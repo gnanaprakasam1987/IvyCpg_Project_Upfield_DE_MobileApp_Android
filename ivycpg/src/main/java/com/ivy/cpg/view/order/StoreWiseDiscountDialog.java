@@ -144,12 +144,11 @@ public class StoreWiseDiscountDialog extends DialogFragment {
                 mDiscountET.setInputType(InputType.TYPE_NULL);
                 mDiscountET.onTouchEvent(event);
                 mDiscountET.setInputType(inType);
-                mDiscountET.selectAll();
                 inputManager.hideSoftInputFromWindow(
                         QUANTITY.getWindowToken(), 0);
                 mDiscountET.requestFocus();
-
-
+                if (mDiscountET.getText().length() > 0)
+                    mDiscountET.setSelection(mDiscountET.getText().length());
                 return true;
             }
         });
@@ -167,6 +166,9 @@ public class StoreWiseDiscountDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
+                if (qty.length() > 0)
+                    mDiscountET.setSelection(qty.length());
+
                 if (!qty.equals("")) {
                     if (mStorewiseDiscountBO != null) {
                         double discValue = SDUtil.convertToDouble(qty);

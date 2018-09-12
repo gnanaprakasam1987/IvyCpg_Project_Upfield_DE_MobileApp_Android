@@ -135,9 +135,9 @@ public class ReplaceFragment extends IvyBaseFragment {
                 ((TextView) view.findViewById(R.id.sroutercaseTitle)).setText(getResources().getString(R.string.avail_outer));
 
 
-            etRepPiece.setText(productMasterBO.getRepPieceQty()+"");
-            etRepCase.setText(productMasterBO.getRepCaseQty()+"");
-            etRepOuter.setText(productMasterBO.getRepOuterQty()+"");
+            etRepPiece.setText(productMasterBO.getRepPieceQty() + "");
+            etRepCase.setText(productMasterBO.getRepCaseQty() + "");
+            etRepOuter.setText(productMasterBO.getRepOuterQty() + "");
 
             etRepPiece.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -153,6 +153,9 @@ public class ReplaceFragment extends IvyBaseFragment {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etRepPiece.setSelection(qty.length());
+
                     if (!("".equals(qty))) {
                         int enteredQty = SDUtil.convertToInt(qty);
                         int totalRepQty = enteredQty + (productMasterBO.getRepCaseQty() * productMasterBO.getCaseSize()) + (productMasterBO.getRepOuterQty() * productMasterBO.getOutersize());
@@ -212,6 +215,8 @@ public class ReplaceFragment extends IvyBaseFragment {
                     }
 
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etRepCase.setSelection(qty.length());
                     if (!("".equals(qty))) {
 
                         int totalRepQty = productMasterBO.getRepPieceQty() + (SDUtil.convertToInt(qty) * productMasterBO.getCaseSize()) + (productMasterBO.getRepOuterQty() * productMasterBO.getOutersize());
@@ -274,6 +279,8 @@ public class ReplaceFragment extends IvyBaseFragment {
                     }
 
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etRepOuter.setSelection(qty.length());
                     if (!("".equals(qty))) {
 
                         int totalRepQty = productMasterBO.getRepPieceQty() + (productMasterBO.getRepCaseQty() * productMasterBO.getCaseSize()) + (SDUtil.convertToInt(qty) * productMasterBO.getOutersize());
@@ -349,8 +356,9 @@ public class ReplaceFragment extends IvyBaseFragment {
                         etRepPiece.setInputType(InputType.TYPE_NULL);
                         etRepPiece.onTouchEvent(event);
                         etRepPiece.setInputType(inType);
-                        etRepPiece.selectAll();
                         etRepPiece.requestFocus();
+                        if (etRepPiece.getText().length() > 0)
+                            etRepPiece.setSelection(etRepPiece.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mSelectedET.getWindowToken(), 0);
                         return true;
@@ -393,8 +401,9 @@ public class ReplaceFragment extends IvyBaseFragment {
                         etRepCase.setInputType(InputType.TYPE_NULL);
                         etRepCase.onTouchEvent(event);
                         etRepCase.setInputType(inType);
-                        etRepCase.selectAll();
                         etRepCase.requestFocus();
+                        if (etRepCase.getText().length() > 0)
+                            etRepCase.setSelection(etRepCase.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 etRepCase.getWindowToken(), 0);
                         return true;
@@ -434,10 +443,11 @@ public class ReplaceFragment extends IvyBaseFragment {
                         etRepOuter.setInputType(InputType.TYPE_NULL);
                         etRepOuter.onTouchEvent(event);
                         etRepOuter.setInputType(inType);
-                        etRepOuter.selectAll();
                         etRepOuter.requestFocus();
-                        inputManager.hideSoftInputFromWindow(
-                                mSelectedET.getWindowToken(), 0);
+                        if (etRepOuter.getText().length() > 0)
+                            etRepOuter.setSelection(etRepOuter.getText().length());
+                                    inputManager.hideSoftInputFromWindow(
+                                            mSelectedET.getWindowToken(), 0);
                         return true;
                     }
                 });
@@ -448,16 +458,16 @@ public class ReplaceFragment extends IvyBaseFragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isReasonAndOtherFieldsAvailable())
+                if (!isReasonAndOtherFieldsAvailable())
                     return;
 
                 removeEmptyRow();
 
-                    Intent intent = new Intent();
-                    intent.putExtra("position", holderPosition);
-                    intent.putExtra("top", holderTop);
-                    getActivity().setResult(RESULT_OK, intent);
-                    getActivity().finish();
+                Intent intent = new Intent();
+                intent.putExtra("position", holderPosition);
+                intent.putExtra("top", holderTop);
+                getActivity().setResult(RESULT_OK, intent);
+                getActivity().finish();
             }
         });
 
@@ -645,8 +655,7 @@ public class ReplaceFragment extends IvyBaseFragment {
                     it.remove();
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
     }

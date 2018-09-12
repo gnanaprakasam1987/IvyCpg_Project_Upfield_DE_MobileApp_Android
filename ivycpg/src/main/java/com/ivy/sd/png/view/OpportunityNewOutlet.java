@@ -605,6 +605,10 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
                         String qty = s.toString();
 
+                        if (qty.length() > 0)
+                            holder.etQty.setSelection(qty.length());
+
+
                         if (!"".equals(qty)) {
                             holder.productObj.setQty_klgs(SDUtil
                                     .convertToInt(qty));
@@ -672,8 +676,9 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                             holder.etQty.setInputType(InputType.TYPE_NULL);
                             holder.etQty.onTouchEvent(event);
                             holder.etQty.setInputType(inType);
-                            holder.etQty.selectAll();
                             holder.etQty.requestFocus();
+                            if (holder.etQty.getText().length() > 0)
+                                holder.etQty.setSelection(holder.etQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -686,6 +691,8 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
 
                         String qty = s.toString();
 
+                        if (qty.length() > 0)
+                            holder.etPrice.setSelection(qty.length());
 
                         if (!"".equals(qty)) {
                             holder.productObj.setOrderPricePiece(SDUtil
@@ -751,8 +758,9 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                             holder.etPrice.setInputType(InputType.TYPE_NULL);
                             holder.etPrice.onTouchEvent(event);
                             holder.etPrice.setInputType(inType);
-                            holder.etPrice.selectAll();
                             holder.etPrice.requestFocus();
+                            if (holder.etPrice.getText().length() > 0)
+                                holder.etPrice.setSelection(holder.etPrice.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;

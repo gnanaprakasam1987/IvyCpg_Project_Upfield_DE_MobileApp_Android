@@ -193,6 +193,8 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 D1.setInputType(InputType.TYPE_NULL);
                 D1.onTouchEvent(event);
                 D1.setInputType(inType);
+                if (D1.getText().length() > 0)
+                    D1.setSelection(D1.getText().length());
                 return true;
             }
         });
@@ -207,7 +209,8 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
 
                 String qty = s.toString();
-
+                if (qty.length() > 0)
+                    D1.setSelection(qty.length());
                 double i = SDUtil.convertToDouble(qty);
 
                 sum = 0;
@@ -500,6 +503,8 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.d1.setSelection(qty.length());
                         double i = SDUtil.convertToDouble(qty);
                         sum = 0;
                         if (i != 0 || i != 0.0) {
@@ -584,6 +589,8 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                               int before, int count) {
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.da.setSelection(qty.length());
                         double i = SDUtil.convertToDouble(qty);
 
                         if (i != 0) {
@@ -660,6 +667,8 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                         holder.d1.setInputType(InputType.TYPE_NULL);
                         holder.d1.onTouchEvent(event);
                         holder.d1.setInputType(inType);
+                        if (holder.d1.getText().length() > 0)
+                            holder.d1.setSelection(holder.d1.getText().length());
                         return true;
                     }
                 });
@@ -675,6 +684,8 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                         holder.da.setInputType(InputType.TYPE_NULL);
                         holder.da.onTouchEvent(event);
                         holder.da.setInputType(inType);
+                        if (holder.da.getText().length() > 0)
+                            holder.da.setSelection(holder.da.getText().length());
                         return true;
                     }
 

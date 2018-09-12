@@ -76,7 +76,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SOSFragment extends IvyBaseFragment implements
-        BrandDialogInterface,FiveLevelFilterCallBack {
+        BrandDialogInterface, FiveLevelFilterCallBack {
 
 
     private static final String BRAND = "Brand";
@@ -581,7 +581,7 @@ public class SOSFragment extends IvyBaseFragment implements
         List<SOSBO> myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
             for (SOSBO temp : items) {
-                if (temp.getParentHierarchy().contains("/"+mFilteredPid+"/") && temp.getIsOwn() == 1) {
+                if (temp.getParentHierarchy().contains("/" + mFilteredPid + "/") && temp.getIsOwn() == 1) {
                     myList.add(temp);
                 }
             }
@@ -1541,6 +1541,8 @@ public class SOSFragment extends IvyBaseFragment implements
                         else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
                                 || !holder.et.getText().toString().equals("0.00"))
                             sb = holder.et.getText().toString();
+                        if (holder.et.getText().length() > 0)
+                            holder.et.setSelection(holder.et.getText().length());
                         return true;
                     }
                 });
@@ -1557,7 +1559,8 @@ public class SOSFragment extends IvyBaseFragment implements
                             sb = holder.et.getText().toString();
 
                         if (!"".equals(s)) {
-
+                            if (s.toString().length() > 0)
+                                holder.et.setSelection(s.toString().length());
                             try {
                                 holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
                             } catch (Exception e) {
@@ -1667,6 +1670,8 @@ public class SOSFragment extends IvyBaseFragment implements
                         holder.etActual.setInputType(InputType.TYPE_NULL);
                         holder.etActual.onTouchEvent(event);
                         holder.etActual.setInputType(inType);
+                        if (holder.etActual.getText().length() > 0)
+                            holder.etActual.setSelection(holder.etActual.getText().length());
                         if (holder.etActual.getText().toString().equals("0") || holder.etActual.getText().toString().equals("0.0")
                                 || holder.etActual.getText().toString().equals("0.00"))
                             sb = "";
@@ -1688,9 +1693,12 @@ public class SOSFragment extends IvyBaseFragment implements
                                 || !holder.etActual.getText().toString().equals("0.00"))
                             sb = holder.etActual.getText().toString();
 
+                        if (sb.length() > 0)
+                            holder.etActual.setSelection(sb.length());
+
                         if (!"".equals(s)) {
                             try {
-                                    holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
+                                holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
 
                             } catch (Exception e) {
                                 holder.sosBO.getLocations().get(mSelectedLocationIndex).setActual(Integer.toString(0));
@@ -1719,6 +1727,8 @@ public class SOSFragment extends IvyBaseFragment implements
                         holder.etTotal.setInputType(InputType.TYPE_NULL);
                         holder.etTotal.onTouchEvent(event);
                         holder.etTotal.setInputType(inType);
+                        if (holder.etTotal.getText().length() > 0)
+                            holder.etTotal.setSelection(holder.etTotal.getText().length());
                         if (holder.etTotal.getText().toString().equals("0") || holder.etTotal.getText().toString().equals("0.0")
                                 || holder.etTotal.getText().toString().equals("0.00"))
                             sb = "";
@@ -1740,8 +1750,10 @@ public class SOSFragment extends IvyBaseFragment implements
                                 || !holder.etTotal.getText().toString().equals("0.00"))
                             sb = holder.etTotal.getText().toString();
 
-                        if (!"".equals(s)) {
+                        if (sb.length() > 0)
+                            holder.etTotal.setSelection(sb.length());
 
+                        if (!"".equals(s)) {
                             try {
                                 holder.sosBO.getLocations().get(mSelectedLocationIndex).setParentTotal(s.toString());
                             } catch (Exception e) {

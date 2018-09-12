@@ -48,7 +48,8 @@ import java.util.Vector;
 public class QuickCallFragment extends IvyBaseFragment {
 
 
-    private static final String MENU_STK_ORD = "MENU_STK_ORD";
+    private String MENU_STK_ORD = "MENU_STK_ORD";
+    private String MENU_ORDER = "MENU_ORDER";
 
     BusinessModel bmodel;
     ListView lvSubDId;
@@ -466,16 +467,20 @@ public class QuickCallFragment extends IvyBaseFragment {
         OrderHelper.getInstance(getActivity()).isQuickCall = true;
         Intent intent = new Intent(getActivity(),
                 StockAndOrder.class);
+        intent.putExtra("OrderFlag", "Nothing");
+        intent.putExtra("ScreenCode",
+                MENU_ORDER);
         startActivity(intent);
 
 
     }
 
     private void loadOrderSummaryScreen() {
-        OrderHelper.getInstance(getActivity()).isQuickCall=true;
+        OrderHelper.getInstance(getActivity()).isQuickCall = true;
 
         Intent intent = new Intent(getActivity(),
                 OrderSummary.class);
+        intent.putExtra("ScreenCode", "MENU_ORDER");
         startActivity(intent);
 
     }

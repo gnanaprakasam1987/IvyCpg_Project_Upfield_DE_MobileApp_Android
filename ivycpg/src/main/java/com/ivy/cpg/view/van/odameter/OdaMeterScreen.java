@@ -260,8 +260,9 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     tripStarting.setCursorVisible(true);
-                    tripStarting.selectAll();
                     tripStarting.onTouchEvent(event);
+                    if (tripStarting.getText().length() > 0)
+                        tripStarting.setSelection(tripStarting.getText().length());
                     // tripStarting.setText("");
                     return true;
                 }
@@ -307,8 +308,9 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     tripEnding.setCursorVisible(true);
-                    tripEnding.selectAll();
                     tripEnding.onTouchEvent(event);
+                    if (tripEnding.getText().length() > 0)
+                        tripEnding.setSelection(tripEnding.getText().length());
                     //tripEnding.setText("");
                     return true;
                 }
@@ -380,6 +382,10 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                         value = "0";
                     else
                         value = s.toString();
+
+                    if (value.length() > 0)
+                        tripStarting.setSelection(value.length());
+
                     startingvalue = SDUtil.convertToDouble(value);
                     Commons.print("Planning ," + " starting value :" + startingvalue);
                     tripStartInsideTry(value);
@@ -418,6 +424,8 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                         value = "0";
                     else
                         value = s.toString();
+                    if (value.length() > 0)
+                        tripEnding.setSelection(value.length());
                     endingvalue = SDUtil.convertToDouble(value);
                     tripEndInsideTry(value);
                     product.setOdameterend(endingvalue);

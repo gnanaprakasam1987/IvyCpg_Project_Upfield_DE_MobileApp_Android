@@ -259,6 +259,9 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 holder.etDocRef.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.etDocRef.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
                             holder.invoiceHeaderBO.setDocRefNo(qty);
                         } else {
@@ -281,6 +284,8 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 holder.etContactName.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.etContactName.setSelection(qty.length());
                         if (!"".equals(qty)) {
                             holder.invoiceHeaderBO.setContactName(qty);
                         } else {
@@ -303,6 +308,8 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 holder.etContactNo.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.etContactNo.setSelection(qty.length());
                         if (!"".equals(qty)) {
                             holder.invoiceHeaderBO.setContactNo(qty);
                         } else {
@@ -325,6 +332,9 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 holder.etRemark.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.etRemark.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
                             holder.invoiceHeaderBO.setDocRemark(qty);
                         } else {

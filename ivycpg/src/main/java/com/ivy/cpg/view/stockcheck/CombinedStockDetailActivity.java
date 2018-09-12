@@ -524,6 +524,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        facingQty.setSelection(qty.length());
                     if (!qty.equals("")) {
                         int wcqty = SDUtil
                                 .convertToInt(facingQty
@@ -551,8 +553,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                             .setInputType(InputType.TYPE_NULL);
                     facingQty.onTouchEvent(event);
                     facingQty.setInputType(inType);
-                    facingQty.selectAll();
                     facingQty.requestFocus();
+                    if (facingQty.getText().length() > 0)
+                        facingQty.setSelection(facingQty.getText().length());
                     inputManager.hideSoftInputFromWindow(
                             facingQty
                                     .getWindowToken(), 0);
@@ -567,6 +570,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
 
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                etShelfPiece.setSelection(qty.length());
+
                             if (!qty.equals("")) {
                                 int sp_qty = SDUtil
                                         .convertToInt(etShelfPiece
@@ -644,8 +650,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .setInputType(InputType.TYPE_NULL);
                             etShelfPiece.onTouchEvent(event);
                             etShelfPiece.setInputType(inType);
-                            etShelfPiece.selectAll();
                             etShelfPiece.requestFocus();
+                            if (etShelfPiece.getText().length() > 0)
+                                etShelfPiece.setSelection(etShelfPiece.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     etShelfPiece
                                             .getWindowToken(), 0);
@@ -658,6 +665,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
 
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                etShelfCase.setSelection(qty.length());
                             if (!qty.equals("")) {
                                 int scqty = SDUtil
                                         .convertToInt(etShelfCase
@@ -732,8 +741,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .setInputType(InputType.TYPE_NULL);
                             etShelfCase.onTouchEvent(event);
                             etShelfCase.setInputType(inType);
-                            etShelfCase.selectAll();
                             etShelfCase.requestFocus();
+                            if (etShelfCase.getText().length() > 0)
+                                etShelfCase.setSelection(etShelfCase.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     etShelfCase
                                             .getWindowToken(), 0);
@@ -757,6 +767,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etShelfOuter.setSelection(qty.length());
                     if (!qty.equals("")) {
                         int shelfoqty = SDUtil
                                 .convertToInt(etShelfOuter
@@ -819,8 +831,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     etShelfOuter.setInputType(InputType.TYPE_NULL);
                     etShelfOuter.onTouchEvent(event);
                     etShelfOuter.setInputType(inType);
-                    etShelfOuter.selectAll();
                     etShelfOuter.requestFocus();
+                    if (etShelfOuter.getText().length() > 0)
+                        etShelfOuter.setSelection(etShelfOuter.getText().length());
                     inputManager.hideSoftInputFromWindow(
                             etShelfOuter.getWindowToken(), 0);
                     return true;
@@ -844,6 +857,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etPricePiece.setSelection(qty.length());
                     if (!"".equals(qty)) {
                         int sp_qty = SDUtil
                                 .convertToInt(etPricePiece
@@ -870,8 +885,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .setInputType(InputType.TYPE_NULL);
                             etPricePiece.onTouchEvent(event);
                             etPricePiece.setInputType(inType);
-                            etPricePiece.selectAll();
                             etPricePiece.requestFocus();
+                            if (etPricePiece.getText().length() > 0)
+                                etPricePiece.setSelection(etPricePiece.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     etPricePiece
                                             .getWindowToken(), 0);
@@ -896,6 +912,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etPriceCase.setSelection(qty.length());
+
                     if (!"".equals(qty)) {
                         mProductMasterBO.setPrice_ca(qty);
                     }
@@ -914,8 +933,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .setInputType(InputType.TYPE_NULL);
                             etPriceCase.onTouchEvent(event);
                             etPriceCase.setInputType(inType);
-                            etPriceCase.selectAll();
                             etPriceCase.requestFocus();
+                            if (etPriceCase.getText().length() > 0)
+                                etPriceCase.setSelection(etPriceCase.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     etPriceCase
                                             .getWindowToken(), 0);
@@ -940,6 +960,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etPriceOuter.setSelection(qty.length());
                     if (!"".equals(qty)) {
                         mProductMasterBO.setPrice_oo(qty);
                     }
@@ -958,8 +980,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .setInputType(InputType.TYPE_NULL);
                             etPriceOuter.onTouchEvent(event);
                             etPriceOuter.setInputType(inType);
-                            etPriceOuter.selectAll();
                             etPriceOuter.requestFocus();
+                            if (etPriceOuter.getText().length() > 0)
+                                etPriceOuter.setSelection(etPriceOuter.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     etPriceOuter
                                             .getWindowToken(), 0);
@@ -988,6 +1011,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etMrpPricePiece.setSelection(qty.length());
                     if (!"".equals(qty)) {
                         int sp_qty = SDUtil
                                 .convertToInt(etMrpPricePiece
@@ -1008,8 +1033,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .setInputType(InputType.TYPE_NULL);
                             etMrpPricePiece.onTouchEvent(event);
                             etMrpPricePiece.setInputType(inType);
-                            etMrpPricePiece.selectAll();
                             etMrpPricePiece.requestFocus();
+                            if (etMrpPricePiece.getText().length() > 0)
+                                etMrpPricePiece.setSelection(etMrpPricePiece.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     etMrpPricePiece
                                             .getWindowToken(), 0);
@@ -1034,6 +1060,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etMrpPriceCase.setSelection(qty.length());
                     if (!"".equals(qty)) {
                         mProductMasterBO.setMrp_ca(qty);
                     }
@@ -1052,8 +1080,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .setInputType(InputType.TYPE_NULL);
                             etMrpPriceCase.onTouchEvent(event);
                             etMrpPriceCase.setInputType(inType);
-                            etMrpPriceCase.selectAll();
                             etMrpPriceCase.requestFocus();
+                            if (etMrpPriceCase.getText().length() > 0)
+                                etMrpPriceCase.setSelection(etMrpPriceCase.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     etMrpPriceCase
                                             .getWindowToken(), 0);
@@ -1078,6 +1107,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etMrpPriceOuter.setSelection(qty.length());
                     if (!"".equals(qty)) {
                         mProductMasterBO.setMrp_ou(qty);
                     }
@@ -1096,8 +1127,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .setInputType(InputType.TYPE_NULL);
                             etMrpPriceOuter.onTouchEvent(event);
                             etMrpPriceOuter.setInputType(inType);
-                            etMrpPriceOuter.selectAll();
                             etMrpPriceOuter.requestFocus();
+                            if (etMrpPriceOuter.getText().length() > 0)
+                                etMrpPriceOuter.setSelection(etMrpPriceOuter.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     etMrpPriceOuter
                                             .getWindowToken(), 0);
@@ -1125,6 +1157,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etExpPiece.setSelection(qty.length());
+
                     if (!"".equals(qty)) {
                         mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex)
@@ -1160,6 +1195,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etExpCase.setSelection(qty.length());
                     if (!"".equals(qty)) {
                         mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex)
@@ -1195,6 +1232,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String qty = s.toString();
+                    if (qty.length() > 0)
+                        etExpOuter.setSelection(qty.length());
                     if (!"".equals(qty)) {
                         mProductMasterBO.getLocations()
                                 .get(mSelectedLocationIndex)
@@ -1224,8 +1263,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     etExpPiece.setInputType(InputType.TYPE_NULL);
                     etExpPiece.onTouchEvent(event);
                     etExpPiece.setInputType(inType);
-                    etExpPiece.selectAll();
                     etExpPiece.requestFocus();
+                    if (etExpPiece.getText().length() > 0)
+                        etExpPiece.setSelection(etExpPiece.getText().length());
                     inputManager.hideSoftInputFromWindow(
                             etExpPiece.getWindowToken(), 0);
                     return true;
@@ -1242,8 +1282,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     etExpCase.setInputType(InputType.TYPE_NULL);
                     etExpCase.onTouchEvent(event);
                     etExpCase.setInputType(inType);
-                    etExpCase.selectAll();
                     etExpCase.requestFocus();
+                    if (etExpCase.getText().length() > 0)
+                        etExpCase.setSelection(etExpCase.getText().length());
                     inputManager.hideSoftInputFromWindow(
                             etExpCase.getWindowToken(), 0);
                     return true;
@@ -1259,8 +1300,9 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     etExpOuter.setInputType(InputType.TYPE_NULL);
                     etExpOuter.onTouchEvent(event);
                     etExpOuter.setInputType(inType);
-                    etExpOuter.selectAll();
                     etExpOuter.requestFocus();
+                    if (etExpOuter.getText().length() > 0)
+                        etExpOuter.setSelection(etExpOuter.getText().length());
                     inputManager.hideSoftInputFromWindow(
                             etExpOuter.getWindowToken(), 0);
                     return true;

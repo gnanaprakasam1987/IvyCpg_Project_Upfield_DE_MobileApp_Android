@@ -97,7 +97,7 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class StockCheckFragment extends IvyBaseFragment implements
         BrandDialogInterface, OnClickListener, OnEditorActionListener,
-        CompetitorFilterInterface, FiveLevelFilterCallBack,StockCheckContractor.StockCheckView {
+        CompetitorFilterInterface, FiveLevelFilterCallBack, StockCheckContractor.StockCheckView {
 
 
     private static final String BRAND = "Brand";
@@ -799,6 +799,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                                 public void afterTextChanged(Editable s) {
                                     String qty = s.toString();
+                                    if (qty.length() > 0)
+                                        holder.shelfPcsQty.setSelection(qty.length());
+
                                     if (!qty.equals("")) {
                                         int sp_qty = SDUtil
                                                 .convertToInt(holder.shelfPcsQty
@@ -874,6 +877,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                                 public void afterTextChanged(Editable s) {
                                     String qty = s.toString();
+                                    if (qty.length() > 0)
+                                        holder.shelfCaseQty.setSelection(qty.length());
+
                                     if (!qty.equals("")) {
                                         int shelf_case_qty = SDUtil
                                                 .convertToInt(holder.shelfCaseQty
@@ -962,6 +968,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         @Override
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.shelfouter.setSelection(qty.length());
                             if (!qty.equals("")) {
                                 int shelf_o_qty = SDUtil
                                         .convertToInt(holder.shelfouter
@@ -1042,6 +1050,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         @Override
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.facingQty.setSelection(qty.length());
                             if (!qty.equals("")) {
                                 int w_cqty = SDUtil
                                         .convertToInt(holder.facingQty
@@ -1071,8 +1081,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .setInputType(InputType.TYPE_NULL);
                                     holder.facingQty.onTouchEvent(event);
                                     holder.facingQty.setInputType(inType);
-                                    holder.facingQty.selectAll();
                                     holder.facingQty.requestFocus();
+                                    if (holder.facingQty.getText().length() > 0)
+                                        holder.facingQty.setSelection(holder.facingQty.getText().length());
                                     inputManager.hideSoftInputFromWindow(
                                             mEdt_searchProductName
                                                     .getWindowToken(), 0);
@@ -1092,8 +1103,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .setInputType(InputType.TYPE_NULL);
                                     holder.shelfPcsQty.onTouchEvent(event);
                                     holder.shelfPcsQty.setInputType(inType);
-                                    holder.shelfPcsQty.selectAll();
                                     holder.shelfPcsQty.requestFocus();
+                                    if (holder.shelfPcsQty.getText().length() > 0)
+                                        holder.shelfPcsQty.setSelection(holder.shelfPcsQty.getText().length());
                                     inputManager.hideSoftInputFromWindow(
                                             mEdt_searchProductName
                                                     .getWindowToken(), 0);
@@ -1113,8 +1125,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             .setInputType(InputType.TYPE_NULL);
                                     holder.shelfCaseQty.onTouchEvent(event);
                                     holder.shelfCaseQty.setInputType(inType);
-                                    holder.shelfCaseQty.selectAll();
                                     holder.shelfCaseQty.requestFocus();
+                                    if (holder.shelfCaseQty.getText().length() > 0)
+                                        holder.shelfCaseQty.setSelection(holder.shelfCaseQty.getText().length());
                                     inputManager.hideSoftInputFromWindow(
                                             mEdt_searchProductName
                                                     .getWindowToken(), 0);
@@ -1131,8 +1144,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             holder.shelfouter.setInputType(InputType.TYPE_NULL);
                             holder.shelfouter.onTouchEvent(event);
                             holder.shelfouter.setInputType(inType);
-                            holder.shelfouter.selectAll();
                             holder.shelfouter.requestFocus();
+                            if (holder.shelfouter.getText().length() > 0)
+                                holder.shelfouter.setSelection(holder.shelfouter.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchProductName.getWindowToken(), 0);
                             return true;
@@ -1523,7 +1537,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_survey) {
             startActivity(new Intent(getActivity(), SurveyActivityNew.class));
             return true;
-        }else if (i == R.id.menu_loc_filter) {
+        } else if (i == R.id.menu_loc_filter) {
             showLocation();
             return true;
         } else if (i == R.id.menu_spl_filter) {

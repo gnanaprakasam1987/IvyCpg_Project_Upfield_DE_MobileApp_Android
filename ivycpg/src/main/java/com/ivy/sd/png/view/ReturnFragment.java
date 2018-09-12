@@ -185,7 +185,7 @@ public class ReturnFragment extends IvyBaseFragment {
                 }
                 removeEmptyRow();
 
-                if (!bmodel.configurationMasterHelper.IS_SALES_RETURN_VALIDATE) {
+                if (bmodel.configurationMasterHelper.IS_SALES_RETURN_VALIDATE) {
                     new validateSalesReturn().execute();
                 } else {
                     Intent intent = new Intent();
@@ -545,7 +545,8 @@ public class ReturnFragment extends IvyBaseFragment {
                             return;
                         }
                         String qty = s.toString();
-
+                        if (qty.length() > 0)
+                            holder.outerQty.setSelection(qty.length());
                         if (!"".equals(qty)) {
                             holder.reasonBO.setOuterQty(SDUtil
                                     .convertToInt(qty));
@@ -557,6 +558,9 @@ public class ReturnFragment extends IvyBaseFragment {
                     public void afterTextChanged(Editable s) {
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.pieceQty.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
                             holder.reasonBO.setPieceQty(SDUtil
                                     .convertToInt(qty));
@@ -584,6 +588,8 @@ public class ReturnFragment extends IvyBaseFragment {
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.caseQty.setSelection(qty.length());
 
                         if (!"".equals(qty)) {
                             holder.reasonBO.setCaseQty(SDUtil
@@ -605,6 +611,9 @@ public class ReturnFragment extends IvyBaseFragment {
                 holder.oldMrp.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.oldMrp.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
 
                             holder.reasonBO.setOldMrp(SDUtil
@@ -631,6 +640,8 @@ public class ReturnFragment extends IvyBaseFragment {
                                               int before, int count) {
                         if (s.toString().contains("\"")) {
                             String qty = s.toString().replaceAll("\"", "");
+                            if (qty.length() > 0)
+                                holder.invoiceno.setSelection(qty.length());
                             holder.invoiceno.setText(qty);
                         }
                     }
@@ -668,6 +679,8 @@ public class ReturnFragment extends IvyBaseFragment {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.srpedit.setSelection(qty.length());
                         if (!"".equals(qty)
                                 && productMasterBO.getSrp() != SDUtil
                                 .convertToFloat(qty)) {
@@ -695,6 +708,9 @@ public class ReturnFragment extends IvyBaseFragment {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.lotNumber.setSelection(qty.length());
+
                         if (!"".equals(qty)
                                 && !"0".equals(qty)) {
                             holder.reasonBO.setLotNumber(qty);
@@ -712,8 +728,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.outerQty.setInputType(InputType.TYPE_NULL);
                         holder.outerQty.onTouchEvent(event);
                         holder.outerQty.setInputType(inType);
-                        holder.outerQty.selectAll();
                         holder.outerQty.requestFocus();
+                        if (holder.outerQty.getText().length() > 0)
+                            holder.outerQty.setSelection(holder.outerQty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mSelectedET.getWindowToken(), 0);
                         return true;
@@ -728,8 +745,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.caseQty.setInputType(InputType.TYPE_NULL);
                         holder.caseQty.onTouchEvent(event);
                         holder.caseQty.setInputType(inType);
-                        holder.caseQty.selectAll();
                         holder.caseQty.requestFocus();
+                        if (holder.caseQty.getText().length() > 0)
+                            holder.caseQty.setSelection(holder.caseQty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mSelectedET.getWindowToken(), 0);
                         return true;
@@ -744,8 +762,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.pieceQty.setInputType(InputType.TYPE_NULL);
                         holder.pieceQty.onTouchEvent(event);
                         holder.pieceQty.setInputType(inType);
-                        holder.pieceQty.selectAll();
                         holder.pieceQty.requestFocus();
+                        if (holder.pieceQty.getText().length() > 0)
+                            holder.pieceQty.setSelection(holder.pieceQty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mSelectedET.getWindowToken(), 0);
                         return true;
@@ -761,8 +780,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.oldMrp.setInputType(InputType.TYPE_NULL);
                         holder.oldMrp.onTouchEvent(event);
                         holder.oldMrp.setInputType(inType);
-                        holder.oldMrp.selectAll();
                         holder.oldMrp.requestFocus();
+                        if (holder.oldMrp.getText().length() > 0)
+                            holder.oldMrp.setSelection(holder.oldMrp.getText().length());
 
                         return true;
                     }
@@ -779,8 +799,9 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.srpedit.setInputType(InputType.TYPE_NULL);
                         holder.srpedit.onTouchEvent(event);
                         holder.srpedit.setInputType(inType);
-                        holder.srpedit.selectAll();
                         holder.srpedit.requestFocus();
+                        if (holder.srpedit.getText().length() > 0)
+                            holder.srpedit.setSelection(holder.srpedit.getText().length());
 
                         return true;
                     }
@@ -794,9 +815,10 @@ public class ReturnFragment extends IvyBaseFragment {
                         holder.invoiceno.setInputType(InputType.TYPE_NULL);
                         holder.invoiceno.onTouchEvent(event);
                         holder.invoiceno.setInputType(inType);
-                        holder.invoiceno.selectAll();
                         holder.invoiceno.requestFocus();
                         holder.invoiceno.showDropDown();
+                        if (holder.invoiceno.getText().length() > 0)
+                            holder.invoiceno.setSelection(holder.invoiceno.getText().length());
                         inputManager.showSoftInput(
                                 holder.invoiceno, InputMethodManager.SHOW_FORCED);
                         return true;

@@ -146,11 +146,12 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
 
                             QUANTITY = edt_availability;
                             edt_availability.onTouchEvent(event);
-                            edt_availability.selectAll();
                             edt_availability.requestFocus();
                             inputManager.hideSoftInputFromWindow(
                                     edt_availability
                                             .getWindowToken(), 0);
+                            if (edt_availability.getText().length() > 0)
+                                edt_availability.setSelection(edt_availability.getText().length());
                             return true;
                         }
                     });

@@ -557,8 +557,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                                                 .setQuantityTypeSelected(false);
                                         holder.showFreeBTN.setEnabled(true);
                                         return;
-                                    }
-                                    else {
+                                    } else {
                                         holder.text_stock_availability.setVisibility(View.GONE);
 
                                     }
@@ -859,6 +858,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         if (s != null) {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
+                                if (s.toString().length() > 0)
+                                    holder.priceET.setSelection(s.toString().length());
                                 priceEntered = SDUtil.convertToDouble(s.toString());
                             }
                         }
@@ -889,6 +890,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         if (s != null) {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
+                                if (s.toString().length() > 0)
+                                    holder.amountET.setSelection(s.toString().length());
                                 amountEntered = SDUtil.convertToDouble(s.toString());
                             }
                         }
@@ -919,6 +922,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         if (s != null) {
                             if (!s.toString().trim().equals("")
                                     && !s.toString().trim().equals(".")) {
+                                if (s.toString().length() > 0)
+                                    holder.percentET.setSelection(s.toString().length());
+
                                 percentEntered = SDUtil.convertToDouble(s
                                         .toString());
                             }
@@ -938,8 +944,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         holder.priceET.setInputType(InputType.TYPE_NULL);
                         holder.priceET.onTouchEvent(event);
                         holder.priceET.setInputType(inType);
-                        holder.priceET.selectAll();
                         holder.priceET.requestFocus();
+                        if (holder.priceET.getText().length() > 0)
+                            holder.priceET.setSelection(holder.priceET.getText().length());
                         return true;
 
                     }
@@ -954,8 +961,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         holder.percentET.setInputType(InputType.TYPE_NULL);
                         holder.percentET.onTouchEvent(event);
                         holder.percentET.setInputType(inType);
-                        holder.percentET.selectAll();
                         holder.percentET.requestFocus();
+                        if (holder.percentET.getText().length() > 0)
+                            holder.percentET.setSelection(holder.percentET.getText().length());
                         return true;
 
                     }
@@ -970,8 +978,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         holder.amountET.setInputType(InputType.TYPE_NULL);
                         holder.amountET.onTouchEvent(event);
                         holder.amountET.setInputType(inType);
-                        holder.amountET.selectAll();
                         holder.amountET.requestFocus();
+                        if (holder.amountET.getText().length() > 0)
+                            holder.amountET.setSelection(holder.amountET.getText().length());
                         return true;
 
                     }
@@ -1320,8 +1329,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                         .setQuantityTypeSelected(false);
                 holder.showFreeBTN.setEnabled(true);
                 holder.text_stock_availability.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 holder.text_stock_availability.setVisibility(View.GONE);
             }
 
