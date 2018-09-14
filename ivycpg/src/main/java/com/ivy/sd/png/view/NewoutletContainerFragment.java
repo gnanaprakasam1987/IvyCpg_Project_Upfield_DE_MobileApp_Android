@@ -10,12 +10,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
 
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ import java.util.List;
 public class NewoutletContainerFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
-    TabLayout tabLayout;
     Bundle bundle;
 
     @Override
@@ -96,9 +95,9 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                         setScreenTitle(bundle.getString("screentitle"));
                 }
 
-                ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+                ViewPager viewPager = view.findViewById(R.id.pager);
 
-                ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+                ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
 
                 if (isFromEditProfileView)
                     adapter.addFragment(new ProfileEditFragmentNew(), getResources().getString(R.string.profile_edit_screen__title));
@@ -109,11 +108,11 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
 
                 viewPager.setAdapter(adapter);
 
-                TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+                TabLayout tabLayout = view.findViewById(R.id.tab_layout);
                 tabLayout.setupWithViewPager(viewPager);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Commons.printException(e);
         }
     }
 

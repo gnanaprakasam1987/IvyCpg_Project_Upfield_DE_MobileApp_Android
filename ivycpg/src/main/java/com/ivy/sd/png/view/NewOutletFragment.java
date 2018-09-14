@@ -1225,7 +1225,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
             scrollview2.addView(totalView);
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
 
     }
@@ -5426,7 +5426,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                         .getSelectedItem()).getLocId());
                             } catch (Exception e) {
                                 outlet.setLocid(0);
-                                Commons.printException("" + e);
+                                Commons.printException(e);
                             }
                         }
                     }
@@ -5439,7 +5439,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                         .getSelectedItem()).getListId());
                             } catch (Exception e) {
                                 outlet.setContractStatuslovid(0);
-                                Commons.printException("" + e);
+                                Commons.printException(e);
                             }
                         }
                     }
@@ -5483,7 +5483,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                 Commons.print("ListId : " + tempBo.getListId());
                             } catch (Exception e) {
                                 outlet.setPayment("0");
-                                Commons.printException("" + e);
+                                Commons.printException(e);
                             }
                         }
                     }
@@ -5619,7 +5619,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                         .getSelectedItem()).getBeatId());
                             } catch (Exception e) {
                                 outlet.setRouteid(0);
-                                Commons.printException("" + e);
+                                Commons.printException(e);
                             }
                         }
                     }
@@ -5825,7 +5825,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
 
         bmodel.newOutletHelper.setNewoutlet(outlet);
@@ -5843,7 +5843,7 @@ public class NewOutletFragment extends IvyBaseFragment
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
     }
 
@@ -6117,7 +6117,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                             .trim());
                             }
                         } catch (Exception e) {
-                            Commons.printException("" + e);
+                            Commons.printException(e);
                         }
                     }
                 });
@@ -6475,7 +6475,7 @@ public class NewOutletFragment extends IvyBaseFragment
             }
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
     }
 
