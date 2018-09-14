@@ -532,17 +532,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     }
 
     public void CallAnalysisClick(View v) {
-
-        for (ConfigureBO menu : menuDB) {
-            if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-                break;
-            } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-                break;
-            } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
-                gotoNextActivity(menu, menu.getHasLink(), false);
-                break;
+        if (!isClick) {
+            isClick = true;
+            for (ConfigureBO menu : menuDB) {
+                if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
+                    gotoNextActivity(menu, menu.getHasLink(), false);
+                    break;
+                } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
+                    gotoNextActivity(menu, menu.getHasLink(), false);
+                    break;
+                } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
+                    gotoNextActivity(menu, menu.getHasLink(), false);
+                    break;
+                }
             }
         }
 
@@ -2826,6 +2828,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.please_complete_previous_activity),
                             Toast.LENGTH_SHORT).show();
                 isCreated = false;
+                isClick = false;
             }
 
         } else if (menu.getConfigCode().equals(MENU_ASSET) && hasLink == 1) {
@@ -3536,6 +3539,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
                     dataNotMapped();
                     isCreated = false;
+                    isClick = false;
                 }
             } else {
                 if (bmodel.configurationMasterHelper.IS_JUMP)
@@ -3547,6 +3551,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.please_complete_previous_activity),
                             Toast.LENGTH_SHORT).show();
                 isCreated = false;
+                isClick = false;
             }
         } else if (menu.getConfigCode().equals(MENU_CLOSE_KLGS)
                 && hasLink == 1) {
@@ -3575,6 +3580,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                         R.string.please_complete_previous_activity),
                                 Toast.LENGTH_SHORT).show();
                     isCreated = false;
+                    isClick = false;
                 }
 
             }
@@ -4183,6 +4189,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
+                                        isClick = false;
                                         dialog.dismiss();
 
                                     }

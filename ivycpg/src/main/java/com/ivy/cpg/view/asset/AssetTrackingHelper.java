@@ -560,7 +560,7 @@ public class AssetTrackingHelper {
                     }
 
                     assetTrackingBO.setNFCTagId(c1.getString(c1.getColumnIndex("NfcTagId")));
-                    assetTrackingBO.setParentHierarchy(c1.getString(c.getColumnIndex("ParentHierarchy")));
+                    assetTrackingBO.setParentHierarchy(c1.getString(c1.getColumnIndex("ParentHierarchy")));
 
                     mAllAssetTrackingList.add(assetTrackingBO);
 

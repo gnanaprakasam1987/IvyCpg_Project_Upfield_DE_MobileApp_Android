@@ -683,6 +683,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
             if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
                 displayTodayRoute(null);
+            } else {
+                loadData(0, null);
             }
 
         } catch (Exception e) {
