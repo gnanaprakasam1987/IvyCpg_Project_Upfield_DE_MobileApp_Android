@@ -193,6 +193,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     public void setSaveSalesReturn() {
         showConfirmAlert();
     }
+
     @OnClick(R.id.btn_cancel)
     public void setCancelSalesReturn() {
         showConfirConfirmAlert();
@@ -214,6 +215,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
+
     private void showConfirConfirmAlert() {
 
         new AlertDialog.Builder(getActivity())
@@ -226,7 +228,8 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                             Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
                             (getActivity()).onBackPressed();
                         }
-                    }})
+                    }
+                })
                 .setNegativeButton(android.R.string.no, null).show();
     }
 
@@ -349,9 +352,9 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         holder.actualCaseQuantity.setInputType(InputType.TYPE_NULL);
                         holder.actualCaseQuantity.onTouchEvent(event);
                         holder.actualCaseQuantity.setInputType(inType);
-                        holder.actualCaseQuantity.selectAll();
                         holder.actualCaseQuantity.requestFocus();
-
+                        if (holder.actualCaseQuantity.getText().length() > 0)
+                            holder.actualCaseQuantity.setSelection(holder.actualCaseQuantity.getText().length());
                         return true;
                     }
                 });
@@ -364,8 +367,9 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         holder.actualPieceQuantity.setInputType(InputType.TYPE_NULL);
                         holder.actualPieceQuantity.onTouchEvent(event);
                         holder.actualPieceQuantity.setInputType(inType);
-                        holder.actualPieceQuantity.selectAll();
                         holder.actualPieceQuantity.requestFocus();
+                        if (holder.actualPieceQuantity.getText().length() > 0)
+                            holder.actualPieceQuantity.setSelection(holder.actualPieceQuantity.getText().length());
                         return true;
                     }
                 });
@@ -383,6 +387,8 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                     @Override
                     public void afterTextChanged(Editable s) {
                         if ((!(s.toString()).isEmpty())) {
+                            if (s.toString().length() > 0)
+                                holder.actualCaseQuantity.setSelection(s.toString().length());
                             salesReturnDeliveryDataModelsList.get(position).setActualCaseQuantity(Integer.valueOf(s.toString()));
                         }
 
@@ -400,8 +406,11 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        if (!(s.toString()).isEmpty())
+                        if (!(s.toString()).isEmpty()) {
+                            if (s.toString().length() > 0)
+                                holder.actualPieceQuantity.setSelection(s.toString().length());
                             salesReturnDeliveryDataModelsList.get(position).setActualPieceQuantity(Integer.valueOf(s.toString()));
+                        }
                     }
                 });
 
@@ -438,11 +447,11 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                     actualPieceQuantity = itemView.findViewById(R.id.txt_actualPieceQuantity);
 
                     productName.setTypeface(FontUtils.getProductNameFont(mContext));
-                    reason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
-                    returnCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
-                    returnPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
-                    actualCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
-                    actualPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,mContext));
+                    reason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+                    returnCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+                    returnPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+                    actualCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+                    actualPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
 
                     SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
                     if (!salesReturnDeliveryHelper.SHOW_SALES_RET_PCS) {

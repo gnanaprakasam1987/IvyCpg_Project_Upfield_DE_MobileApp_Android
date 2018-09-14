@@ -68,7 +68,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SOSKUFragment extends IvyBaseFragment implements
-        BrandDialogInterface,FiveLevelFilterCallBack {
+        BrandDialogInterface, FiveLevelFilterCallBack {
 
     private BusinessModel mBModel;
     private SalesFundamentalHelper mSFHelper;
@@ -526,6 +526,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
             }
         }
     }
+
     /**
      * Five level filter
      */
@@ -697,7 +698,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
     /**
      * Load list based on five level filter selection
      *
-     * @param mFilteredPid        Filtered Product Id
+     * @param mFilteredPid         Filtered Product Id
      * @param mSelectedIdByLevelId Selected product Id by level id
      */
     private void updateFiveFilterSelection(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, String mFilterText) {
@@ -711,12 +712,12 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
         myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
-                for (SOSKUBO temp : items) {
-                    if (temp.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
-                        if (temp.getIsOwn() == 1)
-                            myList.add(temp);
-                    }
+            for (SOSKUBO temp : items) {
+                if (temp.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                    if (temp.getIsOwn() == 1)
+                        myList.add(temp);
                 }
+            }
         } else {
             myList.addAll(items);
         }
@@ -1043,6 +1044,8 @@ public class SOSKUFragment extends IvyBaseFragment implements
                         holder.et.setInputType(InputType.TYPE_NULL);
                         holder.et.onTouchEvent(event);
                         holder.et.setInputType(inType);
+                        if (holder.et.getText().length() > 0)
+                            holder.et.setSelection(holder.et.getText().length());
                         return true;
                     }
                 });
@@ -1052,6 +1055,8 @@ public class SOSKUFragment extends IvyBaseFragment implements
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
                         if (!"".equals(s)) {
+                            if (s.toString().length() > 0)
+                                holder.et.setSelection(s.toString().length());
 
                             try {
                                 holder.soskuBO.setActual(SDUtil.convertToInt(s

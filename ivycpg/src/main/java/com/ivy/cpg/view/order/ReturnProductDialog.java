@@ -236,8 +236,9 @@ public class ReturnProductDialog extends Dialog {
                         holder.etReturnQty.setInputType(InputType.TYPE_NULL);
                         holder.etReturnQty.onTouchEvent(arg1);
                         holder.etReturnQty.setInputType(inType);
-                        holder.etReturnQty.selectAll();
                         holder.etReturnQty.requestFocus();
+                        if (holder.etReturnQty.getText().length() > 0)
+                            holder.etReturnQty.setSelection(holder.etReturnQty.getText().length());
                         return true;
                     }
                 });
@@ -270,6 +271,9 @@ public class ReturnProductDialog extends Dialog {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.etReturnQty.setSelection(qty.length());
+
                         if (!qty.equals("")) {
                             if (bmodel.configurationMasterHelper.CHECK_LIABLE_PRODUCTS) {
                                 if (SDUtil.convertToInt(qty) <= holder.mSKUBO.getLiableQty())

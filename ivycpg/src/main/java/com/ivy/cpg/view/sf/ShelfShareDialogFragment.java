@@ -320,6 +320,8 @@ public class ShelfShareDialogFragment extends DialogFragment {
                 mEdtTxtBlock.setInputType(InputType.TYPE_NULL);
                 mEdtTxtBlock.onTouchEvent(event);
                 mEdtTxtBlock.setInputType(inType);
+                if (mEdtTxtBlock.getText().length() > 0)
+                    mEdtTxtBlock.setSelection(mEdtTxtBlock.getText().length());
                 return true;
             }
         });
@@ -331,6 +333,8 @@ public class ShelfShareDialogFragment extends DialogFragment {
                 mEdtTxtShelf.setInputType(InputType.TYPE_NULL);
                 mEdtTxtShelf.onTouchEvent(event);
                 mEdtTxtShelf.setInputType(inType);
+                if (mEdtTxtShelf.getText().length() > 0)
+                    mEdtTxtShelf.setSelection(mEdtTxtShelf.getText().length());
                 return true;
             }
         });
@@ -342,6 +346,8 @@ public class ShelfShareDialogFragment extends DialogFragment {
                 mEdtTxtShelfLength.setInputType(InputType.TYPE_NULL);
                 mEdtTxtShelfLength.onTouchEvent(event);
                 mEdtTxtShelfLength.setInputType(inType);
+                if (mEdtTxtShelfLength.getText().length() > 0)
+                    mEdtTxtShelfLength.setSelection(mEdtTxtShelfLength.getText().length());
                 return true;
             }
         });
@@ -1220,6 +1226,8 @@ public class ShelfShareDialogFragment extends DialogFragment {
 
             if (mTextWatcherEnabled) {
                 String data = s.toString();
+                if (data.length() > 0)
+                    editText.setSelection(data.length());
                 if (editText.getId() == R.id.edtTxtBlock) {
                     if (!"".equals(data))
                         mBlockCount = SDUtil.convertToInt(data);

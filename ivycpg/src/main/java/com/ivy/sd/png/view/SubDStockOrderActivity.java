@@ -1413,6 +1413,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.caseQty.setSelection(qty.length());
+
 
                         if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER) {
                             if (SDUtil.convertToInt(qty) > holder.productObj.getIndicativeOrder_oc()) {
@@ -1594,8 +1597,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             holder.caseQty.setInputType(InputType.TYPE_NULL);
                             holder.caseQty.onTouchEvent(event);
                             holder.caseQty.setInputType(inType);
-                            holder.caseQty.selectAll();
                             holder.caseQty.requestFocus();
+                            if (holder.caseQty.getText().length() > 0)
+                                holder.caseQty.setSelection(holder.caseQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -1613,6 +1617,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.pcsQty.setSelection(qty.length());
+
                         /** Calculate the total pcs qty **/
                         float totalQty = (holder.productObj.getOrderedCaseQty() * holder.productObj
                                 .getCaseSize())
@@ -1771,8 +1778,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             holder.pcsQty.setInputType(InputType.TYPE_NULL);
                             holder.pcsQty.onTouchEvent(event);
                             holder.pcsQty.setInputType(inType);
-                            holder.pcsQty.selectAll();
                             holder.pcsQty.requestFocus();
+                            if (holder.pcsQty.getText().length() > 0)
+                                holder.pcsQty.setSelection(holder.pcsQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -1791,7 +1799,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             return;
                         }
                         String qty = s.toString();
-
+                        if (qty.length() > 0)
+                            holder.outerQty.setSelection(qty.length());
                         float totalQty = (SDUtil.convertToInt(qty) * holder.productObj
                                 .getOutersize())
                                 + (holder.productObj.getOrderedCaseQty() * holder.productObj
@@ -1953,8 +1962,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             holder.outerQty.setInputType(InputType.TYPE_NULL);
                             holder.outerQty.onTouchEvent(event);
                             holder.outerQty.setInputType(inType);
-                            holder.outerQty.selectAll();
                             holder.outerQty.requestFocus();
+                            if (holder.outerQty.getText().length() > 0)
+                                holder.outerQty.setSelection(holder.outerQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;

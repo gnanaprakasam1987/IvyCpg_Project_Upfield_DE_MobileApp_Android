@@ -644,6 +644,8 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
                             int sum;
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.outerQty.setSelection(qty.length());
                             if (!qty.equals("")) {
 
                                 holder.spbo.setStkproouterqty(SDUtil
@@ -775,8 +777,9 @@ public class StockProposalFragment extends IvyBaseFragment implements
                         holder.outerQty.setInputType(InputType.TYPE_NULL); // disable
                         holder.outerQty.onTouchEvent(event); // call
                         holder.outerQty.setInputType(inType); // restore
-                        holder.outerQty.selectAll();
                         holder.outerQty.requestFocus(); // type
+                        if (holder.outerQty.getText().length() > 0)
+                            holder.outerQty.setSelection(holder.outerQty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mEdt_searchproductName.getWindowToken(), 0);
                         return true;
@@ -798,6 +801,9 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
                             int sum;
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.newProposalQty.setSelection(qty.length());
+
                             if (!qty.equals("")) {
 
                                 holder.spbo.setStkprocaseqty(SDUtil
@@ -934,8 +940,9 @@ public class StockProposalFragment extends IvyBaseFragment implements
                         holder.newProposalQty.setInputType(InputType.TYPE_NULL); // disable
                         holder.newProposalQty.onTouchEvent(event); // call
                         holder.newProposalQty.setInputType(inType); // restore
-                        holder.newProposalQty.selectAll();
                         holder.newProposalQty.requestFocus(); // type
+                        if (holder.newProposalQty.getText().length() > 0)
+                            holder.newProposalQty.setSelection(holder.newProposalQty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mEdt_searchproductName.getWindowToken(), 0);
                         return true;
@@ -949,6 +956,8 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                 try {
                                     int sum;
                                     String qty = s.toString();
+                                    if (qty.length() > 0)
+                                        holder.newproposalpcsQty.setSelection(qty.length());
                                     if (!qty.equals("")) {
                                         holder.spbo.setStkpropcsqty(SDUtil
                                                 .convertToInt(qty));
@@ -1107,8 +1116,9 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         .setInputType(InputType.TYPE_NULL); // disable
                                 holder.newproposalpcsQty.onTouchEvent(event); // call
                                 holder.newproposalpcsQty.setInputType(inType); // restore
-                                holder.newproposalpcsQty.selectAll();
                                 holder.newproposalpcsQty.requestFocus(); // type
+                                if (holder.newproposalpcsQty.getText().length() > 0)
+                                    holder.newproposalpcsQty.setSelection(holder.newproposalpcsQty.getText().length());
                                 inputManager.hideSoftInputFromWindow(
                                         mEdt_searchproductName.getWindowToken(),
                                         0);

@@ -234,6 +234,9 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                             String qty;
                             if (!s.toString().equals("0")) {
                                 qty = s.toString();
+                                if (qty.length() > 0)
+                                    holder.pieceqty.setSelection(qty.length());
+
                                 holder.partilaobjectholder.setPieceqty(SDUtil.convertToInt(qty));
                             }
                         }
@@ -252,6 +255,8 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                             String qty;
                             if (!s.toString().equals("0")) {
                                 qty = s.toString();
+                                if (qty.length() > 0)
+                                    holder.outerqty.setSelection(qty.length());
                                 holder.partilaobjectholder.setOuterqty(SDUtil.convertToInt(qty));
                             }
                         }
@@ -272,6 +277,8 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                             String qty;
                             if (!s.toString().equals("0")) {
                                 qty = s.toString();
+                                if (qty.length() > 0)
+                                    holder.caseqty.setSelection(qty.length());
                                 Commons.print("qty" + qty);
                                 holder.partilaobjectholder.setCaseqty(SDUtil.convertToInt(qty));
                             }
@@ -295,9 +302,9 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                             holder.caseqty.setInputType(InputType.TYPE_NULL);
                             holder.caseqty.onTouchEvent(event);
                             holder.caseqty.setInputType(inType);
-                            holder.caseqty.selectAll();
                             holder.caseqty.requestFocus();
-
+                            if (holder.caseqty.getText().length() > 0)
+                                holder.caseqty.setSelection(holder.caseqty.getText().length());
                             return true;
                         }
                     });
@@ -310,8 +317,9 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                             holder.outerqty.setInputType(InputType.TYPE_NULL);
                             holder.outerqty.onTouchEvent(event);
                             holder.outerqty.setInputType(inType);
-                            holder.outerqty.selectAll();
                             holder.outerqty.requestFocus();
+                            if (holder.outerqty.getText().length() > 0)
+                                holder.outerqty.setSelection(holder.outerqty.getText().length());
 
                             return true;
                         }
@@ -325,9 +333,9 @@ public class PartialFullfillment extends IvyBaseActivityNoActionBar {
                             holder.pieceqty.setInputType(InputType.TYPE_NULL);
                             holder.pieceqty.onTouchEvent(event);
                             holder.pieceqty.setInputType(inType);
-                            holder.pieceqty.selectAll();
                             holder.pieceqty.requestFocus();
-
+                            if (holder.pieceqty.getText().length() > 0)
+                                holder.pieceqty.setSelection(holder.pieceqty.getText().length());
                             return true;
                         }
                     });

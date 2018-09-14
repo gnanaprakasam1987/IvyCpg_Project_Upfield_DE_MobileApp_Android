@@ -106,10 +106,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
     RecyclerView rvContacts;
     private AppSchedulerProvider appSchedulerProvider;
 
-    public static ContactCreationFragment getInstance(boolean isFromEditProfileView){
-        ContactCreationFragment creationFragment=new ContactCreationFragment();
+    public static ContactCreationFragment getInstance(boolean isFromEditProfileView) {
+        ContactCreationFragment creationFragment = new ContactCreationFragment();
         Bundle bundle = new Bundle();
-        bundle.putBoolean("isEdit",isFromEditProfileView);
+        bundle.putBoolean("isEdit", isFromEditProfileView);
         creationFragment.setArguments(bundle);
         return creationFragment;
     }
@@ -266,10 +266,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
                                     }
                                 }
                             } else {
-                                int count=0;
+                                int count = 0;
                                 for (int i = 0; i < contactList.size(); i++) {
-                                    if(!contactList.get(i).getStatus().equalsIgnoreCase("D")){
-                                        count+=i+1;
+                                    if (!contactList.get(i).getStatus().equalsIgnoreCase("D")) {
+                                        count += i + 1;
                                     }
                                 }
                                 if (count < bmodel.configurationMasterHelper.RETAILER_CONTACT_COUNT) {
@@ -332,8 +332,11 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setFistname("");
-                else
+                else {
+                    etFirstName.setSelection(s.toString().length());
                     retailerContactBo.setFistname(s.toString().trim());
+                }
+
 
             }
 
@@ -351,8 +354,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setLastname("");
-                else
+                else {
+                    etLastName.setSelection(s.toString().length());
                     retailerContactBo.setLastname(s.toString().trim());
+                }
 
             }
 
@@ -371,6 +376,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactNumber("");
                 else {
+                    etPhno.setSelection(s.toString().length());
                     retailerContactBo.setContactNumber(s.toString().trim());
                 }
 
@@ -391,8 +397,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactMail("");
-                else
+                else {
+                    etEmail.setSelection(s.toString().length());
                     retailerContactBo.setContactMail(s.toString().trim());
+                }
 
 
             }
@@ -408,11 +416,14 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         etOthers.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
+                if (s.toString().length() > 0)
 
-                if (s.toString().trim().equals(""))
-                    retailerContactBo.setTitle("");
-                else
-                    retailerContactBo.setTitle(s.toString().trim());
+                    if (s.toString().trim().equals(""))
+                        retailerContactBo.setTitle("");
+                    else {
+                        etOthers.setSelection(s.toString().length());
+                        retailerContactBo.setTitle(s.toString().trim());
+                    }
 
             }
 
@@ -452,9 +463,9 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
     private void loadRecyclerView() {
         contactList = bmodel.newOutletHelper.getRetailerContactList();
-        ArrayList<RetailerContactBo> contactListTemp=new ArrayList<>();
+        ArrayList<RetailerContactBo> contactListTemp = new ArrayList<>();
         for (int i = 0; i < contactList.size(); i++) {
-            if(!contactList.get(i).getStatus().equalsIgnoreCase("D")){
+            if (!contactList.get(i).getStatus().equalsIgnoreCase("D")) {
                 contactListTemp.add(contactList.get(i));
             }
         }
@@ -668,18 +679,18 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
     private void deleteContact(RetailerContactBo retailerContact) {
 
-        if(isProfileEdit){
+        if (isProfileEdit) {
             retailerContact.setStatus("D");
             for (int i = 0; i < contactList.size(); i++) {
                 if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContact.getCpId())) {
-                    if(contactList.get(i).getStatus().equalsIgnoreCase("I")){
+                    if (contactList.get(i).getStatus().equalsIgnoreCase("I")) {
                         contactList.remove(i);
-                    }else
-                        contactList.set(i,retailerContact);
+                    } else
+                        contactList.set(i, retailerContact);
                     break;
                 }
             }
-        }else{
+        } else {
             for (int i = 0; i < contactList.size(); i++) {
                 if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContact.getCpId())) {
                     contactList.remove(i);
