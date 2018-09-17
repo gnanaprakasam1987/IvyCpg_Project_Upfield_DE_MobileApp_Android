@@ -115,14 +115,14 @@
             android:id="@+id/scoreGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             card_view:constraint_referenced_ids="score_title,score_dashboard_tv" />
 
         <android.support.constraint.Group
             android:id="@+id/initiativeGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             card_view:constraint_referenced_ids="incentive_title,initiative_dashboard_tv" />
 
         <android.support.constraint.Barrier

@@ -1965,7 +1965,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("retid", "0");
                 bndl.putString("type", "MONTH");
                 fragment = new com.ivy.ui.dashboard.view.SellerDashboardFragment();
-                fragment = new SellerDashboardFragment();
+               // fragment = new SellerDashboardFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DASH_KPI);

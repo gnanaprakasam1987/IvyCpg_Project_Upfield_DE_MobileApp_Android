@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.KeyPairBoolData;
@@ -30,6 +31,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
+import com.ivy.ui.dashboard.adapter.DashboardListAdapter;
 import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardModule;
@@ -99,7 +101,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     private SellerDashboardComponent sellerDashboardComponent;
 
     private String mSelectedDistributorId = "";
+
     private String mFilterUser;
+
+    @Inject
+    DashboardListAdapter dashboardListAdapter;
 
     @Override
     public void initializeDi() {
@@ -246,7 +252,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setDashboardListAdapter() {
+    public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS) {
+
+
+        dashboardListAdapter = new DashboardListAdapter(getActivity(),dashBoardBOS);
+
 
     }
 
@@ -272,6 +282,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         getActivity().invalidateOptionsMenu();
 
         spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+
+        sellerDashboardComponent.inject(dashboardListAdapter);
+
+        dashboardRecyclerView.setAdapter(dashboardListAdapter);
 
     }
 
