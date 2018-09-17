@@ -142,7 +142,9 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     businessModel.reasonHelper.downloadPaymentType();
                     payment_adapter = new ArrayAdapter<>(context,
                             R.layout.spinner_bluetext_layout);
-                    payment_adapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_pay_term_type)));
+                    payment_adapter.add(new ReasonMaster(0 + "",
+                            context.getResources().getString(R.string.plain_select)+" "
+                                    +configureBO.getMenuName()));
                     int count = 0, selectedPos = -1;
                     for (ReasonMaster temp : businessModel.reasonHelper
                             .getPayTermType()) {
