@@ -104,7 +104,9 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                 else
                     adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
 
-                adapter.addFragment(ContactCreationFragment.getInstance(isFromEditProfileView), getResources().getString(R.string.contact));
+                if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
+                    adapter.addFragment(ContactCreationFragment.getInstance(isFromEditProfileView), getResources().getString(R.string.contact));
+                }
 
                 viewPager.setAdapter(adapter);
 
