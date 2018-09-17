@@ -509,6 +509,55 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
             else
                 chkStkDistributed.setChecked(false);
 
+            /*
+             Enable and Disable EditText filed based available UOM
+              UomID == 0 Disable UomID!=0 Enabled
+              */
+            if (mProductMasterBO.getOuUomid() == 0 || !mProductMasterBO.isOuterMapped()) {
+                etShelfOuter.setEnabled(false);
+                etExpOuter.setEnabled(false);
+                etPriceOuter.setEnabled(false);
+                etMrpPriceOuter.setEnabled(false);
+            } else {
+                etShelfOuter.setEnabled(true);
+                etExpOuter.setEnabled(true);
+                etPriceOuter.setEnabled(true);
+                etMrpPriceOuter.setEnabled(true);
+            }
+            if (mProductMasterBO.getCaseUomId() == 0 || !mProductMasterBO.isCaseMapped()) {
+                etShelfCase.setEnabled(false);
+                etExpCase.setEnabled(false);
+                etPriceCase.setEnabled(false);
+                etMrpPriceCase.setEnabled(false);
+            } else {
+                etShelfCase.setEnabled(true);
+                etExpCase.setEnabled(true);
+                etPriceCase.setEnabled(true);
+                etMrpPriceCase.setEnabled(true);
+            }
+            if (mProductMasterBO.getPcUomid() == 0 || !mProductMasterBO.isPieceMapped()) {
+                etShelfPiece.setEnabled(false);
+                etExpPiece.setEnabled(false);
+                etPricePiece.setEnabled(false);
+                etMrpPricePiece.setEnabled(false);
+            } else {
+                etShelfPiece.setEnabled(true);
+                etExpPiece.setEnabled(true);
+                etPricePiece.setEnabled(true);
+                etMrpPricePiece.setEnabled(true);
+            }
+
+            //Disable while all the UOM is not available
+            if ((mProductMasterBO.getOuUomid() == 0 || !mProductMasterBO.isOuterMapped())
+                    && (mProductMasterBO.getCaseUomId() == 0 || !mProductMasterBO.isCaseMapped())
+                    && (mProductMasterBO.getPcUomid() == 0 || !mProductMasterBO.isPieceMapped())) {
+                chkAvailability.setEnabled(false);
+                facingQty.setEnabled(false);
+            } else {
+                chkAvailability.setEnabled(true);
+                facingQty.setEnabled(true);
+            }
+
 
             facingQty.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -1290,11 +1339,14 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .get(mSelectedLocationIndex).setReasonId(0);
                         }
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                                && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("1");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                                && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("1");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                                && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("1");
 
                     } else if (mProductMasterBO.getLocations()
@@ -1312,11 +1364,14 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                         }
 
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                                && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("0");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                                && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("0");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                                && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("0");
 
                     } else if (mProductMasterBO.getLocations()
@@ -1333,11 +1388,14 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .get(mSelectedLocationIndex).setReasonId(0);
                         }
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                                && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                                && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                                && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("");
 
 
