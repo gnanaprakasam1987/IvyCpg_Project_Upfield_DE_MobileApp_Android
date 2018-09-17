@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardviewlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="5dp"
+        card_view:cardPreventCornerOverlap="true"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPadding="0dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/invoiceview_doted_line"
+            android:layout_marginLeft="@dimen/btn_round_corner_padding"
+            android:layout_marginStart="@dimen/btn_round_corner_padding"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/target_top_margin"
+                android:layout_marginStart="@dimen/target_top_margin"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/dimen_40dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:id="@+id/invoiceNo_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="2dp"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp"
+                        android:tag="achieved_day"
+                        android:text="InvoiceNo"
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/greyed_text_size"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="5dp" />
+
+                    <TextView
+                        android:id="@+id/txtInvoiceNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:text="0"
+                        android:textColor="@color/GRAY_TEXT"
+                        android:textSize="@dimen/value_text_size"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/verticalSeparatorBalance"
+                android:layout_width="0.3dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/target_top_margin"
+                android:layout_marginStart="@dimen/target_top_margin"
+                android:background="@color/GRAY" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/dimen_40dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/invoiceDate_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="2dp"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp"
+                        android:tag="balance_day"
+                        android:text="InvoiceDate"
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/greyed_text_size"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="5dp" />
+
+                    <TextView
+                        android:id="@+id/txtInvoiceDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:text="0"
+                        android:textColor="@color/GRAY_TEXT"
+                        android:textSize="@dimen/value_text_size"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/verticalSeparatorBalance1"
+                android:layout_width="0.3dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/target_top_margin"
+                android:layout_marginStart="@dimen/target_top_margin"
+                android:background="@color/GRAY" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/dimen_40dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/invNetamount_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="2dp"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="5dp"
+                        android:tag="target_day"
+                        android:text="invNetamount"
+                        android:textColor="@color/Black"
+                        android:textSize="@dimen/greyed_text_size"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="5dp" />
+
+                    <TextView
+                        android:id="@+id/txtInvNetamount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingStart="5dp"
+                        android:text="0"
+                        android:textColor="@color/GRAY_TEXT"
+                        android:textSize="@dimen/value_text_size"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

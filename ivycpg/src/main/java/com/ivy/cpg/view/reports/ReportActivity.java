@@ -22,6 +22,7 @@ import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportFragment;
 import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
 import com.ivy.cpg.view.reports.contractreport.ContractReportFragment;
 import com.ivy.cpg.view.reports.creditNoteReport.CreditNoteReportFragment;
+import com.ivy.cpg.view.reports.damageReturn.DamageReturnReportFragment;
 import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
 import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockReport;
 import com.ivy.cpg.view.reports.distorderreport.DistOrderReportFragment;
@@ -65,7 +66,6 @@ import com.ivy.sd.png.provider.TaxGstHelper;
 import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -524,6 +524,12 @@ public class ReportActivity extends BaseActivity implements
 
             SalesReturnReportFragment salesReturnReportFragment = new SalesReturnReportFragment();
             transaction.replace(R.id.fragment_content, salesReturnReportFragment);
+            commitFragment(transaction, config);
+        }
+        else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_PENDING_DELIVERYED)) {
+            DamageReturnReportFragment returnsAndPendingDeliverieReportFragment = new DamageReturnReportFragment();
+            transaction.replace(R.id.fragment_content, returnsAndPendingDeliverieReportFragment);
             commitFragment(transaction, config);
         }
     }
