@@ -2261,38 +2261,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         android.support.v4.app.FragmentManager fm = getFragmentManager();
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
-        if (MENU_NEW_RETAILER.equals(menuCode)) {
-            NewOutletFragment mNewOutletFragment = (NewOutletFragment) fm
-                    .findFragmentByTag(MENU_NEW_RETAILER);
-
-            if (mNewOutletFragment != null) {
-                ft.detach(mNewOutletFragment);
-                ft.commit();
-            }
-        } else if (MENU_NON_FIELD.equals(menuCode)) {
-            PlanDeviationFragment mPlanDeviationFragment = (PlanDeviationFragment) fm
-                    .findFragmentByTag(MENU_NON_FIELD);
-            if (mPlanDeviationFragment != null) {
-                ft.detach(mPlanDeviationFragment);
-                ft.commit();
-            }
-        } else if (MENU_LOAD_REQUEST.equals(menuCode)) {
-            StockProposalFragment mStockProposalFragment = (StockProposalFragment) fm
-                    .findFragmentByTag(MENU_LOAD_REQUEST);
-            if (mStockProposalFragment != null) {
-                ft.detach(mStockProposalFragment);
-                ft.commit();
-            }
-        } else if (MENU_SURVEY_SW.equals(menuCode)
-                || MENU_SURVEY01_SW.equals(menuCode)) {
-            SurveyActivityNewFragment mSurveyActivityNewFragment = (SurveyActivityNewFragment) fm
-                    .findFragmentByTag(menuCode);
-            if (mSurveyActivityNewFragment != null) {
-                ft.detach(mSurveyActivityNewFragment);
-                ft.commit();
-            }
+        if (fm.findFragmentByTag(menuCode) != null) {
+            ft.detach(fm.findFragmentByTag(menuCode));
+            ft.commit();
         }
-
 
         DrawerLayout mDrawerLayout = getActivity().findViewById(R.id.drawer_layout);
         mDrawerLayout.openDrawer(GravityCompat.START);
