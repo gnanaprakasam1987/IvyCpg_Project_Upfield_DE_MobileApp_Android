@@ -83,6 +83,18 @@ public class ProductMasterBO {
 
     private boolean isSeparateBill;
 
+    private String marginPrice;
+
+    public String getMarginPrice() {
+        return marginPrice;
+    }
+
+    public void setMarginPrice(String marginPrice) {
+        this.marginPrice = marginPrice;
+    }
+
+
+
 
     // To maintain original SRP value given in master, in case of updating @srp with some other values(SRP without tax).
     private float originalSrp;
