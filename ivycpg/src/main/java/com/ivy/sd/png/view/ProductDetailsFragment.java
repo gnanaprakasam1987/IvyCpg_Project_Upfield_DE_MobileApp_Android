@@ -22,6 +22,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -153,8 +154,11 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             holder.valueTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             holder.configureBO = productConfigs.get(position);
+
             holder.menuTV.setText(holder.configureBO.getMenuName());
-            holder.valueTV.setText(setValue(holder.configureBO, productObj));
+            if(!AppUtils.isEmptyString(setValue(holder.configureBO, productObj))){
+                holder.valueTV.setText(setValue(holder.configureBO, productObj));
+            }
             if (holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET14"))
                 showSkuMixtureView();
 
@@ -250,6 +254,14 @@ public class ProductDetailsFragment extends IvyBaseFragment {
                     break;
                 }
 
+                case "PRODET15": {
+                    value = "" + productMasterBO.getMarginPrice();
+                    break;
+                }
+                case "PRODET16": {
+                    value = "" + productMasterBO.getASRP();
+                    break;
+                }
             }
         }
         return value;

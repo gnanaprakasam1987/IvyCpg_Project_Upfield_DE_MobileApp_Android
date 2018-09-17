@@ -772,12 +772,16 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     public void saveUpdatedProfileEdit() {
         try {
             if (doValidateProdileEdit()) {
-                if (configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
-                    if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
-                            || SDUtil.convertToDouble(longitude) == 0)
-                            || (configurationMasterHelper.retailerLocAccuracyLvl != 0
-                            && LocationUtil.accuracy > configurationMasterHelper.retailerLocAccuracyLvl)) {
-                        getIvyView().showMessage(R.string.location_not_captured);
+                if (profileConfig.get(0).getConfigCode().equals(ProfileConstant.PROFILE_60) &&
+                        (profileConfig.get(0).isFlag() == 1) &&
+                        (profileConfig.get(0).getModule_Order() == 1)) {
+                    if (configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
+                        if ((lat.equals("") || SDUtil.convertToDouble(lat) == 0 || longitude.equals("")
+                                || SDUtil.convertToDouble(longitude) == 0)
+                                || (configurationMasterHelper.retailerLocAccuracyLvl != 0
+                                && LocationUtil.accuracy > configurationMasterHelper.retailerLocAccuracyLvl)) {
+                            getIvyView().showMessage(R.string.location_not_captured);
+                        }
                     }
                 }
                 saveEditProfile();
@@ -791,7 +795,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
         getIvyView().showLoading();
 
-        getCompositeDisposable().add(mProfileDataManager.downloadPriorityProductsForRetailerUpdate(retailerHelper.getContractID())
+        getCompositeDisposable().add(mProfileDataManager.downloadPriorityProductsForRetailerUpdate(retailerMasterBO.getRetailerID())
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<String>>() {
@@ -1037,10 +1041,11 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     ));
         }
 
-        if (!isData)
+        /*if (!isData)
             getIvyView().hideLoading();
         else
-            updateHeaderList();
+            updateHeaderList();*/
+        updateHeaderList();
 
     }
 
@@ -1112,7 +1117,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
 
     private void updateRetailerMasterAttributeList() {
-        isData = true;
         if (getIvyView().getSelectedAttribList().size() != 0) {
             ArrayList<NewOutletAttributeBO> tempList = new ArrayList<>();
             ArrayList<NewOutletAttributeBO> attributeList = updateRetailerMasterAttribute(getRetailerAttribute());
@@ -1838,7 +1842,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             if (retailerMasterBO.getRetailerName().equals(configBO.getMenuNumber())
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
                 deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
-                // isData = true;
             } else if ((!retailerMasterBO.getRetailerName().equals(configBO.getMenuNumber())
                     && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
                     || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
@@ -1849,7 +1852,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         + "," + retailerMasterBO.getRetailerID()
                         + "," + retailerMasterBO.getRetailerID() + ")";
                 insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
-                //isData = true;
             }
         }
     }

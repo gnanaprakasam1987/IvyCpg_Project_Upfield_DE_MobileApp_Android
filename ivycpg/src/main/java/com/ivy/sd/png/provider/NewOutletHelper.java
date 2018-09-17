@@ -2255,7 +2255,7 @@ public class NewOutletHelper {
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
                     "contact_title,contact_title_lovid,IsPrimary,Email,Upload";
 
-            if (retailerContactList.size() > 0) {
+            if (retailerContactList != null && retailerContactList.size() > 0) {
                 for (RetailerContactBo retailerContactBo : retailerContactList) {
                     value = QT(getId())
                             + "," + QT(retailerContactBo.getFistname())
