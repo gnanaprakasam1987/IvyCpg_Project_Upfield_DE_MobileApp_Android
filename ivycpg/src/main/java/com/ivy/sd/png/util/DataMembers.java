@@ -1,5 +1,6 @@
 package com.ivy.sd.png.util;
 
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.model.ApplicationConfigs;
 
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
-    public static String SERVER_URL = "http://dev.ivycpg.com/IvyCPG_Product_Webapi/api";
+    public static String SERVER_URL = BuildConfig.BASE_URL;
    // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
@@ -261,8 +262,8 @@ public class DataMembers {
     public static final String tbl_DailyTargetPlanned = "DailyTargetPlanned";
     private static final String tbl_DailyTargetPlanned_cols = "TargetID,RetailerID,TargetValue,Date,IsGoldenStore";
 
-    public static final String tbl_DenominationMaster= "DenominationMaster";
-    private static final String tbl_DenominationMaster_cols = "id,name,value";
+    public static final String tbl_DenominationDetails = "DenominationDetails";
+    private static final String tbl_DenominationDetails_cols = "Uid,Total";
 
     public static final String tbl_orderHeader = "OrderHeader";
     public static final String tbl_orderDetails = "OrderDetail";
@@ -781,7 +782,7 @@ public class DataMembers {
 
         uploadColumn.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
         uploadColumn.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
-        uploadColumn.put(tbl_DenominationMaster, tbl_DenominationMaster_cols);
+        uploadColumn.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -915,7 +916,7 @@ public class DataMembers {
 
         uploadColumnWithRetailer.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
-        uploadColumnWithRetailer.put(tbl_DenominationMaster, tbl_DenominationMaster_cols);
+        uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

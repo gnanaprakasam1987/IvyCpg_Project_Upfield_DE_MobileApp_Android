@@ -183,30 +183,6 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
         Bundle bundle = null;
         boolean isUnmapped = false;
-        if (mAssetTrackingHelper.SHOW_ASSET_BARCODE) {
-            if (mAllAssetTrackingList != null
-                    && mAllAssetTrackingList.size() > 0) {
-                bundle = new Bundle();
-                for (int i = 0; i < mAllAssetTrackingList.size(); i++) {
-                    if (mCapturedBarcode.equalsIgnoreCase(mAllAssetTrackingList.get(i).getSerialNo())) {
-
-                        if (!mAssetTrackingHelper.isExistingAssetInRetailer(mContext.getApplicationContext(), mCapturedBarcode)) {
-                            isUnmapped = true;
-                            bundle.putString("serialNo", mCapturedBarcode);
-                            bundle.putString("assetName", mAllAssetTrackingList.get(i).getAssetName());
-                            bundle.putInt("assetId", mAllAssetTrackingList.get(i).getAssetID());
-                            bundle.putString("brand", mAllAssetTrackingList.get(i).getBrand());
-                            bundle.putString("retailerName", mBModel.getRetailerMasterBO().getRetailerName());
-
-                            break;
-                        } else {
-                            isUnmapped = false;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
 
 
         mAssetView.updateAssets(mAssetList, isUnmapped, bundle);

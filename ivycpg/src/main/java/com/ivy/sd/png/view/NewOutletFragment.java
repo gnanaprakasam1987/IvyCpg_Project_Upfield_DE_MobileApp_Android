@@ -1225,7 +1225,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
             scrollview2.addView(totalView);
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
 
     }
@@ -1273,27 +1273,29 @@ public class NewOutletFragment extends IvyBaseFragment
                     // to the control to focus on by summing the "top" position of each view in the hierarchy.
                     int yDistanceToControlsView = 0;
                     View parentView = secificEditText;
-                    while (true) {
-                        if (parentView.equals(scrollview2)) {
-                            break;
+                    if (parentView != null) {
+                        while (true) {
+                            if (parentView.equals(scrollview2)) {
+                                break;
+                            }
+                            yDistanceToControlsView += parentView.getTop();
+                            parentView = (View) parentView.getParent();
                         }
-                        yDistanceToControlsView += parentView.getTop();
-                        parentView = (View) parentView.getParent();
+
+                        // Compute the final position value for the top and bottom of the control in the scroll view.
+                        final int topInScrollView = yDistanceToControlsView + secificEditText.getTop();
+                        final int bottomInScrollView = yDistanceToControlsView + secificEditText.getBottom();
+
+                        // Post the scroll action to happen on the scrollView with the UI thread.
+                        scrollview2.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int height = secificEditText.getHeight();
+                                scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
+
+                            }
+                        });
                     }
-
-                    // Compute the final position value for the top and bottom of the control in the scroll view.
-                    final int topInScrollView = yDistanceToControlsView + secificEditText.getTop();
-                    final int bottomInScrollView = yDistanceToControlsView + secificEditText.getBottom();
-
-                    // Post the scroll action to happen on the scrollView with the UI thread.
-                    scrollview2.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int height = secificEditText.getHeight();
-                            scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
-
-                        }
-                    });
                 }
             }).start();
         } catch (Exception e) {
@@ -1312,27 +1314,29 @@ public class NewOutletFragment extends IvyBaseFragment
                     // to the control to focus on by summing the "top" position of each view in the hierarchy.
                     int yDistanceToControlsView = 0;
                     View parentView = (View) specificSpinner.getParent();
-                    while (true) {
-                        if (parentView.equals(scrollview2)) {
-                            break;
+                    if (parentView != null) {
+                        while (true) {
+                            if (parentView.equals(scrollview2)) {
+                                break;
+                            }
+                            yDistanceToControlsView += parentView.getTop();
+                            parentView = (View) parentView.getParent();
                         }
-                        yDistanceToControlsView += parentView.getTop();
-                        parentView = (View) parentView.getParent();
+
+                        // Compute the final position value for the top and bottom of the control in the scroll view.
+                        final int topInScrollView = yDistanceToControlsView + specificSpinner.getTop();
+                        final int bottomInScrollView = yDistanceToControlsView + specificSpinner.getBottom();
+
+                        // Post the scroll action to happen on the scrollView with the UI thread.
+                        scrollview2.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int height = specificSpinner.getHeight();
+                                scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
+
+                            }
+                        });
                     }
-
-                    // Compute the final position value for the top and bottom of the control in the scroll view.
-                    final int topInScrollView = yDistanceToControlsView + specificSpinner.getTop();
-                    final int bottomInScrollView = yDistanceToControlsView + specificSpinner.getBottom();
-
-                    // Post the scroll action to happen on the scrollView with the UI thread.
-                    scrollview2.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int height = specificSpinner.getHeight();
-                            scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
-
-                        }
-                    });
                 }
             }).start();
         } catch (Exception e) {
@@ -5422,7 +5426,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                         .getSelectedItem()).getLocId());
                             } catch (Exception e) {
                                 outlet.setLocid(0);
-                                Commons.printException("" + e);
+                                Commons.printException(e);
                             }
                         }
                     }
@@ -5435,7 +5439,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                         .getSelectedItem()).getListId());
                             } catch (Exception e) {
                                 outlet.setContractStatuslovid(0);
-                                Commons.printException("" + e);
+                                Commons.printException(e);
                             }
                         }
                     }
@@ -5479,7 +5483,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                 Commons.print("ListId : " + tempBo.getListId());
                             } catch (Exception e) {
                                 outlet.setPayment("0");
-                                Commons.printException("" + e);
+                                Commons.printException(e);
                             }
                         }
                     }
@@ -5615,7 +5619,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                         .getSelectedItem()).getBeatId());
                             } catch (Exception e) {
                                 outlet.setRouteid(0);
-                                Commons.printException("" + e);
+                                Commons.printException(e);
                             }
                         }
                     }
@@ -5821,7 +5825,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
 
         bmodel.newOutletHelper.setNewoutlet(outlet);
@@ -5839,7 +5843,7 @@ public class NewOutletFragment extends IvyBaseFragment
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
     }
 
@@ -6113,7 +6117,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                             .trim());
                             }
                         } catch (Exception e) {
-                            Commons.printException("" + e);
+                            Commons.printException(e);
                         }
                     }
                 });
@@ -6471,7 +6475,7 @@ public class NewOutletFragment extends IvyBaseFragment
             }
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException("" + e);
+            Commons.printException(e);
         }
     }
 
