@@ -163,6 +163,8 @@ public class QuickCallFragment extends IvyBaseFragment {
     }
 
     private void loadOrderScreen() {
+        //for SalesType default value
+        bmodel.getRetailerMasterBO().setOrderTypeId(0 + "");
         new DownloadProductsAndPrice().execute();
 
     }
