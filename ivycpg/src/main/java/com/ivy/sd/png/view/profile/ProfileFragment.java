@@ -918,7 +918,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE23": {
-                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractExpiryDate(), "MM/dd/yyyy");
+                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractExpiryDate(), ConfigurationMasterHelper.outDateFormat);
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);
@@ -982,7 +982,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE33": {
-                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractStartDate(), "MM/dd/yyyy");
+                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractStartDate(), ConfigurationMasterHelper.outDateFormat);
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);

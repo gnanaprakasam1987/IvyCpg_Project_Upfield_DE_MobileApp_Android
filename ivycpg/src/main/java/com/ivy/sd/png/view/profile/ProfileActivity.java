@@ -1457,8 +1457,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     Commons.print("lat:" + LocationUtil.latitude);
                     retLatLng = new LatLng(retailerLat, retailerLng);
                     curLatLng = new LatLng(lat, lng);
-                    if (lat != 0.0 && lng != 0.0)
-                        loadMapView(retLatLng, curLatLng);
+                    loadMapView(retLatLng, curLatLng);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

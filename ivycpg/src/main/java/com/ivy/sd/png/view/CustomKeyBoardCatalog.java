@@ -70,6 +70,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         setContentView(R.layout.custom_keyboard_catalog);
         TextView pdtNameTV = (TextView) findViewById(R.id.pdt_name_keyboard);
         TextView SIHTV = (TextView) findViewById(R.id.sih_keyboard);
+        TextView psqTV = findViewById(R.id.psq_keyboard);
         LinearLayout cust_layout = (LinearLayout) findViewById(R.id.cust_layout);
 
         TypedArray typearr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
@@ -100,17 +101,6 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             value_keyboard.setText(context.getResources().getString(R.string.value) + " : " + bmodel.formatValue(pdtBO.getTotalamount()));
             //mSelectedTV = tv;
 
-            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                selectedTextView = case_typed_value;
-                setColor();
-            } else if (bmodel.configurationMasterHelper.SHOW_DIST_ORDER_OUTER) {
-                selectedTextView = outer_case_typed_value;
-                setColor();
-            } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                selectedTextView = pcs_typed_value;
-                setColor();
-            }
-
             setCaseKeyboard(pdtBO.getOrderedCaseQty() + "");
             setOuterKeyboard(pdtBO.getOrderedOuterQty() + "");
             setPcsKeyboard(pdtBO.getOrderedPcsQty() + "");
@@ -139,6 +129,23 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         }
         if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL && total_tv != null) {
             total_tv.setVisibility(View.GONE);
+        }
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
+            psqTV.setVisibility(View.VISIBLE);
+            String strPSQ;
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("psq") != null) {
+                strPSQ = bmodel.labelsMasterHelper
+                        .applyLabels("psq") + ": "
+                        + pdtBO.getRetailerWiseP4StockQty() + "";
+            } else {
+                strPSQ = context.getResources().getString(R.string.psq) + ": "
+                        + pdtBO.getRetailerWiseP4StockQty();
+            }
+            psqTV.setText(strPSQ);
+        } else {
+            psqTV.setVisibility(View.GONE);
         }
     }
 
