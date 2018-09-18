@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -33,7 +31,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by murugan on 17/9/18.
  */
 
-public class DamageReturnReportFragment extends IvyBaseFragment {
+public class DamageReturnCompletedReportFragment extends IvyBaseFragment {
 
     CompositeDisposable compositeDisposable;
     Unbinder unbinder;
@@ -51,6 +49,8 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
         bmodel.setContext(getActivity());
         unbinder = ButterKnife.bind(this, view);
 
+        // textView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+
         return view;
     }
 
@@ -62,7 +62,7 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
         /*customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
         alertDialog = builder.create();
         alertDialog.show();*/
-        compositeDisposable.add((Disposable) DamageReturenReportHelper.getInstance().downloadPendingDeliveryReport(getActivity())
+        compositeDisposable.add((Disposable) DamageReturenReportHelper.getInstance().downloadPendingDeliveryStatusReport(getActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<ArrayList<PandingDeliveryBO>>() {
@@ -70,7 +70,7 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
                     public void onNext(ArrayList<PandingDeliveryBO> contractList) {
                         if (contractList.size() > 0) {
 
-                            DamageReturnReportFragment.MyAdapter adapter = new DamageReturnReportFragment.MyAdapter(contractList);
+                            DamageReturnCompletedReportFragment.MyAdapter adapter = new DamageReturnCompletedReportFragment.MyAdapter(contractList);
                             listView.setAdapter(adapter);
                         } else {
                             Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
@@ -133,15 +133,15 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            DamageReturnReportFragment.ViewHolder holder;
+            DamageReturnCompletedReportFragment.ViewHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 convertView = inflater.inflate(
                         R.layout.pending_delivery_list_item_, parent, false);
-                holder = new DamageReturnReportFragment.ViewHolder(convertView);
+                holder = new DamageReturnCompletedReportFragment.ViewHolder(convertView);
 
-                holder.statusTitle.setVisibility(View.GONE);
-                holder.status.setVisibility(View.GONE);
+                holder.statusTitle.setVisibility(View.VISIBLE);
+                holder.status.setVisibility(View.VISIBLE);
 
                 holder.invoiceNoTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 holder.invoiceNo.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
@@ -155,9 +155,12 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
                 holder.storeNameTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
                 holder.txtStorename.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
+                holder.statusTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.status.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+
                 convertView.setTag(holder);
             } else {
-                holder = (DamageReturnReportFragment.ViewHolder) convertView.getTag();
+                holder = (DamageReturnCompletedReportFragment.ViewHolder) convertView.getTag();
             }
             PandingDeliveryBO pandingDeliveryBO = arrayList.get(position);
 
@@ -165,6 +168,17 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
             holder.invoiceDate.setText(pandingDeliveryBO.getInvoiceDate());
             holder.invNetamount.setText(pandingDeliveryBO.getInvNetamount());
             holder.txtStorename.setText(pandingDeliveryBO.getRetailerName());
+
+            if("P".equalsIgnoreCase(pandingDeliveryBO.getStatus())){
+                holder.status.setText("Partially Delivered");
+                holder.status.setTextColor(getResources().getColor(R.color.red_week_background));
+            }else if("F".equalsIgnoreCase(pandingDeliveryBO.getStatus())){
+                holder.status.setText("Delivered");
+                holder.status.setTextColor(getResources().getColor(R.color.select_week_color_green));
+            }else{
+                holder.status.setText("Rejected");
+                holder.status.setTextColor(getResources().getColor(R.color.pink_week_background));
+            }
 
             return convertView;
         }
@@ -201,6 +215,7 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
 
         @BindView(R.id.txtStatus)
         TextView status;
+
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

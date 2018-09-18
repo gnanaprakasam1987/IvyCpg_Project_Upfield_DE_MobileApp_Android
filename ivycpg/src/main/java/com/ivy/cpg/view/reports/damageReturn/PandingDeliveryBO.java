@@ -15,6 +15,18 @@ public class PandingDeliveryBO {
     private String PickListId;
     private String InvoiceRefNo;
 
+    public String getStatus() {
+        return status;
+    }
+
+    private String status;
+
+    public String getRetailerName() {
+        return retailerName;
+    }
+
+    private String retailerName;
+
     public String getInvoiceNo() {
         return InvoiceNo;
     }
@@ -77,5 +89,13 @@ public class PandingDeliveryBO {
 
     public void setInvoiceRefNo(String invoiceRefNo) {
         InvoiceRefNo = invoiceRefNo;
+    }
+
+    public void setRetailerName(String retailerName) {
+        this.retailerName = retailerName;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
