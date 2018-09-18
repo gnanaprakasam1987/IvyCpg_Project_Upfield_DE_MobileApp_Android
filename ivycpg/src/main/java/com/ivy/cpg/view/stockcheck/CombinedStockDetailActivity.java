@@ -509,6 +509,55 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
             else
                 chkStkDistributed.setChecked(false);
 
+            /*
+             Enable and Disable EditText filed based available UOM
+              UomID == 0 Disable UomID!=0 Enabled
+              */
+            if (mProductMasterBO.getOuUomid() == 0 || !mProductMasterBO.isOuterMapped()) {
+                etShelfOuter.setEnabled(false);
+                etExpOuter.setEnabled(false);
+                etPriceOuter.setEnabled(false);
+                etMrpPriceOuter.setEnabled(false);
+            } else {
+                etShelfOuter.setEnabled(true);
+                etExpOuter.setEnabled(true);
+                etPriceOuter.setEnabled(true);
+                etMrpPriceOuter.setEnabled(true);
+            }
+            if (mProductMasterBO.getCaseUomId() == 0 || !mProductMasterBO.isCaseMapped()) {
+                etShelfCase.setEnabled(false);
+                etExpCase.setEnabled(false);
+                etPriceCase.setEnabled(false);
+                etMrpPriceCase.setEnabled(false);
+            } else {
+                etShelfCase.setEnabled(true);
+                etExpCase.setEnabled(true);
+                etPriceCase.setEnabled(true);
+                etMrpPriceCase.setEnabled(true);
+            }
+            if (mProductMasterBO.getPcUomid() == 0 || !mProductMasterBO.isPieceMapped()) {
+                etShelfPiece.setEnabled(false);
+                etExpPiece.setEnabled(false);
+                etPricePiece.setEnabled(false);
+                etMrpPricePiece.setEnabled(false);
+            } else {
+                etShelfPiece.setEnabled(true);
+                etExpPiece.setEnabled(true);
+                etPricePiece.setEnabled(true);
+                etMrpPricePiece.setEnabled(true);
+            }
+
+            //Disable while all the UOM is not available
+            if ((mProductMasterBO.getOuUomid() == 0 || !mProductMasterBO.isOuterMapped())
+                    && (mProductMasterBO.getCaseUomId() == 0 || !mProductMasterBO.isCaseMapped())
+                    && (mProductMasterBO.getPcUomid() == 0 || !mProductMasterBO.isPieceMapped())) {
+                chkAvailability.setEnabled(false);
+                facingQty.setEnabled(false);
+            } else {
+                chkAvailability.setEnabled(true);
+                facingQty.setEnabled(true);
+            }
+
 
             facingQty.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -1290,11 +1339,14 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .get(mSelectedLocationIndex).setReasonId(0);
                         }
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                                && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("1");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                                && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("1");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                                && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("1");
 
                     } else if (mProductMasterBO.getLocations()
@@ -1312,11 +1364,14 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                         }
 
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                                && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("0");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                                && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("0");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                                && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("0");
 
                     } else if (mProductMasterBO.getLocations()
@@ -1333,11 +1388,14 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .get(mSelectedLocationIndex).setReasonId(0);
                         }
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                                && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                                && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                                && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("");
 
 
@@ -1568,42 +1626,44 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
         @Override
         public void onClick(View v) {
 
-            int i = v.getId();
-            if (i == R.id.calczero || i == R.id.calcone || i == R.id.calctwo || i == R.id.calcthree
-                    || i == R.id.calcfour || i == R.id.calcfive || i == R.id.calcsix
-                    || i == R.id.calcseven || i == R.id.calceight || i == R.id.calcnine) {
-                eff(((Button) v).getText().toString());
-            } else if (i == R.id.calcdel) {
-                String s = mSelectedET.getText().toString();
+            if (mSelectedET == null) {
+                bmodel.showAlert(
+                        getResources().getString(R.string.please_select_item), 0);
+            } else {
+                int i = v.getId();
+                if (i == R.id.calczero || i == R.id.calcone || i == R.id.calctwo || i == R.id.calcthree
+                        || i == R.id.calcfour || i == R.id.calcfive || i == R.id.calcsix
+                        || i == R.id.calcseven || i == R.id.calceight || i == R.id.calcnine) {
+                    eff(((Button) v).getText().toString());
+                } else if (i == R.id.calcdel) {
+                    String s = mSelectedET.getText().toString();
 
-                if (!(s.length() == 0)) {
-                    s = s.substring(0, s.length() - 1);
-                    if (s.length() == 0) {
-                        if (mSelectedET.getId() == etShelfOuter.getId() || mSelectedET.getId() == etShelfCase.getId() || mSelectedET.getId() == etShelfPiece.getId()) {
-                            s = "";
-                        } else {
-                            s = "0";
+                    if (!(s.length() == 0)) {
+                        s = s.substring(0, s.length() - 1);
+                        if (s.length() == 0) {
+                            if (mSelectedET.getId() == etShelfOuter.getId() || mSelectedET.getId() == etShelfCase.getId() || mSelectedET.getId() == etShelfPiece.getId()) {
+                                s = "";
+                            } else {
+                                s = "0";
+                            }
+
                         }
-
                     }
+                    mSelectedET.setText(s);
+
                 }
-                mSelectedET.setText(s);
 
             }
-
         }
     };
 
     private void eff(String val) {
-        if (mSelectedET != null && mSelectedET.getText() != null) {
-
             String s = mSelectedET.getText().toString();
 
             if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s))
                 mSelectedET.setText(val);
             else
                 mSelectedET.setText(mSelectedET.getText().append(val));
-        }
     }
 
     private void setNumberPadlistener() {
