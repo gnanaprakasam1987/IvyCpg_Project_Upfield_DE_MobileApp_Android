@@ -702,9 +702,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PRODUCT_SCHEME_DIALOG;
 
     public boolean SHOW_STK_ORD_SRP = true;
-    public boolean SHOW_CASE_SRP;
-    public boolean SHOW_PC_SRP;
-    public boolean SHOW_OUTER_SRP;
+
     public boolean SHOW_STK_ORD_SRP_EDT;
     public boolean SHOW_STK_QTY_IN_ORDER;
     public boolean SHOW_D1;
@@ -3883,9 +3881,6 @@ public class ConfigurationMasterHelper {
             IS_STK_ORD_PROJECT= false;
             SHOW_SALES_RETURN_IN_ORDER = false;
 
-            SHOW_CASE_SRP = false;
-            SHOW_PC_SRP = false;
-            SHOW_OUTER_SRP = false;
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
             IS_PRINT_SEQUENCE_LEVELWISE = false;
@@ -4476,22 +4471,7 @@ public class ConfigurationMasterHelper {
             }
             c.close();
 
-            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster +
-                    " where hhtcode=" + bmodel.QT(CODE_SHOW_STK_ORD_SRP) + " and Flag=1 and ForSwitchSeller = 0";
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    String value = c.getString(0);
-                    if (value.equalsIgnoreCase("PS")) {
-                        SHOW_PC_SRP = true;
-                    } else if (value.equalsIgnoreCase("CS")) {
-                        SHOW_CASE_SRP = true;
-                    } else if (value.equalsIgnoreCase("OU")) {
-                        SHOW_OUTER_SRP = true;
-                    }
-                }
-                c.close();
-            }
+            
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode=" + bmodel.QT(CODE_PRINT_SEQUENCE) + " and Flag=1";
