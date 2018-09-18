@@ -36,6 +36,7 @@ public class DiscountHelper {
     private ArrayList<StoreWiseDiscountBO> mBillWiseDiscountList;
     private ArrayList<StoreWiseDiscountBO> mBillWisePaytTermDiscountList;
     private ArrayList<StoreWiseDiscountBO> mBillWiseWithHoldDiscountList;
+    private boolean isWihtHoldApplied;
 
     private DiscountHelper(Context context) {
         this.businessModel = (BusinessModel) context;
@@ -1220,5 +1221,12 @@ public class DiscountHelper {
         }
     }
 
+    public boolean isWihtHoldApplied() {
+        return isWihtHoldApplied;
+    }
+
+    public void setWihtHoldApplied(boolean wihtHoldApplied) {
+        isWihtHoldApplied = wihtHoldApplied;
+    }
 
 }

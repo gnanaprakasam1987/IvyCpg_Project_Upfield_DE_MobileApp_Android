@@ -36,6 +36,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.sd.png.provider.TaxGstHelper;
+import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -175,6 +177,11 @@ public class QuickCallFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (!isCancelled()) {
+
+                    if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN)
+                        bmodel.productHelper.taxHelper = TaxGstHelper.getInstance(getActivity());
+                    else
+                        bmodel.productHelper.taxHelper = TaxHelper.getInstance(getActivity());
 
                     if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
                         bmodel.getRetailerWiseSellerType();
