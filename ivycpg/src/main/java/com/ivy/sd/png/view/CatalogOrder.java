@@ -120,6 +120,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private final String mCompertior = "Filt23";
     private final String mDrugProducts = "Filt28";
     private final String mSuggestedOrder = "Filt25";
+    private final String mDeadProducts = "Filt15";
     //public int mSelectedLocationIndex;
     private RecyclerViewAdapter adapter;
     private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
@@ -132,6 +133,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private int sbdDistAchieved = 0;
     private boolean isSbd, isSbdGaps, isOrdered, isPurchased, isInitiative, isOnAllocation, isInStock, isPromo, isMustSell, isFocusBrand,
             isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount, isNearExpiryTag, isFocusBrand3, isFocusBrand4, isSMP;
+    private boolean isDeadProducts;
     private boolean isDrugProducts;
     //private TypedArray typearr;
     private BusinessModel bmodel;
@@ -853,7 +855,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
                 || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
                 || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)
-                || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)) {
+                || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)
+                || (generaltxt.equalsIgnoreCase(mDeadProducts) && ret.getmDeadProduct() == 1)) {
             return true;
         }
         return false;
@@ -867,7 +870,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
                 || (isFocusBrand && ret.getIsFocusBrand() == 1) || (isFocusBrand2 && ret.getIsFocusBrand2() == 1) || (isSIH && ret.getSIH() > 0) || (isOOS && ret.getOos() == 0)
                 || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && ret.getLocations().get(0).getShelfPiece() > 0) || (isDiscount && ret.getIsDiscountable() == 1)
-                || (isDrugProducts && ret.getIsDrug() == 1)) {
+                || (isDrugProducts && ret.getIsDrug() == 1)
+                || (isDeadProducts && ret.getmDeadProduct() == 1)) {
 
             return true;
         }
@@ -920,6 +924,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     isSMP = true;
                 else if (bo.getConfigCode().equals(mDrugProducts))
                     isDrugProducts = true;
+                else if (bo.getConfigCode().equals(mDeadProducts))
+                    isDeadProducts = true;
             }
         }
     }
@@ -2234,6 +2240,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                         //  i.putExtra("mylist",mylist);
                         startActivity(i);
+                        finish();
                     }
                 });
 
