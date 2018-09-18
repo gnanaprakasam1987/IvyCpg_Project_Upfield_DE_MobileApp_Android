@@ -1434,7 +1434,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
+                && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON && calledBy.equals(MENU_VISIT)) {
             mLocTimer = new Timer();
             timerTask = new LocationFetchTimer();
             mLocTimer.schedule(timerTask, 0, 1000);

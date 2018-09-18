@@ -200,7 +200,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar mCalendar = null;
     private String mImageName, attachedFilePath = "";
     private Toolbar toolbar;
-    private boolean isWihtHoldApplied = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -665,7 +664,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
                 discountHelper.downloadBillWiseWithHoldDiscount(getApplicationContext());
                 withHoldDiscount = discountHelper.calculateWithHoldDiscount(totalOrderValue);
-                isWihtHoldApplied = true;
+                discountHelper.setWihtHoldApplied(true);
             }
 
             // Apply Exclude Item level Tax  in Product
@@ -987,7 +986,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Bundle bundle = new Bundle();
             bundle.putDouble("totalValue", totalOrderValue);
             bundle.putDouble("enteredDiscAmtOrPercent", enteredDiscAmtOrPercent);
-            bundle.putBoolean("isWithHold", isWihtHoldApplied);
             mStoreWiseDiscountDialogFragment.setArguments(bundle);
             mStoreWiseDiscountDialogFragment.show(fm, "Sample Fragment");
             mStoreWiseDiscountDialogFragment.setCancelable(false);
@@ -1286,7 +1284,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
     @Override
-    public void onDiscountDismiss(String result, int result1, int result2, int result3, boolean iswihtHold) {
+    public void onDiscountDismiss(String result, int result1, int result2, int result3) {
         if (bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
 
             final double totalValue = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
@@ -1295,15 +1293,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         } else if (bModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT &&
                 bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG &&
                 bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 3) {
-            if ((iswihtHold && !isWihtHoldApplied) || (!iswihtHold && isWihtHoldApplied)) {
-                isWihtHoldApplied = iswihtHold;
-                if (isWihtHoldApplied)
-                    totalOrderValue -= orderHelper.withHoldDiscount;
-                else
-                    totalOrderValue += orderHelper.withHoldDiscount;
+            if (discountHelper.isWihtHoldApplied())
+                totalOrderValue -= orderHelper.withHoldDiscount;
+            else
+                totalOrderValue += orderHelper.withHoldDiscount;
 
-                text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
-            }
+            text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
+
         } else if (bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
             try {
                 int f1 = 0;

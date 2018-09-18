@@ -617,10 +617,10 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                                         .now(SDUtil.TIME));
                         getActivity().finish();
                         //BusinessModel.loadActivity(
-                               // getActivity(),
-                              //  DataMembers.actHomeScreenTwo);
-                      Intent  myIntent = new Intent(getActivity(), HomeScreenTwo.class);
-                       startActivityForResult(myIntent, 0);
+                        // getActivity(),
+                        //  DataMembers.actHomeScreenTwo);
+                        Intent myIntent = new Intent(getActivity(), HomeScreenTwo.class);
+                        startActivityForResult(myIntent, 0);
 
                         /* User clicked OK so do some stuff */
                     }
@@ -664,13 +664,13 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
             if (bmodel.configurationMasterHelper.IS_SR_VALIDATE_BY_RETAILER_TYPE) {
                 if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                    if (OrderHelper.getInstance(getActivity()).returnReplacementAmountValidation(true,false,getActivity().getApplicationContext())) {
+                    if (OrderHelper.getInstance(getActivity()).returnReplacementAmountValidation(true, false, getActivity().getApplicationContext())) {
                         Toast.makeText(getActivity(), getResources().getString(R.string.return_products_not_matching_replacing_product_price), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                 } else if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CREDIT")) {
-                    if (!OrderHelper.getInstance(getActivity()).returnReplacementAmountValidation(false,false,getActivity().getApplicationContext())) {
+                    if (!OrderHelper.getInstance(getActivity()).returnReplacementAmountValidation(false, false, getActivity().getApplicationContext())) {
                         Toast.makeText(getActivity(), getResources().getString(R.string.return_products_price_less_than_replacing_product_price), Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -800,8 +800,21 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 salesReturnHelper.setInvoiceId("");
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                     mDrawerLayout.closeDrawers();
-                else
-                    showCustomDialog();
+
+                else {
+                    if (salesReturnHelper.hasSalesReturn())
+                        showCustomDialog();
+                    else {
+                        salesReturnHelper.clearSalesReturnTable(false);
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                                .now(SDUtil.TIME));
+                        Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+
+                }
+
                 return true;
 
             case R.id.menu_fivefilter:

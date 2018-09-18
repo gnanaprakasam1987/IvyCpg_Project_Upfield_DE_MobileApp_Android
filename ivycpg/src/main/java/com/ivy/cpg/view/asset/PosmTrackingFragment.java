@@ -669,8 +669,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.availQtyET.setSelection(qty.length());
-                        if (qty.length() > 0)
-                            holder.availQtyET.setSelection(qty.length());
 
                         if (!"".equals(qty)) {
                             int mAvailQty = SDUtil.convertToInt(holder.availQtyET
@@ -781,8 +779,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                         if (qty.length() > 0)
                             holder.compQtyET.setSelection(qty.length());
 
-                        if (qty.length() > 0)
-                            holder.compQtyET.setSelection(qty.length());
                         if (!"".equals(qty)) {
                             int mAvailQty = SDUtil.convertToInt(holder.compQtyET
                                     .getText().toString());

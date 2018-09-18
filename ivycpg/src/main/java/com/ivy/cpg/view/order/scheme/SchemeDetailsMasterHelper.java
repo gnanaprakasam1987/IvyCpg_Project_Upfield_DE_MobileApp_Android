@@ -922,7 +922,7 @@ public class SchemeDetailsMasterHelper {
                     + " LEFT JOIN SchemeFreeProductDetail SPD on SPD.parentid=A.schid and OH.orderid=SPD.orderid"
 
                     + " where rid=" + bModel.QT(retailerId)
-                    + " and A.schid!=IFNULL(SD.parentid,0) and A.schid!=IFNULL(SPD.parentid,0) order by schid";
+                    + " and A.schid!=IFNULL(SD.parentid,0) and A.schid!=IFNULL(SPD.parentid,0) order by A.schid";
 
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
