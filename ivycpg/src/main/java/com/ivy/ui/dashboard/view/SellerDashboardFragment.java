@@ -104,8 +104,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private String mFilterUser;
 
-    @Inject
-    DashboardListAdapter dashboardListAdapter;
+    private DashboardListAdapter dashboardListAdapter;
+
 
     @Override
     public void initializeDi() {
@@ -141,22 +141,22 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             type = bundle.getString("type");
         }
 
-        if(isFromRetailer){
+        if (isFromRetailer) {
             getDashSpinnerData();
-        }else {
+        } else {
             handleSellerDashboard();
         }
 
 
     }
 
-    private void handleRetailerDashboard(){
+    private void handleRetailerDashboard() {
 
     }
 
-    private void handleSellerDashboard(){
+    private void handleSellerDashboard() {
         if (presenter.isUserBasedDash() && presenter.isDistributorBasedDash()) {
-            if(presenter.isNiveaBasedDash()){
+            if (presenter.isNiveaBasedDash()) {
                 dashSpinnerLayout.setVisibility(View.GONE);
                 multiSelectStub.setVisibility(View.VISIBLE);
 
@@ -254,13 +254,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @Override
     public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS) {
 
-
-        dashboardListAdapter = new DashboardListAdapter(getActivity(),dashBoardBOS);
-
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS);
 
     }
 
-    private void loadMultiSelectData(){
+    private void loadMultiSelectData() {
 
     }
 
@@ -282,8 +280,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         getActivity().invalidateOptionsMenu();
 
         spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-
-        sellerDashboardComponent.inject(dashboardListAdapter);
 
         dashboardRecyclerView.setAdapter(dashboardListAdapter);
 
@@ -335,13 +331,12 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
 
-
     private AdapterView.OnItemSelectedListener dashSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             String selectedInterval = adapterView.getSelectedItem().toString();
-            if(!isFromRetailer){
-                if(selectedInterval.equalsIgnoreCase(SellerDashboardConstants.P3M)){
+            if (!isFromRetailer) {
+                if (selectedInterval.equalsIgnoreCase(SellerDashboardConstants.P3M)) {
 
                 }
             }

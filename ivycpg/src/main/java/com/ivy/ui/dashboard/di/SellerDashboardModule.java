@@ -55,10 +55,6 @@ public class SellerDashboardModule {
         return sellerDashPresenter;
     }
 
-    @Provides
-    @ActivityContext
-    DashboardListAdapter provideDashboardListAdapter(SellerDashboardFragment sellerDashboardFragment) {
-        return new DashboardListAdapter(sellerDashboardFragment.getContext(),new ArrayList<DashBoardBO>());
-    }
+
 
 }
