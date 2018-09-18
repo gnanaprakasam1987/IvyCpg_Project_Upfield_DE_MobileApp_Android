@@ -1079,7 +1079,7 @@ public class ProfileHelper {
                     }
 
 
-                    if(isEdit){
+                    if(isEdit) {
                         String retailerContactEditQuery = "select ifnull(RC.Contact_Title,'') as contactTitle, ifNull(SM.ListName,'') as listName, RC.Contact_Title_LovId as contact_title_lovid, ifnull(RC.ContactName,'') as cName,ifnull(RC.ContactName_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,Rc.CPId as cpid,Rc.Status as status ,"
                                 + " ifnull(RC.Email,'') as email from RetailerContactEdit RC "
                                 + " Left join StandardListMaster SM on SM.ListId= RC.Contact_Title_LovId "
@@ -1106,6 +1106,7 @@ public class ProfileHelper {
                             }
                             retailerContactEditCurson.close();
 
+                            /*Update the edited contact list */
                             for (int i = 0; i < contactList.size(); i++) {
 
                                 String parentCpId=contactList.get(i).getCpId();
@@ -1116,7 +1117,16 @@ public class ProfileHelper {
 
                                     if(parentCpId.equalsIgnoreCase(editedCpId)){
                                         contactList.set( i,tempList.get(j));
+                                        break;
                                     }
+                                }
+
+                            }
+
+                            /*Add the new contact list */
+                            for (int i = 0; i < tempList.size(); i++) {
+                                if(tempList.get(i).getStatus().equalsIgnoreCase("I")){
+                                    contactList.add(tempList.get(i));
                                 }
                             }
                         }

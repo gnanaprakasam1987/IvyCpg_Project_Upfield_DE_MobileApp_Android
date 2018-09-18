@@ -1697,7 +1697,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         mDeliverDatePickerListener, year, month, day);
                 dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
                 dialog.getDatePicker().setMinDate(mCalendar.getTimeInMillis());
-                if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0) {
+                if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0 &&
+                        bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
                     dialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
                 }
                 return dialog;
