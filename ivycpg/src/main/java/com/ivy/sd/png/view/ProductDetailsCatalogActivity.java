@@ -82,7 +82,15 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         pdt_name.setText(bmodel.selectedPdt.getProductName());
         StringBuilder sihDetail = new StringBuilder();
         if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
-            sihDetail.append(getResources().getString(R.string.srp) + ": ");
+            String price;
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("catalog_srp") != null) {
+                price = bmodel.labelsMasterHelper
+                        .applyLabels("catalog_srp") + ": ";
+            } else {
+                price = "Price : ";
+            }
+            sihDetail.append(price);
             sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getSrp()));
         }
 

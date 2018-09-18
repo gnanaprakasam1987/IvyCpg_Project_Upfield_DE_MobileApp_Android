@@ -96,6 +96,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
     private Button saveBtn;
 
     private DeliveryManagementHelper deliveryManagementHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -248,11 +249,11 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 holder.sih = convertView.findViewById(R.id.sih);
 
                 holder.productNameTV.setTypeface(FontUtils.getProductNameFont(DeliveryManagementDetail.this));
-                holder.batchNoTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
-                holder.pieceET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
-                holder.caseET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
-                holder.outerET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
-                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,DeliveryManagementDetail.this));
+                holder.batchNoTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
+                holder.pieceET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
+                holder.caseET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
+                holder.outerET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
 
                 if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
                     holder.pieceET.setVisibility(View.GONE);
@@ -317,6 +318,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.pieceET.setSelection(qty.length());
+
                         if (!qty.equals("")) {
                             int enteredQty = SDUtil
                                     .convertToInt(qty);
@@ -360,6 +364,8 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.caseET.setSelection(qty.length());
                         if (!qty.equals("")) {
                             int enteredQty = SDUtil
                                     .convertToInt(qty);
@@ -401,6 +407,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.outerET.setSelection(qty.length());
+
                         if (!qty.equals("")) {
                             int enteredQty = SDUtil
                                     .convertToInt(qty);
@@ -432,8 +441,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         holder.pieceET.setInputType(InputType.TYPE_NULL);
                         holder.pieceET.onTouchEvent(event);
                         holder.pieceET.setInputType(inType);
-                        holder.pieceET.selectAll();
                         holder.pieceET.requestFocus();
+                        if (holder.pieceET.getText().length() > 0)
+                            holder.pieceET.setSelection(holder.pieceET.getText().length());
 //                    inputManager.hideSoftInputFromWindow(
 //                            mEdt_searchproductName.getWindowToken(), 0);
                         return true;
@@ -448,8 +458,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         holder.caseET.setInputType(InputType.TYPE_NULL);
                         holder.caseET.onTouchEvent(event);
                         holder.caseET.setInputType(inType);
-                        holder.caseET.selectAll();
                         holder.caseET.requestFocus();
+                        if (holder.caseET.getText().length() > 0)
+                            holder.caseET.setSelection(holder.caseET.getText().length());
                         return true;
                     }
                 });
@@ -462,8 +473,9 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         holder.outerET.setInputType(InputType.TYPE_NULL);
                         holder.outerET.onTouchEvent(event);
                         holder.outerET.setInputType(inType);
-                        holder.outerET.selectAll();
                         holder.outerET.requestFocus();
+                        if (holder.outerET.getText().length() > 0)
+                            holder.outerET.setSelection(holder.outerET.getText().length());
                         return false;
                     }
                 });
@@ -841,7 +853,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                     Vector<ProductMasterBO> productList = new Vector<>(mProductList);
                     //Collections.copy(productList, mProductList);
-                    bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null,null,null);
+                    bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null, null, null);
                     Intent i = new Intent(DeliveryManagementDetail.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);
                     i.putExtra("isHomeBtnEnable", true);
@@ -917,7 +929,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             setTitle(mTitle);
             mTitleTV = rootView.findViewById(R.id.title);
             if (mTitleTV != null) {
-                mTitleTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,DeliveryManagementDetail.this));
+                mTitleTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagementDetail.this));
             }
             mOkBtn = rootView.findViewById(R.id.btn_ok);
             mDismisBtn = rootView.findViewById(R.id.btn_dismiss);
@@ -1138,7 +1150,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
                 Vector<ProductMasterBO> productList = new Vector<>(mProductList);
                 //Collections.copy(productList, mProductList);
-                bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null,null,null);
+                bmodel.mCommonPrintHelper.xmlRead("print_z320_delivery_management.xml", true, productList, null, null, null);
                 Intent i = new Intent(DeliveryManagementDetail.this, CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
                 i.putExtra("isHomeBtnEnable", true);

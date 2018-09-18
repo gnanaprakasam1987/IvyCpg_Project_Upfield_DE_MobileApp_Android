@@ -203,6 +203,10 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             public void afterTextChanged(Editable s) {
 
                 String qty = s.toString();
+
+                if (qty.length() > 0)
+                    et_feedback.setSelection(qty.length());
+
                 if (masterObj != null) {
                     masterObj.setFeedBack(qty);
                 }
@@ -476,8 +480,9 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 holder.edtQty.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         holder.edtQty.onTouchEvent(event);
-                        holder.edtQty.selectAll();
                         holder.edtQty.requestFocus();
+                        if (holder.edtQty.getText().length() > 0)
+                            holder.edtQty.setSelection(holder.edtQty.getText().length());
                         return true;
                     }
                 });
@@ -496,6 +501,8 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String str = s.toString();
+                        if (str.length() > 0)
+                            holder.edtQty.setSelection(str.length());
                         if (!str.equals("")) {
                             int qty = SDUtil
                                     .convertToInt(holder.edtQty

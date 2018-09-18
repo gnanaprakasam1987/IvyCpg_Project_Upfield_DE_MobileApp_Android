@@ -751,7 +751,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         }
 
                         String qty = s.toString();
-
+                        if (qty.length() > 0)
+                            holder.caseQty.setSelection(qty.length());
 
                         float totalQty = (SDUtil.convertToInt(qty) * holder.productObj
                                 .getCaseSize())
@@ -841,8 +842,9 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             holder.caseQty.setInputType(InputType.TYPE_NULL);
                             holder.caseQty.onTouchEvent(event);
                             holder.caseQty.setInputType(inType);
-                            holder.caseQty.selectAll();
                             holder.caseQty.requestFocus();
+                            if (holder.caseQty.getText().length() > 0)
+                                holder.caseQty.setSelection(holder.caseQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -860,6 +862,9 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.pcsQty.setSelection(qty.length());
+
                         /** Calculate the total pcs qty **/
                         float totalQty = (holder.productObj.getOrderedCaseQty() * holder.productObj
                                 .getCaseSize())
@@ -945,8 +950,9 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             holder.pcsQty.setInputType(InputType.TYPE_NULL);
                             holder.pcsQty.onTouchEvent(event);
                             holder.pcsQty.setInputType(inType);
-                            holder.pcsQty.selectAll();
                             holder.pcsQty.requestFocus();
+                            if (holder.pcsQty.getText().length() > 0)
+                                holder.pcsQty.setSelection(holder.pcsQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -965,6 +971,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             return;
                         }
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.outerQty.setSelection(qty.length());
 
                         float totalQty = (SDUtil.convertToInt(qty) * holder.productObj
                                 .getOutersize())
@@ -1051,8 +1059,9 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             holder.outerQty.setInputType(InputType.TYPE_NULL);
                             holder.outerQty.onTouchEvent(event);
                             holder.outerQty.setInputType(inType);
-                            holder.outerQty.selectAll();
                             holder.outerQty.requestFocus();
+                            if (holder.outerQty.getText().length() > 0)
+                                holder.outerQty.setSelection(holder.outerQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -1289,22 +1298,22 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         }
 
 
-                            if (ret.getLocations().get(j).getWHCase() > 0
-                                    || ret.getLocations().get(j).getWHOuter() > 0
-                                    || ret.getLocations().get(j).getWHPiece() > 0
-                                    || ret.getLocations().get(j).getShelfCase() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfOuter() > -1
-                                    || ret.getLocations().get(j)
-                                    .getShelfPiece() > -1
-                                    || ret.isSBDAcheived()
-                                    || ret.isSBDAcheivedLocal()) {
-                                sbdStkAndOrderAchieved.add(ret
-                                        .getSbdGroupName());
-                            }
-                            if (ret.isSBDAcheived() || ret.isSBDAcheivedLocal()) {
-                                sbdAcheived.add(ret.getSbdGroupName());
-                            }
+                        if (ret.getLocations().get(j).getWHCase() > 0
+                                || ret.getLocations().get(j).getWHOuter() > 0
+                                || ret.getLocations().get(j).getWHPiece() > 0
+                                || ret.getLocations().get(j).getShelfCase() > -1
+                                || ret.getLocations().get(j)
+                                .getShelfOuter() > -1
+                                || ret.getLocations().get(j)
+                                .getShelfPiece() > -1
+                                || ret.isSBDAcheived()
+                                || ret.isSBDAcheivedLocal()) {
+                            sbdStkAndOrderAchieved.add(ret
+                                    .getSbdGroupName());
+                        }
+                        if (ret.isSBDAcheived() || ret.isSBDAcheivedLocal()) {
+                            sbdAcheived.add(ret.getSbdGroupName());
+                        }
 
                     }
                 }

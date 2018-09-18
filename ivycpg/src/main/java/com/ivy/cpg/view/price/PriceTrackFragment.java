@@ -1209,7 +1209,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
-
+                        if (qty.length() > 0)
+                            holder.mCaPrice.setSelection(qty.length());
                         if (businessModel.validDecimalValue(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_ca(qty);
                         } else {
@@ -1244,8 +1245,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         holder.mCaPrice.setInputType(InputType.TYPE_NULL);
                         holder.mCaPrice.onTouchEvent(event);
                         holder.mCaPrice.setInputType(inType);
-                        holder.mCaPrice.selectAll();
                         holder.mCaPrice.requestFocus();
+                        if (holder.mCaPrice.getText().length() > 0)
+                            holder.mCaPrice.setSelection(holder.mCaPrice.getText().length());
                         return true;
                     }
                 });
@@ -1255,7 +1257,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
-
+                        if (qty.length() > 0)
+                            holder.mPcPrice.setSelection(qty.length());
                         if (businessModel.validDecimalValue(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_pc(qty);
                         } else {
@@ -1290,8 +1293,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         holder.mPcPrice.setInputType(InputType.TYPE_NULL);
                         holder.mPcPrice.onTouchEvent(event);
                         holder.mPcPrice.setInputType(inType);
-                        holder.mPcPrice.selectAll();
                         holder.mPcPrice.requestFocus();
+                        if (holder.mPcPrice.getText().length() > 0)
+                            holder.mPcPrice.setSelection(holder.mPcPrice.getText().length());
                         return true;
                     }
                 });
@@ -1301,6 +1305,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.mOoPrice.setSelection(qty.length());
 
                         if (businessModel.validDecimalValue(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_oo(qty);
@@ -1336,8 +1342,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         holder.mOoPrice.setInputType(InputType.TYPE_NULL); // disable
                         holder.mOoPrice.onTouchEvent(event); // call native
                         holder.mOoPrice.setInputType(inType); // restore
-                        holder.mOoPrice.selectAll();
                         holder.mOoPrice.requestFocus();
+                        if (holder.mOoPrice.getText().length() > 0)
+                            holder.mOoPrice.setSelection(holder.mOoPrice.getText().length());
                         return true;
                     }
                 });

@@ -1156,6 +1156,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
                         holder.actual.setInputType(InputType.TYPE_NULL);
                         holder.actual.onTouchEvent(event);
                         holder.actual.setInputType(inType);
+                        if (holder.actual.getText().length() > 0)
+                            holder.actual.setSelection(holder.actual.getText().length());
                         return true;
                     }
 
@@ -1167,7 +1169,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
                         if (!"".equals(s)) {
-
+                            if (s.toString().length() > 0)
+                                holder.actual.setSelection(s.toString().length());
                             try {
                                 holder.assetTrackingBO.setActual(SDUtil.convertToInt(s
                                         .toString()));

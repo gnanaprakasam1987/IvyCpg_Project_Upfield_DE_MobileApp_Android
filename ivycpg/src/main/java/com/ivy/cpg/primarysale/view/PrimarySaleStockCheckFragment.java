@@ -639,6 +639,10 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
 
                                 public void afterTextChanged(Editable s) {
                                     String qty = s.toString();
+                                    if (qty.length() > 0)
+                                        holder.shelfPcsQty.setSelection(qty.length());
+                                    if (qty.length() > 0)
+                                        holder.shelfPcsQty.setSelection(qty.length());
                                     if (!qty.equals("")) {
                                         int sp_qty = SDUtil
                                                 .convertToInt(holder.shelfPcsQty
@@ -666,6 +670,10 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
 
                                 public void afterTextChanged(Editable s) {
                                     String qty = s.toString();
+                                    if (qty.length() > 0)
+                                        holder.shelfCaseQty.setSelection(qty.length());
+                                    if (qty.length() > 0)
+                                        holder.shelfCaseQty.setSelection(qty.length());
                                     if (!qty.equals("")) {
                                         int scqty = SDUtil
                                                 .convertToInt(holder.shelfCaseQty
@@ -705,6 +713,11 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                         @Override
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.shelfOuterQty.setSelection(qty.length());
+                            if (qty.length() > 0)
+                                holder.shelfOuterQty.setSelection(qty.length());
+
                             if (!qty.equals("")) {
                                 int shelfoqty = SDUtil
                                         .convertToInt(holder.shelfOuterQty
@@ -729,8 +742,9 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                                             .setInputType(InputType.TYPE_NULL);
                                     holder.shelfPcsQty.onTouchEvent(event);
                                     holder.shelfPcsQty.setInputType(inType);
-                                    holder.shelfPcsQty.selectAll();
                                     holder.shelfPcsQty.requestFocus();
+                                    if (holder.shelfPcsQty.getText().length() > 0)
+                                        holder.shelfPcsQty.setSelection(holder.shelfPcsQty.getText().length());
                                     inputManager.hideSoftInputFromWindow(
                                             mEdt_searchproductName
                                                     .getWindowToken(), 0);
@@ -750,8 +764,9 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                                             .setInputType(InputType.TYPE_NULL);
                                     holder.shelfCaseQty.onTouchEvent(event);
                                     holder.shelfCaseQty.setInputType(inType);
-                                    holder.shelfCaseQty.selectAll();
                                     holder.shelfCaseQty.requestFocus();
+                                    if (holder.shelfCaseQty.getText().length() > 0)
+                                        holder.shelfCaseQty.setSelection(holder.shelfCaseQty.getText().length());
                                     inputManager.hideSoftInputFromWindow(
                                             mEdt_searchproductName
                                                     .getWindowToken(), 0);
@@ -768,8 +783,9 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                             holder.shelfOuterQty.setInputType(InputType.TYPE_NULL);
                             holder.shelfOuterQty.onTouchEvent(event);
                             holder.shelfOuterQty.setInputType(inType);
-                            holder.shelfOuterQty.selectAll();
                             holder.shelfOuterQty.requestFocus();
+                            if (holder.shelfOuterQty.getText().length() > 0)
+                                holder.shelfOuterQty.setSelection(holder.shelfOuterQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;

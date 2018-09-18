@@ -260,8 +260,11 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setFistname("");
-                else
+                else {
+                    etFirstName.setSelection(s.toString().length());
                     retailerContactBo.setFistname(s.toString().trim());
+                }
+
 
             }
 
@@ -279,8 +282,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setLastname("");
-                else
+                else {
+                    etLastName.setSelection(s.toString().length());
                     retailerContactBo.setLastname(s.toString().trim());
+                }
 
             }
 
@@ -299,6 +304,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactNumber("");
                 else {
+                    etPhno.setSelection(s.toString().length());
                     retailerContactBo.setContactNumber(s.toString().trim());
                 }
             }
@@ -317,8 +323,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactMail("");
-                else
+                else {
+                    etEmail.setSelection(s.toString().length());
                     retailerContactBo.setContactMail(s.toString().trim());
+                }
 
 
             }
@@ -334,11 +342,14 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         etOthers.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
+                if (s.toString().length() > 0)
 
-                if (s.toString().trim().equals(""))
-                    retailerContactBo.setTitle("");
-                else
-                    retailerContactBo.setTitle(s.toString().trim());
+                    if (s.toString().trim().equals(""))
+                        retailerContactBo.setTitle("");
+                    else {
+                        etOthers.setSelection(s.toString().length());
+                        retailerContactBo.setTitle(s.toString().trim());
+                    }
 
             }
 

@@ -54,7 +54,7 @@ import java.util.Vector;
  */
 public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
         TextView.OnEditorActionListener,
-        BrandDialogInterface, View.OnClickListener,FiveLevelFilterCallBack {
+        BrandDialogInterface, View.OnClickListener, FiveLevelFilterCallBack {
 
 
     public ArrayList<ProductMasterBO> stockSkuList;
@@ -450,8 +450,8 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
             if (id == R.id.calcdel) {
                 /*
                  * int s = SDUtil.convertToInt((String) QUANTITY.getText()
-				 * .toString()); s = s / 10; QUANTITY.setText(s + ""); val = s;
-				 */
+                 * .toString()); s = s / 10; QUANTITY.setText(s + ""); val = s;
+                 */
 
                 String s = QUANTITY.getText().toString();
                 if (s != null) {
@@ -517,11 +517,11 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                 }
                 /*
                  * else if (mSelectedFilter.equals(getResources().getString(
-				 * R.string.product_short_name))) { if
-				 * (ret.getProductShortName() .toLowerCase() .contains(
-				 * mEdt_searchproductName.getText().toString() .toLowerCase()))
-				 * { mylist.add(ret); } }
-				 */
+                 * R.string.product_short_name))) { if
+                 * (ret.getProductShortName() .toLowerCase() .contains(
+                 * mEdt_searchproductName.getText().toString() .toLowerCase()))
+                 * { mylist.add(ret); } }
+                 */
             }
 
 
@@ -563,15 +563,15 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
         stockSkuList = new ArrayList<ProductMasterBO>();
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (mAttributeProducts != null) {
-            if (mFilteredPid!=0) {
-                    for (ProductMasterBO productBO : items) {
-                        if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
-                            // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
-                            if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                stockSkuList.add(productBO);
-                            }
+            if (mFilteredPid != 0) {
+                for (ProductMasterBO productBO : items) {
+                    if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
+                        if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
+                            stockSkuList.add(productBO);
                         }
                     }
+                }
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
@@ -583,12 +583,12 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                 }
             }
         } else {
-                for (ProductMasterBO productBO : items) {
-                    if (productBO.getIsSaleable() == 1) {
-                        if (productBO.getParentHierarchy().contains("/"+mFilteredPid+"/")) {
-                            stockSkuList.add(productBO);
-                        }
+            for (ProductMasterBO productBO : items) {
+                if (productBO.getIsSaleable() == 1) {
+                    if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
+                        stockSkuList.add(productBO);
                     }
+                }
             }
         }
 
@@ -764,6 +764,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
 
                                 public void afterTextChanged(Editable s) {
                                     String qty = s.toString();
+                                    if (qty.length() > 0)
+                                        holder.shelfPcsQty.setSelection(qty.length());
+
                                     if (!qty.equals("")) {
                                         int sp_qty = SDUtil
                                                 .convertToInt(holder.shelfPcsQty
@@ -791,6 +794,8 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
 
                                 public void afterTextChanged(Editable s) {
                                     String qty = s.toString();
+                                    if (qty.length() > 0)
+                                        holder.shelfCaseQty.setSelection(qty.length());
                                     if (!qty.equals("")) {
                                         int scqty = SDUtil
                                                 .convertToInt(holder.shelfCaseQty
@@ -830,6 +835,8 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                         @Override
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.shelfOuterQty.setSelection(qty.length());
                             if (!qty.equals("")) {
                                 int shelfoqty = SDUtil
                                         .convertToInt(holder.shelfOuterQty
@@ -854,8 +861,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                                             .setInputType(InputType.TYPE_NULL);
                                     holder.shelfPcsQty.onTouchEvent(event);
                                     holder.shelfPcsQty.setInputType(inType);
-                                    holder.shelfPcsQty.selectAll();
                                     holder.shelfPcsQty.requestFocus();
+                                    if (holder.shelfPcsQty.getText().length() > 0)
+                                        holder.shelfPcsQty.setSelection(holder.shelfPcsQty.getText().length());
                                     inputManager.hideSoftInputFromWindow(
                                             mEdt_searchproductName.getWindowToken(), 0);
                                     return true;
@@ -874,8 +882,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                                             .setInputType(InputType.TYPE_NULL);
                                     holder.shelfCaseQty.onTouchEvent(event);
                                     holder.shelfCaseQty.setInputType(inType);
-                                    holder.shelfCaseQty.selectAll();
                                     holder.shelfCaseQty.requestFocus();
+                                    if (holder.shelfCaseQty.getText().length() > 0)
+                                        holder.shelfCaseQty.setSelection(holder.shelfCaseQty.getText().length());
                                     inputManager.hideSoftInputFromWindow(
                                             mEdt_searchproductName.getWindowToken(), 0);
                                     return true;
@@ -891,8 +900,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                             holder.shelfOuterQty.setInputType(InputType.TYPE_NULL);
                             holder.shelfOuterQty.onTouchEvent(event);
                             holder.shelfOuterQty.setInputType(inType);
-                            holder.shelfOuterQty.selectAll();
                             holder.shelfOuterQty.requestFocus();
+                            if (holder.shelfOuterQty.getText().length() > 0)
+                                holder.shelfOuterQty.setSelection(holder.shelfOuterQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -908,6 +918,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                                 return;
                             }
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.pcsQty.setSelection(qty.length());
+
                             /** Calculate the total pcs qty **/
 
                             if (!qty.equals("")) {
@@ -945,6 +958,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                             }
 
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.caseQty.setSelection(qty.length());
+
 
                             if (!qty.equals("")) {
                                 holder.productObj.setOrderedCaseQty(SDUtil
@@ -998,7 +1014,8 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                                 return;
                             }
                             String qty = s.toString();
-
+                            if (qty.length() > 0)
+                                holder.outerQty.setSelection(qty.length());
 
                             if (!qty.equals("")) {
                                 holder.productObj.setOrderedOuterQty(SDUtil
@@ -1027,8 +1044,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                             holder.pcsQty.setInputType(InputType.TYPE_NULL);
                             holder.pcsQty.onTouchEvent(event);
                             holder.pcsQty.setInputType(inType);
-                            holder.pcsQty.selectAll();
                             holder.pcsQty.requestFocus();
+                            if (holder.pcsQty.getText().length() > 0)
+                                holder.pcsQty.setSelection(holder.pcsQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -1044,8 +1062,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                             holder.caseQty.setInputType(InputType.TYPE_NULL);
                             holder.caseQty.onTouchEvent(event);
                             holder.caseQty.setInputType(inType);
-                            holder.caseQty.selectAll();
                             holder.caseQty.requestFocus();
+                            if (holder.caseQty.getText().length() > 0)
+                                holder.caseQty.setSelection(holder.caseQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -1063,8 +1082,9 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                             holder.outerQty.setInputType(InputType.TYPE_NULL);
                             holder.outerQty.onTouchEvent(event);
                             holder.outerQty.setInputType(inType);
-                            holder.outerQty.selectAll();
                             holder.outerQty.requestFocus();
+                            if (holder.outerQty.getText().length() > 0)
+                                holder.outerQty.setSelection(holder.outerQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;

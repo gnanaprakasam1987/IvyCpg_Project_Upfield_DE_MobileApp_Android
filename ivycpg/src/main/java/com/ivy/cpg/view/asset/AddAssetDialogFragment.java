@@ -232,6 +232,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
             @Override
             public void afterTextChanged(Editable s) {
+
+                if (s.toString().length() > 0)
+                    mSNO.setSelection(s.toString().length());
             }
         });
     }

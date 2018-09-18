@@ -480,7 +480,7 @@ public class QuickCallFragment extends IvyBaseFragment {
     }
 
     private void loadOrderSummaryScreen() {
-        OrderHelper.getInstance(getActivity()).isQuickCall=true;
+        OrderHelper.getInstance(getActivity()).isQuickCall = true;
 
         Intent intent = new Intent(getActivity(),
                 OrderSummary.class);

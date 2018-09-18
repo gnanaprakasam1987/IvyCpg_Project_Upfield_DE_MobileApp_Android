@@ -216,6 +216,8 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                     public void afterTextChanged(Editable s) {
                         int quantityEntered = 0;
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.quantityET.setSelection(qty.length());
                             if (!s.toString().trim().equals("")) {
                                 quantityEntered = SDUtil.convertToInt(s.toString());
                             }
@@ -314,8 +316,9 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                         holder.quantityET.setInputType(InputType.TYPE_NULL);
                         holder.quantityET.onTouchEvent(event);
                         holder.quantityET.setInputType(inType);
-                        holder.quantityET.selectAll();
                         holder.quantityET.requestFocus();
+                        if (holder.quantityET.getText().length() > 0)
+                            holder.quantityET.setSelection(holder.quantityET.getText().length());
                         QUANTITY.setCursorVisible(false);
                         InputMethodManager inputManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputManager.hideSoftInputFromWindow(
