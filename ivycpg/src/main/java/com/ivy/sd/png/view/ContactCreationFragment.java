@@ -502,7 +502,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private boolean hasdata() {
         boolean isData = false;
         if (retailerContactBo.getFistname().length() > 0 || retailerContactBo.getLastname().length() > 0 ||
-                !retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ||
+                (!retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") && retailerContactBo.getContactTitleLovId().length() > 0 ) ||
                 retailerContactBo.getTitle().length() > 0 || retailerContactBo.getContactMail().length() > 0
                 || retailerContactBo.getContactNumber().length() > 0) {
             isData = true;
