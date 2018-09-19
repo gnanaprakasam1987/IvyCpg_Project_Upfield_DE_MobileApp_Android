@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -41,6 +41,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -207,15 +208,15 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
     }
 
     private void applyHeaderLabels() {
-        try {
-            ((TextView) findViewById(R.id.tv_schemeduration_header)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_schemeduration_header).getTag()) != null)
-                ((TextView) findViewById(R.id.tv_schemeduration_header)).setText(bModel.labelsMasterHelper
-                        .applyLabels(findViewById(R.id.tv_schemeduration_header).getTag()));
-        } catch (Exception e) {
-            Commons.printException(e + "");
-        }
+//        try {
+//            ((TextView) findViewById(R.id.tv_schemeduration_header)).setTypeface(
+//                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+//            if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_schemeduration_header).getTag()) != null)
+//                ((TextView) findViewById(R.id.tv_schemeduration_header)).setText(bModel.labelsMasterHelper
+//                        .applyLabels(findViewById(R.id.tv_schemeduration_header).getTag()));
+//        } catch (Exception e) {
+//            Commons.printException(e + "");
+//        }
         try {
             ((TextView) findViewById(R.id.tv_schemetype_header)).setTypeface(
                     FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
@@ -478,6 +479,8 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             Vector<SchemeProductBO> schemeList = new Vector<>();
 
             for (Map.Entry<Integer, SchemeBO> entry : currentSchemeList.entrySet()) {
+                parentSchemeBO.setFromDate(entry.getValue().getFromDate());
+                parentSchemeBO.setToDate(entry.getValue().getToDate());
                 if (entry.getKey() == parentSchemeBO.getSchemeID()) {
                     SchemeBO schemeHeader = entry.getValue();
                     if (historyMap != null && historyMap.get(schemeHeader.getParentId() + "") != null) {
@@ -596,6 +599,8 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             for (Map.Entry<Integer, SchemeBO> entry : nextSchemeList.entrySet()) {
                 double schemebuyQty = 0;
                 if (entry.getKey() == parentSchemeBO.getSchemeID()) {
+                    parentSchemeBO.setFromDate(entry.getValue().getFromDate());
+                    parentSchemeBO.setToDate(entry.getValue().getToDate());
                     isNextSchemeAvailable = true;
                     SchemeBO schemeHeader = entry.getValue();
                     if (historyMap != null && historyMap.get(schemeHeader.getParentId() + "") != null) {
@@ -1024,8 +1029,6 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 
             holder.schemeProducts = (SchemeProductBO) getChild(groupPosition,
                     childPosition);
-            holder.group = groupPosition;
-            holder.child = childPosition;
 
             if (childPosition != 0) {
                 holder.lnrSchemeHeader.setVisibility(View.GONE);
@@ -1043,7 +1046,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             } else {
                 gqt = (holder.schemeProducts.getIncreasedPcsQty() + (holder.schemeProducts.getIncreasedCasesQty() * holder.schemeProducts.getCasesPrice())) + "";
             }
-            holder.tv_gqt.setText(gqt);
+            holder.tv_gqt.setText(SDUtil.getWithoutExponential(gqt));
             holder.tv_pcs_final_qty.setText(holder.schemeProducts.getIncreasedPcsQty() + "");
             holder.tv_cases_final_qty.setText(holder.schemeProducts.getIncreasedCasesQty() + "");
 
@@ -1112,8 +1115,8 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 holder.tv_scheme = view
                         .findViewById(R.id.tv_scheme);
                 holder.tv_scheme_secondary_title = view.findViewById(R.id.tv_scheme_secondary_title);
-                holder.tv_schemeDuration = view
-                        .findViewById(R.id.tv_schemeduration);
+//                holder.tv_schemeDuration = view
+//                        .findViewById(R.id.tv_schemeduration);
                 holder.tv_schemeType = view.findViewById(R.id.tv_schemetype);
                 holder.tv_cumulative_purchase = view
                         .findViewById(R.id.tv_cumulative_purchase);
@@ -1139,10 +1142,12 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                         .findViewById(R.id.tv_next_cumulative_scheme_discount);
                 holder.tv_calculated_nextslab_rs_per = view
                         .findViewById(R.id.tv_next_scheme_per_amt);
+                holder.qpsSchemeHeaderLayout = (CardView) view.findViewById(R.id.qpsSchemeHeaderLayout);
+                //typeface
                 //typeface
                 holder.tv_scheme.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
                 holder.tv_scheme_secondary_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_schemeDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                //holder.tv_schemeDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
                 holder.tv_schemeType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
                 holder.tv_cumulative_purchase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
                 holder.tv_curslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
@@ -1164,29 +1169,31 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 
             holder.parentSchemeBO = mSchemeDoneList.get(groupPosition).getParentScheme();
             holder.tv_scheme.setText(holder.parentSchemeBO.getSchemeDesc());
-            holder.tv_scheme_secondary_title.setText(holder.parentSchemeBO.getSchemeShortDesc());
-            String periodStart = "";
-            String periodEnd = "";
-            holder.tv_schemeDuration.setText(periodStart + " - " + periodEnd);
+            //holder.tv_scheme_secondary_title.setText(holder.parentSchemeBO.getSchemeShortDesc());
+            String periodStart = DateUtil.convertFromServerDateToRequestedFormat(holder.parentSchemeBO.getFromDate(),"dd-MM-yyyy");
+            String periodEnd = DateUtil.convertFromServerDateToRequestedFormat(holder.parentSchemeBO.getToDate(),"dd-MM-yyyy");
+            holder.tv_scheme_secondary_title.setText(periodStart + " to " + periodEnd);
             holder.tv_schemeType.setText(holder.parentSchemeBO.getBuyType());
 
-            holder.tv_cumulative_purchase.setText(SDUtil.format(holder.parentSchemeBO.getCumulativePurchase(), 2, 0) + "");
+            holder.tv_cumulative_purchase.setText(SDUtil.getWithoutExponential(holder.parentSchemeBO.getCumulativePurchase()) + "");
             holder.tv_curslab_sch_amt.setText(SDUtil.format(holder.parentSchemeBO.getCurSlabCumSchAmt(), 2, 0) + "");
             holder.tv_curslab_rs_per.setText(SDUtil.format(holder.parentSchemeBO.getCurSlabrsorPer(), 2, 0) + "");
-            holder.tv_nextslab.setText(SDUtil.format(holder.parentSchemeBO.getNextSlabBalance(), 2, 0) + "");
+            holder.tv_nextslab.setText(SDUtil.getWithoutExponential(holder.parentSchemeBO.getNextSlabBalance()) + "");
             holder.tv_nextslab_sch_amt.setText(SDUtil.format(holder.parentSchemeBO.getNextSlabCumSchAmt(), 2, 0) + "");
             holder.tv_nextslab_rs_per.setText(SDUtil.format(holder.parentSchemeBO.getNextSlabrsorPer(), 2, 0) + "");
 
-            holder.tv_calculated_cumulative_purchase.setText(SDUtil.format(holder.parentSchemeBO.getCalculatedCumulativePurchase(), 2, 0) + "");
+            holder.tv_calculated_cumulative_purchase.setText(SDUtil.getWithoutExponential(holder.parentSchemeBO.getCalculatedCumulativePurchase()) + "");
             holder.tv_calculated_curslab_sch_amt.setText(SDUtil.format(holder.parentSchemeBO.getCalculatedcurSlabCumSchAmt(), 2, 0) + "");
             holder.tv_calculated_curslab_rs_per.setText(SDUtil.format(holder.parentSchemeBO.getCalculatedcurSlabrsorPer(), 2, 0) + "");
-            holder.tv_calculated_nextslab.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabBalance(), 2, 0) + "");
+            holder.tv_calculated_nextslab.setText(SDUtil.getWithoutExponential(holder.parentSchemeBO.getCalculatednextSlabBalance()) + "");
             holder.tv_calculated_nextslab_sch_amt.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabCumSchAmt(), 2, 0) + "");
             holder.tv_calculated_nextslab_rs_per.setText(SDUtil.format(holder.parentSchemeBO.getCalculatednextSlabrsorPer(), 2, 0) + "");
             if (holder.parentSchemeBO.isSelected()) {
-                holder.tv_scheme.setTextColor(Color.parseColor("#196F3D"));
+                holder.qpsSchemeHeaderLayout.setCardBackgroundColor(Color.parseColor("#196F3D"));
+                holder.tv_scheme_secondary_title.setTextColor(Color.WHITE);
             } else {
-                holder.tv_scheme.setTextColor(Color.parseColor("#000000"));
+                holder.qpsSchemeHeaderLayout.setCardBackgroundColor(Color.WHITE);
+                holder.tv_scheme_secondary_title.setTextColor(Color.parseColor("#175fab"));
             }
             return view;
         }
@@ -1207,7 +1214,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         private ParentSchemeBO parentSchemeBO;
         private TextView tv_scheme;
         private TextView tv_scheme_secondary_title;
-        private TextView tv_schemeDuration;
+        //private TextView tv_schemeDuration;
         private TextView tv_schemeType;
         private TextView tv_cumulative_purchase;
         private TextView tv_curslab_sch_amt;
@@ -1223,7 +1230,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         private TextView tv_calculated_nextslab_sch_amt;
         private TextView tv_calculated_nextslab_rs_per;
 
-
+        private CardView qpsSchemeHeaderLayout;
     }
 
     static class SchemeProductDetailHolder {
@@ -1232,7 +1239,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 tv_uom, tv_gqt;
         EditText tv_pcs_final_qty, tv_cases_final_qty;
         LinearLayout lnrSchemeHeader;
-        int group, child;
+        //int group, child;
     }
 
     /**
