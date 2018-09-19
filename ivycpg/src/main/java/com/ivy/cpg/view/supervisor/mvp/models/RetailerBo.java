@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp;
+package com.ivy.cpg.view.supervisor.mvp.models;
 
 
 import com.google.android.gms.maps.model.Marker;
