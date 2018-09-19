@@ -57,6 +57,7 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
@@ -1578,11 +1579,19 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         } else if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
-            Intent init = new Intent(CatalogOrder.this, SchemeApply.class);
-            init.putExtra("ScreenCode", screenCode);
-            init.putExtra("ForScheme", screenCode);
-            startActivity(init);
-            finish();
+            if (schemeHelper.IS_SCHEME_QPS_TRACKING) {
+                Intent init = new Intent(CatalogOrder.this, QPSSchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                finish();
+            } else {
+                Intent init = new Intent(CatalogOrder.this, SchemeApply.class);
+                init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
+                startActivity(init);
+                finish();
+            }
         } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
             Intent init = new Intent(CatalogOrder.this, OrderDiscount.class);
             init.putExtra("ScreenCode", screenCode);
