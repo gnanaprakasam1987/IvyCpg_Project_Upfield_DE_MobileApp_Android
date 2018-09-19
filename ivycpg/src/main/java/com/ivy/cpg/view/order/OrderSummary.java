@@ -238,7 +238,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         String screenTitle = bModel.configurationMasterHelper
                 .getHomescreentwomenutitle("MENU_CLOSING");
-        if ("MENU_CLOSING".equals(screenTitle))
+        if (screenTitle.isEmpty())
             screenTitle = getResources().getString(R.string.summary);
 
         toolbar = findViewById(R.id.toolbar);
