@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -33,7 +34,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class DamageReturnCompletedReportFragment extends IvyBaseFragment {
 
-    CompositeDisposable compositeDisposable;
     Unbinder unbinder;
 
     @BindView(R.id.pending_delivery_listview)
@@ -45,65 +45,40 @@ public class DamageReturnCompletedReportFragment extends IvyBaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_damage_return, container,
                 false);
-        BusinessModel bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+
         unbinder = ButterKnife.bind(this, view);
-
-        // textView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-
+        getContractDate();
         return view;
     }
 
     private void getContractDate() {
-        final AlertDialog alertDialog;
-        /*AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());*/
-        compositeDisposable = new CompositeDisposable();
-        /*customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
-        alertDialog = builder.create();
-        alertDialog.show();*/
-        compositeDisposable.add((Disposable) DamageReturenReportHelper.getInstance().downloadPendingDeliveryStatusReport(getActivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<ArrayList<PandingDeliveryBO>>() {
-                    @Override
-                    public void onNext(ArrayList<PandingDeliveryBO> contractList) {
-                        if (contractList.size() > 0) {
 
-                            DamageReturnCompletedReportFragment.MyAdapter adapter = new DamageReturnCompletedReportFragment.MyAdapter(contractList);
-                            listView.setAdapter(adapter);
-                        } else {
-                            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
-                        }
-                    }
+        if (DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size() > 0) {
+            ArrayList<PandingDeliveryBO> pandingDeliveryBOS=new ArrayList<>();
+            for(int i=0;i<DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size();i++){
+                if(!AppUtils.isEmptyString(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
+                    pandingDeliveryBOS.add(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i));
+                }
+            }
+            DamageReturnCompletedReportFragment.MyAdapter adapter = new DamageReturnCompletedReportFragment.MyAdapter(pandingDeliveryBOS);
+            listView.setAdapter(adapter);
+        } else {
+            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        //alertDialog.dismiss();
-                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        //alertDialog.dismiss();
-                    }
-                }));
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        getContractDate();
+
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (compositeDisposable != null
-                && !compositeDisposable.isDisposed())
-            compositeDisposable.clear();
 
         unbinder.unbind();
     }
@@ -164,20 +139,22 @@ public class DamageReturnCompletedReportFragment extends IvyBaseFragment {
             }
             PandingDeliveryBO pandingDeliveryBO = arrayList.get(position);
 
-            holder.invoiceNo.setText(pandingDeliveryBO.getInvoiceNo());
-            holder.invoiceDate.setText(pandingDeliveryBO.getInvoiceDate());
-            holder.invNetamount.setText(pandingDeliveryBO.getInvNetamount());
-            holder.txtStorename.setText(pandingDeliveryBO.getRetailerName());
+            if(!AppUtils.isEmptyString(pandingDeliveryBO.getStatus())){
+                holder.invoiceNo.setText(pandingDeliveryBO.getInvoiceNo());
+                holder.invoiceDate.setText(pandingDeliveryBO.getInvoiceDate());
+                holder.invNetamount.setText(pandingDeliveryBO.getInvNetamount());
+                holder.txtStorename.setText(pandingDeliveryBO.getRetailerName());
 
-            if("P".equalsIgnoreCase(pandingDeliveryBO.getStatus())){
-                holder.status.setText("Partially Delivered");
-                holder.status.setTextColor(getResources().getColor(R.color.red_week_background));
-            }else if("F".equalsIgnoreCase(pandingDeliveryBO.getStatus())){
-                holder.status.setText("Delivered");
-                holder.status.setTextColor(getResources().getColor(R.color.select_week_color_green));
-            }else{
-                holder.status.setText("Rejected");
-                holder.status.setTextColor(getResources().getColor(R.color.pink_week_background));
+                if("P".equalsIgnoreCase(pandingDeliveryBO.getStatus())){
+                    holder.status.setText("Partially Delivered");
+                    holder.status.setTextColor(getResources().getColor(R.color.red_week_background));
+                }else if("F".equalsIgnoreCase(pandingDeliveryBO.getStatus())){
+                    holder.status.setText("Delivered");
+                    holder.status.setTextColor(getResources().getColor(R.color.select_week_color_green));
+                }else{
+                    holder.status.setText("Rejected");
+                    holder.status.setTextColor(getResources().getColor(R.color.pink_week_background));
+                }
             }
 
             return convertView;

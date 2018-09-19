@@ -11,6 +11,6 @@
         android:cacheColorHint="@null"
         android:divider="@android:color/white"
         android:dividerHeight="1dp"
-        android:fitsSystemWindows="true"/>
+        android:fitsSystemWindows="true" />
 
 </android.support.constraint.ConstraintLayout>

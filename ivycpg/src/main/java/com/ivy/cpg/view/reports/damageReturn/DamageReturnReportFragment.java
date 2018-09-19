@@ -1,7 +1,10 @@
 package com.ivy.cpg.view.reports.damageReturn;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +16,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.view.ContactCreationFragment;
+import com.ivy.sd.png.view.UserSettingsActivity;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -35,11 +43,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class DamageReturnReportFragment extends IvyBaseFragment {
 
-    CompositeDisposable compositeDisposable;
+
     Unbinder unbinder;
 
     @BindView(R.id.pending_delivery_listview)
     ListView listView;
+
 
 
     @Override
@@ -47,64 +56,48 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_damage_return, container,
                 false);
-        BusinessModel bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
         unbinder = ButterKnife.bind(this, view);
+        getContractDate();
 
         return view;
     }
-
+    ArrayList<PandingDeliveryBO> pandingDeliveryBOS=new ArrayList<>();
     private void getContractDate() {
-        final AlertDialog alertDialog;
-        /*AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());*/
-        compositeDisposable = new CompositeDisposable();
-        /*customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
-        alertDialog = builder.create();
-        alertDialog.show();*/
-        compositeDisposable.add((Disposable) DamageReturenReportHelper.getInstance().downloadPendingDeliveryReport(getActivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<ArrayList<PandingDeliveryBO>>() {
-                    @Override
-                    public void onNext(ArrayList<PandingDeliveryBO> contractList) {
-                        if (contractList.size() > 0) {
 
-                            DamageReturnReportFragment.MyAdapter adapter = new DamageReturnReportFragment.MyAdapter(contractList);
-                            listView.setAdapter(adapter);
-                        } else {
-                            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
-                        }
-                    }
+        if (DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size() > 0) {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        //alertDialog.dismiss();
-                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
-                    }
+            for(int i=0;i<DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size();i++){
+                if(AppUtils.isEmptyString(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
+                    pandingDeliveryBOS.add(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i));
+                }
+            }
+            DamageReturnReportFragment.MyAdapter adapter = new DamageReturnReportFragment.MyAdapter(pandingDeliveryBOS);
+            listView.setAdapter(adapter);
+        } else {
+            Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+        }
 
-                    @Override
-                    public void onComplete() {
-                        //alertDialog.dismiss();
-                    }
-                }));
+    }
+
+    @OnItemClick(R.id.pending_delivery_listview)
+    void onItemSelected(int position){
+
+        Intent i = new Intent(getActivity(), DamageDetailsActivity.class);
+        i.putExtra("InvoiceNo", pandingDeliveryBOS.get(position).getInvoiceNo());
+        getActivity().startActivity(i);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        getContractDate();
+
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (compositeDisposable != null
-                && !compositeDisposable.isDisposed())
-            compositeDisposable.clear();
-
         unbinder.unbind();
     }
 
@@ -132,7 +125,7 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             DamageReturnReportFragment.ViewHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -201,6 +194,7 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
 
         @BindView(R.id.txtStatus)
         TextView status;
+
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
