@@ -101,6 +101,7 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -1673,28 +1674,24 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             case DIALOG_DELIVERY_DATE_PICKER: {
 
-                Calendar maxCalendar = Calendar.getInstance();
-                if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0) {
-                    if (bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
-                        mCalendar.add(Calendar.DAY_OF_MONTH, bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
-                    } else {
-                        mCalendar.setTimeInMillis(System.currentTimeMillis() - 1000);
-                    }
-                    if (bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
-                        maxCalendar.add(Calendar.DAY_OF_YEAR, bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
-                    }
-                }
+                Calendar c = Calendar.getInstance();
+                c.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
-                int year = mCalendar.get(Calendar.YEAR);
-                int month = mCalendar.get(Calendar.MONTH);
-                int day = mCalendar.get(Calendar.DAY_OF_MONTH);
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
 
                 MyDatePickerDialog dialog = new MyDatePickerDialog(this, R.style.DatePickerDialogStyle,
                         mDeliverDatePickerListener, year, month, day);
                 dialog.setPermanentTitle(getResources().getString(R.string.choose_date));
-                dialog.getDatePicker().setMinDate(mCalendar.getTimeInMillis());
-                if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0 &&
-                        bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
+
+                int diff = bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER -
+                        bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER;
+                c.add(Calendar.DAY_OF_YEAR, -diff);
+                dialog.getDatePicker().setMinDate(c.getTimeInMillis());
+                if (bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
+                    Calendar maxCalendar = Calendar.getInstance();
+                    maxCalendar.add(Calendar.DAY_OF_YEAR, bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
                     dialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
                 }
                 return dialog;
@@ -2916,13 +2913,24 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar dateValidation(Calendar selectedDate) {
         String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
                 selectedDate.getTime(), "yyyy/MM/dd");
-        if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
+
+        while (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
                 || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
             selectedDate.add(Calendar.DAY_OF_MONTH, 1);
-            return dateValidation(selectedDate);
-        } else {
-            return selectedDate;
+            dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+                    selectedDate.getTime(), "yyyy/MM/dd");
         }
+        return selectedDate;
+
+//        String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+//                selectedDate.getTime(), "yyyy/MM/dd");
+//        if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
+//                || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
+//            selectedDate.add(Calendar.DAY_OF_MONTH, 1);
+//            return dateValidation(selectedDate);
+//        } else {
+//            return selectedDate;
+//        }
     }
 
 

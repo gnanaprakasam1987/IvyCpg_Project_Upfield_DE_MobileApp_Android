@@ -274,7 +274,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         hideVisibleComponents();
 
 
-        downloadProductsAndPrice = new DownloadProductsAndPrice();
+        //downloadProductsAndPrice = new DownloadProductsAndPrice();
 
         new LoadProfileConfigs().execute();
 
@@ -1781,6 +1781,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             isClicked = true;
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
+            downloadProductsAndPrice = new DownloadProductsAndPrice();
             downloadProductsAndPrice.execute();
             // new DownloadProductsAndPrice().execute();
         }
@@ -1803,6 +1804,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         // new DownloadProductsAndPrice().execute();
+                                        downloadProductsAndPrice = new DownloadProductsAndPrice();
                                         downloadProductsAndPrice.execute();
 
                                     }
@@ -2305,7 +2307,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             unregisterReceiver(receiver);
         }
 
-        if (downloadProductsAndPrice.getStatus() == AsyncTask.Status.RUNNING)
+        if (downloadProductsAndPrice != null && downloadProductsAndPrice.getStatus() == AsyncTask.Status.RUNNING)
             downloadProductsAndPrice.cancel(true);
 
     }
@@ -2352,6 +2354,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 isClicked = false;
 
                 bmodel.updateUserAudit(1);
+                downloadProductsAndPrice = new DownloadProductsAndPrice();
                 downloadProductsAndPrice.execute();
                 // new DownloadProductsAndPrice().execute();
                 break;
