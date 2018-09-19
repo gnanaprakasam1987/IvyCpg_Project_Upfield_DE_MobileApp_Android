@@ -146,7 +146,7 @@ public class FitScoreHelper {
                     .selectSQL("SELECT DISTINCT Weightage FROM HHTModuleWeightage A " +
                             "INNER JOIN HHTModuleWeightageMapping B " +
                             "ON A.GroupID = B.GroupID LEFT JOIN RetailerMaster RM " +
-                            "ON RM.subchannelid = B.CriteriaId " +
+                            "ON B.CriteriaId IN (RM.subchannelid, RM.Channelid) " +
                             "AND B.CriteriaType = 'CHANNEL' " +
                             "LEFT JOIN RetailerAttribute RA " +
                             "ON (RA.AttributeId = B.CriteriaId AND B.CriteriaType = 'RTR_ATTRIBUTE') " +
@@ -218,7 +218,7 @@ public class FitScoreHelper {
                             "inner join WeightageProductDetail D on C.HeaderID = D.HeaderID and D.ProductID = B." + PID + " " +
                             "inner join HHTModuleWeightage E on E.Module = C.Module " +
                             "inner join HHTModuleWeightageMapping HWM ON E.GroupID = HWM.GroupID " +
-                            "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +
+                            "left join RetailerMaster RM ON HWM.CriteriaId IN (RM.subchannelid, RM.Channelid) AND HWM.CriteriaType = 'CHANNEL' " +
                             "left join RetailerAttribute RA ON (RA.AttributeId = HWM.CriteriaId AND HWM.CriteriaType = 'RTR_ATTRIBUTE') " +
                             "where C.CriteriaID = '" + retailerID + "' and E.Module = '" + Module + "' " +
                             "AND B.Score>0 and (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "')");
@@ -269,7 +269,7 @@ public class FitScoreHelper {
                             "inner join ProductTaggingGroupMapping E ON E.groupid=D.groupid and E.PID = B." + PID + " " +
                             "inner join HHTModuleWeightage G on G.Module = F.ListCode " +
                             "inner join HHTModuleWeightageMapping HWM ON G.GroupID = HWM.GroupID " +
-                            "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +
+                            "left join RetailerMaster RM ON HWM.CriteriaId IN (RM.subchannelid, RM.Channelid) AND HWM.CriteriaType = 'CHANNEL' " +
                             "left join RetailerAttribute RA ON (RA.AttributeId = HWM.CriteriaId AND HWM.CriteriaType = 'RTR_ATTRIBUTE') " +
                             "WHERE G.Module = '" + Module + "' AND B.retailerid=" + retailerID +
                             " AND B.Score>0 and (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "')");
@@ -316,7 +316,7 @@ public class FitScoreHelper {
                             "inner join StandardListMaster D on D.ListId = C.TypeLovID " +
                             "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' " +
                             "inner join HHTModuleWeightageMapping HWM ON E.GroupID = HWM.GroupID " +
-                            "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +
+                            "left join RetailerMaster RM ON HWM.CriteriaId IN (RM.subchannelid, RM.Channelid) AND HWM.CriteriaType = 'CHANNEL' " +
                             "left join RetailerAttribute RA ON (RA.AttributeId = HWM.CriteriaId AND HWM.CriteriaType = 'RTR_ATTRIBUTE') " +
                             "where B.RetailerID = '" + retailerID + "' and D.ListCode = '" + ListCode + "' " +
                             "AND B.Score>0 and (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "')");
@@ -352,7 +352,7 @@ public class FitScoreHelper {
                             "from PromotionProductMapping A inner join PromotionDetail B on A.PromoId = B.PromotionID " +
                             "inner join HHTModuleWeightage E on E.Module =  '" + Module + "' " +
                             "inner join HHTModuleWeightageMapping HWM ON E.GroupID = HWM.GroupID " +
-                            "left join RetailerMaster RM ON RM.subchannelid = HWM.CriteriaId AND HWM.CriteriaType = 'CHANNEL' " +
+                            "left join RetailerMaster RM ON HWM.CriteriaId IN (RM.subchannelid, RM.Channelid) AND HWM.CriteriaType = 'CHANNEL' " +
                             "left join RetailerAttribute RA ON (RA.AttributeId = HWM.CriteriaId AND HWM.CriteriaType = 'RTR_ATTRIBUTE') " +
                             "where B.RetailerID = '" + retailerID + "'" +
                             " AND B.Score>0 and (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "')");
@@ -405,7 +405,7 @@ public class FitScoreHelper {
             Cursor c = db
                     .selectSQL("SELECT DISTINCT Module, Weightage FROM HHTModuleWeightage A " +
                             "INNER JOIN HHTModuleWeightageMapping B ON A.GroupID = B.GroupID " +
-                            "LEFT JOIN RetailerMaster RM ON RM.subchannelid = B.CriteriaId AND B.CriteriaType = 'CHANNEL' " +
+                            "LEFT JOIN RetailerMaster RM ON B.CriteriaId IN (RM.subchannelid, RM.Channelid) AND B.CriteriaType = 'CHANNEL' " +
                             "LEFT JOIN RetailerAttribute RA ON (RA.AttributeId = B.CriteriaId AND B.CriteriaType = 'RTR_ATTRIBUTE') " +
                             "WHERE (RM.RetailerID = '" + retailerID + "' or RA.RetailerID = '" + retailerID + "') LIMIT 5");
 
