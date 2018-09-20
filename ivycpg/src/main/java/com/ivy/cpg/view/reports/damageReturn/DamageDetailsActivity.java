@@ -60,6 +60,7 @@ public class DamageDetailsActivity extends IvyBaseActivityNoActionBar {
 
     private Toolbar toolbar;
     String invoiceNo;
+    String status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +76,11 @@ public class DamageDetailsActivity extends IvyBaseActivityNoActionBar {
         }
         if (getIntent().getExtras() != null) {
             invoiceNo = getIntent().getExtras().getString("InvoiceNo");
+            status = getIntent().getExtras().getString("status");
         }
         Bundle bndl = new Bundle();
         bndl.putString("invoiceNo", invoiceNo);
+        bndl.putString("status", status);
         Fragment fragment = new DamageReturnDetail();
         fragment.setArguments(bndl);
         getSupportFragmentManager().beginTransaction()

@@ -1,6 +1,5 @@
 package com.ivy.cpg.view.reports.damageReturn;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +10,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockBo;
-import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by rajkumar.s on 12/1/2016.
  */
 
-public class DamageReturnDetail extends IvyBaseFragment implements View.OnClickListener {
+public class DamageReturnDetail extends IvyBaseFragment {
     private Unbinder unbinder;
     BusinessModel bmodel;
     private CompositeDisposable compositeDisposable;
@@ -50,6 +50,7 @@ public class DamageReturnDetail extends IvyBaseFragment implements View.OnClickL
     TextView outerTitleTv;
 
     String invoiceNo;
+    String status;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,26 +64,27 @@ public class DamageReturnDetail extends IvyBaseFragment implements View.OnClickL
             unbinder = ButterKnife.bind(this, view);
 
             try {
-                if (bmodel.labelsMasterHelper.applyLabels(caseTitleTv.getTag()) != null)
-                    caseTitleTv
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(caseTitleTv.getTag()));
+                if (bmodel.labelsMasterHelper.applyLabels(caseTitleTv.getTag()) != null) {
+                    caseTitleTv.setText(bmodel.labelsMasterHelper.applyLabels(caseTitleTv.getTag()));
+                    caseTitleTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                }
 
-                if (bmodel.labelsMasterHelper.applyLabels(pieceTitleTv.getTag()) != null)
-                    pieceTitleTv
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(pieceTitleTv.getTag()));
+                if (bmodel.labelsMasterHelper.applyLabels(pieceTitleTv.getTag()) != null) {
+                    pieceTitleTv.setText(bmodel.labelsMasterHelper.applyLabels(pieceTitleTv.getTag()));
+                    pieceTitleTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                }
+                if (bmodel.labelsMasterHelper.applyLabels(outerTitleTv.getTag()) != null) {
+                    outerTitleTv.setText(bmodel.labelsMasterHelper.applyLabels(outerTitleTv.getTag()));
+                    outerTitleTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                }
 
-                if (bmodel.labelsMasterHelper.applyLabels(outerTitleTv.getTag()) != null)
-                    outerTitleTv
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(outerTitleTv.getTag()));
             } catch (Exception e) {
                 Commons.printException(e);
             }
 
             if (getActivity().getIntent().getExtras() != null) {
                 invoiceNo = getActivity().getIntent().getExtras().getString("InvoiceNo");
+                status = getActivity().getIntent().getExtras().getString("status");
             }
 
             getDeliverStockData();
@@ -101,7 +103,7 @@ public class DamageReturnDetail extends IvyBaseFragment implements View.OnClickL
     private void getDeliverStockData() {
 
         compositeDisposable = new CompositeDisposable();
-        compositeDisposable.add((Disposable)  DamageReturenReportHelper.getInstance().downloadDeliveryPendingStockDetails(getActivity(),invoiceNo)
+        compositeDisposable.add((Disposable) DamageReturenReportHelper.getInstance().downloadDeliveryStockDetails(getActivity(), invoiceNo,status)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<ArrayList<DeliveryStockBo>>() {
@@ -160,10 +162,19 @@ public class DamageReturnDetail extends IvyBaseFragment implements View.OnClickL
             }
             holder.deliveryStkBO = items.get(position);
 
+            holder.tvwpsname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            if (AppUtils.isEmptyString(holder.deliveryStkBO.getProductShortName()))
+                holder.tvwpsname.setText(holder.deliveryStkBO.getProductName());
+
             holder.tvwpsname.setText(holder.deliveryStkBO.getProductShortName());
 
+            holder.tv_case_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
             holder.tv_case_qty.setText(holder.deliveryStkBO.getOrderedCaseQty() + "");
+
+            holder.tv_outer_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
             holder.tv_outer_qty.setText(holder.deliveryStkBO.getOrderedOuterQty() + "");
+
+            holder.tv_piece_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
             holder.tv_piece_qty.setText(holder.deliveryStkBO.getOrderedPcsQty() + "");
 
 
@@ -179,20 +190,17 @@ public class DamageReturnDetail extends IvyBaseFragment implements View.OnClickL
         TextView tv_case_qty;
 
         @BindView(R.id.outer_qty)
-        TextView tv_piece_qty;
-
-        @BindView(R.id.piece_qty)
         TextView tv_outer_qty;
 
+        @BindView(R.id.piece_qty)
+        TextView tv_piece_qty;
+
         ViewHolder(View view) {
-            ButterKnife.bind(this,view);
+            ButterKnife.bind(this, view);
         }
 
         DeliveryStockBo deliveryStkBO;
     }
 
-    @Override
-    public void onClick(View view) {
 
-    }
 }

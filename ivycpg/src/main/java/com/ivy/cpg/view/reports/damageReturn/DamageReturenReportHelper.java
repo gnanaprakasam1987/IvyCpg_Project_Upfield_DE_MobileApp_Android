@@ -8,6 +8,8 @@ import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,6 +34,8 @@ public class DamageReturenReportHelper {
         return instance;
     }
 
+    public ArrayList<PandingDeliveryBO> pandingDeliveryBOS;
+
     public ArrayList<PandingDeliveryBO> getPandingDeliveryBOS() {
         return pandingDeliveryBOS;
     }
@@ -39,10 +43,6 @@ public class DamageReturenReportHelper {
     public void setPandingDeliveryBOS(ArrayList<PandingDeliveryBO> pandingDeliveryBOS) {
         this.pandingDeliveryBOS = pandingDeliveryBOS;
     }
-
-
-
-    public ArrayList<PandingDeliveryBO> pandingDeliveryBOS;
 
 
     public Observable<ArrayList<PandingDeliveryBO>> downloadPendingDeliveryReport(final Context context) {
@@ -84,36 +84,36 @@ public class DamageReturenReportHelper {
         });
     }
 
-
-    public HashMap<String, DeliveryStockBo> getmDeliveryProductsBObyId() {
-        return mDeliveryProductsBObyId;
-    }
-
-    public void setmDeliveryProductsBObyId(HashMap<String, DeliveryStockBo> mDeliveryProductsBObyId) {
-        this.mDeliveryProductsBObyId = mDeliveryProductsBObyId;
-    }
-
     HashMap<String, DeliveryStockBo> mDeliveryProductsBObyId;
-
-
-    public Observable<ArrayList<DeliveryStockBo>> downloadDeliveryPendingStockDetails(final Context context, final String invoiceid){
+    public Observable<ArrayList<DeliveryStockBo>> downloadDeliveryStockDetails(final Context context
+            , final String invoiceid, final String status){
         return Observable.create(new ObservableOnSubscribe<ArrayList<DeliveryStockBo>>() {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<DeliveryStockBo>> subscriber) throws Exception {
                 DBUtil db = null;
 
                 try {
-
+                    String sql;
                     ArrayList<DeliveryStockBo> mDeliveryStocks = new ArrayList<>();
                     db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
 
                     db.openDataBase();
 
-                    String sql ="select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,qty as orderedQty " +
-                            "from InvoiceDetailUOMWise ID Left join ProductMaster pm on pm.pid=ID.productid " +
-                            "where invoiceid in(select InvoiceNo from InvoiceDeliveryMaster " +
-                            "where InvoiceNo in ("+invoiceid+")) and  " +
-                            "invoiceid not in(select InvoiceId from VanDeliveryHeader where InvoiceId in ("+invoiceid+"))";
+                    if(AppUtils.isEmptyString(status)){
+                        sql ="select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,qty as orderedQty " +
+                                "from InvoiceDetailUOMWise ID Left join ProductMaster pm on pm.pid=ID.productid " +
+                                "where invoiceid in(select InvoiceNo from InvoiceDeliveryMaster " +
+                                "where InvoiceNo in ("+invoiceid+")) and  " +
+                                "invoiceid not in(select InvoiceId from VanDeliveryHeader where InvoiceId in ("+invoiceid+"))";
+                    }else if("p".equalsIgnoreCase(status)){
+                        sql="select ID.Pid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,Deliveredqty as orderedQty from VanDeliveryDetail ID inner join VanDeliveryHeader vdh on vdh.uid=ID.uid Left join ProductMaster pm on pm.pid=ID.Pid";
+                    }else{
+                        sql ="select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,qty as orderedQty " +
+                                "from InvoiceDetailUOMWise ID Left join ProductMaster pm on pm.pid=ID.productid " +
+                                "where invoiceid in(select InvoiceNo from InvoiceDeliveryMaster " +
+                                "where InvoiceNo in ("+invoiceid+")) and  " +
+                                "invoiceid  in(select InvoiceId from VanDeliveryHeader where InvoiceId in ("+invoiceid+"))";
+                    }
 
                     Cursor c = db.selectSQL(sql);
                     if (c.getCount() > 0) {

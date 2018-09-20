@@ -1,7 +1,6 @@
 package com.ivy.cpg.view.reports.damageReturn;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -121,8 +120,8 @@ public class DamageReturnContainerFragment extends IvyBaseFragment {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
 
-        adapter.addFragment(new DamageReturnReportFragment(), getResources().getString(R.string.pending));
-        adapter.addFragment(new DamageReturnCompletedReportFragment(), getResources().getString(R.string.complete));
+        adapter.addFragment(new DamageReturnPendingFragment(), getResources().getString(R.string.pending));
+        adapter.addFragment(new DamageReturnCompletedFragment(), getResources().getString(R.string.complete));
 
         viewPager.setAdapter(adapter);
 

@@ -1,27 +1,18 @@
 package com.ivy.cpg.view.reports.damageReturn;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.view.ContactCreationFragment;
-import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
@@ -31,26 +22,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 import butterknife.Unbinder;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by murugan on 17/9/18.
  */
 
-public class DamageReturnReportFragment extends IvyBaseFragment {
-
+public class DamageReturnPendingFragment extends IvyBaseFragment {
 
     Unbinder unbinder;
-
     @BindView(R.id.pending_delivery_listview)
     ListView listView;
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,7 +52,7 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
                     pandingDeliveryBOS.add(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i));
                 }
             }
-            DamageReturnReportFragment.MyAdapter adapter = new DamageReturnReportFragment.MyAdapter(pandingDeliveryBOS);
+            DamageReturnPendingFragment.MyAdapter adapter = new DamageReturnPendingFragment.MyAdapter(pandingDeliveryBOS);
             listView.setAdapter(adapter);
         } else {
             Toast.makeText(getActivity(), getResources().getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
@@ -84,6 +65,7 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
 
         Intent i = new Intent(getActivity(), DamageDetailsActivity.class);
         i.putExtra("InvoiceNo", pandingDeliveryBOS.get(position).getInvoiceNo());
+        i.putExtra("status", pandingDeliveryBOS.get(position).getStatus());
         getActivity().startActivity(i);
     }
 
@@ -126,12 +108,12 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            DamageReturnReportFragment.ViewHolder holder;
+            DamageReturnPendingFragment.ViewHolder holder;
             if (convertView == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 convertView = inflater.inflate(
                         R.layout.pending_delivery_list_item_, parent, false);
-                holder = new DamageReturnReportFragment.ViewHolder(convertView);
+                holder = new DamageReturnPendingFragment.ViewHolder(convertView);
 
                 holder.statusTitle.setVisibility(View.GONE);
                 holder.status.setVisibility(View.GONE);
@@ -150,7 +132,7 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
 
                 convertView.setTag(holder);
             } else {
-                holder = (DamageReturnReportFragment.ViewHolder) convertView.getTag();
+                holder = (DamageReturnPendingFragment.ViewHolder) convertView.getTag();
             }
             PandingDeliveryBO pandingDeliveryBO = arrayList.get(position);
 
@@ -195,11 +177,10 @@ public class DamageReturnReportFragment extends IvyBaseFragment {
         @BindView(R.id.txtStatus)
         TextView status;
 
-
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
 
-
     }
 }
+
