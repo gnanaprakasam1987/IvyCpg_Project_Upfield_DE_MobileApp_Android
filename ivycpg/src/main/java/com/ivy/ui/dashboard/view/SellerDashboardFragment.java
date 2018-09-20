@@ -29,6 +29,7 @@ import com.ivy.sd.png.commons.SpinnerListener;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.ui.dashboard.DashboardClickListener;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.adapter.DashboardListAdapter;
@@ -38,6 +39,7 @@ import com.ivy.ui.dashboard.di.SellerDashboardModule;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,7 +50,7 @@ import me.relex.circleindicator.CircleIndicator;
 import static com.ivy.utils.AppUtils.QT;
 import static com.ivy.utils.AppUtils.isNullOrEmpty;
 
-public class SellerDashboardFragment extends BaseFragment implements SellerDashboardContract.SellerDashboardView {
+public class SellerDashboardFragment extends BaseFragment implements SellerDashboardContract.SellerDashboardView, DashboardClickListener {
 
     @Inject
     SellerDashboardContract.SellerDashboardPresenter<SellerDashboardContract.SellerDashboardView> presenter;
@@ -141,7 +143,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             type = bundle.getString("type");
         }
 
-        dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>());
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>(),new HashMap<String, String>(),this);
 
 
         if (isFromRetailer) {
@@ -257,7 +259,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @Override
     public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS) {
 
-        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS);
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS, new HashMap<String, String>(),this);
 
     }
 
@@ -351,4 +353,14 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
         }
     };
+
+    @Override
+    public void onFactorNameClick(int position) {
+
+    }
+
+    @Override
+    public void onSkuWiseClick(int position) {
+
+    }
 }
