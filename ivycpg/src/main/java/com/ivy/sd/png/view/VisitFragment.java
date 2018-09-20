@@ -74,6 +74,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import co.chatsdk.core.session.ChatSDK;
+import co.chatsdk.core.session.InterfaceManager;
+
 public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
 
     private static final String CODE_PRODUCTIVE = "Filt_01";
@@ -617,6 +620,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         }
 
+        menu.findItem(R.id.menu_chat).setVisible(true);
+
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -651,6 +656,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 subDSelectionDialog.setSubIdSelectionInterface(this);
                 subDSelectionDialog.show(getActivity().getSupportFragmentManager(), "SubDSelectionDialog");
             }
+        }
+        else if (i1 == R.id.menu_chat){
+
+            if (ChatSDK.currentUser() == null)
+                InterfaceManager.shared().a.startLoginActivity(getContext(), true);
+            else
+                InterfaceManager.shared().a.startMainActivity(getContext());
         }
 
         return super.onOptionsItemSelected(item);

@@ -201,6 +201,12 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import co.chatsdk.core.error.ChatSDKException;
+import co.chatsdk.core.session.ChatSDK;
+import co.chatsdk.core.session.Configuration;
+import co.chatsdk.firebase.FirebaseNetworkAdapter;
+import co.chatsdk.ui.manager.BaseInterfaceAdapter;
+
 public class BusinessModel extends Application {
 
 
@@ -696,9 +702,26 @@ public class BusinessModel extends Application {
 
             mApplicationComponent.inject(this);
 
+            //initialeChatSdk();
 
         } catch (Exception ex) {
             Commons.printException(ex);
+        }
+
+    }
+
+    public void initialeChatSdk(){
+
+        try {
+            Context context = getApplicationContext();
+// Create a new configuration
+            Configuration.Builder builder = new Configuration.Builder(context);
+
+// Perform any configuration steps (optional)
+            builder.firebaseRootPath("Chat_node");
+            ChatSDK.initialize(builder.build(), new BaseInterfaceAdapter(context), new FirebaseNetworkAdapter());
+        }catch(ChatSDKException e){
+            Commons.printException(e);
         }
 
     }

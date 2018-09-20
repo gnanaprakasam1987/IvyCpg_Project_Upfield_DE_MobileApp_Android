@@ -127,7 +127,7 @@ public class GalleryAdapter extends PagerAdapter {
             container.removeView((View) object);
 
             // Try to clear resources used for displaying this view
-            Glide.clear(((View) object).findViewById(R.id.image_item));
+            //Glide.clear(((View) object).findViewById(R.id.image_item));
             // Remove any resources used by this view
             unbindDrawables((View) object);
             // Invalidate the object

@@ -15,6 +15,7 @@ import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -49,6 +50,9 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Commons.print("Service Firebase Uth Success");
+                            BusinessModel businessModel = (BusinessModel)context.getApplicationContext();
+                            businessModel.initialeChatSdk();
+
                         } else {
                             Commons.print("Service firebase onComplete: Failed=");
                         }
