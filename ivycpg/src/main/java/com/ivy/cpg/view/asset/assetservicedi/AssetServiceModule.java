@@ -18,16 +18,16 @@ import io.reactivex.disposables.CompositeDisposable;
 @Module
 public class AssetServiceModule {
 
-    private AssetServiceContract.AssetServiceView mView;
+    private BaseIvyView mView;
 
 
-    public AssetServiceModule(AssetServiceContract.AssetServiceView assetServiceView) {
+    public AssetServiceModule(BaseIvyView assetServiceView) {
         this.mView = assetServiceView;
 
     }
 
     @Provides
-    AssetServiceContract.AssetServiceView provideView() {
+    BaseIvyView provideView() {
         return mView;
     }
 
@@ -46,9 +46,11 @@ public class AssetServiceModule {
         return new AppSchedulerProvider();
     }
 
+
     @Provides
     @PerActivity
-    BaseIvyPresenter<BaseIvyView> providesAssetServicePresenter(BasePresenter<BaseIvyView> presenter) {
+    BaseIvyPresenter<BaseIvyView>
+    providesAssetServicePresenter(BasePresenter<BaseIvyView> presenter) {
         return presenter;
     }
 

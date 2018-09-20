@@ -108,6 +108,7 @@ public class AssetServiceActivity extends BaseActivity implements AssetServiceCo
 
         setBasePresenter((BasePresenter) viewAssetServicePresenter);
 
+
     }
 
     @Override
