@@ -20,7 +20,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -74,13 +74,13 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
+import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -159,7 +159,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private Animation slide_down, slide_up;
     private Button btn_filter_popup, btn_search, btn_clear;
     private EditText search_txt;
-    private CardView search_toolbar;
+    private LinearLayout search_toolbar;
     private String searchedtext = "";
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
 
@@ -190,6 +190,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private AlertDialog alertDialog;
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
 
+    private ViewFlipper viewFlipper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,35 +201,35 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        pdt_recycler_view = (RecyclerView) findViewById(R.id.pdt_recycler_view);
+        pdt_recycler_view = findViewById(R.id.pdt_recycler_view);
 
-        search_toolbar = (CardView) findViewById(R.id.search_toolbar);
-        bottom_layout = (LinearLayout) findViewById(R.id.bottom_layout);
+        search_toolbar = findViewById(R.id.search_toolbar);
+        bottom_layout = findViewById(R.id.bottom_layout);
 
-        search_txt = (EditText) search_toolbar.findViewById(R.id.edt_searchproductName);
+        search_txt = search_toolbar.findViewById(R.id.edt_searchproductName);
         search_txt.setOnEditorActionListener(this);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        totalValueText = (TextView) findViewById(R.id.totalValue);
-        lpcText = (TextView) findViewById(R.id.lcp);
-        distValue = (TextView) findViewById(R.id.distValue);
-        totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
+        totalValueText = findViewById(R.id.totalValue);
+        lpcText = findViewById(R.id.lcp);
+        distValue = findViewById(R.id.distValue);
+        totalQtyTV = findViewById(R.id.tv_totalqty);
 
-        btn_filter_popup = (Button) search_toolbar.findViewById(R.id.btn_filter_popup);
+        btn_filter_popup = search_toolbar.findViewById(R.id.btn_filter_popup);
         btn_filter_popup.setOnClickListener(this);
 
-        btn_search = (Button) search_toolbar.findViewById(R.id.btn_search);
+        btn_search = search_toolbar.findViewById(R.id.btn_search);
         btn_search.setOnClickListener(this);
 
-        btn_clear = (Button) search_toolbar.findViewById(R.id.btn_clear);
+        btn_clear = search_toolbar.findViewById(R.id.btn_clear);
         btn_clear.setOnClickListener(this);
 
-        nextBtn = (Button) findViewById(R.id.btn_next);
+        nextBtn = findViewById(R.id.btn_next);
         nextBtn.setOnClickListener(this);
         nextBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -248,6 +249,22 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 GravityCompat.END);
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        viewFlipper = findViewById(R.id.view_flipper);
+
+        Button mBtn_Search = findViewById(R.id.btn_search);
+        Button mBtnFilterPopup = findViewById(R.id.btn_filter_popup);
+        Button mBtn_clear = findViewById(R.id.btn_clear);
+        Button saveBtn = findViewById(R.id.btn_next);
+        saveBtn.setText(getResources().getString(R.string.save));
+
+        mBtn_Search.setOnClickListener(this);
+        mBtnFilterPopup.setOnClickListener(this);
+        mBtn_clear.setOnClickListener(this);
+        mBtn_clear.setOnEditorActionListener(this);
+        saveBtn.setOnClickListener(this);
+
+        search_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
 
         screenCode = HomeScreenTwo.MENU_CATALOG_ORDER;
         OrderedFlag = HomeScreenTwo.MENU_CATALOG_ORDER;
@@ -433,28 +450,28 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 R.anim.slide_down);
         slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.slide_up);
-        pdt_recycler_view.addOnScrollListener(new HideShowScrollListener() {
-            @Override
-            public void onHide() {
-                if (bottom_layout.getVisibility() == View.VISIBLE) {
-                    bottom_layout.startAnimation(slide_down);
-                    bottom_layout.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onShow() {
-                if (bottom_layout.getVisibility() == View.GONE) {
-                    bottom_layout.setVisibility(View.VISIBLE);
-                    bottom_layout.startAnimation(slide_up);
-                }
-            }
-
-            @Override
-            public void onScrolled() {
-                // To load more data
-            }
-        });
+//        pdt_recycler_view.addOnScrollListener(new HideShowScrollListener() {
+//            @Override
+//            public void onHide() {
+//                if (bottom_layout.getVisibility() == View.VISIBLE) {
+//                    bottom_layout.startAnimation(slide_down);
+//                    bottom_layout.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            @Override
+//            public void onShow() {
+//                if (bottom_layout.getVisibility() == View.GONE) {
+//                    bottom_layout.setVisibility(View.VISIBLE);
+//                    bottom_layout.startAnimation(slide_up);
+//                }
+//            }
+//
+//            @Override
+//            public void onScrolled() {
+//                // To load more data
+//            }
+//        });
 
 
         //mylist = bmodel.productHelper.getProductMaster();
@@ -508,6 +525,39 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }, 0, timeInterval);
 
         }
+
+        search_txt
+                .setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,
+                                                  KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(
+                                    search_txt.getWindowToken(),
+                                    InputMethodManager.RESULT_UNCHANGED_SHOWN);
+
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+        mBtn_clear
+                .setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,
+                                                  KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(
+                                    search_txt.getWindowToken(),
+                                    InputMethodManager.RESULT_UNCHANGED_SHOWN);
+
+                            return true;
+                        }
+                        return false;
+                    }
+                });
         searchAsync = new SearchAsync();
     }
 
@@ -1774,6 +1824,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     });
             bmodel.applyAlertDialogTheme(builderSingle);
         } else if (v.getId() == R.id.btn_clear) {
+            viewFlipper.showPrevious();
             search_txt.setText("");
             btn_search.setVisibility(View.VISIBLE);
             btn_clear.setVisibility(View.GONE);
@@ -1815,6 +1866,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             } else {
                 nextButtonClick();
             }
+        } else if (v.getId() == R.id.btn_search) {
+            viewFlipper.setInAnimation(this, R.anim.in_from_right);
+            viewFlipper.setOutAnimation(this, R.anim.out_to_right);
+            viewFlipper.showNext();
+            search_txt.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(search_txt,
+                    InputMethodManager.SHOW_FORCED);
         }
 
     }
@@ -2169,15 +2228,15 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                     productCode.setVisibility(View.GONE);
 
-                pdt_details_layout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (bottom_layout.getVisibility() == View.VISIBLE) {
-                            bottom_layout.startAnimation(slide_down);
-                            bottom_layout.setVisibility(View.GONE);
-                        }
-                    }
-                });
+//                pdt_details_layout.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (bottom_layout.getVisibility() == View.VISIBLE) {
+//                            bottom_layout.startAnimation(slide_down);
+//                            bottom_layout.setVisibility(View.GONE);
+//                        }
+//                    }
+//                });
 
                 list_view_order_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
