@@ -18,7 +18,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.base.presenter.BaseIvyPresenter;
+import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.base.view.BaseIvyView;
+import com.ivy.cpg.view.asset.assetservicedi.AssetServiceModule;
+import com.ivy.cpg.view.asset.assetservicedi.DaggerAssetServiceComponent;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
@@ -30,11 +35,13 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class AssetServiceActivity extends BaseActivity {
+public class AssetServiceActivity extends BaseActivity implements AssetServiceContract.AssetServiceView {
 
     @BindView(R.id.recycler_asset_service)
     ListView assetServiceList;
@@ -56,6 +63,10 @@ public class AssetServiceActivity extends BaseActivity {
     private String mModuleName = "";
 
     private Unbinder mUnBinder;
+
+    @Inject
+    BaseIvyPresenter<BaseIvyView> viewAssetServicePresenter;
+
 
     @Override
     public int getLayoutId() {
@@ -89,6 +100,13 @@ public class AssetServiceActivity extends BaseActivity {
     @Override
     public void initializeDi() {
 
+        DaggerAssetServiceComponent.builder()
+                .assetServiceModule(new AssetServiceModule(this))
+                .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
+                .build()
+                .inject(this);
+
+        setBasePresenter((BasePresenter) viewAssetServicePresenter);
 
     }
 
