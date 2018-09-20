@@ -47,5 +47,9 @@ public interface SellerDashboardContract {
         void fetchDistributorList();
 
         void fetchUserList(String userId);
+
+        void fetchKPIDashboardData(String userid, String interval);
+
+        void fetchListRowLabels();
     }
 }

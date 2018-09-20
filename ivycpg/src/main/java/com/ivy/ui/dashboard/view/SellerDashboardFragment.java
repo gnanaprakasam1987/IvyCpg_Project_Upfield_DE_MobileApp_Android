@@ -141,6 +141,9 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             type = bundle.getString("type");
         }
 
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>());
+
+
         if (isFromRetailer) {
             getDashSpinnerData();
         } else {

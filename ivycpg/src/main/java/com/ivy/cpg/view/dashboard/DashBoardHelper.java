@@ -513,6 +513,14 @@ public class DashBoardHelper {
         }
     }
 
+    /**
+     * @deprecated
+     * @See {@link SDUtil#getWholeNumber(String)}
+     *
+     * @param data
+     * @return
+     */
+    @Deprecated
     public String getWhole(String data) {
         String wholeNumber;
         try {

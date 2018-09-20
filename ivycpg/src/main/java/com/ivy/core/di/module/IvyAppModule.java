@@ -114,7 +114,7 @@ public class IvyAppModule {
 
 
     @Provides
-    protected ConfigurationMasterHelper providesConfigurationHelper() {
+    ConfigurationMasterHelper providesConfigurationHelper() {
         return ((BusinessModel) mContext).configurationMasterHelper;
     }
 

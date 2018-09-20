@@ -3,15 +3,19 @@ package com.ivy.ui.dashboard.presenter;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 
+import com.ivy.core.ViewTags;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.distributor.DistributorDataManager;
+import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.di.scope.DistributorInfo;
+import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -21,6 +25,7 @@ import com.ivy.ui.dashboard.data.SellerDashboardDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -34,22 +39,25 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     private SellerDashboardDataManager sellerDashboardDataManager;
     private DistributorDataManager distributorDataManager;
     private UserDataManager userDataManager;
+    private LabelsDataManager labelsDataManager;
 
     @Inject
     public SellerDashboardPresenterImp(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable,
                                        ConfigurationMasterHelper configurationMasterHelper, V view, @OutletTimeStampInfo OutletTimeStampDataManager outletTimeStampDataManager,
                                        SellerDashboardDataManager sellerDashboardDataManager, @DistributorInfo DistributorDataManager distributorDataManager,
-                                       @UserInfo UserDataManager userDataManager) {
+                                       @UserInfo UserDataManager userDataManager, @LabelMasterInfo LabelsDataManager labelsDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mOutletTimeStampDataManager = outletTimeStampDataManager;
-        this.sellerDashboardDataManager =sellerDashboardDataManager;
-        this.distributorDataManager =distributorDataManager;
-        this.userDataManager=userDataManager;
+        this.sellerDashboardDataManager = sellerDashboardDataManager;
+        this.distributorDataManager = distributorDataManager;
+        this.userDataManager = userDataManager;
+        this.labelsDataManager = labelsDataManager;
 
         if (view instanceof LifecycleOwner) {
             ((LifecycleOwner) view).getLifecycle().addObserver(this);
         }
     }
+
 
     @Override
     public void saveModuleCompletion(String menuCode) {
@@ -167,7 +175,56 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     }
 
-    private void fetchUsersMatchingDistributor(String distributorIds){
+    @Override
+    public void fetchKPIDashboardData(String userid, String interval) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getKPIDashboard(userid, interval)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                    @Override
+                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+
+                        getIvyView().setDashboardListAdapter(dashBoardBOS);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+    @Override
+    public void fetchListRowLabels() {
+        getCompositeDisposable().add(labelsDataManager.getLabels(ViewTags.DASHBOARD_ROW_ACHIEVED_TITLE, ViewTags.DASHBOARD_ROW_BALANCE_TITLE,
+                ViewTags.DASHBOARD_ROW_FLEX_TITLE, ViewTags.DASHBOARD_ROW_INCENTIVE_TITLE,
+                ViewTags.DASHBOARD_ROW_SCORE_TITLE, ViewTags.DASHBOARD_ROW_TARGET_TITLE).subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<HashMap<String, String>>() {
+                    @Override
+                    public void onNext(HashMap<String, String> labels) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+    private void fetchUsersMatchingDistributor(String distributorIds) {
         getCompositeDisposable().add(userDataManager.fetchUsersForDistributors(distributorIds)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -193,7 +250,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
 
-    private void fetchAllUsers(){
+    private void fetchAllUsers() {
         getCompositeDisposable().add(userDataManager.fetchDashboardUsers()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())

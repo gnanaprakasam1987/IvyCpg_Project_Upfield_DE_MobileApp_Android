@@ -13,4 +13,6 @@ public interface SellerDashboardComponent {
 
     void inject(SellerDashboardFragment sellerDashboardFragment);
 
+    void inject(DashboardListAdapter dashboardListAdapter);
+
 }
