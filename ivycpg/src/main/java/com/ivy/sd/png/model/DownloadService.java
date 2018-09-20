@@ -41,8 +41,8 @@ public class DownloadService extends IntentService {
         switch (method) {
             case SynchronizationHelper.VOLLEY_LOGIN:
 
-                Intent broadCastLoginIntent = new Intent();
-                broadCastLoginIntent.setAction("android.intent.action.DOWNLOAD");
+                Intent broadCastLoginIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                //broadCastLoginIntent.setAction("android.intent.action.DOWNLOAD");
                 Bundle loginBundle = new Bundle();
                 loginBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
                         SynchronizationHelper.VOLLEY_LOGIN);
@@ -93,8 +93,8 @@ public class DownloadService extends IntentService {
                 break;
 
             case SynchronizationHelper.URL_DOWNLOAD:
-                Intent broadCastUrlIntent = new Intent();
-                broadCastUrlIntent.setAction("android.intent.action.DOWNLOAD");
+                Intent broadCastUrlIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                //broadCastUrlIntent.setAction("android.intent.action.DOWNLOAD");
                 Bundle urlBundle = new Bundle();
                 urlBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
                         SynchronizationHelper.URL_DOWNLOAD);
@@ -200,8 +200,8 @@ public class DownloadService extends IntentService {
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
 
-                            downloadInsertIntent = new Intent();
-                            downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
+                            downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                            //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                             downloadInsertIntent.putExtras(insertBundle);
                             sendBroadcast(downloadInsertIntent);
                         } else {
@@ -214,8 +214,8 @@ public class DownloadService extends IntentService {
                             insertBundle.putInt("updateCount", updateCount);
                             insertBundle.putInt("totalCount", totalListCount);
 
-                            downloadInsertIntent = new Intent();
-                            downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
+                            downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                            //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                             downloadInsertIntent.putExtras(insertBundle);
                             sendBroadcast(downloadInsertIntent);
                         }
@@ -232,9 +232,8 @@ public class DownloadService extends IntentService {
                         sendBroadcast(downloadInsertIntent);
                     }
                 } else if (response == SynchronizationHelper.VOLLEY_FAILURE_RESPONSE) {
-                    downloadInsertIntent = new Intent();
-                    downloadInsertIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                     Bundle insertBundle = new Bundle();
                     String mobileErrorCode = intent
                             .getStringExtra(SynchronizationHelper.ERROR_CODE);
@@ -282,9 +281,8 @@ public class DownloadService extends IntentService {
                             //						bmodel.synchronizationHelper.readEmptyTableDetails();
 
 
-                            downloadInsertIntent = new Intent();
-                            downloadInsertIntent
-                                    .setAction("android.intent.action.DOWNLOAD");
+                            downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                            //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                             Bundle insertBundle = new Bundle();
                             insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
                                     SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT);
@@ -298,9 +296,8 @@ public class DownloadService extends IntentService {
                             downloadInsertIntent.putExtras(insertBundle);
                             sendBroadcast(downloadInsertIntent);
                         } else {
-                            downloadInsertIntent = new Intent();
-                            downloadInsertIntent
-                                    .setAction("android.intent.action.DOWNLOAD");
+                            downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                            //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                             Bundle insertBundle = new Bundle();
                             insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
                                     SynchronizationHelper.DISTRIBUTOR_WISE_DOWNLOAD_INSERT);
@@ -333,9 +330,8 @@ public class DownloadService extends IntentService {
                     }
 
                 } else if (response == SynchronizationHelper.VOLLEY_FAILURE_RESPONSE) {
-                    downloadInsertIntent = new Intent();
-                    downloadInsertIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                     Bundle insertBundle = new Bundle();
                     String mobileErrorCode = intent
                             .getStringExtra(SynchronizationHelper.ERROR_CODE);
@@ -382,9 +378,8 @@ public class DownloadService extends IntentService {
                             //						bmodel.synchronizationHelper.readEmptyTableDetails();
 
 
-                            downloadInsertIntent = new Intent();
-                            downloadInsertIntent
-                                    .setAction("android.intent.action.DOWNLOAD");
+                            downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                            //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                             Bundle insertBundle = new Bundle();
                             insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
                                     SynchronizationHelper.LAST_VISIT_TRAN_DOWNLOAD_INSERT);
@@ -398,9 +393,8 @@ public class DownloadService extends IntentService {
                             downloadInsertIntent.putExtras(insertBundle);
                             sendBroadcast(downloadInsertIntent);
                         } else {
-                            downloadInsertIntent = new Intent();
-                            downloadInsertIntent
-                                    .setAction("android.intent.action.DOWNLOAD");
+                            downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                            //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                             Bundle insertBundle = new Bundle();
                             insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
                                     SynchronizationHelper.LAST_VISIT_TRAN_DOWNLOAD_INSERT);
@@ -433,9 +427,8 @@ public class DownloadService extends IntentService {
                     }
 
                 } else if (response == SynchronizationHelper.VOLLEY_FAILURE_RESPONSE) {
-                    downloadInsertIntent = new Intent();
-                    downloadInsertIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    downloadInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //downloadInsertIntent.setAction("android.intent.action.DOWNLOAD");
                     Bundle insertBundle = new Bundle();
                     String mobileErrorCode = intent
                             .getStringExtra(SynchronizationHelper.ERROR_CODE);
@@ -482,9 +475,8 @@ public class DownloadService extends IntentService {
                                     bmodel.updateSurveyScoreHistoryRetailerWise();
 
 
-                                downloadRetailerInsertIntent = new Intent();
-                                downloadRetailerInsertIntent
-                                        .setAction("android.intent.action.DOWNLOAD");
+                                downloadRetailerInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                                //downloadRetailerInsertIntent.setAction("android.intent.action.DOWNLOAD");
                                 Bundle insertBundle = new Bundle();
                                 insertBundle
                                         .putInt(SynchronizationHelper.SYNXC_STATUS,
@@ -515,9 +507,8 @@ public class DownloadService extends IntentService {
                     }
 
                 } else if (response == SynchronizationHelper.VOLLEY_FAILURE_RESPONSE) {
-                    downloadRetailerInsertIntent = new Intent();
-                    downloadRetailerInsertIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    downloadRetailerInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //downloadRetailerInsertIntent.setAction("android.intent.action.DOWNLOAD");
                     Bundle insertBundle = new Bundle();
                     String mobileErrorCode = intent
                             .getStringExtra(SynchronizationHelper.ERROR_CODE);
@@ -561,9 +552,8 @@ public class DownloadService extends IntentService {
                                 Commons.print("Stop time, " + Utils.getTime());
 
 
-                                downloadUserRetailerInsertIntent = new Intent();
-                                downloadUserRetailerInsertIntent
-                                        .setAction("android.intent.action.DOWNLOAD");
+                                downloadUserRetailerInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                                //downloadUserRetailerInsertIntent.setAction("android.intent.action.DOWNLOAD");
                                 Bundle insertBundle = new Bundle();
                                 insertBundle
                                         .putInt(SynchronizationHelper.SYNXC_STATUS,
@@ -594,9 +584,8 @@ public class DownloadService extends IntentService {
                     }
 
                 } else if (response == SynchronizationHelper.VOLLEY_FAILURE_RESPONSE) {
-                    downloadUserRetailerInsertIntent = new Intent();
-                    downloadUserRetailerInsertIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    downloadUserRetailerInsertIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //downloadUserRetailerInsertIntent.setAction("android.intent.action.DOWNLOAD");
                     Bundle insertBundle = new Bundle();
                     String mobileErrorCode = intent
                             .getStringExtra(SynchronizationHelper.ERROR_CODE);
@@ -632,9 +621,8 @@ public class DownloadService extends IntentService {
 
 
                 }
-                sihIntent = new Intent();
-                sihIntent
-                        .setAction("android.intent.action.DOWNLOAD");
+                sihIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                //sihIntent.setAction("android.intent.action.DOWNLOAD");
                 Bundle insertBundle = new Bundle();
 
                 insertBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
@@ -666,9 +654,8 @@ public class DownloadService extends IntentService {
                     }
 
 
-                    vanloadintent = new Intent();
-                    vanloadintent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    vanloadintent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //vanloadintent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
 
@@ -681,9 +668,8 @@ public class DownloadService extends IntentService {
                     vanloadintent.putExtras(insertBundle);
                     sendBroadcast(vanloadintent);
                 } else {
-                    vanloadintent = new Intent();
-                    vanloadintent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    vanloadintent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //vanloadintent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
                     String mobileErrorCode = intent
@@ -767,9 +753,8 @@ public class DownloadService extends IntentService {
                     }
 
 
-                    retailerDownloadIntent = new Intent();
-                    retailerDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    retailerDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //retailerDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
 
@@ -782,9 +767,8 @@ public class DownloadService extends IntentService {
                     retailerDownloadIntent.putExtras(insertBundle);
                     sendBroadcast(retailerDownloadIntent);
                 } else {
-                    retailerDownloadIntent = new Intent();
-                    retailerDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    retailerDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //retailerDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
                     String mobileErrorCode = intent
@@ -826,9 +810,8 @@ public class DownloadService extends IntentService {
                         bmodel.synchronizationHelper.loadMethodsNew();
                     }
 
-                    dataDownloadIntent = new Intent();
-                    dataDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    dataDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //dataDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
 
@@ -841,9 +824,8 @@ public class DownloadService extends IntentService {
                     dataDownloadIntent.putExtras(insertBundle);
                     sendBroadcast(dataDownloadIntent);
                 } else {
-                    dataDownloadIntent = new Intent();
-                    dataDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    dataDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //dataDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
                     String mobileErrorCode = intent
@@ -879,9 +861,8 @@ public class DownloadService extends IntentService {
                         bmodel.synchronizationHelper.loadMethodsNew();
                     }
                     //bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-                    finishDownloadIntent = new Intent();
-                    finishDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    finishDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //finishDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
 
@@ -894,9 +875,8 @@ public class DownloadService extends IntentService {
                     finishDownloadIntent.putExtras(insertBundle);
                     sendBroadcast(finishDownloadIntent);
                 } else {
-                    finishDownloadIntent = new Intent();
-                    finishDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    finishDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //finishDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
                     String mobileErrorCode = intent
@@ -926,8 +906,8 @@ public class DownloadService extends IntentService {
                         Commons.printException(e);
                     }
 
-                    Intent broadCastIntent = new Intent();
-                    broadCastIntent.setAction("android.intent.action.DOWNLOAD");
+                    Intent broadCastIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //broadCastIntent.setAction("android.intent.action.DOWNLOAD");
 
                     Bundle CSBundle = new Bundle();
                     CSBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
@@ -939,8 +919,8 @@ public class DownloadService extends IntentService {
                     broadCastIntent.putExtras(CSBundle);
                     sendBroadcast(broadCastIntent);
                 } else {
-                    Intent broadCastIntent = new Intent();
-                    broadCastIntent.setAction("android.intent.action.DOWNLOAD");
+                    Intent broadCastIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //broadCastIntent.setAction("android.intent.action.DOWNLOAD");
 
                     Bundle CSBundle = new Bundle();
                     CSBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
@@ -976,9 +956,8 @@ public class DownloadService extends IntentService {
                     } catch (Exception e) {
                         Commons.printException(e);
                     }
-                    Intent absenteesIntent = new Intent();
-                    absenteesIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    Intent absenteesIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //absenteesIntent.setAction("android.intent.action.DOWNLOAD");
                     Bundle absenteesBundle = new Bundle();
 
                     absenteesBundle.putInt(SynchronizationHelper.SYNXC_STATUS,
@@ -1022,9 +1001,8 @@ public class DownloadService extends IntentService {
                         Commons.printException(e);
                     }
                     bmodel.synchronizationHelper.loadMasterUrlFromDB(false);
-                    distributorIntent = new Intent();
-                    distributorIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    distributorIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //distributorIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
 
@@ -1037,9 +1015,8 @@ public class DownloadService extends IntentService {
                     distributorIntent.putExtras(insertBundle);
                     sendBroadcast(distributorIntent);
                 } else {
-                    distributorIntent = new Intent();
-                    distributorIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    distributorIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //distributorIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
                     String mobileErrorCode = intent
@@ -1075,9 +1052,8 @@ public class DownloadService extends IntentService {
                         bmodel.synchronizationHelper.loadMethodsNew();
                     }
 
-                    distFinishDownloadIntent = new Intent();
-                    distFinishDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    distFinishDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //distFinishDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
 
@@ -1090,9 +1066,8 @@ public class DownloadService extends IntentService {
                     distFinishDownloadIntent.putExtras(insertBundle);
                     sendBroadcast(distFinishDownloadIntent);
                 } else {
-                    distFinishDownloadIntent = new Intent();
-                    distFinishDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    distFinishDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //distFinishDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
                     String mobileErrorCode = intent
@@ -1153,9 +1128,8 @@ public class DownloadService extends IntentService {
 
                     }
 
-                    updateFinishedIntent = new Intent();
-                    updateFinishedIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    updateFinishedIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //updateFinishedIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
 
@@ -1168,9 +1142,8 @@ public class DownloadService extends IntentService {
                     updateFinishedIntent.putExtras(insertBundle);
                     sendBroadcast(updateFinishedIntent);
                 } else {
-                    updateFinishedIntent = new Intent();
-                    updateFinishedIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                    updateFinishedIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //updateFinishedIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = null;
                     insertBundle = new Bundle();
                     String mobileErrorCode = intent
@@ -1185,9 +1158,8 @@ public class DownloadService extends IntentService {
                 }
                 break;
             case SynchronizationHelper.MOBILE_EMAIL_VERIFICATION:
-                Intent otpDownloadIntent = new Intent();
-                    otpDownloadIntent
-                            .setAction("android.intent.action.DOWNLOAD");
+                Intent otpDownloadIntent = new Intent(this,com.ivy.sd.png.model.DownloadReceiver.class);
+                    //otpDownloadIntent.setAction("android.intent.action.DOWNLOAD");
                     insertBundle = new Bundle();
                     String mobileErrorCode = intent
                             .getStringExtra(SynchronizationHelper.ERROR_CODE);

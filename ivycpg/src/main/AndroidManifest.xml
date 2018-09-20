@@ -150,11 +150,6 @@
         <receiver
             android:name="com.ivy.sd.png.model.DownloadReceiver"
             android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </receiver>
 
         <meta-data
