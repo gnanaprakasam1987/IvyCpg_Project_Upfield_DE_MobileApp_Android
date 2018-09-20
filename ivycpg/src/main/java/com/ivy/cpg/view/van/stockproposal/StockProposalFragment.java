@@ -1665,7 +1665,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             bmodel.applyAlertDialogTheme(builderSingle);
         } else if (vw == R.id.btn_clear) {
             mEdt_searchproductName.setText("");
-
+            viewFlipper.showPrevious();
             /** set the following value to clear the **/
             mSelectedFilterMap.put("General", "All");
             mSelectedFilterMap.put("Brand", "All");
