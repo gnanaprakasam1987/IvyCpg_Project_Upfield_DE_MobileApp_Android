@@ -254,6 +254,13 @@ public class ReportMenuFragment extends IvyBaseFragment {
                     showToast();
                 break;
 
+            case StandardListMasterConstants.MENU_SKU_REPORT:
+                if(bmodel.reportHelper.hasOrder())
+                    gotoReportActivity(config);
+                else
+                    showToast();
+                break;
+
             default:
                 gotoReportActivity(config);
                 break;

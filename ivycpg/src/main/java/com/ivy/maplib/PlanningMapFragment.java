@@ -152,7 +152,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private int mSelectedSubId = -1;
 
 
-
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
@@ -383,14 +382,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
                     //car icon's
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
-                    }else{
+                    } else {
                         carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
                     }
                     carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
                     //walk iocn's
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
-                    }else {
+                    } else {
                         walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                     }
                     walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
@@ -425,14 +424,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 //car icon's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
-                }else{
+                } else {
                     walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
                 }
                 walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
                 //walk iocn's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
-                }else{
+                } else {
                     carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 }
                 carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
@@ -453,14 +452,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 //car icon's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
-                }else{
+                } else {
                     carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
                 }
                 carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
                 //walk iocn's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
-                }else{
+                } else {
                     walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 }
                 walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
@@ -476,14 +475,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 //car icon's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
-                }else{
+                } else {
                     carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
                 }
                 carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
                 //walk iocn's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
-                }else{
+                } else {
                     walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 }
                 walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
@@ -550,7 +549,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        setUpMapIfNeeded();
+        // setUpMapIfNeeded();
     }
 
     @Override
@@ -577,34 +576,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 bmodel.locationUtil.startLocationListener();
             }
         }
-        int resultCode = GooglePlayServicesUtil
-                .isGooglePlayServicesAvailable(getActivity()
-                        .getApplicationContext());
 
-        try {
-            retailer = new ArrayList<>();
-
-            if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
-                displayTodayRoute(null);
-            }
-
-            markerList = dataPull.getData();
-            if (resultCode == ConnectionResult.SUCCESS) {
-                setUpMapIfNeeded();
-
-
-                if (!bmodel.locationUtil.isGPSProviderEnabled()) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Enable GPS", Toast.LENGTH_LONG).show();
-                }
-
-                getRetailer();
-            } else {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 1);
-            }
-        } catch (Exception e) {
-            Commons.print("Exception:" + e);
-        }
     }
 
 //    @Override
@@ -723,6 +695,36 @@ public class PlanningMapFragment extends SupportMapFragment implements
 
         } catch (Exception e) {
             Commons.printException("" + e);
+        }
+
+
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(getActivity()
+                        .getApplicationContext());
+
+        try {
+            retailer = new ArrayList<>();
+
+            if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
+                displayTodayRoute(null);
+            }
+
+            markerList = dataPull.getData();
+            if (resultCode == ConnectionResult.SUCCESS) {
+                setUpMapIfNeeded();
+
+
+                if (!bmodel.locationUtil.isGPSProviderEnabled()) {
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Enable GPS", Toast.LENGTH_LONG).show();
+                }
+
+                getRetailer();
+            } else {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 1);
+            }
+        } catch (Exception e) {
+            Commons.print("Exception:" + e);
         }
     }
 
@@ -962,12 +964,12 @@ public class PlanningMapFragment extends SupportMapFragment implements
         else
             mode = "mode=driving";
 
-        String mapKey = "key="+getString(R.string.google_maps_api_key);
+        String mapKey = "key=" + getString(R.string.google_maps_api_key);
 
         return "https://maps.googleapis.com/maps/api/directions/json" +
                 "?origin=" + Double.toString(sourcelat) + "," + Double.toString(sourcelog) +
                 "&destination=" + Double.toString(destlat) + "," + Double.toString(destlog) +
-                "&sensor=false&" + mode + "&alternatives=true"+"&"+mapKey;
+                "&sensor=false&" + mode + "&alternatives=true" + "&" + mapKey;
     }
 
     public void drawPath(String result) {
@@ -1186,6 +1188,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setUpMap();
+        setUpMapIfNeeded();
     }
 
     public interface DataPulling {

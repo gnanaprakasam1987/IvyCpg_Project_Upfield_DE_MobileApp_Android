@@ -680,15 +680,21 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 holder.imageButton_availability.setChecked(false);
 
 
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                                        && holder.productObj.getPcUomid() != 0)
-                                    holder.shelfPcsQty.setText("");
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                                        && holder.productObj.getCaseUomId() != 0)
-                                    holder.shelfCaseQty.setText("");
-                                if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
-                                        && holder.productObj.getOuUomid() != 0)
-                                    holder.shelfouter.setText("");
+
+                                /*
+                                 * When one of the config is not enable the default value set as 0 instead of -1
+                                 *
+                                 * so that remove config here
+                                 * */
+                                //   if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                                // && holder.productObj.getPcUomid() != 0)
+                                holder.shelfPcsQty.setText("");
+                                // if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                                // && holder.productObj.getCaseUomId() != 0)
+                                holder.shelfCaseQty.setText("");
+                                // if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                                // && holder.productObj.getOuUomid() != 0)
+                                holder.shelfouter.setText("");
 
                                 if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
                                     holder.mReason.setEnabled(false);
