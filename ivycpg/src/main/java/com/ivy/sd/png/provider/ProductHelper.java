@@ -5473,11 +5473,26 @@ public class ProductHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
+
+            String sqlQuery;
+
+            if (!bmodel.configurationMasterHelper.IS_ATTRIBUTE_MENU)
+                sqlQuery = "select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                        + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
+                        + " and lang=" + bmodel.QT(language)+ " and AttributeId = 0 "
+                        + " Order By MNumber";
+            else
+                sqlQuery = "select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                        + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
+                        + " and lang=" + bmodel.QT(language)+" and attributeId in (0, "
+                        + bmodel.getRetailerAttributeList()
+                        + ")"
+                        + " Order By MNumber";
+
+
             Cursor cur = db
-                    .selectSQL("select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
-                            + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
-                            + " and lang=" + bmodel.QT(language)
-                            + " Order By MNumber");
+                    .selectSQL(sqlQuery);
+
 
             if (cur != null && cur.getCount() > 0) {
                 ConfigureBO configureBO;

@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.supervisor.mvp;
+package com.ivy.cpg.view.supervisor.mvp.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

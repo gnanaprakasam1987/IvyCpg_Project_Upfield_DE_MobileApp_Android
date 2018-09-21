@@ -202,7 +202,9 @@ public class ContactCreationFragment extends IvyBaseFragment {
             if (validateData()) {
                 if (isProfileEdit) {
                     if (isEdit) {
-                        retailerContactBo.setStatus("U");
+                        if(!"I".equalsIgnoreCase(retailerContactBo.getStatus())){
+                            retailerContactBo.setStatus("U");
+                        }
                         for (int i = 0; i < contactList.size(); i++) {
                             if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
                                 contactList.set(i, retailerContactBo);
@@ -738,6 +740,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
         this.retailerContactBo.setIsPrimary(retailerContactBo.getIsPrimary());
         this.retailerContactBo.setContactTitleLovId(retailerContactBo.getContactTitleLovId());
         this.retailerContactBo.setCpId(retailerContactBo.getCpId());
+        this.retailerContactBo.setStatus(retailerContactBo.getStatus());
 
         if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") && retailerContactBo.getTitle().length() == 0)
             sp_reason.setSelection(0);
