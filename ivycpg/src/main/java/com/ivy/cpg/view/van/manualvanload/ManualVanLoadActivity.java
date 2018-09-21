@@ -1070,8 +1070,9 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                             holder.caseQty.setInputType(InputType.TYPE_NULL);
                             holder.caseQty.onTouchEvent(event);
                             holder.caseQty.setInputType(inType);
-                            holder.caseQty.selectAll();
                             holder.caseQty.requestFocus();
+                            if (holder.caseQty.getText().length() > 0)
+                                holder.caseQty.setSelection(holder.caseQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     quantity.getWindowToken(), 0);
                             return true;
@@ -1084,8 +1085,9 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                             holder.pieceQty.setInputType(InputType.TYPE_NULL);
                             holder.pieceQty.onTouchEvent(event);
                             holder.pieceQty.setInputType(inType);
-                            holder.pieceQty.selectAll();
                             holder.pieceQty.requestFocus();
+                            if (holder.pieceQty.getText().length() > 0)
+                                holder.pieceQty.setSelection(holder.pieceQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     quantity.getWindowToken(), 0);
                             return true;
@@ -1100,8 +1102,9 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                             holder.outerQty.setInputType(InputType.TYPE_NULL);
                             holder.outerQty.onTouchEvent(event);
                             holder.outerQty.setInputType(inType);
-                            holder.outerQty.selectAll();
                             holder.outerQty.requestFocus();
+                            if (holder.outerQty.getText().length() > 0)
+                                holder.outerQty.setSelection(holder.outerQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     quantity.getWindowToken(), 0);
                             return true;
@@ -1124,6 +1127,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                         @Override
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.outerQty.setSelection(qty.length());
                             if (!"".equals(qty)) {
                                 holder.productBO.setOuterQty(SDUtil
                                         .convertToInt(qty));
@@ -1135,6 +1140,9 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                         public void afterTextChanged(Editable s) {
 
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.pieceQty.setSelection(qty.length());
+
                             if (!"".equals(qty)) {
                                 holder.productBO.setPieceqty(SDUtil
                                         .convertToInt(qty));
@@ -1155,6 +1163,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                         public void afterTextChanged(Editable s) {
 
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.caseQty.setSelection(qty.length());
                             if (!"".equals(qty)) {
                                 holder.productBO.setCaseqty(SDUtil
                                         .convertToInt(qty));

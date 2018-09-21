@@ -271,8 +271,9 @@ public class BatchAllocationDialog extends Dialog {
                         holder.pieceqty.setInputType(InputType.TYPE_NULL);
                         holder.pieceqty.onTouchEvent(event);
                         holder.pieceqty.setInputType(inType);
-                        holder.pieceqty.selectAll();
                         holder.pieceqty.requestFocus();
+                        if (holder.pieceqty.getText().length() > 0)
+                            holder.pieceqty.setSelection(holder.pieceqty.getText().length());
                         return true;
                     }
                 });
@@ -300,6 +301,10 @@ public class BatchAllocationDialog extends Dialog {
                         double total = 0.0;
                         if (s != null) {
                             String qty = s.toString();
+
+                            if (qty.length() > 0)
+                                holder.pieceqty.setSelection(qty.length());
+
                             if (!qty.equals("")) {
                                 int pieceQty = SDUtil.convertToInt(qty);
 
@@ -405,6 +410,8 @@ public class BatchAllocationDialog extends Dialog {
                                 if (s != null) {
                                     double total = 0.0;
                                     String qty = s.toString();
+                                    if (qty.length() > 0)
+                                        holder.caseqtyEditText.setSelection(qty.length());
                                     if (!qty.equals("")) {
                                         int caseQty = SDUtil.convertToInt(qty);
                                         if ((caseQty * productBO.getCaseSize()) <= holder.productObj
@@ -493,8 +500,9 @@ public class BatchAllocationDialog extends Dialog {
                                         .setInputType(InputType.TYPE_NULL);
                                 holder.caseqtyEditText.onTouchEvent(event);
                                 holder.caseqtyEditText.setInputType(inType);
-                                holder.caseqtyEditText.selectAll();
                                 holder.caseqtyEditText.requestFocus();
+                                if (holder.caseqtyEditText.getText().length() > 0)
+                                    holder.caseqtyEditText.setSelection(holder.caseqtyEditText.getText().length());
                                 return true;
                             }
                         });
@@ -532,6 +540,8 @@ public class BatchAllocationDialog extends Dialog {
 
                             double total = 0.0;
                             String qty = s.toString();
+                            if (qty.length() > 0)
+                                holder.outerQty.setSelection(qty.length());
                             if (!qty.equals("")) {
                                 int outerQty = SDUtil.convertToInt(qty);
                                 if ((outerQty * productBO.getOutersize()) <= holder.productObj
@@ -608,6 +618,8 @@ public class BatchAllocationDialog extends Dialog {
                         holder.outerQty.setInputType(InputType.TYPE_NULL);
                         holder.outerQty.onTouchEvent(event);
                         holder.outerQty.setInputType(inType);
+                        if (holder.outerQty.getText().length() > 0)
+                            holder.outerQty.setSelection(holder.outerQty.getText().length());
                         return true;
                     }
                 });

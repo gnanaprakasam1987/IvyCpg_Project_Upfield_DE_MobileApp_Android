@@ -1913,6 +1913,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.shelfCaseQty.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0) {
+                            holder.shelfCaseQty.setSelection(qty.length());
+                        }
                         if (!"".equals(qty)) {
                             int shelf_case_qty = SDUtil.convertToInt(s.toString());
                             holder.productObj
@@ -2033,8 +2036,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfCaseQty.setInputType(InputType.TYPE_NULL);
                             holder.shelfCaseQty.onTouchEvent(event);
                             holder.shelfCaseQty.setInputType(inType);
-                            holder.shelfCaseQty.selectAll();
                             holder.shelfCaseQty.requestFocus();
+                            if (holder.shelfCaseQty.getText().length() > 0)
+                                holder.shelfCaseQty.setSelection(holder.shelfCaseQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -2045,6 +2049,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.shelfPcsQty.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0) {
+                            holder.shelfPcsQty.setSelection(qty.length());
+                        }
                         if (!"".equals(qty)) {
                             int sp_qty = SDUtil.convertToInt(holder.shelfPcsQty
                                     .getText().toString());
@@ -2165,8 +2172,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfPcsQty.setInputType(InputType.TYPE_NULL);
                             holder.shelfPcsQty.onTouchEvent(event);
                             holder.shelfPcsQty.setInputType(inType);
-                            holder.shelfPcsQty.selectAll();
                             holder.shelfPcsQty.requestFocus();
+                            if (holder.shelfPcsQty.getText().length() > 0)
+                                holder.shelfPcsQty.setSelection(holder.shelfPcsQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -2178,6 +2186,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+
+                        if (qty.length() > 0) {
+                            holder.shelfouter.setSelection(qty.length());
+                        }
                         if (!"".equals(qty)) {
                             int shelfoqty = SDUtil
                                     .convertToInt(holder.shelfouter.getText()
@@ -2297,8 +2309,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfouter.setInputType(InputType.TYPE_NULL);
                             holder.shelfouter.onTouchEvent(event);
                             holder.shelfouter.setInputType(inType);
-                            holder.shelfouter.selectAll();
                             holder.shelfouter.requestFocus();
+                            if (holder.shelfouter.getText().length() > 0)
+                                holder.shelfouter.setSelection(holder.shelfouter.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -2317,7 +2330,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
 
                         String qty = s.toString();
-
+                        if (qty.length() > 0) {
+                            holder.caseQty.setSelection(qty.length());
+                        }
                         if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER) {
                             if (SDUtil.convertToInt(qty) > holder.productObj.getIndicativeOrder_oc()) {
                                 //Delete the last entered number and reset the qty
@@ -2505,8 +2520,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.caseQty.setInputType(InputType.TYPE_NULL);
                             holder.caseQty.onTouchEvent(event);
                             holder.caseQty.setInputType(inType);
-                            holder.caseQty.selectAll();
                             holder.caseQty.requestFocus();
+                            if (holder.caseQty.getText().length() > 0)
+                                holder.caseQty.setSelection(holder.caseQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -2519,6 +2535,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     public void afterTextChanged(Editable s) {
 
                         String qty = s.toString();
+                        if (qty.length() > 0) {
+                            holder.foc.setSelection(qty.length());
+                        }
                         if (qty == null || qty.trim().equals(""))
                             holder.productObj.setFoc(0);
                         else
@@ -2584,8 +2603,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.foc.setInputType(InputType.TYPE_NULL);
                             holder.foc.onTouchEvent(event);
                             holder.foc.setInputType(inType);
-                            holder.foc.selectAll();
                             holder.foc.requestFocus();
+                            if (holder.foc.getText().length() > 0)
+                                holder.foc.setSelection(holder.foc.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -2608,6 +2628,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     public void afterTextChanged(Editable s) {
 
                         int qty = SDUtil.convertToInt(s.toString());
+
+                        if (s.toString().length() > 0) {
+                            holder.uom_qty.setSelection(s.toString().length());
+                        }
 
                         if ((holder.productObj.getPcUomid() != 0 && holder.productObj.getSelectedUomId() != 0) &&
                                 holder.productObj.getPcUomid() == holder.productObj.getSelectedUomId()) {
@@ -2648,8 +2672,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         holder.uom_qty.setInputType(InputType.TYPE_NULL);
                         holder.uom_qty.onTouchEvent(event);
                         holder.uom_qty.setInputType(inType);
-                        holder.uom_qty.selectAll();
                         holder.uom_qty.requestFocus();
+                        if (holder.uom_qty.getText().length() > 0)
+                            holder.uom_qty.setSelection(holder.uom_qty.getText().length());
                         inputManager.hideSoftInputFromWindow(
                                 mEdt_searchproductName.getWindowToken(), 0);
                         return true;
@@ -2667,6 +2692,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
 
                         String qty = s.toString();
+                        if (qty.length() > 0) {
+                            holder.pcsQty.setSelection(qty.length());
+                        }
                         /** Calculate the total pcs qty **/
                         float totalQty = (holder.productObj.getOrderedCaseQty() * holder.productObj
                                 .getCaseSize())
@@ -2832,8 +2860,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.pcsQty.setInputType(InputType.TYPE_NULL);
                             holder.pcsQty.onTouchEvent(event);
                             holder.pcsQty.setInputType(inType);
-                            holder.pcsQty.selectAll();
                             holder.pcsQty.requestFocus();
+                            if (holder.pcsQty.getText().length() > 0)
+                                holder.pcsQty.setSelection(holder.pcsQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -2852,7 +2881,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             return;
                         }
                         String qty = s.toString();
-
+                        if (qty.length() > 0) {
+                            holder.outerQty.setSelection(qty.length());
+                        }
                         float totalQty = (SDUtil.convertToInt(qty) * holder.productObj
                                 .getOutersize())
                                 + (holder.productObj.getOrderedCaseQty() * holder.productObj
@@ -3021,8 +3052,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.outerQty.setInputType(InputType.TYPE_NULL);
                             holder.outerQty.onTouchEvent(event);
                             holder.outerQty.setInputType(inType);
-                            holder.outerQty.selectAll();
                             holder.outerQty.requestFocus();
+                            if (holder.outerQty.getText().length() > 0)
+                                holder.outerQty.setSelection(holder.outerQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -3079,8 +3111,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.srpEdit.setInputType(InputType.TYPE_NULL);
                             holder.srpEdit.onTouchEvent(event);
                             holder.srpEdit.setInputType(inType);
-                            holder.srpEdit.selectAll();
                             holder.srpEdit.requestFocus();
+                            if (holder.srpEdit.getText().length() > 0)
+                                holder.srpEdit.setSelection(holder.srpEdit.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -3092,6 +3125,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0) {
+                            holder.srpEdit.setSelection(qty.length());
+                        }
                         if (!"".equals(qty)) {
                             if (bmodel.validDecimalValue(qty, 8, 2)) {
                                 holder.productObj.setSrp(SDUtil

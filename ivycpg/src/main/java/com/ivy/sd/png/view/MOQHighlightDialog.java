@@ -227,6 +227,8 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                                               int before, int count) {
                         int res = SDUtil.convertToInt(product.getRField1());
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.rField1Txt.setSelection(qty.length());
                         Commons.print("qty" + qty + "res" + res);
 
                         if (!"".equals(qty)) {

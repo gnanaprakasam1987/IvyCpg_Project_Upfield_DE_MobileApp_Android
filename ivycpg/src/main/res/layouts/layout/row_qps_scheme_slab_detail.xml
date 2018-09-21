@@ -13,8 +13,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
             android:background="#FFFFFF"
             android:orientation="vertical"
             android:weightSum="2">
@@ -22,7 +22,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
+                android:layout_margin="2dp"
                 android:background="@color/keypad_bg_color"
                 android:orientation="horizontal"
                 android:weightSum="2">
@@ -34,9 +34,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.6"
                     android:gravity="left|center_vertical"
-                    android:paddingLeft="@dimen/dimen_5dp"
+                    android:paddingLeft="@dimen/dimen_2dp"
                     android:tag="scheme_detail_productname"
                     android:text="Product Name" />
 
@@ -107,7 +107,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.3"
                     android:gravity="center"
                     android:tag="scheme_detail_gqt"
                     android:text="GQT" />
@@ -119,7 +119,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_margin="2dp"
             android:background="#FFFFFF"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -131,9 +131,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_weight="0.7"
+                android:layout_weight="0.6"
                 android:gravity="left"
-                android:paddingLeft="@dimen/dimen_5dp"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimen_4dp"
                 android:text="Product Name" />
 
             <TextView
@@ -200,8 +201,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="0" />
         </LinearLayout>
 

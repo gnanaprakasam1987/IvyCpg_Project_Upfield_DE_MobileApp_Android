@@ -376,6 +376,8 @@ public class InitiativeDialog extends Dialog implements
                     public void afterTextChanged(Editable s) {
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.pieceqty.setSelection(qty.length());
                         /** Calculate the total pcs qty **/
                         float totalQty = (holder.productObj.getOrderedCaseQty() * holder.productObj
                                 .getCaseSize())
@@ -463,7 +465,8 @@ public class InitiativeDialog extends Dialog implements
                         .addTextChangedListener(new TextWatcher() {
                             public void afterTextChanged(Editable s) {
                                 String qty = s.toString();
-
+                                if (qty.length() > 0)
+                                    holder.caseqtyEditText.setSelection(qty.length());
                                 float totalQty = (SDUtil.convertToInt(qty) * holder.productObj
                                         .getCaseSize())
                                         + (holder.productObj.getOrderedPcsQty())
@@ -556,7 +559,8 @@ public class InitiativeDialog extends Dialog implements
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
-
+                        if (qty.length() > 0)
+                            holder.outerQty.setSelection(qty.length());
                         float totalQty = (SDUtil.convertToInt(qty) * holder.productObj
                                 .getOutersize())
                                 + (holder.productObj.getOrderedPcsQty())
@@ -648,6 +652,8 @@ public class InitiativeDialog extends Dialog implements
                                         .setInputType(InputType.TYPE_NULL);
                                 holder.caseqtyEditText.onTouchEvent(event);
                                 holder.caseqtyEditText.setInputType(inType);
+                                if (holder.caseqtyEditText.getText().length() > 0)
+                                    holder.caseqtyEditText.setSelection(holder.caseqtyEditText.getText().length());
                                 return true;
                             }
                         });
@@ -660,6 +666,8 @@ public class InitiativeDialog extends Dialog implements
                         holder.pieceqty.setInputType(InputType.TYPE_NULL);
                         holder.pieceqty.onTouchEvent(event);
                         holder.pieceqty.setInputType(inType);
+                        if (holder.pieceqty.getText().length() > 0)
+                            holder.pieceqty.setSelection(holder.pieceqty.getText().length());
                         return true;
                     }
                 });
@@ -673,6 +681,8 @@ public class InitiativeDialog extends Dialog implements
                         holder.outerQty.setInputType(InputType.TYPE_NULL);
                         holder.outerQty.onTouchEvent(event);
                         holder.outerQty.setInputType(inType);
+                        if (holder.outerQty.getText().length() > 0)
+                            holder.outerQty.setSelection(holder.outerQty.getText().length());
                         return true;
                     }
                 });

@@ -138,10 +138,12 @@ public class SynchronizationFragment extends IvyBaseFragment
     private UploadPresenterImpl presenter;
     private LastSyncTimeHelper lastSyncTimeHelper;
 
+    Context context;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        this.context = context;
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -513,7 +515,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     }
 
     private void syncStatus(int btn_count) {
-        TypedArray type_arr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+        TypedArray type_arr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         int text_color = type_arr.getColor(R.styleable.MyTextView_textColor, 0);
         int background_color = type_arr.getColor(R.styleable.MyTextView_buttonBackground, 0);
         if (txtPassword.getText().toString().length() > 0) {
@@ -2016,6 +2018,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                         .updateProductAndRetailerMaster();
                 bmodel.synchronizationHelper.loadMethodsNew();
                 long endTime = (System.nanoTime() - startTime) / 1000000;
+                if(bmodel.synchronizationHelper.mTableList == null){
+                    bmodel.synchronizationHelper.mTableList = new HashMap<>();
+                }
                 bmodel.synchronizationHelper.mTableList.put("temp table update**", endTime + "");
 
             }
