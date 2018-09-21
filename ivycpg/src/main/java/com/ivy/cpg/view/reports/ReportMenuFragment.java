@@ -122,7 +122,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_INV_SALES_RETURN_REPORT,
                     R.drawable.icon_reports);
-            menuIcons.put(StandardListMasterConstants.MENU_PENDING_DELIVERYED,
+            menuIcons.put(StandardListMasterConstants.MENU_DELIVERY_RPT,
                     R.drawable.icon_reports);
 
 

@@ -527,7 +527,7 @@ public class ReportActivity extends BaseActivity implements
             commitFragment(transaction, config);
         }
         else if (config.getConfigCode().equals(
-                StandardListMasterConstants.MENU_PENDING_DELIVERYED)) {
+                StandardListMasterConstants.MENU_DELIVERY_RPT)) {
             DamageReturnContainerFragment returnsAndPendingDeliverieReportFragment = new DamageReturnContainerFragment();
             transaction.replace(R.id.fragment_content, returnsAndPendingDeliverieReportFragment);
             commitFragment(transaction, config);
