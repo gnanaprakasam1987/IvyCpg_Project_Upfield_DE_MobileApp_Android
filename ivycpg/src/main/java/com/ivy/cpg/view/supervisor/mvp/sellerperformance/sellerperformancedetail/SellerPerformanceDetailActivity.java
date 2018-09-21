@@ -26,7 +26,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
-import com.ivy.cpg.view.supervisor.mvp.SellerBo;
+import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -35,8 +35,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import static android.graphics.Color.rgb;
 

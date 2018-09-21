@@ -73,3 +73,10 @@
 -dontwarn java.beans.Beans
 -dontwarn javax.security.**
 -keep class com.sun.mail.handlers.** {*;}
+
+
+#Added for Firestore
+-keepattributes Signature
+
+-keepclassmembers class com.ivy.cpg.view.supervisor.mvp.models.** {*;}
+-keepclassmembers class com.ivy.cpg.view.supervisor.mvp.models.** {*;}

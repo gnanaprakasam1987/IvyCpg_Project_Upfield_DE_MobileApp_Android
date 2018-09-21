@@ -3,7 +3,7 @@ package com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist;
 import android.content.Context;
 
 import com.github.mikephil.charting.data.Entry;
-import com.ivy.cpg.view.supervisor.mvp.SellerBo;
+import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 
 import java.util.ArrayList;
 
