@@ -711,7 +711,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel = (BusinessModel) context.getApplicationContext();
             isClicked = false;
             setDayCloseEnableDisable();
             SyncDownloadStatusDialog sdsd;
