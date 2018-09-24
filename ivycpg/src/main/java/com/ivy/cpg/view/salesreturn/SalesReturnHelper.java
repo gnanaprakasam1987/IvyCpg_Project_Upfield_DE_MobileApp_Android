@@ -45,10 +45,12 @@ public class SalesReturnHelper {
     public boolean SHOW_SAL_RET_SRP;
     public boolean SHOW_SRP_EDIT;
     public boolean SHOW_LOTNUMBER;
+    public boolean SHOW_LOTNUMBER_MANDATORY;
     public boolean SHOW_STOCK_REPLACE_PCS;
     public boolean SHOW_STOCK_REPLACE_CASE;
     public boolean SHOW_STOCK_REPLACE_OUTER;
     public boolean SHOW_SR_INVOICE_NUMBER;
+    public boolean SHOW_SR_INVOICE_NUMBER_MANDATORY;
     public boolean SHOW_SIH;
     public boolean SHOW_SALES_RET_CASE;
     public boolean SHOW_SALES_RET_PCS;
@@ -257,10 +259,12 @@ public class SalesReturnHelper {
             SHOW_SAL_RET_SRP = false;
             SHOW_SRP_EDIT = false;
             SHOW_LOTNUMBER = false;
+            SHOW_LOTNUMBER_MANDATORY = false;
             SHOW_STOCK_REPLACE_PCS = false;
             SHOW_STOCK_REPLACE_CASE = false;
             SHOW_STOCK_REPLACE_OUTER = false;
             SHOW_SR_INVOICE_NUMBER = false;
+            SHOW_SR_INVOICE_NUMBER_MANDATORY = false;
             CHECK_MRP_VALUE = false;
             SHOW_REMARKS_SAL_RET = false;
             IS_APPLY_DISCOUNT_IN_SR = false;
@@ -303,6 +307,8 @@ public class SalesReturnHelper {
                         SHOW_SRP_EDIT = true;
                     else if ("LNO".equalsIgnoreCase(temp))
                         SHOW_LOTNUMBER = true;
+                    else if ("LNOM".equalsIgnoreCase(temp))
+                        SHOW_LOTNUMBER_MANDATORY = true;
                     else if ("RPS".equalsIgnoreCase(temp))
                         SHOW_STOCK_REPLACE_PCS = true;
                     else if ("RCS".equalsIgnoreCase(temp))
@@ -311,6 +317,8 @@ public class SalesReturnHelper {
                         SHOW_STOCK_REPLACE_OUTER = true;
                     else if ("INVNO".equalsIgnoreCase(temp))
                         SHOW_SR_INVOICE_NUMBER = true;
+                    else if ("INVNOM".equalsIgnoreCase(temp))
+                        SHOW_SR_INVOICE_NUMBER_MANDATORY = true;
                     else if ("SIH".equalsIgnoreCase(temp))
                         SHOW_SIH = true;
                     else if ("CS".equalsIgnoreCase(temp))
@@ -410,7 +418,7 @@ public class SalesReturnHelper {
     /**
      * Save sales return details and update SIH.
      */
-    public void saveSalesReturn(Context mContext, String orderId, String module, boolean isSplitOrder,boolean isInvoice) {
+    public void saveSalesReturn(Context mContext, String orderId, String module, boolean isSplitOrder, boolean isInvoice) {
         try {
             ProductMasterBO product;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -470,7 +478,6 @@ public class SalesReturnHelper {
                     }
                 }
             }
-
 
 
             isData = false;
@@ -570,7 +577,7 @@ public class SalesReturnHelper {
                                 DataMembers.tbl_SalesReturnDetails,
                                 columns, values);
 
-                        if (bmodel.configurationMasterHelper.SHOW_UPDATE_SIH&&(!module.equals("ORDER")||isInvoice)) {
+                        if (bmodel.configurationMasterHelper.SHOW_UPDATE_SIH && (!module.equals("ORDER") || isInvoice)) {
                             if ("SRS".equals(bo.getReasonCategory())) {
 
                                 int salRetSih = bo.getPieceQty()
@@ -660,12 +667,12 @@ public class SalesReturnHelper {
 
             // insert sales replacement and decrease the stock in hand.
             if (SHOW_STOCK_REPLACE_OUTER || SHOW_STOCK_REPLACE_CASE || SHOW_STOCK_REPLACE_PCS) {
-                saveReplacementDetails(db, getSalesReturnID(), module,isInvoice);
+                saveReplacementDetails(db, getSalesReturnID(), module, isInvoice);
             }
 
             // If credit note is generated, then tax appyled details should get saved.
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
-                saveSalesReturnTaxAndCreditNoteDetail(db, getSalesReturnID(), module, bmodel.retailerMasterBO.getRpTypeCode(),isInvoice);
+                saveSalesReturnTaxAndCreditNoteDetail(db, getSalesReturnID(), module, bmodel.retailerMasterBO.getRpTypeCode(), isInvoice);
 
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
@@ -681,7 +688,6 @@ public class SalesReturnHelper {
     {
         return "'" + data + "'";
     }
-
 
 
     public void getSalesReturnGoods(Context mContext) {
@@ -1064,7 +1070,7 @@ public class SalesReturnHelper {
         return total;
     }
 
-    private void saveReplacementDetails(DBUtil db, String uid, String module,boolean isInvoice) {
+    private void saveReplacementDetails(DBUtil db, String uid, String module, boolean isInvoice) {
         String clumns = "uid,returnpid,batchid,uomid,uomCount,returnQty,Retailerid,pid,price,value,qty";
         final Vector<ProductMasterBO> productMaster;
         if (module.equals("ORDER"))
@@ -1098,7 +1104,7 @@ public class SalesReturnHelper {
 
                 totalReplacementQty = product.getRepPieceQty() + repCaseQty + repOuterQty;
 
-                if (bmodel.configurationMasterHelper.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL ||totalQty > 0) {
+                if (bmodel.configurationMasterHelper.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL || totalQty > 0) {
                     if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && product.getBatchwiseProductCount() > 0) {
                         if (bmodel.batchAllocationHelper.getBatchlistByProductID() != null) {
                             ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(product.getProductID());
@@ -1210,8 +1216,8 @@ public class SalesReturnHelper {
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_UPDATE_SIH
-                        &&(!module.equals("ORDER")||isInvoice)
-                        &&(bmodel.configurationMasterHelper.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL||totalQty > 0)) {
+                        && (!module.equals("ORDER") || isInvoice)
+                        && (bmodel.configurationMasterHelper.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL || totalQty > 0)) {
 
                     int calculateSIH = product.getSIH() - totalReplacementQty;
                     product.setSIH(calculateSIH);
@@ -1261,7 +1267,7 @@ public class SalesReturnHelper {
      * @param db  db
      * @param uid uid
      */
-    public void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid, String module, String code,boolean isInvoice) {
+    public void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid, String module, String code, boolean isInvoice) {
 
         String columns = "uid,Retailerid,taxRate,taxType,applyLevelId,taxValue,pid";
         setTotalValue(getTotalCreditNoteWithOutTAX(db));
@@ -1315,8 +1321,8 @@ public class SalesReturnHelper {
 
 
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION && checkType
-                    &&(!module.equals("ORDER")||isInvoice)) {
-                
+                    && (!module.equals("ORDER") || isInvoice)) {
+
                 StringBuffer creditNoteBuffer = new StringBuffer();
                 String creditNoteColumns = "id,refno,amount,retailerid,date,CreatedDate,upload,actualamount,creditnotetype";
 

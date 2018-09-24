@@ -257,6 +257,8 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.mQty.setSelection(qty.length());
                         holder.mSKUBO.setRetPieceQty(SDUtil.convertToInt(qty));
                     }
 
@@ -282,8 +284,10 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                         holder.mQty.setInputType(InputType.TYPE_NULL); // disable
                         holder.mQty.onTouchEvent(event); // call native
                         holder.mQty.setInputType(inType); // restore
-                        holder.mQty.selectAll();
                         holder.mQty.requestFocus();
+
+                        if (holder.mQty.getText().length() > 0)
+                            holder.mQty.setSelection(holder.mQty.getText().length());
                         return true;
                     }
                 });

@@ -1373,6 +1373,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
             bmodel.outletTimeStampHelper.deleteTimeStamp();
             bmodel.outletTimeStampHelper.deleteTimeStampImages();
+            bmodel.outletTimeStampHelper.deleteImagesFromFolder();
+
         }
         resetRemarksBO();
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil

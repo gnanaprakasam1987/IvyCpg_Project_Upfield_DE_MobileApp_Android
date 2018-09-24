@@ -1701,6 +1701,9 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                 holder.shelfCaseQty.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.shelfCaseQty.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
                             holder.productObj
                                     .getLocations()
@@ -1786,8 +1789,9 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                             holder.shelfCaseQty.setInputType(InputType.TYPE_NULL);
                             holder.shelfCaseQty.onTouchEvent(event);
                             holder.shelfCaseQty.setInputType(inType);
-                            holder.shelfCaseQty.selectAll();
                             holder.shelfCaseQty.requestFocus();
+                            if (holder.shelfCaseQty.getText().length() > 0)
+                                holder.shelfCaseQty.setSelection(holder.shelfCaseQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -1798,6 +1802,9 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                 holder.shelfPcsQty.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.shelfPcsQty.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
                             int sp_qty = SDUtil.convertToInt(holder.shelfPcsQty
                                     .getText().toString());
@@ -1882,8 +1889,9 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                             holder.shelfPcsQty.setInputType(InputType.TYPE_NULL);
                             holder.shelfPcsQty.onTouchEvent(event);
                             holder.shelfPcsQty.setInputType(inType);
-                            holder.shelfPcsQty.selectAll();
                             holder.shelfPcsQty.requestFocus();
+                            if (holder.shelfPcsQty.getText().length() > 0)
+                                holder.shelfPcsQty.setSelection(holder.shelfPcsQty.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;
@@ -1895,6 +1903,9 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                     @Override
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.shelfouter.setSelection(qty.length());
+
                         if (!"".equals(qty)) {
                             int shelfoqty = SDUtil
                                     .convertToInt(holder.shelfouter.getText()
@@ -1980,8 +1991,9 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                             holder.shelfouter.setInputType(InputType.TYPE_NULL);
                             holder.shelfouter.onTouchEvent(event);
                             holder.shelfouter.setInputType(inType);
-                            holder.shelfouter.selectAll();
                             holder.shelfouter.requestFocus();
+                            if (holder.shelfouter.getText().length() > 0)
+                                holder.shelfouter.setSelection(holder.shelfouter.getText().length());
                             inputManager.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(), 0);
                             return true;

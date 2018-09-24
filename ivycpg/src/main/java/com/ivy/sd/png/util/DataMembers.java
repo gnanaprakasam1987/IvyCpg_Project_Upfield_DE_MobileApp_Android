@@ -32,6 +32,7 @@ public class DataMembers {
 
     public static String fileName = "sd_png_asean_android.apk";
 
+    
     public static final int MESSAGE_UNZIPPED = 10113;
 
     public static final String DIGITAL_CONTENT = "TRAN";

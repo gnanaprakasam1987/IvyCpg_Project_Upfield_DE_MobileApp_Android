@@ -1213,6 +1213,8 @@ public class SODFragment extends IvyBaseFragment implements
                         else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
                                 || !holder.et.getText().toString().equals("0.00"))
                             sb = holder.et.getText().toString();
+                        if (holder.et.getText().length() > 0)
+                            holder.et.setSelection(holder.et.getText().length());
                         return true;
                     }
                 });
@@ -1229,7 +1231,8 @@ public class SODFragment extends IvyBaseFragment implements
                                 || !holder.et.getText().toString().equals("0.00"))
                             sb = holder.et.getText().toString();
                         if (!"".equals(s)) {
-
+                            if (holder.et.length() > 0)
+                                holder.et.setSelection(holder.et.length());
                             try {
                                 holder.sodBO.getLocations().get(mSelectedLocationIndex).setActual(s.toString());
                             } catch (Exception e) {

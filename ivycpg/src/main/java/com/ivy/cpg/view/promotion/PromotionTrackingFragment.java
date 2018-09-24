@@ -911,6 +911,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     @Override
                     public void afterTextChanged(Editable s) {
                         if (!"".equals(s.toString())) {
+                            if (s.toString().length() > 0)
+                                holder.etPromoQty.setSelection(s.toString().length());
                             int scQty = SDUtil.convertToInt(holder.etPromoQty
                                     .getText().toString());
                             holder.mPromotionMasterBO.setPromoQty(scQty);
@@ -929,8 +931,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         holder.etPromoQty.setInputType(InputType.TYPE_NULL);
                         holder.etPromoQty.onTouchEvent(event);
                         holder.etPromoQty.setInputType(inType);
-                        holder.etPromoQty.selectAll();
                         holder.etPromoQty.requestFocus();
+                        if (holder.etPromoQty.getText().length() > 0)
+                            holder.etPromoQty.setSelection(holder.etPromoQty.getText().length());
                         inputManager.hideSoftInputFromWindow(holder.etPromoQty.getWindowToken(), 0);
                         return true;
                     }

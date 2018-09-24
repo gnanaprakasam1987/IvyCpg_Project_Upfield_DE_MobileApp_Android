@@ -831,6 +831,7 @@ public class ProfileHelper {
             return false;
         }
     }
+
     /**
      * @See {@link  com.ivy.utils.AppUtils}
      * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
@@ -1079,7 +1080,7 @@ public class ProfileHelper {
                     }
 
 
-                    if(isEdit) {
+                    if (isEdit) {
                         String retailerContactEditQuery = "select ifnull(RC.Contact_Title,'') as contactTitle, ifNull(SM.ListName,'') as listName, RC.Contact_Title_LovId as contact_title_lovid, ifnull(RC.ContactName,'') as cName,ifnull(RC.ContactName_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,Rc.CPId as cpid,Rc.Status as status ,"
                                 + " ifnull(RC.Email,'') as email from RetailerContactEdit RC "
                                 + " Left join StandardListMaster SM on SM.ListId= RC.Contact_Title_LovId "
@@ -1090,10 +1091,11 @@ public class ProfileHelper {
                             ArrayList<RetailerContactBo> tempList = new ArrayList<>();
                             while (retailerContactEditCurson.moveToNext()) {
                                 RetailerContactBo retailerContactBo = new RetailerContactBo();
-                                if (retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")).length() > 0)
+                                if (retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")).length() > 0) {
                                     retailerContactBo.setTitle(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contactTitle")));
-                                else
+                                } else {
                                     retailerContactBo.setTitle(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("listName")));
+                                }
                                 retailerContactBo.setContactTitleLovId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("contact_title_lovid")));
                                 retailerContactBo.setFistname(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cName")));
                                 retailerContactBo.setLastname(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cLname")));
@@ -1109,14 +1111,14 @@ public class ProfileHelper {
                             /*Update the edited contact list */
                             for (int i = 0; i < contactList.size(); i++) {
 
-                                String parentCpId=contactList.get(i).getCpId();
+                                String parentCpId = contactList.get(i).getCpId();
 
                                 for (int j = 0; j < tempList.size(); j++) {
 
-                                    String editedCpId=tempList.get(j).getCpId();
+                                    String editedCpId = tempList.get(j).getCpId();
 
-                                    if(parentCpId.equalsIgnoreCase(editedCpId)){
-                                        contactList.set( i,tempList.get(j));
+                                    if (parentCpId.equalsIgnoreCase(editedCpId)) {
+                                        contactList.set(i, tempList.get(j));
                                         break;
                                     }
                                 }
@@ -1125,7 +1127,7 @@ public class ProfileHelper {
 
                             /*Add the new contact list */
                             for (int i = 0; i < tempList.size(); i++) {
-                                if(tempList.get(i).getStatus().equalsIgnoreCase("I")){
+                                if (tempList.get(i).getStatus().equalsIgnoreCase("I")) {
                                     contactList.add(tempList.get(i));
                                 }
                             }

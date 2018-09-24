@@ -79,7 +79,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
             setSupportActionBar(toolbar);
 
         getSupportActionBar().setTitle(
-               null);
+                null);
         getSupportActionBar().setIcon(null);
         // Used to on / off the back arrow icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -230,6 +230,9 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                     public void onTextChanged(CharSequence s, int start,
                                               int before, int count) {
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.d1.setSelection(qty.length());
+
                         double i = SDUtil.convertToDouble(qty);
                         sum = 0;
                         if (i != 0 || i != 0.0) {
@@ -297,6 +300,8 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                                               int before, int count) {
 
                         String qty = s.toString();
+                        if (qty.length() > 0)
+                            holder.da.setSelection(qty.length());
                         double i = SDUtil.convertToDouble(qty);
 
                         if (i != 0) {
@@ -343,6 +348,8 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                         holder.d1.setInputType(InputType.TYPE_NULL);
                         holder.d1.onTouchEvent(event);
                         holder.d1.setInputType(inType);
+                        if (holder.d1.getText().length() > 0)
+                            holder.d1.setSelection(holder.d1.getText().length());
                         return true;
                     }
                 });
@@ -358,6 +365,8 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                         holder.da.setInputType(InputType.TYPE_NULL);
                         holder.da.onTouchEvent(event);
                         holder.da.setInputType(inType);
+                        if (holder.da.getText().length() > 0)
+                            holder.da.setSelection(holder.da.getText().length());
                         return true;
                     }
 
@@ -474,7 +483,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
         String productId, productCode, pname;
         int caseSize, stockInHand;// product id
         TextView psname, mrp, p4qty;
-        EditText d1,da;
+        EditText d1, da;
         int ref;
         TextView msq, total, ou_type, caseqtyEditText, pieceqty, outerQty;
     }
@@ -537,7 +546,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
 
     public double discountcalc(ProductMasterBO productBO, double sum) {
 
-		/* apply batchwise discount starts */
+        /* apply batchwise discount starts */
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
             if (productBO.getBatchwiseProductCount() > 0) {
@@ -634,13 +643,13 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
         // Intent returnIntent = new Intent();
         // setResult(RESULT_CANCELED, returnIntent);
         // finish();
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
             Intent intent = new Intent(OrderDiscount.this, SchemeApply.class);
             intent.putExtra("ScreenCode", screenCode);
             startActivity(intent);
-        }else if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
+        } else if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
             Intent intent = new Intent(OrderDiscount.this,
                     BatchAllocation.class);
             intent.putExtra("OrderFlag", "Nothing");

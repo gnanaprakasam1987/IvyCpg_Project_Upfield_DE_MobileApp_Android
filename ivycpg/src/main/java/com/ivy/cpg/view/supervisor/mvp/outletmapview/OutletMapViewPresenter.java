@@ -22,7 +22,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
+import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;

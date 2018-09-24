@@ -249,6 +249,12 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 } else
                     showToast();
                 break;
+            case StandardListMasterConstants.MENU_COLLECTION_REPORT:
+                if (bmodel.reportHelper.hasPayment()) {
+                    gotoReportActivity(config);
+                } else
+                    showToast();
+                break;
 
             default:
                 gotoReportActivity(config);

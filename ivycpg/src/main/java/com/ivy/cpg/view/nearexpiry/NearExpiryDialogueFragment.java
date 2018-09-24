@@ -891,9 +891,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         CA1.setInputType(InputType.TYPE_NULL); // disable
                         CA1.onTouchEvent(event); // call native
                         CA1.setInputType(inType); // restore input
-                        CA1.selectAll();
                         CA1.requestFocus();
-
+                        if (CA1.getText().length() > 0)
+                            CA1.setSelection(CA1.getText().length());
                         return true;
                     }
                 });
@@ -904,7 +904,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
-
+                            if (s.toString().length() > 0)
+                                CA1.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(0)
@@ -934,6 +935,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         PC1.setInputType(inType); // restore input
                         PC1.selectAll();
                         PC1.requestFocus();
+                        if (PC1.getText().length() > 0)
+                            PC1.setSelection(PC1.getText().length());
                         return true;
                     }
                 });
@@ -944,6 +947,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                PC1.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(0)
@@ -970,8 +975,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         OU1.setInputType(InputType.TYPE_NULL); // disable
                         OU1.onTouchEvent(event); // call native
                         OU1.setInputType(inType); // restore input
-                        OU1.selectAll();
                         OU1.requestFocus();
+                        if (OU1.getText().length() > 0)
+                            OU1.setSelection(OU1.getText().length());
                         return true;
                     }
                 });
@@ -982,6 +988,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                OU1.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(0)
@@ -1069,8 +1077,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         CA2.setInputType(InputType.TYPE_NULL); // disable
                         CA2.onTouchEvent(event); // call native
                         CA2.setInputType(inType); // restore input
-                        CA2.selectAll();
                         CA2.requestFocus();
+                        if (CA2.getText().length() > 0)
+                            CA2.setSelection(CA2.getText().length());
                         return true;
                     }
                 });
@@ -1081,6 +1090,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                CA2.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(1)
@@ -1107,8 +1118,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         PC2.setInputType(InputType.TYPE_NULL); // disable
                         PC2.onTouchEvent(event); // call native
                         PC2.setInputType(inType); // restore input
-                        PC2.selectAll();
                         PC2.requestFocus();
+                        if (PC2.getText().length() > 0)
+                            PC2.setSelection(PC2.getText().length());
                         return true;
                     }
                 });
@@ -1119,6 +1131,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                PC2.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(1)
@@ -1145,8 +1159,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         OU2.setInputType(InputType.TYPE_NULL); // disable
                         OU2.onTouchEvent(event); // call native
                         OU2.setInputType(inType); // restore input
-                        OU2.selectAll();
                         OU2.requestFocus();
+                        if (OU2.getText().length() > 0)
+                            OU2.setSelection(OU2.getText().length());
                         return true;
                     }
                 });
@@ -1157,6 +1172,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                OU2.setSelection(s.toString().length());
+
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(1)
@@ -1244,8 +1262,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         CA3.setInputType(InputType.TYPE_NULL); // disable
                         CA3.onTouchEvent(event); // call native
                         CA3.setInputType(inType); // restore input
-                        CA3.selectAll();
                         CA3.requestFocus();
+                        if (CA3.getText().length() > 0)
+                            CA3.setSelection(CA3.getText().length());
                         return true;
                     }
                 });
@@ -1256,6 +1275,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                CA3.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(2)
@@ -1282,8 +1303,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         PC3.setInputType(InputType.TYPE_NULL); // disable
                         PC3.onTouchEvent(event); // call native
                         PC3.setInputType(inType); // restore input
-                        PC3.selectAll();
                         PC3.requestFocus();
+                        if (PC3.getText().length() > 0)
+                            PC3.setSelection(PC3.getText().length());
                         return true;
                     }
                 });
@@ -1294,6 +1316,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                PC3.setSelection(s.toString().length());
+
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(2)
@@ -1320,8 +1345,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         OU3.setInputType(InputType.TYPE_NULL); // disable
                         OU3.onTouchEvent(event); // call native
                         OU3.setInputType(inType); // restore input
-                        OU3.selectAll();
                         OU3.requestFocus();
+                        if (OU3.getText().length() > 0)
+                            OU3.setSelection(OU3.getText().length());
                         return true;
                     }
                 });
@@ -1332,6 +1358,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                OU3.setSelection(s.toString().length());
+
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(2)
@@ -1415,8 +1444,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         CA4.setInputType(InputType.TYPE_NULL); // disable
                         CA4.onTouchEvent(event); // call native
                         CA4.setInputType(inType); // restore input
-                        CA4.selectAll();
                         CA4.requestFocus();
+                        if (CA4.getText().length() > 0)
+                            CA4.setSelection(CA4.getText().length());
                         return true;
                     }
                 });
@@ -1427,6 +1457,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                CA4.setSelection(s.toString().length());
+
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(3)
@@ -1453,8 +1486,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         PC4.setInputType(InputType.TYPE_NULL); // disable
                         PC4.onTouchEvent(event); // call native
                         PC4.setInputType(inType); // restore input
-                        PC4.selectAll();
                         PC4.requestFocus();
+                        if (PC4.getText().length() > 0)
+                            PC4.setSelection(PC4.getText().length());
                         return true;
                     }
                 });
@@ -1465,6 +1499,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                PC4.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(3)
@@ -1491,8 +1527,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         OU4.setInputType(InputType.TYPE_NULL); // disable
                         OU4.onTouchEvent(event); // call native
                         OU4.setInputType(inType); // restore input
-                        OU4.selectAll();
                         OU4.requestFocus();
+                        if (OU4.getText().length() > 0)
+                            OU4.setSelection(OU4.getText().length());
                         return true;
                     }
                 });
@@ -1503,6 +1540,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                OU4.setSelection(s.toString().length());
+
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(3)
@@ -1591,8 +1631,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         CA5.setInputType(InputType.TYPE_NULL); // disable
                         CA5.onTouchEvent(event); // call native
                         CA5.setInputType(inType); // restore input
-                        CA5.selectAll();
                         CA5.requestFocus();
+                        if (CA5.getText().length() > 0)
+                            CA5.setSelection(CA5.getText().length());
                         return true;
                     }
                 });
@@ -1603,6 +1644,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                CA5.setSelection(s.toString().length());
+
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(4)
@@ -1627,8 +1671,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         PC5.setInputType(InputType.TYPE_NULL); // disable
                         PC5.onTouchEvent(event); // call native
                         PC5.setInputType(inType); // restore input
-                        PC5.selectAll();
                         PC5.requestFocus();
+                        if (PC5.getText().length() > 0)
+                            PC5.setSelection(PC5.getText().length());
                         return true;
                     }
                 });
@@ -1639,6 +1684,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                PC5.setSelection(s.toString().length());
+
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(4)
@@ -1664,8 +1712,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         OU5.setInputType(InputType.TYPE_NULL); // disable
                         OU5.onTouchEvent(event); // call native
                         OU5.setInputType(inType); // restore input
-                        OU5.selectAll();
                         OU5.requestFocus();
+                        if (OU5.getText().length() > 0)
+                            OU5.setSelection(OU5.getText().length());
                         return true;
                     }
                 });
@@ -1675,6 +1724,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                OU5.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(4)
@@ -1760,8 +1811,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         CA6.setInputType(InputType.TYPE_NULL); // disable
                         CA6.onTouchEvent(event); // call native
                         CA6.setInputType(inType); // restore input
-                        CA6.selectAll();
                         CA6.requestFocus();
+                        if (CA6.getText().length() > 0)
+                            CA6.setSelection(CA6.getText().length());
                         return true;
                     }
                 });
@@ -1772,6 +1824,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                CA6.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(5)
@@ -1797,8 +1851,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         PC6.setInputType(InputType.TYPE_NULL); // disable
                         PC6.onTouchEvent(event); // call native
                         PC6.setInputType(inType); // restore input
-                        PC6.selectAll();
                         PC6.requestFocus();
+                        if (PC6.getText().length() > 0)
+                            PC6.setSelection(PC6.getText().length());
                         return true;
                     }
                 });
@@ -1809,6 +1864,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void onTextChanged(CharSequence s, int start, int before,
                                               int count) {
                         if (!"0".equals(s)) {
+                            if (s.toString().length() > 0)
+                                PC6.setSelection(s.toString().length());
+
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(5)
@@ -1834,8 +1892,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         OU6.setInputType(InputType.TYPE_NULL); // disable
                         OU6.onTouchEvent(event); // call native
                         OU6.setInputType(inType); // restore input
-                        OU6.selectAll();
                         OU6.requestFocus();
+                        if (OU6.getText().length() > 0)
+                            OU6.setSelection(OU6.getText().length());
                         return true;
                     }
                 });
@@ -1847,7 +1906,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                               int count) {
 
                         if (!"0".equals(s)) {
-
+                            if (s.toString().length() > 0)
+                                OU6.setSelection(s.toString().length());
                             mSKUBO.getLocations()
                                     .get(mNearExpiryHelper.mSelectedLocationIndex)
                                     .getNearexpiryDate().get(5)

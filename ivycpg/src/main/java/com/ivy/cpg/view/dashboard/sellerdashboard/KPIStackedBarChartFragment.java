@@ -34,7 +34,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,6 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
 
     ArrayList<DashBoardBO> dashBoardList;
     BarChart mbarChart;
-    private BusinessModel bmodel;
     private String selectedInterval;
     public static final int[] MATERIAL_COLORS = {
             ColorTemplate.rgb("#2ecc71"), ColorTemplate.rgb("#e74c3c")
@@ -58,7 +57,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         if (this.getArguments() != null) {
             selectedInterval = this.getArguments().getString("selectedInterval");
         }
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        BusinessModel bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
         dashBoardList = DashBoardHelper.getInstance(getActivity()).getDashListViewList();
@@ -67,6 +66,9 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         mbarChart.getAxisLeft().setDrawGridLines(false);
         mbarChart.getXAxis().setDrawGridLines(false);
         mbarChart.getDescription().setEnabled(false);
+        mbarChart.setDoubleTapToZoomEnabled(false);
+        mbarChart.setPinchZoom(false);
+        mbarChart.setScaleEnabled(false);
 
         mbarChart.setRenderer(new MyBarChartRenderer(mbarChart, mbarChart.getAnimator(), mbarChart.getViewPortHandler()));
         setData();
@@ -75,10 +77,10 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
 
     private void setData() {
 
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+        ArrayList<BarEntry> yVals1 = new ArrayList<>();
         for (int i = 0; i < dashBoardList.size(); i++) {
             if (selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))) {
-                float val1 = 0, val2 = 0;
+                float val1, val2;
                 float target = SDUtil.convertToFloat(dashBoardList.get(i).getKpiTarget());
                 float achieved = SDUtil.convertToFloat(dashBoardList.get(i).getKpiAcheived());
                 if (achieved > target) {
@@ -96,29 +98,33 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
             }
         }
 
+        String text = "";
+        ArrayList<String> mStringList = new ArrayList<>();
+        for (int i = 0; i < dashBoardList.size(); i++) {
+            text = dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText();
+            if (selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))) {
+                mStringList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ?
+                        text : dashBoardList.get(i).getMonthName());
+            } else {
+                mStringList.add(text);
+            }
+        }
+
         BarDataSet set1;
         set1 = new BarDataSet(yVals1, "");
+        String kpiLabel = " " + text;
         if (selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))) {
-            set1.setStackLabels(new String[]{getResources().getString(R.string.achieved), getResources().getString(R.string.balance)});
+            set1.setStackLabels(new String[]{getResources().getString(R.string.achieved) + kpiLabel , getResources().getString(R.string.balance) + kpiLabel});
         } else {
             set1.setStackLabels(new String[]{"% " + getResources().getString(R.string.achieved), "% " + getResources().getString(R.string.balance)});
         }
         set1.setValueFormatter(new PercentageValueFormatter());
         set1.setDrawIcons(false);
         set1.setValueTextColor(Color.WHITE);
-        set1.setValueTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        set1.setValueTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT ,getActivity()));
         set1.setColors(MATERIAL_COLORS);
-        ArrayList<String> mStringList = new ArrayList<>();
-        for (int i = 0; i < dashBoardList.size(); i++) {
-            String text = dashBoardList.get(i).getText().length() > 12 ? dashBoardList.get(i).getText().substring(0, 11) + ".." : dashBoardList.get(i).getText();
-            if (selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))) {
-                mStringList.add((dashBoardList.get(i).getMonthName() != null && dashBoardList.get(i).getMonthName().length() == 0) ?
-                        text : "(" + dashBoardList.get(i).getMonthName() + ")" + text);
-            } else {
-                mStringList.add(text);
-            }
-        }
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
 
         BarData data = new BarData(dataSets);
@@ -130,7 +136,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         XAxis xLabels = mbarChart.getXAxis();
         xLabels.setTextColor(Color.WHITE);
         xLabels.setTextSize(10f);
-        xLabels.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        xLabels.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT ,getActivity()));
         xLabels.setGranularity(1f);
         xLabels.setValueFormatter(new IndexAxisValueFormatter(mStringList));
         xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -141,7 +147,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         yAxisRight.setEnabled(false);
 
         YAxis yAxis = mbarChart.getAxisLeft();
-        yAxis.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        yAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT ,getActivity()));
         yAxis.setTextColor(Color.WHITE);
         yAxis.setTextSize(10f);
         yAxis.setAxisMinimum(0f);
@@ -156,7 +162,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
 
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            String labelStr = "";
+            String labelStr;
             if (selectedInterval != null && (!selectedInterval.matches("WEEK|P3M"))) {
                 labelStr = String.valueOf(SDUtil.format(value, 0, 0)) + "%";
             } else {
@@ -181,8 +187,8 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
                 List<IBarDataSet> dataSets = mChart.getBarData().getDataSets();
 
                 final float valueOffsetPlus = Utils.convertDpToPixel(4.5f);
-                float posOffset = 0f;
-                float negOffset = 0f;
+                float posOffset;
+                float negOffset;
                 boolean drawValueAboveBar = mChart.isDrawValueAboveBarEnabled();
 
                 for (int i = 0; i < mChart.getBarData().getDataSetCount(); i++) {

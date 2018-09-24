@@ -16,7 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
-import com.ivy.cpg.view.supervisor.mvp.SellerBo;
+import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.HideShowScrollListener;
