@@ -407,6 +407,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         else
             title = bmodel.configurationMasterHelper
                     .getHomescreentwomenutitle("MENU_STK_ORD");
+
+        if (title.isEmpty())
+            title = getResources().getString(R.string.order);
+
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
@@ -985,6 +989,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             else
                 title = bmodel.configurationMasterHelper
                         .getHomescreentwomenutitle("MENU_STK_ORD");
+
+            if (title.isEmpty())
+                title = getResources().getString(R.string.order);
+
             if (mSelectedFiltertext.equals("Brand")) {
                 if (totalOrdCount.equals("0"))
                     setScreenTitle(title + " ("
