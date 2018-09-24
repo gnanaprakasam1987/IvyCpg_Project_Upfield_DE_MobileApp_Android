@@ -15,7 +15,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.base.view.BaseIvyView;
+import com.ivy.cpg.view.basedi.BaseModule;
+import com.ivy.cpg.view.basedi.DaggerBaseComponent;
 import com.ivy.cpg.view.reports.asset.AssetTrackingReportFragment;
 import com.ivy.cpg.view.reports.attendancereport.AttendanceReport;
 import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportFragment;
@@ -70,11 +74,14 @@ import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ReportActivity extends BaseActivity implements
+import javax.inject.Inject;
+
+public class ReportActivity extends BaseActivity implements BaseIvyView,
         SellerListFragment.SellerSelectionInterface {
 
     private BusinessModel bmodel;
-
+    @Inject
+    BaseIvyPresenter<BaseIvyView> viewBasePresenter;
     @Override
     public int getLayoutId() {
         return R.layout.report_menu_fragment_activity_layout;
@@ -126,7 +133,11 @@ public class ReportActivity extends BaseActivity implements
 
     @Override
     public void initializeDi() {
-
+        DaggerBaseComponent.builder()
+                .baseModule(new BaseModule(this))
+                .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
+                .build()
+                .inject(this);
     }
 
     private void setLanguage() {
