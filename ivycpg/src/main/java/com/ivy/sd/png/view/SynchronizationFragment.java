@@ -1460,7 +1460,14 @@ public class SynchronizationFragment extends IvyBaseFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(mSyncReceiver);
+        unregisterMyBroadcastReceiver();
+    }
+
+    private void unregisterMyBroadcastReceiver() {
+        if (null != mSyncReceiver) {
+            getActivity().unregisterReceiver(mSyncReceiver);
+            mSyncReceiver = null;
+        }
     }
 
     @Override
