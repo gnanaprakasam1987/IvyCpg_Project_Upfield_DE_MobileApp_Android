@@ -168,6 +168,7 @@
     <string name="targeted">Targeted </string>
     <string name="covered">Covered </string>
     <string name="please_complete">Please Complete</string>
+    <string name="complete">Complete</string>
 
     <string name="enter_receipt_no">Enter Receipt Number</string>
     <string name="please_enter">Please Enter</string>
