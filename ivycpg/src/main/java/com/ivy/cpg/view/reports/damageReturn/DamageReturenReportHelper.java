@@ -2,7 +2,6 @@ package com.ivy.cpg.view.reports.damageReturn;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Parcel;
 
 import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockBo;
 import com.ivy.lib.existing.DBUtil;
@@ -34,23 +33,23 @@ public class DamageReturenReportHelper {
         return instance;
     }
 
-    public ArrayList<PandingDeliveryBO> pandingDeliveryBOS;
+    public ArrayList<PendingDeliveryBO> pandingDeliveryBOS;
 
-    public ArrayList<PandingDeliveryBO> getPandingDeliveryBOS() {
+    public ArrayList<PendingDeliveryBO> getPandingDeliveryBOS() {
         return pandingDeliveryBOS;
     }
 
-    public void setPandingDeliveryBOS(ArrayList<PandingDeliveryBO> pandingDeliveryBOS) {
+    public void setPandingDeliveryBOS(ArrayList<PendingDeliveryBO> pandingDeliveryBOS) {
         this.pandingDeliveryBOS = pandingDeliveryBOS;
     }
 
 
-    public Observable<ArrayList<PandingDeliveryBO>> downloadPendingDeliveryReport(final Context context) {
-        return Observable.create(new ObservableOnSubscribe<ArrayList<PandingDeliveryBO>>() {
+    public Observable<ArrayList<PendingDeliveryBO>> downloadPendingDeliveryReport(final Context context) {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<PendingDeliveryBO>>() {
             @Override
-            public void subscribe(ObservableEmitter<ArrayList<PandingDeliveryBO>> subscribe) throws Exception {
-                PandingDeliveryBO pandingDeliveryBO;
-                ArrayList<PandingDeliveryBO> pandingDeliveryBOS = new ArrayList<>();
+            public void subscribe(ObservableEmitter<ArrayList<PendingDeliveryBO>> subscribe) throws Exception {
+                PendingDeliveryBO pandingDeliveryBO;
+                ArrayList<PendingDeliveryBO> pandingDeliveryBOS = new ArrayList<>();
                 DBUtil db = null;
                 try {
                     db = new DBUtil(context, DataMembers.DB_NAME,
@@ -60,7 +59,7 @@ public class DamageReturenReportHelper {
                             .selectSQL("select distinct InvoiceNo,InvoiceDate,invNetamount,RM.RetailerName,ifnull(vh.status,'') as status from InvoiceDeliveryMaster idm inner join RetailerMaster RM  on RM.RetailerID=idm.Retailerid left join VanDeliveryHeader  vh on vh.invoiceid=idm.InvoiceNo  group by idm.InvoiceNo");
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
-                            pandingDeliveryBO = new PandingDeliveryBO();
+                            pandingDeliveryBO = new PendingDeliveryBO();
                             pandingDeliveryBO.setInvoiceNo(c.getString(0));
                             pandingDeliveryBO.setInvoiceDate(c.getString(1));
                             pandingDeliveryBO.setInvNetamount(c.getString(2));

@@ -33,7 +33,7 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
     @BindView(R.id.pending_delivery_listview)
     ListView listView;
 
-   private ArrayList<PandingDeliveryBO> pandingDeliveryBOS;
+   private ArrayList<PendingDeliveryBO> pandingDeliveryBOS;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,9 +82,9 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
 
 
     class MyAdapter extends BaseAdapter {
-        ArrayList<PandingDeliveryBO> arrayList;
+        ArrayList<PendingDeliveryBO> arrayList;
 
-        public MyAdapter(ArrayList<PandingDeliveryBO> conList) {
+        public MyAdapter(ArrayList<PendingDeliveryBO> conList) {
             arrayList = conList;
         }
 
@@ -94,7 +94,7 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
         }
 
         @Override
-        public PandingDeliveryBO getItem(int arg0) {
+        public PendingDeliveryBO getItem(int arg0) {
             return arrayList.get(arg0);
         }
 
@@ -134,7 +134,7 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
             } else {
                 holder = (DamageReturnCompletedFragment.ViewHolder) convertView.getTag();
             }
-            PandingDeliveryBO pandingDeliveryBO = arrayList.get(position);
+            PendingDeliveryBO pandingDeliveryBO = arrayList.get(position);
 
             if(!AppUtils.isEmptyString(pandingDeliveryBO.getStatus())){
                 holder.invoiceNo.setText(pandingDeliveryBO.getInvoiceNo());

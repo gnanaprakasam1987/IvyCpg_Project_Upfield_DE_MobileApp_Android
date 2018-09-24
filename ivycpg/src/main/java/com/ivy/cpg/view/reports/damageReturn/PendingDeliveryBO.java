@@ -4,7 +4,7 @@ package com.ivy.cpg.view.reports.damageReturn;
  * Created by murugan on 17/9/18.
  */
 
-public class PandingDeliveryBO {
+public class PendingDeliveryBO {
 
     private String InvoiceNo;
     private String InvoiceDate;

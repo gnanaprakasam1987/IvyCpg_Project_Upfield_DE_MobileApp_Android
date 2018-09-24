@@ -96,9 +96,9 @@ public class DamageReturnContainerFragment extends IvyBaseFragment {
         compositeDisposable.add((Disposable) DamageReturenReportHelper.getInstance().downloadPendingDeliveryReport(getActivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<ArrayList<PandingDeliveryBO>>() {
+                .subscribeWith(new DisposableObserver<ArrayList<PendingDeliveryBO>>() {
                     @Override
-                    public void onNext(ArrayList<PandingDeliveryBO> mcontractList) {
+                    public void onNext(ArrayList<PendingDeliveryBO> mcontractList) {
 
                         DamageReturenReportHelper.getInstance().setPandingDeliveryBOS(mcontractList);
                     }

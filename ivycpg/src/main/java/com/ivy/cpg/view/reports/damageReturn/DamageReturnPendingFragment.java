@@ -42,7 +42,7 @@ public class DamageReturnPendingFragment extends IvyBaseFragment {
 
         return view;
     }
-    ArrayList<PandingDeliveryBO> pandingDeliveryBOS=new ArrayList<>();
+    ArrayList<PendingDeliveryBO> pandingDeliveryBOS=new ArrayList<>();
     private void getContractDate() {
 
         if (DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size() > 0) {
@@ -85,9 +85,9 @@ public class DamageReturnPendingFragment extends IvyBaseFragment {
 
 
     class MyAdapter extends BaseAdapter {
-        ArrayList<PandingDeliveryBO> arrayList;
+        ArrayList<PendingDeliveryBO> arrayList;
 
-        public MyAdapter(ArrayList<PandingDeliveryBO> conList) {
+        public MyAdapter(ArrayList<PendingDeliveryBO> conList) {
             arrayList = conList;
         }
 
@@ -97,7 +97,7 @@ public class DamageReturnPendingFragment extends IvyBaseFragment {
         }
 
         @Override
-        public PandingDeliveryBO getItem(int arg0) {
+        public PendingDeliveryBO getItem(int arg0) {
             return arrayList.get(arg0);
         }
 
@@ -134,7 +134,7 @@ public class DamageReturnPendingFragment extends IvyBaseFragment {
             } else {
                 holder = (DamageReturnPendingFragment.ViewHolder) convertView.getTag();
             }
-            PandingDeliveryBO pandingDeliveryBO = arrayList.get(position);
+            PendingDeliveryBO pandingDeliveryBO = arrayList.get(position);
 
             holder.invoiceNo.setText(pandingDeliveryBO.getInvoiceNo());
             holder.invoiceDate.setText(pandingDeliveryBO.getInvoiceDate());
