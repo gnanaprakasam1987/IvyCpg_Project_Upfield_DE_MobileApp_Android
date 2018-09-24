@@ -2053,7 +2053,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                         }
 
-                    } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                    } else {
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);
                     }
