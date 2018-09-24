@@ -138,10 +138,12 @@ public class SynchronizationFragment extends IvyBaseFragment
     private UploadPresenterImpl presenter;
     private LastSyncTimeHelper lastSyncTimeHelper;
 
+    private Context context;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        this.context = context;
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -709,7 +711,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel = (BusinessModel) context.getApplicationContext();
             isClicked = false;
             setDayCloseEnableDisable();
             SyncDownloadStatusDialog sdsd;
