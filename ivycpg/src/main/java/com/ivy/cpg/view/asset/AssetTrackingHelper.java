@@ -2048,7 +2048,7 @@ public class AssetTrackingHelper {
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
             sb.append(" OR Channelid in (0,");
             sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext));
-            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId,SBD.SerialNO ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
 
             Cursor c = db.selectSQL(sb.toString());

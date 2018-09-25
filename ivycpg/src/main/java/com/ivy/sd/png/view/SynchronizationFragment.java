@@ -138,7 +138,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     private UploadPresenterImpl presenter;
     private LastSyncTimeHelper lastSyncTimeHelper;
 
-    Context context;
+    private Context context;
 
     @Override
     public void onAttach(Context context) {
@@ -515,7 +515,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     }
 
     private void syncStatus(int btn_count) {
-        TypedArray type_arr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+        TypedArray type_arr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         int text_color = type_arr.getColor(R.styleable.MyTextView_textColor, 0);
         int background_color = type_arr.getColor(R.styleable.MyTextView_buttonBackground, 0);
         if (txtPassword.getText().toString().length() > 0) {
