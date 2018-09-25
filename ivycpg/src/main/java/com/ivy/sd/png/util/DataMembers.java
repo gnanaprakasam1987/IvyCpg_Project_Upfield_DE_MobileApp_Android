@@ -541,7 +541,7 @@ public class DataMembers {
     private static final String tbl_RetailerEntryDetails_Cols = "UId,EntryMode,ReasonId";
 
     private static final String tbl_retailerContactupload_cols = "RetailerID,contactname,ContactName_LName,ContactNumber," +
-            "contact_title,contact_title_lovid,IsPrimary";
+            "contact_title,contact_title_lovid,IsPrimary,Email";
     private static final String tbl_retailerAddressupload_cols = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
             + "email,FaxNo,pincode,State,IsPrimary,Mobile,Region,Country";
     private static final String tbl_retailerAttributeupload_cols = "RetailerId,AttributeId,LevelId";
