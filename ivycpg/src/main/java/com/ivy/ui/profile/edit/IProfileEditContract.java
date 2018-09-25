@@ -1,7 +1,6 @@
 package com.ivy.ui.profile.edit;
 
 
-import android.text.InputFilter;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;

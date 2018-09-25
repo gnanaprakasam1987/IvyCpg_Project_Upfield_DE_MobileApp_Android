@@ -15,13 +15,18 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.base.view.BaseIvyView;
+import com.ivy.cpg.view.basedi.BaseModule;
+import com.ivy.cpg.view.basedi.DaggerBaseComponent;
 import com.ivy.cpg.view.reports.asset.AssetTrackingReportFragment;
 import com.ivy.cpg.view.reports.attendancereport.AttendanceReport;
 import com.ivy.cpg.view.reports.closingstockreport.ClosingStockReportFragment;
 import com.ivy.cpg.view.reports.collectionreport.CollectionReportFragmentNew;
 import com.ivy.cpg.view.reports.contractreport.ContractReportFragment;
 import com.ivy.cpg.view.reports.creditNoteReport.CreditNoteReportFragment;
+import com.ivy.cpg.view.reports.damageReturn.DamageReturnContainerFragment;
 import com.ivy.cpg.view.reports.dayreport.DayReportFragment;
 import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockReport;
 import com.ivy.cpg.view.reports.distorderreport.DistOrderReportFragment;
@@ -65,16 +70,18 @@ import com.ivy.sd.png.provider.TaxGstHelper;
 import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.ui.reports.currentreport.view.CurrentReportViewFragment;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ReportActivity extends BaseActivity implements
+import javax.inject.Inject;
+
+public class ReportActivity extends BaseActivity implements BaseIvyView,
         SellerListFragment.SellerSelectionInterface {
 
     private BusinessModel bmodel;
-
+    @Inject
+    BaseIvyPresenter<BaseIvyView> viewBasePresenter;
     @Override
     public int getLayoutId() {
         return R.layout.report_menu_fragment_activity_layout;
@@ -126,7 +133,11 @@ public class ReportActivity extends BaseActivity implements
 
     @Override
     public void initializeDi() {
-
+        DaggerBaseComponent.builder()
+                .baseModule(new BaseModule(this))
+                .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
+                .build()
+                .inject(this);
     }
 
     private void setLanguage() {
@@ -524,6 +535,12 @@ public class ReportActivity extends BaseActivity implements
 
             SalesReturnReportFragment salesReturnReportFragment = new SalesReturnReportFragment();
             transaction.replace(R.id.fragment_content, salesReturnReportFragment);
+            commitFragment(transaction, config);
+        }
+        else if (config.getConfigCode().equals(
+                StandardListMasterConstants.MENU_DELIVERY_RPT)) {
+            DamageReturnContainerFragment returnsAndPendingDeliverieReportFragment = new DamageReturnContainerFragment();
+            transaction.replace(R.id.fragment_content, returnsAndPendingDeliverieReportFragment);
             commitFragment(transaction, config);
         }
     }

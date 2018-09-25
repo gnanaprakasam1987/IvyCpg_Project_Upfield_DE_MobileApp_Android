@@ -491,16 +491,19 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     @Override
     public void setPinkTheme() {
         setTheme(R.style.MVPTheme_Pink);
+        initScreen();
     }
 
     @Override
     public void setGreenTheme() {
         setTheme(R.style.MVPTheme_Green);
+        initScreen();
     }
 
     @Override
     public void setNavyBlueTheme() {
         setTheme(R.style.MVPTheme_NBlue);
+        initScreen();
     }
 
     @Override
@@ -512,6 +515,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     @Override
     public void setRedTheme() {
         setTheme(R.style.MVPTheme_Red);
+        initScreen();
     }
 
     @Override
