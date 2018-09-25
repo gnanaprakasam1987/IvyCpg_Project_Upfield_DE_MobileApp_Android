@@ -165,6 +165,9 @@ public class VanUnLoadModuleHelper {
                 String sql1 = "update ProductMaster set sih=sih- " + sih
                         + " where PID = " + product.getProductid();
                 db.executeQ(sql1);
+                String sql2 = "update ExcessStockInHand set qty=qty- " + sih
+                        + ",Upload='N' where PID = " + product.getProductid();
+                db.executeQ(sql2);
             }
 
         }
