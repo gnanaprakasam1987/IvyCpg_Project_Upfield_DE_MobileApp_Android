@@ -264,7 +264,10 @@ public class DataMembers {
     private static final String tbl_DailyTargetPlanned_cols = "TargetID,RetailerID,TargetValue,Date,IsGoldenStore";
 
     public static final String tbl_DenominationDetails = "DenominationDetails";
-    private static final String tbl_DenominationDetails_cols = "Uid,Total";
+    private static final String tbl_DenominationDetails_cols = "uid,value,count,lineAmount";
+
+    public static final String tbl_DenominationHeader = "DenominationHeader";
+    private static final String tbl_DenominationHeader_cols = "uid,date,amount";
 
     public static final String tbl_orderHeader = "OrderHeader";
     public static final String tbl_orderDetails = "OrderDetail";
@@ -784,6 +787,7 @@ public class DataMembers {
         uploadColumn.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
         uploadColumn.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
         uploadColumn.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
+        uploadColumn.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -918,6 +922,7 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
         uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
+        uploadColumnWithRetailer.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

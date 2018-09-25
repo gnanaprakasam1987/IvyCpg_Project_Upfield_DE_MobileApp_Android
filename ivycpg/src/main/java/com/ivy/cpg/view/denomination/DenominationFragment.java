@@ -2,6 +2,7 @@ package com.ivy.cpg.view.denomination;
 
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
@@ -71,6 +74,9 @@ public class DenominationFragment extends IvyBaseFragment {
 
     @SuppressLint("UseSparseArrays")
     private HashMap<Integer, EditText> editTextHashMap = new HashMap<>();
+
+    @SuppressLint("UseSparseArrays")
+    private HashMap<Integer, TextView> textViewHashMap = new HashMap<>();
 
     @Override
     public void onAttach(Context context) {
@@ -151,8 +157,6 @@ public class DenominationFragment extends IvyBaseFragment {
     }
 
 
-
-
     private void downLoadTotalCashInHand() {
 
         DBUtil dbUtil = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -180,7 +184,6 @@ public class DenominationFragment extends IvyBaseFragment {
         return mRootLinearLayout;
     }
 
-     TextView dinominationAmount;
 
     private void createDynamicRowForDenominationValues(final int mNumber, DenominationBO denominationBO) {
 
@@ -191,55 +194,47 @@ public class DenominationFragment extends IvyBaseFragment {
 
         TextView dinominationTextview = (TextView) view.findViewById(R.id.dinomination_textview);
         EditText dinominationValues = (EditText) view.findViewById(R.id.dinomination_values_edittext);
-        dinominationAmount = (TextView) view.findViewById(R.id.dinomination_amount_edittext);
+        TextView dinominationAmount = (TextView) view.findViewById(R.id.dinomination_amount_textview);
+
         dinominationTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         dinominationValues.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         dinominationAmount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
         dinominationTextview.setText(denominationBO.getDenominationDisplayName() + " *");
-        dinominationAmount.setTag(mNumber);
         getRootLinearLayout().addView(view);
 
         editTextHashMap.put(mNumber, dinominationValues);
+        textViewHashMap.put(mNumber, dinominationAmount);
 
         editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
 
             @Override
             public void afterTextChanged(Editable et) {
 
-                String s = et.toString();
-
                 double totalValues = 0;
-
                 for (Integer key : editTextHashMap.keySet()) {
-
                     String values = getDynamicEditTextValues(key);
-
                     if (!isEmptyString(values)) {
-
                         double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
-
                         totalValues = totalValues + (Double.valueOf(values) * temp);
-
-                        if (totalValues <= Double.valueOf(initialTotalAmount))
-                            if (key == dinominationAmount.getTag()) {
-                                double amount = Double.valueOf(values) * temp;
-                                dinominationAmount.setText(String.valueOf(amount));
-                            }
-                    } else if (key == dinominationAmount.getTag()){
-                        dinominationAmount.setText("0");
-                    }
+                        if (totalValues <= Double.valueOf(initialTotalAmount)) {
+                            double amount = Double.valueOf(values) * temp;
+                            textViewHashMap.get(key).setText(String.valueOf(amount));
+                        }
+                    } else
+                        textViewHashMap.get(key).setText("0");
                 }
 
                 if (totalValues <= Integer.valueOf(initialTotalAmount))
                     mTotalCollectionTextview.setText("Total :" + String.valueOf(totalValues));
                  else
                     Toast.makeText(getActivity(), "Total amount not match with you denomination count amount", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -283,22 +278,29 @@ public class DenominationFragment extends IvyBaseFragment {
             }
         }
 
-        if (totalValues != Double.valueOf(initialTotalAmount)){
+        if (totalValues != Double.valueOf(initialTotalAmount)) {
             Toast.makeText(getActivity(), "Total amount not match with you denomination count amount", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             insertData();
         }
 
     }
 
-    private void insertData(){
-         try {
+    private void insertData() {
+        try {
+
             DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
 
             db.createDataBase();
-
             db.openDataBase();
+
+            db.deleteSQL("DenominationDetails", "", true);
+            db.deleteSQL("DenominationHeader", "", true);
+
+            String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String id = "DEN" + SDUtil.now(SDUtil.DATE_TIME_ID);
+            boolean insertDenomination = false;
 
             for (Integer key : editTextHashMap.keySet()) {
 
@@ -306,20 +308,44 @@ public class DenominationFragment extends IvyBaseFragment {
 
                 if (!isEmptyString(count)) {
 
-                    String id=denominationInputValues.get(key).getDenomintionId();
+                    String displayNameValues = denominationInputValues.get(key).getDenominationDisplayNameValues();
 
-                    String columns = "Uid,Total";
+                    double lineAmount = Double.valueOf(displayNameValues) * Double.valueOf(count);
 
-                    db.deleteSQL("DenominationDetails", "Uid=" + AppUtils.QT(id), false);
+                    String columns = "uid,value,count,lineAmount";
 
-                    String values = id + "," + AppUtils.QT(count);
+                    String values = AppUtils.QT(id) + "," + AppUtils.QT(displayNameValues) + "," + AppUtils.QT(count) + "," + AppUtils.QT(String.valueOf(lineAmount));
 
                     db.insertSQL("DenominationDetails", columns, values);
+
+                    insertDenomination = true;
                 }
             }
+
+            if (insertDenomination) {
+
+                String columns = "uid,date,amount";
+
+                String values = AppUtils.QT(id) + "," + AppUtils.QT(currentDate) + "," + AppUtils.QT(initialTotalAmount);
+
+                db.insertSQL("DenominationHeader", columns, values);
+            }
+
             db.closeDB();
+            for (Integer key : editTextHashMap.keySet()) {
+                editTextHashMap.get(key).setText("");
+                textViewHashMap.get(key).setText("0");
+            }
+            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.successfully_exported), Toast.LENGTH_SHORT).show();
+
+
         } catch (Exception e) {
+            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
             Commons.printException("DenominationDetails insert Error" + e);
         }
     }
+
+
+
+
 }
