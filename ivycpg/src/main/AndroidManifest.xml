@@ -329,7 +329,7 @@
             android:name="com.ivy.cpg.primarysale.view.InvoiceStatusActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CallAnalysisActivity"
+            android:name="com.ivy.cpg.view.callanalysis.CallAnalysisActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.HomeScreenTwo"
@@ -344,7 +344,7 @@
             android:name="com.ivy.sd.png.view.BatchAllocation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CloseCallActivity"
+            android:name="com.ivy.cpg.view.callanalysis.CloseCallActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.TaskCreation"
@@ -551,7 +551,7 @@
             android:name="com.ivy.cpg.view.sf.SOSKUActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CallAnalysisActivityKlgs"
+            android:name="com.ivy.cpg.view.callanalysis.CallAnalysisActivityKlgs"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.ChangePasswordActivity"

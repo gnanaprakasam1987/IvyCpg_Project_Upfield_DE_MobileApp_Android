@@ -151,7 +151,7 @@ import com.ivy.sd.png.view.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
-import com.ivy.sd.png.view.CallAnalysisActivity;
+import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.callanalysis;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,20 +27,16 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.DataMembers;
-
-import java.util.Vector;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 public class CloseCallActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
-    // Vector<ReasonMaster> clcrReasonList;
     Spinner reason_desc;
     CheckBox checkbox_yes, checkbox_no;
     EditText otp;
     Button otpSubmit, close;
     ArrayAdapter<ReasonMaster> clcrReasonAdapter;
     TextView timespent;
-    private Toolbar toolbar;
 
 
     @Override
@@ -48,20 +44,20 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_closecall);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        reason_desc = (Spinner) findViewById(R.id.reason_desc);
-        checkbox_yes = (CheckBox) findViewById(R.id.checkbox_yes);
-        checkbox_no = (CheckBox) findViewById(R.id.checkbox_no);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
+        reason_desc =  findViewById(R.id.reason_desc);
+        checkbox_yes =  findViewById(R.id.checkbox_yes);
+        checkbox_no =  findViewById(R.id.checkbox_no);
         checkbox_no.setChecked(true);
-        otp = (EditText) findViewById(R.id.otp);
+        otp =  findViewById(R.id.otp);
         otp.setEnabled(false);
 
-        otpSubmit = (Button) findViewById(R.id.otpSubmit);
+        otpSubmit =  findViewById(R.id.otpSubmit);
         otpSubmit.setEnabled(false);
 
 
-        close = (Button) findViewById(R.id.closecall);
-        timespent = (TextView) findViewById(R.id.timespent);
+        close =  findViewById(R.id.closecall);
+        timespent =  findViewById(R.id.timespent);
 
         //clcrReasonList = new Vector<ReasonMaster>();
         bmodel = (BusinessModel) getApplicationContext();
@@ -75,13 +71,13 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
             // Used to remove the app logo actionbar icon and set title as home
             // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            String title = "";
+            String title;
             title = bmodel.configurationMasterHelper
                     .getHomescreentwomenutitle("MENU_CLOSE_CALL");
             getSupportActionBar().setTitle(title);
         }
 
-        /** set handler for the Timer class */
+        /* set handler for the Timer class */
         if (bmodel.timer != null) {
             bmodel.timer.setHandler(handler);
         }
@@ -91,13 +87,11 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
                     Toast.LENGTH_SHORT).show();
             finish();
         }
-        //clcrReasonList.addAll(bmodel.reasonHelper.getClosecallReasonList());
 
         checkbox_yes.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO Auto-generated method stub
                 if (isChecked) {
                     otp.setText("");
                     otp.setEnabled(true);
@@ -118,7 +112,6 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO Auto-generated method stub
                 if (isChecked) {
                     otp.setText("");
                     otp.setEnabled(false);
@@ -136,7 +129,7 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
         });
 
 
-        clcrReasonAdapter = new ArrayAdapter<ReasonMaster>(this, android.R.layout.simple_spinner_item);
+        clcrReasonAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
         clcrReasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         clcrReasonAdapter.add(new ReasonMaster(0 + "", getResources().getString(R.string.select)));
         for (int i = 0; i < bmodel.reasonHelper.getClosecallReasonList().size(); i++)
@@ -147,13 +140,11 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // TODO Auto-generated method stub
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
 
             }
         });
@@ -206,13 +197,6 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
         if (checkActivityCompletion()) {
             if (reason_desc.getSelectedItemId() != 0) {
 
-               /* if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
-                    int permissionStatus = ContextCompat.checkSelfPermission(CloseCallActivity.this,
-                            Manifest.permission.ACCESS_FINE_LOCATION);
-                    if (permissionStatus == PackageManager.PERMISSION_GRANTED)
-                        bmodel.locationUtil.startLocationListener();
-                }*/
-
                 save();
 
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
@@ -220,8 +204,7 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
                 bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
                         .now(SDUtil.TIME), "");
                 bmodel.productHelper.clearProductHelper();
-//                BusinessModel.loadActivity(CloseCallActivity.this,
-//                        DataMembers.actPlanning);
+
                 finish();
             } else {
                 bmodel.showAlert("Choose type of visit.", 0);
@@ -230,22 +213,18 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
         } else {
             bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
             bmodel.outletTimeStampHelper.deleteTimeStamp();
-//            BusinessModel.loadActivity(CloseCallActivity.this,
-//                    DataMembers.actPlanning);
+
             finish();
         }
     }
 
 
-    private Vector<ConfigureBO> menuDB = new Vector<ConfigureBO>();
 
     private boolean checkActivityCompletion() {
 
         boolean activtyDone = false;
 
-        menuDB = bmodel.configurationMasterHelper.getActivityMenu();
-
-        for (ConfigureBO config : menuDB) {
+        for (ConfigureBO config : bmodel.configurationMasterHelper.getActivityMenu()) {
             if (config.getHasLink() == 1 && config.isDone()
                     && !config.getConfigCode().equals("MENU_CLOSE_CALL")) {
 
@@ -272,12 +251,16 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
         return handler;
     }
 
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
+
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
             bmodel = (BusinessModel) getApplicationContext();
-            timespent.setText(msg.obj + "");
+            timespent.setText(msg.obj.toString());
+            return true;
         }
-    };
+    });
 
     public void save() {
         ReasonMaster temp = (ReasonMaster) reason_desc.getSelectedItem();
@@ -288,7 +271,6 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
 
         bmodel.closecallhelper.saveCloseCallreason(nonproductive);
         bmodel.updateIsVisitedFlag();
-        // Alert the user
         Toast.makeText(CloseCallActivity.this,
                 getResources().getString(R.string.reason_saved),
                 Toast.LENGTH_SHORT).show();
@@ -297,8 +279,7 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
     public void onBack() {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME));
-        /*BusinessModel.loadActivity(CloseCallActivity.this,
-                DataMembers.actHomeScreenTwo);*/
+
         Intent myIntent = new Intent(this, HomeScreenTwo.class);
         startActivityForResult(myIntent, 0);
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);

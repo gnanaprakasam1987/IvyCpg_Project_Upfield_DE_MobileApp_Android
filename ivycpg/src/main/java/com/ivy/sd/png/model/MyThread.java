@@ -18,7 +18,7 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.BixolonIIPrint;
 import com.ivy.sd.png.view.BixolonIPrint;
-import com.ivy.sd.png.view.CallAnalysisActivity;
+import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.InvoicePrintZebraNew;
