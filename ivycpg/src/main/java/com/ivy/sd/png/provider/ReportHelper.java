@@ -2079,4 +2079,27 @@ public class ReportHelper {
         }
         return false;
     }
+
+    public boolean hasOrder() {
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT count(OrderID) from OrderDetail");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    if (c.getInt(0) > 0)
+                        return true;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return false;
+    }
+
 }
