@@ -89,7 +89,10 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             setScreenTitle(getIntent().getStringExtra("screentitle"));
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(null);
+            getSupportActionBar().setIcon(null);
         }
 
         listMap = new HashMap<>();
@@ -113,6 +116,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
 
         if (item.getItemId() == android.R.id.home) {
+            startActivity(new Intent(this, HomeScreenActivity.class));
             finish();
             return true;
         }

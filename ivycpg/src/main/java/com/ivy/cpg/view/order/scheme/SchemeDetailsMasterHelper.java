@@ -498,8 +498,8 @@ public class SchemeDetailsMasterHelper {
         sb.append("SELECT distinct SM.SchemeID, SM.Description, SM.Type, SM.ShortName, BD.ProductID, ");
         sb.append("PM.Psname, PM.PName, BD.BuyQty,SM.parentid,SM.count,PM.pCode,SM.buyType,BD.GroupName,BD.GroupType,");
         sb.append("SM.IsCombination,BD.uomid,UM.ListName,SAC.SchemeApplyCount,BD.ToBuyQty,SM.IsBatch,BD.Batchid,PT.ListCode,SM.IsOnInvoice,");
-        sb.append("Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag,SCM.groupid, SM.GetType, SM.IsAutoApply,SM.IsAccumulation as IsAccumulation");
-
+        sb.append("Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag,SCM.groupid, SM.GetType, SM.IsAutoApply,SM.IsAccumulation as IsAccumulation,");
+        sb.append(" ifNull(SM.FromDate,'') as fromDate,ifNull(SM.ToDate,'') as toDate");
         sb.append(" FROM SchemeMaster SM left join schemeApplyCountMaster SAC on SM.schemeid=SAC.schemeID");
 
         sb.append(" and ((SAC.retailerid=0 OR SAC.retailerid=" + retailerId + ")");
@@ -547,7 +547,8 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setGroupType(c.getString(13));
                     schemeBO.setIsCombination(c.getInt(14));
                     schemeBO.setIsAutoApply(c.getInt(c.getColumnIndex("IsAutoApply")));
-
+                    schemeBO.setFromDate(c.getString(28));
+                    schemeBO.setToDate(c.getString(29));
                     if(c.getInt(c.getColumnIndex("IsAccumulation"))==1)
                         schemeBO.setAccumulationScheme(true);
                     else schemeBO.setAccumulationScheme(false);
