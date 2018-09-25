@@ -1611,7 +1611,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         DeliveryManagementRetailersFragment deliveryRetailersFragment = (DeliveryManagementRetailersFragment) fm
                 .findFragmentByTag(MENU_DELMGMT_RET);
 
-        SellerDashboardFragment mSellerDashFragment = (SellerDashboardFragment) fm
+        com.ivy.ui.dashboard.view.SellerDashboardFragment mSellerDashFragment = (com.ivy.ui.dashboard.view.SellerDashboardFragment) fm
                 .findFragmentByTag(MENU_DASH_KPI);
 
         SellerDashboardFragment mRouteDashFragment = (SellerDashboardFragment) fm
