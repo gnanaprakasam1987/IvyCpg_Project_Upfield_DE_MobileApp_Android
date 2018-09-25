@@ -202,7 +202,9 @@ public class ContactCreationFragment extends IvyBaseFragment {
             if (validateData()) {
                 if (isProfileEdit) {
                     if (isEdit) {
-                        retailerContactBo.setStatus("U");
+                        if(!"I".equalsIgnoreCase(retailerContactBo.getStatus())){
+                            retailerContactBo.setStatus("U");
+                        }
                         for (int i = 0; i < contactList.size(); i++) {
                             if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
                                 contactList.set(i, retailerContactBo);
@@ -260,8 +262,11 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setFistname("");
-                else
+                else {
+                    etFirstName.setSelection(s.toString().length());
                     retailerContactBo.setFistname(s.toString().trim());
+                }
+
 
             }
 
@@ -279,8 +284,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setLastname("");
-                else
+                else {
+                    etLastName.setSelection(s.toString().length());
                     retailerContactBo.setLastname(s.toString().trim());
+                }
 
             }
 
@@ -299,6 +306,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactNumber("");
                 else {
+                    etPhno.setSelection(s.toString().length());
                     retailerContactBo.setContactNumber(s.toString().trim());
                 }
             }
@@ -317,8 +325,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactMail("");
-                else
+                else {
+                    etEmail.setSelection(s.toString().length());
                     retailerContactBo.setContactMail(s.toString().trim());
+                }
 
 
             }
@@ -334,11 +344,14 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         etOthers.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
+                if (s.toString().length() > 0)
 
-                if (s.toString().trim().equals(""))
-                    retailerContactBo.setTitle("");
-                else
-                    retailerContactBo.setTitle(s.toString().trim());
+                    if (s.toString().trim().equals(""))
+                        retailerContactBo.setTitle("");
+                    else {
+                        etOthers.setSelection(s.toString().length());
+                        retailerContactBo.setTitle(s.toString().trim());
+                    }
 
             }
 
@@ -727,6 +740,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
         this.retailerContactBo.setIsPrimary(retailerContactBo.getIsPrimary());
         this.retailerContactBo.setContactTitleLovId(retailerContactBo.getContactTitleLovId());
         this.retailerContactBo.setCpId(retailerContactBo.getCpId());
+        this.retailerContactBo.setStatus(retailerContactBo.getStatus());
 
         if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") && retailerContactBo.getTitle().length() == 0)
             sp_reason.setSelection(0);
