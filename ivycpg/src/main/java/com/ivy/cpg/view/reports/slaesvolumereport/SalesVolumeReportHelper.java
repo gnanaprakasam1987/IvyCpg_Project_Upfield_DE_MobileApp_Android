@@ -52,7 +52,7 @@ public class SalesVolumeReportHelper {
                             "LEFT JOIN ProductLevel PL2 ON PL2.LevelId =  (Select RField from HhtModuleMaster " +
                             "where hhtCode = 'RPT03' and flag = 1 and ForSwitchSeller = 0) " +
                             "LEFT JOIN ProductLevel PL3 ON PL3.LevelId = (Select LevelId from ProductLevel " +
-                            "where Sequence = (Select max(Sequence) from ProductLevel))");
+                            "where Sequence = ( Select Sequence from ProductLevel PL inner join ConfigActivityFilter CF on PL.LevelId = CF.ProductContent where CF.ActivityCode = 'MENU_STK_ORD' ))");
 
             if (filterCur != null) {
                 if (filterCur.moveToNext()) {

@@ -124,7 +124,10 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         lvwplist = (ListView) view.findViewById(R.id.lvwplistorddet);
         lvwplist.setCacheColorHint(0);
 
-        mylist = new SalesVolumeReportHelper(getActivity()).getOrderedProductMaster();
+        SalesVolumeReportHelper reportHelper = new SalesVolumeReportHelper(getActivity());
+        reportHelper.downloadProductReportsWithFiveLevelFilter();
+        mylist = reportHelper.getOrderedProductMaster();
+
         updateOrderGrid();
         setHasOptionsMenu(true);
 

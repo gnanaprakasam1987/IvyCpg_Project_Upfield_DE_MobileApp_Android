@@ -238,6 +238,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         String screenTitle = bModel.configurationMasterHelper
                 .getHomescreentwomenutitle("MENU_CLOSING");
+
         if (screenTitle.isEmpty())
             screenTitle = getResources().getString(R.string.summary);
 
@@ -865,7 +866,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
-            if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
+            if (bModel.getOrderHeaderBO().getOrderImageName() != null && bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_photo_camera_grey_24dp);
                 drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_capture).setIcon(drawable);
@@ -1358,8 +1359,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 AlertDialog.Builder builder2 = new AlertDialog.Builder(OrderSummary.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.order_saved_locally_order_id_is) + orderHelper.getOrderId())
-                        .setMessage((delivery_date_txt.equals("") ? "" : getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt))
+                        .setTitle(getResources().getString(R.string.Orde_Saved))
+                        .setMessage(getResources().getString(R.string.Order_id) + orderHelper.getOrderId() + "\n" +
+                                (delivery_date_txt.equals("") ? "" : getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt))
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
