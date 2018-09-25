@@ -361,7 +361,7 @@ public class SDUtil {
      * This method will convert exponential value into String Using
      * BigDecimal or Format
      */
-    static DecimalFormat df = new DecimalFormat("###.000");
+    static DecimalFormat df = new DecimalFormat("###.00"); //'0's restricted to two decimal places for JNJ after discussing with abbas
 
     public static String getWithoutExponential(Double value) {
         return ((value + "").contains("E")

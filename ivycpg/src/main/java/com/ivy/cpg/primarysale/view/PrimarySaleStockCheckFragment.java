@@ -641,8 +641,6 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                                     String qty = s.toString();
                                     if (qty.length() > 0)
                                         holder.shelfPcsQty.setSelection(qty.length());
-                                    if (qty.length() > 0)
-                                        holder.shelfPcsQty.setSelection(qty.length());
                                     if (!qty.equals("")) {
                                         int sp_qty = SDUtil
                                                 .convertToInt(holder.shelfPcsQty
@@ -670,8 +668,6 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
 
                                 public void afterTextChanged(Editable s) {
                                     String qty = s.toString();
-                                    if (qty.length() > 0)
-                                        holder.shelfCaseQty.setSelection(qty.length());
                                     if (qty.length() > 0)
                                         holder.shelfCaseQty.setSelection(qty.length());
                                     if (!qty.equals("")) {
@@ -713,8 +709,6 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
                         @Override
                         public void afterTextChanged(Editable s) {
                             String qty = s.toString();
-                            if (qty.length() > 0)
-                                holder.shelfOuterQty.setSelection(qty.length());
                             if (qty.length() > 0)
                                 holder.shelfOuterQty.setSelection(qty.length());
 

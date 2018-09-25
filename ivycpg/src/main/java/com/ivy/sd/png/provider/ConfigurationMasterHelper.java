@@ -654,6 +654,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_VANLOAD_OP;
     public boolean SHOW_STOCK_RSN;// available reason
     public boolean SHOW_STOCK_CB;// available checkbox
+    public boolean CHANGE_AVAL_FLOW;// check box tristate flow
     public boolean SHOW_STOCK_LD;// Listed checkbox
     public boolean SHOW_STOCK_DD;// Distributes=d checkbox
     public boolean SHOW_STOCK_POURING;// Pouring
@@ -3815,6 +3816,7 @@ public class ConfigurationMasterHelper {
             SHOW_CAT_STOCK_SP = false;
             SHOW_STOCK_SC = false;
             SHOW_STOCK_CB = false;
+            CHANGE_AVAL_FLOW = false;
             SHOW_STOCK_LD = false;
             SHOW_STOCK_DD = false;
             SHOW_STOCK_RSN = false;
@@ -3988,7 +3990,8 @@ public class ConfigurationMasterHelper {
                         SHOW_COMB_STOCK_CB = true;
                     else if (temp.equals("SR"))
                         SHOW_SALES_RETURN_IN_ORDER = true;
-
+                    else if (temp.equals("CB01"))
+                        CHANGE_AVAL_FLOW = true;
                 }
             }
 

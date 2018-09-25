@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.location.Location;
 import android.os.BatteryManager;
 
 import com.ivy.core.data.app.AppDataProviderImpl;
@@ -16,6 +15,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -165,6 +165,18 @@ public class OutletTimeStampHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
+            String query = "SELECT imageName from OutletTimestampImages where UID=" + getUid();
+            Cursor c = db.selectSQL(query);
+
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    deleteFiles(c.getString(0));
+                }
+                c.close();
+            }
+
+            db.createDataBase();
+            db.openDataBase();
             db.deleteSQL(DataMembers.tbl_OutletTimestamp_images, "uid="
                     + getUid(), false);
             db.closeDB();
@@ -173,14 +185,49 @@ public class OutletTimeStampHelper {
         }
     }
 
-	/**
-	 * Used to set Time Stamp.
-	 *
-	 * @param date date of last user visited retailer
-	 * @param timeIn time of last user visited retailer
-	 */
-	public boolean saveTimeStamp(String date, String timeIn,float distance,String folderPath,String fName,String mVisitMode,String mNFCREasonId) {
-		ArrayList<UserMasterBO> joinCallList=bmodel.userMasterHelper.getUserMasterBO().getJoinCallUserList();boolean sucessFlag=true;
+    public void deleteImagesFromFolder() {
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+        String query = "SELECT imageName from OutletTimestampImages where UID=" + getUid();
+        Cursor c = db.selectSQL(query);
+
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                deleteFiles(c.getString(0));
+            }
+            c.close();
+        }
+    }
+
+    private void deleteFiles(String filename) {
+
+        String[] fileArry = filename.split("/");
+        if (fileArry.length > 0) {
+            filename = fileArry[fileArry.length - 1];
+        }
+        File folder = new File(HomeScreenFragment.photoPath + "/");
+
+        File[] files = folder.listFiles();
+        for (File tempFile : files) {
+            if (tempFile != null && tempFile.getName().equals(filename)) {
+                boolean isDeleted = tempFile.delete();
+                if (isDeleted)
+                    Commons.print("Image Delete," + "Sucess");
+            }
+        }
+    }/**
+     * Used to set Time Stamp.
+     *
+     * @param date   date of last user visited retailer
+     * @param timeIn time of last user visited retailer
+     */
+    public boolean saveTimeStamp(String date, String timeIn, float distance, String folderPath, String fName, String mVisitMode, String mNFCREasonId) {
+
+        ArrayList<UserMasterBO> joinCallList = bmodel.userMasterHelper.getUserMasterBO().getJoinCallUserList();
+        boolean sucessFlag=true;
         try {
 		try {
 			if(bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED)
@@ -195,35 +242,35 @@ public class OutletTimeStampHelper {
                 Commons.printException(e);
             }
 
-			int joinCallFlag=0;
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
+            int joinCallFlag = 0;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
 
-			String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc";
+            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc";
 
 
-			String values = getUid() + ","
-					+ bmodel.retailerMasterBO.getBeatID() + "," + QT(date)
-					+ "," + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
-					+ QT(date + " " + timeIn) + "," + QT(date + " " + timeIn)
-					+ "," + QT(bmodel.retailerMasterBO.getRetailerName()) + ","
-					+ QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
-					+ QT(LocationUtil.latitude + "") + ","
-					+ QT(LocationUtil.longitude + "")+","
-					+ joinCallFlag+","
-					+ QT(LocationUtil.accuracy+"")+","
-					+ QT(distance+"")+","
-					+ (dist<bmodel.getRetailerMasterBO().getGpsDistance()?1:0)+","
-					+ (getLastRetailerId()==SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID())? getLastRetailerSequence():(getLastRetailerSequence()+1))
-					+","+bmodel.retailerMasterBO.getDistributorId()
-					+","+getBatteryPercentage(context)
-					+","+QT(LocationUtil.mProviderName)
-					+","+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
-					+","+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
-					+","+QT(String.valueOf(bmodel.getOrderValue()))
-                    +","+QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
+            String values = getUid() + ","
+                    + bmodel.retailerMasterBO.getBeatID() + "," + QT(date)
+                    + "," + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+                    + QT(date + " " + timeIn) + "," + QT(date + " " + timeIn)
+                    + "," + QT(bmodel.retailerMasterBO.getRetailerName()) + ","
+                    + QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
+                    + QT(LocationUtil.latitude + "") + ","
+                    + QT(LocationUtil.longitude + "") + ","
+                    + joinCallFlag + ","
+                    + QT(LocationUtil.accuracy + "") + ","
+                    + QT(distance + "") + ","
+                    + (dist < bmodel.getRetailerMasterBO().getGpsDistance() ? 1 : 0) + ","
+                    + (getLastRetailerId() == SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID()) ? getLastRetailerSequence() : (getLastRetailerSequence() + 1))
+                    + "," + bmodel.retailerMasterBO.getDistributorId()
+                    + "," + getBatteryPercentage(context)
+                    + "," + QT(LocationUtil.mProviderName)
+                    + "," + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
+                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+                    + "," + QT(String.valueOf(bmodel.getOrderValue()))
+                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
 
 			db.insertSQL("OutletTimestamp", columns, values);
 
@@ -254,39 +301,39 @@ public class OutletTimeStampHelper {
         return sucessFlag;
 	}
 
-	/**
-	 * Set Time Out
-	 *
-	 * @param timeOut Module timeout
-	 * @param reasonDesc reason for closing
-	 */
-	public void updateTimeStamp(String timeOut,String reasonDesc) {
-		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
-			db.createDataBase();
-			db.openDataBase();
-			String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
-			String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
-					+"',feedback="+bmodel.QT(reasonDesc)
-					+", OrderValue = "+QT(String.valueOf(bmodel.getOrderValue()))
-					+", outLatitude = "+ QT(LocationUtil.latitude + "")
-					+", outLongitude = "+ QT(LocationUtil.longitude + "")
-					+", LocationProvider = "+QT(LocationUtil.mProviderName)
-					+", gpsAccuracy = "+ QT(LocationUtil.accuracy+"")
-					+", Battery = "+getBatteryPercentage(context)
-					+", IsLocationEnabled = "+QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
-					+", IsDeviated = "+QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
-                    +", lpc = "+ bmodel.retailerMasterBO.getTotalLines()
-					+"  WHERE RetailerID = '"
-					+bmodel.retailerMasterBO.getRetailerID()
-					+ "' AND TimeIn = '" + getTimeIn() + "'";
-			db.updateSQL(query);
-			db.closeDB();
-		} catch (Exception e) {
-			Commons.printException(e);
-		}
-	}
+    /**
+     * Set Time Out
+     *
+     * @param timeOut    Module timeout
+     * @param reasonDesc reason for closing
+     */
+    public void updateTimeStamp(String timeOut, String reasonDesc) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
+            String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
+                    + "',feedback=" + bmodel.QT(reasonDesc)
+                    + ", OrderValue = " + QT(String.valueOf(bmodel.getOrderValue()))
+                    + ", outLatitude = " + QT(LocationUtil.latitude + "")
+                    + ", outLongitude = " + QT(LocationUtil.longitude + "")
+                    + ", LocationProvider = " + QT(LocationUtil.mProviderName)
+                    + ", gpsAccuracy = " + QT(LocationUtil.accuracy + "")
+                    + ", Battery = " + getBatteryPercentage(context)
+                    + ", IsLocationEnabled = " + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
+                    + ", IsDeviated = " + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+                    + ", lpc = " + bmodel.retailerMasterBO.getTotalLines()
+                    + "  WHERE RetailerID = '"
+                    + bmodel.retailerMasterBO.getRetailerID()
+                    + "' AND TimeIn = '" + getTimeIn() + "'";
+            db.updateSQL(query);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
 
     /**

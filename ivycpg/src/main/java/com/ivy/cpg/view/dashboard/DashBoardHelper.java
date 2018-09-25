@@ -3809,7 +3809,8 @@ public class DashBoardHelper {
             db.openDataBase();
             String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
                     + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
-                    + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
+                    + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL"
+                    + " inner join stockapply sa on sa.uid = vl.uid";
             Cursor c = db
                     .selectSQL(query);
             int loadQty;
@@ -3875,7 +3876,7 @@ public class DashBoardHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select count(distinct RM.retailerid) from retailermaster RM inner join " +
-                    "RetailerBeatMapping RBM on RM.RetailerId = RBM.Retailerid where RM.isdeviated='N' and RBM.isVisited = 'Y'");
+                    "RetailerBeatMapping RBM on RM.RetailerId = RBM.Retailerid where RBM.isdeviated='N' and RBM.isVisited = 'Y'");
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {

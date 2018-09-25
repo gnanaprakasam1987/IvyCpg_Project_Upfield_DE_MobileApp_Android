@@ -2795,6 +2795,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     !bmodel.collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(),this)){
 
                 isCreated = false;
+                isClick = false;
                 Toast.makeText(this, getString(R.string.invoice_with_no_collection), Toast.LENGTH_SHORT).show();
             }
             else if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))

@@ -257,7 +257,7 @@ public class CommonPrintHelper {
      * @param fileNameWithPath
      * @param isFromAsset
      */
-    public void xmlRead(String fileNameWithPath, boolean isFromAsset, Vector<ProductMasterBO> productList, HashMap<String, String> keyValues, String signatureName,ArrayList<StockReportBO> eodStockList) {
+    public void xmlRead(String fileNameWithPath, boolean isFromAsset, Vector<ProductMasterBO> productList, HashMap<String, String> keyValues, String signatureName, ArrayList<StockReportBO> eodStockList) {
         try {
 
             resetValues();
@@ -328,7 +328,7 @@ public class CommonPrintHelper {
                                 product_header_border_char = product_header_border_char == null ? "-" : product_header_border_char;
 
                                 mAttributeList = new Vector<>();
-                                if (group_name.equals("product_details")||group_name.equals("eod_product_details")) {
+                                if (group_name.equals("product_details") || group_name.equals("eod_product_details")) {
                                     for (int i = 0; i < product_header_border_char_length; i++) {
                                         sb.append(product_header_border_char);
                                     }
@@ -464,7 +464,7 @@ public class CommonPrintHelper {
 
 
                             if (group_name != null && (group_name.equalsIgnoreCase("product_details")
-                                    ||group_name.equalsIgnoreCase("eod_product_details"))) {
+                                    || group_name.equalsIgnoreCase("eod_product_details"))) {
                                 //mLengthUptoPName = mLengthUptoPName + attr_length + attr_space;
                                 if (product_name_single_line.equalsIgnoreCase("YES")) {
 
@@ -570,14 +570,13 @@ public class CommonPrintHelper {
                                 }
 
                                 printEmptyReturn(mAttributeList, product_name_single_line, sb);
-                            }
-                            else if(group_name != null && group_name.equalsIgnoreCase("eod_product_details")) {
+                            } else if (group_name != null && group_name.equalsIgnoreCase("eod_product_details")) {
                                 sb.append(newline);
                                 for (int i = 0; i < product_header_border_char_length; i++) {
                                     sb.append(product_header_border_char);
                                 }
-                                if(eodStockList!=null)
-                                    loadEODStock(mAttributeList, sb,  eodStockList, product_name_single_line);
+                                if (eodStockList != null)
+                                    loadEODStock(mAttributeList, sb, eodStockList, product_name_single_line);
                             }
 
                             group_name = "";
@@ -754,7 +753,10 @@ public class CommonPrintHelper {
             extraSpace = SDUtil.convertToInt(attr_space_str);
             value = alignWithLabelForSingleLine(label, formatValueInPrint(mBillLevelDiscountValue, precisionCount) + "", extraSpace);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_WITH_HOLD)) {
-            value = alignWithLabelForSingleLine(label, formatValueInPrint(orderHelper.withHoldDiscount, precisionCount) + "");
+            if (DiscountHelper.getInstance(context).isWihtHoldApplied())
+                value = alignWithLabelForSingleLine(label, formatValueInPrint(orderHelper.withHoldDiscount, precisionCount) + "");
+            else
+                value = "";
         } else if (tag.equalsIgnoreCase(TAG_TAX_BILL)) {
             value = printBillLevelTax(precisionCount, attr_space_str);
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL)) {
@@ -832,27 +834,20 @@ public class CommonPrintHelper {
                 mProductValue = mProductRetQtyTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP)) {
                 mProductValue = mProductRepOrdInPieceTotal + "";
-            }
-            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LOADING_STOCK)) {
-                mProductValue = mLoadStockTotal+"";
-            }
-            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SOLD_STOCK)) {
-                mProductValue = mSoldStockTotal+"";
-            }
-            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FREE_ISSUED_STOCK)) {
-                mProductValue = mFreeStockTotal+"";
-            }
-            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CURRENT_STOCK)) {
-                mProductValue = mCurrentStockTotal+"";
-            }
-            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_EMPTY_BOTTLE_STOCK)) {
-                mProductValue = mEmptyStockTotal+"";
-            }
-            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_RETURN_STOCK)) {
-                mProductValue = mReturnStockTotal+"";
-            }
-            else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REP_STOCK)) {
-                mProductValue = mRepStockTotal +"";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LOADING_STOCK)) {
+                mProductValue = mLoadStockTotal + "";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SOLD_STOCK)) {
+                mProductValue = mSoldStockTotal + "";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FREE_ISSUED_STOCK)) {
+                mProductValue = mFreeStockTotal + "";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CURRENT_STOCK)) {
+                mProductValue = mCurrentStockTotal + "";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_EMPTY_BOTTLE_STOCK)) {
+                mProductValue = mEmptyStockTotal + "";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_RETURN_STOCK)) {
+                mProductValue = mReturnStockTotal + "";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REP_STOCK)) {
+                mProductValue = mRepStockTotal + "";
             }
 
 
@@ -947,7 +942,7 @@ public class CommonPrintHelper {
             if (productBO.getOrderedCaseQty() > 0
                     || productBO.getOrderedPcsQty() > 0
                     || productBO.getOrderedOuterQty() > 0
-                    || ((bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY||bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
+                    || ((bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY || bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                     && isReturnDoneForProduct(productBO))) {
                 mOrderedProductList.add(productBO);
             }
@@ -1836,7 +1831,7 @@ public class CommonPrintHelper {
                                         s = doAlign("", ALIGNMENT_RIGHT, taxDesc.length());
                                     }
 
-                                    s = s + " " + taxpercentege + "% "+context.getResources().getString(R.string.tax_on)+" " + formatValueInPrint(totalExcludeValue, precision);
+                                    s = s + " " + taxpercentege + "% " + context.getResources().getString(R.string.tax_on) + " " + formatValueInPrint(totalExcludeValue, precision);
 
                                     s = alignWithLabelForSingleLine(s, formatValueInPrint(totalTax, precision));
 
@@ -1873,6 +1868,9 @@ public class CommonPrintHelper {
         } else {
             discountValue = discount;
         }
+
+        if (bmodel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT && !DiscountHelper.getInstance(context).isWihtHoldApplied())
+            discountValue -= orderHelper.withHoldDiscount;
         mBillLevelDiscountValue = SDUtil.convertToDouble(SDUtil.format(discountValue, 2, 0));
     }
 
@@ -2354,13 +2352,13 @@ public class CommonPrintHelper {
         mSchemeValueByAmountType = 0;
         netSchemeAmount = 0;
 
-        mLoadStockTotal=0;
-        mSoldStockTotal=0;
-        mFreeStockTotal=0;
-        mCurrentStockTotal=0;
-        mEmptyStockTotal=0;
-        mReturnStockTotal=0;
-        mRepStockTotal=0;
+        mLoadStockTotal = 0;
+        mSoldStockTotal = 0;
+        mFreeStockTotal = 0;
+        mCurrentStockTotal = 0;
+        mEmptyStockTotal = 0;
+        mReturnStockTotal = 0;
+        mRepStockTotal = 0;
     }
 
     private String formatValueInPrint(double value, int precision) {
@@ -2518,24 +2516,24 @@ public class CommonPrintHelper {
     }
 
     private void loadEODStock(Vector<AttributeListBO> mAttrList, StringBuilder sb, ArrayList<StockReportBO> productList
-            , String product_name_single_line){
+            , String product_name_single_line) {
 
-        mLoadStockTotal=0;
-        mSoldStockTotal=0;
-        mFreeStockTotal=0;
-        mCurrentStockTotal=0;
-        mEmptyStockTotal=0;
-        mReturnStockTotal=0;
-        mRepStockTotal=0;
+        mLoadStockTotal = 0;
+        mSoldStockTotal = 0;
+        mFreeStockTotal = 0;
+        mCurrentStockTotal = 0;
+        mEmptyStockTotal = 0;
+        mReturnStockTotal = 0;
+        mRepStockTotal = 0;
 
         sb.append("\n");
         String mProductValue;
         int mLengthUptoPName;
 
-        for(StockReportBO prod:productList) {
+        for (StockReportBO prod : productList) {
             if (prod.getVanLoadQty() > 0 || prod.getEmptyBottleQty() > 0 || prod.getFreeIssuedQty() > 0
                     || prod.getSoldQty() > 0 || prod.getReplacementQty() > 0 || prod.getReturnQty() > 0) {
-                mLengthUptoPName=0;
+                mLengthUptoPName = 0;
                 for (AttributeListBO attr : mAttrList) {
 
                     mProductValue = "";
@@ -2543,25 +2541,25 @@ public class CommonPrintHelper {
                         mProductValue = (prod.getProductShortName() != null ? prod.getProductShortName() : prod.getProductName());
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LOADING_STOCK)) {
                         mProductValue = prod.getVanLoadQty() + "";
-                        mLoadStockTotal+=prod.getVanLoadQty();
+                        mLoadStockTotal += prod.getVanLoadQty();
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SOLD_STOCK)) {
                         mProductValue = prod.getSoldQty() + "";
-                        mSoldStockTotal+=prod.getSoldQty();
+                        mSoldStockTotal += prod.getSoldQty();
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_FREE_ISSUED_STOCK)) {
                         mProductValue = prod.getFreeIssuedQty() + "";
-                        mFreeStockTotal+=prod.getFreeIssuedQty();
+                        mFreeStockTotal += prod.getFreeIssuedQty();
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CURRENT_STOCK)) {
                         mProductValue = prod.getSih() + "";
-                        mCurrentStockTotal+=prod.getSih();
+                        mCurrentStockTotal += prod.getSih();
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_EMPTY_BOTTLE_STOCK)) {
                         mProductValue = prod.getEmptyBottleQty() + "";
-                        mEmptyStockTotal+=prod.getEmptyBottleQty();
+                        mEmptyStockTotal += prod.getEmptyBottleQty();
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_RETURN_STOCK)) {
                         mProductValue = prod.getReturnQty() + "";
-                        mReturnStockTotal+=prod.getReturnQty();
+                        mReturnStockTotal += prod.getReturnQty();
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REP_STOCK)) {
                         mProductValue = prod.getReplacementQty() + "";
-                        mRepStockTotal+=prod.getReplacementQty();
+                        mRepStockTotal += prod.getReplacementQty();
                     }
 
 
@@ -2598,7 +2596,6 @@ public class CommonPrintHelper {
                             }
                         }
                     }
-
 
 
                 }

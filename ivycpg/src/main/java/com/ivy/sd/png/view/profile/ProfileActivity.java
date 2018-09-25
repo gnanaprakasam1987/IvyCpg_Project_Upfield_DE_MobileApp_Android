@@ -274,7 +274,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         hideVisibleComponents();
 
 
-        downloadProductsAndPrice = new DownloadProductsAndPrice();
+        //downloadProductsAndPrice = new DownloadProductsAndPrice();
 
         new LoadProfileConfigs().execute();
 
@@ -1434,7 +1434,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
+                && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON && calledBy.equals(MENU_VISIT)) {
             mLocTimer = new Timer();
             timerTask = new LocationFetchTimer();
             mLocTimer.schedule(timerTask, 0, 1000);
@@ -1457,8 +1457,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     Commons.print("lat:" + LocationUtil.latitude);
                     retLatLng = new LatLng(retailerLat, retailerLng);
                     curLatLng = new LatLng(lat, lng);
-                    if (lat != 0.0 && lng != 0.0)
-                        loadMapView(retLatLng, curLatLng);
+                    loadMapView(retLatLng, curLatLng);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1782,6 +1781,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             isClicked = true;
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
+            downloadProductsAndPrice = new DownloadProductsAndPrice();
             downloadProductsAndPrice.execute();
             // new DownloadProductsAndPrice().execute();
         }
@@ -1804,6 +1804,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         // new DownloadProductsAndPrice().execute();
+                                        downloadProductsAndPrice = new DownloadProductsAndPrice();
                                         downloadProductsAndPrice.execute();
 
                                     }
@@ -2052,7 +2053,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                         }
 
-                    } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                    } else {
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);
                     }
@@ -2306,7 +2307,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             unregisterReceiver(receiver);
         }
 
-        if (downloadProductsAndPrice.getStatus() == AsyncTask.Status.RUNNING)
+        if (downloadProductsAndPrice != null && downloadProductsAndPrice.getStatus() == AsyncTask.Status.RUNNING)
             downloadProductsAndPrice.cancel(true);
 
     }
@@ -2353,6 +2354,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 isClicked = false;
 
                 bmodel.updateUserAudit(1);
+                downloadProductsAndPrice = new DownloadProductsAndPrice();
                 downloadProductsAndPrice.execute();
                 // new DownloadProductsAndPrice().execute();
                 break;

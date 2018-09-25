@@ -1989,6 +1989,8 @@ SynchronizationHelper {
                 db.executeQ("CREATE INDEX index_producttaggrpmaster ON ProductTaggingGroupMapping(Groupid)");
                 db.executeQ("CREATE INDEX index_producttaggingmap ON ProductTaggingCriteriaMapping(locid)");
                 db.executeQ("CREATE INDEX index_productmasterpid ON ProductMaster(ParentId)");
+                db.executeQ("CREATE INDEX index_productmasterplid ON ProductMaster(PLid)");
+                db.executeQ("CREATE INDEX index_productmasterpidh ON ProductMaster(ParentHierarchy)");
                 db.executeQ("CREATE INDEX index_schememaster ON SchemeMaster(SchemeID)");
                 db.executeQ("CREATE INDEX index_schemecritmap ON SchemeCriteriaMapping(SchemeID)");
                 db.executeQ("CREATE INDEX index_schemecountmaster ON SchemeApplyCountMaster(SchemeID)");
@@ -1999,6 +2001,9 @@ SynchronizationHelper {
                 db.executeQ("CREATE INDEX index_discountprdmap ON DiscountProductMapping(DiscountId)");
                 db.executeQ("CREATE INDEX index_standardlistmaster ON StandardListMaster(ListId)");
                 db.executeQ("CREATE INDEX index_entityattributemaster ON EntityAttributeMaster(AttributeId)");
+                db.executeQ("CREATE INDEX index_sbddistributionMaster ON SbdDistributionMaster(ChannelId,productId)");
+                db.executeQ("CREATE INDEX index_productwarehousestockmaster ON ProductWareHouseStockMaster(PID,Uomid)");
+                db.executeQ("CREATE INDEX index_hsnmaster ON HSNMaster(HSNId)");
             } catch (Exception e) {
                 Commons.printException(e);
             }

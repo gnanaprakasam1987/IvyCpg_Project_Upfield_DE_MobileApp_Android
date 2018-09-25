@@ -170,6 +170,18 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 holder.del_rep_code_val.setText(getResources().getString(R.string.close));
                 holder.del_rep_code_val.setTextColor(ContextCompat.getColor(getActivity(), R.color.GREEN));
             }
+            Vector<OrderHistoryBO> historyDetailList = null;
+            if (bmodel.profilehelper.getChild_invoiceHistoryList() != null && bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
+                historyDetailList = bmodel.profilehelper.getChild_invoiceHistoryList()
+                        .get(position);
+                if (historyDetailList != null && historyDetailList.size() > 0 && (historyDetailList.get(0).getCaseQty() > 0 || historyDetailList.get(0).getPcsQty() > 0 || historyDetailList.get(0).getOuterQty() > 0))
+                    holder.invViewLayout.setVisibility(View.VISIBLE);
+                else
+                    holder.invViewLayout.setVisibility(View.GONE);
+            } else {
+                holder.invViewLayout.setVisibility(View.GONE);
+            }
+
             /*try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
                 Calendar c = Calendar.getInstance();
@@ -226,7 +238,6 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 del_rep_code_txt = (TextView) itemView.findViewById(R.id.del_rep_code_txt);
 
                 if (bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
-                    invViewLayout.setVisibility(View.VISIBLE);
                     itemView.setClickable(true);
                     itemView.setOnClickListener(new View.OnClickListener() {
                         @Override

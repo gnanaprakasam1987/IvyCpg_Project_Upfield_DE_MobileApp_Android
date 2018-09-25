@@ -92,12 +92,16 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         initializeDi();
+        showLoading();
+
+
+
 
     }
 
-    private void initScreen() {
+    private void initScreen(){
+
         this.setContentView(this.getLayoutId());
 
         checkAndRequestPermissionAtRunTime(PHONE_STATE_AND_WRITE_PERMISSON);
@@ -108,6 +112,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         initVariables();
         setUpViews();
+        hideLoading();
     }
 
     private void setUpDefaults() {
@@ -479,6 +484,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void setBlueTheme() {
+
         setTheme(R.style.MVPTheme_Blue);
         initScreen();
     }

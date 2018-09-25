@@ -29,6 +29,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -703,10 +704,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             //  if (productBO != null) {
 
                             if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
-                                tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
+                                tv.setText(SDUtil.getWithoutExponential(schemeProductBO.getBuyQty()) + "-" + SDUtil.getWithoutExponential(schemeProductBO.getTobuyQty()) + " " + schemeProductBO.getUomDescription());
 
                             } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
-                                tv.setText(schemeProductBO.getBuyQty() + "-" + schemeProductBO.getTobuyQty() + " " + rupeesLabel);
+                                tv.setText(SDUtil.getWithoutExponential(schemeProductBO.getBuyQty()) + "-" + SDUtil.getWithoutExponential(schemeProductBO.getTobuyQty()) + " " + rupeesLabel);
                             }
 
                             schemeChildView.addView(tv);
@@ -821,10 +822,10 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             //if (productBO != null) {
 
                             if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
-                                tv.setText((int) schemeProductBO.getBuyQty() + "-" + (int) schemeProductBO.getTobuyQty() + " " + schemeProductBO.getUomDescription());
+                                tv.setText(SDUtil.getWithoutExponential(schemeProductBO.getBuyQty()) + "-" + SDUtil.getWithoutExponential(schemeProductBO.getTobuyQty()) + " " + schemeProductBO.getUomDescription());
 
                             } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
-                                tv.setText(schemeProductBO.getBuyQty() + "-" + schemeProductBO.getTobuyQty() + " " + rupeesLabel);
+                                tv.setText(SDUtil.getWithoutExponential(schemeProductBO.getBuyQty()) + "-" + SDUtil.getWithoutExponential(schemeProductBO.getTobuyQty()) + " " + rupeesLabel);
                             }
                             tv.setWidth(mSchemeDetailWidth);
                             tv.setSingleLine(true);
@@ -935,18 +936,18 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                             if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_QTY)) {
 
                                 if (buyProductBO.getBuyQty() == buyProductBO.getTobuyQty()) {
-                                    sb.append((int) buyProductBO.getBuyQty());
+                                    sb.append(SDUtil.getWithoutExponential(buyProductBO.getBuyQty()));
                                 } else {
-                                    sb.append((int) buyProductBO.getBuyQty() + " - " + (int) buyProductBO.getTobuyQty());
+                                    sb.append(SDUtil.getWithoutExponential(buyProductBO.getBuyQty()) + " - " + SDUtil.getWithoutExponential(buyProductBO.getTobuyQty()));
                                 }
                                 sb.append(" " + buyProductBO.getUomDescription());
 
                             } else if (schemeBO.getBuyType().equals(SCHEME_BUY_TYPE_VALUE)) {
 
                                 if (buyProductBO.getBuyQty() == buyProductBO.getTobuyQty()) {
-                                    sb.append(buyProductBO.getBuyQty());
+                                    sb.append(SDUtil.getWithoutExponential(buyProductBO.getBuyQty()));
                                 } else {
-                                    sb.append(buyProductBO.getBuyQty() + " - " + buyProductBO.getTobuyQty());
+                                    sb.append(SDUtil.getWithoutExponential(buyProductBO.getBuyQty()) + " - " + SDUtil.getWithoutExponential(buyProductBO.getTobuyQty()));
                                 }
                                 sb.append(" " + rupeesLabel);
                             }
@@ -1678,7 +1679,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         layout_child.setOrientation(LinearLayout.VERTICAL);
 
         TextView productNameTV = getDefaultTextView();
-        int fromQty = 0, toQty = 0;
+        String fromQty = "", toQty = "";
         String uomDes = "";
 
         for (SchemeProductBO freeProductBO : freeProductList) {
@@ -1690,8 +1691,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     sb.append(productBO.getProductShortName());
                     sb.append("\n");
 
-                    fromQty = (int) freeProductBO.getBuyQty();
-                    toQty = (int) freeProductBO.getTobuyQty();
+                    fromQty = SDUtil.getWithoutExponential(freeProductBO.getBuyQty());
+                    toQty = SDUtil.getWithoutExponential(freeProductBO.getTobuyQty());
                     if (freeProductBO.getUomID() == productBO.getCaseUomId()) {
                         uomDes = freeProductBO.getUomDescription();
                     } else if (freeProductBO.getUomID() == productBO.getOuUomid()) {

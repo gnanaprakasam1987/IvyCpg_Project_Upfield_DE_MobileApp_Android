@@ -1001,7 +1001,7 @@
     <string name="rtgs_date">PaymentModeActivity</string>
     <string name="cheque_date">Çek Tarihi</string>
     <string name="dd_no_date">Talep Taslak Tarihi</string>
-    <string name="total_sih">Total Sih</string>
+    <string name="total_sih">Total SIH</string>
     <string name="total_cases">Toplam Koli</string>
     <string name="total_outer">Toplam Dış Koli</string>
     <string name="total_piece">Total Piece</string>

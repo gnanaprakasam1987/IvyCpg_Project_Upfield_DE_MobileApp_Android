@@ -281,6 +281,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
         //if statement to make sure the alert is displayed only for the first time
+        if(mPlanoGramHelper == null){
+            mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
+        }
         if (mPlanoGramHelper.getInStoreLocation().size() != 1 && !isDialogPopup) {
             if (!mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 showLocationFilterAlert();

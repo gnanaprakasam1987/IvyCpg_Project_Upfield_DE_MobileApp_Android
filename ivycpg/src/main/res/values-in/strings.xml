@@ -1001,7 +1001,7 @@
     <string name="rtgs_date">Tanggal Rtgs</string>
     <string name="cheque_date">Tanggal Cek</string>
     <string name="dd_no_date">Tanggal Permintaan Draft</string>
-    <string name="total_sih">Total Sih</string>
+    <string name="total_sih">Total SIH</string>
     <string name="total_cases">Total Bungkusan</string>
     <string name="total_outer">Total Bungkusan Luar</string>
     <string name="total_piece">Total Eceran</string>

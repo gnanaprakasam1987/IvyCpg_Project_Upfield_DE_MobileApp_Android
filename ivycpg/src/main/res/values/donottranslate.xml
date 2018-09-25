@@ -168,6 +168,7 @@
     <string name="targeted">Targeted </string>
     <string name="covered">Covered </string>
     <string name="please_complete">Please Complete</string>
+    <string name="complete">Complete</string>
 
     <string name="enter_receipt_no">Enter Receipt Number</string>
     <string name="please_enter">Please Enter</string>
@@ -232,5 +233,8 @@
 
     <string name="skip">Skip</string>
 
+
+    <string name="Orde_Saved">Order Saved.</string>
+    <string name="Order_id">Order ID is: </string>
     <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
 </resources>

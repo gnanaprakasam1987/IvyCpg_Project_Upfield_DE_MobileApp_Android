@@ -122,6 +122,8 @@ public class ReportMenuFragment extends IvyBaseFragment {
                     R.drawable.icon_reports);
             menuIcons.put(StandardListMasterConstants.MENU_INV_SALES_RETURN_REPORT,
                     R.drawable.icon_reports);
+            menuIcons.put(StandardListMasterConstants.MENU_DELIVERY_RPT,
+                    R.drawable.icon_reports);
 
 
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
@@ -251,6 +253,13 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 if (bmodel.reportHelper.hasPayment()) {
                     gotoReportActivity(config);
                 } else
+                    showToast();
+                break;
+
+            case StandardListMasterConstants.MENU_SKU_REPORT:
+                if(bmodel.reportHelper.hasOrder())
+                    gotoReportActivity(config);
+                else
                     showToast();
                 break;
 

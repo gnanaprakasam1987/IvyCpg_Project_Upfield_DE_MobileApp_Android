@@ -63,7 +63,7 @@ public class EODStockReportFragment extends Fragment {
         MyAdapter adapter = new MyAdapter(mStockReportList);
         lv.setAdapter(adapter);
 
-        if (bmodel.configurationMasterHelper.SHOW_BUTTON_PRINT01) {
+        if (bmodel.configurationMasterHelper.SHOW_BUTTON_PRINT01 && !mStockReportList.isEmpty()) {
             btnPrint.setVisibility(View.VISIBLE);
             layoutPrint.setVisibility(View.VISIBLE);
         }

@@ -3281,6 +3281,9 @@ public class BusinessModel extends Application {
     public void showAlertWithImage(String title, String msg, int id, boolean imgDisplay) {
 
         final int idd = id;
+        if(getContext() == null){
+            return;
+        }
 
         CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override

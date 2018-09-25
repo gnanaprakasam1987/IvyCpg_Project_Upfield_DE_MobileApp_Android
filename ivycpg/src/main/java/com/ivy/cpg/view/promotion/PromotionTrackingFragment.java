@@ -913,8 +913,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         if (!"".equals(s.toString())) {
                             if (s.toString().length() > 0)
                                 holder.etPromoQty.setSelection(s.toString().length());
-                            if (s.toString().length() > 0)
-                                holder.etPromoQty.setSelection(s.toString().length());
                             int scQty = SDUtil.convertToInt(holder.etPromoQty
                                     .getText().toString());
                             holder.mPromotionMasterBO.setPromoQty(scQty);
