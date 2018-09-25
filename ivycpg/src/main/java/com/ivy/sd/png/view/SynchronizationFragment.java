@@ -711,7 +711,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel = (BusinessModel) context.getApplicationContext();
             isClicked = false;
             setDayCloseEnableDisable();
             SyncDownloadStatusDialog sdsd;
@@ -1460,7 +1460,14 @@ public class SynchronizationFragment extends IvyBaseFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(mSyncReceiver);
+        unregisterMyBroadcastReceiver();
+    }
+
+    private void unregisterMyBroadcastReceiver() {
+        if (null != mSyncReceiver) {
+            getActivity().unregisterReceiver(mSyncReceiver);
+            mSyncReceiver = null;
+        }
     }
 
     @Override

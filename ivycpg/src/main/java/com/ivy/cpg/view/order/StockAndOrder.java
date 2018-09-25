@@ -1957,12 +1957,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
                                 holder.imageButton_availability.setChecked(false);
 
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
-                                    holder.shelfPcsQty.setText("");
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
-                                    holder.shelfCaseQty.setText("");
-                                if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
-                                    holder.shelfouter.setText("");
+                           // if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                holder.shelfPcsQty.setText("");
+                           // if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                holder.shelfCaseQty.setText("");
+                            //if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                holder.shelfouter.setText("");
 
                             }
                         }
@@ -3882,6 +3882,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
         } else if (SOLogic == 2) {
+            so = productObj.getIco();
+        }else{
             so = productObj.getIco();
         }
 
