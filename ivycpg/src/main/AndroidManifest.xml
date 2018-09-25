@@ -244,6 +244,9 @@
             android:name="com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.ivy.cpg.view.reports.damageReturn.DamageDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.ivy.cpg.primarysale.view.PrimarySaleStockAndOrderFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
