@@ -1,76 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <HorizontalScrollView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_header_height"
+        android:background="@color/black_bg1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/product_name_title"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="@string/product_name" />
+
+        <TextView
+            android:id="@+id/case_qty"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:tag="item_case"
+            android:text="@string/item_case" />
+
+        <TextView
+            android:id="@+id/piece_qty"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:tag="item_piece"
+            android:text="@string/item_piece" />
+
+        <TextView
+            android:id="@+id/outer_qty"
+            style="?attr/customListTitle"
+            android:layout_width="@dimen/list_item_width_medium"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:tag="item_outer"
+            android:text="@string/item_outer" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none" >
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/list_header_height"
-                android:background="@color/black_bg1"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/product_name_title"
-                    style="?attr/customListTitle"
-                    android:layout_width="@dimen/list_product_name_width"
-                    android:gravity="left"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"
-                    android:text="@string/product_name" />
-
-                <TextView
-                    android:id="@+id/case_qty"
-                    style="?attr/customListTitle"
-                    android:layout_width="@dimen/list_item_width_large"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:tag="item_case"
-                    android:text="@string/item_case" />
-                <TextView
-                    android:id="@+id/piece_qty"
-                    style="?attr/customListTitle"
-                    android:layout_width="@dimen/list_item_width_large"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:tag="item_piece"
-                    android:text="@string/item_piece" />
-                <TextView
-                    android:id="@+id/outer_qty"
-                    style="?attr/customListTitle"
-                    android:layout_width="@dimen/list_item_width_large"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:tag="item_outer"
-                    android:text="@string/item_outer" />
-            </LinearLayout>
-
-            <ListView
-                android:id="@+id/list"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:cacheColorHint="@null"
-                android:divider="@android:color/white"
-                android:dividerHeight="1dp"
-                android:drawSelectorOnTop="false"
-                android:fitsSystemWindows="true"
-                android:listSelector="@null"
-                android:scrollbarAlwaysDrawHorizontalTrack="true"
-                android:scrollbarAlwaysDrawVerticalTrack="true" >
-            </ListView>
-        </LinearLayout>
-    </HorizontalScrollView>
-
+        android:cacheColorHint="@null"
+        android:divider="@android:color/white"
+        android:dividerHeight="1dp"
+        android:drawSelectorOnTop="false"
+        android:fitsSystemWindows="true"
+        android:listSelector="@null"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"/>
 </LinearLayout>

@@ -75,7 +75,6 @@
 -keep class com.sun.mail.handlers.** {*;}
 
 
-
 #Added for Firestore
 -keepattributes Signature
 

@@ -5494,7 +5494,6 @@ public class ProductHelper {
                     .selectSQL(sqlQuery);
 
 
-
             if (cur != null && cur.getCount() > 0) {
                 ConfigureBO configureBO;
                 while (cur.moveToNext()) {
