@@ -272,7 +272,8 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                     supportInvalidateOptionsMenu();
                     if (s.length() >= 3) {
                         loadSearchedList();
-                    }
+                    } else
+                        updateGeneralText(GENERAL);
                 }
 
                 @Override
