@@ -231,9 +231,9 @@ public class DenominationFragment extends IvyBaseFragment {
                 }
 
                 if (totalValues <= Integer.valueOf(initialTotalAmount))
-                    mTotalCollectionTextview.setText("Total :" + String.valueOf(totalValues));
+                    mTotalCollectionTextview.setText(getActivity().getResources().getString(R.string.total) +":"+ String.valueOf(totalValues));
                  else
-                    Toast.makeText(getActivity(), "Total amount not match with you denomination count amount", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), ""+getActivity().getResources().getString(R.string.denomination_error), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -279,7 +279,7 @@ public class DenominationFragment extends IvyBaseFragment {
         }
 
         if (totalValues != Double.valueOf(initialTotalAmount)) {
-            Toast.makeText(getActivity(), "Total amount not match with you denomination count amount", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ""+getActivity().getResources().getString(R.string.denomination_error), Toast.LENGTH_SHORT).show();
         } else {
             insertData();
         }
@@ -344,8 +344,5 @@ public class DenominationFragment extends IvyBaseFragment {
             Commons.printException("DenominationDetails insert Error" + e);
         }
     }
-
-
-
 
 }
