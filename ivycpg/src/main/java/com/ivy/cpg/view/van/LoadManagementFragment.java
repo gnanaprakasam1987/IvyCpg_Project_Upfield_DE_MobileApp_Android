@@ -34,6 +34,7 @@ import com.ivy.cpg.view.van.odameter.OdaMeterScreen;
 import com.ivy.cpg.view.van.stockproposal.StockProposalScreen;
 import com.ivy.cpg.view.van.stockview.StockViewActivity;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyActivity;
+import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.cpg.view.van.vanunload.VanUnloadActivity;
 import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -515,6 +516,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 case MENU_VAN_UNLOAD:
                     if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                        bmodel.getRetailerMasterBO().setDistributorId(0);
                         navigateToActivity(menuName, menuCode, VanUnloadActivity.class);
                     } else {
                         showMessage(getString(R.string.data_not_mapped));
@@ -632,6 +634,14 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                         bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
                     }
+                    VanUnLoadModuleHelper unLoadModuleHelper = VanUnLoadModuleHelper.getInstance(getActivity().getApplicationContext());
+
+                    // Non Salable return product product set object to reason wise
+                    if (bmodel.configurationMasterHelper.SHOW_NON_SALABLE_UNLOAD)
+                        unLoadModuleHelper.setNonSalableReturnProduct(bmodel.productHelper.getLoadMgmtProducts(), getActivity());
+
+                    unLoadModuleHelper.getUnloadHistory(getActivity());
+
                     updateModuleWiseTimeStampDetails(menuCode);
                     break;
 
@@ -759,6 +769,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
     /**
      * Load Stock proposal Data's
+     *
      * @param menuCode
      */
     private void loadStockProposalData(String menuCode) {

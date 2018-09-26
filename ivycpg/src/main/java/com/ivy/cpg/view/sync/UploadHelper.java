@@ -242,7 +242,22 @@ public class UploadHelper {
                 }
                 Commons.print("jsonObjData.toString():3:"
                         + jsonObjData.toString());
+            } else if (flag == DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD) { // Delivered order realtime sync
+                Set<String> keys = DataMembers.uploadOrderDeliveryStatusTable.keySet();
+
+                jsonObjData = new JSONObject();
+                for (String tableName : keys) {
+                    JSONArray jsonArray = prepareDataForUploadJSON(db,
+                            handlerr, tableName,
+                            DataMembers.uploadOrderDeliveryStatusTable.get(tableName));
+
+                    if (jsonArray.length() > 0)
+                        jsonObjData.put(tableName, jsonArray);
+                }
+                Commons.print("jsonObjData.toString():3:"
+                        + jsonObjData.toString());
             }
+
 
             if (businessModel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT) {
                 String id = SDUtil.now(SDUtil.DATE_TIME);
@@ -287,7 +302,7 @@ public class UploadHelper {
                 jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
                 jsonFormatter.addParameter("OrganisationId", businessModel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
-                jsonFormatter.addParameter("ParentPositionIds",businessModel.getUserParentPosition());
+                jsonFormatter.addParameter("ParentPositionIds", businessModel.getUserParentPosition());
                 if (businessModel.synchronizationHelper.isDayClosed()) {
                     int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
                             businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
@@ -399,7 +414,13 @@ public class UploadHelper {
                     responseMessage = 2;
                     return responseMessage;
                 }
-            }else
+            } else if (flag == DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD) {
+                url = businessModel.synchronizationHelper.getUploadUrl("UPLDORDDELSTS");
+                if (url.length() == 0) {
+                    responseMessage = 2;
+                    return responseMessage;
+                }
+            } else
                 url = businessModel.synchronizationHelper.getUploadUrl("UPLDTRAN");
 
             Vector<String> responseVector = businessModel.synchronizationHelper.getUploadResponse(jsonFormatter.getDataInJson(),
@@ -471,6 +492,9 @@ public class UploadHelper {
                 } else if (flag == DataMembers.ATTENDANCE_UPLOAD) {
                     updateUploadFlag(DataMembers.uploadAttendanceColumn, context.getApplicationContext());
                     responseMessage = 1;
+                } else if (flag == DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD) {
+                    updateUploadFlag(DataMembers.uploadOrderDeliveryStatusTable, context.getApplicationContext());
+                    responseMessage = 2;
                 } else {
                     updateUploadFlag(DataMembers.uploadColumn, context.getApplicationContext());
                     responseMessage = 1;

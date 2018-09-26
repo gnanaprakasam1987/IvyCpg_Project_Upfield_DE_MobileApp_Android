@@ -275,6 +275,17 @@
                                 android:text="@string/item_piece" >
                             </TextView>
 
+                            <TextView
+                                android:id="@+id/tv_nonsalable_title"
+                                style="?attr/customListTitle"
+                                android:layout_width="@dimen/list_item_width_medium"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:tag="item_piece"
+                                android:text="@string/ns" />
+
                         </LinearLayout>
 
                         <ListView

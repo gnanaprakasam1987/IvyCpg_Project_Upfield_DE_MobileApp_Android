@@ -16,6 +16,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.lib.Utils;
@@ -24,7 +25,6 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
@@ -807,26 +807,32 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected String doInBackground(String... params) {
+            String responseCode = "E01";
             String response = businessModel.synchronizationHelper.sendPostMethod(businessModel.synchronizationHelper.getSIHUrl(), json);
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
-                        String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                            businessModel.synchronizationHelper
-                                    .parseJSONAndInsert(jsonObject, true);
+                JSONArray jsonArray = jsonObject.getJSONArray(SynchronizationHelper.JSON_KEY);
 
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject value = (JSONObject) jsonArray.get(i);
+                    Iterator itr = value.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                            String errorCode = value.getString(key);
+                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                businessModel.synchronizationHelper
+                                        .parseJSONAndInsert(value, true);
+
+                            }
+                            responseCode = errorCode;
                         }
-                        return errorCode;
                     }
                 }
             } catch (JSONException jsonException) {
                 Commons.print(jsonException.getMessage());
             }
-            return "E01";
+            return responseCode;
         }
 
         @Override

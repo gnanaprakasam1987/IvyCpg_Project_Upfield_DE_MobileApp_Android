@@ -240,4 +240,5 @@
     <string name="Order_id">Order ID is: </string>
     <string name="denomination_error">Total amount not match with you denomination count amount </string>
 
+    <string name="pay">Pay</string>
 </resources>

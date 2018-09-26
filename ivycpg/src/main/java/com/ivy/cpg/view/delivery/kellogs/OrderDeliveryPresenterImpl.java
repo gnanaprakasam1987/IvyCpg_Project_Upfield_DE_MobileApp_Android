@@ -98,14 +98,14 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
         double orderTaxIncludeVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount()) +
                 orderValue - (isEdit ? 0.0 : discountVal);
 
-        orderDeliveryView.updateAmountDetails(String.valueOf(bmodel.formatValueBasedOnConfig(orderValue)),
-                isEdit ? "0.0" : String.valueOf(bmodel.formatValueBasedOnConfig(discountVal)),
-                String.valueOf(bmodel.formatValueBasedOnConfig(totalTaxVal)),
-                String.valueOf(bmodel.formatValueBasedOnConfig(orderTaxIncludeVal)));
+        orderDeliveryView.updateAmountDetails(String.valueOf(bmodel.formatBasedOnCurrency(orderValue)),
+                isEdit ? "0.0" : String.valueOf(bmodel.formatBasedOnCurrency(discountVal)),
+                String.valueOf(bmodel.formatBasedOnCurrency(totalTaxVal)),
+                String.valueOf(bmodel.formatBasedOnCurrency(orderTaxIncludeVal)));
     }
 
     @Override
-    public void saveOrderDeliveryDetail(final boolean isEdit, final String orderId,final String menuCode,double totalOrderValue,double totalReturnValue) {
+    public void saveOrderDeliveryDetail(final boolean isEdit, final String orderId,final String menuCode,double totalOrderValue,double totalReturnValue,final String referenceId) {
         if (orderDeliveryHelper.getTotalProductQty() == 0)
             Toast.makeText(
                     context,
@@ -123,7 +123,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
-                    new UpdateOrderDeliveryTable(orderId, context, isEdit,menuCode).execute();
+                    new UpdateOrderDeliveryTable(orderId, context, isEdit,menuCode,referenceId).execute();
                 }
 
             }, new CommonDialog.negativeOnClickListener() {
@@ -146,7 +146,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     @Override
     public void doPrintActivity(String orderId) {
-        bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null,null);
+        bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null,null,null);
 
         bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                 StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -158,17 +158,19 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
         private String orderId,menuCode;
         private Context context;
         private boolean isEdit;
+        private String referenceId;
 
-        private UpdateOrderDeliveryTable(String orderId, Context context, boolean isEdit,String menuCode) {
+        private UpdateOrderDeliveryTable(String orderId, Context context, boolean isEdit,String menuCode,String referenceId) {
             this.orderId = orderId;
             this.context = context;
             this.isEdit = isEdit;
             this.menuCode=menuCode;
+            this.referenceId = referenceId;
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            return orderDeliveryHelper.updateTableValues(context, orderId, isEdit,menuCode);
+            return orderDeliveryHelper.updateTableValues(context, orderId, isEdit,menuCode,referenceId);
         }
 
         @Override
@@ -183,7 +185,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size() - 1).
                             setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context, orderId));
 
-                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null,null);
+                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null,null,null);
 
                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -212,7 +214,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
         @Override
         protected Boolean doInBackground(String... params) {
-            bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null,null);
+            bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null,null,null);
 
             bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                     StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);

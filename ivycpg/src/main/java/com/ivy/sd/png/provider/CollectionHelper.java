@@ -580,7 +580,7 @@ public class CollectionHelper {
         }
 
         //applying currency rule config
-        discountValue = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(discountValue));
+        discountValue = SDUtil.convertToDouble(bmodel.formatBasedOnCurrency(discountValue));
 
         String values = uid + "," + bmodel.QT(BigDecimal.valueOf(discountValue)
                 .toPlainString()) + "," + discountPer;
@@ -626,11 +626,11 @@ public class CollectionHelper {
                                 0,
                                 0, bmodel.configurationMasterHelper.IS_DOT_FOR_GROUP));
                     } else {
-                        totalRemaingDisc = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(totalRemaingDisc));
+                        totalRemaingDisc = SDUtil.convertToDouble(bmodel.formatBasedOnCurrency(totalRemaingDisc));
                     }
                     discountedAmount = totalBalanceWithDisc - totalRemaingDisc;
 
-                    discountedAmount = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(discountedAmount));
+                    discountedAmount = SDUtil.convertToDouble(bmodel.formatBasedOnCurrency(discountedAmount));
 
                     updateQuery = "update invoicemaster set discountedAmount=invnetAmount-(paidAmount+"
                             + (totalDisc + totalRemaingDisc) + ")"
@@ -936,7 +936,7 @@ public class CollectionHelper {
                 totalDiscountAmt = totalDiscountAmt + invoiceHeaderBO.getRemainingDiscountAmt();
             }
         }
-        totalInvoiceAmt = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(totalInvoiceAmt));
+        totalInvoiceAmt = SDUtil.convertToDouble(bmodel.formatBasedOnCurrency(totalInvoiceAmt));
         if (selectedMode.equals(StandardListMasterConstants.CREDIT_NOTE)) {
             totalInvoiceAmt = totalInvoiceAmt + totalDiscountAmt;
         }
@@ -1104,7 +1104,7 @@ public class CollectionHelper {
                         + bmodel.QT(invoiceHeaderBO.getInvoiceAmount() + "") + "," + invoiceHeaderBO.getBalance()
                         + "," + bmodel.QT(modeID) + ","
                         + bmodel.QT(chequeNumber) + ","
-                        + bmodel.QT(bmodel.formatValueBasedOnConfig(collectedAmount)) + ","
+                        + bmodel.QT(bmodel.formatBasedOnCurrency(collectedAmount)) + ","
                         + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
                         + bmodel.QT(bmodel.getRetailerMasterBO().getBeatID() + "") + ","
                         + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + "") + ","
@@ -1547,7 +1547,7 @@ public class CollectionHelper {
                     }
 
                     updateQuery = "update invoicemaster set discountedAmount="
-                            + bmodel.formatValueBasedOnConfig(discountedAmount)
+                            + bmodel.formatBasedOnCurrency(discountedAmount)
                             + ",invoiceAmount="
                             + invoiceAmount
                             + " where invoiceNo="
@@ -1562,7 +1562,7 @@ public class CollectionHelper {
                                     precison);
 
                     updateQuery = "update invoicemaster set discountedAmount="
-                            + bmodel.formatValueBasedOnConfig(discountedAmount) + ",invoiceAmount="
+                            + bmodel.formatBasedOnCurrency(discountedAmount) + ",invoiceAmount="
                             + invoiceAmount + " where invoiceNo="
                             + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
                             + " and upload='Y'";
@@ -1575,7 +1575,7 @@ public class CollectionHelper {
                         precison);
 
                 updateQuery = "update invoicemaster set discountedAmount="
-                        + bmodel.formatValueBasedOnConfig(discountedAmount) + ",invoiceAmount=" + invoiceAmount
+                        + bmodel.formatBasedOnCurrency(discountedAmount) + ",invoiceAmount=" + invoiceAmount
                         + " where invoiceNo="
                         + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
                         + " and upload='Y'";

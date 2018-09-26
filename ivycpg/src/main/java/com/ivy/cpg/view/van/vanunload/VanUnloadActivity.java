@@ -163,6 +163,10 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
         ((TextView) findViewById(R.id.outeritemcasetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
         ((TextView) findViewById(R.id.itempiecetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
 
+        if (!bModel.configurationMasterHelper.SHOW_NON_SALABLE_UNLOAD)
+            ((TextView) findViewById(R.id.tv_nonsalable_title)).setVisibility(View.GONE);
+        else
+            ((TextView) findViewById(R.id.tv_nonsalable_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -314,7 +318,7 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
 
     public void onNextButtonClick() {
         if (mVanUnLoadModuleHelper.hasVanunload()) {
-            new SaveVanUnloadAsyncTask(VanUnloadActivity.this, vanunloadlist).execute();
+            new SaveVanUnloadAsyncTask(VanUnloadActivity.this, vanunloadlist, bModel).execute();
 
         } else {
             bModel.showAlert(
@@ -585,6 +589,8 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
 
 
         menu.findItem(R.id.menu_fivefilter).setVisible(true);
+        menu.findItem(R.id.menu_sih_apply).setVisible(true);
+        menu.findItem(R.id.menu_unload_history).setVisible(true);
 
 
         if (bModel.configurationMasterHelper.IS_BAR_CODE_VAN_UNLOAD) {
@@ -644,6 +650,13 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
                         + " " + getString(R.string.permission_camera));
             }
             return true;
+        } else if (i == R.id.menu_unload_history) {
+            if (mVanUnLoadModuleHelper.getUnloadHistoryList().size() > 0) {
+                Intent intent = new Intent(VanUnloadActivity.this, VanUnloadHistoryActivity.class);
+                startActivity(intent);
+            } else {
+                showMessage(getString(R.string.data_not_mapped));
+            }
         }
         return super.onOptionsItemSelected(item);
     }

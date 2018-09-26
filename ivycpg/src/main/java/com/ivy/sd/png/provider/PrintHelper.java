@@ -1549,7 +1549,7 @@ public class PrintHelper {
 
                     sb.append("T 7 0 470 " + (x) + " ");
 
-                    sb.append(bmodel.formatValueBasedOnConfig((total - SDUtil.convertToDouble(bmodel.formatValue(discount)))) + "\r\n");
+                    sb.append(bmodel.formatBasedOnCurrency((total - SDUtil.convertToDouble(bmodel.formatValue(discount)))) + "\r\n");
                     x = x + 70;
                     hght = x;
                 }
