@@ -94,8 +94,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initializeDi();
 
-        if (mCurrentTheme != 0)
+        if (mCurrentTheme != 0) {
+            setTheme(mCurrentTheme);
             initScreen();
+        }
         else
             showLoading();
 
