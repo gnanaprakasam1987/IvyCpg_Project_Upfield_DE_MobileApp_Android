@@ -36,7 +36,10 @@ public class EodStockModel implements IEodStockModelPresenter {
             if (stockReportBO.getSih() > 0 || stockReportBO.getEmptyBottleQty() > 0 || stockReportBO.getFreeIssuedQty() > 0
                     || stockReportBO.getSoldQty() > 0 || stockReportBO.getReplacementQty() > 0 || stockReportBO.getReturnQty() > 0) {
 
-                int vanloadQty = (stockReportBO.getSih() + stockReportBO.getSoldQty() + stockReportBO.getFreeIssuedQty() + stockReportBO.getReplacementQty())
+                int vanloadQty = (stockReportBO.getSih() +
+                        stockReportBO.getSoldQty() +
+                        stockReportBO.getFreeIssuedQty() +
+                        stockReportBO.getReplacementQty() + stockReportBO.getVanUnloadQty())
                         - (stockReportBO.getReturnQty() + stockReportBO.getEmptyBottleQty());
 
                 if (mBusinessModel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
@@ -48,6 +51,9 @@ public class EodStockModel implements IEodStockModelPresenter {
                     int rem_replacementyQty = 0;
                     int rem_returnQty = 0;
                     boolean isUomWiseSplitted = false;
+                    int rem_nonSalableQty = 0;
+                    int rem_vanUnloadQty = 0;
+
 
                     if (stockReportBO.isBaseUomCaseWise() && stockReportBO.getCaseSize() != 0) {
                         isUomWiseSplitted = true;
@@ -59,7 +65,8 @@ public class EodStockModel implements IEodStockModelPresenter {
                         stockReportBO.setVanLoadQty_cs(vanloadQty / stockReportBO.getCaseSize());
                         stockReportBO.setReplacementQty_cs(stockReportBO.getReplacementQty() / stockReportBO.getCaseSize());
                         stockReportBO.setReturnQty_cs(stockReportBO.getReturnQty() / stockReportBO.getCaseSize());
-
+                        stockReportBO.setNonsalableQty_cs(stockReportBO.getNonSalableQty() / stockReportBO.getCaseSize());
+                        stockReportBO.setVanUnloadQty_cs(stockReportBO.getVanUnloadQty() / stockReportBO.getCaseSize());
 
                         rem_SIH = stockReportBO.getSih() % stockReportBO.getCaseSize();
                         rem_empty = stockReportBO.getEmptyBottleQty() % stockReportBO.getCaseSize();
@@ -68,6 +75,8 @@ public class EodStockModel implements IEodStockModelPresenter {
                         rem_vanLoad = vanloadQty % stockReportBO.getCaseSize();
                         rem_replacementyQty = stockReportBO.getReplacementQty() % stockReportBO.getCaseSize();
                         rem_returnQty = stockReportBO.getReturnQty() % stockReportBO.getCaseSize();
+                        rem_nonSalableQty = stockReportBO.getNonSalableQty() % stockReportBO.getCaseSize();
+                        rem_vanUnloadQty = stockReportBO.getVanUnloadQty() % stockReportBO.getCaseSize();
                     }
 
                     if (stockReportBO.isBaseUomOuterWise() && stockReportBO.getOuterSize() != 0) {
@@ -79,6 +88,8 @@ public class EodStockModel implements IEodStockModelPresenter {
                             stockReportBO.setVanLoadQty_ou(rem_vanLoad / stockReportBO.getOuterSize());
                             stockReportBO.setReplacemnetQty_ou(rem_replacementyQty / stockReportBO.getOuterSize());
                             stockReportBO.setReturnQty_ou(rem_returnQty / stockReportBO.getCaseSize());
+                            stockReportBO.setNonsalableQty_ou(rem_nonSalableQty / stockReportBO.getOuterSize());
+                            stockReportBO.setVanUnloadQty_ou(rem_vanUnloadQty / stockReportBO.getOuterSize());
 
                             rem_SIH = rem_SIH % stockReportBO.getOuterSize();
                             rem_empty = rem_empty % stockReportBO.getOuterSize();
@@ -87,6 +98,8 @@ public class EodStockModel implements IEodStockModelPresenter {
                             rem_vanLoad = rem_vanLoad % stockReportBO.getOuterSize();
                             rem_replacementyQty = rem_replacementyQty % stockReportBO.getOuterSize();
                             rem_returnQty = rem_returnQty % stockReportBO.getOuterSize();
+                            rem_nonSalableQty = rem_nonSalableQty % stockReportBO.getOuterSize();
+                            rem_vanUnloadQty = rem_vanUnloadQty % stockReportBO.getOuterSize();
                         } else {
                             isUomWiseSplitted = true;
                             stockReportBO.setSih_ou(stockReportBO.getSih() / stockReportBO.getOuterSize());
@@ -102,6 +115,9 @@ public class EodStockModel implements IEodStockModelPresenter {
                             stockReportBO.setReplacemnetQty_ou(stockReportBO.getReplacementQty() / stockReportBO.getOuterSize());
 
                             stockReportBO.setReturnQty_ou(stockReportBO.getReturnQty() / stockReportBO.getOuterSize());
+                            stockReportBO.setNonsalableQty_ou(stockReportBO.getNonSalableQty() / stockReportBO.getOuterSize());
+                            stockReportBO.setVanUnloadQty_ou((stockReportBO.getVanUnloadQty() / stockReportBO.getOuterSize()));
+
 
                             rem_SIH = stockReportBO.getSih() % stockReportBO.getOuterSize();
                             rem_empty = stockReportBO.getEmptyBottleQty() % stockReportBO.getOuterSize();
@@ -110,6 +126,8 @@ public class EodStockModel implements IEodStockModelPresenter {
                             rem_vanLoad = vanloadQty % stockReportBO.getOuterSize();
                             rem_replacementyQty = stockReportBO.getReplacementQty() % stockReportBO.getOuterSize();
                             rem_returnQty = stockReportBO.getReturnQty() % stockReportBO.getOuterSize();
+                            rem_nonSalableQty = rem_nonSalableQty % stockReportBO.getOuterSize();
+                            rem_vanUnloadQty = rem_vanUnloadQty % stockReportBO.getOuterSize();
                         }
                     }
 
@@ -121,6 +139,8 @@ public class EodStockModel implements IEodStockModelPresenter {
                         stockReportBO.setVanLoadQty_pc(rem_vanLoad);
                         stockReportBO.setReplacementQty_pc(rem_replacementyQty);
                         stockReportBO.setReturnQty_pc(rem_returnQty);
+                        stockReportBO.setNonsalableQty_pc(rem_nonSalableQty);
+                        stockReportBO.setVanUnloadQty_pc(rem_vanUnloadQty);
                     } else {
                         stockReportBO.setVanLoadQty_pc(vanloadQty);
                         stockReportBO.setSoldQty_pc(stockReportBO.getSoldQty());
@@ -129,6 +149,8 @@ public class EodStockModel implements IEodStockModelPresenter {
                         stockReportBO.setEmptyBottleQty_pc(stockReportBO.getEmptyBottleQty());
                         stockReportBO.setReplacementQty_pc(stockReportBO.getReplacementQty());
                         stockReportBO.setReturnQty_pc(stockReportBO.getReturnQty());
+                        stockReportBO.setNonsalableQty_pc(stockReportBO.getNonSalableQty());
+                        stockReportBO.setVanUnloadQty_pc(stockReportBO.getVanUnloadQty());
                     }
                 } else {
                     stockReportBO.setVanLoadQty(vanloadQty);

@@ -1,16 +1,20 @@
 package com.ivy.sd.png.bo;
 
+import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class LoadManagementBO {
 
-	private int parentid, productid, suggestqty, dUomQty, sih, wsih, isalloc,
-			dOuomQty, isMust, maxQty, stkprototalQty, stkpropcsqty,
-			stkprocaseqty, stkproouterqty, outerQty;
-	private String batchNo;
-	private Vector<LoadManagementBO> batchnolist;
-	private Vector<LoadManagementBO> batchlist;
-	private String parentHierarchy;
+    private int parentid, productid, suggestqty, dUomQty, sih, wsih, isalloc,
+            dOuomQty, isMust, maxQty, stkprototalQty, stkpropcsqty,
+            stkprocaseqty, stkproouterqty, outerQty;
+    private String batchNo;
+    private Vector<LoadManagementBO> batchnolist;
+    private Vector<LoadManagementBO> batchlist;
+    private String parentHierarchy;
     private String productCode = "";
 
     public Vector<LoadManagementBO> getBatchlist() {
@@ -567,17 +571,18 @@ public class LoadManagementBO {
         return isCase;
     }
 
-	public void setCaseMapped(boolean aCase) {
-		isCase = aCase;
-	}
+    public void setCaseMapped(boolean aCase) {
+        isCase = aCase;
+    }
 
-	public String getParentHierarchy() {
-		return parentHierarchy;
-	}
+    public String getParentHierarchy() {
+        return parentHierarchy;
+    }
 
-	public void setParentHierarchy(String parentHierarchy) {
-		this.parentHierarchy = parentHierarchy;
-	}
+    public void setParentHierarchy(String parentHierarchy) {
+        this.parentHierarchy = parentHierarchy;
+    }
+
     /**
      * @return product Code
      */
@@ -587,5 +592,48 @@ public class LoadManagementBO {
 
     public void setProductCode(String productCode) {
         this.productCode = productCode;
+    }
+
+
+    private List salesReturnReasonList = null;
+    private int nonSalableQty;
+
+    public int getNonSalableQty() {
+        return nonSalableQty;
+    }
+
+    public void setNonSalableQty(int nonSalableQty) {
+        this.nonSalableQty = nonSalableQty;
+    }
+
+    public List<SalesReturnReasonBO> getSalesReturnReasonList() {
+        if (salesReturnReasonList == null)
+            return new ArrayList<>();
+        return salesReturnReasonList;
+    }
+
+    public void setSalesReturnReasonList(
+            List<SalesReturnReasonBO> salesReturnReasonList) {
+        this.salesReturnReasonList = salesReturnReasonList;
+    }
+
+    private int typeId;
+    private String TransactionId = "";
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+
+    public String getTransactionId() {
+        return TransactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        TransactionId = transactionId;
     }
 }

@@ -4223,4 +4223,39 @@ SynchronizationHelper {
 
     }
 
+
+    /**
+     * Method used to check OrderDelivery Staus table data.
+     *
+     * @return
+     */
+    public boolean checkOrderDeliveryStatusTable() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        boolean hasData = false;
+        try {
+            db.openDataBase();
+            String sql;
+            Cursor c;
+
+            sql = "select count(*) from OrderDeliveryStatus where upload='N'";
+
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    if (c.getInt(0) > 0)
+                        hasData = true;
+                }
+                c.close();
+            }
+
+            db.closeDB();
+            return hasData;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+            return hasData;
+        }
+
+    }
+
 }

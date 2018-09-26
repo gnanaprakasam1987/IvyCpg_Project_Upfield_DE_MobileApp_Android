@@ -2196,7 +2196,7 @@ public class OrderHelper {
                         + totalqty
                         + " then ifnull(qty,0)-"
                         + totalqty
-                        + " else 0 end) where pid="
+                        + " else 0 end),Upload='N' where pid="
                         + product.getProductID());
             }
 
@@ -2776,7 +2776,7 @@ public class OrderHelper {
                                     + totalqty
                                     + " then ifnull(qty,0)-"
                                     + totalqty
-                                    + " else 0 end) where pid="
+                                    + " else 0 end),Upload='N' where pid="
                                     + product.getProductID());
                         }
 
@@ -2892,7 +2892,7 @@ public class OrderHelper {
                                         + totalQty
                                         + " then ifnull(qty,0)-"
                                         + totalQty
-                                        + " else 0 end) where pid="
+                                        + " else 0 end),Upload='N' where pid="
                                         + productMasterBO.getProductID());
                             }
 

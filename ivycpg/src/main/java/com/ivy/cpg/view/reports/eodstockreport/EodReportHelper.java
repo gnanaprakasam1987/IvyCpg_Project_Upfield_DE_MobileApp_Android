@@ -148,7 +148,7 @@ public class EodReportHelper {
             // get freeQty for crown FROM ORDER DETAIL
             sb = new StringBuffer();
             sb.append("select OD.Productid,sum(OD.Qty),batchid from orderDetail OD  inner join OrderHeader OH on ");
-            sb.append("OD.orderid=OH.orderid where OH.upload!='X' and OH.is_vansales=1 and OD.Ordertype!=0 group by OD.Productid,batchid ");
+            sb.append("OD.orderid=OH.orderid where OH.upload!='X' and OH.is_vansales=1 and OH.invoiceStatus=1 and OD.Ordertype!=0 group by OD.Productid,batchid ");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -171,7 +171,8 @@ public class EodReportHelper {
 
             //load replacement qty
             sb = new StringBuffer();
-            sb.append("select pid,sum(case when uomCount!=0 then qty*UomCount else qty end) as Qty,batchid from SalesReturnReplacementDetails where upload!='X' group by pid,batchid");
+            sb.append("select pid,sum(case when uomCount!=0 then qty*UomCount else qty end) as Qty,batchid from SalesReturnReplacementDetails SD" +
+                    " INNER JOIN SalesReturnHeader SH ON SH.uid=SD.uid where SH.upload!='X' and SH.iflag!=1 and SH.invoiceid!=0 group by pid,batchid");
             c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -196,6 +197,37 @@ public class EodReportHelper {
                 }
             }
             c.close();
+
+
+            // Non salable return qty
+            sb = new StringBuffer();
+            sb.append("select SD.Productid,sum(SD.totalQty),SD.batchid from SalesReturnDetails SD  inner join SalesReturnHeader SH on ");
+            sb.append("SD.uid=SH.uid inner join Standardlistmaster SLM on SLM.listid=SD.condition  AND  SLM.ListType = 'REASON'");
+            sb.append(" inner join Standardlistmaster SLM1 on SLM.parentid=SLM1.listid and SLM1.ListCode='SR' where SH.upload!='X' and SH.IFLAG!=1 and SH.invoiceid!=0");
+            sb.append(" group by SD.Productid,SD.batchid");
+            c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    setEODObject(c.getString(0), c.getString(2), c.getInt(1), QtyType.NON_SALABLE);
+                }
+            }
+            c.close();
+
+            // Salable unload qty from Vanunloaddetails table(type 1 is a salable product and type 0 is a non salable product)
+            sb = new StringBuffer();
+            sb.append("SELECT pid,sum(pcsqty+(caseqty*duomQty)+(outerqty*dOuomQty)) as totalQty  FROM VanUnloadDetails where type = 1");
+            sb.append(" GROUP BY pid");
+            sb.append(" ORDER BY Uid");
+            c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    String porductid = c.getString(0);
+                    int unloadQty = c.getInt(1);
+                    setEODObject(porductid, "0", unloadQty, QtyType.VAN_UNLOAD);
+                }
+            }
+            c.close();
+
 
             db.closeDB();
         } catch (Exception e) {
@@ -293,6 +325,10 @@ public class EodReportHelper {
                                 stockReportBO.setReplacementQty(qty);
                             } else if (type == QtyType.RETURN) {
                                 stockReportBO.setReturnQty(qty);
+                            } else if (type == QtyType.NON_SALABLE) {
+                                stockReportBO.setNonSalableQty(qty);
+                            } else if (type == QtyType.VAN_UNLOAD) {
+                                stockReportBO.setVanUnloadQty(qty);
                             }
                             lastProductid = productid;
                         }
@@ -314,6 +350,10 @@ public class EodReportHelper {
                             stockReportBO.setReplacementQty(qty);
                         } else if (type == QtyType.RETURN) {
                             stockReportBO.setReturnQty(qty);
+                        } else if (type == QtyType.NON_SALABLE) {
+                            stockReportBO.setNonSalableQty(qty);
+                        } else if (type == QtyType.VAN_UNLOAD) {
+                            stockReportBO.setVanUnloadQty(qty);
                         }
 
 
@@ -331,7 +371,9 @@ public class EodReportHelper {
         SOLD(2),
         FREE_ISSUED(3),
         REPLACEMENT(4),
-        EMPTY(5);
+        EMPTY(5),
+        NON_SALABLE(6),
+        VAN_UNLOAD(7);
         private int value;
 
         QtyType(int value) {

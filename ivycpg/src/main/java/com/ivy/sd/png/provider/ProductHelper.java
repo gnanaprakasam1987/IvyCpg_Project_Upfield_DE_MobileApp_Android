@@ -3309,7 +3309,7 @@ public class ProductHelper {
     public Vector<LoadManagementBO> downloadLoadMgmtProductsWithFiveLevel(
             String moduleCode, String batchmenucode) {
         mLoadManagementBOByProductId = new SparseArray<>();
-        String sql = "", sql1 = "", sql2 = "", sql3 = "";
+        String sql = "", sql1 = "", sql2 = "", sql3 = "",sql4="";
         productlist = new Vector<>();
         LoadManagementBO bo;
         Vector<LoadManagementBO> list;
@@ -3325,9 +3325,13 @@ public class ProductHelper {
             sql = "  LEFT JOIN StockInHandMaster SIH ON SIH.pid=PM.PID"
                     + " LEFT JOIN BatchMaster BM ON (SIH.batchid = BM.batchid AND PM.pid=BM.pid)";
             sql1 = ",IFNULL(BM.batchNum,'') as batchNum,SIH.qty as qty,SIH.adjusted_qty,SIH.batchid";
+
+            // Unload non salable qty from NonSalableSIHMaster
+            sql4 = " left join ( select pid, SUM(qty) as nsihqty from NonSalableSIHMaster group by pid) as NSIH ON NSIH.pid = PM.PID";
         } else {
             sql = "";
             sql1 = "";
+            sql4 = "";
         }
         if (batchmenucode.equals("MENU_STOCK_PROPOSAL")
                 || batchmenucode.equals("MENU_STK_PRO")) {
@@ -3347,11 +3351,12 @@ public class ProductHelper {
                 + sql1
                 + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
                 + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou,PM.pCode as ProCode,"
-                + "  PM.ParentHierarchy as ParentHierarchy "
+                + "  PM.ParentHierarchy as ParentHierarchy,NSIH.nsihqty "
                 + " FROM ProductMaster PM"
                 + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                 + sql2
                 + sql
+                + sql4
                 + " WHERE PM.PLid IN"
                 + " (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
                 + bmodel.QT(moduleCode) + ")";
@@ -3389,6 +3394,7 @@ public class ProductHelper {
                 bo.setMsqQty(c.getInt(24));
                 bo.setIssalable(c.getInt(25));
                 bo.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                bo.setNonSalableQty(c.getInt(c.getColumnIndex("nsihqty")));
                 if (batchmenucode.equals("MENU_STOCK_PROPOSAL")
                         || batchmenucode.equals("MENU_STK_PRO")) {
                     bo.setStkprototalQty(c.getInt(c.getColumnIndex("qty")));

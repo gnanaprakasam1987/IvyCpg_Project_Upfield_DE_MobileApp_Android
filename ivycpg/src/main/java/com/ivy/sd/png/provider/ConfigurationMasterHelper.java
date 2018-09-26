@@ -539,6 +539,9 @@ public class ConfigurationMasterHelper {
     public boolean IS_SWITCH_WITH_OUT_SKU_WISE_TGT;
     public String SELLER_SKU_WISE_KPI_CODES;
 
+    private static final String CODE_NON_SALABLE_UNLOAD = "NS_UNLOAD";
+    public boolean SHOW_NON_SALABLE_UNLOAD;
+
     /**
      * RoadActivity config *
      */
@@ -1197,7 +1200,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN,SHOW_STOCK_NON_SALABLE,SHOW_STOCK_VAN_UNLOAD;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -2658,6 +2661,8 @@ public class ConfigurationMasterHelper {
 
         this.IS_NAVIGATE_CREDIT_NOTE_SCREEN= hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) : false;
         this.SHOW_NO_COLLECTION_REASON= hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) != null ? hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) : false;
+        // Unload non salable product returns.
+        this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
     }
 
     private boolean isInOutModule() {
@@ -4598,10 +4603,16 @@ public class ConfigurationMasterHelper {
         String CODE_STOCK_EMPTY = "EMP";
         String CODE_STOCK_FREE_ISSUED = "FI";
         String CODE_STOCK_RETURN = "RET";
+        String CODE_STOCK_NON_SALABLE = "NS";
+        String CODE_STOCK_VAN_UNLOAD = "UL";
+        SHOW_STOCK_NON_SALABLE = false;
+        SHOW_STOCK_VAN_UNLOAD = false;
         SHOW_STOCK_REPLACE = false;
         SHOW_STOCK_RETURN = false;
         SHOW_STOCK_EMPTY = false;
         SHOW_STOCK_FREE_ISSUED = false;
+        SHOW_STOCK_NON_SALABLE =false;
+        SHOW_STOCK_VAN_UNLOAD = false;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         ;
@@ -4633,6 +4644,10 @@ public class ConfigurationMasterHelper {
                             SHOW_STOCK_FREE_ISSUED = true;
                         else if (temp.equals(CODE_STOCK_RETURN))
                             SHOW_STOCK_RETURN = true;
+                        else if (temp.equals(CODE_STOCK_NON_SALABLE))
+                            SHOW_STOCK_NON_SALABLE = true;
+                        else if (temp.equals(CODE_STOCK_VAN_UNLOAD))
+                            SHOW_STOCK_VAN_UNLOAD = true;
                     }
                 }
 

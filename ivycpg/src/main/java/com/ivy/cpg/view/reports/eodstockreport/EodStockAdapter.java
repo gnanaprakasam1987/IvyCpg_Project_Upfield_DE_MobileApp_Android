@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
@@ -66,7 +66,7 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
             holder.mSoldStock_cs = convertView.findViewById(R.id.soldstock_cs);
             holder.mSoldStock_ou = convertView.findViewById(R.id.soldstock_ou);
 
-            holder.freeIssuedRL = convertView.findViewById(R.id.rl_freeissued);
+            holder.freeIssuedQtyLL = convertView.findViewById(R.id.ll_freeissued);
 
             holder.mFreeIssued = convertView.findViewById(R.id.freeissued);
             holder.mFreeIssued_cs = convertView.findViewById(R.id.freeissued_cs);
@@ -76,18 +76,61 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
             holder.mSIH_cs = convertView.findViewById(R.id.sih_cs);
             holder.mSIH_ou = convertView.findViewById(R.id.sih_ou);
 
-            holder.emptyRL = convertView.findViewById(R.id.rl_empty);
+            holder.emptyQtyLL = convertView.findViewById(R.id.ll_empty);
             holder.mEmpty = convertView.findViewById(R.id.empty);
             holder.mEmpty_cs = convertView.findViewById(R.id.empty_cs);
             holder.mEmpty_ou = convertView.findViewById(R.id.empty_ou);
 
-            holder.replacementRL = convertView.findViewById(R.id.rl_replacement);
+            holder.returnQtyLL = convertView.findViewById(R.id.ll_return);
+            holder.replacementQtyLL = convertView.findViewById(R.id.ll_replacement);
             holder.mReplacementTV = convertView.findViewById(R.id.replacement);
             holder.mReplacementTV_cs = convertView.findViewById(R.id.replacement_cs);
             holder.mReplacementTV_ou = convertView.findViewById(R.id.replacement_ou);
-
+            holder.nonSalableQtyLL = convertView.findViewById(R.id.ll_nonsalable);
+            holder.vanUnloadQtyLL = convertView.findViewById(R.id.ll_unload);
 
             holder.mBatchNum = convertView.findViewById(R.id.batchnumber);
+
+            //Non salable
+            holder.mNonsalableTV = convertView.findViewById(R.id.tv_nonsalable_ps);
+            holder.mNonsalableTV_cs = convertView.findViewById(R.id.tv_nonsalable_cs);
+            holder.mNonsalableTV_ou = convertView.findViewById(R.id.tv_nonsalable_ou);
+
+            //Van unload
+            holder.mVanunloadQtyTV = convertView.findViewById(R.id.tv_unload_ps);
+            holder.mVanunloadQtyTV_cs = convertView.findViewById(R.id.tv_unload_cs);
+            holder.mVanunloadQtyTV_ou = convertView.findViewById(R.id.tv_unload_ou);
+
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN)
+                holder.returnQtyLL.setVisibility(View.VISIBLE);
+            else
+                holder.returnQtyLL.setVisibility(View.GONE);
+
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_REPLACE)
+                holder.replacementQtyLL.setVisibility(View.VISIBLE);
+            else
+                holder.replacementQtyLL.setVisibility(View.GONE);
+
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_EMPTY)
+                holder.emptyQtyLL.setVisibility(View.VISIBLE);
+            else
+                holder.emptyQtyLL.setVisibility(View.GONE);
+
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_VAN_UNLOAD)
+                holder.vanUnloadQtyLL.setVisibility(View.VISIBLE);
+            else
+                holder.vanUnloadQtyLL.setVisibility(View.GONE);
+
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_FREE_ISSUED)
+                holder.freeIssuedQtyLL.setVisibility(View.VISIBLE);
+            else
+                holder.freeIssuedQtyLL.setVisibility(View.GONE);
+
+            if (bmodel.configurationMasterHelper.SHOW_STOCK_NON_SALABLE)
+                holder.nonSalableQtyLL.setVisibility(View.VISIBLE);
+            else
+                holder.nonSalableQtyLL.setVisibility(View.GONE);
+
 
             if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
                 if (bmodel.configurationMasterHelper.SHOW_EOD_OC) {
@@ -110,19 +153,6 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
                 hideAllViews(holder);
 
             }
-
-            if (bmodel.configurationMasterHelper.SHOW_STOCK_REPLACE)
-                holder.replacementRL.setVisibility(View.VISIBLE);
-            else
-                holder.replacementRL.setVisibility(View.GONE);
-            if (bmodel.configurationMasterHelper.SHOW_STOCK_EMPTY)
-                holder.emptyRL.setVisibility(View.VISIBLE);
-            else
-                holder.emptyRL.setVisibility(View.GONE);
-            if (bmodel.configurationMasterHelper.SHOW_STOCK_FREE_ISSUED)
-                holder.freeIssuedRL.setVisibility(View.VISIBLE);
-            else
-                holder.freeIssuedRL.setVisibility(View.GONE);
 
             if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                 holder.mProductCode.setVisibility(View.GONE);
@@ -164,6 +194,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
                     holder.mEmpty.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getEmptyBottleQty() / holder.mSKUBO.getOuterSize()))));
                     holder.mReplacementTV.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getReplacementQty() / holder.mSKUBO.getOuterSize()))));
                     holder.tv_return.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getReturnQty() / holder.mSKUBO.getOuterSize()))));
+                    holder.mNonsalableTV.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getNonSalableQty() / holder.mSKUBO.getOuterSize()))));
+                    holder.mVanunloadQtyTV.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getVanUnloadQty() / holder.mSKUBO.getOuterSize()))));
                 } else {
                     holder.mLoadStock.setText(String.valueOf(holder.mSKUBO.getVanLoadQty()));
                     holder.mSoldStock.setText(String.valueOf(holder.mSKUBO.getSoldQty()));
@@ -172,6 +204,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
                     holder.mEmpty.setText(String.valueOf(holder.mSKUBO.getEmptyBottleQty()));
                     holder.mReplacementTV.setText(String.valueOf(holder.mSKUBO.getReplacementQty()));
                     holder.tv_return.setText(String.valueOf(holder.mSKUBO.getReturnQty()));
+                    holder.mNonsalableTV.setText(String.valueOf(holder.mSKUBO.getNonSalableQty()));
+                    holder.mVanunloadQtyTV.setText(String.valueOf(holder.mSKUBO.getVanUnloadQty()));
                 }
             } else if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_CS) {
                 if (holder.mSKUBO.getCaseSize() != 0) {
@@ -182,6 +216,9 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
                     holder.mEmpty.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getEmptyBottleQty() / holder.mSKUBO.getCaseSize()))));
                     holder.mReplacementTV.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getReplacementQty() / holder.mSKUBO.getCaseSize()))));
                     holder.tv_return.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getReturnQty() / holder.mSKUBO.getCaseSize()))));
+                    holder.mNonsalableTV.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getNonSalableQty() / holder.mSKUBO.getCaseSize()))));
+                    holder.mVanunloadQtyTV.setText(String.valueOf(SDUtil.mathRoundoff(((double) holder.mSKUBO.getVanUnloadQty() / holder.mSKUBO.getOuterSize()))));
+
                 } else {
                     holder.mLoadStock.setText(String.valueOf(holder.mSKUBO.getVanLoadQty()));
                     holder.mSoldStock.setText(String.valueOf(holder.mSKUBO.getSoldQty()));
@@ -190,18 +227,21 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
                     holder.mEmpty.setText(String.valueOf(holder.mSKUBO.getEmptyBottleQty()));
                     holder.mReplacementTV.setText(String.valueOf(holder.mSKUBO.getReplacementQty()));
                     holder.tv_return.setText(String.valueOf(holder.mSKUBO.getReturnQty()));
+                    holder.mNonsalableTV.setText(String.valueOf(holder.mSKUBO.getNonSalableQty()));
+                    holder.mVanunloadQtyTV.setText(String.valueOf(holder.mSKUBO.getVanUnloadQty()));
                 }
 
-            } else //if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS) {
-
+            } else {
                 holder.mLoadStock.setText(String.valueOf(holder.mSKUBO.getVanLoadQty()));
-            holder.mSoldStock.setText(String.valueOf(holder.mSKUBO.getSoldQty()));
-            holder.mFreeIssued.setText(String.valueOf(holder.mSKUBO.getFreeIssuedQty()));
-            holder.mSIH.setText(String.valueOf(holder.mSKUBO.getSih()));
-            holder.mEmpty.setText(String.valueOf(holder.mSKUBO.getEmptyBottleQty()));
-            holder.mReplacementTV.setText(String.valueOf(holder.mSKUBO.getReplacementQty()));
-            holder.tv_return.setText(String.valueOf(holder.mSKUBO.getReturnQty()));
-            // }
+                holder.mSoldStock.setText(String.valueOf(holder.mSKUBO.getSoldQty()));
+                holder.mFreeIssued.setText(String.valueOf(holder.mSKUBO.getFreeIssuedQty()));
+                holder.mSIH.setText(String.valueOf(holder.mSKUBO.getSih()));
+                holder.mEmpty.setText(String.valueOf(holder.mSKUBO.getEmptyBottleQty()));
+                holder.mReplacementTV.setText(String.valueOf(holder.mSKUBO.getReplacementQty()));
+                holder.tv_return.setText(String.valueOf(holder.mSKUBO.getReturnQty()));
+                holder.mNonsalableTV.setText(String.valueOf(holder.mSKUBO.getNonSalableQty()));
+                holder.mVanunloadQtyTV.setText(String.valueOf(holder.mSKUBO.getVanUnloadQty()));
+            }
         } else if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
 
             holder.mSIH_cs.setText(String.valueOf(holder.mSKUBO.getSih_cs()));
@@ -211,6 +251,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
             holder.mLoadStock_cs.setText(String.valueOf(holder.mSKUBO.getVanLoadQty_cs()));
             holder.mReplacementTV_cs.setText(String.valueOf(holder.mSKUBO.getReplacementQty_cs()));
             holder.tv_return_cs.setText(String.valueOf(holder.mSKUBO.getReturnQty_cs()));
+            holder.mNonsalableTV_cs.setText(String.valueOf(holder.mSKUBO.getNonsalableQty_cs()));
+            holder.mVanunloadQtyTV_cs.setText(String.valueOf(holder.mSKUBO.getVanUnloadQty_cs()));
 
             holder.mSIH_ou.setText(String.valueOf(holder.mSKUBO.getSih_ou()));
             holder.mEmpty_ou.setText(String.valueOf(holder.mSKUBO.getEmptyBottleQty_ou()));
@@ -219,6 +261,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
             holder.mLoadStock_ou.setText(String.valueOf(holder.mSKUBO.getVanLoadQty_ou()));
             holder.mReplacementTV_ou.setText(String.valueOf(holder.mSKUBO.getReplacemnetQty_ou()));
             holder.tv_return_ou.setText(String.valueOf(holder.mSKUBO.getReturnQty_ou()));
+            holder.mNonsalableTV_ou.setText(String.valueOf(holder.mSKUBO.getNonsalableQty_ou()));
+            holder.mVanunloadQtyTV_ou.setText(String.valueOf(holder.mSKUBO.getVanUnloadQty_ou()));
 
 
             holder.mSIH.setText(String.valueOf(holder.mSKUBO.getSih_pc()));
@@ -228,6 +272,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
             holder.mLoadStock.setText(String.valueOf(holder.mSKUBO.getVanLoadQty_pc()));
             holder.mReplacementTV.setText(String.valueOf(holder.mSKUBO.getReplacementQty_pc()));
             holder.tv_return.setText(String.valueOf(holder.mSKUBO.getReturnQty_pc()));
+            holder.mNonsalableTV.setText(String.valueOf(holder.mSKUBO.getNonsalableQty_pc()));
+            holder.mVanunloadQtyTV.setText(String.valueOf(holder.mSKUBO.getVanUnloadQty_pc()));
 
         } else {
             holder.mLoadStock.setText(String.valueOf(holder.mSKUBO.getVanLoadQty()));
@@ -237,6 +283,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
             holder.mEmpty.setText(String.valueOf(holder.mSKUBO.getEmptyBottleQty()));
             holder.mReplacementTV.setText(String.valueOf(holder.mSKUBO.getReplacementQty()));
             holder.tv_return.setText(String.valueOf(holder.mSKUBO.getReturnQty()));
+            holder.mNonsalableTV.setText(String.valueOf(holder.mSKUBO.getNonSalableQty()));
+            holder.mVanunloadQtyTV.setText(String.valueOf(holder.mSKUBO.getVanUnloadQty()));
         }
 
         return convertView;
@@ -264,6 +312,12 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
 
         holder.mReplacementTV_cs.setVisibility(View.GONE);
         holder.mReplacementTV_ou.setVisibility(View.GONE);
+
+        holder.mVanunloadQtyTV_cs.setVisibility(View.GONE);
+        holder.mVanunloadQtyTV_ou.setVisibility(View.GONE);
+
+        holder.mNonsalableTV_cs.setVisibility(View.GONE);
+        holder.mNonsalableTV_ou.setVisibility(View.GONE);
     }
 
     private void setSHOW_EOD_OC(ViewHolder holder, int visible) {
@@ -274,6 +328,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
         holder.mSIH_cs.setVisibility(visible);
         holder.mEmpty_cs.setVisibility(visible);
         holder.mReplacementTV_cs.setVisibility(visible);
+        holder.mNonsalableTV_cs.setVisibility(visible);
+        holder.mVanunloadQtyTV_cs.setVisibility(visible);
     }
 
     private void setSHOW_EOD_OP(ViewHolder holder, int visible) {
@@ -284,7 +340,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
         holder.mSIH.setVisibility(visible);
         holder.mEmpty.setVisibility(visible);
         holder.mReplacementTV.setVisibility(visible);
-
+        holder.mNonsalableTV.setVisibility(visible);
+        holder.mVanunloadQtyTV.setVisibility(visible);
     }
 
     private void setSHOW_EOD_OO(ViewHolder holder, int visible) {
@@ -295,6 +352,8 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
         holder.mSIH_ou.setVisibility(visible);
         holder.mEmpty_ou.setVisibility(visible);
         holder.mReplacementTV_ou.setVisibility(visible);
+        holder.mNonsalableTV_ou.setVisibility(visible);
+        holder.mVanunloadQtyTV_ou.setVisibility(visible);
 
     }
 
@@ -324,9 +383,18 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
         TextView mReplacementTV_ou;
         TextView tv_return_cs;
         TextView tv_return_ou;
+        TextView mNonsalableTV;
+        TextView mNonsalableTV_cs;
+        TextView mNonsalableTV_ou;
+        TextView mVanunloadQtyTV;
+        TextView mVanunloadQtyTV_cs;
+        TextView mVanunloadQtyTV_ou;
         TextView mBatchNum;
-        RelativeLayout replacementRL;
-        RelativeLayout emptyRL;
-        RelativeLayout freeIssuedRL;
+        LinearLayout returnQtyLL;
+        LinearLayout replacementQtyLL;
+        LinearLayout emptyQtyLL;
+        LinearLayout freeIssuedQtyLL;
+        LinearLayout nonSalableQtyLL;
+        LinearLayout vanUnloadQtyLL;
     }
 }
