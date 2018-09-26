@@ -191,6 +191,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
         if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             Button btnClose = (Button) rootView.findViewById(R.id.btn_close);
+            btnClose.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             btnClose.setVisibility(View.VISIBLE);
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -206,7 +207,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                             Bundle extras = getActivity().getIntent().getExtras();
                             if (extras != null) {
                                 intent.putExtra("IsMoveNextActivity", true);
-                                intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                                intent.putExtra("CurrentActivityCode", "MENU_COLLECTION");
                             }
 
                             startActivity(intent);

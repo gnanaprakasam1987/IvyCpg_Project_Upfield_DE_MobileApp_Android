@@ -2196,29 +2196,59 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     @Override
     public void showStockSavedDialog() {
-        new CommonDialog(getActivity().getApplicationContext(), getActivity(),
-                "", getResources().getString(R.string.saved_successfully),
-                false, getActivity().getResources().getString(R.string.ok),
-                null, new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+        if(businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY){
+            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                    "", getResources().getString(R.string.saved_successfully),
+                    false, getActivity().getResources().getString(R.string.next),
+                    getActivity().getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                    Bundle extras = getActivity().getIntent().getExtras();
+                    if (extras != null) {
+                        intent.putExtra("IsMoveNextActivity", businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                        intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                    }
 
-                Bundle extras = getActivity().getIntent().getExtras();
-                if (extras != null) {
-                    intent.putExtra("IsMoveNextActivity", businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                    intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                    startActivity(intent);
+                    getActivity().finish();
+
                 }
+            }, new CommonDialog.negativeOnClickListener() {
+                @Override
+                public void onNegativeButtonClick() {
 
-                startActivity(intent);
-                getActivity().finish();
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                    startActivity(intent);
+                    getActivity().finish();
 
-            }
-        }, new CommonDialog.negativeOnClickListener() {
-            @Override
-            public void onNegativeButtonClick() {
-            }
-        }).show();
+                }
+            }).show();
+        }else{
+            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                    "", getResources().getString(R.string.saved_successfully),
+                    false, getActivity().getResources().getString(R.string.ok),
+                    null, new CommonDialog.PositiveClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+                    Bundle extras = getActivity().getIntent().getExtras();
+                    if (extras != null) {
+                        intent.putExtra("IsMoveNextActivity", businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                        intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                    }
+
+                    startActivity(intent);
+                    getActivity().finish();
+
+                }
+            }, new CommonDialog.negativeOnClickListener() {
+                @Override
+                public void onNegativeButtonClick() {
+                }
+            }).show();
+        }
     }
 
     @Override
