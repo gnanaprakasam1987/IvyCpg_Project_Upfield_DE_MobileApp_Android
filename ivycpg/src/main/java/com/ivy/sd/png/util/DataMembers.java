@@ -23,7 +23,7 @@ public class DataMembers {
 
     // Sync
     public static String SERVER_URL = BuildConfig.BASE_URL;
-   // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
+    // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
@@ -32,7 +32,7 @@ public class DataMembers {
 
     public static String fileName = "sd_png_asean_android.apk";
 
-    
+
     public static final int MESSAGE_UNZIPPED = 10113;
 
     public static final String DIGITAL_CONTENT = "TRAN";
@@ -237,7 +237,7 @@ public class DataMembers {
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";
 
-    public static final String tbl_AssetService= "AssetServiceRequest";
+    public static final String tbl_AssetService = "AssetServiceRequest";
     private static final String tbl_AssetService_cols = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
@@ -264,7 +264,7 @@ public class DataMembers {
     private static final String tbl_DailyTargetPlanned_cols = "TargetID,RetailerID,TargetValue,Date,IsGoldenStore";
 
     public static final String tbl_DenominationDetails = "DenominationDetails";
-    private static final String tbl_DenominationDetails_cols = "uid,value,count,lineAmount";
+    private static final String tbl_DenominationDetails_cols = "uid,value,count,lineAmount,isCoin";
 
     public static final String tbl_DenominationHeader = "DenominationHeader";
     private static final String tbl_DenominationHeader_cols = "uid,date,amount";
@@ -472,7 +472,6 @@ public class DataMembers {
     private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
 
 
-
     private static final String tbl_RetailerVerification = "RetailerVerification";
     private static final String tbl_RetailerVerification_cols = "RefId,IsValidated";
     public static final String tbl_password_rules = "PasswordPolicyRules";
@@ -608,12 +607,12 @@ public class DataMembers {
     private static final String tbl_RetailerScoreDetail = "RetailerScoreDetails";
     private static final String tbl_RetailerScoreDetail_cols = "Tid,ModuleCode,Weightage,Score";
 
-    private static final String tbl_CollectionDueHeader="CollectionDueHeader";
-    private static final String tbl_CollectionDueHeader_cols="Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
+    private static final String tbl_CollectionDueHeader = "CollectionDueHeader";
+    private static final String tbl_CollectionDueHeader_cols = "Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
 
 
-    private static final String tbl_CollectionDueDetails="CollectionDueDetails";
-    private static final String tbl_CollectionDueDetails_cols="InvoiceNo,ReasonId,uid";
+    private static final String tbl_CollectionDueDetails = "CollectionDueDetails";
+    private static final String tbl_CollectionDueDetails_cols = "InvoiceNo,ReasonId,uid";
 
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
@@ -784,8 +783,8 @@ public class DataMembers {
         uploadColumn.put(tbl_RetailerScoreHeader, tbl_RetailerScoreHeader_cols);
         uploadColumn.put(tbl_RetailerScoreDetail, tbl_RetailerScoreDetail_cols);
 
-        uploadColumn.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
-        uploadColumn.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
+        uploadColumn.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
+        uploadColumn.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumn.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
         uploadColumn.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
     }
@@ -919,10 +918,9 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
 
-        uploadColumnWithRetailer.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
-        uploadColumnWithRetailer.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
-        uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
-        uploadColumnWithRetailer.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
+        uploadColumnWithRetailer.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
+        uploadColumnWithRetailer.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
+
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();
@@ -985,6 +983,8 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_retailer_kpi_modified, tbl_retailer_kpi_modified_cols);
         uploadColumnWithOutRetailer.put(tbl_JointCallDetail, tbl_JointCallDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
+        uploadColumnWithOutRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
+        uploadColumnWithOutRetailer.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

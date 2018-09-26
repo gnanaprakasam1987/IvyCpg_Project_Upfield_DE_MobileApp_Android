@@ -219,9 +219,9 @@ public class DenominationFragment extends IvyBaseFragment {
         assert inflater != null;
         view = inflater.inflate(R.layout.fragment_denomination_item_view, null);
 
-        TextView dinominationTextview = (TextView) view.findViewById(R.id.dinomination_textview);
-        EditText dinominationValues = (EditText) view.findViewById(R.id.dinomination_values_edittext);
-        TextView dinominationAmount = (TextView) view.findViewById(R.id.dinomination_amount_textview);
+        TextView dinominationTextview = view.findViewById(R.id.dinomination_textview);
+        EditText dinominationValues = view.findViewById(R.id.dinomination_values_edittext);
+        TextView dinominationAmount = view.findViewById(R.id.dinomination_amount_textview);
 
         dinominationTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         dinominationValues.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
@@ -269,7 +269,6 @@ public class DenominationFragment extends IvyBaseFragment {
     }
 
 
-
     private String getDynamicEditTextValues(int mNumber) {
         EditText value = editTextHashMap.get(mNumber);
         if (value != null) {
@@ -303,27 +302,31 @@ public class DenominationFragment extends IvyBaseFragment {
         }
 
         if (totalValues != Double.valueOf(initialTotalAmount)) {
-            Toast.makeText(getActivity(), ""+getActivity().getResources().getString(R.string.denomination_error), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "" + getActivity().getResources().getString(R.string.denomination_error), Toast.LENGTH_SHORT).show();
         } else {
+            if(totalValues>0)
             insertData();
+            else
+                Toast.makeText(getActivity(), "" + getActivity().getResources().getString(R.string.no_data_tosave), Toast.LENGTH_SHORT).show();
         }
 
     }
 
     private void insertData() {
-        ArrayList<DenominationBO> denomination = new ArrayList<>();
+        ArrayList<DenominationBO> denominationList = new ArrayList<>();
         for (Integer key : editTextHashMap.keySet()) {
             String count = getDynamicEditTextValues(key);
             if (!AppUtils.isEmptyString(count)) {
-                DenominationBO denominationBO=new DenominationBO();
+                DenominationBO denominationBO = new DenominationBO();
                 denominationBO.setDenomintionId(denominationInputValues.get(key).getDenomintionId());
                 denominationBO.setDenominationDisplayName(denominationInputValues.get(key).getDenominationDisplayName());
                 denominationBO.setDenominationDisplayNameValues(denominationInputValues.get(key).getDenominationDisplayNameValues());
                 denominationBO.setCount(count);
-                denomination.add(denominationBO);
+                denominationBO.setIsCoin(denominationInputValues.get(key).getIsCoin());
+                denominationList.add(denominationBO);
             }
         }
-        compositeDisposable.add((Disposable) DenominationHelper.getInstance().insertDenomination(getActivity(),denomination,initialTotalAmount)
+        compositeDisposable.add(DenominationHelper.getInstance().insertDenomination(getActivity(), denominationList, initialTotalAmount)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Boolean>() {
@@ -335,7 +338,7 @@ public class DenominationFragment extends IvyBaseFragment {
                                 editTextHashMap.get(key).setText("");
                                 textViewHashMap.get(key).setText("0");
                             }
-                            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.successfully_exported), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                         }
 
                     }

@@ -59,6 +59,7 @@ public class DenominationHelper {
                             denominationBO.setDenomintionId(cursor.getString(0));
                             denominationBO.setDenominationDisplayName(cursor.getString(1));
                             denominationBO.setDenominationDisplayNameValues(cursor.getString(2));
+                            denominationBO.setIsCoin(cursor.getInt(3));
                             denominationBOS.add(denominationBO);
                         }
                         cursor.close();
@@ -105,8 +106,8 @@ public class DenominationHelper {
         });
     }
 
-    public Single<Boolean> insertDenomination(final Context context,final ArrayList<DenominationBO> denominationInputValues
-            ,final String initialTotalAmount) {
+    public Single<Boolean> insertDenomination(final Context context, final ArrayList<DenominationBO> denominationInputValues
+            , final String initialTotalAmount) {
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
@@ -125,14 +126,17 @@ public class DenominationHelper {
 
 
                     for (int i = 0; i < denominationInputValues.size(); i++) {
-                        String displayNameValues = denominationInputValues.get(i).getDenominationDisplayNameValues();
-                        String count = denominationInputValues.get(i).getCount();
 
-                        double lineAmount = Double.valueOf(displayNameValues) * Double.valueOf(count);
+                        double lineAmount = Double.valueOf(denominationInputValues.get(i).getDenominationDisplayNameValues()) *
+                                Double.valueOf(denominationInputValues.get(i).getCount());
 
-                        String columns = "uid,value,count,lineAmount";
+                        String columns = "uid,value,count,lineAmount,isCoin";
 
-                        String values = AppUtils.QT(id) + "," + AppUtils.QT(displayNameValues) + "," + AppUtils.QT(count) + "," + AppUtils.QT(String.valueOf(lineAmount));
+                        String values = AppUtils.QT(id) + ","
+                                + AppUtils.QT(denominationInputValues.get(i).getDenominationDisplayNameValues()) + ","
+                                + AppUtils.QT(denominationInputValues.get(i).getCount()) + ","
+                                + AppUtils.QT(String.valueOf(lineAmount)) + ","
+                                + denominationInputValues.get(i).getIsCoin();
 
                         db.insertSQL("DenominationDetails", columns, values);
 

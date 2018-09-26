@@ -10,6 +10,7 @@ public class DenominationBO {
     private String denominationDisplayName;
     private String denominationDisplayNameValues;
     private String count;
+    private int isCoin;
 
     public String getCount() {
         return count;
@@ -18,7 +19,6 @@ public class DenominationBO {
     public void setCount(String count) {
         this.count = count;
     }
-
 
 
     public String getDenomintionId() {
@@ -43,5 +43,13 @@ public class DenominationBO {
 
     public void setDenominationDisplayNameValues(String denominationDisplayNameValues) {
         this.denominationDisplayNameValues = denominationDisplayNameValues;
+    }
+
+    public int getIsCoin() {
+        return isCoin;
+    }
+
+    public void setIsCoin(int isCoin) {
+        this.isCoin = isCoin;
     }
 }
