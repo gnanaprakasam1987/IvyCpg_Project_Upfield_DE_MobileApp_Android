@@ -944,6 +944,7 @@ public class DiscountHelper {
         if (appliedSchemeList != null) {
 
             for (SchemeBO schemeBO : appliedSchemeList) {
+                boolean isFreeProductGiven=false;
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
@@ -1131,15 +1132,19 @@ public class DiscountHelper {
                                                 totalSchemeDiscountValue += totalPercentageDiscount;
                                             } else if (schemeBO
                                                     .isQuantityTypeSelected()) {
-                                                orderHelper.updateSchemeFreeProduct(schemeBO, productBO);
+                                                if(!isFreeProductGiven) {
+                                                    orderHelper.updateSchemeFreeProduct(schemeBO, productBO);
+                                                    isFreeProductGiven=true;
+                                                }
                                                 break;
                                             }
                                         } else {
                                             if (schemeBO.isQuantityTypeSelected()) {
                                                 // if  Accumulation scheme's buy product not available, free product set in First order product object
-                                                if (i == schemeProductList.size() && !isBuyProductAvailable) {
+                                                if (!isFreeProductGiven && !isBuyProductAvailable) {
                                                     ProductMasterBO firstProductBO = mOrderedList.get(0);
                                                     orderHelper.updateSchemeFreeProduct(schemeBO, firstProductBO);
+                                                    isFreeProductGiven=true;
                                                 }
                                             }
                                         }
