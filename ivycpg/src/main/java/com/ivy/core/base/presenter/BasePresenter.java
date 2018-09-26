@@ -5,6 +5,7 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 
+import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -47,7 +48,8 @@ public class BasePresenter<V extends BaseIvyView> implements BaseIvyPresenter<V>
     @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     public void onCreate() {
-        getAppTheme();
+        if (BaseActivity.mCurrentTheme == 0)
+            getAppTheme();
         getAppFontSize();
         getIvyView().handleLayoutDirection(mDataManager.getPreferredLanguage());
     }
