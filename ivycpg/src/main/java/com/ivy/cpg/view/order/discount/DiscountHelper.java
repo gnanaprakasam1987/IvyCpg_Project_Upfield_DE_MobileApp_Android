@@ -163,6 +163,8 @@ public class DiscountHelper {
                 totalDiscOrAmtValue = totalQty * value;
 
             }
+            totalDiscOrAmtValue = SDUtil.formatAsPerCalculationConfig(totalDiscOrAmtValue);
+
 
             if (discountId == 0) {
                 productBO.setApplyValue(totalDiscOrAmtValue);
@@ -432,6 +434,7 @@ public class DiscountHelper {
                     } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
                         discountValue = storeWiseDiscountBO.getAppliedDiscount();
                     }
+                    discountValue=SDUtil.formatAsPerCalculationConfig(discountValue);
                     storeWiseDiscountBO.setDiscountValue(discountValue);
 
                     businessModel.getOrderHeaderBO().setDiscountValue(discountValue);
@@ -504,6 +507,7 @@ public class DiscountHelper {
                     // So If it is not percentage type discount, then it is considered as amount type discount.
                     discountValue = storeWiseDiscountBO.getDiscount();
                 }
+                discountValue=SDUtil.formatAsPerCalculationConfig(discountValue);
 
                 storeWiseDiscountBO.setDiscountValue(discountValue);
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
@@ -550,6 +554,7 @@ public class DiscountHelper {
                 } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
                     discountValue = storeWiseDiscountBO.getDiscount();
                 }
+                discountValue = SDUtil.formatAsPerCalculationConfig(discountValue);
 
                 storeWiseDiscountBO.setDiscountValue(discountValue);
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
@@ -871,6 +876,7 @@ public class DiscountHelper {
                 } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
                     discountValue = storeWiseDiscountBO.getDiscount();
                 }
+                discountValue=SDUtil.formatAsPerCalculationConfig(discountValue);
 
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 1)
                     billWiseCompanyDiscount = billWiseCompanyDiscount + discountValue;
@@ -941,6 +947,7 @@ public class DiscountHelper {
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
+                        totalSchemeDiscountValue=SDUtil.formatAsPerCalculationConfig(totalSchemeDiscountValue);
                     }
 
                     List<SchemeProductBO> schemeProductList = schemeBO
@@ -954,7 +961,7 @@ public class DiscountHelper {
                         if (schemeBO.isAmountTypeSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
                                 totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
-                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),false);
+                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),false, false);
                             }
                         }
 
@@ -963,11 +970,11 @@ public class DiscountHelper {
                         for (SchemeProductBO schemeProductBo : schemeProductList) {
 
                             for (ProductMasterBO productBO : mOrderedList) {
-                                if (productBO.getParentHierarchy().contains("/" + schemeProductBo
-                                        .getProductId() + "/")) {
+                                if (productBO.getParentHierarchy().contains("/" + schemeProductBo.getProductId() + "/")) {
                                     if (!productIdList.contains(productBO.getProductID())) {
                                         productIdList.add(productBO.getProductID());
                                         i = i++;
+
                                         if (productBO.getOrderedPcsQty() > 0
                                                 || productBO.getOrderedCaseQty() > 0
                                                 || productBO.getOrderedOuterQty() > 0) {
@@ -981,6 +988,7 @@ public class DiscountHelper {
                                                         + (productBO.getOrderedOuterQty() * productBO.getOsrp());
                                                 double percentage_productContribution = ((line_value / totalOrderValueOfBuyProducts) * 100);
                                                 double amount_free = schemeBO.getSelectedAmount() * (percentage_productContribution / 100);
+                                                amount_free=SDUtil.formatAsPerCalculationConfig(amount_free);
                                                 //
 
                                                 if (businessModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
@@ -1011,6 +1019,7 @@ public class DiscountHelper {
                                                                             + (batchProduct.getOrderedOuterQty() * productBO.getOsrp());
                                                                     double percentage_batchProductContribution = ((line_value_batch / totalOrderValueOfBuyProducts_batch) * 100);
                                                                     double amount_free_batch = amount_free * (percentage_batchProductContribution / 100);
+                                                                    amount_free_batch=SDUtil.formatAsPerCalculationConfig(amount_free_batch);
                                                                     //
 
                                                                     batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + amount_free_batch);
@@ -1020,19 +1029,17 @@ public class DiscountHelper {
                                                         }
                                                     } else {
                                                         productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
+                                                        schemeProductBo.setDiscountValue(amount_free);
                                                         if (productBO.getDiscount_order_value() > 0) {
-                                                            productBO.setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
-                                                                    - amount_free);
+                                                            productBO.setDiscount_order_value(productBO.getDiscount_order_value()- amount_free);
 
                                                         }
                                                     }
                                                 } else {
                                                     productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
+                                                    schemeProductBo.setDiscountValue(amount_free);
                                                     if (productBO.getDiscount_order_value() > 0) {
-                                                        productBO.setDiscount_order_value(productBO
-                                                                .getDiscount_order_value()
-                                                                - amount_free);
+                                                        productBO.setDiscount_order_value(productBO.getDiscount_order_value() - amount_free);
 
                                                     }
                                                 }

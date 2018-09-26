@@ -96,26 +96,21 @@ public class SaveVanUnloadAsyncTask extends AsyncTask<Integer, Integer, Boolean>
             moduleTimeStampHelper.setTid("");
             moduleTimeStampHelper.setModuleCode("");
 
-            if (businessModel.configurationMasterHelper.SHOW_BUTTON_PRINT01
-                    && (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+            if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
                     || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
                     || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
                     || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
                     || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC
-                    || businessModel.configurationMasterHelper.COMMON_PRINT_MAESTROS)) {
-                businessModel.mCommonPrintHelper.xmlRead("van", false, null, null, null, null);
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
+                businessModel.mCommonPrintHelper.xmlRead("van", false, null, null, null, null,mVanUnLoadModuleHelper.getReasonList());
 
                 businessModel.writeToFile(String.valueOf(businessModel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_UNLOAD + mVanUnLoadModuleHelper.getTransactionId(), "/" + DataMembers.PRINT_FILE_PATH);
 
                 Intent intent = new Intent(((VanUnloadActivity) mContext),
                         CommonPrintPreviewActivity.class);
-                intent.putExtra("IsFromOrder", false);
-                intent.putExtra("isFromEOD", false);
-                intent.putExtra("IsUpdatePrintCount", false);
                 intent.putExtra("isHomeBtnEnable", true);
                 intent.putExtra("isFromVanUnload", true);
-                intent.putExtra("sendMailAndLoadClass", "PRINT_FILE_ORDER");
                 mContext.startActivity(intent);
             }
 

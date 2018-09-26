@@ -585,7 +585,7 @@ public class OrderDeliveryHelper {
                     if (discountPercentage > 0) {
 
                         double remainingAmount = (SDUtil.convertToDouble(getOrderDeliveryTotalValue()) * discountPercentage) / 100;
-                        remainingAmount = SDUtil.convertToDouble(businessModel.formatValueBasedOnConfig(remainingAmount));
+                        remainingAmount = SDUtil.convertToDouble(businessModel.formatBasedOnCurrency(remainingAmount));
 
                         discountedAmount = SDUtil.convertToDouble(getOrderDeliveryTotalValue()) - remainingAmount;
                     } else {
@@ -684,10 +684,10 @@ public class OrderDeliveryHelper {
                         "orderid,ImageName,discount,invoiceAmount,latitude,longitude,return_amt," +
                         "discount_type,LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
                         "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount,totalamount,paidamount)" +
-                        " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," + businessModel.QT(businessModel.formatValueBasedOnConfig(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
+                        " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," + businessModel.QT(businessModel.formatBasedOnCurrency(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
                         ",orderid,imagename,discount," + businessModel.QT(getOrderDeliveryTotalValue()) +",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," +
-                        businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + businessModel.QT(businessModel.formatValueBasedOnConfig(discountedAmount)) +
+                        businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + businessModel.QT(businessModel.formatBasedOnCurrency(discountedAmount)) +
                         "," +totalAmount + ",0 from OrderHeader where OrderId = " + businessModel.QT(orderId);
 
                 db.executeQ(invoiceHeaderQry);

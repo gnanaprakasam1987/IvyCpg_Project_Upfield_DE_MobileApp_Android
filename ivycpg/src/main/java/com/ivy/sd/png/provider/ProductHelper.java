@@ -1046,12 +1046,14 @@ public class ProductHelper {
                     product.setProductShortName(c.getString(c.getColumnIndex("psname")));
                     product.setBarCode(c.getString(c.getColumnIndex("barcode")));
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));
-                    product.setSrp(c.getFloat(c.getColumnIndex("srp")));
-                    product.setPrevPrice_pc(c.getFloat(c.getColumnIndex("srp")) + "");
-                    product.setCsrp(c.getFloat(c.getColumnIndex("csrp")));
-                    product.setPrevPrice_ca(c.getFloat(c.getColumnIndex("csrp")) + "");
-                    product.setOsrp(c.getFloat(c.getColumnIndex("osrp")));
-                    product.setPrevPrice_oo(c.getFloat(c.getColumnIndex("osrp")) + "");
+
+                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setPrevPrice_pc(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
+                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setPrevPrice_ca(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
+                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setPrevPrice_oo(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
+
                     product.setMSQty(c.getInt(c.getColumnIndex("msqqty")));
                     product.setCaseSize(c.getInt(c.getColumnIndex("caseQty")));
                     product.setCaseUomId(c.getInt(c.getColumnIndex("caseUomId")));
@@ -3003,8 +3005,8 @@ public class ProductHelper {
                 sb.append(bomReturnBo.getpSrp() + ","
                         + bomReturnBo.getPieceUomId() + ","
                         + bomReturnBo.getTypeId() + ",");
-                sb.append(QT(SDUtil.getWithoutExponential((bomReturnBo.getLiableQty() - bomReturnBo
-                        .getReturnQty()) * (double) bomReturnBo.getpSrp())) + ",");
+                sb.append(QT(String.valueOf(SDUtil.formatAsPerCalculationConfig((bomReturnBo.getLiableQty() - bomReturnBo
+                        .getReturnQty()) * (double) bomReturnBo.getpSrp()))) + ",");
                 sb.append(QT(bmodel.getRetailerMasterBO().getRetailerID()));
 
                 db.insertSQL(tableName, returncolumns, sb.toString());

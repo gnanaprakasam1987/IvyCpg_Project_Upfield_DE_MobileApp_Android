@@ -2090,16 +2090,6 @@ SynchronizationHelper {
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_vanload", null, true);
             }
-        } else if (tableName.equalsIgnoreCase("temp_product_warehousestockmaster")) {
-            if (IsDataAvailableInTable("temp_product_warehousestockmaster")) {
-                sb = new StringBuffer();
-                sb.append("insert into ProductWareHouseStockMaster(PID,Uomid,Qty,DistributorId) ");
-                sb.append("select tw.pid,pm.piece_uomid,tw.wsih,0 from temp_product_warehousestockmaster tw ");
-                sb.append(" left join ProductMaster as pm on pm.pid=tw.pid ");
-                db.executeQ(sb.toString());
-                db.deleteSQL("temp_product_warehousestockmaster", null, true);
-                sb = null;
-            }
         }
     }
 
@@ -2123,8 +2113,6 @@ SynchronizationHelper {
 
             updateTable("temp_indicativeorder", db);
             updateTable("temp_retailerprogramtarget", db);
-            updateTable("temp_product_warehousestockmaster", db);
-
         } catch (Exception e) {
             Commons.printException("" + e);
         } finally {

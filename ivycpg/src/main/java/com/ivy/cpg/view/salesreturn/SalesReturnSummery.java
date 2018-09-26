@@ -722,7 +722,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     if ("1".equalsIgnoreCase(bmodel.getRetailerMasterBO().getRField4())) {
                         bmodel.productHelper.updateDistributorDetails();
                     }
-                    bmodel.mCommonPrintHelper.xmlRead("credit_note", false, mPrintList, keyValues, null,null);
+                    bmodel.mCommonPrintHelper.xmlRead("credit_note", false, mPrintList, keyValues, null,null,null);
                     Intent i = new Intent(SalesReturnSummery.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);
                     i.putExtra("isHomeBtnEnable", true);

@@ -573,7 +573,7 @@ public class VanUnLoadModuleHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select " +
-                    "VUD.pname,VUD.pcsqty,VUD.caseqty,VUD.outerqty,PM.mrp," +
+                    "VUD.pname,VUD.pcsqty,VUD.caseqty,VUD.outerqty,PM.baseprice," +
                     "IFNULL(SLM.ListName," + bmodel.QT(context.getString(R.string.salable)) + ")as ListName," +
                     "IFNULL(SLM.ListId,0)as ListID" +
                     ",PM.dUomQty,PM.dOuomQty" +

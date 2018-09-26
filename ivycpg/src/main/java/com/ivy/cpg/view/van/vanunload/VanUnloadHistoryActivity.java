@@ -121,12 +121,8 @@ public class VanUnloadHistoryActivity extends IvyBaseActivityNoActionBar {
 
                         Intent intent = new Intent(VanUnloadHistoryActivity.this,
                                 CommonPrintPreviewActivity.class);
-                        intent.putExtra("IsFromOrder", false);
-                        intent.putExtra("isFromEOD", false);
-                        intent.putExtra("IsUpdatePrintCount", false);
                         intent.putExtra("isHomeBtnEnable", true);
                         intent.putExtra("isFromVanUnload", true);
-                        intent.putExtra("sendMailAndLoadClass", "PRINT_FILE_ORDER");
                         startActivity(intent);
                     }
                 }

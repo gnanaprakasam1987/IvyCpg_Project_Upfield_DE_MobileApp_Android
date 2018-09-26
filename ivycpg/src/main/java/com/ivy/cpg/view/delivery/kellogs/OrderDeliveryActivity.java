@@ -277,7 +277,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                                         .now(SDUtil.TIME));
 
-                                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null, null);
+                                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null, null,null);
 
                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
