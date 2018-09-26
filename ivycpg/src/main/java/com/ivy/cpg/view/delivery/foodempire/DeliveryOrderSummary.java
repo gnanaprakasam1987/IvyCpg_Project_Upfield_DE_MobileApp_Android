@@ -150,7 +150,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
             if (isSaved) {
                 Toast.makeText(DeliveryOrderSummary.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
                 if (!isPartialOrder) {
-                    bmodel.mCommonPrintHelper.xmlRead("invoice", false, mylist, null,null,null);
+                    bmodel.mCommonPrintHelper.xmlRead("invoice", false, mylist, null,null,null,null);
 
                     Intent i = new Intent(DeliveryOrderSummary.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);

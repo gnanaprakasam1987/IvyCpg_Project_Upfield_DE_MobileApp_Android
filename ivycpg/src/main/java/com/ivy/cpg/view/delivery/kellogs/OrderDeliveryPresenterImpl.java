@@ -98,10 +98,10 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
         double orderTaxIncludeVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount()) +
                 orderValue - (isEdit ? 0.0 : discountVal);
 
-        orderDeliveryView.updateAmountDetails(String.valueOf(bmodel.formatValueBasedOnConfig(orderValue)),
-                isEdit ? "0.0" : String.valueOf(bmodel.formatValueBasedOnConfig(discountVal)),
-                String.valueOf(bmodel.formatValueBasedOnConfig(totalTaxVal)),
-                String.valueOf(bmodel.formatValueBasedOnConfig(orderTaxIncludeVal)));
+        orderDeliveryView.updateAmountDetails(String.valueOf(bmodel.formatBasedOnCurrency(orderValue)),
+                isEdit ? "0.0" : String.valueOf(bmodel.formatBasedOnCurrency(discountVal)),
+                String.valueOf(bmodel.formatBasedOnCurrency(totalTaxVal)),
+                String.valueOf(bmodel.formatBasedOnCurrency(orderTaxIncludeVal)));
     }
 
     @Override
@@ -146,7 +146,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     @Override
     public void doPrintActivity(String orderId) {
-        bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null,null);
+        bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null,null,null);
 
         bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                 StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -185,7 +185,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size() - 1).
                             setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context, orderId));
 
-                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null,null);
+                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null,null,null);
 
                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -214,7 +214,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
         @Override
         protected Boolean doInBackground(String... params) {
-            bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null,null);
+            bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.preparePrintData(context, orderId), null, null,null,null);
 
             bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                     StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);

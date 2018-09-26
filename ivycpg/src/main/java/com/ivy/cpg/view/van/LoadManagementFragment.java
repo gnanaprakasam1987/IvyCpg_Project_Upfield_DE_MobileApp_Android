@@ -516,6 +516,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 case MENU_VAN_UNLOAD:
                     if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                        bmodel.getRetailerMasterBO().setDistributorId(0);
                         navigateToActivity(menuName, menuCode, VanUnloadActivity.class);
                     } else {
                         showMessage(getString(R.string.data_not_mapped));

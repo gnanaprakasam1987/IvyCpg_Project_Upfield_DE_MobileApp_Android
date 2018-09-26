@@ -376,9 +376,7 @@
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity
-            android:name="com.ivy.sd.png.view.BixolonIPrint"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.sd.camera.CameraActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -398,9 +396,7 @@
         <activity
             android:name="com.ivy.sd.png.view.AdhocGallery"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.InvoicePrintZebra"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.sd.png.view.UserSettingsActivity"
             android:screenOrientation="portrait"
@@ -432,12 +428,7 @@
         <activity
             android:name="com.ivy.sd.png.view.OrderDiscount"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.BixolonIIPrint"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.png.view.InvoicePrintZebraNew"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity"
             android:screenOrientation="portrait" />
@@ -459,27 +450,18 @@
         <activity
             android:name="com.ivy.cpg.view.van.vanunload.VanUnloadActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.print.PrintPreviewScreen"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.print.PrintPreviewScreenDiageo"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.sd.print.PrintPreviewScreenTitan"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.print.GhanaPrintPreviewActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.sd.print.CollectionPreviewScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.print.EODStockReportPreviewScreen"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.sd.intermecprint.BtPrint4Ivy"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.ivy.cpg.view.asset.AssetTrackingActivity"
             android:exported="false"

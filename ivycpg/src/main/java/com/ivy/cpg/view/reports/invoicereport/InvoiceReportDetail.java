@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
-import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -38,15 +37,9 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.BixolonIIPrint;
-import com.ivy.sd.png.view.BixolonIPrint;
-import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.print.BtService;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.sd.print.DemoSleeper;
-import com.ivy.sd.print.GhanaPrintPreviewActivity;
-import com.ivy.sd.print.PrintPreviewScreen;
-import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.SettingsHelper;
 import com.tremol.zfplibj.ZFPLib;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -335,26 +328,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 
             Intent intent = new Intent();
 
-            if (businessModel.configurationMasterHelper.SHOW_BIXOLONI)
-                intent.setClass(InvoiceReportDetail.this, BixolonIPrint.class);
-            else if (businessModel.configurationMasterHelper.SHOW_BIXOLONII)
-                intent.setClass(InvoiceReportDetail.this, BixolonIIPrint.class);
-            else if (businessModel.configurationMasterHelper.SHOW_ZEBRA)
-                intent.setClass(InvoiceReportDetail.this,
-                        InvoicePrintZebraNew.class);
-            else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_ATS)
-                intent.setClass(InvoiceReportDetail.this,
-                        PrintPreviewScreen.class);
-            else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
-                intent.setClass(InvoiceReportDetail.this,
-                        PrintPreviewScreenDiageo.class);
-                intent.putExtra("print_count", businessModel.printHelper.getPrintCnt());
-            } else if (businessModel.configurationMasterHelper.SHOW_INTERMEC_ATS)
-                intent.setClass(InvoiceReportDetail.this, BtPrint4Ivy.class);
-            else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_GHANA) {
-                intent.setClass(InvoiceReportDetail.this,
-                        GhanaPrintPreviewActivity.class);
-            } else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL || businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
+            if (businessModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL || businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                 showDialog(2);
             } else if (businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
                     || businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
@@ -366,8 +340,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 intent.putExtra("IsUpdatePrintCount", true);
                 intent.putExtra("isHomeBtnEnable", true);
                 intent.putExtra("isFromInvoice", true);
-            } else
-                intent.setClass(InvoiceReportDetail.this, BixolonIIPrint.class);
+            }
 
             if (!businessModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL && !businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                 intent.putExtra("IsFromReport", true);

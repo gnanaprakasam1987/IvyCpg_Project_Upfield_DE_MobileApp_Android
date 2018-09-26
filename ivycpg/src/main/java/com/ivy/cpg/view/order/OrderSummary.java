@@ -51,7 +51,6 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.sd.camera.CameraActivity;
-import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CollectionBO;
 import com.ivy.sd.png.bo.OrderHeader;
@@ -71,24 +70,18 @@ import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.AdvancePaymentDialogFragment;
 import com.ivy.sd.png.view.AmountSplitUpDialog;
-import com.ivy.sd.png.view.BixolonIIPrint;
-import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.IndicativeOrderReasonDialog;
-import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.png.view.OrderSummaryDialogFragment;
 import com.ivy.sd.png.view.SerialNoEntryScreen;
 import com.ivy.sd.print.BtService;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.sd.print.DemoSleeper;
-import com.ivy.sd.print.GhanaPrintPreviewActivity;
-import com.ivy.sd.print.PrintPreviewScreen;
-import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.sd.print.SettingsHelper;
 import com.tremol.zfplibj.ZFPLib;
@@ -587,7 +580,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
                     totalQuantityOrdered = totalQuantityOrdered + totalQuantity;
-                    totalWeight = totalWeight + (totalQuantity * productBO.getWeight());
+                    totalWeight = totalWeight + SDUtil.convertToFloat(String.valueOf(SDUtil.formatAsPerCalculationConfig(totalQuantity * productBO.getWeight())));
 
                     mOrderedProductList.add(productBO);
 
@@ -702,7 +695,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.getOrderHeaderBO() != null) {
                     bModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
                 }
-                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount, bModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
+                totalOrderValue = totalOrderValue - billWiseDiscount;
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
             } else {
@@ -733,7 +726,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             //Applying bill wise tax
             if (bModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 bModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-                totalOrderValue = SDUtil.convertToDouble(SDUtil.format(totalOrderValue, bModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
                 if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
                     totalOrderValue += bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
             }
@@ -3086,55 +3078,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             customProgressDialog(builder10, "Printing....");
             alertDialog = builder10.create();
             alertDialog.show();
-        } else if (bModel.configurationMasterHelper.SHOW_BIXOLONII) {
-            i = new Intent(OrderSummary.this,
-                    BixolonIIPrint.class);
-            i.putExtra("IsFromOrder", true);
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
-        } else if (bModel.configurationMasterHelper.SHOW_BIXOLONI) {
-            i = new Intent(OrderSummary.this,
-                    BixolonIPrint.class);
-            i.putExtra("IsFromOrder", true);
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
-        } else if (bModel.configurationMasterHelper.SHOW_ZEBRA) {
-            i = new Intent(OrderSummary.this,
-                    InvoicePrintZebraNew.class);
-            i.putExtra("IsFromOrder", true);
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
-        } else if (bModel.configurationMasterHelper.SHOW_ZEBRA_ATS) {
-            i = new Intent(OrderSummary.this,
-                    PrintPreviewScreen.class);
-            i.putExtra("IsFromOrder", true);
-
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
-        } else if (bModel.configurationMasterHelper.SHOW_INTERMEC_ATS) {
-            i = new Intent(OrderSummary.this,
-                    BtPrint4Ivy.class);
-            i.putExtra("IsFromOrder", true);
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
-        } else if (bModel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
-            i = new Intent(OrderSummary.this,
-                    PrintPreviewScreenDiageo.class);
-            i.putExtra("IsFromOrder", true);
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
-        } else if (bModel.configurationMasterHelper.SHOW_ZEBRA_GHANA) {
-            i = new Intent(OrderSummary.this,
-                    GhanaPrintPreviewActivity.class);
-            i.putExtra("IsFromOrder", true);
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         } else if (bModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
                 || bModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
                 || bModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
@@ -3151,7 +3094,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
 
-            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null);
+            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null,null);
             if (bModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
@@ -3180,13 +3123,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 finish();
             }
 
-        } else {
-            i = new Intent(OrderSummary.this,
-                    BixolonIIPrint.class);
-            i.putExtra("IsFromOrder", true);
-            startActivity(i);
-            overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            finish();
         }
 
     }
@@ -3237,7 +3173,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName, null);
+            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName, null,null);
 
 
             bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),

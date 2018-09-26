@@ -117,9 +117,17 @@ public class ConfigurationMasterHelper {
     private static final String CODE_PHOTO_COMPETITOR = "PHOTOCOMP";
     private static final String CODE_TASK = "TSK";
     private static final String CODE_JUMP = "JUMPING";
+
     private static final String CODE_VOLUME_COMMA_COUNT = "VolComma";
     private static final String CODE_VOLUME_PRECISION_COUNT = "VolDecimal";
     private static final String CODE_PERCENT_PRECISION_COUNT = "PerDecimal";
+    private static final String CODE_CALCULATION_PRECISION_COUNT = "CalcDecimal";
+    public int PRECISION_COUNT_FOR_CALCULATION=3;
+    public int VALUE_PRECISION_COUNT = 2;
+    public int VALUE_COMMA_COUNT = 0;
+    public int PERCENT_PRECISION_COUNT = 0;
+
+
     private static final String CODE_VISITSCREEN_DEV_ALLOW = "RTRS02";
     private static final String CODE_DAY_MISMATCH = "RTRS03";
     private static final String CODE_INITIATIVE = "ORDB01";
@@ -570,9 +578,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_PHOTO_CAPTURE_IMG_PATH_CHANGE;//to change image path for kelog's specific
     public boolean IS_PHOTO_COMPETITOR;
     public boolean IS_TASK; // Activity Menu
-    public int VALUE_PRECISION_COUNT = 2;
-    public int VALUE_COMMA_COUNT = 0;
-    public int PERCENT_PRECISION_COUNT = 0;
+
     public boolean IS_VISITSCREEN_DEV_ALLOW;
     public boolean IS_DATE_VALIDATION_REQUIRED;
     public boolean IS_INITIATIVE;
@@ -999,6 +1005,8 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_ORDER_FOCUS_COUNT; //ORDB54
     public boolean SHOW_MENU_COUNTER_ALERT; //FUN28
     public boolean isRetailerBOMEnabled = false;
+
+
 
     //To show volume qty in order header report
     private static final String CODE_ORDER_RPT_VOLUME = "ORDRPT03";
@@ -2346,8 +2354,11 @@ public class ConfigurationMasterHelper {
         this.discount_max = hashMapHHTModuleOrder.get(CODE_GLOBAL_DISOCUNT_DIALOG) != null ? hashMapHHTModuleOrder.get(CODE_GLOBAL_DISOCUNT_DIALOG) : 100;
 
         this.VALUE_COMMA_COUNT = hashMapHHTModuleOrder.get(CODE_VOLUME_COMMA_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_VOLUME_COMMA_COUNT) : 0;
-        this.VALUE_PRECISION_COUNT = hashMapHHTModuleOrder.get(CODE_VOLUME_PRECISION_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_VOLUME_PRECISION_COUNT) : 0;
+        this.VALUE_PRECISION_COUNT = hashMapHHTModuleOrder.get(CODE_VOLUME_PRECISION_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_VOLUME_PRECISION_COUNT) : 2;
         this.PERCENT_PRECISION_COUNT = hashMapHHTModuleOrder.get(CODE_PERCENT_PRECISION_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PERCENT_PRECISION_COUNT) : 0;
+        this.PRECISION_COUNT_FOR_CALCULATION = hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT)!=null?hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT):3;
+        SDUtil.CALCULATION_PRECISION_COUNT =hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT)!=null?hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT):3;
+
         this.printCount = hashMapHHTModuleOrder.get(CODE_PRINT_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PRINT_COUNT) : 0;
         this.photocount = hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_COUNT) : 0;
         this.raPhotoCount = hashMapHHTModuleOrder.get(CODE_ROAD_ACTIVITY_PHOTO_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_ROAD_ACTIVITY_PHOTO_COUNT) : 0;
