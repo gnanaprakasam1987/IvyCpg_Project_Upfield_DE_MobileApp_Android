@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:minHeight="@dimen/list_item_height_double_line"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_5dp">
+
+        <LinearLayout
+            android:id="@+id/ll_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dimen_5dp">
+
+            <TextView
+                android:id="@+id/txt_label_inv_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/id"
+                android:tag="unload_history_id"
+                android:textColor="@color/history_label_color"
+                android:textSize="@dimen/list_item_primary_text_size" />
+
+            <TextView
+                android:id="@+id/txt_history_inv_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                android:textColor="?attr/primarycolor"
+                android:textSize="@dimen/font_micro_small" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_salable_qty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_label_salable_qty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_qty"
+                android:tag="unload_history_sa_qty"
+                android:textColor="@color/history_label_color"
+                android:textSize="@dimen/list_item_primary_text_size" />
+
+            <TextView
+                android:id="@+id/txt_history_salable_qty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                android:textColor="@color/history_date_color"
+                android:textSize="@dimen/font_micro_small" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_ns_qty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_label_ns_qty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/ns"
+                android:tag="unload_history_ns_qty"
+                android:textColor="@color/history_label_color"
+                android:textSize="@dimen/list_item_primary_text_size" />
+
+            <TextView
+                android:id="@+id/txt_history_ns_qty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                android:textColor="@color/history_date_color"
+                android:textSize="@dimen/font_micro_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/inv_view_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dimen_5dp"
+            android:paddingEnd="@dimen/dimen_5dp"
+            android:paddingLeft="@dimen/dimen_5dp"
+            android:paddingRight="@dimen/dimen_5dp"
+            android:paddingTop="@dimen/dimen_5dp">
+
+            <TextView
+                android:id="@+id/inv_view_btn"
+                android:layout_width="@dimen/profile_history_20dp"
+                android:layout_height="@dimen/profile_history_25dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/profile_header_txt_layout_marginbottom"
+                android:layout_marginRight="@dimen/profile_header_txt_layout_marginbottom"
+                android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
+                android:background="@drawable/ic_double_right_arrow"
+                android:backgroundTint="@color/history_invbtn_color"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
+                android:textColor="@color/toolbar_title"
+                android:textSize="@dimen/text_sz_extra_small" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

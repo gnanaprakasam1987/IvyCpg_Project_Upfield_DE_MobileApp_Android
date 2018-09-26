@@ -942,7 +942,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             if (bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE
                     && bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH")
-                    && bmodel.hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL),bmodel.getRetailerMasterBO().getRetailerID())) {
+                    && bmodel.hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.getRetailerMasterBO().getRetailerID())) {
 
                 Toast.makeText(this, getResources().getString(R.string.collection_mandatory), Toast.LENGTH_SHORT).show();
                 return;
@@ -976,7 +976,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     bmodel.outletTimeStampHelper.deleteTimeStampModuleWise("MENU_STK_ORD");
                     showCollectionReasonOrDialog();
                 }
-            }  else if (!hasActivityDone() && bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
+            } else if (!hasActivityDone() && bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
                 showFeedbackReasonOrDialog();
             } else {
                 showCollectionReasonOrDialog();
@@ -1018,11 +1018,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     }
 
 
-
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
         boolean isStoreCheckMenu = false;
-        boolean isStockOrder=false;
+        boolean isStockOrder = false;
 
         menuDB = bmodel.configurationMasterHelper.getActivityMenu();
 
@@ -1035,13 +1034,12 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 sb.append(config.getMenuName()).append(" ").append(getResources().getString(R.string.is_not_done)).append("\n");
             }
 
-            if(config.getHasLink() == 1 && !config.isDone()
-                    && config.getConfigCode().equals("MENU_STK_ORD")){
-                isStockOrder=true;
+            if (config.getHasLink() == 1 && !config.isDone()
+                    && config.getConfigCode().equals("MENU_STK_ORD")) {
+                isStockOrder = true;
             }
 
         }
-
 
 
         if (isStoreCheckMenu) {
@@ -1061,9 +1059,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.IS_FOCUS_PACK_NOT_DONE && !isStockOrder) {
             bmodel.getOrderedFocusBrandList();
             if (bmodel.getTotalFocusBrandLines() < bmodel.getTotalFocusBrands()) {
-                StringBuilder msg= new StringBuilder();
-                for (String focusBrand:bmodel.getTotalFocusBrandList()){
-                    if(!bmodel.getOrderedFocusBrands().contains(focusBrand))
+                StringBuilder msg = new StringBuilder();
+                for (String focusBrand : bmodel.getTotalFocusBrandList()) {
+                    if (!bmodel.getOrderedFocusBrands().contains(focusBrand))
                         msg.append(focusBrand).append(", ");
                 }
 
@@ -1227,7 +1225,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                                        /* BusinessModel.loadActivity(
                                                 CallAnalysisActivity.this,
                                                 DataMembers.actHomeScreenTwo);*/
-                                        Intent  myIntent = new Intent(CallAnalysisActivity.this, HomeScreenTwo.class);
+                                        Intent myIntent = new Intent(CallAnalysisActivity.this, HomeScreenTwo.class);
                                         startActivityForResult(myIntent, 0);
                                         finish();
                                     }
@@ -1344,7 +1342,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             Toast.makeText(CallAnalysisActivity.this,
                     getResources().getString(R.string.reason_saved),
                     Toast.LENGTH_SHORT).show();
-        } else if (!mFeedBackId.equals("0")||hasActivityDone()) {
+        } else if (!mFeedBackId.equals("0") || hasActivityDone()) {
             bmodel.updateIsVisitedFlag();
         }
 
@@ -1410,15 +1408,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     }
 
-    private void resetSellerConfiguration(){
+    private void resetSellerConfiguration() {
         bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
         bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
         bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
         SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_ON = SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_ON_MASTER;
         SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_SHOW_SCREEN = SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_SHOW_SCREEN_MASTER;
         bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
-        bmodel.configurationMasterHelper.IS_INVOICE=bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+        bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
     }
+
     private void resetRemarksBO() {
         bmodel.setOrderHeaderNote("");
         bmodel.setRField1("");
@@ -1712,7 +1711,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }
@@ -1778,8 +1777,22 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     alertDialog.dismiss();
                     presenter.upload();
                     break;
+
                 case DataMembers.NOTIFY_SIH_UPLOAD_ERROR:
                     Commons.print("SIH ," + "Error");
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+
+                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOADED: // Delivered order realtime sync
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+
+                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOAD_ERROR:
+                    Commons.print("OrderDeliveryStatus ," + "Error");
                     alertDialog.dismiss();
                     bmodel.showAlert(
                             getResources().getString(

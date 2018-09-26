@@ -79,4 +79,15 @@
         android:padding="@dimen/dimens_2dp"
         android:text="@string/zero" />
 
+    <TextView
+        android:id="@+id/tv_nonsalable_pc"
+        style="?attr/customListItemPrimary"
+        android:layout_width="@dimen/list_item_width_medium"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:textStyle="bold" />
+
 </LinearLayout>

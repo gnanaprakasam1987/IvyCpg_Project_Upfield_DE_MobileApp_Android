@@ -115,7 +115,7 @@ public class OrderDeliveryHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String sb = ("select OD.OrderID,OrderValue,LinesPerCall,OrderDate,invoicestatus from "
+            String sb = ("select OD.OrderID,OrderValue,LinesPerCall,OrderDate,invoicestatus,OD.RField3 from "
                     + DataMembers.tbl_orderHeader + " OD ") +
                     " where OD.upload='X' and OD.RetailerID="
                     + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID());
@@ -131,6 +131,7 @@ public class OrderDeliveryHelper {
                     orderHeader.setLinesPerCall(orderHeaderCursor.getInt(2));
                     orderHeader.setOrderDate(orderHeaderCursor.getString(3));
                     orderHeader.setInvoiceStatus(orderHeaderCursor.getInt(4));
+                    orderHeader.setrField3(orderHeaderCursor.getString(5));
 
                     orderHeaders.add(orderHeader);
                 }
@@ -540,7 +541,7 @@ public class OrderDeliveryHelper {
         return true;
     }
 
-    boolean updateTableValues(Context context, String orderId, boolean isEdit,String menuCode) {
+    boolean updateTableValues(Context context, String orderId, boolean isEdit,String menuCode,String referenceId) {
         boolean status = true;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -750,6 +751,13 @@ public class OrderDeliveryHelper {
                 }
             }
 
+
+            //OrderDelivery status insertion
+            String orderDeliveryStatus = "OrderDeliveryStatus";
+            String orderDeliveryStatus_cols = "orderId,refId";
+            String values = businessModel.QT(orderId) + "," + businessModel.QT(referenceId);
+            db.insertSQL(orderDeliveryStatus, orderDeliveryStatus_cols, values);
+
             db.closeDB();
 
             businessModel.saveModuleCompletion(menuCode);
@@ -913,7 +921,7 @@ public class OrderDeliveryHelper {
 
                         if (c.getCount() > 0 && c.moveToNext()) {
                             updateExcessSih = c.getInt(0) + updateExcessSih;
-                            db.executeQ("update ExcessStockInHand set qty=" + updateExcessSih + " where pid = " + headProductMasterBO.getProductID());
+                            db.executeQ("update ExcessStockInHand set qty=" + updateExcessSih + ",Upload='N' where pid = " + headProductMasterBO.getProductID());
                         } else {
                             db.executeQ("insert into ExcessStockInHand (qty,pid) values(" + updateExcessSih + "," + headProductMasterBO.getProductID() + ")");
                         }

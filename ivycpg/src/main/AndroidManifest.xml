@@ -822,8 +822,13 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-        <activity android:name="com.ivy.cpg.view.collection.NoCollectionReasonActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.collection.NoCollectionReasonActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.cpg.view.van.vanunload.VanUnloadHistoryActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
