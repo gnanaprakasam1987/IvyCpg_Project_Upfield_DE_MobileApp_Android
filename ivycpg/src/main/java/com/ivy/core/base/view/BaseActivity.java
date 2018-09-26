@@ -57,6 +57,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     private TextView progressMsgTxt;
 
+    public static int mCurrentTheme=0;
+
 
     /**
      * Always set you layout reference using this method
@@ -91,14 +93,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initializeDi();
-        showLoading();
 
-
-
+        if (mCurrentTheme != 0)
+            initScreen();
+        else
+            showLoading();
 
     }
 
-    private void initScreen(){
+    private void initScreen() {
 
         this.setContentView(this.getLayoutId());
 
@@ -119,7 +122,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     }
 
     @Override
-    public void createNFCManager() {}
+    public void createNFCManager() {
+    }
 
     @Override
     public void resumeNFCManager() {
@@ -402,7 +406,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
         if (isReplace) {
             for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-                fragmentManager.popBackStack();}
+                fragmentManager.popBackStack();
+            }
             fragmentManager.executePendingTransactions();
         }
 
@@ -454,7 +459,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         this.screenTitle = title;
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
         mScreenTitleTV.setText(title);
-        mScreenTitleTV.setTypeface(FontUtils.getFontBalooHai(this,FontUtils. FontType.REGULAR));
+        mScreenTitleTV.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
     }
 
     public void showDialog(String msg) {
@@ -483,37 +488,42 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void setBlueTheme() {
-
+        mCurrentTheme = R.style.MVPTheme_Blue;
         setTheme(R.style.MVPTheme_Blue);
         initScreen();
     }
 
     @Override
     public void setPinkTheme() {
+        mCurrentTheme = R.style.MVPTheme_Pink;
         setTheme(R.style.MVPTheme_Pink);
         initScreen();
     }
 
     @Override
     public void setGreenTheme() {
+        mCurrentTheme = R.style.MVPTheme_Green;
         setTheme(R.style.MVPTheme_Green);
         initScreen();
     }
 
     @Override
     public void setNavyBlueTheme() {
+        mCurrentTheme = R.style.MVPTheme_NBlue;
         setTheme(R.style.MVPTheme_NBlue);
         initScreen();
     }
 
     @Override
     public void setOrangeTheme() {
+        mCurrentTheme = R.style.MVPTheme_Orange;
         setTheme(R.style.MVPTheme_Orange);
         initScreen();
     }
 
     @Override
     public void setRedTheme() {
+        mCurrentTheme = R.style.MVPTheme_Red;
         setTheme(R.style.MVPTheme_Red);
         initScreen();
     }
@@ -538,7 +548,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     @Override
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
 
-        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener,isCancelable);
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener, isCancelable);
         dialog.setCancelable(true);
         dialog.show();
     }
