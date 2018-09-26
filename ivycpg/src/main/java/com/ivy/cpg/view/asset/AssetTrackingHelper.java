@@ -1824,7 +1824,9 @@ public class AssetTrackingHelper {
             int size = mAssetTrackingList.size();
 
             for (int i = 0; i < size; i++) {
-                if (mAssetTrackingList.get(i).getProductId() == pid && mAssetTrackingList.get(i).getAssetID() == assetID) {
+                if (mAssetTrackingList.get(i).getProductId() == pid &&
+                        mAssetTrackingList.get(i).getAssetID() == assetID &&
+                        mAssetTrackingList.get(i).getSerialNo() .equalsIgnoreCase(serialNo) ) {
                     assetBO = mAssetTrackingList.get(i);
                     break;
                 }
