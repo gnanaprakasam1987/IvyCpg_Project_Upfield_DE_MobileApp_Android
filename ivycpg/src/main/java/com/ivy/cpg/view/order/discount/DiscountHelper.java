@@ -937,6 +937,7 @@ public class DiscountHelper {
         if (appliedSchemeList != null) {
 
             for (SchemeBO schemeBO : appliedSchemeList) {
+                boolean isFreeProductGiven=false;
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
@@ -967,7 +968,6 @@ public class DiscountHelper {
                                     if (!productIdList.contains(productBO.getProductID())) {
                                         productIdList.add(productBO.getProductID());
                                         i = i++;
-                                        boolean isFreeProductGiven = false;
                                         if (productBO.getOrderedPcsQty() > 0
                                                 || productBO.getOrderedCaseQty() > 0
                                                 || productBO.getOrderedOuterQty() > 0) {
