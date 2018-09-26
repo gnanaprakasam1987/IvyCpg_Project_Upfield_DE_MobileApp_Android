@@ -239,7 +239,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         String screenTitle = bModel.configurationMasterHelper
                 .getHomescreentwomenutitle("MENU_CLOSING");
 
-        if (screenTitle.isEmpty())
+        if (!screenCode.equals("MENU_CLOSING"))
             screenTitle = getResources().getString(R.string.summary);
 
         toolbar = findViewById(R.id.toolbar);
@@ -1362,7 +1362,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         .setTitle(getResources().getString(R.string.Orde_Saved))
                         .setMessage(getResources().getString(R.string.Order_id) + orderHelper.getOrderId() + "\n" +
                                 (delivery_date_txt.equals("") ? "" : getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt))
-                        .setPositiveButton(getResources().getString(R.string.ok),
+                        .setPositiveButton(bModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY ? getResources().getString(R.string.next):getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -1381,6 +1381,17 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                                     }
                                 });
+                if (bModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY)
+                    builder2.setNegativeButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int whichButton) {
+                            Intent i = new Intent(
+                                    OrderSummary.this,
+                                    HomeScreenTwo.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    });
 
 
                 bModel.applyAlertDialogTheme(builder2);

@@ -2248,6 +2248,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Intent i = new Intent(HomeScreenTwo.this,
                                     OrderSummary.class);
                             i.putExtra("FromClose", "Closing");
+                            i.putExtra("ScreenCode",menu.getConfigCode());
                             startActivity(i);
                             finish();
                         }
