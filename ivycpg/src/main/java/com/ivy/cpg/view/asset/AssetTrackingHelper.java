@@ -1828,36 +1828,37 @@ public class AssetTrackingHelper {
                         mAssetTrackingList.get(i).getAssetID() == assetID &&
                         mAssetTrackingList.get(i).getSerialNo() .equalsIgnoreCase(serialNo) ) {
                     assetBO = mAssetTrackingList.get(i);
-                    break;
+                    if (assetBO != null) {
+
+                        assetBO.setAvailQty(qty);
+                        assetBO.setImageName(imageName);
+                        assetBO.setReason1ID(mReasonId);
+                        assetBO.setConditionID(conditionId);
+                        assetBO.setInstallDate(installDate);
+                        assetBO.setServiceDate(serviceDate);
+
+                        assetBO.setAudit(audit);
+                        if (!"null".equals(serialNo)) {
+                            assetBO.setSerialNo(serialNo);
+                        } else {
+                            assetBO.setSerialNo(Integer.toString(0));
+                        }
+
+                        assetBO.setCompetitorQty(compQty);
+
+                        assetBO.setExecutorQty(isExec);
+                        assetBO.setImgName(imgName);
+
+                        if (SHOW_LOCATION_POSM)
+                            assetBO.setLocationID(locId);
+
+                        assetBO.setImageList(getImagesList(mcontext, assetID, locId));
+
+                    }
+
                 }
             }
-            if (assetBO != null) {
 
-                assetBO.setAvailQty(qty);
-                assetBO.setImageName(imageName);
-                assetBO.setReason1ID(mReasonId);
-                assetBO.setConditionID(conditionId);
-                assetBO.setInstallDate(installDate);
-                assetBO.setServiceDate(serviceDate);
-
-                assetBO.setAudit(audit);
-                if (!"null".equals(serialNo)) {
-                    assetBO.setSerialNo(serialNo);
-                } else {
-                    assetBO.setSerialNo(Integer.toString(0));
-                }
-
-                assetBO.setCompetitorQty(compQty);
-
-                assetBO.setExecutorQty(isExec);
-                assetBO.setImgName(imgName);
-
-                if (SHOW_LOCATION_POSM)
-                    assetBO.setLocationID(locId);
-
-                assetBO.setImageList(getImagesList(mcontext, assetID, locId));
-
-            }
         }
     }
 
