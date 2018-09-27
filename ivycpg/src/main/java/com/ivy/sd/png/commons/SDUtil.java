@@ -31,6 +31,7 @@ public class SDUtil {
     public static final int DATE_GLOBAL_PLAIN = 8;
     public static final int DATE_GLOBAL_EIPHEN = 9;
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
+    public static int CALCULATION_PRECISION_COUNT =3;
 
 
     /**
@@ -201,6 +202,10 @@ public class SDUtil {
         } catch (Exception var8) {
             return "Err";
         }
+    }
+
+    public static double formatAsPerCalculationConfig(double value){
+        return convertToDouble(format(value, CALCULATION_PRECISION_COUNT,0));
     }
 
     /**

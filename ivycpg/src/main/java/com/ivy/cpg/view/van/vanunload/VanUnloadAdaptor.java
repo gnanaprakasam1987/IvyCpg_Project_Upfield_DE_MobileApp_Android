@@ -91,6 +91,7 @@ public class VanUnloadAdaptor extends BaseAdapter {
                     .findViewById(R.id.stock_and_order_listview_sih);
             holder.batchno = (TextView) row
                     .findViewById(R.id.stock_and_order_listview_batchno);
+            holder.nonSalableQty_pc = (TextView) row.findViewById(R.id.tv_nonsalable_pc);
 
             holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
             holder.batchno.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
@@ -98,8 +99,11 @@ public class VanUnloadAdaptor extends BaseAdapter {
             holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
             holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
             holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+            holder.nonSalableQty_pc.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
 
-
+            // Nonsalable unload view
+            if (!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_UNLOAD)
+                holder.nonSalableQty_pc.setVisibility(View.GONE);
             if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
                 holder.caseQty.setVisibility(View.GONE);
             if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
@@ -358,6 +362,11 @@ public class VanUnloadAdaptor extends BaseAdapter {
         } else {
             holder.pieceQty.setEnabled(true);
         }
+        if (holder.productBO.getNonSalableQty() > 0) {
+            holder.nonSalableQty_pc.setText(holder.productBO.getNonSalableQty() + "");
+        } else {
+            holder.nonSalableQty_pc.setText(mContext.getString(R.string.zero));
+        }
 
         if (position % 2 == 0) {
             row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.list_even_item_bg));
@@ -380,6 +389,7 @@ public class VanUnloadAdaptor extends BaseAdapter {
         EditText caseQty;
         EditText outerQty;
         LinearLayout listheaderLty;
+        TextView nonSalableQty_pc;
     }
 
 

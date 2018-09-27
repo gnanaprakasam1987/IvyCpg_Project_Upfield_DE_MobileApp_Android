@@ -1,7 +1,6 @@
 package com.ivy.sd.png.view;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -191,6 +190,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
         if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             Button btnClose = (Button) rootView.findViewById(R.id.btn_close);
+            btnClose.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             btnClose.setVisibility(View.VISIBLE);
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -206,7 +206,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                             Bundle extras = getActivity().getIntent().getExtras();
                             if (extras != null) {
                                 intent.putExtra("IsMoveNextActivity", true);
-                                intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                                intent.putExtra("CurrentActivityCode", "MENU_COLLECTION");
                             }
 
                             startActivity(intent);
@@ -567,22 +567,22 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 holder.tvAge.setText(strDays);
             }
 
-            String strPayment = bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getBalance()) + "";
+            String strPayment = bmodel.formatBasedOnCurrency(holder.invoiceHeaderBO.getBalance()) + "";
             holder.tvPayableAmt.setText(strPayment);
 
             holder.tvDiscAmt.setText(bmodel
-                    .formatValueBasedOnConfig(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
+                    .formatBasedOnCurrency(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
 
             holder.tvReceivedAmt.setText(bmodel.formatValue(holder.invoiceHeaderBO
                     .getPaidAmount() + holder.invoiceHeaderBO.getAppliedDiscountAmount()));
 
             holder.tvDueDate.setText(holder.invoiceHeaderBO.getDueDate());
 
-            double osamount = holder.invoiceHeaderBO.getBalance() + SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
+            double osamount = holder.invoiceHeaderBO.getBalance() + SDUtil.convertToDouble(bmodel.formatBasedOnCurrency(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
             if (osamount <= 0)
                 holder.tvOSAmt.setText("0");
             else
-                holder.tvOSAmt.setText(bmodel.formatValueBasedOnConfig(osamount));
+                holder.tvOSAmt.setText(bmodel.formatBasedOnCurrency(osamount));
 
             if (holder.invoiceHeaderBO.isChkBoxChecked()) {
                 holder.imgInvSelected.setVisibility(View.VISIBLE);
@@ -699,8 +699,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
     }
 
     private void updateListView(ViewHolder holder) {
-        holder.tvPayableAmt.setText(bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getBalance()));
-        holder.tvDiscAmt.setText(bmodel.formatValueBasedOnConfig(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
+        holder.tvPayableAmt.setText(bmodel.formatBasedOnCurrency(holder.invoiceHeaderBO.getBalance()));
+        holder.tvDiscAmt.setText(bmodel.formatBasedOnCurrency(holder.invoiceHeaderBO.getRemainingDiscountAmt()));
     }
 
     private void updateHeaderValuesForPendingInvoice() {

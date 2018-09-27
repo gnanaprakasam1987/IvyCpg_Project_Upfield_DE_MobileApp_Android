@@ -44,6 +44,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     private static final int UPLOAD_STOCK_IN_HAND = 3;
     private static final int UPLOAD_STOCK_APPLY = 4;
     private static final int UPLOAD_LOYALTY_POINTS = 6;
+    private static final int UPLOAD_ORDER_DELIVERY_STATUS = 7;
 
 
     public UploadPresenterImpl(Context mContext, BusinessModel mBModel, SyncContractor.SyncView view
@@ -151,6 +152,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         mBModel.mEmptyReconciliationhelper.updateTable();
         if (mBModel.configurationMasterHelper.CALCULATE_UNLOAD) {
             mVanUnloadHelper.vanUnloadAutomatically(mContext.getApplicationContext());
+            mVanUnloadHelper.vanUnloadNonSalableAutomatically(mContext.getApplicationContext());
         }
 
         if (mBModel.synchronizationHelper.checkDataForSync()
@@ -221,6 +223,9 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
                 && !isDayClosed) {
             startSync(RETAILER_WISE_UPLOAD);
+        } else if (mBModel.synchronizationHelper.checkOrderDeliveryStatusTable()
+                && !mBModel.synchronizationHelper.getUploadUrl("UPLDORDDELSTS").isEmpty()) {
+            startSync(UPLOAD_ORDER_DELIVERY_STATUS);
         } else if (mBModel.synchronizationHelper.checkDataForSync()) {
             startSync(UPLOAD_ALL);
         } else {

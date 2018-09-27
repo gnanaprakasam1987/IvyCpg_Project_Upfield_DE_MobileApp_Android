@@ -56,6 +56,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     final String Str_EDIT = "EDIT";
     private boolean isPrintClicked;
     private String orderId;
+    private String referenceId = "";
     private double totalReturnValue,totalOrderValue;
 
     @Override
@@ -140,14 +141,13 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         }
 
         orderId = getIntent().getExtras().getString("OrderId");
+        referenceId = getIntent().getExtras().getString("RefId");
 
         findViewById(R.id.accept_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 orderDeliveryPresenter.saveOrderDeliveryDetail(
-                        isEdit,orderId,getIntent().getExtras().getString("menuCode"),totalOrderValue,totalReturnValue
-
-                );
+                        isEdit,orderId,getIntent().getExtras().getString("menuCode"),totalOrderValue,totalReturnValue,referenceId);
             }
         });
     }

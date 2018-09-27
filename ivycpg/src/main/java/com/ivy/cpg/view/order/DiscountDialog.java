@@ -843,7 +843,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 + productBO.getOrderedOuterQty()
                 * productBO.getOutersize();
 
-        productBO.setApplyValue(totalQty * amount);
+        productBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(totalQty * amount));
         double total = 0;
         if (bmodel.configurationMasterHelper.IS_DISCOUNT_PRICE_PER) {
             if (productBO.getApplyValue() > productBO.getDiscount_order_value() * (bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER / 100))
@@ -875,7 +875,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         /* apply batchwise discount ends */
 
         double line_total_price = productBO.getDiscount_order_value();
-        productBO.setApplyValue(line_total_price * sum / 100);
+        productBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(line_total_price * sum / 100));
 
         double total = productBO.getDiscount_order_value() - productBO.getApplyValue();
 

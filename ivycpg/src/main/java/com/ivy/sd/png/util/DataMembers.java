@@ -158,6 +158,11 @@ public class DataMembers {
     public static final int DIST_DELETE_ORDER = 1011;
     public static final int DIST_DELETE_STOCK_ORDER = 1012;
 
+    // Delivery order for realtime sync
+    public static final int SYNC_ORDER_DELIVERY_STATUS_UPLOAD = -47;
+    public static final int NOTIFY_ORDER_DELIVERY_STATUS_UPLOADED = -48;
+    public static final int NOTIFY_ORDER_DELIVERY_STATUS_UPLOAD_ERROR = -49;
+
     // ***********
     public static final int PRINT_COUNT = 5;
     public static final int PRINT_TEXT_SIZE = 1;
@@ -237,7 +242,7 @@ public class DataMembers {
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";
 
-    public static final String tbl_AssetService= "AssetServiceRequest";
+    public static final String tbl_AssetService = "AssetServiceRequest";
     private static final String tbl_AssetService_cols = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
@@ -380,6 +385,10 @@ public class DataMembers {
     private static final String tbl_vanunload_details_cols = "uid,pid,batchid,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type,SubDepotId,TypeID,LineValue,Price,RefId,LiableQty";
     public static final String tbl_SIH = "StockInHandMaster";
     private static final String tbl_SIH_cols = "pid,batchid,qty,adjusted_qty";
+    public static final String tbl_ExcessStockInHand = "ExcessStockInHand";
+    private static final String tbl_ExcessStockInHand_cols = "pid,qty";
+    public static final String tbl_NonSalableSIHMaster = "NonSalableSIHMaster";
+    private static final String tbl_NonSalableSIHMaster_cols = "pid,qty,reasonid";
     private static final String tbl_NEWOUTLETIMAGE_cols = "RetailerID,ListId,ImageName";
     public static final String tbl_outlet_time_stamp_detail = "OutletTimeStampDetail";
     public static final String tbl_outlet_time_stamp_detail_cols = "UID,ModuleCode,TimeIn,TimeOut,RetailerID";
@@ -469,7 +478,6 @@ public class DataMembers {
     private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
 
 
-
     private static final String tbl_RetailerVerification = "RetailerVerification";
     private static final String tbl_RetailerVerification_cols = "RefId,IsValidated";
     public static final String tbl_password_rules = "PasswordPolicyRules";
@@ -541,7 +549,7 @@ public class DataMembers {
     private static final String tbl_RetailerEntryDetails_Cols = "UId,EntryMode,ReasonId";
 
     private static final String tbl_retailerContactupload_cols = "RetailerID,contactname,ContactName_LName,ContactNumber," +
-            "contact_title,contact_title_lovid,IsPrimary";
+            "contact_title,contact_title_lovid,IsPrimary,Email";
     private static final String tbl_retailerAddressupload_cols = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
             + "email,FaxNo,pincode,State,IsPrimary,Mobile,Region,Country";
     private static final String tbl_retailerAttributeupload_cols = "RetailerId,AttributeId,LevelId";
@@ -605,12 +613,15 @@ public class DataMembers {
     private static final String tbl_RetailerScoreDetail = "RetailerScoreDetails";
     private static final String tbl_RetailerScoreDetail_cols = "Tid,ModuleCode,Weightage,Score";
 
-    private static final String tbl_CollectionDueHeader="CollectionDueHeader";
-    private static final String tbl_CollectionDueHeader_cols="Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
+    private static final String tbl_CollectionDueHeader = "CollectionDueHeader";
+    private static final String tbl_CollectionDueHeader_cols = "Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
 
 
-    private static final String tbl_CollectionDueDetails="CollectionDueDetails";
-    private static final String tbl_CollectionDueDetails_cols="InvoiceNo,ReasonId,uid";
+    private static final String tbl_CollectionDueDetails = "CollectionDueDetails";
+    private static final String tbl_CollectionDueDetails_cols = "InvoiceNo,ReasonId,uid";
+
+    public static final String tbl_order_delivery_status = "OrderDeliveryStatus";
+    public static final String tbl_order_delivery_status_cols = "orderId,refId";
 
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
@@ -781,8 +792,8 @@ public class DataMembers {
         uploadColumn.put(tbl_RetailerScoreHeader, tbl_RetailerScoreHeader_cols);
         uploadColumn.put(tbl_RetailerScoreDetail, tbl_RetailerScoreDetail_cols);
 
-        uploadColumn.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
-        uploadColumn.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
+        uploadColumn.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
+        uploadColumn.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumn.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
     }
 
@@ -915,8 +926,8 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
 
-        uploadColumnWithRetailer.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
-        uploadColumnWithRetailer.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
+        uploadColumnWithRetailer.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
+        uploadColumnWithRetailer.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
     }
 
@@ -1001,6 +1012,10 @@ public class DataMembers {
     static {
         uploadSIHTable.put(tbl_SIH,
                 tbl_SIH_cols);
+        uploadSIHTable.put(tbl_ExcessStockInHand,
+                tbl_ExcessStockInHand_cols);
+        uploadSIHTable.put(tbl_NonSalableSIHMaster,
+                tbl_NonSalableSIHMaster_cols);
 
     }
 
@@ -1074,6 +1089,16 @@ public class DataMembers {
         statusReportTables.put(tbl_retailerMasterupload, "New Retailer");
         statusReportTables.put(tbl_AssetHeader, "Asset Tracking");
 
+    }
+
+    /**
+     * Used to upload data for orderdelivery status.
+     */
+    public static final HashMap<String, String> uploadOrderDeliveryStatusTable = new HashMap<>();
+
+    static {
+        uploadOrderDeliveryStatusTable.put(tbl_order_delivery_status,
+                tbl_order_delivery_status_cols);
     }
 
 }

@@ -262,7 +262,7 @@ public class TaxHelper implements TaxInterface {
                         .getRetailerID()) + ",");
                 sb.append(mBusinessModel.QT(invoiceid) + "," + taxBO.getTaxRate() + ",");
                 sb.append(mBusinessModel.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.format(taxBO.getTotalTaxAmount(), 2, 0));
+                        + taxBO.getTotalTaxAmount());
                 db.insertSQL("InvoiceTaxDetails", columns, sb.toString());
 
             }
@@ -289,7 +289,7 @@ public class TaxHelper implements TaxInterface {
                         .getRetailerID()) + ",");
                 sb.append(orderId + "," + taxBO.getTaxRate() + ",");
                 sb.append(mBusinessModel.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.roundIt(taxBO.getTotalTaxAmount(), 2) + "," + "0");
+                        + taxBO.getTotalTaxAmount());
                 db.insertSQL("OrderTaxDetails", columns, sb.toString());
 
             }
@@ -601,6 +601,10 @@ public class TaxHelper implements TaxInterface {
                             || batchProductBO.getOrderedOuterQty() > 0) {
                         double batchTaxValue = batchProductBO.getDiscount_order_value() / (1 + (taxRate / 100));
                         double appliedTaxValue = batchTaxValue * taxRate / 100;
+
+                        batchTaxValue=SDUtil.formatAsPerCalculationConfig(batchTaxValue);
+                        appliedTaxValue=SDUtil.formatAsPerCalculationConfig(appliedTaxValue);
+
                         taxValue = taxValue + batchTaxValue;
                         totalAppliedTaxValue = totalAppliedTaxValue + appliedTaxValue;
                         batchProductBO.setTaxValue(batchTaxValue);
@@ -614,6 +618,10 @@ public class TaxHelper implements TaxInterface {
         } else {
             taxValue = productBO.getDiscount_order_value() / (1 + (taxRate / 100));
             totalAppliedTaxValue = taxValue * taxRate / 100;
+
+            taxValue=SDUtil.formatAsPerCalculationConfig(taxValue);
+            totalAppliedTaxValue=SDUtil.formatAsPerCalculationConfig(totalAppliedTaxValue);
+
             productBO.setTaxApplyvalue(totalAppliedTaxValue);
             productBO.setTaxValue(taxValue);
         }
@@ -696,10 +704,9 @@ public class TaxHelper implements TaxInterface {
         String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
         StringBuffer values = new StringBuffer();
 
-        double taxvalue = productBO.getTaxValue() * taxBO.getTaxRate() / 100;
         values.append(orderId + "," + productBO.getProductID() + ","
                 + taxBO.getTaxRate() + ",");
-        values.append(taxBO.getTaxType() + "," + taxvalue
+        values.append(taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
                 + "," + mBusinessModel.getRetailerMasterBO().getRetailerID());
         values.append("," + taxBO.getGroupId() + ",0");
 
@@ -730,8 +737,8 @@ public class TaxHelper implements TaxInterface {
 
         for (TaxBO taxBO : mBillTaxList) {
             double taxValue = totalExclusiveOrderAmount * (taxBO.getTaxRate() / 100);
-            totalTaxValue = totalTaxValue + taxValue;
-            taxBO.setTotalTaxAmount(taxValue);
+            totalTaxValue = totalTaxValue + SDUtil.formatAsPerCalculationConfig(taxValue);
+            taxBO.setTotalTaxAmount(SDUtil.formatAsPerCalculationConfig(taxValue));
         }
         return totalTaxValue;
     }
@@ -818,7 +825,9 @@ public class TaxHelper implements TaxInterface {
                 if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
                     for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
                         if (taxBO.getParentType().equals("0")) {
-                            finalAmount += SDUtil.truncateDecimal(bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                            double taxValue=bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100);
+                            finalAmount += SDUtil.formatAsPerCalculationConfig(taxValue);
+
                         }
                     }
                 }
@@ -847,7 +856,9 @@ public class TaxHelper implements TaxInterface {
                                 double taxAmount = 0;
                                 for (TaxBO taxBO : taxList) {
                                     if (taxBO.getParentType().equals("0")) {
-                                        double calTax = SDUtil.truncateDecimal(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                                        double calTax;
+                                        calTax=SDUtil.formatAsPerCalculationConfig(productBo.getDiscount_order_value() * (taxBO.getTaxRate() / 100));
+
                                         taxBO.setTotalTaxAmount(calTax);
                                         taxAmount += calTax;
                                     }

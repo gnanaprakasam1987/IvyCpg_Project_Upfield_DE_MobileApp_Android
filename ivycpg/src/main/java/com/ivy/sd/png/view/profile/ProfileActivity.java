@@ -1519,13 +1519,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            loadHomeScreenTwo(bmodel.getRetailerMasterBO());
-
+                            //loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                            validationToProceed();
                         }
                     });
                     builder.show();
                 } else {
-                    loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                    //loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                    validationToProceed();
                 }
             } else if (resultCode == 0) {
                 Toast.makeText(this, R.string.photo_mandatory, Toast.LENGTH_LONG).show();
@@ -1555,7 +1556,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void retailerClick() {
 
         if (!isClicked && calledBy.equals(MENU_VISIT)) {
-            validationToProceed();
+
+            if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
+                takePhotoForRetailer();
+                return;
+            } else
+                validationToProceed();
         }
     }
 
@@ -1646,10 +1652,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             return;
         }
 
-        if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
+       /* if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
             takePhotoForRetailer();
             return;
-        }
+        }*/
 
         if (bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE) {
 
