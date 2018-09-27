@@ -485,7 +485,7 @@
             android:screenOrientation="portrait" />
         <!-- IvyRetail Integration Classes -->
         <activity
-            android:name="com.ivy.sd.png.view.JoinCallActivity"
+            android:name="com.ivy.cpg.view.jointcall.JoinCallActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.price.PriceTrackActivity"
@@ -512,7 +512,7 @@
             android:name="com.ivy.cpg.view.promotion.PromotionTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.RetailerContractActivity"
+            android:name="com.ivy.cpg.view.retailercontract.RetailerContractActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.sf.SOSActivity"

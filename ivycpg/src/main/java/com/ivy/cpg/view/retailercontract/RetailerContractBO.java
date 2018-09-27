@@ -1,24 +1,23 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.retailercontract;
 
 /**
  * Created by chiranjeevulu.l on 18-04-2016.
  */
 public class RetailerContractBO {
-    String Startdate;
-    String Enddate;
-    String Contractname;
-    String Contracttype;
-    String Status;
-    String Retailerid;
-    String typelovid;
-    String Tid;
-    String Contractid = "0";
-    String TemplateId;
-    String cs_id;
-    boolean renewed = false;
+    private String Startdate;
+    private String Enddate;
+    private String Contractname;
+    private String Contracttype;
+    private String Status;
+    private String Retailerid;
+    private String typelovid;
+    private String Tid;
+    private String Contractid = "0";
+    private String TemplateId;
+    private String cs_id;
+    private boolean renewed = false;
 
-    boolean uploaded = false;
-
+    private boolean uploaded = false;
 
     public String getTid() {
         return Tid;
@@ -122,9 +121,5 @@ public class RetailerContractBO {
     public void setCs_id(String cs_id) {
         this.cs_id = cs_id;
     }
-
-
-
-
 
 }

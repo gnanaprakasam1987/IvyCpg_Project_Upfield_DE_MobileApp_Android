@@ -1,9 +1,8 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.retailercontract;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,24 +17,24 @@ import android.widget.Toast;
 
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.RetailerContractBO;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+
 public class RenewContractDialog extends DialogFragment {
 
-    private BusinessModel bmodel;
     View v;
-    private String contractId, outDateFormat;
-    private TextView tvCancel, tvOk;
     private RetailerContractBO mretailerContractBO;
     private EditText etStartDate, etEndDate;
-
-
+    private AppSchedulerProvider appSchedulerProvider;
+    private ProgressDialog progressDialogue;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,16 +48,16 @@ public class RenewContractDialog extends DialogFragment {
 
         v = inflater.inflate(R.layout.dialog_renew_contract, container, false);
 
-        contractId = getArguments().getString("ContractID");
+        String contractId = getArguments().getString("ContractID");
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        final RetailerContractHelper retailerContractHelper = RetailerContractHelper.getInstance(getActivity());
 
-        tvCancel = (TextView) v.findViewById(R.id.tv_cancel);
-        tvOk = (TextView) v.findViewById(R.id.tv_ok);
-        etStartDate = (EditText) v.findViewById(R.id.et_startdate);
-        etEndDate = (EditText) v.findViewById(R.id.et_enddate);
+        TextView tvCancel =  v.findViewById(R.id.tv_cancel);
+        TextView tvOk =  v.findViewById(R.id.tv_ok);
+        etStartDate =  v.findViewById(R.id.et_startdate);
+        etEndDate =  v.findViewById(R.id.et_enddate);
 
+        appSchedulerProvider = new AppSchedulerProvider();
         tvCancel.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -73,17 +72,28 @@ public class RenewContractDialog extends DialogFragment {
                 if (etEndDate.getText().toString().length() > 0) {
                     mretailerContractBO.setStartdate(etStartDate.getText().toString());
                     mretailerContractBO.setEnddate(etEndDate.getText().toString());
-                    new SaveAsyncTask().execute();
+
+                    progressDialogue = ProgressDialog.show(getActivity(),
+                            DataMembers.SD, getResources().getString(R.string.saving),
+                            true, false);
+                    new CompositeDisposable().add(retailerContractHelper.saveRetailerContract(mretailerContractBO)
+                            .subscribeOn(appSchedulerProvider.io())
+                            .observeOn(appSchedulerProvider.ui())
+                            .subscribe(new Consumer<Boolean>() {
+                                @Override
+                                public void accept(Boolean aBoolean) {
+                                    updateUiAfterSave();
+                                }
+                            }));
                 } else
                     Toast.makeText(getActivity(), getResources().getString(R.string.alert_select_date), Toast.LENGTH_LONG).show();
             }
         });
 
-        for (RetailerContractBO retailer : bmodel.retailerContractHelper.getRetailerContractList()) {
+        for (RetailerContractBO retailer : retailerContractHelper.getRetailerContractList()) {
             if (retailer.getContractid().equals(contractId))
                 mretailerContractBO = retailer;
         }
-        outDateFormat = "yyyy/MM/dd";
 
         etStartDate.setText(getNextDate(mretailerContractBO.getEnddate()));
 
@@ -99,9 +109,9 @@ public class RenewContractDialog extends DialogFragment {
     }
 
     public String getNextDate(String curDate) {
-        String nextDate = "";
+        String nextDate ;
         try {
-            final SimpleDateFormat format = new SimpleDateFormat(outDateFormat);
+            final SimpleDateFormat format = DateUtil.getDateFormat("yyyy/MM/dd");
             final Date date = format.parse(curDate);
             final Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
@@ -119,7 +129,7 @@ public class RenewContractDialog extends DialogFragment {
     public long getNextDateMills(String curDate) {
         long nextDate;
         try {
-            final SimpleDateFormat format = new SimpleDateFormat(outDateFormat);
+            final SimpleDateFormat format = DateUtil.getDateFormat("yyyy/MM/dd");
             final Date date = format.parse(curDate);
             final Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
@@ -141,10 +151,7 @@ public class RenewContractDialog extends DialogFragment {
 
 
     public boolean isShowing() {
-        if (getDialog() != null) {
-            return true;
-        }
-        return false;
+        return getDialog() != null;
     }
 
 
@@ -156,8 +163,6 @@ public class RenewContractDialog extends DialogFragment {
         if (getDialog() == null) {
             return;
         }
-
-        int dialogHeight = (int) getActivity().getResources().getDimension(R.dimen.dialog_height); // specify a value here
 
         getDialog().getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
@@ -210,45 +215,14 @@ public class RenewContractDialog extends DialogFragment {
         dpd1.show();
     }
 
-    class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
-        private ProgressDialog progressDialogue;
+    private void updateUiAfterSave() {
+        progressDialogue.dismiss();
 
-        @Override
-        protected Boolean doInBackground(String... arg0) {
-            try {
-                bmodel.retailerContractHelper.saveRetailersContract(mretailerContractBO);
-                bmodel.retailerContractHelper.downloadRenewedContract(mretailerContractBO.getRetailerid());
-                bmodel.retailerContractHelper.downloadRetailerContract(mretailerContractBO.getRetailerid());
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                return Boolean.FALSE;
-            }
-
-        }
-
-        protected void onPreExecute() {
-            progressDialogue = ProgressDialog.show(getActivity(),
-                    DataMembers.SD, getResources().getString(R.string.saving),
-                    true, false);
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-
-            progressDialogue.dismiss();
-
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.saved_successfully),
-                    Toast.LENGTH_SHORT).show();
-            getDialog().dismiss();
-
-
-        }
-
+        Toast.makeText(getActivity(),
+                getResources().getString(R.string.saved_successfully),
+                Toast.LENGTH_SHORT).show();
+        getDialog().dismiss();
     }
+
 
 }
