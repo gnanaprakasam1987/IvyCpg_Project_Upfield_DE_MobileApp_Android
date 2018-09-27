@@ -1092,7 +1092,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             db.openDataBase();
             Cursor c = db.selectSQL("select stockid from "
                     + DataMembers.tbl_closingstockheader + " where retailerid="
-                    + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                    + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID())
                     + " AND DistributorID=" + bmodel.getRetailerMasterBO().getDistributorId());
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -1840,6 +1840,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 default:
                     return false;
             }
+            return false;
         }
     });
 
