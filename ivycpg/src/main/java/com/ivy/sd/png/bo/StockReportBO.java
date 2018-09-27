@@ -299,6 +299,8 @@ public class StockReportBO {
     private int replacemnetQty_ou;
 
 
+
+
     public int getSih_pc() {
         return sih_pc;
     }
@@ -459,6 +461,76 @@ public class StockReportBO {
 
     public void setEmptyBottleQty_cs(int emptyBottleQty_cs) {
         this.emptyBottleQty_cs = emptyBottleQty_cs;
+    }
+
+    private int nonsalableQty_pc, nonsalableQty_cs, nonsalableQty_ou;
+    private int nonSalableQty;
+
+    public int getNonsalableQty_pc() {
+        return nonsalableQty_pc;
+    }
+
+    public void setNonsalableQty_pc(int nonsalableQty_pc) {
+        this.nonsalableQty_pc = nonsalableQty_pc;
+    }
+
+    public int getNonsalableQty_cs() {
+        return nonsalableQty_cs;
+    }
+
+    public void setNonsalableQty_cs(int nonsalableQty_cs) {
+        this.nonsalableQty_cs = nonsalableQty_cs;
+    }
+
+    public int getNonsalableQty_ou() {
+        return nonsalableQty_ou;
+    }
+
+    public void setNonsalableQty_ou(int nonsalableQty_ou) {
+        this.nonsalableQty_ou = nonsalableQty_ou;
+    }
+
+    public int getNonSalableQty() {
+        return nonSalableQty;
+    }
+
+    public void setNonSalableQty(int nonSalableQty) {
+        this.nonSalableQty = nonSalableQty;
+    }
+
+    private int vanUnloadQty;
+    private int vanUnloadQty_pc, vanUnloadQty_cs, vanUnloadQty_ou;
+
+    public int getVanUnloadQty() {
+        return vanUnloadQty;
+    }
+
+    public void setVanUnloadQty(int vanUnloadQty) {
+        this.vanUnloadQty = vanUnloadQty;
+    }
+
+    public int getVanUnloadQty_pc() {
+        return vanUnloadQty_pc;
+    }
+
+    public void setVanUnloadQty_pc(int vanUnloadQty_pc) {
+        this.vanUnloadQty_pc = vanUnloadQty_pc;
+    }
+
+    public int getVanUnloadQty_cs() {
+        return vanUnloadQty_cs;
+    }
+
+    public void setVanUnloadQty_cs(int vanUnloadQty_cs) {
+        this.vanUnloadQty_cs = vanUnloadQty_cs;
+    }
+
+    public int getVanUnloadQty_ou() {
+        return vanUnloadQty_ou;
+    }
+
+    public void setVanUnloadQty_ou(int vanUnloadQty_ou) {
+        this.vanUnloadQty_ou = vanUnloadQty_ou;
     }
 
 }

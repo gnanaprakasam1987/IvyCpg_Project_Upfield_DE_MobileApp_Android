@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.retailercontract;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,27 +6,29 @@ import android.database.DatabaseUtils;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.RetailerContractBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 
 public class RetailerContractHelper {
     private Context mContext;
     private BusinessModel bmodel;
     private static RetailerContractHelper instance = null;
-    private static final String TAG = "RetailerContractHelper";
 
     private ArrayList<RetailerContractBO> mRetailerContractList;
     private ArrayList<RetailerContractBO> mRenewedContractList;
 
     protected RetailerContractHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static RetailerContractHelper getInstance(Context context) {
@@ -36,33 +38,32 @@ public class RetailerContractHelper {
         return instance;
     }
 
-    public ArrayList<RetailerContractBO> getRetailerContractList() {
+    ArrayList<RetailerContractBO> getRetailerContractList() {
         if (mRetailerContractList != null) {
             return mRetailerContractList;
         }
-        return new ArrayList<RetailerContractBO>();
+        return new ArrayList<>();
     }
 
-    public ArrayList<RetailerContractBO> getmRenewedContractList() {
+    ArrayList<RetailerContractBO> getmRenewedContractList() {
         if (mRenewedContractList != null) {
             return mRenewedContractList;
         }
-        return new ArrayList<RetailerContractBO>();
+        return new ArrayList<>();
     }
 
     public void downloadRetailerContract(String retailerid) {
-        mRetailerContractList = new ArrayList<RetailerContractBO>();
+        mRetailerContractList = new ArrayList<>();
         RetailerContractBO mRetailerContractBO;
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("select contractid,ContractDesc,ContractType,StartDate,EndDate,RetailerId,Status,templateid,typelovid,cs_id " +
-                    "from RetailerContract where retailerid= " + bmodel.QT(retailerid));
+            String sb ="select contractid,ContractDesc,ContractType,StartDate,EndDate,RetailerId,Status,templateid,typelovid,cs_id " +
+                    "from RetailerContract where retailerid= " + AppUtils.QT(retailerid);
 
-            Cursor c = db.selectSQL(sb.toString());
+            Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     mRetailerContractBO = new RetailerContractBO();
@@ -95,12 +96,11 @@ public class RetailerContractHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("select upload from RetailerContractRenewalDetails  " +
-                    "where Retailerid= " + bmodel.QT(mRetailerContractBO.getRetailerid()) +
-                    "AND ContractID= " + bmodel.QT(mRetailerContractBO.getCs_id()));
+            String sb ="select upload from RetailerContractRenewalDetails  " +
+                    "where Retailerid= " + AppUtils.QT(mRetailerContractBO.getRetailerid()) +
+                    "AND ContractID= " + AppUtils.QT(mRetailerContractBO.getCs_id());
 
-            Cursor c = db.selectSQL(sb.toString());
+            Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     mRetailerContractBO.setRenewed(true);
@@ -119,19 +119,18 @@ public class RetailerContractHelper {
     }
 
     public void downloadRenewedContract(String retailerid) {
-        mRenewedContractList = new ArrayList<RetailerContractBO>();
+        mRenewedContractList = new ArrayList<>();
         RetailerContractBO mRetailerContractBO;
         DBUtil db = null;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("select RetailerId,ContractId,Tid,startdate,enddate,description,typelovid,ContractType "
-                    +"from RetailerContractRenewalDetails where retailerid=" + bmodel.QT(retailerid)
-                    +" AND upload =" + bmodel.QT("N"));
+            String sb = "select RetailerId,ContractId,Tid,startdate,enddate,description,typelovid,ContractType "
+                    +"from RetailerContractRenewalDetails where retailerid=" + AppUtils.QT(retailerid)
+                    +" AND upload =" + AppUtils.QT("N");
 
-            Cursor c = db.selectSQL(sb.toString());
+            Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     mRetailerContractBO = new RetailerContractBO();
@@ -155,7 +154,7 @@ public class RetailerContractHelper {
         }
     }
 
-    public void saveRetailersContract(RetailerContractBO retailerContractBO) {
+    private void saveRetailersContract(RetailerContractBO retailerContractBO) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -163,21 +162,21 @@ public class RetailerContractHelper {
             db.openDataBase();
 
             db.deleteSQL("RetailerContractRenewalDetails", "ContractId="
-                    + bmodel.QT(retailerContractBO.getContractid()), false);
+                    + AppUtils.QT(retailerContractBO.getContractid()), false);
 
             String columnsNew = "Retailerid,ContractID,Tid,startdate,enddate,utcDate,templateid,description,typelovid,ContractType";
             String values;
 
-            values = bmodel.QT(retailerContractBO.getRetailerid()) + "," +
-                    bmodel.QT(retailerContractBO.getCs_id()) + "," +
-                    bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) + "," +
-                    bmodel.QT(retailerContractBO.getStartdate()) + "," +
-                    bmodel.QT(retailerContractBO.getEnddate()) + "," +
+            values = AppUtils.QT(retailerContractBO.getRetailerid()) + "," +
+                    AppUtils.QT(retailerContractBO.getCs_id()) + "," +
+                    AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) + "," +
+                    AppUtils.QT(retailerContractBO.getStartdate()) + "," +
+                    AppUtils.QT(retailerContractBO.getEnddate()) + "," +
                     DatabaseUtils.sqlEscapeString( Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) + "," +
-                    bmodel.QT(retailerContractBO.getTemplateId()) + "," +
-                    bmodel.QT(retailerContractBO.getContractname()) + "," +
-                    bmodel.QT(retailerContractBO.getTypelovid()) + "," +
-                    bmodel.QT(retailerContractBO.getContracttype());
+                    AppUtils.QT(retailerContractBO.getTemplateId()) + "," +
+                    AppUtils.QT(retailerContractBO.getContractname()) + "," +
+                    AppUtils.QT(retailerContractBO.getTypelovid()) + "," +
+                    AppUtils.QT(retailerContractBO.getContracttype());
 
             db.insertSQL("RetailerContractRenewalDetails", columnsNew, values);
             db.closeDB();
@@ -186,7 +185,7 @@ public class RetailerContractHelper {
         }
     }
 
-    public void deleteRenewal(String Tid) {
+    private void deleteRenewal(String Tid) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -194,7 +193,7 @@ public class RetailerContractHelper {
             db.openDataBase();
 
             db.deleteSQL("RetailerContractRenewalDetails", "Tid="
-                    + bmodel.QT(Tid), false);
+                    + AppUtils.QT(Tid), false);
 
 
             db.closeDB();
@@ -202,4 +201,29 @@ public class RetailerContractHelper {
             Commons.printException(e);
         }
     }
+
+    Single<Boolean> saveRetailerContract(final RetailerContractBO retailerContractBO) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                saveRetailersContract(retailerContractBO);
+                downloadRenewedContract(retailerContractBO.getRetailerid());
+                downloadRetailerContract(retailerContractBO.getRetailerid());
+                return Boolean.TRUE;
+            }
+        });
+    }
+
+    Single<Boolean> deleteRetailerContract(final String tid,final String retailerId) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                deleteRenewal(tid);
+                downloadRenewedContract(retailerId);
+                downloadRetailerContract(retailerId);
+                return Boolean.TRUE;
+            }
+        });
+    }
+
 }

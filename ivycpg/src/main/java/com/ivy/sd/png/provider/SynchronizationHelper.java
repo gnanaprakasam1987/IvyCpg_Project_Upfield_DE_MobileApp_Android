@@ -985,7 +985,9 @@ SynchronizationHelper {
                     "union select count(uid) from VanLoad where upload='N'" +
                     "union select count(Uid) from JointCallDetail where upload='N'" +
                     "union select count(Tid) from RetailerScoreHeader where upload='N'" +
-                    "union select count(Tid) from RetailerScoreDetails where upload='N'";
+                    "union select count(Tid) from RetailerScoreDetails where upload='N'" +
+                    "union select count(uid) from DenominationHeader where upload='N'" +
+                    "union select count(uid) from DenominationDetails where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -2090,16 +2092,6 @@ SynchronizationHelper {
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_vanload", null, true);
             }
-        } else if (tableName.equalsIgnoreCase("temp_product_warehousestockmaster")) {
-            if (IsDataAvailableInTable("temp_product_warehousestockmaster")) {
-                sb = new StringBuffer();
-                sb.append("insert into ProductWareHouseStockMaster(PID,Uomid,Qty,DistributorId) ");
-                sb.append("select tw.pid,pm.piece_uomid,tw.wsih,0 from temp_product_warehousestockmaster tw ");
-                sb.append(" left join ProductMaster as pm on pm.pid=tw.pid ");
-                db.executeQ(sb.toString());
-                db.deleteSQL("temp_product_warehousestockmaster", null, true);
-                sb = null;
-            }
         }
     }
 
@@ -2123,8 +2115,6 @@ SynchronizationHelper {
 
             updateTable("temp_indicativeorder", db);
             updateTable("temp_retailerprogramtarget", db);
-            updateTable("temp_product_warehousestockmaster", db);
-
         } catch (Exception e) {
             Commons.printException("" + e);
         } finally {
@@ -2522,9 +2512,9 @@ SynchronizationHelper {
     }
 
     /*Methods used add deviceID's json Validation params
-    *  - isDeviceChanged - false - validate -1 and Update -0
-    *  - isDeviceChaned - True - validate -0 and Update - 1
-    *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
+     *  - isDeviceChanged - false - validate -1 and Update -0
+     *  - isDeviceChaned - True - validate -0 and Update - 1
+     *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
     public void addDeviceValidationParameters(boolean isDeviceChanged, JSONObject jsonObject) {
         int mDeviceIdValidate, mDeviceIdChange;
         try {
@@ -4163,6 +4153,7 @@ SynchronizationHelper {
         return docsFolder;
 
     }
+
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#generateOtpUrl}
@@ -4220,6 +4211,41 @@ SynchronizationHelper {
             db.closeDB();
         }
 
+
+    }
+
+
+    /**
+     * Method used to check OrderDelivery Staus table data.
+     *
+     * @return
+     */
+    public boolean checkOrderDeliveryStatusTable() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        boolean hasData = false;
+        try {
+            db.openDataBase();
+            String sql;
+            Cursor c;
+
+            sql = "select count(*) from OrderDeliveryStatus where upload='N'";
+
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    if (c.getInt(0) > 0)
+                        hasData = true;
+                }
+                c.close();
+            }
+
+            db.closeDB();
+            return hasData;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+            return hasData;
+        }
 
     }
 

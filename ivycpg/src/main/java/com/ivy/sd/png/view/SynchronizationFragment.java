@@ -800,6 +800,19 @@ public class SynchronizationFragment extends IvyBaseFragment
                                     R.string.upload_failed_please_try_again), 0);
                     break;
 
+                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOADED: // Delivered order realtime sync
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+
+                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOAD_ERROR:
+                    Commons.print("OrderDeliveryStatus ," + "Error");
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
                     alertDialog.dismiss();
                     presenter.upload();
@@ -994,10 +1007,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.pls_upload_images_before_download), 0);
-                } else if(!UploadHelper.getInstance(getContext()).isAttendanceCompleted(getContext())){
+                } else if (!UploadHelper.getInstance(getContext()).isAttendanceCompleted(getContext())) {
                     showAttendanceNotCompletedToast();
-                }
-                else {
+                } else {
                     if (!selectedRetailerDownloadCheckBox.isChecked()) {
                         if (bmodel.configurationMasterHelper.SHOW_DOWNLOAD_ALERT)
                             showAlertForDownload();
@@ -1365,9 +1377,9 @@ public class SynchronizationFragment extends IvyBaseFragment
     };
 
 
-    private void moveToHomeScreenActivity(){
+    private void moveToHomeScreenActivity() {
 
-        Intent  myIntent = new Intent(getActivity(), HomeScreenActivity.class);
+        Intent myIntent = new Intent(getActivity(), HomeScreenActivity.class);
         myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         getActivity().startActivityForResult(myIntent, 0);
@@ -1979,26 +1991,33 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         @Override
         protected String doInBackground(String... params) {
+            String responseCode = "E01";
             String response = bmodel.synchronizationHelper.sendPostMethod(bmodel.synchronizationHelper.getSIHUrl(), json);
             try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
-                        String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                            bmodel.synchronizationHelper
-                                    .parseJSONAndInsert(jsonObject, true);
 
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray jsonArray = jsonObject.getJSONArray(SynchronizationHelper.JSON_KEY);
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject value = (JSONObject) jsonArray.get(i);
+                    Iterator itr = value.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                            String errorCode = value.getString(key);
+                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                bmodel.synchronizationHelper
+                                        .parseJSONAndInsert(value, true);
+
+                            }
+                            responseCode = errorCode;
                         }
-                        return errorCode;
                     }
                 }
             } catch (JSONException jsonExpection) {
                 Commons.print("" + jsonExpection.getMessage());
             }
-            return "E01";
+            return responseCode;
         }
 
         @Override
@@ -2025,7 +2044,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         .updateProductAndRetailerMaster();
                 bmodel.synchronizationHelper.loadMethodsNew();
                 long endTime = (System.nanoTime() - startTime) / 1000000;
-                if(bmodel.synchronizationHelper.mTableList == null){
+                if (bmodel.synchronizationHelper.mTableList == null) {
                     bmodel.synchronizationHelper.mTableList = new HashMap<>();
                 }
                 bmodel.synchronizationHelper.mTableList.put("temp table update**", endTime + "");

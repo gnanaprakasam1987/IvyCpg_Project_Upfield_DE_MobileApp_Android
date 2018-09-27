@@ -78,6 +78,8 @@ import com.ivy.cpg.view.price.PriceTrackCompActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.promotion.PromotionHelper;
 import com.ivy.cpg.view.promotion.PromotionTrackingActivity;
+import com.ivy.cpg.view.retailercontract.RetailerContractActivity;
+import com.ivy.cpg.view.retailercontract.RetailerContractHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sf.SODActivity;
@@ -93,7 +95,6 @@ import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
@@ -110,8 +111,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.profile.ProfileActivity;
-import com.ivy.sd.print.PrintPreviewScreen;
-import com.ivy.sd.print.PrintPreviewScreenDiageo;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -2249,6 +2248,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Intent i = new Intent(HomeScreenTwo.this,
                                     OrderSummary.class);
                             i.putExtra("FromClose", "Closing");
+                            i.putExtra("ScreenCode",menu.getConfigCode());
                             startActivity(i);
                             finish();
                         }
@@ -2546,33 +2546,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                    if (bmodel.configurationMasterHelper.SHOW_BIXOLONII) {
-
-                        intent = new Intent(HomeScreenTwo.this,
-                                BixolonIIPrint.class);
-                    } else if (bmodel.configurationMasterHelper.SHOW_BIXOLONI) {
-                        intent = new Intent(HomeScreenTwo.this,
-                                BixolonIPrint.class);
-                    } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA) {
-                        intent = new Intent(HomeScreenTwo.this,
-                                InvoicePrintZebraNew.class);
-                    } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_ATS) {
-                        intent = new Intent(HomeScreenTwo.this,
-                                PrintPreviewScreen.class);
-                    } else if (bmodel.configurationMasterHelper.SHOW_INTERMEC_ATS) {
-                        intent = new Intent(HomeScreenTwo.this,
-                                BtPrint4Ivy.class);
-                    } else if (bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
+                    /*if (bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
                         intent = new Intent(HomeScreenTwo.this,
                                 PrintPreviewScreenDiageo.class);
-                    } else {
-                        intent = new Intent(HomeScreenTwo.this,
-                                BixolonIIPrint.class);
                     }
                     intent.putExtra("IsFromOrder", false);
                     startActivity(intent);
                     finish();
-                    overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                    overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);*/
                 } else {
                     Toast.makeText(
                             this,
@@ -2992,8 +2973,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                         SDUtil.now(SDUtil.DATE_GLOBAL),
                         SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                bmodel.retailerContractHelper.downloadRetailerContract(bmodel.getRetailerMasterBO().getRetailerID());
-                bmodel.retailerContractHelper.downloadRenewedContract(bmodel.getRetailerMasterBO().getRetailerID());
+                RetailerContractHelper retailerContractHelper = RetailerContractHelper.getInstance(this);
+                retailerContractHelper.downloadRetailerContract(bmodel.getRetailerMasterBO().getRetailerID());
+                retailerContractHelper.downloadRenewedContract(bmodel.getRetailerMasterBO().getRetailerID());
                 Intent i = new Intent(HomeScreenTwo.this,
                         RetailerContractActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -4384,6 +4366,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private void enableSchemeModule() {
         if (schemeHelper.IS_SCHEME_ON
                 && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
+            SchemeDetailsMasterHelper.getInstance(getApplicationContext()).prepareNecessaryLists(bmodel.productHelper.getProductMaster());
             schemeHelper.loadSchemeDetails(getApplicationContext(), bmodel
                     .getRetailerMasterBO().getRetailerID());
         }

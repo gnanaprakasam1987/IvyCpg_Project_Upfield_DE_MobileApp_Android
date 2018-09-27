@@ -1736,6 +1736,19 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                                     R.string.upload_failed_please_try_again), 0);
                     return true;
 
+                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOADED: // Delivered order realtime sync
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+
+                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOAD_ERROR:
+                    Commons.print("OrderDeliveryStatus ," + "Error");
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
                     alertDialog.dismiss();
                     presenter.upload();

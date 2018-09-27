@@ -221,9 +221,9 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         outletMapViewPresenter.downloadOutletListAws();
 
-        outletMapViewPresenter.setOutletActivityDetail(sellerid, selectedDate);
-
         outletMapViewPresenter.setTabPosition(tabPos);
+
+        outletMapViewPresenter.setOutletActivityDetail(sellerid, selectedDate);
 
     }
 

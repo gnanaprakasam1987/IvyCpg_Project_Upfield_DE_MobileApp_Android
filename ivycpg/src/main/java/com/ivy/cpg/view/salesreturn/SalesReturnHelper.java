@@ -10,7 +10,6 @@ import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SalesReturnReportBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -621,6 +620,43 @@ public class SalesReturnHelper {
                                 bmodel.batchAllocationHelper
                                         .setBatchwiseSIH(product, Integer.toString(batchid)
                                                 , salRetSih, false);
+                            } else { // Nonsalable sih insert and update
+
+                                int nonSalRetSih = bo.getPieceQty()
+                                        + (bo.getCaseQty() * product
+                                        .getCaseSize())
+                                        + (bo.getOuterQty() * product
+                                        .getOutersize());
+
+                                Cursor c = db
+                                        .selectSQL("select pid,ifnull(qty,0) from NonSalableSIHMaster where pid="
+                                                + QT(product.getProductID())
+                                                + " and reasonid = " + bo.getReasonID()
+                                                + " and upload = 'N'");
+                                //+ " and batchid=" + batchid);
+                                if (c != null && c.getCount() > 0) {
+                                    while (c.moveToNext()) {
+                                        nonSalRetSih += c.getInt(1);
+                                    }
+                                    db.updateSQL("UPDATE NonSalableSIHMaster SET upload='N',qty = "
+                                            + nonSalRetSih
+                                            + " WHERE pid = "
+                                            + QT(product.getProductID())
+                                            + " and reasonid = " + bo.getReasonID());
+                                    //+ " AND batchid = " + batchid);
+                                    c.close();
+                                } else {
+                                    db.executeQ("delete from NonSalableSIHMaster where upload = 'Y' ");
+                                    String sihMasterColumns = "pid,qty,reasonid";
+                                    String sihMastervalues = QT(product.getProductID())
+                                            + ","
+                                            + nonSalRetSih + ","
+                                            + bo.getReasonID();
+                                    db.insertSQL("NonSalableSIHMaster",
+                                            sihMasterColumns,
+                                            sihMastervalues);
+                                }
+
                             }
                         }
                         isData = true;

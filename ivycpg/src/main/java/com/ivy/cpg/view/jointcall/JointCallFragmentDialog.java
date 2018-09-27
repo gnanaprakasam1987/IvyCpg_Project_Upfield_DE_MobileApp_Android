@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.jointcall;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.JoinDialogInterface;
+import com.ivy.sd.png.util.Commons;
 
 public class JointCallFragmentDialog extends DialogFragment {
 
@@ -42,11 +42,11 @@ public class JointCallFragmentDialog extends DialogFragment {
         Context context = getActivity();
         bmodel = (BusinessModel) context.getApplicationContext();
         getDialog().setTitle("Joint Call");
-        EditText mUserNameET = (EditText) view.findViewById(R.id.edit_username);
+        EditText mUserNameET =  view.findViewById(R.id.edit_username);
         mUserNameET.setEnabled(false);
-        mPasswordET = (EditText) view.findViewById(R.id.edit_password);
+        mPasswordET =  view.findViewById(R.id.edit_password);
         mPasswordET.requestFocus();
-        mRemarksET = (EditText) view.findViewById(R.id.edit_remarks);
+        mRemarksET =  view.findViewById(R.id.edit_remarks);
 
         remarksLabels = context.getResources().getString(R.string.enter_remarks);
 
@@ -65,18 +65,17 @@ public class JointCallFragmentDialog extends DialogFragment {
                                     .getTag());
                 }
             } catch (Exception e) {
-
+                Commons.printException(e);
             }
         }
 
         mUserNameET.setText(mJoinUserBo.getUserName());
-        Button mDoneBTN = (Button) view.findViewById(R.id.btn_done);
-        Button mCancelBTN = (Button) view.findViewById(R.id.btn_cancel);
+        Button mDoneBTN =  view.findViewById(R.id.btn_done);
+        Button mCancelBTN =  view.findViewById(R.id.btn_cancel);
         mCancelBTN.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 dismiss();
             }
         });
@@ -84,7 +83,6 @@ public class JointCallFragmentDialog extends DialogFragment {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 if (mPasswordET.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.enter_password), Toast.LENGTH_SHORT).show();
                 } else if (bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS && mRemarksET.getText().toString().equals("")) {

@@ -18,6 +18,7 @@
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
             android:onClick="numberPressed"
+            android:textStyle="bold"
             android:text="1"/>
 
         <View
@@ -30,6 +31,7 @@
             android:id="@+id/calctwo"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="2"/>
 
@@ -43,6 +45,7 @@
             android:id="@+id/calcthree"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="3"/>
 
@@ -56,6 +59,7 @@
             android:id="@+id/calcfour"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="4"/>
 
@@ -69,6 +73,7 @@
             android:id="@+id/calcfive"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="5"/>
 
@@ -82,6 +87,7 @@
             android:id="@+id/calcsix"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="6"/>
 
@@ -95,6 +101,7 @@
             android:id="@+id/calcseven"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="7"/>
 
@@ -108,6 +115,7 @@
             android:id="@+id/calceight"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="8"/>
 
@@ -121,6 +129,7 @@
             android:id="@+id/calcnine"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="9"/>
 
@@ -134,6 +143,7 @@
             android:id="@+id/calczero"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="0"/>
 
@@ -147,6 +157,7 @@
             android:id="@+id/calcdot"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
             android:text="."
             android:visibility="gone"/>
@@ -155,8 +166,10 @@
             android:id="@+id/calcdel"
             style="@style/ButtonKeyPad"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="numberPressed"
-            android:text="&lt;"/>
+            android:textSize="@dimen/font_medium"
+            android:text="&#x2190;"/>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

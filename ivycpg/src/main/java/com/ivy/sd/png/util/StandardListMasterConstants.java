@@ -92,10 +92,11 @@ public class StandardListMasterConstants {
 	public static final String MENU_TIMEANDTRAVEL_REPORT = "MENU_TIMEANDTRAVEL_REPORT";
 	public static final String MENU_PRODUCTIVITY_REPORT = "MENU_PRODUCTIVITY_REPORT";
 
-	public static final String FEEDBACK_TYPE="VFDK";
+	public static final String FEEDBACK_TYPE = "VFDK";
 	public static final String PRINT_FILE_INVOICE = "PF_INV_";
 	public static final String PRINT_FILE_COLLECTION = "PF_COL_";
 	public static final String PRINT_FILE_ORDER = "PF_ORD_";
+	public static final String PRINT_FILE_UNLOAD = "PF_UNLOAD_";
 	public static final String PRINT_FILE_PATH = "PrintFile/";
 
 	public static final String MENU_CLOSING_STK_RPT = "MENU_CLOSING_STK_RPT";

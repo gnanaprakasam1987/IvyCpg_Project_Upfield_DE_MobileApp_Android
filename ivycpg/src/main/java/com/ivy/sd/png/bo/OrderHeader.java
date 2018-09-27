@@ -24,6 +24,7 @@ public class OrderHeader {
     private String orderDate;
     private int invoiceStatus;
     private int addressID = 0;
+    private String rField3 = "";
 
     public int getInvoiceStatus() {
         return invoiceStatus;
@@ -276,4 +277,13 @@ public class OrderHeader {
     public void setAttachedFileName(String attachedFileName) {
         this.attachedFileName = attachedFileName;
     }*/
+
+    public String getrField3() {
+        return rField3;
+    }
+
+    public void setrField3(String rField3) {
+        this.rField3 = rField3;
+    }
+
 }

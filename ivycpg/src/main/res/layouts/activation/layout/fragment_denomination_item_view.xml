@@ -46,7 +46,7 @@
                 android:textSize="@dimen/footer_lbl_text_size" />
 
             <TextView
-                android:id="@+id/dinomination_amount_edittext"
+                android:id="@+id/dinomination_amount_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

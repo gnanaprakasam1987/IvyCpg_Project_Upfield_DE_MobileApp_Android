@@ -10,24 +10,17 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.sync.UploadHelper;
-import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BatchAllocation;
-import com.ivy.sd.png.view.BixolonIIPrint;
-import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
-import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.SubDStockOrderActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
-import com.ivy.sd.print.GhanaPrintPreviewActivity;
-import com.ivy.sd.print.PrintPreviewScreen;
-import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 
 import java.util.Locale;
@@ -142,7 +135,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             bmodel.uploadImageToAmazonCloud(handler);
 
-        }  else if (opt == DataMembers.SYNCUPLOAD) {
+        } else if (opt == DataMembers.SYNCUPLOAD) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
             Handler handler;
@@ -278,7 +271,7 @@ public class MyThread extends Thread {
 
                 }
 
-                if ( orderHelper.saveOrder(ctx, bill2Products,false)) {
+                if (orderHelper.saveOrder(ctx, bill2Products, false)) {
 
                     bmodel.setOrderHeaderBO(null);
 
@@ -332,7 +325,7 @@ public class MyThread extends Thread {
             } else {
 
                 // Save Order
-                if (orderHelper.saveOrder(ctx,false)) {
+                if (orderHelper.saveOrder(ctx, false)) {
                     // Save Discount
 //            bmodel.saveInvoiceDiscountDetails();
 
@@ -393,7 +386,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
 
             // Save Order
-            if (orderHelper.saveOrder(ctx,false)) {
+            if (orderHelper.saveOrder(ctx, false)) {
 
                 bmodel.setOrderHeaderBO(null);
 
@@ -504,7 +497,7 @@ public class MyThread extends Thread {
         } else if (opt == DataMembers.DELETE_STOCK_AND_ORDER) {
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-           //delete captured image form folder
+            //delete captured image form folder
             if (bmodel.getOrderHeaderBO().getOrderImageName().length() > 0)
                 bmodel.deleteFiles(HomeScreenFragment.photoPath,
                         bmodel.getOrderHeaderBO().getOrderImageName());
@@ -600,7 +593,7 @@ public class MyThread extends Thread {
 
             bmodel = (BusinessModel) ctx.getApplicationContext();
             bmodel.setContext(ctx);
-            if (orderHelper.saveOrder(ctx,true)) {
+            if (orderHelper.saveOrder(ctx, true)) {
 
                 bmodel.setOrderHeaderNote("");
 
@@ -673,49 +666,14 @@ public class MyThread extends Thread {
 
                 Commons.print("Class Simple Name :"
                         + ctx.getClass().getSimpleName());
-                if (ctx.getClass().getSimpleName()
-                        .equalsIgnoreCase("BixolonIIPrint")) {
-                    BixolonIIPrint frm = (BixolonIIPrint) ctx;
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_INVOICE_SAVED);
-                } else if (ctx.getClass().getSimpleName()
-                        .equalsIgnoreCase("BixolonIPrint")) {
-                    BixolonIPrint frm = (BixolonIPrint) ctx;
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_INVOICE_SAVED);
-                } else if (ctx.getClass().getSimpleName()
-                        .equalsIgnoreCase("InvoicePrintZebraNew")) {
-                    InvoicePrintZebraNew frm = (InvoicePrintZebraNew) ctx;
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_INVOICE_SAVED);
-                } else if (ctx.getClass().getSimpleName().equals("BatchAllocation")) {
+                if (ctx.getClass().getSimpleName().equals("BatchAllocation")) {
                     BatchAllocation frm = (BatchAllocation) ctx;
                     frm.getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_INVOICE_SAVED);
 
                 } else if (ctx.getClass().getSimpleName()
-                        .equalsIgnoreCase("PrintPreviewScreen")) {
-                    PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_INVOICE_SAVED);
-                } else if (ctx.getClass().getSimpleName()
-                        .equalsIgnoreCase("BtPrint4Ivy")) {
-                    BtPrint4Ivy frm = (BtPrint4Ivy) ctx;
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_INVOICE_SAVED);
-                } else if (ctx.getClass().getSimpleName()
-                        .equalsIgnoreCase("PrintPreviewScreenDiageo")) {
-                    PrintPreviewScreenDiageo frm = (PrintPreviewScreenDiageo) ctx;
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_INVOICE_SAVED);
-                } else if (ctx.getClass().getSimpleName()
                         .equalsIgnoreCase("PrintPreviewScreenTitan")) {
                     PrintPreviewScreenTitan frm = (PrintPreviewScreenTitan) ctx;
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_INVOICE_SAVED);
-                } else if (ctx.getClass().getSimpleName()
-                        .equalsIgnoreCase("GhanaPrintPreviewActivity")) {
-                    GhanaPrintPreviewActivity frm = (GhanaPrintPreviewActivity) ctx;
                     frm.getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_INVOICE_SAVED);
                 } else {
