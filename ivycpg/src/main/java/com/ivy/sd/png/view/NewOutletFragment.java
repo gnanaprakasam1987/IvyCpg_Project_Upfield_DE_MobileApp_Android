@@ -6042,17 +6042,19 @@ public class NewOutletFragment extends IvyBaseFragment
 
     }
 
-    private final Handler handler = new Handler() {
+    private final Handler handler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case DataMembers.NOTIFY_NEW_OUTLET_SAVED:
                     alertDialog.dismiss();
-                    bmodel.showAlert(
+                    bmodel = (BusinessModel) getActivity().getApplicationContext();
+                    onCreateDialogNew(2);
+                   /* bmodel.showAlert(
                             getResources().getString(
                                     R.string.new_store_has_been_saved),
-                            DataMembers.NOTIFY_NEW_OUTLET_SAVED);
-                    break;
+                            DataMembers.NOTIFY_NEW_OUTLET_SAVED);*/
+                    return true;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -6060,13 +6062,14 @@ public class NewOutletFragment extends IvyBaseFragment
                             "Error: "
                                     + getResources().getString(
                                     R.string.new_store_infn_not_saved), 0);
-                    break;
+                    return true;
                 case DataMembers.SAVENEWOUTLET:
                     alertDialog.dismiss();
                     showToast(getResources().getString(
                             R.string.saved_successfully));
                     startActivity(new Intent(getActivity(), HomeScreenActivity.class));
                     getActivity().finish();
+                    return true;
                 case DataMembers.RETAILER_DOWNLOAD_FAILED:
                     alertDialog.dismiss();
                     showToast(getResources().getString(
@@ -6074,23 +6077,25 @@ public class NewOutletFragment extends IvyBaseFragment
                     startActivity(new Intent(getActivity(), HomeScreenActivity.class));
                     getActivity().finish();
 
-                    break;
+                    return true;
                 case DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL:
                     alertDialog.dismiss();
                     showToast(getResources().getString(
                             R.string.sessionout_loginagain));
                     getActivity().finish();
+                    return true;
                 case DataMembers.NOTIFY_URL_NOT_CONFIGURED:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
                     bmodel.showAlert(
                             getResources().getString(R.string.url_not_mapped), 0);
-                    break;
+                    return true;
                 default:
-                    break;
+                    return false;
+
             }
         }
-    };
+    });
 
     public Handler getHandler() {
         return handler;
