@@ -55,6 +55,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.firebase.storage.FirebaseStorage;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -204,7 +205,9 @@ import java.util.Vector;
 import co.chatsdk.core.error.ChatSDKException;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.session.Configuration;
+import co.chatsdk.core.utils.ImageUtils;
 import co.chatsdk.firebase.FirebaseNetworkAdapter;
+import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
 import co.chatsdk.ui.manager.BaseInterfaceAdapter;
 
 public class BusinessModel extends Application {
@@ -702,7 +705,7 @@ public class BusinessModel extends Application {
 
             mApplicationComponent.inject(this);
 
-            //initialeChatSdk();
+            initialeChatSdk();
 
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -718,8 +721,17 @@ public class BusinessModel extends Application {
             Configuration.Builder builder = new Configuration.Builder(context);
 
 // Perform any configuration steps (optional)
-            builder.firebaseRootPath("Chat_node");
+            builder.firebaseRootPath("Chat_node_sep25");
+            builder.firebaseStorageURL("gs://testapp-a2b92.appspot.com"); // /files/new_folder_cpg/chat_img
+            builder.firebaseCloudMessagingServerKey("AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc");
+            builder.googleMaps("AIzaSyBrL2q-4N0xGxS7Y_f3FcF9Ec1XdL6VDk4");
+            builder.locationMessagesEnabled(true);
+
+
             ChatSDK.initialize(builder.build(), new BaseInterfaceAdapter(context), new FirebaseNetworkAdapter());
+
+            FirebaseFileStorageModule.activate();
+
         }catch(ChatSDKException e){
             Commons.printException(e);
         }
