@@ -21,7 +21,7 @@ public class WebViewReportHelper {
 
     protected WebViewReportHelper(Context context) {
         mContext = context;
-        bModel = (BusinessModel) context;
+        bModel = (BusinessModel) context.getApplicationContext();
     }
 
     public static WebViewReportHelper getInstance(Context context) {
