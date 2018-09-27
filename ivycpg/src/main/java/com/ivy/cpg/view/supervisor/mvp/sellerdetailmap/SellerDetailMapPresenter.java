@@ -33,12 +33,14 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.annotation.Nullable;
 
@@ -242,7 +244,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
         if (time != null && time != 0) {
             Date date = new Date(time);
-            Format format = new SimpleDateFormat("hh:mm a", Locale.US);
+            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
             return format.format(date);
         } else
             return "";
