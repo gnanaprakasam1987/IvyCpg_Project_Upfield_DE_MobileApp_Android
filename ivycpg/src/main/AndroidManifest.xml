@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1330"
-    android:versionName="2.133.0.2831">
+    android:versionCode="1340"
+    android:versionName="2.133.0.2832">
 
     <supports-screens
         android:anyDensity="true"
@@ -485,7 +485,7 @@
             android:screenOrientation="portrait" />
         <!-- IvyRetail Integration Classes -->
         <activity
-            android:name="com.ivy.sd.png.view.JoinCallActivity"
+            android:name="com.ivy.cpg.view.jointcall.JoinCallActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.price.PriceTrackActivity"
@@ -512,7 +512,7 @@
             android:name="com.ivy.cpg.view.promotion.PromotionTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.RetailerContractActivity"
+            android:name="com.ivy.cpg.view.retailercontract.RetailerContractActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.sf.SOSActivity"

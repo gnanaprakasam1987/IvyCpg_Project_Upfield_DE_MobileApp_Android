@@ -133,7 +133,7 @@ import com.ivy.sd.png.provider.ProfileHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
 import com.ivy.sd.png.provider.ReportHelper;
-import com.ivy.sd.png.provider.RetailerContractHelper;
+import com.ivy.cpg.view.retailercontract.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -262,7 +262,6 @@ public class BusinessModel extends Application {
     public JExcelHelper mJExcelHelper;
     public CommonPrintHelper mCommonPrintHelper;
     public DynamicReportHelper dynamicReportHelper;
-    public RetailerContractHelper retailerContractHelper;
     public TeamLeaderMasterHelper teamLeadermasterHelper;
     private static BusinessModel mInstance;
     public LoyalityHelper mLoyalityHelper;
@@ -427,7 +426,6 @@ public class BusinessModel extends Application {
         dynamicReportHelper = DynamicReportHelper.getInstance(this);
         teamLeadermasterHelper = TeamLeaderMasterHelper.getInstance(this);
 
-        retailerContractHelper = RetailerContractHelper.getInstance(this);
         mLoyalityHelper = LoyalityHelper.getInstance(this);
         newOutletAttributeHelper = NewOutletAttributeHelper.getInstance(this);
 

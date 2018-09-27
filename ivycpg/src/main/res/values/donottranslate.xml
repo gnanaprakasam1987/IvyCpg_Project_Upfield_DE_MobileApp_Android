@@ -234,8 +234,11 @@
     <string name="skip">Skip</string>
 
 
+    <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
+
     <string name="Orde_Saved">Order Saved.</string>
     <string name="Order_id">Order ID is: </string>
-    <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
+    <string name="denomination_error">Total amount not match with you denomination count amount </string>
+
     <string name="pay">Pay</string>
 </resources>

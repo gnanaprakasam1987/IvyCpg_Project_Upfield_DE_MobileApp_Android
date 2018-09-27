@@ -985,7 +985,9 @@ SynchronizationHelper {
                     "union select count(uid) from VanLoad where upload='N'" +
                     "union select count(Uid) from JointCallDetail where upload='N'" +
                     "union select count(Tid) from RetailerScoreHeader where upload='N'" +
-                    "union select count(Tid) from RetailerScoreDetails where upload='N'";
+                    "union select count(Tid) from RetailerScoreDetails where upload='N'" +
+                    "union select count(uid) from DenominationHeader where upload='N'" +
+                    "union select count(uid) from DenominationDetails where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -2510,9 +2512,9 @@ SynchronizationHelper {
     }
 
     /*Methods used add deviceID's json Validation params
-    *  - isDeviceChanged - false - validate -1 and Update -0
-    *  - isDeviceChaned - True - validate -0 and Update - 1
-    *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
+     *  - isDeviceChanged - false - validate -1 and Update -0
+     *  - isDeviceChaned - True - validate -0 and Update - 1
+     *  if activation false or is in internal activation ie uses ivy apis both values set to 0*/
     public void addDeviceValidationParameters(boolean isDeviceChanged, JSONObject jsonObject) {
         int mDeviceIdValidate, mDeviceIdChange;
         try {
@@ -4151,6 +4153,7 @@ SynchronizationHelper {
         return docsFolder;
 
     }
+
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#generateOtpUrl}

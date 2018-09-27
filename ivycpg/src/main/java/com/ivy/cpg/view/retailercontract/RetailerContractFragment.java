@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.retailercontract;
 
 
 import android.content.DialogInterface;
@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.RetailerContractBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
@@ -37,7 +36,7 @@ public class RetailerContractFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lvContract = (ListView) view.findViewById(R.id.list);
+        lvContract = view.findViewById(R.id.list);
 
         return view;
     }
@@ -51,7 +50,7 @@ public class RetailerContractFragment extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        lvContract.setAdapter(new MyAdapter(bmodel.retailerContractHelper.getRetailerContractList()));
+        lvContract.setAdapter(new MyAdapter(RetailerContractHelper.getInstance(getActivity()).getRetailerContractList()));
 
     }
 
@@ -65,44 +64,40 @@ public class RetailerContractFragment extends IvyBaseFragment {
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return items.size();
         }
 
         @Override
         public Object getItem(int arg0) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public long getItemId(int position) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            // TODO Auto-generated method stub
             final ViewHolder holder;
             if (convertView == null) {
 
                 holder = new ViewHolder();
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView = (View) inflater.inflate(
-                        R.layout.row_retailer_contract, null);
+                convertView = inflater.inflate(
+                        R.layout.row_retailer_contract, parent, false);
                 convertView.setTag(holder);
 
-                holder.tvcontactname = (TextView) convertView
+                holder.tvcontactname = convertView
                         .findViewById(R.id.contractname);
-                holder.tvcontracttype = (TextView) convertView
+                holder.tvcontracttype = convertView
                         .findViewById(R.id.contracttype);
-                holder.audit = (ImageButton) convertView
+                holder.audit = convertView
                         .findViewById(R.id.btn_audit);
-                holder.tvendDate = (TextView) convertView
+                holder.tvendDate = convertView
                         .findViewById(R.id.endDate1);
-                holder.tvstartdate = (TextView) convertView
+                holder.tvstartdate = convertView
                         .findViewById(R.id.strDate1);
 
 
