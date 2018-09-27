@@ -6033,8 +6033,11 @@ public class NewOutletFragment extends IvyBaseFragment
             super.onPostExecute(result);
             if (result) {
                 bmodel.setNewlyaddedRetailer("");
-                getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_NEW_OUTLET_SAVED);
+                /*getHandler().sendEmptyMessage(
+                        DataMembers.NOTIFY_NEW_OUTLET_SAVED);*/
+                alertDialog.dismiss();
+                bmodel = (BusinessModel) getActivity().getApplicationContext();
+                onCreateDialogNew(2);
             }
 
 
@@ -6256,9 +6259,11 @@ public class NewOutletFragment extends IvyBaseFragment
                                 Toast.LENGTH_SHORT).show();
                     }
                     alertDialog.dismiss();
-                    Intent i = new Intent(getActivity(), HomeScreenActivity.class);
-                    startActivity(i);
-                    getActivity().finish();
+                    if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
+                        /*startActivity(new Intent(getActivity(),
+                                HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));*/
+                        getActivity().finish();
+                    }
                 }
                 break;
             case SynchronizationHelper.DOWNLOAD_FINISH_UPDATE:
@@ -6269,9 +6274,11 @@ public class NewOutletFragment extends IvyBaseFragment
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.data_download_successfully),
                         Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(getActivity(), HomeScreenActivity.class);
-                startActivity(i);
-                getActivity().finish();
+                if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
+                   /* startActivity(new Intent(getActivity(),
+                            HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));*/
+                    getActivity().finish();
+                }
                 break;
         }
 

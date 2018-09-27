@@ -479,7 +479,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                     fromHomeScreen = true;
                 }
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
 
             } else {
                 bmodel = (BusinessModel) getActivity().getApplicationContext();
