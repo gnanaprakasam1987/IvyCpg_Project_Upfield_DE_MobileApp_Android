@@ -191,7 +191,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private AlertDialog alertDialog;
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
 
-    private ViewFlipper viewFlipper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
