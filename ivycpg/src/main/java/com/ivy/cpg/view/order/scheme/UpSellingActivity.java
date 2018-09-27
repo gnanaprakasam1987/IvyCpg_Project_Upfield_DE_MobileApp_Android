@@ -143,7 +143,7 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
 
                     }
                     else if(schemeBO.getBuyType().equals(SALES_VALUE)){
-                        double ordered=schemeHelper.getTotalOrderedValue(schemeProductBO.getProductId(),schemeBO.isBatchWise(),schemeProductBO.getBatchId(),schemeBO.getParentId(),false);
+                        double ordered=schemeHelper.getTotalOrderedValue(schemeProductBO.getProductId(),schemeBO.isBatchWise(),schemeProductBO.getBatchId(),schemeBO.getParentId(),false,false);
                         text_ordered.setText(String.valueOf(ordered));
 
                         toAdd=(schemeProductBO.getBuyQty()-ordered);

@@ -1464,7 +1464,7 @@ public class SchemeDetailsMasterHelper {
                                             if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
                                                 bought += getTotalOrderedQuantity(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeProductBo.getUomID(), parentID,schemeBO.isAccumulationScheme());
                                             } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
-                                                bought += getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), parentID,schemeBO.isAccumulationScheme());
+                                                bought += getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), parentID,schemeBO.isAccumulationScheme(),false);
                                             }
 
 
@@ -1487,7 +1487,7 @@ public class SchemeDetailsMasterHelper {
                                             if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
                                                 total_bought += getTotalOrderedQuantity(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeProductBo.getUomID(), parentID,schemeBO.isAccumulationScheme());
                                             } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
-                                                total_bought += getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), parentID,schemeBO.isAccumulationScheme());
+                                                total_bought += getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), parentID,schemeBO.isAccumulationScheme(),false);
                                             }
 
                                         }
@@ -1732,7 +1732,7 @@ public class SchemeDetailsMasterHelper {
                 } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
                     double totalValue;
-                    totalValue = getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),schemeBO.isAccumulationScheme());
+                    totalValue = getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),schemeBO.isAccumulationScheme(),IS_CHECK_SCHEME_WITH_ASRP);
 
                     //Just reducing value which is used already for applying scheme.
                     if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()) != null) {
@@ -1802,7 +1802,7 @@ public class SchemeDetailsMasterHelper {
                 } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
                     double totalProductValue;
-                    totalProductValue = getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),schemeBO.isAccumulationScheme());
+                    totalProductValue = getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),schemeBO.isAccumulationScheme(),IS_CHECK_SCHEME_WITH_ASRP);
 
                     //Just reducing value which is used already for applying scheme.
                     if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()) != null) {
@@ -2085,7 +2085,7 @@ public class SchemeDetailsMasterHelper {
 
 
                 double totalValue;
-                totalValue = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId(), parentId,isAccumulationScheme);
+                totalValue = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId(), parentId,isAccumulationScheme,IS_CHECK_SCHEME_WITH_ASRP);
 
                 if (totalValue > 0) {
 
@@ -2307,7 +2307,7 @@ public class SchemeDetailsMasterHelper {
                 maximumBuyValue = schemeProductBO.getTobuyQty();
 
                 double value;
-                value = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId(), parentID,isAccumulationScheme);
+                value = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId(), parentID,isAccumulationScheme,IS_CHECK_SCHEME_WITH_ASRP);
 
                 if (value > 0) {
 
@@ -2348,7 +2348,7 @@ public class SchemeDetailsMasterHelper {
 
                     for (SchemeProductBO schemeProductBO : schemeProductList) {
 
-                        totVal = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId(), parentID,isAccumulationScheme);
+                        totVal = getTotalOrderedValue(schemeProductBO.getProductId(), isBatchWise, schemeProductBO.getBatchId(), parentID,isAccumulationScheme,IS_CHECK_SCHEME_WITH_ASRP);
 
                         if (totVal > 0) {
 
@@ -2876,7 +2876,7 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public double getTotalOrderedValue(String productId, boolean isBatchWise, String batchId, int schemeId,boolean isAccumulationScheme) {
+    public double getTotalOrderedValue(String productId, boolean isBatchWise, String batchId, int schemeId,boolean isAccumulationScheme,boolean isFromASRP) {
         double totalValue = 0;
         if (mOrderedProductList == null)
             prepareNecessaryLists(bModel.productHelper.getProductMaster());
@@ -2895,7 +2895,7 @@ public class SchemeDetailsMasterHelper {
 
                                     if (batchProductBO.getOrderedPcsQty() > 0 || batchProductBO.getOrderedCaseQty() > 0 || batchProductBO.getOrderedOuterQty() > 0) {
 
-                                        if(IS_CHECK_SCHEME_WITH_ASRP){
+                                        if(isFromASRP){
                                             int qty= batchProductBO.getOrderedPcsQty()
                                                     + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCaseSize())
                                                     + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOutersize());
@@ -2915,7 +2915,7 @@ public class SchemeDetailsMasterHelper {
                         }
                     }
                 } else {
-                    if(IS_CHECK_SCHEME_WITH_ASRP){
+                    if(isFromASRP){
                         int qty= productMasterBO.getOrderedPcsQty()
                                 + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                                 + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
@@ -3067,7 +3067,7 @@ public class SchemeDetailsMasterHelper {
             if (schemeBO.isAmountTypeSelected()) {
                 for (SchemeProductBO schemeProductBo : schemeBO.getBuyingProducts()) {
                     totalOrderValueOfBuyProducts += getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(),
-                            schemeProductBo.getBatchId(), schemeBO.getParentId(),false);
+                            schemeProductBo.getBatchId(), schemeBO.getParentId(),false,IS_CHECK_SCHEME_WITH_ASRP);
                 }
             }
 
