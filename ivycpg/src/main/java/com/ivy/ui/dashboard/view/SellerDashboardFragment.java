@@ -143,7 +143,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             type = bundle.getString("type");
         }
 
-        dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>(),new HashMap<String, String>(),this);
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>(),presenter.getLabelsMap(),this);
 
 
         if (isFromRetailer) {
@@ -259,7 +259,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @Override
     public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS) {
 
-        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS, new HashMap<String, String>(),this);
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS, presenter.getLabelsMap(),this);
 
     }
 

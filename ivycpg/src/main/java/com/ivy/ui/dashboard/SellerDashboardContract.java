@@ -8,6 +8,7 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface SellerDashboardContract {
 
@@ -50,6 +51,7 @@ public interface SellerDashboardContract {
 
         void fetchKPIDashboardData(String userid, String interval);
 
-        void fetchListRowLabels();
+        HashMap<String, String> getLabelsMap();
+
     }
 }

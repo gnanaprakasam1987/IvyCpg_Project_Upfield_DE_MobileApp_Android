@@ -1,7 +1,9 @@
 package com.ivy.ui.dashboard.presenter;
 
+import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
 
 import com.ivy.core.ViewTags;
 import com.ivy.core.base.presenter.BasePresenter;
@@ -41,6 +43,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     private UserDataManager userDataManager;
     private LabelsDataManager labelsDataManager;
 
+    private HashMap<String, String> labelsMap=new HashMap<>();
+
     @Inject
     public SellerDashboardPresenterImp(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable,
                                        ConfigurationMasterHelper configurationMasterHelper, V view, @OutletTimeStampInfo OutletTimeStampDataManager outletTimeStampDataManager,
@@ -70,6 +74,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     }
                 }));
     }
+
 
     @Override
     public void updateTimeStampModuleWise() {
@@ -200,8 +205,14 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 }));
     }
 
+
     @Override
-    public void fetchListRowLabels() {
+    public HashMap<String, String> getLabelsMap() {
+        return labelsMap;
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private void fetchListRowLabels() {
         getCompositeDisposable().add(labelsDataManager.getLabels(ViewTags.DASHBOARD_ROW_ACHIEVED_TITLE, ViewTags.DASHBOARD_ROW_BALANCE_TITLE,
                 ViewTags.DASHBOARD_ROW_FLEX_TITLE, ViewTags.DASHBOARD_ROW_INCENTIVE_TITLE,
                 ViewTags.DASHBOARD_ROW_SCORE_TITLE, ViewTags.DASHBOARD_ROW_TARGET_TITLE).subscribeOn(getSchedulerProvider().io())
@@ -210,6 +221,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     @Override
                     public void onNext(HashMap<String, String> labels) {
 
+                        labelsMap.clear();
+                        labelsMap.putAll(labels);
                     }
 
                     @Override
