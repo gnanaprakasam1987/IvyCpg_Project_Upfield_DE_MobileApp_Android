@@ -98,7 +98,6 @@ public class DenominationHelper {
                     }
                     db.closeDB();
                 } catch (Exception e) {
-                    ;
                     Commons.printException(e);
                 }
                 return initialTotalAmount;
