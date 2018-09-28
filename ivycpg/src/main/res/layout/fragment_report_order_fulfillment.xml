@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/list_title_bg_color"
+        android:minHeight="@dimen/dimen_40dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:weightSum="3">
+
+        <TextView
+            android:id="@+id/txtHeaderProductName"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/skuwise_right_margin"
+            android:layout_weight="1"
+            android:gravity="left|center"
+            android:padding="10dp"
+            android:tag="order_fulfill_detail_productname"
+            android:text="@string/product_name"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/txtHeaderOrderedCases"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/skuwise_right_margin"
+            android:layout_weight="0.5"
+            android:gravity="left|center"
+            android:padding="10dp"
+            android:tag="order_fulfill_detail_orderedcases"
+            android:text="@string/ordered_cases"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/txtHeaderOrderedPieces"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/skuwise_right_margin"
+            android:layout_weight="0.5"
+            android:gravity="left|center"
+            android:padding="10dp"
+            android:tag="order_fulfill_detail_orderedpieces"
+            android:text="@string/ordered_pieces"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/txtHeaderFulfilledCases"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/skuwise_right_margin"
+            android:layout_weight="0.5"
+            android:gravity="left|center"
+            android:padding="10dp"
+            android:tag="order_fulfill_detail_fulfilledcases"
+            android:text="@string/fulfilled_cases"
+            android:textSize="@dimen/font_micro_small" />
+
+        <TextView
+            android:id="@+id/txtHeaderFulfilledPieces"
+            style="?attr/customListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/skuwise_right_margin"
+            android:layout_weight="0.5"
+            android:gravity="left|center"
+            android:padding="10dp"
+            android:tag="order_fulfill_detail_fulfilledpieces"
+            android:text="@string/fulfilled_pieces"
+            android:textSize="@dimen/font_micro_small" />
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layoutDelivery"
+        android:layout_below="@id/header"
+        android:cacheColorHint="@null"
+        android:divider="@android:color/white"
+        android:dividerHeight="1dp"
+        android:fitsSystemWindows="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true"></ListView>
+
+
+    <LinearLayout
+        android:id="@+id/layoutDelivery"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@color/footer_bg"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_orderfulfillment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/card_margin"
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:text="@string/date_label"
+            android:textColor="?attr/colorAccent"
+            android:textSize="@dimen/greyed_text_size" />
+
+        <Button
+            android:id="@+id/orderfulfillmentDate"
+            style="@style/datePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/card_margin"
+            android:drawableTint="@color/BLUE"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/dummy_txt"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/footer_lbl_text_size" />
+
+    </LinearLayout>
+
+</RelativeLayout>

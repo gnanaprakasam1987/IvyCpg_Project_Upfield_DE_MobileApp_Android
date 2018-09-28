@@ -811,6 +811,9 @@
         <activity
             android:name="com.ivy.cpg.view.van.vanunload.VanUnloadHistoryActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.reports.orderfulfillmentreport.OrderFulfillmentDetailReportActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
