@@ -188,7 +188,7 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
         checkandaddScreens(DataMembers.FIT_STOCK);
         adapterViewPager = new MyPagerAdapter(getChildFragmentManager(), fragmentList);
         new setAdapterTask().execute();
-        loadSKUandScore(DataMembers.MODULE_STOCK);
+        loadSKUandScore(stockCheckLabel);
     }
 
     static class ViewHolder {
