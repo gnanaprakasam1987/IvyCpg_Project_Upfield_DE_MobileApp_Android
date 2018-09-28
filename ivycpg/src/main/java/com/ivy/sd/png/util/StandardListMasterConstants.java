@@ -102,7 +102,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_CLOSING_STK_RPT = "MENU_CLOSING_STK_RPT";
 	public static final String MENU_ORD_STAT_RPT = "MENU_ORD_STAT_RPT";
 	public static final String MENU_INV_STAT_RPT = "MENU_INV_STAT_RPT";
-
+	public static final String MENU_ORDER_FULFILL_REPORT = "MENU_ORDERFULFILL_REPORT";
 
 	public static final String MENU_INV_SALES_RETURN_REPORT = "MENU_SALES_RET_REPORT";
 
