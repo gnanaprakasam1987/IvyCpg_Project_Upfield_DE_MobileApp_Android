@@ -7,12 +7,24 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.amazonaws.util.StringInputStream;
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.ivy.cpg.view.sfdc.MyjsonarrayPostRequest;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -20,6 +32,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.network.TLSSocketFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,15 +42,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import static com.ivy.lib.Utils.QT;
+import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_DATA_KEY;
+import static com.ivy.sd.png.provider.SynchronizationHelper.access_token;
+import static com.ivy.sd.png.provider.SynchronizationHelper.instance_url;
 
 /**
  * Created by rajkumar on 19/3/18.
@@ -54,6 +76,10 @@ public class UploadHelper {
     private StringBuilder mVisitedRetailerIds;
 
     private Context mContext;
+
+    private RequestQueue mRequestQueue;
+
+    private static final String TAG = "UploadHelper";
 
 
     private UploadHelper(Context context) {
@@ -89,11 +115,7 @@ public class UploadHelper {
             }
             db.close();
 
-            if (counts > 0) {
-                check = false;
-            } else {
-                check = true;
-            }
+            check = counts <= 0;
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -105,7 +127,7 @@ public class UploadHelper {
     /**
      * upload starts
      */
-    public int uploadUsingHttp(Handler handlerr, final int flag, Context context) {
+    public int uploadUsingHttp(final Handler handlerr, final int flag, Context context) {
         responseMessage = 0;
         handler = handlerr;
         try {
@@ -423,89 +445,34 @@ public class UploadHelper {
             } else
                 url = businessModel.synchronizationHelper.getUploadUrl("UPLDTRAN");
 
-            Vector<String> responseVector = businessModel.synchronizationHelper.getUploadResponse(jsonFormatter.getDataInJson(),
-                    jsonObjData.toString(), url);
-
-            int response = 0;
 
 
-            if (responseVector.size() > 0) {
 
+            if(BuildConfig.FLAVOR.equalsIgnoreCase("aws")){
+                int response = getResponseFlag(context, jsonObjData, jsonFormatter, url);
 
-                for (String s : responseVector) {
-                    JSONObject jsonObject = new JSONObject(s);
+                if (response == -1)
+                    return response;
 
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Response")) {
-                            response = jsonObject.getInt("Response");
-
-                        } else if (key.equals("ErrorCode")) {
-                            String tokenResponse = jsonObject.getString("ErrorCode");
-                            if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                    || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                    || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
-
-                                return -1;
-
-                            }
-
-                        }
-
+                responseMessage = handleUploadresponse(flag, context, response);
+            }else {
+                final JSONObject finalJsonObjData = jsonObjData;
+                businessModel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                    @Override
+                    public String onSuccess(String result) {
+                        getUploadResponseSFDC(finalJsonObjData,flag,handlerr);
+                        return "";
                     }
 
-
-                }
-            } else {
-                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    @Override
+                    public String onFailure(String errorresult) {
+                        return "";
                     }
-                }
+                });
+
             }
 
-            if (response == 1) {
 
-                if (flag == DataMembers.SYNCUPLOADRETAILERWISE) {
-                    updateUploadFlagRetailerWise(context.getApplicationContext());
-                    getVisitedRetailerIds().delete(0,
-                            getVisitedRetailerIds().length());
-                    responseMessage = 1;
-                } else if (flag == DataMembers.SYNCSIHUPLOAD) {
-                    updateUploadFlag(DataMembers.uploadSIHTable, context.getApplicationContext());
-
-                    responseMessage = 2;
-                } else if (flag == DataMembers.SYNCLYTYPTUPLOAD) {
-                    updateUploadFlag(DataMembers.uploadLPTable, context.getApplicationContext());
-
-                    responseMessage = 2;
-                } else if (flag == DataMembers.SYNCSTKAPPLYUPLOAD) {
-                    updateUploadFlag(DataMembers.uploadStockApplyTable, context.getApplicationContext());
-                    responseMessage = 2;
-                } else if (flag == DataMembers.SYNC_REALLOC_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadReallocTable, context.getApplicationContext());
-                    responseMessage = 1;
-                } else if (flag == DataMembers.ATTENDANCE_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadAttendanceColumn, context.getApplicationContext());
-                    responseMessage = 1;
-                } else if (flag == DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD) {
-                    updateUploadFlag(DataMembers.uploadOrderDeliveryStatusTable, context.getApplicationContext());
-                    responseMessage = 2;
-                } else {
-                    updateUploadFlag(DataMembers.uploadColumn, context.getApplicationContext());
-                    responseMessage = 1;
-                }
-            } else if (response == 0) {
-                if (DataMembers.SYNCUPLOADRETAILERWISE == 1) {
-                    getVisitedRetailerIds().delete(0,
-                            getVisitedRetailerIds().length());
-                    responseMessage = 0;
-                }
-            }
             Commons.print("After Responce");
             // Upload Transaction Sequence Table Separate , the above method
             // successfully upload. This Method also doing same work, but server
@@ -530,6 +497,381 @@ public class UploadHelper {
             return 0;
         }
         return responseMessage;
+    }
+
+    private String uniqueTransactionID;
+
+    private void getUploadResponseSFDC(final JSONObject data, final int flag, final Handler handler) {
+        // Update Security key
+        //updateAuthenticateToken();
+        /*StringBuilder url = new StringBuilder();
+        url.append(DataMembers.SERVER_URL);
+        url.append(appendurl);*/
+        Commons.print("Json data " + data);
+        MyjsonarrayPostRequest jsonObjectRequest;
+
+        uniqueTransactionID = businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+
+        try {
+            data.put("MessageId",uniqueTransactionID);
+            HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }catch (JSONException ex){
+            ex.printStackTrace();
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(instance_url);
+
+        //sb.append("/");
+        sb.append(businessModel.synchronizationHelper.getUploadUrl("UPLDTRAN"));
+        try {
+
+            jsonObjectRequest = new MyjsonarrayPostRequest(
+                    Request.Method.POST, sb.toString(), data,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray jsonObject) {
+                            Commons.print(" RES: " + jsonObject);
+                            System.gc();
+
+                            updateProgress(flag,handler);
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    System.gc();
+                    Commons.print("AuthFailureError 5");
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_UPLOAD_ERROR);
+
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "OAuth " + access_token);
+                    headers.put("Content_Type", "application/json");
+                    if (businessModel.synchronizationHelper.isDayClosed()) {
+                        int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                                businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
+                                "yyyy/MM/dd");
+                        if (varianceDwnDate == 0) {
+                            headers.put("MobileDate",
+                                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+                        }
+                        if (varianceDwnDate > 0) {
+                            headers.put("MobileDate",
+                                    businessModel.synchronizationHelper.getLastTransactedDate());
+                        }
+                    }
+                    return headers;
+                }
+
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    return new HashMap<>();
+                }
+
+            };
+
+            RetryPolicy policy = new DefaultRetryPolicy(
+                    (int) TimeUnit.SECONDS.toMillis(30),
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            jsonObjectRequest.setRetryPolicy(policy);
+            jsonObjectRequest.setShouldCache(false);
+
+            addToRequestQueue(jsonObjectRequest, "");
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    private RequestQueue getRequestQueue() {
+
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(mContext);
+            mRequestQueue.getCache().clear();
+
+        }
+        return mRequestQueue;
+
+    }
+
+    private <T> void addToRequestQueue(Request<T> req, String tag) {
+        // set the default tag if tag is empty
+        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
+        getRequestQueue().add(req);
+    }
+
+
+
+    private void updateProgress( final int flag, final Handler handler){
+        try {
+
+            final Handler handlerNew = new Handler();
+            handlerNew.postDelayed(new Runnable() {
+                public void run() {
+                    getCheckUploadedResponseFromSFDC(flag,handler);
+                }
+            }, businessModel.configurationMasterHelper.VALUE_SYNC_PROGRESS_TIME);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getCheckUploadedResponseFromSFDC(final int flag, final Handler handler) {
+
+
+        JsonObjectRequest jsonObjectRequest;
+
+
+
+        try {
+            HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(instance_url);
+
+        //sb.append("/");
+        sb.append(businessModel.synchronizationHelper.getUploadUrl("UPLDSTS"));
+        try {
+
+            jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET, sb.toString(),new JSONObject(),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Commons.print(" RES: " + jsonObject);
+                            System.gc();
+                            try {
+
+                                int response = 0;
+                                if (jsonObject.toString().contains("Data")) {
+                                    JSONArray first = jsonObject.getJSONArray(JSON_DATA_KEY);
+                                    for (int j = 0; j < first.length(); j++) {
+                                        JSONArray value = (JSONArray) first.get(j);
+                                        response=value.getInt(0);
+                                    }
+
+                                }
+
+                                int responseMsg = 0;
+                                if (response == 1) {
+
+                                    if (flag == DataMembers.SYNCUPLOADRETAILERWISE) {
+                                        updateUploadFlagRetailerWise(mContext);
+                                        getVisitedRetailerIds().delete(0,
+                                                getVisitedRetailerIds().length());
+                                        responseMsg = 1;
+                                    } else if (flag == DataMembers.SYNCSIHUPLOAD) {
+                                        updateUploadFlag(DataMembers.uploadSIHTable,mContext);
+
+                                        responseMsg = 2;
+                                    } else if (flag == DataMembers.SYNCLYTYPTUPLOAD) {
+                                        updateUploadFlag(DataMembers.uploadLPTable,mContext);
+
+                                        responseMsg = 2;
+                                    } else if (flag == DataMembers.SYNCSTKAPPLYUPLOAD) {
+
+                                        updateUploadFlag(DataMembers.uploadStockApplyTable,mContext);
+                                        responseMsg = 2;
+                                    } else if (flag == DataMembers.SYNC_REALLOC_UPLOAD) {
+                                        updateUploadFlag(DataMembers.uploadReallocTable,mContext);
+                                        responseMsg = 1;
+                                    } else if (flag == DataMembers.ATTENDANCE_UPLOAD) {
+                                        updateUploadFlag(DataMembers.uploadAttendanceColumn,mContext);
+                                        responseMsg = 1;
+                                    } else {
+                                        updateUploadFlag(DataMembers.uploadColumn,mContext);
+                                        responseMsg = 1;
+                                    }
+
+                                } else if (response == 0) {
+                                    if (DataMembers.SYNCUPLOADRETAILERWISE == 1) {
+                                        getVisitedRetailerIds().delete(0,
+                                                getVisitedRetailerIds().length());
+                                        responseMsg = 0;
+                                    }
+                                }else if(response==2){
+                                    updateProgress(flag,handler);
+                                    responseMsg = 3;
+                                }
+                                // Upload Transaction Sequence Table Separate , the above method
+                                // successfully upload. This Method also doing same work, but server
+                                // need the data while replicate this data while download instantly.
+                                if ((businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
+                                        && businessModel.orderAndInvoiceHelper.hasTransactionSequence()) {
+                                    if (responseMsg == 1) {
+                                        responseMsg = uploadInvoiceSequenceNo(handler,mContext);
+                                    }
+                                }
+                                Commons.print("After Responce");
+
+                                if (responseMsg == 1) {
+                                    handler.sendEmptyMessage(
+                                            DataMembers.NOTIFY_UPLOADED);
+                                } else if (responseMsg == -1) {
+                                    handler.sendEmptyMessage(
+                                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+
+
+                                } else if (responseMsg == 0) {
+                                    handler.sendEmptyMessage(
+                                            DataMembers.NOTIFY_UPLOAD_ERROR);
+                                }
+                            } catch (JSONException e) {
+                                //error.getMessage();
+
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    Commons.print("AuthFailureError 5");
+                    System.gc();
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_UPLOAD_ERROR);
+
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "OAuth " + access_token);
+                    headers.put("MessageId",uniqueTransactionID);
+                    headers.put("Content_Type", "application/json");
+
+                    return headers;
+                }
+
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    //Map<String, String> params = new HashMap<String, String>();
+                    return new HashMap<>();
+                }
+
+            };
+
+            RetryPolicy policy = new DefaultRetryPolicy(
+                    (int) TimeUnit.SECONDS.toMillis(30),
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            jsonObjectRequest.setRetryPolicy(policy);
+            jsonObjectRequest.setShouldCache(false);
+
+            addToRequestQueue(jsonObjectRequest, "");
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    private int getResponseFlag(Context context, JSONObject jsonObjData, JSONFormatter jsonFormatter, String url) throws JSONException {
+
+        int response = 0;
+        Vector<String> responseVector = businessModel.synchronizationHelper.getUploadResponse(jsonFormatter.getDataInJson(),
+                jsonObjData.toString(), url);
+
+        if (responseVector.size() > 0) {
+
+
+            for (String s : responseVector) {
+                JSONObject jsonObject = new JSONObject(s);
+
+                Iterator itr = jsonObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals("Response")) {
+                        response = jsonObject.getInt("Response");
+
+                    } else if (key.equals("ErrorCode")) {
+                        String tokenResponse = jsonObject.getString("ErrorCode");
+                        if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+                            return -1;
+
+                        }
+
+                    }
+
+                }
+            }
+            return response;
+        } else {
+            if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
+            return response;
+        }
+    }
+
+    private int handleUploadresponse(int flag, Context context, int response) {
+
+        int responseMsg = 0;
+        if (response == 1) {
+
+            if (flag == DataMembers.SYNCUPLOADRETAILERWISE) {
+                updateUploadFlagRetailerWise(context.getApplicationContext());
+                getVisitedRetailerIds().delete(0,
+                        getVisitedRetailerIds().length());
+                responseMsg = 1;
+            } else if (flag == DataMembers.SYNCSIHUPLOAD) {
+                updateUploadFlag(DataMembers.uploadSIHTable, context.getApplicationContext());
+
+                responseMsg = 2;
+            } else if (flag == DataMembers.SYNCLYTYPTUPLOAD) {
+                updateUploadFlag(DataMembers.uploadLPTable, context.getApplicationContext());
+
+                responseMsg = 2;
+            } else if (flag == DataMembers.SYNCSTKAPPLYUPLOAD) {
+                updateUploadFlag(DataMembers.uploadStockApplyTable, context.getApplicationContext());
+                responseMsg = 2;
+            } else if (flag == DataMembers.SYNC_REALLOC_UPLOAD) {
+                updateUploadFlag(DataMembers.uploadReallocTable, context.getApplicationContext());
+                responseMsg = 1;
+            } else if (flag == DataMembers.ATTENDANCE_UPLOAD) {
+                updateUploadFlag(DataMembers.uploadAttendanceColumn, context.getApplicationContext());
+                responseMsg = 1;
+            } else if (flag == DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD) {
+                updateUploadFlag(DataMembers.uploadOrderDeliveryStatusTable, context.getApplicationContext());
+                responseMsg = 2;
+            }else {
+                updateUploadFlag(DataMembers.uploadColumn, context.getApplicationContext());
+                responseMsg = 1;
+            }
+        } else if (response == 0) {
+            if (DataMembers.SYNCUPLOADRETAILERWISE == 1) {
+                getVisitedRetailerIds().delete(0,
+                        getVisitedRetailerIds().length());
+                responseMsg = 0;
+            }
+        }
+
+        return responseMsg;
     }
 
 
@@ -1102,5 +1444,8 @@ public class UploadHelper {
         }
         return res;
     }
+
+
+
 
 }

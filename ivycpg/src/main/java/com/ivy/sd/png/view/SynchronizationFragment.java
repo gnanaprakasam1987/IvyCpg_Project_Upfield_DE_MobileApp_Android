@@ -138,6 +138,10 @@ public class SynchronizationFragment extends IvyBaseFragment
     private UploadPresenterImpl presenter;
     private LastSyncTimeHelper lastSyncTimeHelper;
 
+    private boolean isValidUser = false;
+
+    private boolean aws = BuildConfig.FLAVOR.equalsIgnoreCase("aws");
+
     private Context context;
 
     @Override
@@ -488,6 +492,14 @@ public class SynchronizationFragment extends IvyBaseFragment
         bmodel.synchronizationHelper.isSihDownloadDone = false;
         bmodel.synchronizationHelper.isDistributorDownloadDone = false;
 
+
+        if (!aws) {
+            txtPassword.setVisibility(View.GONE);
+        } else {
+            txtPassword.setVisibility(View.VISIBLE);
+        }
+
+
         syncStatus(2);
         txtPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -518,7 +530,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         TypedArray type_arr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         int text_color = type_arr.getColor(R.styleable.MyTextView_textColor, 0);
         int background_color = type_arr.getColor(R.styleable.MyTextView_buttonBackground, 0);
-        if (txtPassword.getText().toString().length() > 0) {
+        if (!aws || txtPassword.getText().toString().length() > 0) {
             if (btn_count == 1) {
                 if ((bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
                         && (bmodel.synchronizationHelper
@@ -965,17 +977,21 @@ public class SynchronizationFragment extends IvyBaseFragment
 
             if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
 
-                if (dayCloseCheckBox.isChecked()) {
-                    showAlertOkCancel(
-                            getResources()
-                                    .getString(
-                                            R.string.do_u_want_to_close_the_day),
-                            0);
 
-                } else {
-                    presenter.validateAndUpload(dayCloseCheckBox.isChecked());
+                isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
 
-                }
+                if (isValidUser)
+                    if (dayCloseCheckBox.isChecked()) {
+                        showAlertOkCancel(
+                                getResources()
+                                        .getString(
+                                                R.string.do_u_want_to_close_the_day),
+                                0);
+
+                    } else {
+                        presenter.validateAndUpload(dayCloseCheckBox.isChecked());
+
+                    }
             } else {
                 bmodel.showAlert(
                         getResources().getString(
@@ -1016,9 +1032,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                         else {
 
                             if (!bmodel.isAutoUpdateAvailable()) {
+                                isValidUser = !aws || bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString());
 
-                                if (bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword
-                                        .getText().toString())) {
+                                if (isValidUser) {
 
                                     if (!isClicked) {
                                         isClicked = true;
@@ -1041,8 +1057,8 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                         }
                     } else {
-                        if (bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword
-                                .getText().toString())) {
+                        isValidUser = !aws || bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                        if (isValidUser) {
 
                             Intent i = new Intent(getActivity(), RetailerSelectionActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1413,6 +1429,9 @@ public class SynchronizationFragment extends IvyBaseFragment
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (bmodel.isOnline()) {
+                    if (!aws)
+                        return false;
+
                     bmodel.synchronizationHelper.updateAuthenticateToken(true);
                     if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                         return bmodel.synchronizationHelper.checkForAutoUpdate();
@@ -1443,13 +1462,29 @@ public class SynchronizationFragment extends IvyBaseFragment
             // result is the value returned from doInBackground
             if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 if (!result) {
-                    if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
-                        new UrlDownloadData().execute();
-                    else {
-                        isClicked = false;
-                        Toast.makeText(getActivity(), R.string.authentication_error, Toast.LENGTH_LONG).show();
-                        if (alertDialog != null)
-                            alertDialog.dismiss();
+                    if (!aws) {
+                        bmodel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                            @Override
+                            public String onSuccess(String result) {
+                                new UrlDownloadData().execute();
+                                return "Success";
+                            }
+
+                            @Override
+                            public String onFailure(String errorresult) {
+                                return "Failure";
+                            }
+                        });
+                    } else {
+
+                        if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
+                            new UrlDownloadData().execute();
+                        else {
+                            isClicked = false;
+                            Toast.makeText(getActivity(), R.string.authentication_error, Toast.LENGTH_LONG).show();
+                            if (alertDialog != null)
+                                alertDialog.dismiss();
+                        }
                     }
                 } else {
                     showAlertOk(
@@ -1529,8 +1564,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                     public void onClick(DialogInterface dialog, int which) {
 
                         if (!bmodel.isAutoUpdateAvailable()) {
-                            if (bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword
-                                    .getText().toString())) {
+                            isValidUser = !aws || bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                            if (isValidUser) {
 
                                 if (!isClicked) {
                                     isClicked = true;
@@ -1758,25 +1793,45 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         @Override
         protected String doInBackground(String... params) {
-            String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.URLDOWNLOAD_MASTER_APPEND_URL, jsonObject);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
-                        String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                            bmodel.synchronizationHelper
-                                    .parseJSONAndInsert(jsonObject, true);
-                            bmodel.synchronizationHelper.loadMasterUrlFromDB(true);
-
-                        }
-                        return errorCode;
+            if (!aws) {
+                bmodel.synchronizationHelper.getUrldownloadMasterSFDC(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                    @Override
+                    public String onSuccess(String result) {
+                        String response = returnUrlDownloadResponse(result);//bmodel.synchronizationHelper.getUrlDownloadJson();
+                        updateDeleteTableStatus(response);
+                        return response;
                     }
+
+                    @Override
+                    public String onFailure(String errorresult) {
+                        String response = returnUrlDownloadResponse(errorresult);
+                        updateDeleteTableStatus(response);
+                        return response;
+                    }
+                });
+
+            } else {
+
+                String response = bmodel.synchronizationHelper.sendPostMethod(SynchronizationHelper.URLDOWNLOAD_MASTER_APPEND_URL, jsonObject);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Iterator itr = jsonObject.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                            String errorCode = jsonObject.getString(key);
+                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                bmodel.synchronizationHelper
+                                        .parseJSONAndInsert(jsonObject, true);
+                                bmodel.synchronizationHelper.loadMasterUrlFromDB(true);
+
+                            }
+                            return errorCode;
+                        }
+                    }
+                } catch (JSONException jsonExpection) {
+                    Commons.print("" + jsonExpection.getMessage());
                 }
-            } catch (JSONException jsonExpection) {
-                Commons.print("" + jsonExpection.getMessage());
             }
             return "E01";
         }
@@ -1784,7 +1839,11 @@ public class SynchronizationFragment extends IvyBaseFragment
         @Override
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
-            if (errorCode
+
+            if (aws) {
+                updateDeleteTableStatus(errorCode);
+            }
+        /*    if (errorCode
                     .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 if (dayCloseCheckBox.isChecked()) {
                     new DeleteTables(true, true).execute();
@@ -1801,8 +1860,54 @@ public class SynchronizationFragment extends IvyBaseFragment
                 }
                 alertDialog.dismiss();
                 isClicked = false;
-            }
+            }*/
         }
+    }
+
+
+    private void updateDeleteTableStatus(String errorCode) {
+        if (errorCode
+                .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (dayCloseCheckBox.isChecked()) {
+                new DeleteTables(true, true).execute();
+            } else {
+                new DeleteTables(false, true).execute();
+            }
+        } else {
+            new DeleteTables(false, false).execute();
+            String errorMessage = bmodel.synchronizationHelper
+                    .getErrormessageByErrorCode().get(errorCode);
+            if (errorMessage != null) {
+                Toast.makeText(getActivity(), errorMessage,
+                        Toast.LENGTH_SHORT).show();
+            }
+            alertDialog.dismiss();
+            isClicked = false;
+        }
+    }
+
+
+    private String returnUrlDownloadResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            Iterator itr = jsonObject.keys();
+            while (itr.hasNext()) {
+                String key = (String) itr.next();
+                if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                    String errorCode = jsonObject.getString(key);
+                    if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        bmodel.synchronizationHelper
+                                .parseJSONAndInsert(jsonObject, true);
+                        bmodel.synchronizationHelper.loadMasterUrlFromDB(true);
+
+                    }
+                    return errorCode;
+                }
+            }
+        } catch (JSONException jsonExpection) {
+            Commons.print(jsonExpection.getMessage());
+        }
+        return "E01";
     }
 
     /**
@@ -1908,7 +2013,22 @@ public class SynchronizationFragment extends IvyBaseFragment
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             if (errorCode.equals("1")) {
-                downloadOnDemandMasterUrl(true);
+                if (!aws) {
+                    bmodel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                        @Override
+                        public String onSuccess(String result) {
+                            bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+                            return "";
+                        }
+
+                        @Override
+                        public String onFailure(String errorresult) {
+                            return "";
+                        }
+                    });
+                } else {
+                    downloadOnDemandMasterUrl(true);
+                }
             }
         }
     }

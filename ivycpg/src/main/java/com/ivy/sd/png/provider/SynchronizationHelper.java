@@ -29,13 +29,17 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.cpg.view.sfdc.AccountData;
+import com.ivy.cpg.view.sfdc.RefreshAuthTokenAsync;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -53,6 +57,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.network.TLSSocketFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,6 +77,7 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyFactory;
+import java.security.KeyManagementException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -91,6 +97,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Cipher;
+import javax.net.ssl.HttpsURLConnection;
 
 
 public class
@@ -213,6 +220,12 @@ SynchronizationHelper {
 
     public static final int LAST_VISIT_TRAN_SPLIT_RETAILER_COUNT = 100;
 
+
+    public static String CLIENT_SECRET = "9060277100187040165";
+    public static String USER_NAME;
+    public static String access_token = "";
+    public static String instance_url = "instance_url";
+
     private Context context;
     private BusinessModel bmodel;
     private StringBuilder retailerIds;
@@ -269,6 +282,9 @@ SynchronizationHelper {
     private Handler handler;
 
 
+    private boolean isSFDC = !BuildConfig.FLAVOR.equalsIgnoreCase("aws");
+
+
     protected SynchronizationHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -279,6 +295,11 @@ SynchronizationHelper {
             instance = new SynchronizationHelper(context);
         }
         return instance;
+    }
+
+
+    public void getAuthToken(VolleyResponseCallbackInterface responseCallbackInterface){
+        new RefreshAuthTokenAsync(context,responseCallbackInterface).execute();
     }
 
     /**
@@ -1306,15 +1327,385 @@ SynchronizationHelper {
                 mTableList = new HashMap<>();
 
                 for (String url : mDownloadUrlList) {
-                    String downloadUrl = DataMembers.SERVER_URL + url;
-                    callVolley(downloadUrl, fromLogin, mDownloadUrlList.size(),
-                            insert, json);
+                    if (isSFDC) {
+                        String downloadUrl = instance_url + "/" + url;
+                        downloadMasterSFDC(downloadUrl, fromLogin, mDownloadUrlList.size(),
+                                VOLLEY_DOWNLOAD_INSERT);
+                    } else {
+                        String downloadUrl = DataMembers.SERVER_URL + url;
+                        callVolley(downloadUrl, fromLogin, mDownloadUrlList.size(),
+                                insert, json);
+                    }
                 }
             } catch (JSONException e) {
                 Commons.printException("" + e);
             }
         }
     }
+
+    public interface VolleyResponseCallbackInterface {
+        String onSuccess(String result);
+
+        String onFailure(String errorresult);
+    }
+
+
+    public void getUrldownloadMasterSFDC(final VolleyResponseCallbackInterface responseCallbackInterface) {
+        final String url = instance_url + DataMembers.SFDC_URLDOWNLOAD_MASTER_URL;
+
+        try {
+            HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+
+        StringRequest jsonObjectRequest = new StringRequest(
+                Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String jsonObject) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Commons.print("Volley error " + error);
+            }
+        }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "OAuth " + access_token);
+                headers.put("Content_Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            protected VolleyError parseNetworkError(VolleyError volleyError) {
+                Commons.print("AuthFailureError 1");
+                if (volleyError instanceof AuthFailureError) {
+                    /*deleteAllRequestQueue();
+                    bmodel.isTokenUpdated = false;
+                    new getRefreshedAuthTokenSFDC("SFDC",responseCallbackInterface).execute();*/
+                }
+                return super.parseNetworkError(volleyError);
+            }
+
+            @Override
+            protected void deliverResponse(String jsonObject) {
+                super.deliverResponse(jsonObject);
+                Commons.print("Json Obj " + jsonObject);
+                responseCallbackInterface.onSuccess(jsonObject);
+            }
+
+            @Override
+            public void deliverError(VolleyError error) {
+                super.deliverError(error);
+                Commons.print("AuthFailureError 2");
+                Commons.print("Volley deliver error " + error.getMessage());
+                responseCallbackInterface.onFailure("E01");
+            }
+        };
+
+        RetryPolicy policy = new DefaultRetryPolicy(
+                (int) TimeUnit.SECONDS.toMillis(30),
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsonObjectRequest.setRetryPolicy(policy);
+        jsonObjectRequest.setShouldCache(false);
+        addToRequestQueue(jsonObjectRequest,
+                TAG_JSON_OBJ);
+    }
+
+
+    private void downloadMasterSFDC(final String url, final FROM_SCREEN isFromWhere,
+                                    final int totalListCount, final int which) {
+
+
+        mJsonObjectResponseByTableName = new HashMap<>();
+        final long startTime = System.nanoTime();
+        try {
+            HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        if (mURLList != null)
+            mURLList.put(url, new URLListBO());
+
+        StringRequest jsonObjectRequest = new StringRequest(
+                Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String jsonObject) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Commons.print("Volley error " + error);
+                Commons.print("AuthFailureError 7");
+            }
+        }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "OAuth " + access_token);
+                headers.put("Content_Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                if (response.data.length > 10000)
+                    setShouldCache(false);
+
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            protected VolleyError parseNetworkError(VolleyError volleyError) {
+                Commons.print("AuthFailureError 3");
+                if (volleyError instanceof AuthFailureError) {
+                    /*deleteAllRequestQueue();
+                    bmodel.isTokenUpdated = false;
+                    new getRefreshedAuthTokenSFDC(isFromWhere, null).execute();*/
+                }
+                return super.parseNetworkError(volleyError);
+            }
+
+            @Override
+            protected void deliverResponse(String jsonObject) {
+                super.deliverResponse(jsonObject);
+                JSONObject json= new JSONObject();
+
+                Commons.print("Json Obj " + jsonObject);
+                String successUrl = getUrl();
+
+                increaseCount();
+
+                Intent i = new Intent(context, DownloadService.class);
+                i.putExtra(SYNXC_STATUS, which);
+                i.putExtra(VOLLEY_RESPONSE, VOLLEY_SUCCESS_RESPONSE);
+                i.putExtra("TotalCount", totalListCount);
+                i.putExtra("UpdateCount", mDownloadUrlCount);
+                i.putExtra("isFromWhere", isFromWhere);
+                try {
+                    json = new JSONObject(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Iterator itr = json.keys();
+                String tableName = "";
+                ArrayList<String> tableList = new ArrayList<>();
+                int mandatory = 0;
+                if (mMandatoryByUrl != null && mMandatoryByUrl.get(successUrl) != null) {
+                    mandatory = mMandatoryByUrl.get(successUrl);
+                }
+                try {
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+
+                        if (key.equals("Tables")) {
+                            JSONArray jsonArray = json.getJSONArray(JSON_KEY);
+
+                            long endTime = (System.nanoTime() - startTime) / 1000000;
+                            if (mURLList != null) {
+                                mURLList.get(url).setTime(endTime + "");
+                                mURLList.get(url).setServerResponse("Tables");
+                                mURLList.get(url).setDataSize((jsonObject.toString().getBytes().length / 1024.0) + "");
+                            }
+
+                            for (int k = 0; k < jsonArray.length(); k++) {
+
+                                JSONObject value = (JSONObject) jsonArray.get(k);
+
+                                Iterator tableItr = value.keys();
+                                while (tableItr.hasNext()) {
+                                    String innerKey = (String) tableItr.next();
+                                    if (innerKey.equals("Master")) {
+                                        if (value != null) {
+                                            tableName = value.getString("Master");
+                                        }
+                                        Commons.print("Table name& value " + tableName + ", " + value);
+                                        mJsonObjectResponseByTableName.put(tableName, value);
+                                        tableList.add(tableName);
+                                        break;
+                                    } else if (innerKey.equals(ERROR_CODE)) {
+                                        if (value != null) {
+                                            String errorCode = value.getString(innerKey);
+                                            if (!errorCode.equals("0") && !errorCode.equals(DATA_NOT_AVAILABLE_ERROR)) {
+                                                if (mandatory == 1) {
+                                                    i.putExtra(VOLLEY_RESPONSE, VOLLEY_FAILURE_RESPONSE);
+                                                    i.putExtra(ERROR_CODE, json.getString(key));
+                                                    context.startService(i);
+                                                    deleteAllRequestQueue();
+                                                    return;
+
+                                                } else {
+                                                    i.putExtra(VOLLEY_RESPONSE, VOLLEY_SUCCESS_RESPONSE);
+                                                    tableName = value.getString(ERROR_CODE);
+                                                    mJsonObjectResponseByTableName.put(tableName, value);
+                                                    tableList.add(tableName);
+                                                    value = null;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
+                            context.startService(i);
+                            break;
+                        } else {
+                            if (key.equals("Master")) {
+                                tableName = json.getString("Master");
+
+                                long endTime = (System.nanoTime() - startTime) / 1000000;
+                                if (mURLList != null) {
+                                    mURLList.get(url).setTime(endTime + "");
+                                    mURLList.get(url).setServerResponse("Data - " + tableName);
+                                    mURLList.get(url).setDataSize((jsonObject.toString().getBytes().length / 1024.0) + "");
+                                }
+
+                                mJsonObjectResponseByTableName.put(tableName, json);
+                                tableList.add(tableName);
+                                i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
+                                context.startService(i);
+                                break;
+                            } else if (key.equals(ERROR_CODE)) {
+                                String errorCode = json.getString(key);
+                                if (!errorCode.equals("0") && !errorCode.equals(DATA_NOT_AVAILABLE_ERROR)) {
+                                    if (mandatory == 1) {
+                                        i.putExtra(VOLLEY_RESPONSE, VOLLEY_FAILURE_RESPONSE);
+                                        i.putExtra(ERROR_CODE, json.getString(key));
+                                        context.startService(i);
+                                        deleteAllRequestQueue();
+                                        return;
+
+                                    } else {
+                                        tableName = json.getString(ERROR_CODE);
+
+                                        long endTime = (System.nanoTime() - startTime) / 1000000;
+                                        if (mURLList != null) {
+                                            mURLList.get(url).setTime(endTime + "");
+                                            mURLList.get(url).setServerResponse("ErrorCode - " + tableName);
+                                            mURLList.get(url).setDataSize((jsonObject.toString().getBytes().length / 1024.0) + "");
+                                        }
+
+                                        mJsonObjectResponseByTableName.put(tableName, json);
+                                        tableList.add(tableName);
+                                        i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
+                                        context.startService(i);
+                                        break;
+                                    }
+                                }
+
+                            } else if (key.equals("Response")) {
+
+                                mJsonObjectResponseByTableName.put(SynchronizationHelper.ERROR_CODE, json);
+                                tableList.add(SynchronizationHelper.ERROR_CODE);
+                                i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
+                                context.startService(i);
+
+                            }
+                        }
+
+
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Commons.printException("" + e);
+                }
+            }
+
+            @Override
+            public void deliverError(VolleyError error) {
+                super.deliverError(error);
+                Commons.print("AuthFailureError 4");
+                Commons.print("Volley deliver error " + error.getMessage());
+                String url = getUrl();
+                int mantatory = 0;
+                if (mMandatoryByUrl != null && mMandatoryByUrl.get(url) != null)
+                    mantatory = mMandatoryByUrl.get(url);
+                increaseCount();
+                if (mantatory == 1) {
+                    Intent i = new Intent(context, DownloadService.class);
+                    i.putExtra(SYNXC_STATUS, which);
+                    i.putExtra(VOLLEY_RESPONSE, VOLLEY_FAILURE_RESPONSE);
+                    i.putExtra("isFromWhere", isFromWhere);
+
+                    if (error instanceof TimeoutError) {
+                        i.putExtra(ERROR_CODE, "E32");
+                    } else if (error instanceof NoConnectionError) {
+                        i.putExtra(ERROR_CODE, "E06");
+                    } else if (error instanceof ServerError) {
+                        i.putExtra(ERROR_CODE, "E01");
+                    } else if (error instanceof NetworkError) {
+                        i.putExtra(ERROR_CODE, "E01");
+                    } else if (error instanceof ParseError) {
+                        i.putExtra(ERROR_CODE, "E31");
+                    } else {
+                        i.putExtra(ERROR_CODE, "E01");
+                    }
+
+                    context.startService(i);
+                    deleteAllRequestQueue();
+                } else {
+                    if (mDownloadUrlCount == totalListCount) {
+                        Intent i = new Intent(context, DownloadService.class);
+                        i.putExtra(SYNXC_STATUS, which);
+                        i.putExtra(VOLLEY_RESPONSE, VOLLEY_FAILURE_RESPONSE);
+                        i.putExtra("isFromWhere", isFromWhere);
+
+                        if (error instanceof TimeoutError) {
+                            i.putExtra(ERROR_CODE, "E32");
+                        } else if (error instanceof NoConnectionError) {
+                            i.putExtra(ERROR_CODE, "E06");
+                        } else if (error instanceof ServerError) {
+                            i.putExtra(ERROR_CODE, "E01");
+                        } else if (error instanceof NetworkError) {
+                            i.putExtra(ERROR_CODE, "E01");
+                        } else if (error instanceof ParseError) {
+                            i.putExtra(ERROR_CODE, "E31");
+                        } else {
+                            i.putExtra(ERROR_CODE, "E01");
+                        }
+
+                        context.startService(i);
+                        deleteAllRequestQueue();
+                    }
+                }
+            }
+        };
+
+        RetryPolicy policy = new DefaultRetryPolicy(
+                (int) TimeUnit.SECONDS.toMillis(30),
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsonObjectRequest.setRetryPolicy(policy);
+        jsonObjectRequest.setShouldCache(false);
+        addToRequestQueue(jsonObjectRequest,
+                TAG_JSON_OBJ);
+    }
+
 
     public void downloadLastVisitTranAtVolley(final FROM_SCREEN fromLogin, int whichDownload) {
         mDownloadUrlCount = 0;
@@ -3813,18 +4204,23 @@ SynchronizationHelper {
 
 
     public boolean validateUser(String username, String password) {
-        LoginHelper.getInstance(context).loadPasswordConfiguration(context);
-        boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
-        boolean isPwd;
-        if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
-            if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
-                isPwd = encryptPassword(password).equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getPassword());
-            else
-                isPwd = BCrypt.checkpw(password, bmodel.userMasterHelper.getUserMasterBO().getPassword());
-        } else {
-            isPwd = password.equals(bmodel.userMasterHelper.getUserMasterBO().getPassword());
+        if(isSFDC){
+            return new AccountData(context).isUserAvailable();
+        }else {
+
+            LoginHelper.getInstance(context).loadPasswordConfiguration(context);
+            boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+            boolean isPwd;
+            if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
+                if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
+                    isPwd = encryptPassword(password).equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getPassword());
+                else
+                    isPwd = BCrypt.checkpw(password, bmodel.userMasterHelper.getUserMasterBO().getPassword());
+            } else {
+                isPwd = password.equals(bmodel.userMasterHelper.getUserMasterBO().getPassword());
+            }
+            return (isUser && isPwd);
         }
-        return (isUser && isPwd);
     }
 
     public boolean validateJointCallUser(int userId, String username, String password) {
