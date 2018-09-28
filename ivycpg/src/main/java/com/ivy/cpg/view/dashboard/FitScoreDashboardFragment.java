@@ -35,22 +35,19 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.survey.QuestionBO;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.FitScoreBO;
 import com.ivy.sd.png.bo.HHTModuleBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
-import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -77,6 +74,8 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
 
     TextView total_weightage_bottom, total_score_bottom;
     String screenTitle = "", title = "", menuCode = "";
+    String stockCheckLabel = DataMembers.MODULE_STOCK, priceCheckLabel = DataMembers.MODULE_PRICE,
+            assetLabel = DataMembers.MODULE_ASSET, posmLabel = DataMembers.MODULE_POSM, promoLabel = DataMembers.MODULE_PROMO;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_fitscore_dashboard, container, false);
@@ -126,23 +125,44 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
         questions_dashboard_recycler.setLayoutManager(questionManager);
 
         bmodel.fitscoreHelper.getModules();
+        Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
+                .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
+        for (ConfigureBO config : menuDB) {
+            switch (config.getConfigCode()) {
+                case DataMembers.MENU_STOCK:
+                    stockCheckLabel = config.getMenuName();
+                    break;
+                case DataMembers.MENU_PRICE:
+                    priceCheckLabel = config.getMenuName();
+                    break;
+                case DataMembers.MENU_ASSET:
+                    assetLabel = config.getMenuName();
+                    break;
+                case DataMembers.MENU_POSM:
+                    posmLabel = config.getMenuName();
+                    break;
+                case DataMembers.MENU_PROMO:
+                    promoLabel = config.getMenuName();
+                    break;
+            }
+        }
         Vector<String> categoryNames = new Vector<>();
         for (HHTModuleBO hhtModule : bmodel.fitscoreHelper.getHhtModuleList()) {
             switch (hhtModule.getModule()) {
                 case DataMembers.FIT_STOCK:
-                    categoryNames.add(DataMembers.MODULE_STOCK);
+                    categoryNames.add(stockCheckLabel);
                     break;
                 case DataMembers.FIT_PRICE:
-                    categoryNames.add(DataMembers.MODULE_PRICE);
+                    categoryNames.add(priceCheckLabel);
                     break;
                 case DataMembers.FIT_ASSET:
-                    categoryNames.add(DataMembers.MODULE_ASSET);
+                    categoryNames.add(assetLabel);
                     break;
                 case DataMembers.FIT_POSM:
-                    categoryNames.add(DataMembers.MODULE_POSM);
+                    categoryNames.add(posmLabel);
                     break;
                 case DataMembers.FIT_PROMO:
-                    categoryNames.add(DataMembers.MODULE_PROMO);
+                    categoryNames.add(promoLabel);
                     break;
             }
         }
@@ -305,7 +325,7 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
 
     private void loadSKUandScore(String s) {
         fitScoreList.clear();
-        if (s.equalsIgnoreCase(DataMembers.MODULE_STOCK)) {
+        if (s.equalsIgnoreCase(stockCheckLabel)) {
             bmodel.fitscoreHelper.getFitScoreforStockandPriceCheck(bmodel.getRetailerMasterBO().getRetailerID(), DataMembers.FIT_STOCK);
             fitScoreList = bmodel.fitscoreHelper.getFitScoreList();
             if (fitScoreList != null && fitScoreList.size() > 0) {
@@ -314,9 +334,9 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
             } else {
                 no_data.setVisibility(View.VISIBLE);
             }
-            title = DataMembers.MODULE_STOCK;
+            title = stockCheckLabel;
             checkandaddScreens(DataMembers.FIT_STOCK);
-        } else if (s.equalsIgnoreCase(DataMembers.MODULE_PRICE)) {
+        } else if (s.equalsIgnoreCase(priceCheckLabel)) {
             bmodel.fitscoreHelper.getFitScoreforStockandPriceCheck(bmodel.getRetailerMasterBO().getRetailerID(), DataMembers.FIT_PRICE);
             fitScoreList = bmodel.fitscoreHelper.getFitScoreList();
             if (fitScoreList != null && fitScoreList.size() > 0) {
@@ -325,9 +345,9 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
             } else {
                 no_data.setVisibility(View.VISIBLE);
             }
-            title = DataMembers.MODULE_PRICE;
+            title = priceCheckLabel;
             checkandaddScreens(DataMembers.FIT_PRICE);
-        } else if (s.equalsIgnoreCase(DataMembers.MODULE_ASSET)) {
+        } else if (s.equalsIgnoreCase(assetLabel)) {
             bmodel.fitscoreHelper.getFitScoreforAssetandPOSM(bmodel.getRetailerMasterBO().getRetailerID(), DataMembers.FIT_ASSET);
             fitScoreList = bmodel.fitscoreHelper.getFitScoreList();
             if (fitScoreList != null && fitScoreList.size() > 0) {
@@ -336,9 +356,9 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
             } else {
                 no_data.setVisibility(View.VISIBLE);
             }
-            title = DataMembers.MODULE_ASSET;
+            title = assetLabel;
             checkandaddScreens(DataMembers.FIT_ASSET);
-        } else if (s.equalsIgnoreCase(DataMembers.MODULE_POSM)) {
+        } else if (s.equalsIgnoreCase(posmLabel)) {
             bmodel.fitscoreHelper.getFitScoreforAssetandPOSM(bmodel.getRetailerMasterBO().getRetailerID(), DataMembers.FIT_POSM);
             fitScoreList = bmodel.fitscoreHelper.getFitScoreList();
             if (fitScoreList != null && fitScoreList.size() > 0) {
@@ -347,9 +367,9 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
             } else {
                 no_data.setVisibility(View.VISIBLE);
             }
-            title = DataMembers.MODULE_POSM;
+            title = posmLabel;
             checkandaddScreens(DataMembers.FIT_POSM);
-        } else if (s.equalsIgnoreCase(DataMembers.MODULE_PROMO)) {
+        } else if (s.equalsIgnoreCase(promoLabel)) {
             bmodel.fitscoreHelper.getFitScoreforPromo(bmodel.getRetailerMasterBO().getRetailerID(), DataMembers.FIT_PROMO);
             fitScoreList = bmodel.fitscoreHelper.getFitScoreList();
             if (fitScoreList != null && fitScoreList.size() > 0) {
@@ -358,7 +378,7 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
             } else {
                 no_data.setVisibility(View.VISIBLE);
             }
-            title = DataMembers.MODULE_PROMO;
+            title = promoLabel;
             checkandaddScreens(DataMembers.FIT_PROMO);
         }
         double total = 0, weightage = 0;
