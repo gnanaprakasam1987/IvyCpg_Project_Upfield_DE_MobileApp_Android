@@ -1733,7 +1733,7 @@ public class SchemeDetailsMasterHelper {
                 } else if (schemeBO.getBuyType().equals(SALES_VALUE)) {
 
                     double totalValue;
-                    totalValue = getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),schemeBO.isAccumulationScheme(), IS_CHECK_SCHEME_WITH_ASRP);
+                    totalValue = getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(),schemeBO.isAccumulationScheme(),IS_CHECK_SCHEME_WITH_ASRP);
 
                     //Just reducing value which is used already for applying scheme.
                     if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()) != null) {
@@ -2877,7 +2877,7 @@ public class SchemeDetailsMasterHelper {
 
     }
 
-    public double getTotalOrderedValue(String productId, boolean isBatchWise, String batchId, int schemeId, boolean isAccumulationScheme, boolean isFromASRP) {
+    public double getTotalOrderedValue(String productId, boolean isBatchWise, String batchId, int schemeId,boolean isAccumulationScheme, boolean isFromASRP) {
         double totalValue = 0;
         if (mOrderedProductList == null)
             prepareNecessaryLists(bModel.productHelper.getProductMaster());
