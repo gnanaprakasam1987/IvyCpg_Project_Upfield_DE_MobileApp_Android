@@ -928,6 +928,8 @@ public class OrderDeliveryHelper {
 
                         c.close();
                     }
+
+                    updateSalesReturnSIH(db, productMasterBO);
                 }
             }
         } catch (Exception e) {
@@ -1151,5 +1153,102 @@ public class OrderDeliveryHelper {
             }
         }
         return line_total_price;
+    }
+
+    private void updateSalesReturnSIH(DBUtil db, ProductMasterBO product) {
+
+        try {
+            for (SalesReturnReasonBO bo : product
+                    .getSalesReturnReasonList()) {
+                if (bo.getPieceQty() > 0 || bo.getCaseQty() > 0
+                        || bo.getOuterQty() > 0 || bo.getSrPieceQty() > 0 || bo.getSrCaseQty() > 0 || bo.getSrOuterQty() > 0 || bo.getSrPieceQty() > 0 || bo.getSrCaseQty() > 0) {
+                    if (businessModel.configurationMasterHelper.SHOW_UPDATE_SIH) {
+                        if ("SRS".equals(bo.getReasonCategory())) {
+
+                            int salRetSih = bo.getPieceQty()
+                                    + (bo.getCaseQty() * product
+                                    .getCaseSize())
+                                    + (bo.getOuterQty() * product
+                                    .getOutersize());
+                            int calcSih = product.getSIH() + salRetSih;
+                            product.setSIH(calcSih);
+                            db.updateSQL("UPDATE ProductMaster SET sih = "
+                                    + calcSih
+                                    + " WHERE PID = "
+                                    + businessModel.QT(product.getProductID()));
+                            int batchid = businessModel.productHelper
+                                    .getOldBatchIDByMfd(product.getProductID());
+
+                            Cursor c = db
+                                    .selectSQL("select pid,ifnull(qty,0) from StockInHandMaster where pid="
+                                            + businessModel.QT(product.getProductID())
+                                            + " and batchid=" + batchid);
+                            if (c != null && c.getCount() > 0) {
+                                while (c.moveToNext()) {
+                                    salRetSih += c.getInt(1);
+                                }
+                                db.updateSQL("UPDATE StockInHandMaster SET upload='N',qty = "
+                                        + salRetSih
+                                        + " WHERE pid = "
+                                        + businessModel.QT(product.getProductID())
+                                        + " AND batchid = " + batchid);
+                                c.close();
+                            } else {
+                                String sihMasterColumns = "pid,qty,batchid";
+                                String sihMastervalues = businessModel.QT(product.getProductID())
+                                        + ","
+                                        + salRetSih + "," + batchid;
+                                db.insertSQL("StockInHandMaster",
+                                        sihMasterColumns,
+                                        sihMastervalues);
+                            }
+                            // update batchwise sih in object
+                            businessModel.batchAllocationHelper
+                                    .setBatchwiseSIH(product, Integer.toString(batchid)
+                                            , salRetSih, false);
+                        } else { // Nonsalable sih insert and update
+
+                            int nonSalRetSih = bo.getPieceQty()
+                                    + (bo.getCaseQty() * product
+                                    .getCaseSize())
+                                    + (bo.getOuterQty() * product
+                                    .getOutersize());
+
+                            Cursor c = db
+                                    .selectSQL("select pid,ifnull(qty,0) from NonSalableSIHMaster where pid="
+                                            + businessModel.QT(product.getProductID())
+                                            + " and reasonid = " + bo.getReasonID()
+                                            + " and upload = 'N'");
+                            //+ " and batchid=" + batchid);
+                            if (c != null && c.getCount() > 0) {
+                                while (c.moveToNext()) {
+                                    nonSalRetSih += c.getInt(1);
+                                }
+                                db.updateSQL("UPDATE NonSalableSIHMaster SET upload='N',qty = "
+                                        + nonSalRetSih
+                                        + " WHERE pid = "
+                                        + businessModel.QT(product.getProductID())
+                                        + " and reasonid = " + bo.getReasonID());
+                                //+ " AND batchid = " + batchid);
+                                c.close();
+                            } else {
+                                db.executeQ("delete from NonSalableSIHMaster where upload = 'Y' ");
+                                String sihMasterColumns = "pid,qty,reasonid";
+                                String sihMastervalues = businessModel.QT(product.getProductID())
+                                        + ","
+                                        + nonSalRetSih + ","
+                                        + bo.getReasonID();
+                                db.insertSQL("NonSalableSIHMaster",
+                                        sihMasterColumns,
+                                        sihMastervalues);
+                            }
+
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 }

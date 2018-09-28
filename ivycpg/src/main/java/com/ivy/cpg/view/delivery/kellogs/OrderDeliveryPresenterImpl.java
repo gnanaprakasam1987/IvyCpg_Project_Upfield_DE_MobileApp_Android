@@ -113,7 +113,9 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     Toast.LENGTH_SHORT).show();
         else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
 
-            if(totalOrderValue<totalReturnValue){
+            if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                    && bmodel.retailerMasterBO.getRpTypeCode() != null
+                    && "CASH".equals(bmodel.retailerMasterBO.getRpTypeCode()) && totalOrderValue<totalReturnValue){
                 Toast.makeText(context
                         ,context.getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
                 return;

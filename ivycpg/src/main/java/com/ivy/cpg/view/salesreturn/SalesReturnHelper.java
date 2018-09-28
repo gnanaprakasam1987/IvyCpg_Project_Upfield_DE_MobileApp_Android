@@ -17,6 +17,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -456,8 +457,9 @@ public class SalesReturnHelper {
             // transaction before saving new one.
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                 String sb = "select uid from SalesReturnHeader where RetailerID=" +
-                        bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
-                        " and upload='N' and distributorid=" + bmodel.retailerMasterBO.getDistributorId();
+                        AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
+                        " and upload='N' and distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
+                        " and RefModule != 'ORDER'";
                 Cursor c = db.selectSQL(sb);
                 if (c.getCount() > 0) {
                     if (c.moveToFirst()) {

@@ -858,7 +858,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
-            if (bModel.getOrderHeaderBO().getOrderImageName() != null && bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
+            if (bModel.getOrderHeaderBO() != null && bModel.getOrderHeaderBO().getOrderImageName() != null && bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_photo_camera_grey_24dp);
                 drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_capture).setIcon(drawable);
@@ -1774,6 +1774,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
 
                     if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                            && bModel.retailerMasterBO.getRpTypeCode() != null && "CASH".equals(bModel.retailerMasterBO.getRpTypeCode())
                             && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
                         Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
                         isClick = false;

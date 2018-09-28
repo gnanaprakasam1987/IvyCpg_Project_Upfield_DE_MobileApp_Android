@@ -591,6 +591,12 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
 
             }
 
+            if (!bmodel.configurationMasterHelper.SHOW_FLEX_DASH) {
+                row.findViewById(R.id.flex_dashboard_tv).setVisibility(View.GONE);
+                row.findViewById(R.id.flex_title).setVisibility(View.GONE);
+                row.findViewById(R.id.verticalSeparatorFlex).setVisibility(View.GONE);
+                row.findViewById(R.id.row_dot_orange1).setVisibility(View.GONE);
+            }
             //common row layout used - old dashboard score not available
             score.setVisibility(View.GONE);
             scoreTitle.setVisibility(View.GONE);
