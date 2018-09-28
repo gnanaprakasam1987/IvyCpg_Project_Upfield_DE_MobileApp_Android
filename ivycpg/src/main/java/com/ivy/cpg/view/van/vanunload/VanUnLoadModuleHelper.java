@@ -521,7 +521,7 @@ public class VanUnLoadModuleHelper {
                     bo = mylist.get(i);
 
                     String query = "select nsih.pid,nsih.qty,nsih.reasonid,c.listname from NonSalableSIHMaster nsih " +
-                            "left join standardlistmaster c on nsih.reasonid = c.listid where nsih.pid = " + bo.getProductid() + " and nsih.upload = 'N' ";
+                            "left join standardlistmaster c on nsih.reasonid = c.listid where nsih.pid = " + bo.getProductid();
 
                     Cursor c = db.selectSQL(query);
                     if (c != null) {
