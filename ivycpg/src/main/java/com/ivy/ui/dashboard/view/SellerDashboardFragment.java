@@ -265,6 +265,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private void loadMultiSelectData() {
 
+        presenter.fetchKPIDashboardData(mFilterUser,mSelectedDistributorId);
+        if(presenter.isSMPBasedDash()){
+            pager.setVisibility(View.VISIBLE);
+        }
+
     }
 
 

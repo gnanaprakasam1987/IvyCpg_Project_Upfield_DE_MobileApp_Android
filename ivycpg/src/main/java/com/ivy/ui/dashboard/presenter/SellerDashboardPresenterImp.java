@@ -35,6 +35,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
+
 public class SellerDashboardPresenterImp<V extends SellerDashboardContract.SellerDashboardView> extends BasePresenter<V> implements SellerDashboardContract.SellerDashboardPresenter<V>, LifecycleObserver {
 
     private OutletTimeStampDataManager mOutletTimeStampDataManager;
@@ -42,6 +44,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     private DistributorDataManager distributorDataManager;
     private UserDataManager userDataManager;
     private LabelsDataManager labelsDataManager;
+
+    private boolean isP3M;
 
     private HashMap<String, String> labelsMap=new HashMap<>();
 
@@ -98,6 +102,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .subscribeWith(new DisposableObserver<ArrayList<String>>() {
                     @Override
                     public void onNext(ArrayList<String> dashList) {
+                        isP3M = dashList.contains(P3M);
                         getIvyView().updateDashSpinner(dashList);
                     }
 
@@ -115,7 +120,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     @Override
     public boolean isSMPBasedDash() {
-        return getConfigurationMasterHelper().IS_SMP_BASED_DASH;
+        return isP3M || getConfigurationMasterHelper().IS_SMP_BASED_DASH;
     }
 
     @Override
@@ -135,7 +140,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     @Override
     public boolean shouldShowTrendChart() {
-        return false;
+        return getConfigurationMasterHelper().IS_SMP_BASED_DASH;
     }
 
     @Override
