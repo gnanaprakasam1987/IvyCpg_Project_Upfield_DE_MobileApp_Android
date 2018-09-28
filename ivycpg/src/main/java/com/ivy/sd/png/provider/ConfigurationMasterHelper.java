@@ -40,6 +40,7 @@ public class ConfigurationMasterHelper {
     public static final String MENU_SUBD = "SUBD_MENU";
     public static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     public static final String MENU_STORECHECK = "MENU_STORECHECK";
+    public int VALUE_SYNC_PROGRESS_TIME = 10000;
 
     public static int vanDistance = 0;
     public static String ACCESS_KEY_ID = "AKIAI5OG2UQYXDPYQNNQ";

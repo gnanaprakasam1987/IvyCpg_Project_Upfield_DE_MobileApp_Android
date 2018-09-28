@@ -204,7 +204,7 @@ public class BusinessModel extends Application {
     public TimerCount timer;
     private String remarkType = "0";
 
-    public String userNameTemp, passwordTemp;
+    public String userNameTemp="", passwordTemp="";
     public RetailerMasterBO retailerMasterBO;
     public Vector<RetailerMasterBO> retailerMaster;
     public Vector<RetailerMasterBO> subDMaster;

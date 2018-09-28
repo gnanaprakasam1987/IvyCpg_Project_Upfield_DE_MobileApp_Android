@@ -30,9 +30,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
     compileSdkVersion 26
     buildToolsVersion '27.0.3'
-
     useLibrary 'org.apache.http.legacy'
-
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
         minSdkVersion 14
@@ -45,7 +43,6 @@ android {
         buildConfigField("String", "TEST_PASSWORD", "\"${TEST_PASSWORD}\"")
         buildConfigField("boolean", "IS_AUTO_LOGIN_ENABLED", IS_AUTO_LOGIN_ENABLED)
     }
-
     lintOptions {
         // set to true to turn off analysis progress reporting by lint
         quiet false
@@ -54,7 +51,6 @@ android {
         // if true, only report errors
         ignoreWarnings true
     }
-
     signingConfigs {
         release {
 
@@ -78,7 +74,6 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-
     buildTypes {
         debug {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
@@ -113,7 +108,6 @@ android {
         jumboMode = true
         javaMaxHeapSize "4g"
     }
-
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/LICENSE.txt'
@@ -126,7 +120,6 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
-
     testOptions {
         unitTests.returnDefaultValues = true
         unitTests.all {
@@ -135,21 +128,43 @@ android {
             }
         }
     }
-
-    android {
-        sourceSets {
-            main {
-
-                // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
-                res.srcDirs = [
-                        'src/main/res/layouts/activation',
-                        'src/main/res/layouts',
-                        'src/main/res'
-                ]
+    sourceSets {
+        aws {
+            java {
+                srcDirs('src/aws', 'src/main/java')
             }
+        }
+
+        sfdc {
+            java {
+                srcDirs('src/sfdc/java', 'src/main/java')
+            }
+            res {
+                srcDirs('src/sfdc/res','src/main/res')
+            }
+        }
+
+        main {
+            // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
+            res.srcDirs = [
+                    'src/main/res/layouts/activation',
+                    'src/main/res/layouts',
+                    'src/main/res'
+            ]
         }
     }
 
+
+    flavorDimensions "cpg"
+    productFlavors {
+        aws {
+            dimension "cpg"
+        }
+        sfdc {
+            minSdkVersion 19
+            dimension "cpg"
+        }
+    }
 }
 
 static def getLayoutList(path) {
@@ -225,27 +240,21 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
     implementation 'com.google.dagger:dagger:2.13'
     annotationProcessor "com.google.dagger:dagger-compiler:2.13"
-
     implementation 'com.android.support:support-annotations:27.1.1'
-
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-
     // reactive
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
-
     // dependencies for local unit tests
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
     testImplementation "org.hamcrest:hamcrest-all:$rootProject.hamcrestVersion"
-
     testAnnotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
-
     testImplementation 'org.json:json:20140107'
 
+    sfdcImplementation 'com.salesforce.mobilesdk:SmartSync:5.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
