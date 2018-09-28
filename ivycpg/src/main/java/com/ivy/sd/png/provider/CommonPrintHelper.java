@@ -1157,16 +1157,9 @@ public class CommonPrintHelper {
 
         for (ProductMasterBO prod : mOrderedProductList) {
             mLengthUptoPName = 0;
-            //int position=0;
-            ///position=mAttrList.size();
+
             //load the ordered product line item - start
             for (AttributeListBO attr : mAttrList) {
-
-                //Below line added for RTL support - Rajkumar
-               /* if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
-                    position -= 1;
-                    attr = mAttrList.get(position);
-                }*/
 
                 mProductValue = "";
                 if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)) {

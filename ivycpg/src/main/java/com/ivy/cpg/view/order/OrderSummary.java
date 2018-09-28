@@ -698,7 +698,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 totalOrderValue = totalOrderValue - billWiseDiscount;
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
-            } else {
+            } else if(bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
                 // user manually enter bill wise discount
                 double discount = bModel.orderAndInvoiceHelper.restoreDiscountAmount(bModel
                         .getRetailerMasterBO().getRetailerID());

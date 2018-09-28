@@ -210,6 +210,8 @@ public class ProductMasterBO {
 
     private double discount_order_value;
 
+    private double lineValue;
+
     private boolean ispromo;
     private int isMustSell;
     private int isFocusBrand;
