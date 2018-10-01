@@ -35,6 +35,7 @@ import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.eodstockreport.EODStockReportFragmentRe;
 import com.ivy.cpg.view.reports.inventoryreport.InventoryReportFragment;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportFragment;
+import com.ivy.cpg.view.reports.orderfulfillmentreport.OrderFulfillmentReport;
 import com.ivy.cpg.view.reports.orderreport.OrderReportFragment;
 import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportFragment;
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
@@ -541,6 +542,10 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
                 StandardListMasterConstants.MENU_DELIVERY_RPT)) {
             DamageReturnContainerFragment returnsAndPendingDeliverieReportFragment = new DamageReturnContainerFragment();
             transaction.replace(R.id.fragment_content, returnsAndPendingDeliverieReportFragment);
+            commitFragment(transaction, config);
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ORDER_FULFILL_REPORT)){
+            OrderFulfillmentReport mOrderFulfillmentReportFragmnet = new OrderFulfillmentReport();
+            transaction.replace(R.id.fragment_content, mOrderFulfillmentReportFragmnet);
             commitFragment(transaction, config);
         }
     }

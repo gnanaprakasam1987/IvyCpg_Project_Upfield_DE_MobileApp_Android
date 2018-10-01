@@ -34,7 +34,8 @@ public class EodStockModel implements IEodStockModelPresenter {
         for (StockReportBO stockReportBO : eodReportHelper.getEODStockReport()) {
             // update list if any qty >0
             if (stockReportBO.getSih() > 0 || stockReportBO.getEmptyBottleQty() > 0 || stockReportBO.getFreeIssuedQty() > 0
-                    || stockReportBO.getSoldQty() > 0 || stockReportBO.getReplacementQty() > 0 || stockReportBO.getReturnQty() > 0) {
+                    || stockReportBO.getSoldQty() > 0 || stockReportBO.getReplacementQty() > 0 || stockReportBO.getReturnQty() > 0
+                    || stockReportBO.getVanUnloadQty() > 0 || stockReportBO.getNonSalableQty() > 0) {
 
                 int vanloadQty = (stockReportBO.getSih() +
                         stockReportBO.getSoldQty() +
