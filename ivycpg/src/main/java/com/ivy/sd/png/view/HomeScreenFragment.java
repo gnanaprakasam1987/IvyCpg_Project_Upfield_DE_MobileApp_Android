@@ -1467,7 +1467,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1478,7 +1478,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+                //getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1489,7 +1489,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1499,7 +1499,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 

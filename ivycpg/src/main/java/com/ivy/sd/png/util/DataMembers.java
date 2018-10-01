@@ -23,7 +23,7 @@ public class DataMembers {
 
     // Sync
     public static String SERVER_URL = BuildConfig.BASE_URL;
-   // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
+    // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
@@ -32,7 +32,7 @@ public class DataMembers {
 
     public static String fileName = "sd_png_asean_android.apk";
 
-    
+
     public static final int MESSAGE_UNZIPPED = 10113;
 
     public static final String DIGITAL_CONTENT = "TRAN";
@@ -79,6 +79,12 @@ public class DataMembers {
     public static final String FIT_PROMO = "FIT_PROMO";
     public static final String FIT_ASSET = "FIT_ASSET";
     public static final String FIT_POSM = "FIT_POSM";
+
+    public static final String MENU_STOCK = "MENU_STOCK";
+    public static final String MENU_PRICE = "MENU_PRICE";
+    public static final String MENU_PROMO = "MENU_PROMO";
+    public static final String MENU_ASSET = "MENU_ASSET";
+    public static final String MENU_POSM = "MENU_POSM";
 
     public static final String MODULE_STOCK = "Stock Check";
     public static final String MODULE_PRICE = "Price Check";
@@ -237,7 +243,7 @@ public class DataMembers {
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";
 
-    public static final String tbl_AssetService= "AssetServiceRequest";
+    public static final String tbl_AssetService = "AssetServiceRequest";
     private static final String tbl_AssetService_cols = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
@@ -469,7 +475,6 @@ public class DataMembers {
     private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
 
 
-
     private static final String tbl_RetailerVerification = "RetailerVerification";
     private static final String tbl_RetailerVerification_cols = "RefId,IsValidated";
     public static final String tbl_password_rules = "PasswordPolicyRules";
@@ -605,12 +610,12 @@ public class DataMembers {
     private static final String tbl_RetailerScoreDetail = "RetailerScoreDetails";
     private static final String tbl_RetailerScoreDetail_cols = "Tid,ModuleCode,Weightage,Score";
 
-    private static final String tbl_CollectionDueHeader="CollectionDueHeader";
-    private static final String tbl_CollectionDueHeader_cols="Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
+    private static final String tbl_CollectionDueHeader = "CollectionDueHeader";
+    private static final String tbl_CollectionDueHeader_cols = "Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
 
 
-    private static final String tbl_CollectionDueDetails="CollectionDueDetails";
-    private static final String tbl_CollectionDueDetails_cols="InvoiceNo,ReasonId,uid";
+    private static final String tbl_CollectionDueDetails = "CollectionDueDetails";
+    private static final String tbl_CollectionDueDetails_cols = "InvoiceNo,ReasonId,uid";
 
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
@@ -781,8 +786,8 @@ public class DataMembers {
         uploadColumn.put(tbl_RetailerScoreHeader, tbl_RetailerScoreHeader_cols);
         uploadColumn.put(tbl_RetailerScoreDetail, tbl_RetailerScoreDetail_cols);
 
-        uploadColumn.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
-        uploadColumn.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
+        uploadColumn.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
+        uploadColumn.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumn.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
     }
 
@@ -915,8 +920,8 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
 
-        uploadColumnWithRetailer.put(tbl_CollectionDueHeader,tbl_CollectionDueHeader_cols);
-        uploadColumnWithRetailer.put(tbl_CollectionDueDetails,tbl_CollectionDueDetails_cols);
+        uploadColumnWithRetailer.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
+        uploadColumnWithRetailer.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
     }
 

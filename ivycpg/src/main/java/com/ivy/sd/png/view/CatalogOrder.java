@@ -20,7 +20,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -155,8 +155,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private LinearLayout bottom_layout;
     private Animation slide_down, slide_up;
     private Button btn_filter_popup, btn_search, btn_clear;
+    private ViewFlipper viewFlipper;
     private EditText search_txt;
-    private CardView search_toolbar;
+    private LinearLayout search_toolbar;
     private String searchedtext = "";
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
 
@@ -197,35 +198,36 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        pdt_recycler_view = (RecyclerView) findViewById(R.id.pdt_recycler_view);
+        pdt_recycler_view = findViewById(R.id.pdt_recycler_view);
 
-        search_toolbar = (CardView) findViewById(R.id.search_toolbar);
-        bottom_layout = (LinearLayout) findViewById(R.id.bottom_layout);
+        search_toolbar = findViewById(R.id.search_toolbar);
+        bottom_layout = findViewById(R.id.bottom_layout);
 
-        search_txt = (EditText) search_toolbar.findViewById(R.id.edt_searchproductName);
+        search_txt = search_toolbar.findViewById(R.id.edt_searchproductName);
         search_txt.setOnEditorActionListener(this);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        totalValueText = (TextView) findViewById(R.id.totalValue);
-        lpcText = (TextView) findViewById(R.id.lcp);
-        distValue = (TextView) findViewById(R.id.distValue);
-        totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
+        totalValueText = findViewById(R.id.totalValue);
+        lpcText = findViewById(R.id.lcp);
+        distValue = findViewById(R.id.distValue);
+        totalQtyTV = findViewById(R.id.tv_totalqty);
 
-        btn_filter_popup = (Button) search_toolbar.findViewById(R.id.btn_filter_popup);
+        Button btn_filter_popup = search_toolbar.findViewById(R.id.btn_filter_popup);
         btn_filter_popup.setOnClickListener(this);
 
-        btn_search = (Button) search_toolbar.findViewById(R.id.btn_search);
+        Button btn_search = search_toolbar.findViewById(R.id.btn_search);
         btn_search.setOnClickListener(this);
 
-        btn_clear = (Button) search_toolbar.findViewById(R.id.btn_clear);
+        Button btn_clear = search_toolbar.findViewById(R.id.btn_clear);
         btn_clear.setOnClickListener(this);
 
-        nextBtn = (Button) findViewById(R.id.btn_next);
+        Button nextBtn = findViewById(R.id.btn_next);
         nextBtn.setOnClickListener(this);
         nextBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        viewFlipper = findViewById(R.id.view_flipper);
+        toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -391,12 +393,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 searchedtext = s.toString();
                 if (searchedtext.length() == 0 || searchedtext.equals("")) {
-                    btn_search.setVisibility(View.VISIBLE);
-                    btn_clear.setVisibility(View.GONE);
+                    findViewById(R.id.btn_search).setVisibility(View.VISIBLE);
+                    findViewById(R.id.btn_clear).setVisibility(View.GONE);
                     loadProductList();
                 } else {
-                    btn_search.setVisibility(View.GONE);
-                    btn_clear.setVisibility(View.VISIBLE);
+                    findViewById(R.id.btn_search).setVisibility(View.GONE);
+                    findViewById(R.id.btn_clear).setVisibility(View.VISIBLE);
                     if (searchedtext.length() >= 3) {
                         searchAsync = new SearchAsync();
                         searchAsync.execute();
@@ -581,7 +583,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         }
 
         protected void onPostExecute(Boolean result) {
-
             adapter = new RecyclerViewAdapter(mylist);
             pdt_recycler_view.setAdapter(adapter);
         }
@@ -1759,9 +1760,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     });
             bmodel.applyAlertDialogTheme(builderSingle);
         } else if (v.getId() == R.id.btn_clear) {
+            viewFlipper.showPrevious();
             search_txt.setText("");
-            btn_search.setVisibility(View.VISIBLE);
-            btn_clear.setVisibility(View.GONE);
+            findViewById(R.id.btn_search).setVisibility(View.VISIBLE);
+            findViewById(R.id.btn_clear).setVisibility(View.GONE);
             loadProductList();
         } else if (v.getId() == R.id.btn_next) {
             if (bmodel.configurationMasterHelper.IS_ENABLE_LICENSE_VALIDATION) {
@@ -1800,6 +1802,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             } else {
                 nextButtonClick();
             }
+        } else if (v.getId() == R.id.btn_search) {
+            viewFlipper.setInAnimation(this, R.anim.in_from_right);
+            viewFlipper.setOutAnimation(this, R.anim.out_to_right);
+            viewFlipper.showNext();
+            search_txt.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(search_txt,
+                    InputMethodManager.SHOW_FORCED);
         }
 
     }
@@ -2064,23 +2074,23 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             public MyViewHolder(View v) {
                 super(v);
-                pdt_image = (ImageView) v.findViewById(R.id.pdt_image);
-                catalog_order_listview_productname = (TextView) v.findViewById(R.id.catalog_order_listview_productname);
-                productCode = (TextView) v.findViewById(R.id.catalog_order_listview_pCode);
-                ppq = (TextView) v.findViewById(R.id.catalog_order_listview_ppq);
-                moq = (TextView) v.findViewById(R.id.catalog_order_listview_moq);
-                ssrp = (TextView) v.findViewById(R.id.catalog_order_listview_srp);
-                mrp = (TextView) v.findViewById(R.id.catalog_order_listview_mrp);
-                total = (TextView) v.findViewById(R.id.catalog_order_listview_product_value);
-                list_view_order_btn = (Button) v.findViewById(R.id.list_view_order_btn);
-                list_view_stock_btn = (Button) v.findViewById(R.id.list_view_stock_btn);
-                list_view_sales_return_qty = (Button) v.findViewById(R.id.list_view_sales_return_qty);
-                pdt_details_layout = (LinearLayout) v.findViewById(R.id.pdt_details_layout);
-                sih = (TextView) v.findViewById(R.id.catalog_order_listview_sih);
-                wsih = (TextView) v.findViewById(R.id.catalog_order_listview_wsih);
-                slant_view = (RelativeLayout) v.findViewById(R.id.slant_view);
-                slant_view_bg = (SlantView) v.findViewById(R.id.slant_view_bg);
-                allocation = (TextView) v.findViewById(R.id.catalog_order_listview_allocation);
+                pdt_image = v.findViewById(R.id.pdt_image);
+                catalog_order_listview_productname = v.findViewById(R.id.catalog_order_listview_productname);
+                productCode = v.findViewById(R.id.catalog_order_listview_pCode);
+                ppq = v.findViewById(R.id.catalog_order_listview_ppq);
+                moq = v.findViewById(R.id.catalog_order_listview_moq);
+                ssrp = v.findViewById(R.id.catalog_order_listview_srp);
+                mrp = v.findViewById(R.id.catalog_order_listview_mrp);
+                total = v.findViewById(R.id.catalog_order_listview_product_value);
+                list_view_order_btn = v.findViewById(R.id.list_view_order_btn);
+                list_view_stock_btn = v.findViewById(R.id.list_view_stock_btn);
+                list_view_sales_return_qty = v.findViewById(R.id.list_view_sales_return_qty);
+                pdt_details_layout = v.findViewById(R.id.pdt_details_layout);
+                sih = v.findViewById(R.id.catalog_order_listview_sih);
+                wsih = v.findViewById(R.id.catalog_order_listview_wsih);
+                slant_view = v.findViewById(R.id.slant_view);
+                slant_view_bg = v.findViewById(R.id.slant_view_bg);
+                allocation = v.findViewById(R.id.catalog_order_listview_allocation);
 
                 catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
                 productCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
