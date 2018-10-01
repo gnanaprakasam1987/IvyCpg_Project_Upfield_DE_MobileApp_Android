@@ -268,6 +268,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         presenter.fetchKPIDashboardData(mFilterUser,mSelectedDistributorId);
         if(presenter.isSMPBasedDash()){
             pager.setVisibility(View.VISIBLE);
+            circleIndicatorView.setViewPager(pager);
         }
 
     }
