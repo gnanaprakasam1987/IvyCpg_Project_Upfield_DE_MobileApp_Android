@@ -208,6 +208,7 @@ import co.chatsdk.core.session.Configuration;
 import co.chatsdk.core.utils.ImageUtils;
 import co.chatsdk.firebase.FirebaseNetworkAdapter;
 import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
+import co.chatsdk.firebase.push.FirebasePushModule;
 import co.chatsdk.ui.manager.BaseInterfaceAdapter;
 
 public class BusinessModel extends Application {
@@ -731,6 +732,7 @@ public class BusinessModel extends Application {
             ChatSDK.initialize(builder.build(), new BaseInterfaceAdapter(context), new FirebaseNetworkAdapter());
 
             FirebaseFileStorageModule.activate();
+            FirebasePushModule.activateForFirebase();
 
         }catch(ChatSDKException e){
             Commons.printException(e);

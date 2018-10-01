@@ -221,6 +221,8 @@ public class LoginHelper {
                         }
                     });
 
+//            FirebaseMessaging.getInstance().subscribeToTopic("APP");
+
 
         } else {
             Commons.printInformation("No valid Google Play Services APK found.");

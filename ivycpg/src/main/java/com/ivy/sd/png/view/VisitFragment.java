@@ -43,6 +43,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -659,10 +660,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         else if (i1 == R.id.menu_chat){
 
-            if (ChatSDK.currentUser() == null)
-                InterfaceManager.shared().a.startLoginActivity(getContext(), true);
-            else
-                InterfaceManager.shared().a.startMainActivity(getContext());
+            Intent intent = new Intent(getContext(), StartChatActivity.class);
+            startActivity(intent);
+
         }
 
         return super.onOptionsItemSelected(item);

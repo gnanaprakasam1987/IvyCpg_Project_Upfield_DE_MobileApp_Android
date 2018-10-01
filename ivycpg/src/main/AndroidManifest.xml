@@ -61,7 +61,6 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE" />
 
-
     <!-- Allows using PowerManager WakeLocks to keep processor from sleeping -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -134,7 +133,6 @@
         </receiver>
 
         <service android:name="com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadService" />
-
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
@@ -203,7 +201,6 @@
         <activity
             android:name="com.ivy.sd.png.view.ViewImage"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
@@ -499,7 +496,6 @@
         <activity
             android:name="com.ivy.cpg.view.van.damagestock.DamageStockFragmentActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
             android:screenOrientation="portrait" />
@@ -771,30 +767,24 @@
         <activity
             android:name="com.ivy.cpg.view.asset.PosmGallery"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.order.scheme.QPSSchemeApply"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.ui.activation.view.ActivationActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.asset.AssetServiceActivity"
             android:screenOrientation="portrait" />
 
-
-        <!--FCM Service Registration-->
+        <!-- FCM Service Registration -->
 
         <service android:name="com.ivy.cpg.fcmnotification.CPGFirebaseMessagingService">
             <intent-filter>
@@ -824,8 +814,10 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-        <activity android:name="com.ivy.cpg.view.collection.NoCollectionReasonActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.collection.NoCollectionReasonActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.supervisor.chat.StartChatActivity"></activity>
     </application>
 
 </manifest>
