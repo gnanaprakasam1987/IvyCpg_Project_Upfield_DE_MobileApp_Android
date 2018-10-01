@@ -598,6 +598,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_INV_HST_OVERDUE_DAYS;
     public boolean SHOW_INV_HST_OS_AMOUNT;
     public boolean SHOW_INV_HST_STATUS;
+    public boolean SHOW_INV_HST_VOLUME;
 
 
     public boolean IS_PRESENTATION_INORDER;
@@ -3593,6 +3594,7 @@ public class ConfigurationMasterHelper {
             SHOW_INV_HST_OVERDUE_DAYS = false;
             SHOW_INV_HST_OS_AMOUNT = false;
             SHOW_INV_HST_STATUS = false;
+            SHOW_INV_HST_VOLUME = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3637,6 +3639,8 @@ public class ConfigurationMasterHelper {
                         case "ST":
                             SHOW_INV_HST_STATUS = true;
                             break;
+                        case"VOL":
+                            SHOW_INV_HST_VOLUME = true;
 
                     }
 
