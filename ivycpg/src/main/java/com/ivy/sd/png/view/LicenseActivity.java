@@ -7,33 +7,21 @@ import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.utils.FontUtils;
 
 public class LicenseActivity extends IvyBaseActivityNoActionBar {
 
-    private BusinessModel bmodel;
     private LinearLayout lnrLicense;
-
     private Toolbar toolbar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_licensing);
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
-            finish();
-        }
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Set title to toolbar
