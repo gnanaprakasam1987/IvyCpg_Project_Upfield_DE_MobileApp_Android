@@ -19,7 +19,7 @@ import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.ReAllocationActivity;
-import com.ivy.sd.png.view.SubDStockOrderActivity;
+import com.ivy.cpg.view.subd.SubDStockOrderActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 

@@ -702,15 +702,15 @@
             android:name="com.ivy.cpg.view.reports.soho.SalesReturnValidationReportSOHO"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SubDHomeActivity"
+            android:name="com.ivy.cpg.view.subd.SubDHomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SubDStockCheckActivity"
+            android:name="com.ivy.cpg.view.subd.SubDStockCheckActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SubDStockOrderActivity"
+            android:name="com.ivy.cpg.view.subd.SubDStockOrderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity

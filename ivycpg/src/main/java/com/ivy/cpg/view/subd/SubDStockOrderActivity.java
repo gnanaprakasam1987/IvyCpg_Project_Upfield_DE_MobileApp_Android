@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.subd;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -83,6 +83,16 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.BatchAllocation;
+import com.ivy.sd.png.view.CustomKeyBoard;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.InitiativeActivity;
+import com.ivy.sd.png.view.MustSellReasonDialog;
+import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +112,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     private Button mBtn_clear;
     private TextView totalValueText;
     private TextView lpcText;
-    private TextView distValue;
     private TextView productName;
     private TextView pnametitle;
     private BusinessModel bmodel;
@@ -203,7 +212,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     private Button mBtnNext;
     private Button mBtnGuidedSelling_next, mBtnGuidedSelling_prev;
 
-    private Toolbar toolbar;
 
     private ArrayList<String> fiveFilter_productIDs;
 
@@ -211,7 +219,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
     private final String mStockCode = "STK";
     private final String mOrderCode = "ORD";
-    private int totalAllQty = 0;
 
     private boolean isFilter = true;// only for guided selling. Default value is true, so it will ot affect normal flow
     private TextView totalQtyTV;
@@ -228,7 +235,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     private static final int DIALOG_ORDER_SAVED = 3;
     private boolean isClick = false;
     private AlertDialog alertDialog;
-    private AlertDialog.Builder build;
     SearchAsync searchAsync;
 
     @Override
@@ -245,7 +251,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         Bundle extras = getIntent().getExtras();
         OrderedFlag = "MENU_STK_ORD";
         screenCode = "MENU_STK_ORD";
@@ -284,14 +290,14 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
         }
 
-        FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
+        FrameLayout drawer =  findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout =  findViewById(R.id.drawer_layout);
         // set a custom shadow that overlays the main content when the drawer
         // opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -303,15 +309,15 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+        viewFlipper =  findViewById(R.id.view_flipper);
 
-        mEdt_searchproductName = (EditText) findViewById(R.id.edt_searchproductName);
-        mBtn_Search = (Button) findViewById(R.id.btn_search);
-        mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
-        mBtn_clear = (Button) findViewById(R.id.btn_clear);
-        mBtnNext = (Button) findViewById(R.id.btn_next);
-        mBtnGuidedSelling_next = (Button) findViewById(R.id.btn_guided_selling_next);
-        mBtnGuidedSelling_prev = (Button) findViewById(R.id.btn_guided_selling_prev);
+        mEdt_searchproductName =  findViewById(R.id.edt_searchproductName);
+        mBtn_Search =  findViewById(R.id.btn_search);
+        mBtnFilterPopup =  findViewById(R.id.btn_filter_popup);
+        mBtn_clear =  findViewById(R.id.btn_clear);
+        mBtnNext =  findViewById(R.id.btn_next);
+        mBtnGuidedSelling_next =  findViewById(R.id.btn_guided_selling_next);
+        mBtnGuidedSelling_prev =  findViewById(R.id.btn_guided_selling_prev);
         mBtnGuidedSelling_next.setOnClickListener(this);
         mBtnGuidedSelling_prev.setOnClickListener(this);
 
@@ -321,7 +327,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         mBtn_clear.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
 
-        mBtnNext.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mBtnNext.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
         mBtnNext.setText(getResources().getString(R.string.save));
 
 
@@ -387,11 +393,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }
 
-        totalValueText = (TextView) findViewById(R.id.totalValue);
-        lpcText = (TextView) findViewById(R.id.lcp);
-        distValue = (TextView) findViewById(R.id.distValue);
-        totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
-        rvFilterList = (RecyclerView) findViewById(R.id.rvFilter);
+        totalValueText =  findViewById(R.id.totalValue);
+        lpcText =  findViewById(R.id.lcp);
+        totalQtyTV =  findViewById(R.id.tv_totalqty);
+        rvFilterList =  findViewById(R.id.rvFilter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         rvFilterList.setLayoutManager(mLayoutManager);
         rvFilterList.setItemAnimator(new DefaultItemAnimator());
@@ -401,12 +406,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         (findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
 
-        productName = (TextView) findViewById(R.id.productName);
-        productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        productName =  findViewById(R.id.productName);
+        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
 
 
-        lvwplist = (ListView) findViewById(R.id.list);
+        lvwplist =  findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         productList = filterWareHouseProducts();
@@ -563,11 +568,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             findViewById(R.id.hscrl_spl_filter).setVisibility(View.GONE);
                         }
                         // incase of menu item
-                        if (!bo.isProductFilter()) {
-                            isFilter = false;
-                        } else {
-                            isFilter = true;
-                        }
+
+                        isFilter = bo.isProductFilter();
+
                         getSupportActionBar().invalidateOptionsMenu();
 
                         if (bo.getFilterCode().equalsIgnoreCase("ALL")) {
@@ -594,7 +597,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                         bo.setDone(true);
                         if (isPrevious) {
                             setCurrentFlag(bo);
-                            updateGuidedSellingView(false, isPrevious);
+                            updateGuidedSellingView(false, true);
                             return;
                         } else {
                             if (bmodel.getmGuidedSelling().get(position + 1) != null) {
@@ -923,7 +926,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                                             .getMonthly_target()));
                 }
                 try {
-                    ((TextView) findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                     if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                             R.id.totalTitle).getTag()) != null)
                         ((TextView) findViewById(R.id.totalTitle))
@@ -942,7 +945,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.warehouseCaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) findViewById(R.id.warehouseCaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.warehouseCaseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.warehouseCaseTitle))
@@ -961,7 +964,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.warehousePcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) findViewById(R.id.warehousePcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.warehousePcsTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.warehousePcsTitle))
@@ -979,7 +982,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.caseTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.caseTitle))
@@ -994,7 +997,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.pcsTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.pcsTitle))
@@ -1009,7 +1012,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.focTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.focTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.focTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.focTitle))
@@ -1025,7 +1028,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.outercaseTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.outercaseTitle))
@@ -1044,7 +1047,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.warehouseOuterTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) findViewById(R.id.warehouseOuterTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.warehouseOuterTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.warehouseOuterTitle))
@@ -1060,7 +1063,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.icoTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.icoTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) findViewById(R.id.icoTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.icoTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.icoTitle))
@@ -1078,7 +1081,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.productBarcodetitle).getTag()) != null)
                             ((TextView) findViewById(R.id.productBarcodetitle))
@@ -1096,7 +1099,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.weight).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.weight)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) findViewById(R.id.weight)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.weight).getTag()) != null)
                             ((TextView) findViewById(R.id.weight))
@@ -1192,7 +1195,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
 
             if (sequence == null) {
-                sequence = new Vector<LevelBO>();
+                sequence = new Vector<>();
             }
 
             if (mSelectedIdByLevelId == null || mSelectedIdByLevelId.size() == 0) {
@@ -1207,8 +1210,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             if (!sequence.isEmpty()) {
                 mSelectedLevelBO = sequence.get(0);
                 int levelID = sequence.get(0).getProductID();
-                Vector<LevelBO> filterValues = new Vector<>();
-                filterValues.addAll(loadedFilterValues.get(levelID));
+                Vector<LevelBO> filterValues = new Vector<>(loadedFilterValues.get(levelID));
                 filterAdapter = new FilterAdapter(filterValues);
                 rvFilterList.setAdapter(filterAdapter);
             }
@@ -1231,14 +1233,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
     private class MyAdapter extends ArrayAdapter<ProductMasterBO> {
         private final Vector<ProductMasterBO> items;
-        private final int SOLogic;
         private CustomKeyBoard dialogCustomKeyBoard;
 
         public MyAdapter(Vector<ProductMasterBO> items) {
             super(SubDStockOrderActivity.this,
                     R.layout.activity_stock_and_order_listview_subd, items);
             this.items = items;
-            SOLogic = bmodel.configurationMasterHelper.getSOLogic();
         }
 
         public ProductMasterBO getItem(int position) {
@@ -1271,9 +1271,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
                 holder = new ViewHolder();
 
-                holder.psname = (TextView) row
+                holder.psname =  row
                         .findViewById(R.id.stock_and_order_listview_productname);
-                holder.mrp = (TextView) row
+                holder.mrp =  row
                         .findViewById(R.id.stock_and_order_listview_mrp);
 
 
@@ -1281,25 +1281,25 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
 
                 //Store - Order
-                holder.caseQty = (EditText) row
+                holder.caseQty =  row
                         .findViewById(R.id.stock_and_order_listview_case_qty);
-                holder.pcsQty = (EditText) row
+                holder.pcsQty =  row
                         .findViewById(R.id.stock_and_order_listview_pcs_qty);
-                holder.outerQty = (EditText) row
+                holder.outerQty =  row
                         .findViewById(R.id.stock_and_order_listview_outer_case_qty);
 
-                holder.total = (TextView) row
+                holder.total =  row
                         .findViewById(R.id.stock_and_order_listview_total);
 
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.pcsQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.psname.setTypeface(FontUtils.getProductNameFont(SubDStockOrderActivity.this));
+                holder.mrp.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+                holder.pcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+                holder.total.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
 
 
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
@@ -1308,10 +1308,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 // SIH - Enable/Disable - Start
                 // Order Field - Enable/Disable
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.llCase)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -1323,10 +1323,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -1339,10 +1339,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_FOC)
-                    ((LinearLayout) row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.focTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.focTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.focTitle))
@@ -1355,10 +1355,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outercaseTitle))
@@ -1372,10 +1372,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
-                    ((LinearLayout) row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.stkRtTitle))
                                     .setText(bmodel.labelsMasterHelper
@@ -1387,10 +1387,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
-                    ((LinearLayout) row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
+                    ( row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.totalTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.totalTitle))
@@ -2121,7 +2121,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
     public void updateValue() {
         try {
-            totalAllQty = 0;
+            int totalAllQty = 0;
             int lpccount = 0;
             totalvalue = 0;
             HashSet<String> sbdAcheived = new HashSet<>();
@@ -2145,7 +2145,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             + (ret.getOrderedCaseQty() * ret.getCsrp())
                             + ret.getOrderedOuterQty() * ret.getOsrp();
                     totalvalue = totalvalue + temp;
-
                     totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
                 }
                 if (ret.isRPS()) {
@@ -2210,12 +2209,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 findViewById(R.id.ll_lpc).setVisibility(View.GONE);
             }
 
-            ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.totalValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.lcp)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.distText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) findViewById(R.id.distValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.totalValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.lcp)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.distText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.distValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
 
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -2412,7 +2411,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 bmodel.getOrderHeaderBO().setIsCompanyGiven(0);
                 bmodel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) lpcText.getText()));
 
-                build = new AlertDialog.Builder(SubDStockOrderActivity.this);
+                AlertDialog.Builder build = new AlertDialog.Builder(SubDStockOrderActivity.this);
                 customProgressDialog(build, getResources().getString(R.string.saving_new_order));
                 alertDialog = build.create();
                 alertDialog.show();
@@ -2678,17 +2677,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
             } else if (id == R.id.calcdot) {
                 val = SDUtil.convertToInt(append);
-                if (QUANTITY.getTag() != null) {
-                       /* if (QUANTITY.getId() == R.id.stock_and_order_listview_srpedit) {
-                            Button ed = (Button) findViewById(vw.getId());
-                            append = ed.getText().toString();
-                            eff();
-                            val = SDUtil.convertToInt(append);
-                        }
-*/
-                }
             } else {
-                Button ed = (Button) findViewById(vw.getId());
+                Button ed =  findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
                 val = SDUtil.convertToInt(append);
@@ -2959,18 +2949,15 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         if (!GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // both filter selected
 
-            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
-                    && isSpecialFilterAppliedProduct(generalbutton, ret))
-                return true;
+            return fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID())
+                    && isSpecialFilterAppliedProduct(generalbutton, ret);
 
         } else if (!GENERAL.equals(generalbutton) && BRAND.equals(brandbutton)) {
             //special filter alone selected
-            if (isSpecialFilterAppliedProduct(generalbutton, ret))
-                return true;
+            return isSpecialFilterAppliedProduct(generalbutton, ret);
         } else if (GENERAL.equals(generalbutton) && !BRAND.equals(brandbutton)) {
             // product filter alone selected
-            if (fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID()))
-                return true;
+            return fiveFilter_productIDs != null && fiveFilter_productIDs.contains(ret.getProductID());
 
         }
         return false;
@@ -2979,38 +2966,56 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     private void getMandatoryFilters() {
         for (ConfigureBO bo : bmodel.configurationMasterHelper.getGenFilter()) {
             if (bo.getMandatory() == 1) {
-                if (bo.getConfigCode().equals(mSbd))
-                    isSbd = true;
-                else if (bo.getConfigCode().equals(mSbdGaps))
-                    isSbdGaps = true;
-                else if (bo.getConfigCode().equals(mOrdered))
-                    isOrdered = true;
-                else if (bo.getConfigCode().equals(mPurchased))
-                    isPurchased = true;
-                else if (bo.getConfigCode().equals(mInitiative))
-                    isInitiative = true;
-                else if (bo.getConfigCode().equals(mOnAllocation))
-                    isOnAllocation = true;
-                else if (bo.getConfigCode().equals(mInStock))
-                    isInStock = true;
-                else if (bo.getConfigCode().equals(mPromo))
-                    isPromo = true;
-                else if (bo.getConfigCode().equals(mMustSell))
-                    isMustSell = true;
-                else if (bo.getConfigCode().equals(mFocusBrand))
-                    isFocusBrand = true;
-                else if (bo.getConfigCode().equals(mFocusBrand2))
-                    isFocusBrand2 = true;
-                else if (bo.getConfigCode().equals(msih))
-                    isSIH = true;
-                else if (bo.getConfigCode().equals(mOOS))
-                    isOOS = true;
-                else if (bo.getConfigCode().equals(mNMustSell))
-                    isNMustSell = true;
-                else if (bo.getConfigCode().equals(mDiscount))
-                    isDiscount = true;
-                else if (bo.getConfigCode().equals(mStock))
-                    isStock = true;
+                switch (bo.getConfigCode()) {
+                    case mSbd:
+                        isSbd = true;
+                        break;
+                    case mSbdGaps:
+                        isSbdGaps = true;
+                        break;
+                    case mOrdered:
+                        isOrdered = true;
+                        break;
+                    case mPurchased:
+                        isPurchased = true;
+                        break;
+                    case mInitiative:
+                        isInitiative = true;
+                        break;
+                    case mOnAllocation:
+                        isOnAllocation = true;
+                        break;
+                    case mInStock:
+                        isInStock = true;
+                        break;
+                    case mPromo:
+                        isPromo = true;
+                        break;
+                    case mMustSell:
+                        isMustSell = true;
+                        break;
+                    case mFocusBrand:
+                        isFocusBrand = true;
+                        break;
+                    case mFocusBrand2:
+                        isFocusBrand2 = true;
+                        break;
+                    case msih:
+                        isSIH = true;
+                        break;
+                    case mOOS:
+                        isOOS = true;
+                        break;
+                    case mNMustSell:
+                        isNMustSell = true;
+                        break;
+                    case mDiscount:
+                        isDiscount = true;
+                        break;
+                    case mStock:
+                        isStock = true;
+                        break;
+                }
             }
         }
     }
@@ -3048,8 +3053,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             int siz = items.size();
             mylist = new Vector<>();
 
-            pnametitle = (TextView) findViewById(R.id.productnametitle);
-            ((TextView) findViewById(R.id.productnametitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            pnametitle =  findViewById(R.id.productnametitle);
+            ((TextView) findViewById(R.id.productnametitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
 
 
             // Add the products into list
@@ -3185,32 +3190,28 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         String mSelectedFilter = bmodel.getProductFilter();
         if (getResources().getString(
                 R.string.order_dialog_barcode).equals(mSelectedFilter)) {
-            if (ret.getBarCode() != null
+            return ret.getBarCode() != null
                     && (ret.getBarCode().toLowerCase()
                     .contains(mEdt_searchproductName.getText().toString().toLowerCase())
                     || ret.getCasebarcode().toLowerCase().
                     contains(mEdt_searchproductName.getText().toString().toLowerCase())
                     || ret.getOuterbarcode().toLowerCase().
-                    contains(mEdt_searchproductName.getText().toString().toLowerCase()) && ret.getIsSaleable() == 1)) {
-                return true;
-            }
+                    contains(mEdt_searchproductName.getText().toString().toLowerCase()) && ret.getIsSaleable() == 1);
         } else if (getResources().getString(
                 R.string.prod_code).equals(mSelectedFilter)) {
-            if (ret.getRField1() != null && ret.getRField1()
+            return ret.getRField1() != null && ret.getRField1()
                     .toLowerCase()
                     .contains(
                             mEdt_searchproductName.getText().toString()
-                                    .toLowerCase()) && ret.getIsSaleable() == 1)
-                return true;
+                                    .toLowerCase()) && ret.getIsSaleable() == 1;
 
         } else if (getResources().getString(
                 R.string.product_name).equals(mSelectedFilter)) {
-            if (ret.getProductShortName() != null && ret.getProductShortName()
+            return ret.getProductShortName() != null && ret.getProductShortName()
                     .toLowerCase()
                     .contains(
                             mEdt_searchproductName.getText().toString()
-                                    .toLowerCase()) && ret.getIsSaleable() == 1)
-                return true;
+                                    .toLowerCase()) && ret.getIsSaleable() == 1;
         }
         return false;
     }
@@ -3351,8 +3352,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             if (!sequence.isEmpty()) {
                 mSelectedLevelBO = sequence.get(0);
                 int levelID = sequence.get(0).getProductID();
-                Vector<LevelBO> filterValues = new Vector<>();
-                filterValues.addAll(loadedFilterValues.get(levelID));
+                Vector<LevelBO> filterValues = new Vector<>(loadedFilterValues.get(levelID));
                 filterAdapter = new FilterAdapter(filterValues);
                 rvFilterList.setAdapter(filterAdapter);
             }
@@ -4150,8 +4150,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
     private void loadSpecialFilterView() {
         findViewById(R.id.hscrl_spl_filter).setVisibility(View.VISIBLE);
-        ll_spl_filter = (LinearLayout) findViewById(R.id.ll_spl_filter);
-        ll_tab_selection = (LinearLayout) findViewById(R.id.ll_tab_selection);
+        ll_spl_filter =  findViewById(R.id.ll_spl_filter);
+        ll_tab_selection =  findViewById(R.id.ll_tab_selection);
         float scale;
         int width;
 
@@ -4169,7 +4169,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             scale = den;
             width = (int) (dimen_wd * scale + 25.5f);
         }
-        final TabLayout tabLay = (TabLayout) findViewById(R.id.dummy_tab_lay);
+        final TabLayout tabLay =  findViewById(R.id.dummy_tab_lay);
         final TabLayout.Tab tab1 = tabLay.newTab();
         tab1.setText("ABCD");
         tabLay.addTab(tab1);
@@ -4207,7 +4207,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            tab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
             tab.setTextColor(color);
             tab.setMaxLines(1);
             tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
@@ -4342,8 +4342,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
             public MyViewHolder(View view) {
                 super(view);
-                btnFilter = (Button) view.findViewById(R.id.btn_filter);
-                btnFilter.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+                btnFilter =  view.findViewById(R.id.btn_filter);
+                btnFilter.setTypeface(FontUtils.getFontBalooHai(SubDStockOrderActivity.this,FontUtils.FontType.REGULAR));
             }
         }
 
@@ -4501,100 +4501,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
         }
         return false;
-    }
-
-    private Vector<LevelBO> updateProductLoad(int pos) {
-
-        Vector<LevelBO> finalValuelist = new Vector<>();
-
-        if (isFilterContentSelected(pos)) {
-
-            int selectedGridLevelID = 0;
-            ArrayList<Integer> parentIdList = null;
-
-            for (int i = 0; i < pos; i++) {
-                LevelBO levelBO = sequence.get(i);
-
-                if (i != 0) {
-
-                    parentIdList = getParenIdList(selectedGridLevelID,
-                            parentIdList, levelBO);
-
-                }
-                selectedGridLevelID = mSelectedIdByLevelId.get(levelBO
-                        .getProductID());
-
-                if (i == pos - 1) {
-
-                    Vector<LevelBO> gridViewlist = loadedFilterValues
-                            .get(levelBO.getProductID());
-                    finalValuelist = new Vector<>();
-                    if (selectedGridLevelID != 0) {
-                        for (LevelBO gridViewBO : gridViewlist) {
-                            if (selectedGridLevelID == gridViewBO.getProductID()) {
-                                finalValuelist.add(gridViewBO);
-                            }
-
-                        }
-
-                    } else {
-                        if (parentIdList != null)
-                            if (!parentIdList.isEmpty()) {
-                                for (int productID : parentIdList) {
-                                    for (LevelBO gridViewBO : gridViewlist) {
-                                        if (productID == gridViewBO.getProductID()) {
-                                            finalValuelist.add(gridViewBO);
-                                        }
-
-                                    }
-                                }
-                            }
-                    }
-                }
-
-            }
-
-
-        } else {
-            if (pos > 0)
-                finalValuelist = loadedFilterValues.get(sequence.get(pos - 1)
-                        .getProductID());
-
-        }
-        return finalValuelist;
-
-    }
-
-    private ArrayList<Integer> getParenIdList(int selectedGridLevelID,
-                                              ArrayList<Integer> list, LevelBO levelBO) {
-        ArrayList<Integer> parentIdList = new ArrayList<>();
-        Vector<LevelBO> gridViewlist = loadedFilterValues.get(levelBO
-                .getProductID());
-        if (selectedGridLevelID != 0) {
-            if (gridViewlist != null) {
-                for (LevelBO gridlevelBO : gridViewlist) {
-                    if (selectedGridLevelID == gridlevelBO.getParentID()) {
-                        parentIdList.add(gridlevelBO.getProductID());
-                    }
-
-                }
-            }
-
-        } else {
-
-            if (gridViewlist != null && list != null && list.size() > 0) {
-                for (int id : list) {
-                    for (LevelBO gridlevelBO : gridViewlist) {
-                        if (gridlevelBO.getParentID() == id) {
-                            parentIdList
-                                    .add(gridlevelBO.getProductID());
-                        }
-                    }
-                }
-            }
-
-        }
-        return parentIdList;
     }
 
     //This method Adds product after barcode reads value and updates view
