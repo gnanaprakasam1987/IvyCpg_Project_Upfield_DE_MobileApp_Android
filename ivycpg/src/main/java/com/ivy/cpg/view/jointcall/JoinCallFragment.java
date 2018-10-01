@@ -1,10 +1,8 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.jointcall;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -31,10 +29,10 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.JoinDialogInterface;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -52,7 +50,7 @@ public class JoinCallFragment extends IvyBaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_join_call_main, container, false);
 
-        recyclerViewJonitcall = (RecyclerView) view.findViewById(R.id.jointcall_recycview);
+        recyclerViewJonitcall = view.findViewById(R.id.jointcall_recycview);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
@@ -64,19 +62,9 @@ public class JoinCallFragment extends IvyBaseFragment {
             actionBar.setIcon(null);
             actionBar.setElevation(0);
             actionBar.setDisplayShowTitleEnabled(false);
-            //  actionBar.setStackedBackgroundDrawable((new ColorDrawable(ContextCompat.getColor(getActivity(),R.color.toolbar_ret_bg))));
         }
 
         setScreenTitle(bmodel.configurationMasterHelper.getJointCallTitle());
-      /*  String title = bmodel.configurationMasterHelper.getJointCallTitle();
-        ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setIcon(R.drawable.icon_order);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-        setHasOptionsMenu(true);*/
 
         return view;
     }
@@ -108,7 +96,7 @@ public class JoinCallFragment extends IvyBaseFragment {
      * Method used to call Joint call RecyclerView.
      */
     private void loadJoincalldata() {
-        JointCallRecyclerAdapter adapter = new JointCallRecyclerAdapter(getActivity());
+        JointCallRecyclerAdapter adapter = new JointCallRecyclerAdapter();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerViewJonitcall.setLayoutManager(mLayoutManager);
         recyclerViewJonitcall.setItemAnimator(new DefaultItemAnimator());
@@ -120,7 +108,6 @@ public class JoinCallFragment extends IvyBaseFragment {
      */
     public class JointCallRecyclerAdapter extends RecyclerView.Adapter<JointCallRecyclerAdapter.MyViewHolder> {
 
-        private Context context;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             private UserMasterBO userBO;
@@ -133,25 +120,21 @@ public class JoinCallFragment extends IvyBaseFragment {
             public MyViewHolder(View view) {
                 super(view);
 
-                nameTV = (TextView) view
+                nameTV = view
                         .findViewById(R.id.tv_join_user_name);
-                inandoutBTN = (ImageView) view
+                inandoutBTN = view
                         .findViewById(R.id.btn_inandout);
-                userType = (TextView) view
+                userType = view
                         .findViewById(R.id.tv_join_user_type);
-                llCircle = (LinearLayout) view
+                llCircle = view
                         .findViewById(R.id.icon_ll);
-                parentLayout = (LinearLayout) view
+                parentLayout = view
                         .findViewById(R.id.parentLayout);
-                childLayout = (LinearLayout) view
+                childLayout = view
                         .findViewById(R.id.childLayout);
-                dashedLine = (ImageView) view
+                dashedLine = view
                         .findViewById(R.id.dashedline);
             }
-        }
-
-        public JointCallRecyclerAdapter(Context context) {
-            this.context = context;
         }
 
 
@@ -167,8 +150,8 @@ public class JoinCallFragment extends IvyBaseFragment {
         public void onBindViewHolder(final JointCallRecyclerAdapter.MyViewHolder holder, int position) {
 
             //Custom font set for Textviews.
-            holder.userType.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.nameTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.userType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            holder.nameTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
             //Set values from UsermasterBo list
             holder.userBO = mjoinCallUserList.get(position);
@@ -228,8 +211,9 @@ public class JoinCallFragment extends IvyBaseFragment {
                                             loadJoincalldata();
                                             updateJoinDetails(1);
                                         }
+
                                         @Override
-                                        public void insertJointCallDetails(String remarks){
+                                        public void insertJointCallDetails(String remarks) {
                                             insertJoinCallDetails(remarks);
                                         }
 
@@ -273,20 +257,21 @@ public class JoinCallFragment extends IvyBaseFragment {
     private void showDialogLogout() {
 
         final Dialog dialog = new Dialog(getActivity());
+        final ViewGroup nullParent = null;
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_jointcall_logout, null);
+        View view = inflater.inflate(R.layout.dialog_jointcall_logout, nullParent);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(view);
 
-        Button cancelBtn = (Button) dialog.findViewById(R.id.btn_cancel);
-        Button yesBtn = (Button) dialog.findViewById(R.id.btn_yes);
+        Button cancelBtn = dialog.findViewById(R.id.btn_cancel);
+        Button yesBtn = dialog.findViewById(R.id.btn_yes);
         yesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSelectedUserBO.setIsJointCall(0);
                 loadJoincalldata();
                 updateJoinDetails(0);
-                if(bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS)
+                if (bmodel.configurationMasterHelper.IS_SHOW_JOINT_CALL_REMARKS)
                     updateJoinCallDetails();
                 dialog.dismiss();
             }
@@ -322,7 +307,7 @@ public class JoinCallFragment extends IvyBaseFragment {
     /**
      * Method used to update Joint call login status.
      *
-     * @param value
+     * @param value to update in usermaster table
      */
     private void updateJoinDetails(int value) {
         try {
@@ -346,22 +331,21 @@ public class JoinCallFragment extends IvyBaseFragment {
             db.openDataBase();
 
 
-            ArrayList<UserMasterBO> joinCallUserList=bmodel.userMasterHelper
+            ArrayList<UserMasterBO> joinCallUserList = bmodel.userMasterHelper
                     .getUserMasterBO().getJoinCallUserList();
-            if(joinCallUserList!=null){
-                String columns="Uid,UserId,JointCallUserId,TimeIn,TimeOut,Remarks,DateTime";
-                for(UserMasterBO userMasterBO:joinCallUserList){
-                    if(userMasterBO.getIsJointCall()==1){
+            if (joinCallUserList != null) {
+                String columns = "Uid,UserId,JointCallUserId,TimeIn,TimeOut,Remarks,DateTime";
+                for (UserMasterBO userMasterBO : joinCallUserList) {
+                    if (userMasterBO.getIsJointCall() == 1) {
                         String date = SDUtil.now(SDUtil.DATE_GLOBAL);
                         String time = SDUtil.now(SDUtil.TIME);
 
-                        String uId=SDUtil.now(SDUtil.DATE_TIME_ID);
-                        StringBuilder values=new StringBuilder();
+                        String uId = SDUtil.now(SDUtil.DATE_TIME_ID);
 
-                        values.append(uId+","+bmodel.userMasterHelper.getUserMasterBO().getUserid()+","+userMasterBO.getUserid()+",");
-                        values.append(QT(date + " " + time)+","+QT(date + " " + time)+","+QT(remarks)+","+QT(SDUtil.now(SDUtil.DATE_TIME)));
+                        String values = uId + "," + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "," + userMasterBO.getUserid() + "," +
+                                QT(date + " " + time) + "," + QT(date + " " + time) + "," + QT(remarks) + "," + QT(SDUtil.now(SDUtil.DATE_TIME));
 
-                        db.insertSQL("JointCallDetail",columns,values.toString());
+                        db.insertSQL("JointCallDetail", columns, values);
                     }
                 }
             }
@@ -381,7 +365,7 @@ public class JoinCallFragment extends IvyBaseFragment {
 
             String date = SDUtil.now(SDUtil.DATE_GLOBAL);
             String time = SDUtil.now(SDUtil.TIME);
-            db.updateSQL("update JointCallDetail set upload='N',TimeOut=" + QT(date+" "+time)
+            db.updateSQL("update JointCallDetail set upload='N',TimeOut=" + QT(date + " " + time)
                     + " where TimeIn=TimeOut and JointCallUserId=" + mSelectedUserBO.getUserid());
             db.closeDB();
         } catch (Exception e) {

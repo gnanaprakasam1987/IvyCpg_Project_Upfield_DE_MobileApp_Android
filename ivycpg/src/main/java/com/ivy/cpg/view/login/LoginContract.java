@@ -9,9 +9,9 @@ import java.util.HashMap;
  *
  */
 
-public interface LoginContractor {
+public interface LoginContract {
     interface LoginPresenter {
-        void setView(LoginView loginView);
+        void setView(LoginContract.LoginBaseView loginView);
 
         void loadInitialData();
 
@@ -28,6 +28,7 @@ public interface LoginContractor {
         void callInitialAuthentication(boolean isDeviceChanged);
 
         void applyLastSyncPref();
+
         void updateDownloadedTime();
 
         void applyPasswordLockCountPref();
@@ -38,15 +39,7 @@ public interface LoginContractor {
 
     }
 
-    interface LoginView {
-        void showForgotPassword();
-
-        void reload();
-
-        void setSupportNoTV(String supportNo);
-
-        void retrieveDBData();
-
+    interface LoginBaseView {
         void showAlert(String msg, boolean isFinish);
 
         void showProgressDialog(String msg);
@@ -55,19 +48,38 @@ public interface LoginContractor {
 
         void showGPSDialog();
 
-        void requestLocation();
-
-        void goToChangePwd();
+        void setAlertDialogMessage(String msg);
 
         void goToHomeScreen();
 
         void goToAttendance();
 
-        void setAlertDialogMessage(String msg);
+        void finishActivity();
+
+        void reload();
+
+        void requestLocation();
+
+        void doLocalLogin();
+
+        void goToDistributorSelection();
+
+        void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility);
+    }
+
+
+    interface LoginView extends LoginBaseView{
+        void showForgotPassword();
+
+        void reload();
+
+        void setSupportNoTV(String supportNo);
+
+        void retrieveDBData();
+
+        void goToChangePwd();
 
         void sendUserNotExistToHandler();
-
-        void threadActions();
 
         void showDeviceLockedDialog();
 
@@ -75,11 +87,7 @@ public interface LoginContractor {
 
         void showAppUpdateAlert(String msg);
 
-        void goToDistributorSelection();
 
-        void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility);
-
-        void finishActivity();
 
         void callResetPassword();
 

@@ -521,7 +521,7 @@ public class VanUnLoadModuleHelper {
                     bo = mylist.get(i);
 
                     String query = "select nsih.pid,nsih.qty,nsih.reasonid,c.listname from NonSalableSIHMaster nsih " +
-                            "left join standardlistmaster c on nsih.reasonid = c.listid where nsih.pid = " + bo.getProductid() + " and nsih.upload = 'N' ";
+                            "left join standardlistmaster c on nsih.reasonid = c.listid where nsih.pid = " + bo.getProductid();
 
                     Cursor c = db.selectSQL(query);
                     if (c != null) {
@@ -594,10 +594,10 @@ public class VanUnLoadModuleHelper {
                     reasonName = c.getString(5);
                     bo = new LoadManagementBO();
                     bo.setProductname(c.getString(0));
-                    bo.setPieceqty(c.getInt(1));
-                    bo.setCaseqty(c.getInt(2));
-                    bo.setOuterQty(c.getInt(3));
-                    bo.setMrp(c.getDouble(4));
+                    bo.setOrderedPcsQty(c.getInt(1));
+                    bo.setOrderedCaseQty(c.getInt(2));
+                    bo.setOuterOrderedCaseQty(c.getInt(3));
+                    bo.setBaseprice(c.getDouble(4));
                     bo.setCaseSize(c.getInt(7));
                     bo.setOuterSize(c.getInt(8));
 

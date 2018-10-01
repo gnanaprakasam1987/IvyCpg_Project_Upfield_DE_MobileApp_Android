@@ -1,6 +1,5 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.retailercontract;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -17,25 +16,21 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.FontUtils;
 
 /**
  * Created by chiranjeevulu.l on 18-04-2016.
  */
 public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
-    static String outPutDateFormat;
-    private ProgressDialog pd;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_retailer_contract);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        Toolbar toolbar =  findViewById(R.id.toolbar);
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -52,7 +47,7 @@ public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setTitle(getIntent().getStringExtra("screentitle"));
         }
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout =  findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_existing_contract)));
         tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.text_renewed_contract)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -66,13 +61,11 @@ public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
             for (int i = 0; i < tabChildsCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                 }
             }
         }
 
-        outPutDateFormat = bmodel.configurationMasterHelper.outDateFormat;
-        // refreshList();
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
@@ -85,7 +78,7 @@ public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
         transaction.addToBackStack(null);
         transaction.commit();
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 FragmentTransaction transaction = getSupportFragmentManager()
@@ -145,8 +138,6 @@ public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
     public void onBack() {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME));
-       // BusinessModel.loadActivity(RetailerContractActivity.this,
-             //   DataMembers.actHomeScreenTwo);
 
         Intent myIntent = new Intent(this, HomeScreenTwo.class);
         startActivityForResult(myIntent, 0);

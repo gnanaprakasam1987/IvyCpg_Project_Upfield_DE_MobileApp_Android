@@ -1,4 +1,4 @@
-package com.ivy.sd.png.model;
+package com.ivy.cpg.view.jointcall;
 
 public interface JoinDialogInterface {
 

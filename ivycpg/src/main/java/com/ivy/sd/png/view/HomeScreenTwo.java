@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -43,7 +42,6 @@ import android.widget.Toast;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
-import com.ivy.cpg.view.collection.NoCollectionReasonBo;
 import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.FitScoreDashboardActivity;
@@ -77,6 +75,8 @@ import com.ivy.cpg.view.price.PriceTrackCompActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.promotion.PromotionHelper;
 import com.ivy.cpg.view.promotion.PromotionTrackingActivity;
+import com.ivy.cpg.view.retailercontract.RetailerContractActivity;
+import com.ivy.cpg.view.retailercontract.RetailerContractHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sf.SODActivity;
@@ -2970,8 +2970,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                         SDUtil.now(SDUtil.DATE_GLOBAL),
                         SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-                bmodel.retailerContractHelper.downloadRetailerContract(bmodel.getRetailerMasterBO().getRetailerID());
-                bmodel.retailerContractHelper.downloadRenewedContract(bmodel.getRetailerMasterBO().getRetailerID());
+                RetailerContractHelper retailerContractHelper = RetailerContractHelper.getInstance(this);
+                retailerContractHelper.downloadRetailerContract(bmodel.getRetailerMasterBO().getRetailerID());
+                retailerContractHelper.downloadRenewedContract(bmodel.getRetailerMasterBO().getRetailerID());
                 Intent i = new Intent(HomeScreenTwo.this,
                         RetailerContractActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

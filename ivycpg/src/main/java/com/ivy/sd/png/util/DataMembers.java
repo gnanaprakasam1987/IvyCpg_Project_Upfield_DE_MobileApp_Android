@@ -22,8 +22,11 @@ public class DataMembers {
     public static String S3_ROOT_DIRECTORY = "IvyDistributor";
 
     // Sync
+    public static final String SFDC_URLDOWNLOAD_MASTER_URL = "/services/apexrest/ivybase/v1/URLDownload/Masters/";
     public static String SERVER_URL = BuildConfig.BASE_URL;
-   // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
+  //  public static String SERVER_URL = BuildConfig.BASE_URL;
+    // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
+    // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
@@ -32,7 +35,7 @@ public class DataMembers {
 
     public static String fileName = "sd_png_asean_android.apk";
 
-    
+
     public static final int MESSAGE_UNZIPPED = 10113;
 
     public static final String DIGITAL_CONTENT = "TRAN";
@@ -79,6 +82,12 @@ public class DataMembers {
     public static final String FIT_PROMO = "FIT_PROMO";
     public static final String FIT_ASSET = "FIT_ASSET";
     public static final String FIT_POSM = "FIT_POSM";
+
+    public static final String MENU_STOCK = "MENU_STOCK";
+    public static final String MENU_PRICE = "MENU_PRICE";
+    public static final String MENU_PROMO = "MENU_PROMO";
+    public static final String MENU_ASSET = "MENU_ASSET";
+    public static final String MENU_POSM = "MENU_POSM";
 
     public static final String MODULE_STOCK = "Stock Check";
     public static final String MODULE_PRICE = "Price Check";
@@ -269,7 +278,10 @@ public class DataMembers {
     private static final String tbl_DailyTargetPlanned_cols = "TargetID,RetailerID,TargetValue,Date,IsGoldenStore";
 
     public static final String tbl_DenominationDetails = "DenominationDetails";
-    private static final String tbl_DenominationDetails_cols = "Uid,Total";
+    private static final String tbl_DenominationDetails_cols = "uid,value,count,lineAmount,isCoin";
+
+    public static final String tbl_DenominationHeader = "DenominationHeader";
+    private static final String tbl_DenominationHeader_cols = "uid,date,amount";
 
     public static final String tbl_orderHeader = "OrderHeader";
     public static final String tbl_orderDetails = "OrderDetail";
@@ -795,6 +807,7 @@ public class DataMembers {
         uploadColumn.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
         uploadColumn.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumn.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
+        uploadColumn.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -991,6 +1004,8 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_retailer_kpi_modified, tbl_retailer_kpi_modified_cols);
         uploadColumnWithOutRetailer.put(tbl_JointCallDetail, tbl_JointCallDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
+        uploadColumnWithOutRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
+        uploadColumnWithOutRetailer.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

@@ -1,10 +1,9 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.retailercontract;
 
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,20 +15,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.RetailerContractBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 public class RenewContractFragment extends IvyBaseFragment {
 
     BusinessModel bmodel;
     private ListView lvContract;
     private String mretailerID, Tid;
-    private TextView tvDelete;
-
+    private RetailerContractHelper retailerContractHelper;
+    private AppSchedulerProvider appSchedulerProvider;
+    private ProgressDialog progressDialogue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,9 +44,12 @@ public class RenewContractFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        lvContract = (ListView) view.findViewById(R.id.list);
-        tvDelete = (TextView) view.findViewById(R.id.audit);
-        tvDelete.setText("Delete");
+        retailerContractHelper = RetailerContractHelper.getInstance(getActivity());
+        appSchedulerProvider = new AppSchedulerProvider();
+
+        lvContract = view.findViewById(R.id.list);
+        TextView tvDelete = view.findViewById(R.id.audit);
+        tvDelete.setText(getActivity().getResources().getString(R.string.delete));
 
         return view;
     }
@@ -51,7 +57,7 @@ public class RenewContractFragment extends IvyBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        lvContract.setAdapter(new MyAdapter(bmodel.retailerContractHelper.getmRenewedContractList()));
+        lvContract.setAdapter(new MyAdapter(retailerContractHelper.getmRenewedContractList()));
 
     }
 
@@ -65,44 +71,40 @@ public class RenewContractFragment extends IvyBaseFragment {
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return items.size();
         }
 
         @Override
         public Object getItem(int arg0) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public long getItemId(int position) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            // TODO Auto-generated method stub
             final ViewHolder holder;
             if (convertView == null) {
 
                 holder = new ViewHolder();
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView = (View) inflater.inflate(
-                        R.layout.row_retailer_contract, null);
+                convertView = inflater.inflate(
+                        R.layout.row_retailer_contract, parent, false);
                 convertView.setTag(holder);
 
-                holder.tvcontactname = (TextView) convertView
+                holder.tvcontactname = convertView
                         .findViewById(R.id.contractname);
-                holder.tvcontracttype = (TextView) convertView
+                holder.tvcontracttype = convertView
                         .findViewById(R.id.contracttype);
-                holder.audit = (ImageButton) convertView
+                holder.audit = convertView
                         .findViewById(R.id.btn_audit);
-                holder.tvendDate = (TextView) convertView
+                holder.tvendDate = convertView
                         .findViewById(R.id.endDate1);
-                holder.tvstartdate = (TextView) convertView
+                holder.tvstartdate = convertView
                         .findViewById(R.id.strDate1);
 
 
@@ -143,47 +145,6 @@ public class RenewContractFragment extends IvyBaseFragment {
 
     }
 
-    class DeleteAsyncTask extends AsyncTask<String, Integer, Boolean> {
-        private ProgressDialog progressDialogue;
-
-        @Override
-        protected Boolean doInBackground(String... arg0) {
-            try {
-                bmodel.retailerContractHelper.deleteRenewal(Tid);
-                bmodel.retailerContractHelper.downloadRenewedContract(mretailerID);
-                bmodel.retailerContractHelper.downloadRetailerContract(mretailerID);
-                return Boolean.TRUE;
-            } catch (Exception e) {
-                return Boolean.FALSE;
-            }
-
-        }
-
-        protected void onPreExecute() {
-            progressDialogue = ProgressDialog.show(getActivity(),
-                    DataMembers.SD, getResources().getString(R.string.deleting),
-                    true, false);
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            // result is the value returned from doInBackground
-
-            progressDialogue.dismiss();
-
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.contract_deleted_sucessfully),
-                    Toast.LENGTH_SHORT).show();
-
-            onStart();
-
-
-        }
-
-    }
 
     public void showAlert(String title) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -192,7 +153,18 @@ public class RenewContractFragment extends IvyBaseFragment {
                 new android.content.DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
-                        new DeleteAsyncTask().execute();
+                        progressDialogue = ProgressDialog.show(getActivity(),
+                                DataMembers.SD, getResources().getString(R.string.deleting),
+                                true, false);
+                        new CompositeDisposable().add(retailerContractHelper.deleteRetailerContract(Tid, mretailerID)
+                                .subscribeOn(appSchedulerProvider.io())
+                                .observeOn(appSchedulerProvider.ui())
+                                .subscribe(new Consumer<Boolean>() {
+                                    @Override
+                                    public void accept(Boolean aBoolean) {
+                                        updateUiAfterSave();
+                                    }
+                                }));
                     }
 
                 });
@@ -206,4 +178,15 @@ public class RenewContractFragment extends IvyBaseFragment {
                 });
         bmodel.applyAlertDialogTheme(builder);
     }
+
+    private void updateUiAfterSave() {
+        progressDialogue.dismiss();
+
+        Toast.makeText(getActivity(),
+                getResources().getString(R.string.contract_deleted_sucessfully),
+                Toast.LENGTH_SHORT).show();
+
+        onStart();
+    }
+
 }
