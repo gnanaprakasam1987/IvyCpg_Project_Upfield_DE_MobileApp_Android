@@ -250,4 +250,8 @@
     <string name="fulfilled_cases">Fulfilled Cases</string>
     <string name="fulfilled_pieces">Fulfilled Pieces</string>
     <string name="order_fulfillment_detail">Order Fulfillment Detail</string>
+
+    <string name="licensing">About License</string>
+    <string name="software_licensing">Software License</string>
+    <string name="click_to_show_licensing">Click to show the Software License</string>
 </resources>

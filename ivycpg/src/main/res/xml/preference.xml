@@ -82,4 +82,16 @@
             <!--android:summary="App Data will be cleared"-->
         </com.ivy.sd.png.view.CustomPreference>
     </com.ivy.sd.png.view.CustomPreferenceCategory>
+    <com.ivy.sd.png.view.CustomPreferenceCategory
+        android:key="ls"
+        android:layout="@layout/settings_header_layout"
+        android:title="@string/licensing">
+        <com.ivy.sd.png.view.CustomPreference
+            android:key="software_licensing"
+            android:layout="@layout/settings_card_layout"
+            android:summary="@string/click_to_show_licensing"
+            android:title="@string/software_licensing">
+            <!--android:summary="App Data will be cleared"-->
+        </com.ivy.sd.png.view.CustomPreference>
+    </com.ivy.sd.png.view.CustomPreferenceCategory>
 </PreferenceScreen>
