@@ -143,7 +143,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             type = bundle.getString("type");
         }
 
-        dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>(),presenter.getLabelsMap(),this);
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>(), presenter.getLabelsMap(), this);
 
 
         if (isFromRetailer) {
@@ -173,6 +173,14 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 presenter.fetchDistributorList();
             }
 
+        } else {
+            dashSpinnerLayout.setVisibility(View.VISIBLE);
+            multiSelectStub.setVisibility(View.GONE);
+            distributorSpinnerStub.setVisibility(View.VISIBLE);
+            Spinner distributorSpinner = (Spinner) distributorSpinnerStub.inflate();
+
+            userSpinnerStub.setVisibility(View.VISIBLE);
+            Spinner userSpinner  = (Spinner) userSpinnerStub.inflate();
         }
 
     }
@@ -259,14 +267,14 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @Override
     public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS) {
 
-        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS, presenter.getLabelsMap(),this);
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS, presenter.getLabelsMap(), this);
 
     }
 
     private void loadMultiSelectData() {
 
-        presenter.fetchKPIDashboardData(mFilterUser,mSelectedDistributorId);
-        if(presenter.isSMPBasedDash()){
+        presenter.fetchKPIDashboardData(mFilterUser, mSelectedDistributorId);
+        if (presenter.isSMPBasedDash()) {
             pager.setVisibility(View.VISIBLE);
             circleIndicatorView.setViewPager(pager);
         }
