@@ -2182,11 +2182,12 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                         priceTrackingHelper.savePriceTransaction(getApplicationContext(), mylist);
 
                     // save near expiry
-                    bmodel.saveNearExpiry();
+                    OrderHelper orderHelper = OrderHelper.getInstance(getApplicationContext());
+                    orderHelper.saveNearExpiry(getApplicationContext());
                 }
 
                 // Save closing stock
-                bmodel.saveClosingStock(true);
+                orderHelper.saveClosingStock(getApplicationContext(),true);
 
                 bmodel.saveModuleCompletion("MENU_SUBD_STOCK");
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
@@ -168,12 +169,13 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     priceTrackingHelper.savePriceTransaction(context.getApplicationContext(), stockList);
 
                 // save near expiry
-                businessModel.saveNearExpiry();
+                OrderHelper orderHelper = OrderHelper.getInstance(context.getApplicationContext());
+                orderHelper.saveNearExpiry(context.getApplicationContext());
 
                 // Save closing stock
-                businessModel.saveClosingStock(false);
+                orderHelper.saveClosingStock(context.getApplicationContext(),false);
                 // update review plan in DB
-                businessModel.setReviewPlanInDB();
+                orderHelper.setReviewPlanInDB(context.getApplicationContext());
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_STOCK);
 
                 return Boolean.TRUE;

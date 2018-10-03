@@ -1587,8 +1587,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        bmodel.saveClosingStock(true);
-
+                                        OrderHelper.getInstance(OrderNewOutlet.this).saveClosingStock(OrderNewOutlet.this,true);
                                         Toast.makeText(
                                                 OrderNewOutlet.this,
                                                 getResources().getString(

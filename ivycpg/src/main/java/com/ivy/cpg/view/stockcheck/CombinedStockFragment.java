@@ -50,6 +50,7 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
@@ -1399,13 +1400,14 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), mylist);
 
                 // save near expiry
-                bmodel.saveNearExpiry();
+                OrderHelper orderHelper = OrderHelper.getInstance(getContext().getApplicationContext());
+                orderHelper.saveNearExpiry(getContext().getApplicationContext());
 
                 // Save closing stock
-                bmodel.saveClosingStock(false);
+                orderHelper.saveClosingStock(getContext().getApplicationContext(),false);
 
                 // update review plan in DB
-                bmodel.setReviewPlanInDB();
+                orderHelper.setReviewPlanInDB(getContext().getApplicationContext());
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMBINED_STOCK);
 
                 return Boolean.TRUE;

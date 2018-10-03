@@ -4681,11 +4681,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         priceTrackingHelper.savePriceTransaction(getApplicationContext(), mylist);
 
                     // save near expiry
-                    bmodel.saveNearExpiry();
+                    orderHelper.saveNearExpiry(getApplicationContext());
                 }
 
                 // Save closing stock
-                bmodel.saveClosingStock(true);
+                orderHelper.saveClosingStock(getApplicationContext(),true);
 
                 bmodel.saveModuleCompletion(OrderedFlag);
 

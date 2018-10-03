@@ -279,12 +279,12 @@ public class MyThread extends Thread {
                     bmodel.setOrderHeaderBO(null);
 
                     // Update review plan in DB
-                    bmodel.setReviewPlanInDB();
+                    orderHelper.setReviewPlanInDB(ctx.getApplicationContext());
 
                     // If Stock and order is enabled , then save stock too.
                     if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                             && bmodel.hasStockInOrder()) {
-                        bmodel.saveClosingStock(true);
+                        orderHelper.saveClosingStock(ctx.getApplicationContext(),true);
 
                         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                             // save price check
@@ -293,7 +293,7 @@ public class MyThread extends Thread {
                                 priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
                             // save near expiry
-                            bmodel.saveNearExpiry();
+                            orderHelper.saveNearExpiry(ctx.getApplicationContext());
                         }
                     }
 
@@ -335,12 +335,12 @@ public class MyThread extends Thread {
                     bmodel.setOrderHeaderBO(null);
 
                     // Update review plan in DB
-                    bmodel.setReviewPlanInDB();
+                    orderHelper.setReviewPlanInDB(ctx.getApplicationContext());
 
                     // If Stock and order is enabled , then save stock too.
                     if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                             && bmodel.hasStockInOrder()) {
-                        bmodel.saveClosingStock(true);
+                        orderHelper.saveClosingStock(ctx.getApplicationContext(),true);
 
                         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                             // save price check
@@ -349,7 +349,7 @@ public class MyThread extends Thread {
                                 priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
                             // save near expiry
-                            bmodel.saveNearExpiry();
+                            orderHelper.saveNearExpiry(ctx.getApplicationContext());
                         }
                     }
 
@@ -394,7 +394,7 @@ public class MyThread extends Thread {
                 bmodel.setOrderHeaderBO(null);
 
                 // Update review plan in DB
-                bmodel.setReviewPlanInDB();
+                orderHelper.setReviewPlanInDB(ctx.getApplicationContext());
 
                 // Set Order Flag
                 bmodel.setIsOrdered("Y");
@@ -602,11 +602,11 @@ public class MyThread extends Thread {
 
 
                 // Update review plan in DB
-                bmodel.setReviewPlanInDB();
+                orderHelper.setReviewPlanInDB(ctx.getApplicationContext());
 
                 if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                         && bmodel.hasStockInOrder()) {
-                    bmodel.saveClosingStock(true);
+                    orderHelper.saveClosingStock(ctx.getApplicationContext(),true);
 
                     if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                         // save price check
@@ -615,7 +615,7 @@ public class MyThread extends Thread {
                             priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
                         // save near expiry
-                        bmodel.saveNearExpiry();
+                        orderHelper.saveNearExpiry(ctx.getApplicationContext());
                     }
                 }
 
