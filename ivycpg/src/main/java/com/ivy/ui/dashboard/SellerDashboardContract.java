@@ -18,6 +18,10 @@ public interface SellerDashboardContract {
 
         void setupMultiSelectDistributorSpinner(ArrayList<DistributorMasterBO> distributorMasterBOS);
 
+        void setUpDistributorSpinner(ArrayList<DistributorMasterBO> distributorMasterBOS);
+
+        void setUpUserSpinner(ArrayList<UserMasterBO> userMasterBOS);
+
         void setUpMultiSelectUserSpinner(ArrayList<UserMasterBO> userMasterBOS);
 
         void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS);
@@ -33,6 +37,10 @@ public interface SellerDashboardContract {
 
         void fetchSellerDashList(SellerDashboardConstants.DashBoardType dashBoardType);
 
+        void fetchSellerDashboardDataForUser(int selectedUser);
+
+        void fetchSellerDashboardForUserAndInterval(int selectedUser, String interval);
+
         boolean isSMPBasedDash();
 
         boolean isUserBasedDash();
@@ -45,7 +53,9 @@ public interface SellerDashboardContract {
 
         void getP3MSellerDashboardData();
 
-        void fetchDistributorList();
+        void fetchDistributorList(boolean isMultiSelect);
+
+        void fetchUsersAndDistributors();
 
         void fetchUserList(String userId);
 

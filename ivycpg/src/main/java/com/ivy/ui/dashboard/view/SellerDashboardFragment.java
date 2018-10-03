@@ -47,6 +47,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import me.relex.circleindicator.CircleIndicator;
 
+import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
 import static com.ivy.utils.AppUtils.QT;
 import static com.ivy.utils.AppUtils.isNullOrEmpty;
 
@@ -91,6 +92,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @BindView(R.id.resultsHeaderTxt)
     TextView spinnerHeaderTxt;
 
+    private Spinner distributorSpinner;
+
+    private Spinner userSpinner;
+
     private MultiSpinner distributorMultiSpinner;
 
     private MultiSpinner userMultiSpinner;
@@ -108,6 +113,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private DashboardListAdapter dashboardListAdapter;
 
+
+    private int mSelectedUser =0;
+
+    private String selectedInterval;
 
     @Override
     public void initializeDi() {
@@ -170,17 +179,19 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 distributorMultiSpinner = multiSelectLayout.findViewById(R.id.distributorSpinner1);
                 userMultiSpinner = multiSelectLayout.findViewById(R.id.userSpinner1);
 
-                presenter.fetchDistributorList();
+                presenter.fetchDistributorList(true);
             }
 
         } else {
             dashSpinnerLayout.setVisibility(View.VISIBLE);
             multiSelectStub.setVisibility(View.GONE);
             distributorSpinnerStub.setVisibility(View.VISIBLE);
-            Spinner distributorSpinner = (Spinner) distributorSpinnerStub.inflate();
+            distributorSpinner = (Spinner) distributorSpinnerStub.inflate();
 
             userSpinnerStub.setVisibility(View.VISIBLE);
-            Spinner userSpinner  = (Spinner) userSpinnerStub.inflate();
+            userSpinner = (Spinner) userSpinnerStub.inflate();
+
+            presenter.fetchDistributorList(false);
         }
 
     }
@@ -224,6 +235,33 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             }
         });
 
+    }
+
+    @Override
+    public void setUpDistributorSpinner(ArrayList<DistributorMasterBO> distributorMasterBOS) {
+        ArrayAdapter<DistributorMasterBO> distributorMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
+        distributorMasterBOArrayAdapter.add(new DistributorMasterBO("0", getResources().getString(R.string.select)));
+
+        if (distributorMasterBOS.size() != 0) {
+            distributorMasterBOArrayAdapter.addAll(distributorMasterBOS);
+            distributorMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+            distributorSpinner.setAdapter(distributorMasterBOArrayAdapter);
+            distributorSpinner.setOnItemSelectedListener(distributorSpinnerListener);
+        }
+    }
+
+    @Override
+    public void setUpUserSpinner(ArrayList<UserMasterBO> userMasterBOS) {
+
+        ArrayAdapter<UserMasterBO> userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
+        userMasterBOArrayAdapter.add(new UserMasterBO(0, getResources().getString(R.string.all)));
+
+        if(userMasterBOS.size()!=0){
+            userMasterBOArrayAdapter.addAll(userMasterBOS);
+            userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+            userSpinner.setAdapter(userMasterBOArrayAdapter);
+            userSpinner.setOnItemSelectedListener(userSpinnerListener);
+        }
     }
 
     @Override
@@ -353,9 +391,9 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     private AdapterView.OnItemSelectedListener dashSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            String selectedInterval = adapterView.getSelectedItem().toString();
+            selectedInterval = adapterView.getSelectedItem().toString();
             if (!isFromRetailer) {
-                if (selectedInterval.equalsIgnoreCase(SellerDashboardConstants.P3M)) {
+                if (selectedInterval.equalsIgnoreCase(P3M)) {
 
                 }
             }
@@ -377,4 +415,37 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     public void onSkuWiseClick(int position) {
 
     }
+
+    private AdapterView.OnItemSelectedListener userSpinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            mSelectedUser =((UserMasterBO) adapterView.getSelectedItem()).getUserid();
+
+            if(!isFromRetailer){
+                if(selectedInterval.equalsIgnoreCase(P3M))
+                    presenter.fetchSellerDashboardDataForUser(mSelectedUser);
+            }
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
+
+    private AdapterView.OnItemSelectedListener distributorSpinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
+
 }
