@@ -24,7 +24,7 @@ public class DataMembers {
     // Sync
     public static final String SFDC_URLDOWNLOAD_MASTER_URL = "/services/apexrest/ivybase/v1/URLDownload/Masters/";
     public static String SERVER_URL = BuildConfig.BASE_URL;
-  //  public static String SERVER_URL = BuildConfig.BASE_URL;
+    //  public static String SERVER_URL = BuildConfig.BASE_URL;
     // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
