@@ -38,10 +38,13 @@ import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import jxl.format.Font;
 
 //import android.support.v7.widget.Toolbar;
 
@@ -231,6 +234,17 @@ public class UserSettingsActivity extends PreferenceActivity {
                 }
             });
 
+            Preference software_licensing = findPreference("software_licensing");
+            //PreferenceCategory lsCategory = (PreferenceCategory) findPreference("ls");
+            software_licensing.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent i = new Intent(context, LicenseActivity.class);
+                    startActivity(i);
+                    return true;
+                }
+            });
+
             bmodel.userMasterHelper.downloadDistributionDetails();
         } catch (Exception e) {
             Commons.printException(e);
@@ -283,12 +297,12 @@ public class UserSettingsActivity extends PreferenceActivity {
         //dialog.setContentView(R.layout.settings_printer_dialog);
 
         TextView textView9 = (TextView) view.findViewById(R.id.textView9);
-        textView9.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        textView9.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
         textView9.setText("Enter MAC Address");
         TextView uname = (TextView) view.findViewById(R.id.uname);
         uname.setVisibility(View.GONE);
         final EditText eText = (EditText) view.findViewById(R.id.edit_username);
-        eText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        eText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
         eText.setHint("MAC Address");
 
         eText.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -297,9 +311,9 @@ public class UserSettingsActivity extends PreferenceActivity {
         EditText edit_password = (EditText) view.findViewById(R.id.edit_password);
         edit_password.setVisibility(View.GONE);
         Button mDoneBTN = (Button) view.findViewById(R.id.btn_done);
-        mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mDoneBTN.setTypeface(FontUtils.getFontBalooHai(context,FontUtils.FontType.REGULAR));
         Button mCancelBTN = (Button) view.findViewById(R.id.btn_cancel);
-        mCancelBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mCancelBTN.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
         mDoneBTN.setText("Ok");
         //eText.setBackgroundResource(android.R.drawable.edit_text);
 //        TypedArray typearr = getTheme().obtainStyledAttributes(R.styleable.MyTextView);

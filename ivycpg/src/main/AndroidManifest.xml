@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
     android:versionCode="1330"
-    android:versionName="2.133.0.2882">
+    android:versionName="2.133.0.2896">
 
     <supports-screens
         android:anyDensity="true"
@@ -149,8 +149,7 @@
 
         <receiver
             android:name="com.ivy.sd.png.model.DownloadReceiver"
-            android:exported="false">
-        </receiver>
+            android:exported="false"></receiver>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -816,7 +815,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.orderfulfillmentreport.OrderFulfillmentDetailReportActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.sd.png.view.LicenseActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

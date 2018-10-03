@@ -26,6 +26,7 @@ public class DataMembers {
     public static String SERVER_URL = BuildConfig.BASE_URL;
     //  public static String SERVER_URL = BuildConfig.BASE_URL;
     // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
+    // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
@@ -940,6 +941,7 @@ public class DataMembers {
 
         uploadColumnWithRetailer.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
+        uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

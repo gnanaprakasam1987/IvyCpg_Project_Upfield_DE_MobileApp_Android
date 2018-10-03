@@ -219,7 +219,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         mAssetList.addAll(mAssetTrackingList);
                     } else {
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            if (assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
+                            if (assetBO.getParentHierarchy() != null && assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                                 if (ALL.equals(mCapturedBarcode)) {
                                     if ("".equals(mCapturedNFCTag)) {
