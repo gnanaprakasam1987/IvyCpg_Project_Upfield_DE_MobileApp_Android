@@ -1001,6 +1001,16 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         } else if (v.getId() == R.id.download) {
             isSwitchUser = false;
+            if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
+                bmodel.userMasterHelper.downloadJoinCallusers();
+            if (bmodel.outletTimeStampHelper
+                    .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
+                            .getJoinCallUserList())) {
+                bmodel.showAlert(
+                        getResources().getString(
+                                R.string.logout_joint_user), 0);
+                return;
+            }
             if (bmodel.isOnline()) {
                 if (bmodel.synchronizationHelper.checkDataForSync()) {
 
