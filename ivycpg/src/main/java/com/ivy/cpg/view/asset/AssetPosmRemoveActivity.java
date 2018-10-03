@@ -109,16 +109,14 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
      * @return is Selected
      */
     private boolean isAssetSelectedWithReason() {
-        boolean isAllReasonSelected = false;
+
 
         for (AssetTrackingBO bo : mList) {
-            if (bo.isSelectedToRemove() && !bo.getReason1ID().equalsIgnoreCase("0")) {
-                isAllReasonSelected = true;
-            } else if (bo.isSelectedToRemove() && bo.getReason1ID().equalsIgnoreCase("0")) {
-                isAllReasonSelected = false;
-            }
+            if (bo.isSelectedToRemove() && bo.getReason1ID().equalsIgnoreCase("0"))
+                return false;
+
         }
-        return isAllReasonSelected;
+        return true;
     }
 
     @Override
