@@ -2918,11 +2918,11 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                         }
                     } else if (mSelectedFilter.equals(getResources().getString(
                             R.string.prod_code))) {
-                        if (ret.getRField1() != null && ret.getRField1()
+                        if (((ret.getRField1() != null && ret.getRField1()
                                 .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText().toString()
-                                                .toLowerCase()) && ret.getIsSaleable() == 1) {
+                                .contains(mEdt_searchproductName.getText().toString()
+                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase()))) && ret.getIsSaleable() == 1) {
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                                 mylist.add(ret);
                             else if (applyProductAndSpecialFilter(ret))
