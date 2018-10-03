@@ -224,13 +224,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void initializeViews(View view) {
 
-
-        listview = (ListView) view.findViewById(R.id.list);
+        listview =  view.findViewById(R.id.list);
         listview.setCacheColorHint(0);
 
-        mDrawerLayout = (DrawerLayout) view.findViewById(
+        mDrawerLayout =  view.findViewById(
                 R.id.drawer_layout);
-        drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        drawer =  view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
@@ -272,28 +271,28 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
-        productName = (TextView) view.findViewById(R.id.productName);
+        viewFlipper =  view.findViewById(R.id.view_flipper);
+        productName =  view.findViewById(R.id.productName);
         productName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        mEdt_searchProductName = (EditText) view.findViewById(
+        mEdt_searchProductName =  view.findViewById(
                 R.id.edt_searchproductName);
         mEdt_searchProductName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mBtn_Search = (Button) view.findViewById(R.id.btn_search);
+        mBtn_Search =  view.findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
-        mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
+        mBtn_clear =  view.findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
-        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup =  view.findViewById(R.id.btn_filter_popup);
         mBtnFilterPopup.setOnClickListener(this);
 
-        tv_total_stockCheckedProducts = (TextView) view.findViewById(R.id.tv_stockCheckedProductscount);
-        tv_total_products = (TextView) view.findViewById(R.id.tv_productsCount);
+        tv_total_stockCheckedProducts =  view.findViewById(R.id.tv_stockCheckedProductscount);
+        tv_total_products =  view.findViewById(R.id.tv_productsCount);
 
         tv_total_stockCheckedProducts.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         tv_total_products.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
 
-        btn_save = (Button) view.findViewById(R.id.btn_save);
+        btn_save =  view.findViewById(R.id.btn_save);
         btn_save.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btn_save.setOnClickListener(this);
         mEdt_searchProductName.setOnEditorActionListener(this);
@@ -321,10 +320,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
         });
 
-        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup =  view.findViewById(R.id.btn_filter_popup);
 
-        ll_stockCheck_SharePercent = (LinearLayout) view.findViewById(R.id.llstockCheckSharePercent);
-        tv_sharePercent = (TextView) view.findViewById(R.id.tv_sharePercent);
+        ll_stockCheck_SharePercent =  view.findViewById(R.id.llstockCheckSharePercent);
+        tv_sharePercent =  view.findViewById(R.id.tv_sharePercent);
     }
 
     private ActionBar getActionBar() {
@@ -525,45 +524,45 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             R.layout.activity_stock_check_listview, parent,
                             false);
                     holder = new ViewHolder();
-                    holder.audit = (ImageButton) row
+                    holder.audit =  row
                             .findViewById(R.id.btn_audit);
-                    holder.psname = (TextView) row
+                    holder.psname =  row
                             .findViewById(R.id.stock_and_order_listview_productname);
                     holder.psname.setTypeface(businessModel.configurationMasterHelper.getProductNameFont());
                     holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                    holder.productCode = (TextView) row
+                    holder.productCode =  row
                             .findViewById(R.id.stock_and_order_listview_produtCode);
                     holder.productCode.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.ppq = (TextView) row
+                    holder.ppq =  row
                             .findViewById(R.id.stock_and_order_listview_ppq);
                     holder.ppq.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.psq = (TextView) row
+                    holder.psq =  row
                             .findViewById(R.id.stock_and_order_listview_psq);
                     holder.psq.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                    holder.mReason = (Spinner) row.findViewById(R.id.reason);
+                    holder.mReason =  row.findViewById(R.id.reason);
 
-                    holder.shelfPcsQty = (EditText) row
+                    holder.shelfPcsQty =  row
                             .findViewById(R.id.stock_and_order_listview_sp_qty);
-                    holder.shelfCaseQty = (EditText) row
+                    holder.shelfCaseQty =  row
                             .findViewById(R.id.stock_and_order_listview_sc_qty);
-                    holder.shelfouter = (EditText) row
+                    holder.shelfouter =  row
                             .findViewById(R.id.stock_and_order_listview_shelfouter_qty);
                     holder.shelfPcsQty.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.shelfCaseQty.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                     holder.shelfouter.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                    holder.ll_stkCB = (LinearLayout) row
+                    holder.ll_stkCB =  row
                             .findViewById(R.id.ll_stock_and_order_listview_cb);
 
-                    holder.imageButton_availability = (AppCompatCheckBox) row
+                    holder.imageButton_availability =  row
                             .findViewById(R.id.btn_availability);
-                    holder.total = (TextView) row
+                    holder.total =  row
                             .findViewById(R.id.stock_check_listview_total);
                     holder.total.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-                    holder.facingQty = (EditText) row
+                    holder.facingQty =  row
                             .findViewById(R.id.stock_check_listview_fc_qty);
 
                     if (businessModel.configurationMasterHelper.IS_SHOW_PSQ) {
@@ -1777,10 +1776,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     private void loadSpecialFilterView(View view) {
-        hscrl_spl_filter = (HorizontalScrollView) view.findViewById(R.id.hscrl_spl_filter);
+        hscrl_spl_filter =  view.findViewById(R.id.hscrl_spl_filter);
         hscrl_spl_filter.setVisibility(View.VISIBLE);
-        ll_spl_filter = (LinearLayout) view.findViewById(R.id.ll_spl_filter);
-        ll_tab_selection = (LinearLayout) view.findViewById(R.id.ll_tab_selection);
+        ll_spl_filter =  view.findViewById(R.id.ll_spl_filter);
+        ll_tab_selection =  view.findViewById(R.id.ll_tab_selection);
         stockCheckPresenter.getGeneralFilter().add(0, new ConfigureBO("ALL", "All", "0", 0, 1, 1));
 
         Vector<ConfigureBO> generalFilter = stockCheckPresenter.getGeneralFilter();

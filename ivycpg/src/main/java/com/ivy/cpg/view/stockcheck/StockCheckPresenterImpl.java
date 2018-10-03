@@ -9,7 +9,6 @@ import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -202,8 +201,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         }
     }
 
-    public void getFilteredList(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId,
-                                ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    void getFilteredList(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId,
+                         ArrayList<Integer> mAttributeProducts, String mFilterText) {
         Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
         fiveFilter_productIDs = new ArrayList<>();
         brandButton = filtertext;
@@ -214,7 +213,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             stockCheckView.showAlert();
             return;
         }
-        if (mSelectedIdByLevelId != null && businessModel.isMapEmpty(mSelectedIdByLevelId) == false) {
+        if (mSelectedIdByLevelId != null && !businessModel.isMapEmpty(mSelectedIdByLevelId)) {
             mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();
