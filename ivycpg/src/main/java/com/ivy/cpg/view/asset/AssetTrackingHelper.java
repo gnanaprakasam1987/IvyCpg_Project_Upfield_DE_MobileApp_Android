@@ -527,7 +527,7 @@ public class AssetTrackingHelper {
                 for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        clonedList.add(new AssetTrackingBO(assetBO));
+                        clonedList.add(assetBO);
                     }
                     standardListBO.setAssetTrackingList(clonedList);
                 }
