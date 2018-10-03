@@ -387,8 +387,13 @@ public class FitScoreHelper {
 
             for (HHTModuleBO hhtModule : hhtModuleList) {
                 Cursor c = db
-                        .selectSQL("Select Ifnull(A.Score,0) as Score,A.Weightage from RetailerScoreDetails A inner join RetailerScoreHeader B " +
-                                "on A.Tid = B.Tid where B.RetailerID = '" + retailerID + "' and A.ModuleCode ='" + hhtModule.getModule() + "'");
+                        .selectSQL("SELECT Ifnull(RS.Score,0) as Score,HMW.Weightage FROM HHTModuleWeightage HMW " +
+                                "INNER JOIN HHTModuleWeightageMapping HMWM ON HMW.GroupID = HMWM.GroupID " +
+                                "LEFT JOIN RetailerMaster RM ON HMWM.CriteriaId IN (RM.subchannelid, RM.Channelid) AND HMWM.CriteriaType = 'CHANNEL' " +
+                                "LEFT JOIN RetailerAttribute RA ON (RA.AttributeId = HMWM.CriteriaId AND HMWM.CriteriaType = 'RTR_ATTRIBUTE') " +
+                                "LEFT JOIN RetailerScoreDetails RS ON HMW.Module = RS.ModuleCode " +
+                                "LEFT JOIN RetailerScoreHeader RH ON RS.Tid = RH.Tid " +
+                                "WHERE HMW.Module = '" + hhtModule.getModule() + "' AND (RM.RetailerID = '" + retailerID + "' OR RA.RetailerID = '" + retailerID + "') LIMIT 1;");
                 if (c != null) {
                     while (c.moveToNext()) {
                         FitScoreChartBO fitChart = new FitScoreChartBO();
