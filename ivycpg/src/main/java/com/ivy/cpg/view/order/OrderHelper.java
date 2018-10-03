@@ -3232,6 +3232,13 @@ public class OrderHelper {
      */
     public boolean isStockCheckMenuEnabled() {
         Vector<ConfigureBO> config = businessModel.configurationMasterHelper.getActivityMenu();
+
+        // No need to show delete stock&order button if stock columns disabled even if the call from MENU_STK_ORD
+        if(!businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                &&!businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                &&!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER){
+            return false;
+        }
         for (int i = 0; i < config.size(); i++) {
             ConfigureBO con = config.get(i);
             if (con.getConfigCode().equals("MENU_STK_ORD"))

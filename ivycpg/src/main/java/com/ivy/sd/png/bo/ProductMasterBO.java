@@ -210,6 +210,18 @@ public class ProductMasterBO {
 
     private double discount_order_value;
 
+    public double getLineValue() {
+        return lineValue;
+    }
+
+    /**
+     * Product Original Line Value
+     * @param lineValue
+     */
+    public void setLineValue(double lineValue) {
+        this.lineValue = lineValue;
+    }
+
     private double lineValue;
 
     private boolean ispromo;
