@@ -1576,11 +1576,11 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
                     } else if (mSelectedFilter.equals(getResources().getString(
                             R.string.prod_code))) {
-                        if (ret.getRField1() != null && ret.getRField1()
+                        if ((ret.getRField1() != null && ret.getRField1()
                                 .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText()
-                                                .toString().toLowerCase()))
+                                .contains(mEdt_searchproductName.getText().toString()
+                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase())))
                             stockPropMylist.add(ret);
 
                     } else if (mSelectedFilter.equals(getResources().getString(

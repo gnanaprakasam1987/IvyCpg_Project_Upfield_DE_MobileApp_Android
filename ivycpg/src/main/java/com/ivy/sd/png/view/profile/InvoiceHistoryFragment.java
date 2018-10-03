@@ -19,6 +19,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -159,6 +160,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
             holder.invDate.setText(projectObj.getOrderdate());
             holder.totLines.setText(projectObj.getLpc() + "");
             holder.totVal.setText(bmodel.formatValue(projectObj.getOrderValue()));
+            holder.totalVolume.setText(projectObj.getVolume()==null?"0":projectObj.getVolume());
 
             holder.del_date_val.setText(projectObj.getDueDate());
             holder.invoice_date_val.setText(bmodel.formatValue(projectObj.getOutStandingAmt()));
@@ -204,10 +206,11 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
 
             private final TextView del_date_txt, invoice_date_txt, invoice_qty_txt, del_rep_code_txt;
             private LinearLayout listBgLayout, invViewLayout;
-            private TextView invoice_Id_label, dateTxt, totLinesTxt, totValTxt;
-            private TextView invoice_Id, invDate, totLines, totVal;
+            private TextView invoice_Id_label, dateTxt, totLinesTxt, totValTxt, totalVolumeTxt;
+            private TextView invoice_Id, invDate, totLines, totVal, totalVolume;
             private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
             private TextView order_Id, order_Id_label;
+
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -219,6 +222,8 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 dateTxt = (TextView) itemView.findViewById(R.id.date_txt);
                 totLinesTxt = (TextView) itemView.findViewById(R.id.tot_lines_txt);
                 totValTxt = (TextView) itemView.findViewById(R.id.tot_val_txt);
+                totalVolumeTxt = itemView.findViewById(R.id.tot_volume_txt);
+
 
                 order_Id = (TextView) itemView.findViewById(R.id.ord_id_val);
                 invoice_Id = (TextView) itemView.findViewById(R.id.order_id_val);
@@ -226,6 +231,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 totLines = (TextView) itemView.findViewById(R.id.tota_lines_val);
                 totVal = (TextView) itemView.findViewById(R.id.tot_val);
                 invViewBtn = (TextView) itemView.findViewById(R.id.inv_view_btn);
+                totalVolume = itemView.findViewById(R.id.tota_Volume_val);
 
                 del_date_val = (TextView) itemView.findViewById(R.id.del_date_val);
                 invoice_date_val = (TextView) itemView.findViewById(R.id.invoice_date_val);
@@ -274,30 +280,33 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 }
 
                 //typeface for label text
-                invoice_Id_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                order_Id_label.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                dateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                totLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                totValTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                invoice_Id_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
+                order_Id_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
+                dateTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
+                totLinesTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
+                totValTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
+                totalVolumeTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
-                del_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                invoice_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                invoice_qty_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                del_rep_code_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+                del_date_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
+                invoice_date_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
+                invoice_qty_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
+                del_rep_code_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));;
 
 
                 //typeface for value text font
-                invoice_Id.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                order_Id.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                invDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                totLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                totVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                invViewBtn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                invoice_Id.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                order_Id.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                invDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                totLines.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                totVal.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                invViewBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                totalVolume.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
-                del_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                invoice_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                invoice_qty_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                del_rep_code_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                del_date_val.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                invoice_date_val.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                invoice_qty_val.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                del_rep_code_val.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
                 if (!bmodel.configurationMasterHelper.SHOW_INV_HST_ORDERID) {
                     itemView.findViewById(R.id.order_id_layout).setVisibility(View.GONE);
@@ -322,6 +331,10 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_INV_HST_STATUS) {
                     itemView.findViewById(R.id.del_rep_code_layout).setVisibility(View.GONE);
+                }
+
+                if (!bmodel.configurationMasterHelper.SHOW_INV_HST_VOLUME) {
+                    itemView.findViewById(R.id.total_volume_layout).setVisibility(View.GONE);
                 }
 
             }
