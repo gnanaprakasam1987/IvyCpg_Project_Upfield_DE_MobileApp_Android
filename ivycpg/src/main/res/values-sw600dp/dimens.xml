@@ -775,5 +775,6 @@
     <dimen name="web_view_width">270dp</dimen>
 
 
+    <dimen name="catalog_details_image">350dp</dimen>
 
 </resources>

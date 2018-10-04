@@ -633,7 +633,7 @@ public class DataMembers {
     private static final String tbl_CollectionDueDetails_cols = "InvoiceNo,ReasonId,uid";
 
     public static final String tbl_order_delivery_status = "OrderDeliveryStatus";
-    public static final String tbl_order_delivery_status_cols = "orderId,refId";
+    public static final String tbl_order_delivery_status_cols = "orderId,refId,status";
 
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();

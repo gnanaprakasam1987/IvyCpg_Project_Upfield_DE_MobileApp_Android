@@ -90,13 +90,13 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     @Override
     public void getAmountDetails(boolean isEdit) {
-        orderDeliveryHelper.getProductTotalValue();
+        orderDeliveryHelper.getProductTotalValue(isEdit);
 
         double discountVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryDiscountAmount());
         double orderValue = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTotalValue());
         double totalTaxVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount());
-        double orderTaxIncludeVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount()) +
-                orderValue - (isEdit ? 0.0 : discountVal);
+        double orderTaxIncludeVal = (SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount()) +
+                orderValue) - (isEdit ? 0.0 : discountVal);
 
         orderDeliveryView.updateAmountDetails(String.valueOf(bmodel.formatBasedOnCurrency(orderValue)),
                 isEdit ? "0.0" : String.valueOf(bmodel.formatBasedOnCurrency(discountVal)),

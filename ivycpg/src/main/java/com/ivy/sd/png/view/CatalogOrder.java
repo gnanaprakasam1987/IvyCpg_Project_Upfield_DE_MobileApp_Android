@@ -51,6 +51,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -191,6 +192,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private AlertDialog alertDialog;
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
 
+    private RequestManager glide;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -198,7 +201,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-
+        this.glide = Glide.with(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         pdt_recycler_view = findViewById(R.id.pdt_recycler_view);
@@ -446,6 +449,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             pdt_recycler_view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         }
         pdt_recycler_view.setLayoutManager(gridLayoutManager);
+        pdt_recycler_view.setNestedScrollingEnabled(false);
+        pdt_recycler_view.addOnScrollListener(new PauseOnFling(glide));
 
         slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.slide_down);
@@ -2057,8 +2062,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                     + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg"));
                 }
 
-                Glide.with(getApplicationContext())
-                        .load(path)
+                //Glide.with(getApplicationContext())
+                glide.load(path)
                         .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
                         .dontAnimate()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)

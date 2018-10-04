@@ -826,4 +826,6 @@
 
 
     <dimen name="padding_normal">8dp</dimen>
+
+    <dimen name="catalog_details_image">150dp</dimen>
 </resources>
