@@ -24,7 +24,7 @@ public class DataMembers {
     // Sync
     public static final String SFDC_URLDOWNLOAD_MASTER_URL = "/services/apexrest/ivybase/v1/URLDownload/Masters/";
     public static String SERVER_URL = BuildConfig.BASE_URL;
-  //  public static String SERVER_URL = BuildConfig.BASE_URL;
+    //  public static String SERVER_URL = BuildConfig.BASE_URL;
     // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
@@ -633,7 +633,7 @@ public class DataMembers {
     private static final String tbl_CollectionDueDetails_cols = "InvoiceNo,ReasonId,uid";
 
     public static final String tbl_order_delivery_status = "OrderDeliveryStatus";
-    public static final String tbl_order_delivery_status_cols = "orderId,refId";
+    public static final String tbl_order_delivery_status_cols = "orderId,refId,status";
 
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();

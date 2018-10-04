@@ -2256,6 +2256,7 @@ public class NewOutletHelper {
 
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
                     "contact_title,contact_title_lovid,IsPrimary,Email,Upload";
+
             if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
                 if (retailerContactList != null && retailerContactList.size() > 0) {
                     for (RetailerContactBo retailerContactBo : retailerContactList) {
@@ -2271,7 +2272,7 @@ public class NewOutletHelper {
                         db.insertSQL("RetailerContact", column, value);
                     }
                 }
-            } else {
+            }else{
                 if (outlet.getContactpersonname() != null && !outlet.getContactpersonname().trim().equals("")) {
                     value = QT(getId())
                             + "," + QT(outlet.getContactpersonname())
