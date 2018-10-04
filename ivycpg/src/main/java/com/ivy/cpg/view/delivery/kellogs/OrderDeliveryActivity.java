@@ -39,10 +39,10 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
     OrderDeliveryHelper orderDeliveryHelper;
     ArrayList<OrderHeader> orderHeaders = new ArrayList<>();
     private MyAdapter myAdapter;
-    final String Str_ACCEPT = "ACCEPT";
-    final String Str_VIEW = "VIEW";
-    final String Str_EDIT = "EDIT";
-    final String Str_REJECT = "REJECT";
+    final String ACCEPT = "ACCEPT";
+    final String VIEW = "VIEW";
+    final String EDIT = "EDIT";
+    final String REJECT = "REJECT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,8 +159,8 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 public void onClick(View view) {
 
                     if(orderHeaders.get(position).getInvoiceStatus()!=1 && !orderHeaders.get(position).getOrderStatus().equals("R")) {
-                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
-                                Str_VIEW,
+                        new DownloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
+                                VIEW,
                                 orderHeaders.get(position).getInvoiceStatus(),
                                 orderHeaders.get(position).getrField3()).execute();
                     }
@@ -192,8 +192,8 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
-                            Str_EDIT,
+                    new DownloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
+                            EDIT,
                             orderHeaders.get(position).getInvoiceStatus(),
                             orderHeaders.get(position).getrField3()).execute();
                 }
@@ -211,8 +211,8 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
-                            Str_ACCEPT,
+                    new DownloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
+                            ACCEPT,
                             orderHeaders.get(position).getInvoiceStatus(),
                             orderHeaders.get(position).getrField3()).execute();
 
@@ -223,8 +223,8 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View v) {
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
-                            Str_REJECT,
+                    new DownloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
+                            REJECT,
                             orderHeaders.get(position).getInvoiceStatus(),
                             orderHeaders.get(position).getrField3()).execute();
 
@@ -281,14 +281,14 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         dialog.setCancelable(false);
     }
 
-    class downloadOrderDeliveryDetail extends AsyncTask<Void, Void, Void> {
+    class DownloadOrderDeliveryDetail extends AsyncTask<Void, Void, Void> {
 
         private String orderId;
         private String from;
         private int invoiceStatus;
         private String referenceId;
 
-        private downloadOrderDeliveryDetail(String orderId, String from, int invoiceStatus, String referenceId) {
+        private DownloadOrderDeliveryDetail(String orderId, String from, int invoiceStatus, String referenceId) {
             this.orderId = orderId;
             this.from = from;
             this.invoiceStatus = invoiceStatus;
@@ -303,7 +303,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             orderDeliveryHelper.downloadSchemeFreeProducts(OrderDeliveryActivity.this, orderId);
             orderDeliveryHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this, orderId);
             orderDeliveryHelper.downloadOrderedProducts();
-            if (from.equalsIgnoreCase(Str_ACCEPT) || from.equalsIgnoreCase(Str_REJECT)) {
+            if (from.equalsIgnoreCase(ACCEPT) || from.equalsIgnoreCase(REJECT)) {
                 orderDeliveryHelper.getProductTotalValue(false);
             }
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
@@ -316,10 +316,10 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            if (from.equalsIgnoreCase(Str_REJECT)) {
+            if (from.equalsIgnoreCase(REJECT)) {
                 rejectOrder(orderId,referenceId);
             }
-            else if (from.equalsIgnoreCase(Str_ACCEPT)) {
+            else if (from.equalsIgnoreCase(ACCEPT)) {
 
                 if (orderDeliveryHelper.getTotalProductQty() == 0)
                     Toast.makeText(
