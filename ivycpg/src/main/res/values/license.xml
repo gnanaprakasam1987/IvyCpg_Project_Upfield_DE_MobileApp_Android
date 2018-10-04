@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="license_header"><![CDATA[<b>Apache License</b>]]> \n\n</string>
-    <string name="license_version">Version 2.0, January 2004 \n\n</string>
-    <string name="license_link"><![CDATA[<a href="http://www.apache.org/licenses/">http://www.apache.org/licenses/</a>]]>  \n</string>
-    <string name="apache_license">
+    <string name="license_header" translatable="false"><![CDATA[<b>Apache License</b>]]> \n\n</string>
+    <string name="license_version" translatable="false">Version 2.0, January 2004 \n\n</string>
+    <string name="license_link" translatable="false"><![CDATA[<a href="http://www.apache.org/licenses/">http://www.apache.org/licenses/</a>]]>  \n</string>
+    <string name="apache_license" translatable="false">
 <![CDATA[<br>TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION</br>]]>
 <![CDATA[<br></br>]]>
  <![CDATA[<br><b>1. Definitions.</b></br>]]>
