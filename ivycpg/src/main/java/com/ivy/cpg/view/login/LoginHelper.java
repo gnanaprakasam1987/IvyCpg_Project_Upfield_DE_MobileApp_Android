@@ -17,10 +17,14 @@ import com.google.android.gms.common.GoogleApiAvailability;
 //import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
@@ -33,10 +37,18 @@ import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_PASSWORD;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.USERS;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.USER_INFO;
 
 /**
  * Created by subramanian.r on 11-11-2015.
@@ -213,10 +225,32 @@ public class LoginHelper {
                                 return;
                             }
 
-                            // Get new Instance ID token
-                            String token = task.getResult().getToken();
+                            OnCompleteListener<AuthResult> authResultOnCompleteListener = new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task1) {
+                                    // Get new Instance ID token
+                                    String token = task.getResult().getToken();
 
-                            registerInBackground(mContext,token);
+                                    registerInBackground(mContext,token);
+
+                                    updateTokenInFirebase(token);
+                                }
+                            };
+
+                            if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+
+                                String email = FIREBASE_EMAIL;
+                                String password = FIREBASE_PASSWORD;
+
+                                if(email.trim().length() > 0 && password.trim().length() > 0) {
+                                    FirebaseAuth.getInstance().signInWithEmailAndPassword(
+                                            email, password).addOnCompleteListener(authResultOnCompleteListener);
+                                }else{
+                                    Commons.print("Firebase : No User Found");
+                                }
+                            }else{
+                                Commons.print("Firebase : User already Online");
+                            }
 
                         }
                     });
@@ -227,6 +261,20 @@ public class LoginHelper {
         } else {
             Commons.printInformation("No valid Google Play Services APK found.");
         }
+    }
+
+    private void updateTokenInFirebase(String token){
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("token", token);
+
+        db.collection(FIRESTORE_BASE_PATH)
+                .document(USERS)
+                .collection(USER_INFO)
+                .document(businessModel.userMasterHelper.getUserMasterBO().getUserid()+"")
+                .set(userInfo);
     }
 
     /**

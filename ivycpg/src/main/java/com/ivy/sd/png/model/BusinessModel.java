@@ -211,6 +211,10 @@ import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
 import co.chatsdk.firebase.push.FirebasePushModule;
 import co.chatsdk.ui.manager.BaseInterfaceAdapter;
 
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_FIREBASE_STORAGE_URL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_ROOT_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_SERVER_KEY;
+
 public class BusinessModel extends Application {
 
 
@@ -722,10 +726,10 @@ public class BusinessModel extends Application {
             Configuration.Builder builder = new Configuration.Builder(context);
 
 // Perform any configuration steps (optional)
-            builder.firebaseRootPath("Chat_node_sep25");
-            builder.firebaseStorageURL("gs://testapp-a2b92.appspot.com"); // /files/new_folder_cpg/chat_img
-            builder.firebaseCloudMessagingServerKey("AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc");
-            builder.googleMaps("AIzaSyBrL2q-4N0xGxS7Y_f3FcF9Ec1XdL6VDk4");
+            builder.firebaseRootPath(CHAT_ROOT_PATH);
+            builder.firebaseStorageURL(CHAT_FIREBASE_STORAGE_URL); // /files/new_folder_cpg/chat_img
+            builder.firebaseCloudMessagingServerKey(CHAT_SERVER_KEY);
+            builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
             builder.locationMessagesEnabled(true);
 
 
