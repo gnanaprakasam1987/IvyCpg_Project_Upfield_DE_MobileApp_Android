@@ -13,20 +13,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.ivy.cpg.view.supervisor.mvp.SellerBo;
+import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
-import java.text.Format;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAdapter.MyViewHolder> {
 
@@ -121,7 +121,8 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
 
         if(time != 0) {
             Date date = new Date(time);
-            Format format = new SimpleDateFormat("hh:mm a", Locale.US);
+            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
             return format.format(date);
         }else
             return "";

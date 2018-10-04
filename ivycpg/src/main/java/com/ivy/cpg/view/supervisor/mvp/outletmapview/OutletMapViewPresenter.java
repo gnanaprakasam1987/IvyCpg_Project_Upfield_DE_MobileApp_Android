@@ -22,7 +22,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
+import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -30,6 +30,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.annotation.Nullable;
 
@@ -293,7 +295,8 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
         if (time != null && time != 0) {
             Date date = new Date(time);
-            Format format = new SimpleDateFormat("hh:mm a", Locale.US);
+            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
             return format.format(date);
         } else
             return "";
@@ -367,6 +370,10 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
                         String title = retailerMasterBo.getRetailerName() + "//" + retailerMasterBo.getInTime();
 
+                        if (retailerMasterBo.getMarker() == null){
+                            setMarker(retailerMasterBo);
+                        }
+
                         retailerMasterBo.getMarker().setPosition(newRetailLatlng);
                         retailerMasterBo.getMarker().setSnippet(String.valueOf(retailerMasterBo.getRetailerId()));
                         retailerMasterBo.getMarker().setTitle(title);
@@ -386,6 +393,10 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
                     }
 
                     LatLng newRetailLatlng = new LatLng(retailerMasterBo.getLatitude(), retailerMasterBo.getLongitude());
+
+                    if (retailerMasterBo.getMarker() == null){
+                        setMarker(retailerMasterBo);
+                    }
 
                     retailerMasterBo.getMarker().setPosition(newRetailLatlng);
                 }

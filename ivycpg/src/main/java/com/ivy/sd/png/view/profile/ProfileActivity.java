@@ -274,7 +274,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         hideVisibleComponents();
 
 
-        downloadProductsAndPrice = new DownloadProductsAndPrice();
+        //downloadProductsAndPrice = new DownloadProductsAndPrice();
 
         new LoadProfileConfigs().execute();
 
@@ -1519,13 +1519,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            loadHomeScreenTwo(bmodel.getRetailerMasterBO());
-
+                            //loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                            validationToProceed();
                         }
                     });
                     builder.show();
                 } else {
-                    loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                    //loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+                    validationToProceed();
                 }
             } else if (resultCode == 0) {
                 Toast.makeText(this, R.string.photo_mandatory, Toast.LENGTH_LONG).show();
@@ -1555,7 +1556,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void retailerClick() {
 
         if (!isClicked && calledBy.equals(MENU_VISIT)) {
-            validationToProceed();
+
+            if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
+                takePhotoForRetailer();
+                return;
+            } else
+                validationToProceed();
         }
     }
 
@@ -1646,10 +1652,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             return;
         }
 
-        if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
+       /* if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
             takePhotoForRetailer();
             return;
-        }
+        }*/
 
         if (bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE) {
 
@@ -1781,6 +1787,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             isClicked = true;
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
+            downloadProductsAndPrice = new DownloadProductsAndPrice();
             downloadProductsAndPrice.execute();
             // new DownloadProductsAndPrice().execute();
         }
@@ -1803,6 +1810,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         // new DownloadProductsAndPrice().execute();
+                                        downloadProductsAndPrice = new DownloadProductsAndPrice();
                                         downloadProductsAndPrice.execute();
 
                                     }
@@ -2051,7 +2059,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                         }
 
-                    } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                    } else {
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);
                     }
@@ -2305,7 +2313,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             unregisterReceiver(receiver);
         }
 
-        if (downloadProductsAndPrice.getStatus() == AsyncTask.Status.RUNNING)
+        if (downloadProductsAndPrice != null && downloadProductsAndPrice.getStatus() == AsyncTask.Status.RUNNING)
             downloadProductsAndPrice.cancel(true);
 
     }
@@ -2352,6 +2360,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 isClicked = false;
 
                 bmodel.updateUserAudit(1);
+                downloadProductsAndPrice = new DownloadProductsAndPrice();
                 downloadProductsAndPrice.execute();
                 // new DownloadProductsAndPrice().execute();
                 break;

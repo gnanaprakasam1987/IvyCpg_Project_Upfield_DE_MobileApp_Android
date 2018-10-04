@@ -78,6 +78,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_SELLER_PERFOMANCE_REPORT = "MENU_SELPERFO_RPT";
 	public static final String MENU_RETPERFO_RPT="MENU_RETPERFO_RPT";
 	public static final String MENU_ARCHV_RPT = "MENU_ARCHV_RPT";
+	public static final String MENU_DELIVERY_RPT = "MENU_DELIVERY_RPT";
 
 	public static final String VISITCONFIG_PLANNING = "MENU_PLANNING";
 	public static final String VISITCONFIG_COVERAGE = "MENU_VISIT";
@@ -91,16 +92,17 @@ public class StandardListMasterConstants {
 	public static final String MENU_TIMEANDTRAVEL_REPORT = "MENU_TIMEANDTRAVEL_REPORT";
 	public static final String MENU_PRODUCTIVITY_REPORT = "MENU_PRODUCTIVITY_REPORT";
 
-	public static final String FEEDBACK_TYPE="VFDK";
+	public static final String FEEDBACK_TYPE = "VFDK";
 	public static final String PRINT_FILE_INVOICE = "PF_INV_";
 	public static final String PRINT_FILE_COLLECTION = "PF_COL_";
 	public static final String PRINT_FILE_ORDER = "PF_ORD_";
+	public static final String PRINT_FILE_UNLOAD = "PF_UNLOAD_";
 	public static final String PRINT_FILE_PATH = "PrintFile/";
 
 	public static final String MENU_CLOSING_STK_RPT = "MENU_CLOSING_STK_RPT";
 	public static final String MENU_ORD_STAT_RPT = "MENU_ORD_STAT_RPT";
 	public static final String MENU_INV_STAT_RPT = "MENU_INV_STAT_RPT";
-
+	public static final String MENU_ORDER_FULFILL_REPORT = "MENU_ORDERFULFILL_REPORT";
 
 	public static final String MENU_INV_SALES_RETURN_REPORT = "MENU_SALES_RET_REPORT";
 

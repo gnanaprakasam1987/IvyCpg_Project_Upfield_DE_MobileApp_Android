@@ -63,7 +63,7 @@ public class EODStockReportFragment extends Fragment {
         MyAdapter adapter = new MyAdapter(mStockReportList);
         lv.setAdapter(adapter);
 
-        if (bmodel.configurationMasterHelper.SHOW_BUTTON_PRINT01) {
+        if (bmodel.configurationMasterHelper.SHOW_BUTTON_PRINT01 && !mStockReportList.isEmpty()) {
             btnPrint.setVisibility(View.VISIBLE);
             layoutPrint.setVisibility(View.VISIBLE);
         }
@@ -389,7 +389,7 @@ public class EODStockReportFragment extends Fragment {
                 holder.mSoldStock_cs = convertView.findViewById(R.id.soldstock_cs);
                 holder.mSoldStock_ou = convertView.findViewById(R.id.soldstock_ou);
 
-                holder.freeIssuedRL = convertView.findViewById(R.id.rl_freeissued);
+                holder.freeIssuedRL = convertView.findViewById(R.id.ll_freeissued);
 
                 holder.mFreeIssued = convertView.findViewById(R.id.freeissued);
                 holder.mFreeIssued_cs = convertView.findViewById(R.id.freeissued_cs);
@@ -399,12 +399,12 @@ public class EODStockReportFragment extends Fragment {
                 holder.mSIH_cs = convertView.findViewById(R.id.sih_cs);
                 holder.mSIH_ou = convertView.findViewById(R.id.sih_ou);
 
-                holder.emptyRL = convertView.findViewById(R.id.rl_empty);
+                holder.emptyRL = convertView.findViewById(R.id.ll_empty);
                 holder.mEmpty = convertView.findViewById(R.id.empty);
                 holder.mEmpty_cs = convertView.findViewById(R.id.empty_cs);
                 holder.mEmpty_ou = convertView.findViewById(R.id.empty_ou);
 
-                holder.replacementRL = convertView.findViewById(R.id.rl_replacement);
+                holder.replacementRL = convertView.findViewById(R.id.ll_replacement);
                 holder.mReplacementTV = convertView.findViewById(R.id.replacement);
                 holder.mReplacementTV_cs = convertView.findViewById(R.id.replacement_cs);
                 holder.mReplacementTV_ou = convertView.findViewById(R.id.replacement_ou);
@@ -440,9 +440,9 @@ public class EODStockReportFragment extends Fragment {
                     holder.replacementRL.setVisibility(View.GONE);
 
                 if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN)
-                    convertView.findViewById(R.id.rl_return).setVisibility(View.VISIBLE);
+                    convertView.findViewById(R.id.ll_return).setVisibility(View.VISIBLE);
                 else
-                    convertView.findViewById(R.id.rl_return).setVisibility(View.GONE);
+                    convertView.findViewById(R.id.ll_return).setVisibility(View.GONE);
 
                 if (bmodel.configurationMasterHelper.SHOW_STOCK_EMPTY)
                     holder.emptyRL.setVisibility(View.VISIBLE);

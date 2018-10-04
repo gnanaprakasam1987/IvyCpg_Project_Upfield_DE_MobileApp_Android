@@ -264,6 +264,7 @@ public class NewOutletHelper {
             Commons.printException("" + e);
         }
     }
+
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#getContactStatus}
@@ -305,7 +306,7 @@ public class NewOutletHelper {
 
             boolean isData;
             String tid;
-            String currentDate= SDUtil.now(SDUtil.DATE_GLOBAL);
+            String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
             Cursor headerCursor;
 
 
@@ -315,12 +316,12 @@ public class NewOutletHelper {
 
             // delete Header if exist
             headerCursor = db.selectSQL("SELECT Tid FROM RetailerEditHeader"
-                            + " WHERE RetailerId = "
-                            + bmodel.getRetailerMasterBO().getRetailerID()
-                            + " AND Date = "
-                            + bmodel.QT(currentDate)
-                            + " AND Upload = "
-                            + bmodel.QT("N"));
+                    + " WHERE RetailerId = "
+                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + " AND Date = "
+                    + bmodel.QT(currentDate)
+                    + " AND Upload = "
+                    + bmodel.QT("N"));
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
@@ -1802,6 +1803,7 @@ public class NewOutletHelper {
         }
 
     }
+
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl}
@@ -2255,16 +2257,43 @@ public class NewOutletHelper {
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
                     "contact_title,contact_title_lovid,IsPrimary,Email,Upload";
 
-            if (retailerContactList != null && retailerContactList.size() > 0) {
-                for (RetailerContactBo retailerContactBo : retailerContactList) {
+            if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
+                if (retailerContactList != null && retailerContactList.size() > 0) {
+                    for (RetailerContactBo retailerContactBo : retailerContactList) {
+                        value = QT(getId())
+                                + "," + QT(retailerContactBo.getFistname())
+                                + "," + QT(retailerContactBo.getLastname())
+                                + "," + QT(retailerContactBo.getContactNumber())
+                                + "," + QT(retailerContactBo.getTitle())
+                                + "," + QT(retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ? "0" : retailerContactBo.getContactTitleLovId())
+                                + "," + retailerContactBo.getIsPrimary()
+                                + "," + QT(retailerContactBo.getContactMail())
+                                + "," + QT("N");
+                        db.insertSQL("RetailerContact", column, value);
+                    }
+                }
+            }else{
+                if (outlet.getContactpersonname() != null && !outlet.getContactpersonname().trim().equals("")) {
                     value = QT(getId())
-                            + "," + QT(retailerContactBo.getFistname())
-                            + "," + QT(retailerContactBo.getLastname())
-                            + "," + QT(retailerContactBo.getContactNumber())
-                            + "," + QT(retailerContactBo.getTitle())
-                            + "," + QT(retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ? "0" : retailerContactBo.getContactTitleLovId())
-                            + "," + retailerContactBo.getIsPrimary()
-                            + "," + QT(retailerContactBo.getContactMail())
+                            + "," + QT(outlet.getContactpersonname())
+                            + "," + QT(getNewoutlet().getContactpersonnameLastName())
+                            + "," + QT(outlet.getPhone())
+                            + "," + QT(getNewoutlet().getContact1title())
+                            + "," + getNewoutlet().getContact1titlelovid()
+                            + "," + 1
+                            + "," + QT("")
+                            + "," + QT("N");
+                    db.insertSQL("RetailerContact", column, value);
+                }
+                if (outlet.getContactpersonname2() != null && !outlet.getContactpersonname2().trim().equals("")) {
+                    value = QT(getId())
+                            + "," + QT(outlet.getContactpersonname2())
+                            + "," + QT(getNewoutlet().getContactpersonname2LastName())
+                            + "," + QT(outlet.getPhone2())
+                            + "," + QT(getNewoutlet().getContact2title())
+                            + "," + getNewoutlet().getContact2titlelovid()
+                            + "," + 0
+                            + "," + QT("")
                             + "," + QT("N");
                     db.insertSQL("RetailerContact", column, value);
                 }
@@ -2502,6 +2531,7 @@ public class NewOutletHelper {
 
 
     }
+
     /**
      * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
      * @since CPG131 replaced by {@link ProfileDataManagerImpl#getLinkRetailer()}
@@ -2642,7 +2672,7 @@ public class NewOutletHelper {
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
-    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues( String type) {
+    public ArrayList<RetailerFlexBO> downloadRetailerFlexValues(String type) {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();

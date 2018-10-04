@@ -872,7 +872,7 @@ public class ProductHelper {
 
                 String query = "SELECT DISTINCT PM.PID, PM.PName,PM.ParentHierarchy,PM.PLid,PM.ParentId FROM ProductMaster PM "
                         // Inner join is ensure filtered category or brand has at least one child sku
-                        + " INNER JOIN ProductMaster prdm on prdm.ParentHierarchy LIKE '%/' || PM.PID || '/%' and prdm.PLid =" + contentLevelId
+                        //+ " INNER JOIN ProductMaster prdm on prdm.ParentHierarchy LIKE '%/' || PM.PID || '/%' and prdm.PLid =" + contentLevelId
                         + " WHERE PM.PLid in (" + pLIds + ") ";
 
                 if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
@@ -916,7 +916,7 @@ public class ProductHelper {
     public GenericObjectPair downloadProducts(String moduleCode) {
 
         Map<String, ProductMasterBO> productMasterById = new HashMap<>();
-        Vector<ProductMasterBO> productMaster = new Vector<>();
+        Vector<ProductMasterBO> productMaster;
         GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = null;
 
         try {
@@ -956,29 +956,18 @@ public class ProductHelper {
             String sql = "";
 
             int mContentLevelId = 0;
-            int mContentLevel = 0;
 
             // for hybrid seeler if pre seller need to take order at different level
             if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL && bmodel.getRetailerMasterBO().getIsVansales() == 0 &&
                     bmodel.configurationMasterHelper.switchConfigLevel > 0 && moduleCode.equalsIgnoreCase("MENU_STK_ORD")) {
                 mContentLevelId = bmodel.configurationMasterHelper.switchConfigLevel;
-                Cursor cur = db.selectSQL("SELECT sequence FROM ProductLevel " +
-                        " WHERE LevelId = " + mContentLevelId);
 
-                if (cur != null) {
-                    if (cur.moveToNext()) {
-                        mContentLevel = cur.getInt(0);
-                    }
-                    cur.close();
-                }
             } else {
-                Cursor cur = db.selectSQL("SELECT CF.ProductContent,PL.sequence FROM ConfigActivityFilter CF " +
-                        "INNER JOIN ProductLevel PL ON CF.productContent=PL.levelid WHERE CF.ActivityCode = " + bmodel.QT(moduleCode));
+                Cursor cur = db.selectSQL("SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = " + bmodel.QT(moduleCode));
 
                 if (cur != null) {
                     if (cur.moveToNext()) {
                         mContentLevelId = cur.getInt(0);
-                        mContentLevel = cur.getInt(1);
                     }
                     cur.close();
                 }
@@ -1010,13 +999,13 @@ public class ProductHelper {
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
                     + " from ProductMaster A";
 
-            if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+            /*if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
                 //downloading product distribution and preparing query to get products mapped..
                 String pdQuery = downloadProductDistribution(mContentLevelId, mContentLevel);
                 if (pdQuery.length() > 0) {
                     sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
                 }
-            }
+            }*/
 
             sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = "
                     + bmodel.getRetailerMasterBO().getGroupId()
@@ -1028,6 +1017,14 @@ public class ProductHelper {
                     + " LEFT JOIN DiscountProductMapping DPM ON A.ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
                     + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
                     + " WHERE A.PLid IN(" + mContentLevelId + ") ";
+
+            if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                String pdQuery = downloadProductDistribution(mContentLevelId);
+                if (pdQuery.length() > 0) {
+                    sql = sql + " and A.pid in(" + pdQuery + ")";
+                }
+            }
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
                 sql = sql + " and A.ParentHierarchy LIKE '%/' || " + mSelectedGlobalProductId + " || '/%'";
 
@@ -1049,12 +1046,14 @@ public class ProductHelper {
                     product.setProductShortName(c.getString(c.getColumnIndex("psname")));
                     product.setBarCode(c.getString(c.getColumnIndex("barcode")));
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));
-                    product.setSrp(c.getFloat(c.getColumnIndex("srp")));
-                    product.setPrevPrice_pc(c.getFloat(c.getColumnIndex("srp")) + "");
-                    product.setCsrp(c.getFloat(c.getColumnIndex("csrp")));
-                    product.setPrevPrice_ca(c.getFloat(c.getColumnIndex("csrp")) + "");
-                    product.setOsrp(c.getFloat(c.getColumnIndex("osrp")));
-                    product.setPrevPrice_oo(c.getFloat(c.getColumnIndex("osrp")) + "");
+
+                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setPrevPrice_pc(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
+                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setPrevPrice_ca(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
+                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setPrevPrice_oo(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
+
                     product.setMSQty(c.getInt(c.getColumnIndex("msqqty")));
                     product.setCaseSize(c.getInt(c.getColumnIndex("caseQty")));
                     product.setCaseUomId(c.getInt(c.getColumnIndex("caseUomId")));
@@ -1106,7 +1105,7 @@ public class ProductHelper {
 
                     product.setPriceoffvalue(c.getDouble(c.getColumnIndex("priceoffvalue")));
                     product.setPriceOffId(c.getInt(c.getColumnIndex("priceoffid")));
-                    product.setASRP(c.getInt(c.getColumnIndex("asrp"))); //added by murugan
+                    product.setASRP(c.getFloat(c.getColumnIndex("asrp"))); //added by murugan
 
                     product.setAvailableinWareHouse(c.getString(c.getColumnIndex("IsAvailWareHouse")).equals("true"));
                     product.setHsnId(c.getInt(c.getColumnIndex("HSNId")));
@@ -1258,40 +1257,37 @@ public class ProductHelper {
     /**
      * Download products based on given distribution type(Route/Retailer/SalesType)
      *
-     * @param mContentLevel to identify given products level
+     * @param mContentLevelId to identify given products level id
      * @return Returns a query which gets products(content level) mapped to current distribution type
      */
-    private String downloadProductDistribution(int mContentLevelId, int mContentLevel) {
+    private String downloadProductDistribution(int mContentLevelId) {
 
         String PRODUCT_DISTRIBUTION_TYPE_ROUTE = "ROUTE";
         String PRODUCT_DISTRIBUTION_TYPE_RETAILER = "RETAILER";
         String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE = "SALES_TYPE";
-        String PRODUCT_DISTRIBUTION_TYPE_DISTRIBUTOR = "DISTRIBUTOR";
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
-        String finalQuery = "";
+        String productIds = "";
+
         try {
             db.openDataBase();
-            // String sql = "";
-            String productIds = "";
-            int givenLevelId = 0;
-            Cursor cursor = null;
+            Cursor cursor;
             StringBuilder stringBuilder;
 
             if (!bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals("")) {
 
                 //getting products mapped
                 stringBuilder = new StringBuilder();
-                stringBuilder.append("select distinct productid,productlevelId from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE));
+                stringBuilder.append("select distinct PM.PID  from ProductDistribution " +
+                        " inner join ProductMaster PM on PM.ParentHierarchy LIKE '%/' || productid || '/%'and PM.PLid = " + mContentLevelId +
+                        " where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE));
                 if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_ROUTE)) {
                     stringBuilder.append(" and criteriaid IN(" + getRetailerBeat(bmodel.getRetailerMasterBO().getRetailerID(), db) + ")");
                 } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_RETAILER)) {
                     stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getRetailerID() + ")");
                 } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE)) {
                     stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getSalesTypeId() + ")");
-                } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_DISTRIBUTOR)) {
-                    stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
                 }
                 cursor = db.selectSQL(stringBuilder.toString());
                 if (cursor.getCount() > 0) {
@@ -1300,48 +1296,11 @@ public class ProductHelper {
                             productIds += ",";
 
                         productIds += cursor.getString(0);
-                        givenLevelId = cursor.getInt(1);
                     }
                     cursor.close();
                 }
 
-                ///////////////////////////////
-                //If products not available for current distribution type all products will be loaded, so no additional joins
-                if (productIds.length() > 0) {
 
-                    int givenSequence = 0;
-                    if (givenLevelId != 0) {
-                        cursor = db.selectSQL("select sequence from ProductLevel where levelid=" + givenLevelId);
-                        if (cursor.getCount() > 0) {
-                            if (cursor.moveToNext()) {
-                                givenSequence = cursor.getInt(0);
-                            }
-                            cursor.close();
-                        }
-                    }
-
-                    // If given level is not content level then skipping..
-                    if (givenSequence != 0 && givenSequence != mContentLevel) {
-
-
-                        stringBuilder = new StringBuilder();
-                        stringBuilder.append("select PM.pid as productid from productmaster P1");
-
-                        stringBuilder.append(" INNER JOIN ProductMaster PM ON PM.ParentHierarchy LIKE '%/' || P1.PID || '/%'"
-                                + " and PM.PLid =" + mContentLevelId);
-
-                        stringBuilder.append(" WHERE P1.PLid=" + givenLevelId + " and P1.pid in(" + productIds + ")");
-
-                    } else {
-                        //content level so getting directly..
-                        stringBuilder = new StringBuilder();
-                        stringBuilder.append(" select productid from ProductDistribution where criteriaType=" + bmodel.QT(bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE)
-                                + " and productid IN(" + productIds + ")");
-
-
-                    }
-                    finalQuery = stringBuilder.toString();
-                }
             }
 
             db.closeDB();
@@ -1352,7 +1311,7 @@ public class ProductHelper {
             db.closeDB();
         }
 
-        return finalQuery;
+        return productIds;
 
     }
 
@@ -3046,8 +3005,8 @@ public class ProductHelper {
                 sb.append(bomReturnBo.getpSrp() + ","
                         + bomReturnBo.getPieceUomId() + ","
                         + bomReturnBo.getTypeId() + ",");
-                sb.append(QT(SDUtil.getWithoutExponential((bomReturnBo.getLiableQty() - bomReturnBo
-                        .getReturnQty()) * (double) bomReturnBo.getpSrp())) + ",");
+                sb.append(QT(String.valueOf(SDUtil.formatAsPerCalculationConfig((bomReturnBo.getLiableQty() - bomReturnBo
+                        .getReturnQty()) * (double) bomReturnBo.getpSrp()))) + ",");
                 sb.append(QT(bmodel.getRetailerMasterBO().getRetailerID()));
 
                 db.insertSQL(tableName, returncolumns, sb.toString());
@@ -3352,7 +3311,7 @@ public class ProductHelper {
     public Vector<LoadManagementBO> downloadLoadMgmtProductsWithFiveLevel(
             String moduleCode, String batchmenucode) {
         mLoadManagementBOByProductId = new SparseArray<>();
-        String sql = "", sql1 = "", sql2 = "", sql3 = "";
+        String sql = "", sql1 = "", sql2 = "", sql3 = "",sql4="";
         productlist = new Vector<>();
         LoadManagementBO bo;
         Vector<LoadManagementBO> list;
@@ -3368,9 +3327,13 @@ public class ProductHelper {
             sql = "  LEFT JOIN StockInHandMaster SIH ON SIH.pid=PM.PID"
                     + " LEFT JOIN BatchMaster BM ON (SIH.batchid = BM.batchid AND PM.pid=BM.pid)";
             sql1 = ",IFNULL(BM.batchNum,'') as batchNum,SIH.qty as qty,SIH.adjusted_qty,SIH.batchid";
+
+            // Unload non salable qty from NonSalableSIHMaster
+            sql4 = " left join ( select pid, SUM(qty) as nsihqty from NonSalableSIHMaster group by pid) as NSIH ON NSIH.pid = PM.PID";
         } else {
             sql = "";
             sql1 = "";
+            sql4 = "";
         }
         if (batchmenucode.equals("MENU_STOCK_PROPOSAL")
                 || batchmenucode.equals("MENU_STK_PRO")) {
@@ -3390,11 +3353,12 @@ public class ProductHelper {
                 + sql1
                 + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
                 + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou,PM.pCode as ProCode,"
-                + "  PM.ParentHierarchy as ParentHierarchy "
+                + "  PM.ParentHierarchy as ParentHierarchy,NSIH.nsihqty "
                 + " FROM ProductMaster PM"
                 + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                 + sql2
                 + sql
+                + sql4
                 + " WHERE PM.PLid IN"
                 + " (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
                 + bmodel.QT(moduleCode) + ")";
@@ -3432,6 +3396,7 @@ public class ProductHelper {
                 bo.setMsqQty(c.getInt(24));
                 bo.setIssalable(c.getInt(25));
                 bo.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                bo.setNonSalableQty(c.getInt(c.getColumnIndex("nsihqty")));
                 if (batchmenucode.equals("MENU_STOCK_PROPOSAL")
                         || batchmenucode.equals("MENU_STK_PRO")) {
                     bo.setStkprototalQty(c.getInt(c.getColumnIndex("qty")));
@@ -3625,6 +3590,7 @@ public class ProductHelper {
             sb.append(" and dm.ApplyLevelid=(select ListId from StandardListMaster ");
             sb.append(" where ListCode='ITEM' and ListType='DISCOUNT_APPLY_TYPE') ");
             sb.append(" and dm.Typeid not in (select ListId from StandardListMaster where ListCode='GLDSTORE')");
+            sb.append(" and dm.DiscountId not in (select DiscountId from DiscountMappingExclusion where CriteriaId =" + bmodel.getRetailerMasterBO().getRetailerID() + " and CriteriaType = 'RETAILER')");
             sb.append(" order by dm.DiscountId,dm.isCompanyGiven desc");
             ArrayList<StoreWiseDiscountBO> productdiscountList = new ArrayList<StoreWiseDiscountBO>();
             StoreWiseDiscountBO storeWiseDiscountBO;
@@ -5473,11 +5439,26 @@ public class ProductHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
+
+            String sqlQuery;
+
+            if (!bmodel.configurationMasterHelper.IS_ATTRIBUTE_MENU)
+                sqlQuery = "select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                        + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
+                        + " and lang=" + bmodel.QT(language) + " and AttributeId = 0 "
+                        + " Order By MNumber";
+            else
+                sqlQuery = "select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
+                        + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
+                        + " and lang=" + bmodel.QT(language) + " and attributeId in (0, "
+                        + bmodel.getRetailerAttributeList()
+                        + ")"
+                        + " Order By MNumber";
+
+
             Cursor cur = db
-                    .selectSQL("select HHTCode,MName,RField1,RField  from HhtMenuMaster where flag=1 and lower(MenuType)="
-                            + bmodel.QT("ORDER_SUM_DLG").toLowerCase()
-                            + " and lang=" + bmodel.QT(language)
-                            + " Order By MNumber");
+                    .selectSQL(sqlQuery);
+
 
             if (cur != null && cur.getCount() > 0) {
                 ConfigureBO configureBO;

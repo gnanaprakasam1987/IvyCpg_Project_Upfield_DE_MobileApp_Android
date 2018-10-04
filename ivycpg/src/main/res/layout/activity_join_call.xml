@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/newoutlet_fragment"
-        android:name="com.ivy.sd.png.view.JoinCallFragment"
+        android:name="com.ivy.cpg.view.jointcall.JoinCallFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

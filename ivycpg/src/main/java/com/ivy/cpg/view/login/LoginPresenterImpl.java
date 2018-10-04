@@ -16,15 +16,16 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.lib.Utils;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
@@ -52,10 +53,10 @@ import static com.ivy.sd.png.model.ApplicationConfigs.LANGUAGE;
  * Created by dharmapriya.k on 4/12/17.
  */
 
-public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
+public class LoginPresenterImpl implements LoginContract.LoginPresenter {
     private final Context context;
     private final BusinessModel businessModel;
-    private LoginContractor.LoginView loginView;
+    private LoginContract.LoginBaseView loginView;
     private final LoginHelper loginHelper;
     private boolean syncDone;
     public SharedPreferences mPasswordLockCountPref;
@@ -66,15 +67,19 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     private SharedPreferences sharedPrefs;
     private int mTotalRetailerCount = 0;
 
-    LoginPresenterImpl(Context context) {
+    private boolean isSFDC;
+
+    public LoginPresenterImpl(Context context) {
         this.context = context;
         businessModel = (BusinessModel) context.getApplicationContext();
         loginHelper = LoginHelper.getInstance(context);
 
+        isSFDC = !BuildConfig.FLAVOR.equalsIgnoreCase("aws");
+
     }
 
     @Override
-    public void setView(LoginContractor.LoginView loginView) {
+    public void setView(LoginContract.LoginBaseView loginView) {
         this.loginView = loginView;
     }
 
@@ -90,8 +95,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             if (loginHelper.IS_PASSWORD_ENCRYPTED)
                 businessModel.synchronizationHelper.setEncryptType();
 
-            if (loginHelper.SHOW_FORGET_PASSWORD) {
-                loginView.showForgotPassword();
+            if (loginHelper.SHOW_FORGET_PASSWORD && loginView instanceof LoginContract.LoginView) {
+                ((LoginContract.LoginView) loginView).showForgotPassword();
             }
         }
         businessModel.synchronizationHelper.loadErrorCode();
@@ -126,7 +131,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
                 int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(context.getApplicationContext());
                 if (resultCode == ConnectionResult.SUCCESS) {
-                    loginView.requestLocation();
+                    ((LoginContract.LoginView) loginView).requestLocation();
                 } else {
                     loginView.showGPSDialog();
                 }
@@ -170,8 +175,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     /*
-    * Saves the password lock count in shared preferences
-    * */
+     * Saves the password lock count in shared preferences
+     * */
     @Override
     public void applyPasswordLockCountPref() {
         SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
@@ -180,7 +185,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     /* Returns password lock count from shared preference
-    * */
+     * */
     @Override
     public int getPasswordLockCount() {
         return mPasswordLockCountPref.getInt("passwordlock", 0);
@@ -188,20 +193,21 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
     @Override
     public void getSupportNo() {
-        loginView.setSupportNoTV(loginHelper.getSupportNo(context.getApplicationContext()));
+        ((LoginContract.LoginView) loginView).setSupportNoTV(loginHelper.getSupportNo(context.getApplicationContext()));
     }
 
     /*
-    * Checks if external storage available or not
-    *         not available then finishes the application
-    *         available then checks if back up DB there.
-    *         If backup available restores the old DB
-    **/
+     * Checks if external storage available or not
+     *         not available then finishes the application
+     *         available then checks if back up DB there.
+     *         If backup available restores the old DB
+     **/
     @Override
     public void checkDB() {
         if (businessModel.synchronizationHelper.isExternalStorageAvailable()) {
             if (syncDone) {
-                loginView.retrieveDBData();
+                if (!isSFDC)
+                    ((LoginContract.LoginView) loginView).retrieveDBData();
             } else {
                 try {
                     File backupDB = new File(
@@ -220,8 +226,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     /*
-    * Async task to restore the DB from external storage
-    * */
+     * Async task to restore the DB from external storage
+     * */
     class RestoreDB extends AsyncTask<Integer, Integer, Boolean> {
 
         @Override
@@ -242,7 +248,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 syncDone = businessModel.userMasterHelper.getSyncStatus();
                 if (syncDone) {
                     businessModel.userMasterHelper.downloadDistributionDetails();
-                    loginView.retrieveDBData();
+                    ((LoginContract.LoginView) loginView).retrieveDBData();
                 } else {
                     loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.database_not_restored), false);
                 }
@@ -251,8 +257,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     /*
-    * Assigns server url from shared preference
-    * */
+     * Assigns server url from shared preference
+     * */
     @Override
     public void assignServerUrl() {
         if (ApplicationConfigs.withActivation) {
@@ -262,7 +268,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                     .getDefaultSharedPreferences(context.getApplicationContext()).getString("activationKey", "");
         }
 
-         /* Display application Phase if the environment is other than live.*/
+        /* Display application Phase if the environment is other than live.*/
         String phase = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext())
                 .getString("application", "");
         if (!phase.equals(""))
@@ -280,7 +286,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
                 int result = SDUtil.compareDate(loginHelper.getPasswordExpiryDate(createdDate),
                         businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
                 if (result == -1) {
-                    loginView.goToChangePwd();
+                    ((LoginContract.LoginView) loginView).goToChangePwd();
                 } else {
                     checkAttendance();
                     //used for showing password expiring date
@@ -356,9 +362,9 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         //handle password lock in offline based on reached maximum_attempt_count compare with mPasswordLockCountPref count
         int count = mPasswordLockCountPref.getInt("passwordlock", 0);
         if (count + 1 == loginHelper.MAXIMUM_ATTEMPT_COUNT)
-            loginView.sendUserNotExistToHandler();
+            ((LoginContract.LoginView) loginView).sendUserNotExistToHandler();
         else
-            loginView.threadActions();
+            loginView.doLocalLogin();
     }
 
 
@@ -369,8 +375,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
 
     /*
-    * get UTC date and time
-    * */
+     * get UTC date and time
+     * */
     private class DownloadUTCTime extends
             AsyncTask<Integer, Integer, Integer> {
 
@@ -449,6 +455,10 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected String doInBackground(String... params) {
+
+            if (isSFDC) {
+                return "SFDC";
+            }
             String LoginResponse = businessModel.synchronizationHelper.userInitialAuthenticate(jsonObject, isDeviceChanged);
             try {
                 JSONObject jsonObject = new JSONObject(LoginResponse);
@@ -476,28 +486,32 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected void onPostExecute(String output) {
             super.onPostExecute(output);
             loginView.dismissAlertDialog();
-            if (output.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (isSFDC || output.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                 new CheckNewVersionTask().execute();
             } else {
-                if (output.equals("E27")) {
-                    loginView.showDeviceLockedDialog();
-                } else if (output.equals("E28")) {
-                    businessModel.showAlert(context.getApplicationContext().getResources().
-                            getString(R.string.user_already_assigned), 0);
-                } else {
+                switch (output) {
+                    case "E27":
+                        ((LoginContract.LoginView) loginView).showDeviceLockedDialog();
+                        break;
+                    case "E28":
+                        businessModel.showAlert(context.getApplicationContext().getResources().
+                                getString(R.string.user_already_assigned), 0);
+                        break;
+                    default:
 
-                    if (output.equals("E25")) {
-                        // User Account Locked
-                        loginView.showForgotPassword();
-                    }
+                        if (output.equals("E25")) {
+                            // User Account Locked
+                            ((LoginContract.LoginView) loginView).showForgotPassword();
+                        }
 
-                    String ErrorMessage = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(output);
+                        String ErrorMessage = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(output);
 
-                    if (ErrorMessage != null) {
-                        loginView.showAlert(ErrorMessage, false);
-                    } else {
-                        loginView.showAlert("Connection Exception", false);
-                    }
+                        if (ErrorMessage != null) {
+                            loginView.showAlert(ErrorMessage, false);
+                        } else {
+                            loginView.showAlert("Connection Exception", false);
+                        }
+                        break;
                 }
 
 
@@ -507,15 +521,17 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
     }
 
     /*
-    * Checks if updated version of the application is available */
+     * Checks if updated version of the application is available */
     class CheckNewVersionTask extends AsyncTask<Integer, Integer, Boolean> {
 
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (businessModel.isOnline()) {
-                    businessModel.synchronizationHelper.updateAuthenticateToken(false);
-                    return businessModel.synchronizationHelper.checkForAutoUpdate();
+                    if (!isSFDC) {
+                        businessModel.synchronizationHelper.updateAuthenticateToken(false);
+                        return businessModel.synchronizationHelper.checkForAutoUpdate();
+                    }
                 } else
                     return Boolean.FALSE;
 
@@ -532,32 +548,165 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                if (!result) {
-                    if (loginHelper.isPasswordReset(context.getApplicationContext())) {
-                        loginView.dismissAlertDialog();
-                        loginView.resetPassword();
-                    } else {
-                        businessModel.synchronizationHelper.deleteUrlDownloadMaster();
-                        new UrlMasterDownload().execute();
-                    }
-
-                } else {
-                    loginView.dismissAlertDialog();
-                    loginView.showAppUpdateAlert(context.getApplicationContext().getResources().getString(R.string.update_available));
-                }
+            if (isSFDC) {
+                Commons.print("SFDC url download start");
+                new UrlDownloadData().execute();  //used for sfdc purpose
             } else {
-                String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
-                if (errorMsg != null) {
-                    Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (!result) {
+                        if (loginHelper.isPasswordReset(context.getApplicationContext())) {
+                            loginView.dismissAlertDialog();
+                            ((LoginContract.LoginView) loginView).resetPassword();
+                        } else {
+                            businessModel.synchronizationHelper.deleteUrlDownloadMaster();
+                            new UrlMasterDownload().execute();
+                        }
+
+                    } else {
+                        loginView.dismissAlertDialog();
+                        ((LoginContract.LoginView) loginView).showAppUpdateAlert(context.getApplicationContext().getResources().getString(R.string.update_available));
+                    }
                 } else {
-                    Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, context.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
-
         }
 
     }
+
+    /**
+     * UrlDownload Data class is download master mapping url from server
+     * and insert into sqLite file
+     */
+    class UrlDownloadData extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            businessModel.synchronizationHelper.getUrldownloadMasterSFDC(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                @Override
+                public String onSuccess(String result) {
+                    Commons.print("SFDC URL download start 1");
+                    String response = returnUrlDownloadResponse(result);//bmodel.synchronizationHelper.getUrlDownloadJson();
+                    updateDeleteTableStatus(response);
+                    return response;
+                }
+
+                @Override
+                public String onFailure(String errorresult) {
+                    String response = returnUrlDownloadResponse(errorresult);
+                    updateDeleteTableStatus(response);
+                    return response;
+                }
+            });
+
+            return "E01";
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            if (!isSFDC) {
+                updateDeleteTableStatus(errorCode);
+            }
+        }
+    }
+
+
+    private String returnUrlDownloadResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            Iterator itr = jsonObject.keys();
+            while (itr.hasNext()) {
+                String key = (String) itr.next();
+                if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                    String errorCode = jsonObject.getString(key);
+                    if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        businessModel.synchronizationHelper
+                                .parseJSONAndInsert(jsonObject, true);
+                        businessModel.synchronizationHelper.loadMasterUrlFromDB(true);
+
+                    }
+                    return errorCode;
+                }
+            }
+        } catch (JSONException jsonExpection) {
+            Commons.print(jsonExpection.getMessage());
+        }
+        return "E01";
+    }
+
+
+    private void updateDeleteTableStatus(String errorCode) {
+        if (errorCode
+                .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            deleteTables(true);
+        } else {
+            deleteTables(false);
+            String errorMessage = businessModel.synchronizationHelper
+                    .getErrormessageByErrorCode().get(errorCode);
+            if (errorMessage != null) {
+                loginView.showAlert(errorMessage, false);
+            }
+            loginView.dismissAlertDialog();
+        }
+    }
+
+
+    public void deleteTables(boolean isDownloaded) {
+        new DeleteTables(isDownloaded).execute();
+    }
+
+    private class DeleteTables extends
+            AsyncTask<Integer, Integer, Integer> {
+
+        final boolean isDownloaded;
+
+
+        DeleteTables(boolean isDownloaded) {
+            this.isDownloaded = isDownloaded;
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            businessModel.synchronizationHelper.deleteTables(false);
+            return 0;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (isDownloaded) {
+                if (businessModel.synchronizationHelper
+                        .getUrlList().size() > 0) {
+                    if (isSFDC) {
+                        businessModel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                            @Override
+                            public String onSuccess(String result) {
+                                businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+                                return "";
+                            }
+
+                            @Override
+                            public String onFailure(String errorresult) {
+                                return "";
+                            }
+                        });
+                    } else {
+                        businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
+                    }
+                } else {
+                    loginView.showAlert(context.getResources().getString(R.string.no_data_download), false);
+                    loginView.dismissAlertDialog();
+                }
+            }
+        }
+    }
+
 
     /**
      * UrlDownload Data class is download master mapping url from server
@@ -569,7 +718,8 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            jsonObject = businessModel.synchronizationHelper.getCommonJsonObject();
+            if (!isSFDC)
+                jsonObject = businessModel.synchronizationHelper.getCommonJsonObject();
         }
 
         @Override
@@ -678,7 +828,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
             businessModel.distributorMasterHelper.downloadDistributorsList();
             if (businessModel.distributorMasterHelper.getDistributors().size() > 0) {
                 loginView.dismissAlertDialog();
-                loginView.goToDistributorSelection();
+                ((LoginContract.LoginView) loginView).goToDistributorSelection();
             } else {
                 //No distributors, so downloading on demand url without distributor selection.
                 downloadOnDemandMasterUrl(false);
@@ -807,26 +957,32 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
 
         @Override
         protected String doInBackground(String... params) {
+            String responseCode = "E01";
             String response = businessModel.synchronizationHelper.sendPostMethod(businessModel.synchronizationHelper.getSIHUrl(), json);
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                Iterator itr = jsonObject.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
-                        String errorCode = jsonObject.getString(key);
-                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                            businessModel.synchronizationHelper
-                                    .parseJSONAndInsert(jsonObject, true);
+                JSONArray jsonArray = jsonObject.getJSONArray(SynchronizationHelper.JSON_KEY);
 
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject value = (JSONObject) jsonArray.get(i);
+                    Iterator itr = value.keys();
+                    while (itr.hasNext()) {
+                        String key = (String) itr.next();
+                        if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                            String errorCode = value.getString(key);
+                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                businessModel.synchronizationHelper
+                                        .parseJSONAndInsert(value, true);
+
+                            }
+                            responseCode = errorCode;
                         }
-                        return errorCode;
                     }
                 }
             } catch (JSONException jsonException) {
                 Commons.print(jsonException.getMessage());
             }
-            return "E01";
+            return responseCode;
         }
 
         @Override
@@ -950,7 +1106,22 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected void onPostExecute(String errorCode) {
             super.onPostExecute(errorCode);
             if (errorCode.equals("1")) {
-                downloadOnDemandMasterUrl(true);
+                if (isSFDC) {
+                    businessModel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                        @Override
+                        public String onSuccess(String result) {
+                            businessModel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.LOGIN, SynchronizationHelper.DownloadType.DISTRIBUTOR_WISE_DOWNLOAD);
+                            return "";
+                        }
+
+                        @Override
+                        public String onFailure(String errorresult) {
+                            return "";
+                        }
+                    });
+                } else {
+                    downloadOnDemandMasterUrl(true);
+                }
             }
         }
     }
@@ -1078,7 +1249,7 @@ public class LoginPresenterImpl implements LoginContractor.LoginPresenter {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if (!s.equals("")) {
-                loginView.callResetPassword();
+                ((LoginContract.LoginView) loginView).callResetPassword();
             } else {
                 loginView.showAlert(context.getApplicationContext().getResources().getString(R.string.token_expired), false);
             }

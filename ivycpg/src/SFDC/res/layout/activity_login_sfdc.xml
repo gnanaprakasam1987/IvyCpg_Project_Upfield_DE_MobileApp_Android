@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+
+    >
+
+    <Button
+        android:id="@+id/sfdc_login_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login with SFDC"
+        android:onClick="loginSFDC"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center"
+        android:minWidth="150dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

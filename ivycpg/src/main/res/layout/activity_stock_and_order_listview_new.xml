@@ -724,6 +724,7 @@
                         style="?attr/customListItemSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:tag="avail_title"
                         android:maxLines="1"
                         android:text="@string/avail" />
 

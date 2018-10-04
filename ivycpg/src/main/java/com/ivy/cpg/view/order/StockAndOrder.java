@@ -407,6 +407,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         else
             title = bmodel.configurationMasterHelper
                     .getHomescreentwomenutitle("MENU_STK_ORD");
+
+        if (title.isEmpty())
+            title = getResources().getString(R.string.order);
+
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
@@ -985,6 +989,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             else
                 title = bmodel.configurationMasterHelper
                         .getHomescreentwomenutitle("MENU_STK_ORD");
+
+            if (title.isEmpty())
+                title = getResources().getString(R.string.order);
+
             if (mSelectedFiltertext.equals("Brand")) {
                 if (totalOrdCount.equals("0"))
                     setScreenTitle(title + " ("
@@ -1399,7 +1407,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
                     ((LinearLayout) row.findViewById(R.id.llAvail)).setVisibility(View.GONE);
 
-                ((TextView) row.findViewById(R.id.shelfPcsCB)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                else {
+                    try {
+                        ((TextView) row.findViewById(R.id.shelfPcsCB)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.shelfPcsCB).getTag()) != null)
+                            ((TextView) row.findViewById(R.id.shelfPcsCB))
+                                    .setText(bmodel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.shelfPcsCB)
+                                                    .getTag()));
+                    } catch (Exception e) {
+                        Commons.printException(e + "");
+                    }
+                }
+
 
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC
                         || screenCode
@@ -1857,52 +1879,102 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.imageButton_availability.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (holder.productObj.getLocations()
-                                .get(mSelectedLocationIndex).getAvailability() == -1) {
-                            holder.productObj.getLocations()
-                                    .get(mSelectedLocationIndex).setAvailability(1);
+                        if (bmodel.configurationMasterHelper.CHANGE_AVAL_FLOW) {
+                            if (holder.productObj.getLocations()
+                                    .get(mSelectedLocationIndex).getAvailability() == -1) {
+                                holder.productObj.getLocations()
+                                        .get(mSelectedLocationIndex).setAvailability(0);
 
-                            CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.colorAccent)));
-                            holder.imageButton_availability.setChecked(true);
+                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.RED)));
+                                holder.imageButton_availability.setChecked(true);
 
-                            if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
-                                holder.shelfPcsQty.setText("1");
-                            else if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
-                                holder.shelfCaseQty.setText("1");
-                            else if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
-                                holder.shelfouter.setText("1");
+                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    holder.shelfPcsQty.setText("0");
+                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    holder.shelfCaseQty.setText("0");
+                                if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    holder.shelfouter.setText("0");
 
-                        } else if (holder.productObj.getLocations()
-                                .get(mSelectedLocationIndex).getAvailability() == 1) {
-                            holder.productObj.getLocations()
-                                    .get(mSelectedLocationIndex).setAvailability(0);
+                            } else if (holder.productObj.getLocations()
+                                    .get(mSelectedLocationIndex).getAvailability() == 1) {
+                                holder.productObj.getLocations()
+                                        .get(mSelectedLocationIndex).setAvailability(-1);
 
-                            CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.RED)));
-                            holder.imageButton_availability.setChecked(true);
+                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
+                                holder.imageButton_availability.setChecked(false);
 
-                            if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
-                                holder.shelfPcsQty.setText("0");
-                            if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
-                                holder.shelfCaseQty.setText("0");
-                            if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
-                                holder.shelfouter.setText("0");
+                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    holder.shelfPcsQty.setText("");
+                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    holder.shelfCaseQty.setText("");
+                                if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    holder.shelfouter.setText("");
 
-                        } else if (holder.productObj.getLocations()
-                                .get(mSelectedLocationIndex).getAvailability() == 0) {
-                            holder.productObj.getLocations()
-                                    .get(mSelectedLocationIndex).setAvailability(-1);
+                            } else if (holder.productObj.getLocations()
+                                    .get(mSelectedLocationIndex).getAvailability() == 0) {
+                                holder.productObj.getLocations()
+                                        .get(mSelectedLocationIndex).setAvailability(1);
 
-                            CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
-                            holder.imageButton_availability.setChecked(false);
+                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.colorAccent)));
+                                holder.imageButton_availability.setChecked(true);
 
-                            if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    holder.shelfPcsQty.setText("1");
+                                else if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    holder.shelfCaseQty.setText("1");
+                                else if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    holder.shelfouter.setText("1");
+
+                            }
+                        } else {
+                            if (holder.productObj.getLocations()
+                                    .get(mSelectedLocationIndex).getAvailability() == -1) {
+                                holder.productObj.getLocations()
+                                        .get(mSelectedLocationIndex).setAvailability(1);
+
+                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.colorAccent)));
+                                holder.imageButton_availability.setChecked(true);
+
+                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    holder.shelfPcsQty.setText("1");
+                                else if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    holder.shelfCaseQty.setText("1");
+                                else if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    holder.shelfouter.setText("1");
+
+                            } else if (holder.productObj.getLocations()
+                                    .get(mSelectedLocationIndex).getAvailability() == 1) {
+                                holder.productObj.getLocations()
+                                        .get(mSelectedLocationIndex).setAvailability(0);
+
+                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.RED)));
+                                holder.imageButton_availability.setChecked(true);
+
+                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    holder.shelfPcsQty.setText("0");
+                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    holder.shelfCaseQty.setText("0");
+                                if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    holder.shelfouter.setText("0");
+
+                            } else if (holder.productObj.getLocations()
+                                    .get(mSelectedLocationIndex).getAvailability() == 0) {
+                                holder.productObj.getLocations()
+                                        .get(mSelectedLocationIndex).setAvailability(-1);
+
+                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
+                                holder.imageButton_availability.setChecked(false);
+
+                           // if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
                                 holder.shelfPcsQty.setText("");
-                            if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                           // if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
                                 holder.shelfCaseQty.setText("");
-                            if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                            //if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
                                 holder.shelfouter.setText("");
 
+                            }
                         }
+
 
                         updateValue();
 
@@ -3819,6 +3891,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (SOLogic == 2) {
             so = productObj.getIco();
+        }else{
+            so = productObj.getIco();
         }
 
         if (so < 0)
@@ -4957,11 +5031,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     } else if (mSelectedFilter.equals(getResources().getString(
                             R.string.prod_code))) {
-                        if (ret.getRField1() != null && ret.getRField1()
+                        if (((ret.getRField1() != null && ret.getRField1()
                                 .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText().toString()
-                                                .toLowerCase()) && ret.getIsSaleable() == 1) {
+                                .contains(mEdt_searchproductName.getText().toString()
+                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase()))) && ret.getIsSaleable() == 1) {
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                                 mylist.add(ret);
                             else if (applyProductAndSpecialFilter(ret))

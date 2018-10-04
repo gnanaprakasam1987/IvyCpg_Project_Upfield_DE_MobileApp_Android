@@ -30,6 +30,7 @@ public class SDUtil {
     public static final int DATE_GLOBAL_PLAIN = 8;
     public static final int DATE_GLOBAL_EIPHEN = 9;
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
+    public static int CALCULATION_PRECISION_COUNT =3;
 
 
     /**
@@ -202,6 +203,10 @@ public class SDUtil {
         }
     }
 
+    public static double formatAsPerCalculationConfig(double value){
+        return convertToDouble(format(value, CALCULATION_PRECISION_COUNT,0));
+    }
+
     /**
      * Return current Day. For Eg : Monday
      *
@@ -360,7 +365,7 @@ public class SDUtil {
      * This method will convert exponential value into String Using
      * BigDecimal or Format
      */
-    static DecimalFormat df = new DecimalFormat("###.000");
+    static DecimalFormat df = new DecimalFormat("###.00"); //'0's restricted to two decimal places for JNJ after discussing with abbas
 
     public static String getWithoutExponential(Double value) {
         return ((value + "").contains("E")

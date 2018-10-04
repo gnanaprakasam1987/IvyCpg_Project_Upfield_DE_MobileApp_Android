@@ -604,7 +604,7 @@ public class DashBoardHelper {
             String sql = "SELECT SLM.ListName,RKD.Target,RKD.Achievement,"
                     + " ROUND(CASE WHEN (100-((RKD.Achievement*100)/((RKD.Target)*1.0))) < 0"
                     + " THEN 100 ELSE ((RKD.Achievement*100)/((RKD.Target)*1.0)) END ,2) AS conv_ach_perc"
-                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,count(rkdd.KPIParamLovId),BeatDescription FROM RouteKPI RK"
+                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,count(rkdd.KPIParamLovId),BeatDescription,SLM.ListCode as Code FROM RouteKPI RK"
                     + " inner join RouteKPIDetail RKD on RKD.KPIID= RK.KPIID"
                     + " LEFT join RouteKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
@@ -640,6 +640,7 @@ public class DashBoardHelper {
                     sbo.setFlex1(c.getInt(8));
                     sbo.setSubDataCount(c.getInt(9));
                     sbo.setMonthName(c.getString(10));
+                    sbo.setCode(c.getString(c.getColumnIndex("Code")));
                     getDashChartDataList().add(sbo);
                 }
                 c.close();
@@ -3760,7 +3761,8 @@ public class DashBoardHelper {
             db.openDataBase();
             String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
                     + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
-                    + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL";
+                    + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL"
+                    + " inner join stockapply sa on sa.uid = vl.uid";
             Cursor c = db
                     .selectSQL(query);
             int loadQty;
@@ -3826,7 +3828,7 @@ public class DashBoardHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select count(distinct RM.retailerid) from retailermaster RM inner join " +
-                    "RetailerBeatMapping RBM on RM.RetailerId = RBM.Retailerid where RM.isdeviated='N' and RBM.isVisited = 'Y'");
+                    "RetailerBeatMapping RBM on RM.RetailerId = RBM.Retailerid where RBM.isdeviated='N' and RBM.isVisited = 'Y'");
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {

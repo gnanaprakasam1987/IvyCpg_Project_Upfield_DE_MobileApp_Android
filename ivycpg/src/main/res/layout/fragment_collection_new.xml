@@ -167,7 +167,7 @@
                 android:id="@+id/paybtn"
                 style="?attr/roundedCustomButtonSmall"
                 android:layout_margin="@dimen/target_top_margin"
-                android:text="@string/next"
+                android:text="@string/pay"
                 android:textAllCaps="false"
                 android:textSize="@dimen/font_micro_small" />
 
@@ -176,7 +176,7 @@
                 style="?attr/roundedCustomButtonSmall"
                 android:layout_margin="@dimen/target_top_margin"
                 android:layout_toEndOf="@id/paybtn"
-                android:text="@string/close"
+                android:text="@string/next"
                 android:textAllCaps="false"
                 android:visibility="gone"
                 android:layout_toRightOf="@id/paybtn" />

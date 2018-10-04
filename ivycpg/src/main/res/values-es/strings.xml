@@ -1263,5 +1263,7 @@
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
     <string name="language">Language</string>
     <string name="printer_settings">Printer Settings</string>
-
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">Vendible</string>
 </resources>

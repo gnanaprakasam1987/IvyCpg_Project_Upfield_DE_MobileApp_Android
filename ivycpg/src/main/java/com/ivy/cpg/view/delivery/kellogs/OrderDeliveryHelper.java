@@ -115,7 +115,7 @@ public class OrderDeliveryHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String sb = ("select OD.OrderID,OrderValue,LinesPerCall,OrderDate,invoicestatus from "
+            String sb = ("select OD.OrderID,OrderValue,LinesPerCall,OrderDate,invoicestatus,OD.RField3 from "
                     + DataMembers.tbl_orderHeader + " OD ") +
                     " where OD.upload='X' and OD.RetailerID="
                     + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID());
@@ -131,6 +131,7 @@ public class OrderDeliveryHelper {
                     orderHeader.setLinesPerCall(orderHeaderCursor.getInt(2));
                     orderHeader.setOrderDate(orderHeaderCursor.getString(3));
                     orderHeader.setInvoiceStatus(orderHeaderCursor.getInt(4));
+                    orderHeader.setrField3(orderHeaderCursor.getString(5));
 
                     orderHeaders.add(orderHeader);
                 }
@@ -540,7 +541,7 @@ public class OrderDeliveryHelper {
         return true;
     }
 
-    boolean updateTableValues(Context context, String orderId, boolean isEdit,String menuCode) {
+    boolean updateTableValues(Context context, String orderId, boolean isEdit,String menuCode,String referenceId) {
         boolean status = true;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -584,7 +585,7 @@ public class OrderDeliveryHelper {
                     if (discountPercentage > 0) {
 
                         double remainingAmount = (SDUtil.convertToDouble(getOrderDeliveryTotalValue()) * discountPercentage) / 100;
-                        remainingAmount = SDUtil.convertToDouble(businessModel.formatValueBasedOnConfig(remainingAmount));
+                        remainingAmount = SDUtil.convertToDouble(businessModel.formatBasedOnCurrency(remainingAmount));
 
                         discountedAmount = SDUtil.convertToDouble(getOrderDeliveryTotalValue()) - remainingAmount;
                     } else {
@@ -683,10 +684,10 @@ public class OrderDeliveryHelper {
                         "orderid,ImageName,discount,invoiceAmount,latitude,longitude,return_amt," +
                         "discount_type,LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
                         "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount,totalamount,paidamount)" +
-                        " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," + businessModel.QT(businessModel.formatValueBasedOnConfig(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
+                        " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," + businessModel.QT(businessModel.formatBasedOnCurrency(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
                         ",orderid,imagename,discount," + businessModel.QT(getOrderDeliveryTotalValue()) +",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," +
-                        businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + businessModel.QT(businessModel.formatValueBasedOnConfig(discountedAmount)) +
+                        businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + businessModel.QT(businessModel.formatBasedOnCurrency(discountedAmount)) +
                         "," +totalAmount + ",0 from OrderHeader where OrderId = " + businessModel.QT(orderId);
 
                 db.executeQ(invoiceHeaderQry);
@@ -749,6 +750,13 @@ public class OrderDeliveryHelper {
                     break;
                 }
             }
+
+
+            //OrderDelivery status insertion
+            String orderDeliveryStatus = "OrderDeliveryStatus";
+            String orderDeliveryStatus_cols = "orderId,refId";
+            String values = businessModel.QT(orderId) + "," + businessModel.QT(referenceId);
+            db.insertSQL(orderDeliveryStatus, orderDeliveryStatus_cols, values);
 
             db.closeDB();
 
@@ -913,13 +921,15 @@ public class OrderDeliveryHelper {
 
                         if (c.getCount() > 0 && c.moveToNext()) {
                             updateExcessSih = c.getInt(0) + updateExcessSih;
-                            db.executeQ("update ExcessStockInHand set qty=" + updateExcessSih + " where pid = " + headProductMasterBO.getProductID());
+                            db.executeQ("update ExcessStockInHand set qty=" + updateExcessSih + ",Upload='N' where pid = " + headProductMasterBO.getProductID());
                         } else {
                             db.executeQ("insert into ExcessStockInHand (qty,pid) values(" + updateExcessSih + "," + headProductMasterBO.getProductID() + ")");
                         }
 
                         c.close();
                     }
+
+                    updateSalesReturnSIH(db, productMasterBO);
                 }
             }
         } catch (Exception e) {
@@ -1143,5 +1153,102 @@ public class OrderDeliveryHelper {
             }
         }
         return line_total_price;
+    }
+
+    private void updateSalesReturnSIH(DBUtil db, ProductMasterBO product) {
+
+        try {
+            for (SalesReturnReasonBO bo : product
+                    .getSalesReturnReasonList()) {
+                if (bo.getPieceQty() > 0 || bo.getCaseQty() > 0
+                        || bo.getOuterQty() > 0 || bo.getSrPieceQty() > 0 || bo.getSrCaseQty() > 0 || bo.getSrOuterQty() > 0 || bo.getSrPieceQty() > 0 || bo.getSrCaseQty() > 0) {
+                    if (businessModel.configurationMasterHelper.SHOW_UPDATE_SIH) {
+                        if ("SRS".equals(bo.getReasonCategory())) {
+
+                            int salRetSih = bo.getPieceQty()
+                                    + (bo.getCaseQty() * product
+                                    .getCaseSize())
+                                    + (bo.getOuterQty() * product
+                                    .getOutersize());
+                            int calcSih = product.getSIH() + salRetSih;
+                            product.setSIH(calcSih);
+                            db.updateSQL("UPDATE ProductMaster SET sih = "
+                                    + calcSih
+                                    + " WHERE PID = "
+                                    + businessModel.QT(product.getProductID()));
+                            int batchid = businessModel.productHelper
+                                    .getOldBatchIDByMfd(product.getProductID());
+
+                            Cursor c = db
+                                    .selectSQL("select pid,ifnull(qty,0) from StockInHandMaster where pid="
+                                            + businessModel.QT(product.getProductID())
+                                            + " and batchid=" + batchid);
+                            if (c != null && c.getCount() > 0) {
+                                while (c.moveToNext()) {
+                                    salRetSih += c.getInt(1);
+                                }
+                                db.updateSQL("UPDATE StockInHandMaster SET upload='N',qty = "
+                                        + salRetSih
+                                        + " WHERE pid = "
+                                        + businessModel.QT(product.getProductID())
+                                        + " AND batchid = " + batchid);
+                                c.close();
+                            } else {
+                                String sihMasterColumns = "pid,qty,batchid";
+                                String sihMastervalues = businessModel.QT(product.getProductID())
+                                        + ","
+                                        + salRetSih + "," + batchid;
+                                db.insertSQL("StockInHandMaster",
+                                        sihMasterColumns,
+                                        sihMastervalues);
+                            }
+                            // update batchwise sih in object
+                            businessModel.batchAllocationHelper
+                                    .setBatchwiseSIH(product, Integer.toString(batchid)
+                                            , salRetSih, false);
+                        } else { // Nonsalable sih insert and update
+
+                            int nonSalRetSih = bo.getPieceQty()
+                                    + (bo.getCaseQty() * product
+                                    .getCaseSize())
+                                    + (bo.getOuterQty() * product
+                                    .getOutersize());
+
+                            Cursor c = db
+                                    .selectSQL("select pid,ifnull(qty,0) from NonSalableSIHMaster where pid="
+                                            + businessModel.QT(product.getProductID())
+                                            + " and reasonid = " + bo.getReasonID()
+                                            + " and upload = 'N'");
+                            //+ " and batchid=" + batchid);
+                            if (c != null && c.getCount() > 0) {
+                                while (c.moveToNext()) {
+                                    nonSalRetSih += c.getInt(1);
+                                }
+                                db.updateSQL("UPDATE NonSalableSIHMaster SET upload='N',qty = "
+                                        + nonSalRetSih
+                                        + " WHERE pid = "
+                                        + businessModel.QT(product.getProductID())
+                                        + " and reasonid = " + bo.getReasonID());
+                                //+ " AND batchid = " + batchid);
+                                c.close();
+                            } else {
+                                db.executeQ("delete from NonSalableSIHMaster where upload = 'Y' ");
+                                String sihMasterColumns = "pid,qty,reasonid";
+                                String sihMastervalues = businessModel.QT(product.getProductID())
+                                        + ","
+                                        + nonSalRetSih + ","
+                                        + bo.getReasonID();
+                                db.insertSQL("NonSalableSIHMaster",
+                                        sihMasterColumns,
+                                        sihMastervalues);
+                            }
+
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 }

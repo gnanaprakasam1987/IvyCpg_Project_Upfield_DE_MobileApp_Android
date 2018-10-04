@@ -5,6 +5,8 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.OrderFulfillmentReportBO;
+import com.ivy.sd.png.bo.OrderFulfillmentReportListBO;
 import com.ivy.sd.png.bo.OrderFullfillmentBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -24,6 +26,8 @@ public class OrderFullfillmentHelper {
     private static OrderFullfillmentHelper instance = null;
     private ArrayList<OrderFullfillmentBO> oflist;
     private ArrayList<OrderFullfillmentBO> newlist;
+    ArrayList<OrderFulfillmentReportBO> orderFulfillmentList;
+    ArrayList<OrderFulfillmentReportListBO> orderFulfillmentDetailList;
 
     private OrderFullfillmentHelper(Context context) {
         this.context = context;
@@ -127,6 +131,22 @@ public class OrderFullfillmentHelper {
 
     private ArrayList<OrderFullfillmentBO> getPartialFullfillmentDetail() {
         return partialfullmentdetaillist;
+    }
+
+    public ArrayList<OrderFulfillmentReportBO> getOrderFulfillmentList() {
+        return orderFulfillmentList;
+    }
+
+    public void setOrderFulfillmentList(ArrayList<OrderFulfillmentReportBO> orderFulfillmentList) {
+        this.orderFulfillmentList = orderFulfillmentList;
+    }
+
+    public ArrayList<OrderFulfillmentReportListBO> getOrderFulfillmentDetailList() {
+        return orderFulfillmentDetailList;
+    }
+
+    public void setOrderFulfillmentDetailList(ArrayList<OrderFulfillmentReportListBO> orderFulfillmentDetailList) {
+        this.orderFulfillmentDetailList = orderFulfillmentDetailList;
     }
 
     /**
@@ -316,5 +336,91 @@ public class OrderFullfillmentHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+
+    public void downloadOrderFullfillmentReport(String date) {
+        orderFulfillmentList = new ArrayList<>();
+        try {
+            OrderFulfillmentReportBO bo;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("Select distinct OFH.OrderID, RM.RetailerName, " +
+                            "case when DH.Status = 'F' then 'Fulfilled' " +
+                            "when DH.Status = 'R' then 'Rejected' " +
+                            "else 'Partially Fulfilled' end as Status " +
+                            "from OrderFullfillmentHeader OFH " +
+                            "inner join DeliveryHeader DH on OFH.OrderId = DH.OrderId " +
+                            "inner join RetailerMaster RM on RM.RetailerID = OFH.RetailerId " +
+                            "where OFH.Date = '" + date + "'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    bo = new OrderFulfillmentReportBO();
+                    bo.setOrderID(c.getString(0));
+                    bo.setRetailerID(c.getString(1));
+                    bo.setStatus(c.getString(2));
+                    orderFulfillmentList.add(bo);
+                }
+            }
+
+            c.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        setOrderFulfillmentList(orderFulfillmentList);
+    }
+
+    public void downloadOrderFullfillmentDetailReport(String Date, String orderID) {
+        orderFulfillmentDetailList = new ArrayList<>();
+        try {
+            OrderFulfillmentReportListBO bo;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT distinct OFD.OrderID,PM.PName," +
+                            "       CASE WHEN SLM.ListCode = 'CASE' THEN OFD.Qty ELSE '0' END AS CaseOrderedQty," +
+                            "       CASE WHEN SLM.ListCode = 'PIECE' THEN OFD.Qty ELSE '0' END AS PieceOrderedQty," +
+                            "       CASE WHEN DH.Status = 'P' AND SLM.ListCode = 'CASE' THEN DD.DeliveredQty WHEN DH.Status = 'F' AND " +
+                            "                                                                                               SLM.ListCode = 'CASE' THEN OFD.Qty ELSE '0' END AS CaseFulfilledQty," +
+                            "       CASE WHEN DH.Status = 'P' AND SLM.ListCode = 'PIECE' THEN DD.DeliveredQty WHEN DH.Status = 'F' AND " +
+                            "                                                                                                SLM.ListCode = 'PIECE' THEN OFD.Qty ELSE '0' END AS PieceFulfilledQty" +
+                            "  FROM ProductMaster PM" +
+                            "       INNER JOIN" +
+                            "       OrderFullfillmentDetail OFD ON OFD.PID = PM.PID" +
+                            "       INNER JOIN" +
+                            "       StandardListMaster SLM ON (SLM.ListID = OFD.UOMID OR " +
+                            "                                  SLM.ListID = DD.UOMID) " +
+                            "       LEFT JOIN" +
+                            "       DeliveryHeader DH ON DH.OrderID = OFD.OrderID" +
+                            "       LEFT JOIN" +
+                            "       DeliveryDetail DD ON DD.PId = OFD.PId AND " +
+                            "                            DD.OrderId = OFD.OrderId" +
+                            "       INNER JOIN" +
+                            "       OrderFullfillmentHeader OFH ON OFH.OrderId = OFD.OrderId" +
+                            " WHERE OFH.Date = '" + Date + "' and DH.Status != 'R' and OFD.OrderID = '" + orderID + "'");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    bo = new OrderFulfillmentReportListBO();
+                    bo.setOrderID(c.getString(0));
+                    bo.setProductName(c.getString(1));
+                    bo.setOrderedCases(c.getString(2));
+                    bo.setOrderedPcs(c.getString(3));
+                    bo.setFulfilledCases(c.getString(4));
+                    bo.setFulfilledPcs(c.getString(5));
+                    orderFulfillmentDetailList.add(bo);
+                }
+            }
+
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        setOrderFulfillmentDetailList(orderFulfillmentDetailList);
     }
 }

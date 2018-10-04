@@ -718,7 +718,7 @@ public class BatchAllocationHelper {
             for (ProductMasterBO batchProductBO : batchList) {
                 double lineValue = batchProductBO.getDiscount_order_value();
                 if (lineValue > 0) {
-                    batchProductBO.setApplyValue(lineValue * discountValue / 100);
+                    batchProductBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(lineValue * discountValue / 100));
                     totalVaue = totalVaue + batchProductBO.getDiscount_order_value() - batchProductBO.getApplyValue();
                 }
 
@@ -750,7 +750,7 @@ public class BatchAllocationHelper {
                         * productBO.getOutersize();
 
                 if (totalQty > 0) {
-                    batchProductBO.setApplyValue(totalQty * discountValue);
+                    batchProductBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(totalQty * discountValue));
                     totalVaue = totalVaue + batchProductBO.getDiscount_order_value() - (batchProductBO.getApplyValue());
                 }
             }

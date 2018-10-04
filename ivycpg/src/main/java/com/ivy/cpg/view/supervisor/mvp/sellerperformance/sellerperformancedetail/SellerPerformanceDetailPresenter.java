@@ -23,9 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ivy.cpg.view.supervisor.mvp.RetailerBo;
-import com.ivy.cpg.view.supervisor.mvp.SellerBo;
-import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
+import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -40,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
@@ -431,7 +432,8 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
         if (time != null && time != 0) {
             Date date = new Date(time);
-            Format format = new SimpleDateFormat("hh:mm a", Locale.US);
+            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
             return format.format(date);
         } else
             return "";

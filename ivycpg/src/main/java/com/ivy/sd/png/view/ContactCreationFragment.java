@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -35,7 +34,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -202,7 +200,9 @@ public class ContactCreationFragment extends IvyBaseFragment {
             if (validateData()) {
                 if (isProfileEdit) {
                     if (isEdit) {
-                        retailerContactBo.setStatus("U");
+                        if(!"I".equalsIgnoreCase(retailerContactBo.getStatus())){
+                            retailerContactBo.setStatus("U");
+                        }
                         for (int i = 0; i < contactList.size(); i++) {
                             if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContactBo.getCpId())) {
                                 contactList.set(i, retailerContactBo);
@@ -513,7 +513,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private boolean hasdata() {
         boolean isData = false;
         if (retailerContactBo.getFistname().length() > 0 || retailerContactBo.getLastname().length() > 0 ||
-                !retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ||
+                (!retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") && retailerContactBo.getContactTitleLovId().length() > 0 ) ||
                 retailerContactBo.getTitle().length() > 0 || retailerContactBo.getContactMail().length() > 0
                 || retailerContactBo.getContactNumber().length() > 0) {
             isData = true;
@@ -738,6 +738,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
         this.retailerContactBo.setIsPrimary(retailerContactBo.getIsPrimary());
         this.retailerContactBo.setContactTitleLovId(retailerContactBo.getContactTitleLovId());
         this.retailerContactBo.setCpId(retailerContactBo.getCpId());
+        this.retailerContactBo.setStatus(retailerContactBo.getStatus());
 
         if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") && retailerContactBo.getTitle().length() == 0)
             sp_reason.setSelection(0);

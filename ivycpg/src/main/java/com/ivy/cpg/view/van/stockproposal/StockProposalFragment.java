@@ -1576,11 +1576,11 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
                     } else if (mSelectedFilter.equals(getResources().getString(
                             R.string.prod_code))) {
-                        if (ret.getRField1() != null && ret.getRField1()
+                        if ((ret.getRField1() != null && ret.getRField1()
                                 .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText()
-                                                .toString().toLowerCase()))
+                                .contains(mEdt_searchproductName.getText().toString()
+                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase())))
                             stockPropMylist.add(ret);
 
                     } else if (mSelectedFilter.equals(getResources().getString(
@@ -1665,7 +1665,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             bmodel.applyAlertDialogTheme(builderSingle);
         } else if (vw == R.id.btn_clear) {
             mEdt_searchproductName.setText("");
-
+            viewFlipper.showPrevious();
             /** set the following value to clear the **/
             mSelectedFilterMap.put("General", "All");
             mSelectedFilterMap.put("Brand", "All");

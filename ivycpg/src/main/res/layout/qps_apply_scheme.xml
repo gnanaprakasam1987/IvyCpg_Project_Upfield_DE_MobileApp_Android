@@ -230,30 +230,18 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     android:background="@color/black_bg1"
-                    android:orientation="horizontal" android:weightSum="2.4">
+                    android:orientation="horizontal" android:weightSum="2.1">
 
                     <!--<TextView-->
-                        <!--android:id="@+id/tv_scheme_header"-->
-                        <!--style="?attr/customListTitle"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="0.4"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:gravity="start|center"-->
-                        <!--android:paddingLeft="@dimen/dimen_2dp"-->
-                        <!--android:paddingRight="@dimen/dimen_2dp"-->
-                        <!--android:text="Scheme Name" />-->
-
-                    <TextView
-                        android:id="@+id/tv_schemeduration_header"
-                        style="?attr/customListTitle"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.3"
-                        android:layout_height="match_parent"
-                        android:paddingLeft="@dimen/dimen_2dp"
-                        android:paddingRight="@dimen/dimen_2dp"
-                        android:gravity="center"
-                        android:tag="scheme_duration"
-                        android:text="Scheme Duration" />
+                    <!--android:id="@+id/tv_scheme_header"-->
+                    <!--style="?attr/customListTitle"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="0.4"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:gravity="start|center"-->
+                    <!--android:paddingLeft="@dimen/dimen_2dp"-->
+                    <!--android:paddingRight="@dimen/dimen_2dp"-->
+                    <!--android:text="Scheme Name" />-->
 
                     <TextView
                         android:id="@+id/tv_schemetype_header"
@@ -346,13 +334,14 @@
                 android:id="@+id/elv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="4dp"
+                android:layout_margin="2dp"
                 android:cacheColorHint="@null"
                 android:divider="#FFFFFF"
                 android:dividerHeight="0dp"
                 android:groupIndicator="@null"
-                android:descendantFocusability="beforeDescendants"
                 />
+            <!--android:descendantFocusability="beforeDescendants"-->
+            <!--/>-->
         </LinearLayout>
         <!-- </HorizontalScrollView> -->
     </LinearLayout>

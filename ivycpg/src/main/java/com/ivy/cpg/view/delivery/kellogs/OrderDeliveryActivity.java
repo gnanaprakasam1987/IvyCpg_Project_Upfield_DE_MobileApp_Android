@@ -93,7 +93,8 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
         prepareScreenData();
     }
-    private void prepareScreenData(){
+
+    private void prepareScreenData() {
         MyAdapter myAdapter = new MyAdapter();
         recyclerView.setAdapter(myAdapter);
         myAdapter.notifyDataSetChanged();
@@ -104,8 +105,8 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView orderId,orderDate,orderValue,orderLine,invoiceGeneratedText;
-            private Button orderAccept,orderEdit;
+            private TextView orderId, orderDate, orderValue, orderLine, invoiceGeneratedText;
+            private Button orderAccept, orderEdit;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -124,10 +125,10 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 orderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
                 orderLine.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
 
-                ((TextView)view.findViewById(R.id.order_delivery_listview_id_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
-                ((TextView)view.findViewById(R.id.order_delivery_listview_date_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
-                ((TextView)view.findViewById(R.id.order_delivery_listview_line_head)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
-                ((TextView)view.findViewById(R.id.order_delivery_listview_value_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
+                ((TextView) view.findViewById(R.id.order_delivery_listview_id_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
+                ((TextView) view.findViewById(R.id.order_delivery_listview_date_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
+                ((TextView) view.findViewById(R.id.order_delivery_listview_line_head)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
+                ((TextView) view.findViewById(R.id.order_delivery_listview_value_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
 
                 (view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
@@ -155,11 +156,10 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 public void onClick(View view) {
 
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
-                    if(orderHeaders.get(position).getInvoiceStatus()!=1) {
-                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
-                    }
-                    else {
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus(), orderHeaders.get(position).getrField3()).execute();
+                    if (orderHeaders.get(position).getInvoiceStatus() != 1) {
+                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus(), orderHeaders.get(position).getrField3()).execute();
+                    } else {
                         Toast.makeText(
                                 OrderDeliveryActivity.this,
                                 "Already invoice has been generated",
@@ -173,7 +173,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
 
-                    if(orderHeaders.get(position).getInvoiceStatus() == 1) {
+                    if (orderHeaders.get(position).getInvoiceStatus() == 1) {
                         Toast.makeText(
                                 OrderDeliveryActivity.this,
                                 "Already invoice has been generated",
@@ -181,7 +181,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),Str_EDIT,orderHeaders.get(position).getInvoiceStatus()).execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_EDIT, orderHeaders.get(position).getInvoiceStatus(), orderHeaders.get(position).getrField3()).execute();
                 }
             });
 
@@ -189,7 +189,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
 
-                    if(orderHeaders.get(position).getInvoiceStatus() == 1) {
+                    if (orderHeaders.get(position).getInvoiceStatus() == 1) {
                         Toast.makeText(
                                 OrderDeliveryActivity.this,
                                 "Already invoice has been generated",
@@ -197,12 +197,12 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),Str_ACCEPT,orderHeaders.get(position).getInvoiceStatus()).execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_ACCEPT, orderHeaders.get(position).getInvoiceStatus(), orderHeaders.get(position).getrField3()).execute();
 
                 }
             });
 
-            if(orderHeaders.get(position).getInvoiceStatus() == 1){
+            if (orderHeaders.get(position).getInvoiceStatus() == 1) {
                 holder.orderAccept.setVisibility(View.GONE);
                 holder.orderEdit.setVisibility(View.GONE);
                 holder.invoiceGeneratedText.setVisibility(View.VISIBLE);
@@ -216,25 +216,27 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
-    class downloadOrderDeliveryDetail extends AsyncTask<Void,Void,Void>{
+    class downloadOrderDeliveryDetail extends AsyncTask<Void, Void, Void> {
 
         private String orderId;
         private String from;
         private int invoiceStatus;
+        private String referenceId;
 
-        private downloadOrderDeliveryDetail(String orderId,String from,int invoiceStatus){
+        private downloadOrderDeliveryDetail(String orderId, String from, int invoiceStatus, String referenceId) {
             this.orderId = orderId;
             this.from = from;
             this.invoiceStatus = invoiceStatus;
+            this.referenceId = referenceId;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             bmodel.productHelper.clearOrderTable();
             orderDeliveryHelper.clearSalesReturnTable();
-            orderDeliveryHelper.downloadOrderDeliveryDetail(OrderDeliveryActivity.this,orderId);
-            orderDeliveryHelper.downloadSchemeFreeProducts(OrderDeliveryActivity.this,orderId);
-            orderDeliveryHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this,orderId);
+            orderDeliveryHelper.downloadOrderDeliveryDetail(OrderDeliveryActivity.this, orderId);
+            orderDeliveryHelper.downloadSchemeFreeProducts(OrderDeliveryActivity.this, orderId);
+            orderDeliveryHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this, orderId);
             orderDeliveryHelper.downloadOrderedProducts();
             orderDeliveryHelper.getProductTotalValue();
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
@@ -247,9 +249,9 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            if(from.equalsIgnoreCase(Str_ACCEPT)) {
+            if (from.equalsIgnoreCase(Str_ACCEPT)) {
 
-                if(orderDeliveryHelper.getTotalProductQty() == 0)
+                if (orderDeliveryHelper.getTotalProductQty() == 0)
                     Toast.makeText(
                             OrderDeliveryActivity.this,
                             getResources().getString(R.string.no_ordered_products_found),
@@ -261,21 +263,21 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         @Override
                         public void onPositiveButtonClick() {
 
-                            boolean status = orderDeliveryHelper.updateTableValues(OrderDeliveryActivity.this, orderId,false,getIntent().getExtras().getString("menuCode"));
-                            if(status){
+                            boolean status = orderDeliveryHelper.updateTableValues(OrderDeliveryActivity.this, orderId, false, getIntent().getExtras().getString("menuCode"), referenceId);
+                            if (status) {
                                 bmodel.saveModuleCompletion(getIntent().getExtras().getString("menuCode"));
                                 Toast.makeText(
                                         OrderDeliveryActivity.this,
                                         getResources().getString(R.string.invoice_generated),
                                         Toast.LENGTH_SHORT).show();
 
-                                orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size()-1).
-                                        setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(OrderDeliveryActivity.this,orderId));
+                                orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size() - 1).
+                                        setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(OrderDeliveryActivity.this, orderId));
 
                                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                                         .now(SDUtil.TIME));
 
-                                bmodel.mCommonPrintHelper.xmlRead("invoice", false,orderDeliveryHelper.getOrderedProductMasterBOS() , null,null,null);
+                                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null, null,null);
 
                                 bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
                                         StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
@@ -287,8 +289,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                                 i.putExtra("sendMailAndLoadClass", "PRINT_FILE_INVOICE");
                                 startActivity(i);
                                 overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                            }
-                            else
+                            } else
                                 Toast.makeText(
                                         OrderDeliveryActivity.this,
                                         getResources().getString(R.string.not_able_to_generate_invoice),
@@ -309,13 +310,12 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                             getResources().getString(R.string.ordered_value_exceeds_sih_value_please_edit_the_order),
                             Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            else {
+            } else {
                 Intent intent = new Intent(OrderDeliveryActivity.this, OrderDeliveryDetailActivity.class);
                 intent.putExtra("From", from);
-                intent.putExtra("OrderId",orderId);
-                intent.putExtra("InvoiceStatus",invoiceStatus);
+                intent.putExtra("OrderId", orderId);
+                intent.putExtra("RefId", referenceId);
+                intent.putExtra("InvoiceStatus", invoiceStatus);
                 intent.putExtra("menuCode", getIntent().getExtras().getString("menuCode"));
                 startActivity(intent);
             }

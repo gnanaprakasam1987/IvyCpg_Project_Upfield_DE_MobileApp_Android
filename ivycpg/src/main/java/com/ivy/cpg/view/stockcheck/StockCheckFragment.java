@@ -367,7 +367,18 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             if (!businessModel.configurationMasterHelper.SHOW_STOCK_CB)
                 view.findViewById(R.id.shelfPcsCB).setVisibility(View.GONE);
-
+            else {
+                try {
+                    if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                            R.id.shelfPcsCB).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.shelfPcsCB))
+                                .setText(businessModel.labelsMasterHelper
+                                        .applyLabels(view.findViewById(
+                                                R.id.shelfPcsCB).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+            }
 
             if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
                 view.findViewById(R.id.shelfOuterTitle).setVisibility(View.GONE);
@@ -623,79 +634,155 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.imageButton_availability.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (holder.productObj.getLocations()
-                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == -1) {
-                                holder.productObj.getLocations()
-                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
-
-                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
-                                holder.imageButton_availability.setChecked(true);
-
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                                        && holder.productObj.getPcUomid() != 0)
-                                    holder.shelfPcsQty.setText("1");
-                                else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                                        && holder.productObj.getCaseUomId() != 0)
-                                    holder.shelfCaseQty.setText("1");
-                                else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
-                                        && holder.productObj.getOuUomid() != 0)
-                                    holder.shelfouter.setText("1");
-
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
-                                    holder.mReason.setEnabled(false);
-                                    holder.mReason.setSelected(false);
-                                    holder.mReason.setSelection(0);
+                            if (businessModel.configurationMasterHelper.CHANGE_AVAL_FLOW) {
+                                if (holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == -1) {
                                     holder.productObj.getLocations()
-                                            .get(stockCheckPresenter.mSelectedLocationIndex).setReasonId(0);
-                                }
-                            } else if (holder.productObj.getLocations()
-                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
-                                holder.productObj.getLocations()
-                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
+                                            .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
 
-                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.RED)));
-                                holder.imageButton_availability.setChecked(true);
+                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.RED)));
+                                    holder.imageButton_availability.setChecked(true);
 
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                                        && holder.productObj.getPcUomid() != 0)
-                                    holder.shelfPcsQty.setText("0");
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                                        && holder.productObj.getCaseUomId() != 0)
-                                    holder.shelfCaseQty.setText("0");
-                                if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
-                                        && holder.productObj.getOuUomid() != 0)
-                                    holder.shelfouter.setText("0");
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                        holder.shelfPcsQty.setText("0");
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                        holder.shelfCaseQty.setText("0");
+                                    if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                        holder.shelfouter.setText("0");
 
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
-                                    holder.mReason.setEnabled(true);
-                                    holder.mReason.setSelected(true);
-                                    holder.mReason.setSelection(0);
-                                }
-                            } else if (holder.productObj.getLocations()
-                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 0) {
-                                holder.productObj.getLocations()
-                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
-
-                                CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.checkbox_default_color)));
-                                holder.imageButton_availability.setChecked(false);
-
-
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                                        && holder.productObj.getPcUomid() != 0)
-                                    holder.shelfPcsQty.setText("");
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                                        && holder.productObj.getCaseUomId() != 0)
-                                    holder.shelfCaseQty.setText("");
-                                if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
-                                        && holder.productObj.getOuUomid() != 0)
-                                    holder.shelfouter.setText("");
-
-                                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
-                                    holder.mReason.setEnabled(false);
-                                    holder.mReason.setSelected(false);
-                                    holder.mReason.setSelection(0);
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                        holder.mReason.setEnabled(true);
+                                        holder.mReason.setSelected(true);
+                                        holder.mReason.setSelection(0);
+                                    }
+                                } else if (holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
                                     holder.productObj.getLocations()
-                                            .get(stockCheckPresenter.mSelectedLocationIndex).setReasonId(0);
+                                            .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
+
+                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.checkbox_default_color)));
+                                    holder.imageButton_availability.setChecked(false);
+
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                        holder.shelfPcsQty.setText("");
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                        holder.shelfCaseQty.setText("");
+                                    if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                        holder.shelfouter.setText("");
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                        holder.mReason.setEnabled(false);
+                                        holder.mReason.setSelected(false);
+                                        holder.mReason.setSelection(0);
+                                        holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex).setReasonId(0);
+                                    }
+
+                                } else if (holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 0) {
+                                    holder.productObj.getLocations()
+                                            .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
+
+                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
+                                    holder.imageButton_availability.setChecked(true);
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                        holder.shelfPcsQty.setText("1");
+                                    else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                        holder.shelfCaseQty.setText("1");
+                                    else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                        holder.shelfouter.setText("1");
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                        holder.mReason.setEnabled(false);
+                                        holder.mReason.setSelected(false);
+                                        holder.mReason.setSelection(0);
+                                        holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex).setReasonId(0);
+                                    }
+                                }
+                            } else {
+                                if (holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == -1) {
+                                    holder.productObj.getLocations()
+                                            .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
+
+                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
+                                    holder.imageButton_availability.setChecked(true);
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                                            && holder.productObj.getPcUomid() != 0)
+                                        holder.shelfPcsQty.setText("1");
+                                    else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                                            && holder.productObj.getCaseUomId() != 0)
+                                        holder.shelfCaseQty.setText("1");
+                                    else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                                            && holder.productObj.getOuUomid() != 0)
+                                        holder.shelfouter.setText("1");
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                        holder.mReason.setEnabled(false);
+                                        holder.mReason.setSelected(false);
+                                        holder.mReason.setSelection(0);
+                                        holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex).setReasonId(0);
+                                    }
+                                } else if (holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
+                                    holder.productObj.getLocations()
+                                            .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
+
+                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.RED)));
+                                    holder.imageButton_availability.setChecked(true);
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                                            && holder.productObj.getPcUomid() != 0)
+                                        holder.shelfPcsQty.setText("0");
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                                            && holder.productObj.getCaseUomId() != 0)
+                                        holder.shelfCaseQty.setText("0");
+                                    if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                                            && holder.productObj.getOuUomid() != 0)
+                                        holder.shelfouter.setText("0");
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                        holder.mReason.setEnabled(true);
+                                        holder.mReason.setSelected(true);
+                                        holder.mReason.setSelection(0);
+                                    }
+                                } else if (holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 0) {
+                                    holder.productObj.getLocations()
+                                            .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(-1);
+
+                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.checkbox_default_color)));
+                                    holder.imageButton_availability.setChecked(false);
+
+
+
+                                /*
+                                 * When one of the config is not enable the default value set as 0 instead of -1
+                                 *
+                                 * so that remove config here
+                                 * */
+                                //   if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                                // && holder.productObj.getPcUomid() != 0)
+                                holder.shelfPcsQty.setText("");
+                                // if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                                // && holder.productObj.getCaseUomId() != 0)
+                                holder.shelfCaseQty.setText("");
+                                // if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                                // && holder.productObj.getOuUomid() != 0)
+                                holder.shelfouter.setText("");
+
+                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                        holder.mReason.setEnabled(false);
+                                        holder.mReason.setSelected(false);
+                                        holder.mReason.setSelection(0);
+                                        holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex).setReasonId(0);
+                                    }
                                 }
                             }
 
@@ -2109,29 +2196,59 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     @Override
     public void showStockSavedDialog() {
-        new CommonDialog(getActivity().getApplicationContext(), getActivity(),
-                "", getResources().getString(R.string.saved_successfully),
-                false, getActivity().getResources().getString(R.string.ok),
-                null, new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+        if(businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY){
+            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                    "", getResources().getString(R.string.saved_successfully),
+                    false, getActivity().getResources().getString(R.string.next),
+                    getActivity().getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                    Bundle extras = getActivity().getIntent().getExtras();
+                    if (extras != null) {
+                        intent.putExtra("IsMoveNextActivity", businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                        intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                    }
 
-                Bundle extras = getActivity().getIntent().getExtras();
-                if (extras != null) {
-                    intent.putExtra("IsMoveNextActivity", businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                    intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                    startActivity(intent);
+                    getActivity().finish();
+
                 }
+            }, new CommonDialog.negativeOnClickListener() {
+                @Override
+                public void onNegativeButtonClick() {
 
-                startActivity(intent);
-                getActivity().finish();
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                    startActivity(intent);
+                    getActivity().finish();
 
-            }
-        }, new CommonDialog.negativeOnClickListener() {
-            @Override
-            public void onNegativeButtonClick() {
-            }
-        }).show();
+                }
+            }).show();
+        }else{
+            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                    "", getResources().getString(R.string.saved_successfully),
+                    false, getActivity().getResources().getString(R.string.ok),
+                    null, new CommonDialog.PositiveClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+                    Bundle extras = getActivity().getIntent().getExtras();
+                    if (extras != null) {
+                        intent.putExtra("IsMoveNextActivity", businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                        intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                    }
+
+                    startActivity(intent);
+                    getActivity().finish();
+
+                }
+            }, new CommonDialog.negativeOnClickListener() {
+                @Override
+                public void onNegativeButtonClick() {
+                }
+            }).show();
+        }
     }
 
     @Override

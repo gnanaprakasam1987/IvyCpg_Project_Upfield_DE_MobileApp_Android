@@ -188,7 +188,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         int i = v.getId();
         Commons.print("lang " + Locale.getDefault().getLanguage() + "/" + getActivity().getBaseContext().getResources().getConfiguration().locale);
         if (i == R.id.buttonproceed) {
-            if (reason
+            if (reason != null && reason
                     .equalsIgnoreCase(getResources().getString(R.string.none)))
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.select_reason),

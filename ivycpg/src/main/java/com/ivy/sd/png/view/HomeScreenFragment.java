@@ -63,6 +63,7 @@ import com.ivy.cpg.view.denomination.DenominationFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.expense.ExpenseFragment;
+import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
@@ -1467,7 +1468,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1478,7 +1479,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+                //getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1489,7 +1490,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1499,7 +1500,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 

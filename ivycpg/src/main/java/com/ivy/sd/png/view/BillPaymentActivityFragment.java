@@ -175,12 +175,12 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         //mTotalPayableAmt = mTotalPayableAmt - paidAmt;
         mTotalDiscAmt = mTotalDiscAmt - givenDiscAmt;
         if (mTotalPayableAmt > 0) {
-            mPayableAmtTV.setText(bmodel.formatValueBasedOnConfig(mTotalPayableAmt));
+            mPayableAmtTV.setText(bmodel.formatBasedOnCurrency(mTotalPayableAmt));
         } else {
             mPayableAmtTV.setText(bmodel.formatValue(0));
         }
         if (mTotalDiscAmt > 0) {
-            mDiscTV.setText(bmodel.formatValueBasedOnConfig(mTotalDiscAmt) + "");
+            mDiscTV.setText(bmodel.formatBasedOnCurrency(mTotalDiscAmt) + "");
         } else {
             mDiscTV.setText(bmodel.formatValue(0));
         }
@@ -194,7 +194,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
         mBalanceAmt = mTotalPayableAmt - paidAmt;
         if (mBalanceAmt > 0) {
-            mBalaceAmtTV.setText(bmodel.formatValueBasedOnConfig(mBalanceAmt));
+            mBalaceAmtTV.setText(bmodel.formatBasedOnCurrency(mBalanceAmt));
         } else {
             mBalaceAmtTV.setText(bmodel.formatValue(0));
         }
@@ -397,7 +397,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
             }
         }
-        totalPayableAmt = Double.parseDouble(bmodel.formatValueBasedOnConfig(totalPayableAmt));
+        totalPayableAmt = Double.parseDouble(bmodel.formatBasedOnCurrency(totalPayableAmt));
         if (totalCollected == totalPayableAmt) {
             flag = true;
         }
@@ -422,7 +422,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
             }
         }
-        totalPayableAmt = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(totalPayableAmt));
+        totalPayableAmt = SDUtil.convertToDouble(bmodel.formatBasedOnCurrency(totalPayableAmt));
         if (totalCollected > totalPayableAmt) {
             flag = true;
         }
@@ -964,7 +964,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                             tempStr = "" + payBO.getReferenceNumber();
                     }
                     sb.append(doPrintFormatingLeft(tempStr, 9));
-                    sb.append(doPrintFormatingLeft(String.format("%10s", bmodel.formatValueBasedOnConfig(payBO.getAmount())), 12));
+                    sb.append(doPrintFormatingLeft(String.format("%10s", bmodel.formatBasedOnCurrency(payBO.getAmount())), 12));
                     sb.append(LineFeed(1));
 
                     if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE))
@@ -978,10 +978,10 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(LineFeed(1));
 
                 sb.append(doPrintFormatingLeft("Discount ", 12));
-                sb.append(doPrintFormatingLeft(bmodel.formatValueBasedOnConfig(totalDiscount), 10));
+                sb.append(doPrintFormatingLeft(bmodel.formatBasedOnCurrency(totalDiscount), 10));
                 sb.append(doPrintAddSpace(0, 7));
                 sb.append(doPrintFormatingLeft("Total ", 7));
-                sb.append(String.format("%14s", bmodel.formatValueBasedOnConfig(total)));
+                sb.append(String.format("%14s", bmodel.formatBasedOnCurrency(total)));
                 sb.append(LineFeed(1));
 
                 for (int i = 0; i < 47; i++) {
@@ -1217,7 +1217,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                             tempStr = "" + payBO.getReferenceNumber();
                     }
                     sb.append(doPrintFormatingLeft(tempStr, 9));
-                    sb.append(doPrintFormatingLeft(String.format("%10s", bmodel.formatValueBasedOnConfig(payBO.getAmount())), 10));
+                    sb.append(doPrintFormatingLeft(String.format("%10s", bmodel.formatBasedOnCurrency(payBO.getAmount())), 10));
                     sb.append(LineFeed(1));
 
                     if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE))
@@ -1233,12 +1233,12 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 if (totalDiscount > 0) {
                     sb.append(doPrintFormatingLeft(getResources().getString(R.string.discount) + " ", 10));
                     sb.append(doPrintAddSpace(0, 17));
-                    sb.append(doPrintFormatingRight(bmodel.formatValueBasedOnConfig(totalDiscount), 13));
+                    sb.append(doPrintFormatingRight(bmodel.formatBasedOnCurrency(totalDiscount), 13));
                     sb.append(LineFeed(1));
                 }
                 sb.append(doPrintFormatingLeft(getResources().getString(R.string.total) + " ", 7));
                 sb.append(doPrintAddSpace(0, 15));
-                sb.append(doPrintFormatingRight(String.format("%13s", bmodel.formatValueBasedOnConfig(total) + " MXN"), 13));
+                sb.append(doPrintFormatingRight(String.format("%13s", bmodel.formatBasedOnCurrency(total) + " MXN"), 13));
                 sb.append(LineFeed(1));
 
                 for (int i = 0; i < 36; i++) {

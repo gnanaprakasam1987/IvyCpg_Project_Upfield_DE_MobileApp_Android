@@ -82,7 +82,6 @@ import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
-import com.ivy.sd.intermecprint.BtPrint4Ivy;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
@@ -135,7 +134,7 @@ import com.ivy.sd.png.provider.ProfileHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
 import com.ivy.sd.png.provider.ReportHelper;
-import com.ivy.sd.png.provider.RetailerContractHelper;
+import com.ivy.cpg.view.retailercontract.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -150,25 +149,18 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
-import com.ivy.sd.png.view.BixolonIIPrint;
-import com.ivy.sd.png.view.BixolonIPrint;
 import com.ivy.sd.png.view.CallAnalysisActivity;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.InvoicePrintZebra;
-import com.ivy.sd.png.view.InvoicePrintZebraNew;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.sd.png.view.ScreenActivationActivity;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
-import com.ivy.sd.print.GhanaPrintPreviewActivity;
-import com.ivy.sd.print.PrintPreviewScreen;
-import com.ivy.sd.print.PrintPreviewScreenDiageo;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
@@ -226,7 +218,7 @@ public class BusinessModel extends Application {
     public TimerCount timer;
     private String remarkType = "0";
 
-    public String userNameTemp, passwordTemp;
+    public String userNameTemp="", passwordTemp="";
     public RetailerMasterBO retailerMasterBO;
     public Vector<RetailerMasterBO> retailerMaster;
     public Vector<RetailerMasterBO> subDMaster;
@@ -284,7 +276,6 @@ public class BusinessModel extends Application {
     public JExcelHelper mJExcelHelper;
     public CommonPrintHelper mCommonPrintHelper;
     public DynamicReportHelper dynamicReportHelper;
-    public RetailerContractHelper retailerContractHelper;
     public TeamLeaderMasterHelper teamLeadermasterHelper;
     private static BusinessModel mInstance;
     public LoyalityHelper mLoyalityHelper;
@@ -449,7 +440,6 @@ public class BusinessModel extends Application {
         dynamicReportHelper = DynamicReportHelper.getInstance(this);
         teamLeadermasterHelper = TeamLeaderMasterHelper.getInstance(this);
 
-        retailerContractHelper = RetailerContractHelper.getInstance(this);
         mLoyalityHelper = LoyalityHelper.getInstance(this);
         newOutletAttributeHelper = NewOutletAttributeHelper.getInstance(this);
 
@@ -999,7 +989,7 @@ public class BusinessModel extends Application {
      * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
      * value will not be considered.
      */
-
+@Deprecated
     public String QT(String data) {
         return "'" + data + "'";
     }
@@ -2726,8 +2716,8 @@ public class BusinessModel extends Application {
     }
 
 
-    //Applying currence value config or normal format(2)
-    public String formatValueBasedOnConfig(double value) {
+    //Applying currency value config or normal format(2)
+    public String formatBasedOnCurrency(double value) {
         String formattedValue = "0";
         try {
             if (configurationMasterHelper.IS_FORMAT_USING_CURRENCY_VALUE) {
@@ -2752,7 +2742,7 @@ public class BusinessModel extends Application {
 
                 }
             } else {
-                formattedValue = SDUtil.format(value, configurationMasterHelper.VALUE_PRECISION_COUNT, 0);
+                formattedValue = String.valueOf(SDUtil.formatAsPerCalculationConfig(value));
 
             }
         } catch (Exception ex) {
@@ -3291,6 +3281,9 @@ public class BusinessModel extends Application {
     public void showAlertWithImage(String title, String msg, int id, boolean imgDisplay) {
 
         final int idd = id;
+        if(getContext() == null){
+            return;
+        }
 
         CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
@@ -3306,95 +3299,26 @@ public class BusinessModel extends Application {
                     StockCheckActivity frm = (StockCheckActivity) ctx;
                     frm.finish();
                     ctx.startActivity(new Intent(ctx, HomeScreenTwo.class));
-                } else if (idd == 2222) {
-                    InvoicePrintZebra frm = (InvoicePrintZebra) ctx;
-                    frm.finish();
-                    loadActivity(ctx,
-                            DataMembers.actHomeScreenTwo);
                 } else if (idd == 3333) {
                     ReAllocationActivity frm = (ReAllocationActivity) ctx;
                     frm.finish();
                     loadActivity(ctx, DataMembers.actHomeScreen);
                 } else if (idd == 1234) {
                     productHelper.clearOrderTable();
-                    if (configurationMasterHelper.SHOW_BIXOLONII) {
-                        BixolonIIPrint frm = (BixolonIIPrint) ctx;
-                        loadActivity(frm, DataMembers.actHomeScreenTwo);
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_BIXOLONI) {
-                        BixolonIPrint frm = (BixolonIPrint) ctx;
-                        loadActivity(frm, DataMembers.actHomeScreenTwo);
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_ZEBRA) {
-                        InvoicePrintZebraNew frm = (InvoicePrintZebraNew) ctx;
-                        loadActivity(frm, DataMembers.actHomeScreenTwo);
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_ZEBRA_ATS) {
-                        PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
-                        loadActivity(frm, DataMembers.actHomeScreenTwo);
-                        frm.finish();
-
-                    } else if (configurationMasterHelper.SHOW_INTERMEC_ATS) {
-                        BtPrint4Ivy frm = (BtPrint4Ivy) ctx;
-                        loadActivity(frm, DataMembers.actHomeScreenTwo);
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
-                        PrintPreviewScreenDiageo frm = (PrintPreviewScreenDiageo) ctx;
-                        loadActivity(frm, DataMembers.actHomeScreenTwo);
-                        frm.finish();
-
-                    } else if (configurationMasterHelper.SHOW_ZEBRA_TITAN) {
+                    if (configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                         PrintPreviewScreenTitan frm = (PrintPreviewScreenTitan) ctx;
                         loadActivity(frm, DataMembers.actHomeScreenTwo);
                         frm.finish();
 
-                    } else if (configurationMasterHelper.SHOW_ZEBRA_GHANA) {
-                        GhanaPrintPreviewActivity frm = (GhanaPrintPreviewActivity) ctx;
-                        loadActivity(frm, DataMembers.actHomeScreenTwo);
-                        frm.finish();
-                    } else {
-                        loadActivity(ctx,
-                                DataMembers.actHomeScreenTwo);
-                        BixolonIIPrint frm = (BixolonIIPrint) ctx;
-                        frm.finish();
                     }
                 } else if (idd == 121) {
 
-                    if (configurationMasterHelper.SHOW_BIXOLONII) {
-                        BixolonIIPrint frm = (BixolonIIPrint) ctx;
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_BIXOLONI) {
-                        BixolonIPrint frm = (BixolonIPrint) ctx;
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_ZEBRA) {
-                        InvoicePrintZebraNew frm = (InvoicePrintZebraNew) ctx;
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_ZEBRA_ATS) {
-                        PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_INTERMEC_ATS) {
-                        BtPrint4Ivy frm = (BtPrint4Ivy) ctx;
-                        frm.finish();
-                    } else if (configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
-                        PrintPreviewScreenDiageo frm = (PrintPreviewScreenDiageo) ctx;
-
-                        frm.finish();
-
-                    } else if (configurationMasterHelper.SHOW_ZEBRA_TITAN) {
+                    if (configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                         PrintPreviewScreenTitan frm = (PrintPreviewScreenTitan) ctx;
 
                         frm.finish();
 
-                    } else if (configurationMasterHelper.SHOW_ZEBRA_GHANA) {
-                        GhanaPrintPreviewActivity frm = (GhanaPrintPreviewActivity) ctx;
-                        frm.finish();
-                    } else {
-                        BixolonIIPrint frm = (BixolonIIPrint) ctx;
-                        frm.finish();
                     }
-                } else if (idd == 1235) {
-                    BixolonIPrint frm = (BixolonIPrint) ctx;
-                    frm.finish();
                 } else if (idd == DataMembers.SAVECOLLECTION) {
                     CollectionScreen frm = (CollectionScreen) ctx;
                     frm.finish();
@@ -3423,163 +3347,15 @@ public class BusinessModel extends Application {
 
                 } else if (idd == DataMembers.NOTIFY_INVOICE_SAVED) {
                     if (ctx.getClass().getSimpleName()
-                            .equalsIgnoreCase("BixolonIIPrint")) {
-                        // PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
-                        BixolonIIPrint frm = (BixolonIIPrint) ctx;
-                        frm.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_PRINT);
-                        /*
-                         * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                         * frm.finish();
-                         */
-                    } else if (ctx.getClass().getSimpleName()
-                            .equalsIgnoreCase("BixolonIPrint")) {
-                        BixolonIPrint frm = (BixolonIPrint) ctx;
-                        frm.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_PRINT);
-                        /*
-                         * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                         * frm.finish();
-                         */
-                    } else if (ctx.getClass().getSimpleName()
-                            .equalsIgnoreCase("BtPrint4Ivy")) {
-                        BtPrint4Ivy frm = (BtPrint4Ivy) ctx;
-                        frm.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_PRINT);
-                        /*
-                         * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                         * frm.finish();
-                         */
-                    } else if (ctx.getClass().getSimpleName()
-                            .equalsIgnoreCase("InvoicePrintZebraNew")) {
-                        InvoicePrintZebraNew frm = (InvoicePrintZebraNew) ctx;
-                        frm.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_PRINT);
-                        /*
-                         * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                         * frm.finish();
-                         */
-                    } else if (ctx.getClass().getSimpleName()
-                            .equalsIgnoreCase("PrintPreviewScreen")) {
-                        PrintPreviewScreen frm = (PrintPreviewScreen) ctx;
-                        frm.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_PRINT);
-                        /*
-                         * loadActivity(frm, DataMembers.actHomeScreenTwo);
-                         * frm.finish();
-                         */
-                    } else if (ctx.getClass().getSimpleName()
-                            .equalsIgnoreCase("PrintPreviewScreenDiageo")) {
-                        PrintPreviewScreenDiageo frm = (PrintPreviewScreenDiageo) ctx;
-                        frm.getHandler().sendEmptyMessage(
-                                DataMembers.NOTIFY_PRINT);
-
-                    } else if (ctx.getClass().getSimpleName()
                             .equals("BatchAllocation")) {
                         BatchAllocation frm = (BatchAllocation) ctx;
-                        if (configurationMasterHelper.SHOW_BIXOLONII) {
-                            Intent intent = new Intent(ctx,
-                                    BixolonIIPrint.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_BIXOLONI) {
-                            Intent intent = new Intent(ctx, BixolonIPrint.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_ZEBRA) {
-                            Intent intent = new Intent(ctx,
-                                    InvoicePrintZebraNew.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_ZEBRA_ATS) {
-                            Intent intent = new Intent(ctx,
-                                    PrintPreviewScreen.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
 
-                        } else if (configurationMasterHelper.SHOW_INTERMEC_ATS) {
-                            Intent intent = new Intent(ctx, BtPrint4Ivy.class);
-                            Commons.print("bmodel intermec batchallocation");
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-
-                        } else if (configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
-                            Intent intent = new Intent(ctx,
-                                    PrintPreviewScreenDiageo.class);
-                            intent.putExtra("IsFromOrder", false);
-                            intent.putExtra("print_count", OrderHelper.getInstance(getContext()).getPrint_count());
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_ZEBRA_GHANA) {
-                            Intent intent = new Intent(ctx,
-                                    GhanaPrintPreviewActivity.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-
-                        } else {
-                            Intent intent = new Intent(ctx,
-                                    BixolonIIPrint.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        }
                     } else {
                         OrderSummary frm = (OrderSummary) ctx;
-                        if (configurationMasterHelper.SHOW_BIXOLONII) {
-                            Intent intent = new Intent(ctx,
-                                    BixolonIIPrint.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_BIXOLONI) {
-                            Intent intent = new Intent(ctx, BixolonIPrint.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_ZEBRA) {
-                            Intent intent = new Intent(ctx,
-                                    InvoicePrintZebraNew.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_ZEBRA_ATS) {
-                            Intent intent = new Intent(ctx,
-                                    PrintPreviewScreen.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_INTERMEC_ATS) {
-                            Intent intent = new Intent(ctx, BtPrint4Ivy.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
-                            Intent intent = new Intent(ctx,
-                                    PrintPreviewScreenDiageo.class);
-                            intent.putExtra("IsFromOrder", false);
-                            intent.putExtra("print_count", printHelper.getPrintCnt());
-                            frm.startActivity(intent);
-                            frm.finish();
-                        } else if (configurationMasterHelper.SHOW_ZEBRA_GHANA) {
-                            Intent intent = new Intent(ctx,
-                                    GhanaPrintPreviewActivity.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-
-                        } else {
-                            Intent intent = new Intent(ctx,
-                                    BixolonIIPrint.class);
-                            intent.putExtra("IsFromOrder", false);
-                            frm.startActivity(intent);
-                            frm.finish();
-                        }
+                        Intent returnIntent = new Intent();
+                        frm.setResult(Activity.RESULT_OK, returnIntent);
+                        frm.finish();
+                        loadActivity(ctx, DataMembers.actHomeScreenTwo);
                     }
                 } else if (idd == 1502) {
                     Gallery frm = (Gallery) ctx;

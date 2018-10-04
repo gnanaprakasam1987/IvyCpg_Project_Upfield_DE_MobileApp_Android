@@ -26,19 +26,15 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
-import com.ivy.cpg.view.supervisor.mvp.SellerBo;
-import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellerMapHomePresenter;
+import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Vector;
 
 public class SellerListActivity extends IvyBaseActivityNoActionBar {
 

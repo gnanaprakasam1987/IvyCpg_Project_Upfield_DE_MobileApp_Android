@@ -3,9 +3,10 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/qpsSchemeHeaderLayout"
     card_view:cardBackgroundColor="@color/WHITE"
-    card_view:cardCornerRadius="0dp"
-    card_view:cardElevation="5dp"
+    card_view:cardCornerRadius="2dp"
+    card_view:cardElevation="4dp"
     card_view:cardPreventCornerOverlap="true"
     card_view:cardUseCompatPadding="true"
     card_view:contentPadding="0dp">
@@ -55,27 +56,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dimen_2dp"
-            android:background="#FFFFFF"
             android:orientation="horizontal"
-            android:weightSum="2.4">
-
-            <TextView
-                android:id="@+id/tv_schemeduration"
-                style="?attr/customListItemSecondary"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:paddingLeft="@dimen/dimen_1dp"
-                android:paddingRight="@dimen/dimen_1dp"
-                android:gravity="left"
-                android:text="Duration" />
+            android:weightSum="2.1">
 
             <TextView
                 android:id="@+id/tv_schemetype"
                 style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
+                android:layout_weight="0.3"
                 android:paddingLeft="@dimen/dimen_1dp"
                 android:paddingRight="@dimen/dimen_1dp"
                 android:gravity="center"
@@ -86,10 +75,11 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.35"
+                android:layout_weight="0.3"
                 android:paddingLeft="@dimen/dimen_1dp"
                 android:paddingRight="@dimen/dimen_1dp"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="Cumiulative Purchase" />
 
             <TextView
@@ -97,7 +87,7 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.35"
+                android:layout_weight="0.3"
                 android:paddingLeft="@dimen/dimen_1dp"
                 android:paddingRight="@dimen/dimen_1dp"
                 android:gravity="center"
@@ -123,6 +113,7 @@
                 android:paddingLeft="@dimen/dimen_1dp"
                 android:paddingRight="@dimen/dimen_1dp"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="Balance to Next Slab" />
 
             <TextView
@@ -154,7 +145,7 @@
             android:padding="@dimen/dimen_2dp"
             android:layout_marginBottom="@dimen/dimen_2dp"
             android:orientation="horizontal"
-            android:weightSum="2.4">
+            android:weightSum="2.1">
 
             <TextView
                 android:id="@+id/tv_schemetypeLabel"
@@ -163,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
                 android:paddingRight="@dimen/dimen_1dp"
-                android:layout_weight="0.5"
+                android:layout_weight="0.3"
                 android:gravity="left"
                 android:text="Status Including Current Order" />
 
@@ -174,8 +165,9 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
                 android:paddingRight="@dimen/dimen_1dp"
-                android:layout_weight="0.35"
+                android:layout_weight="0.3"
                 android:gravity="center"
+                android:maxLines="1"
                 android:layout_gravity="bottom"
                 android:text="0" />
 
@@ -186,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
                 android:paddingRight="@dimen/dimen_1dp"
-                android:layout_weight="0.35"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:layout_gravity="bottom"
                 android:text="0" />
@@ -213,6 +205,7 @@
                 android:layout_weight="0.3"
                 android:gravity="center"
                 android:layout_gravity="bottom"
+                android:maxLines="1"
                 android:text="0" />t
 
             <TextView

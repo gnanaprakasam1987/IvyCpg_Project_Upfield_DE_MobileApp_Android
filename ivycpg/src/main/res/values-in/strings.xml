@@ -1001,7 +1001,7 @@
     <string name="rtgs_date">Tanggal Rtgs</string>
     <string name="cheque_date">Tanggal Cek</string>
     <string name="dd_no_date">Tanggal Permintaan Draft</string>
-    <string name="total_sih">Total Sih</string>
+    <string name="total_sih">Total SIH</string>
     <string name="total_cases">Total Bungkusan</string>
     <string name="total_outer">Total Bungkusan Luar</string>
     <string name="total_piece">Total Eceran</string>
@@ -1264,6 +1264,8 @@
     <string name="return_products_price_less_than_replacing_product_price">Return value should be higher than replacement value</string>
     <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
-
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">Laku</string>
 </resources>
 

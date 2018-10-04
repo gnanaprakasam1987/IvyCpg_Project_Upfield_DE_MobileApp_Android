@@ -527,7 +527,7 @@ public class AssetTrackingHelper {
                 for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
                     ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        clonedList.add(new AssetTrackingBO(assetBO));
+                        clonedList.add(assetBO);
                     }
                     standardListBO.setAssetTrackingList(clonedList);
                 }
@@ -1824,38 +1824,41 @@ public class AssetTrackingHelper {
             int size = mAssetTrackingList.size();
 
             for (int i = 0; i < size; i++) {
-                if (mAssetTrackingList.get(i).getProductId() == pid && mAssetTrackingList.get(i).getAssetID() == assetID) {
+                if (mAssetTrackingList.get(i).getProductId() == pid &&
+                        mAssetTrackingList.get(i).getAssetID() == assetID &&
+                        mAssetTrackingList.get(i).getSerialNo() .equalsIgnoreCase(serialNo) ) {
                     assetBO = mAssetTrackingList.get(i);
-                    break;
+                    if (assetBO != null) {
+
+                        assetBO.setAvailQty(qty);
+                        assetBO.setImageName(imageName);
+                        assetBO.setReason1ID(mReasonId);
+                        assetBO.setConditionID(conditionId);
+                        assetBO.setInstallDate(installDate);
+                        assetBO.setServiceDate(serviceDate);
+
+                        assetBO.setAudit(audit);
+                        if (!"null".equals(serialNo)) {
+                            assetBO.setSerialNo(serialNo);
+                        } else {
+                            assetBO.setSerialNo(Integer.toString(0));
+                        }
+
+                        assetBO.setCompetitorQty(compQty);
+
+                        assetBO.setExecutorQty(isExec);
+                        assetBO.setImgName(imgName);
+
+                        if (SHOW_LOCATION_POSM)
+                            assetBO.setLocationID(locId);
+
+                        assetBO.setImageList(getImagesList(mcontext, assetID, locId));
+
+                    }
+
                 }
             }
-            if (assetBO != null) {
 
-                assetBO.setAvailQty(qty);
-                assetBO.setImageName(imageName);
-                assetBO.setReason1ID(mReasonId);
-                assetBO.setConditionID(conditionId);
-                assetBO.setInstallDate(installDate);
-                assetBO.setServiceDate(serviceDate);
-
-                assetBO.setAudit(audit);
-                if (!"null".equals(serialNo)) {
-                    assetBO.setSerialNo(serialNo);
-                } else {
-                    assetBO.setSerialNo(Integer.toString(0));
-                }
-
-                assetBO.setCompetitorQty(compQty);
-
-                assetBO.setExecutorQty(isExec);
-                assetBO.setImgName(imgName);
-
-                if (SHOW_LOCATION_POSM)
-                    assetBO.setLocationID(locId);
-
-                assetBO.setImageList(getImagesList(mcontext, assetID, locId));
-
-            }
         }
     }
 
@@ -2048,7 +2051,7 @@ public class AssetTrackingHelper {
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
             sb.append(" OR Channelid in (0,");
             sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext));
-            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
+            sb.append(")) GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId,SBD.SerialNO ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
 
             Cursor c = db.selectSQL(sb.toString());

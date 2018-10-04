@@ -726,4 +726,7 @@
     <dimen name="score_card_height">120dp</dimen>
     <dimen name="qn_text_margin_left">8dp</dimen>
     <dimen name="web_view_width">216dp</dimen>
+
+    <dimen name="catalog_details_image">300dp</dimen>
+
 </resources>

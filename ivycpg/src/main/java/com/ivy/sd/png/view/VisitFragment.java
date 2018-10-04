@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
+import com.ivy.cpg.view.jointcall.JoinCallActivity;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -178,6 +179,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             bmodel.beatMasterHealper.setTodayBeatMasterBO(tempBeat);
 
         }
+
 
         if (bmodel.configurationMasterHelper.SHOW_RETAILER_SELECTION_FILTER) {
             bmodel.mRetailerHelper.downloadRetailerFilterSelection(RETAILER_FILTER_MENU_TYPE);
@@ -1385,7 +1387,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
 
             if (!calledBy.equals(MENU_PLANNING)) {
-                bmodel.loadProductiveCallsConfig();
+               // bmodel.loadProductiveCallsConfig();
                 if (("Y").equals(retailerObj.isOrdered()) && (!bmodel.PRD_FOR_SKT)) {   // If ProductiveStockCheck is OFF
                     if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             && ("N").equals(retailerObj.isInvoiceDone())) {
