@@ -572,7 +572,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
             if (outletListBos.get(holder.getAdapterPosition()).getMasterSequence() != 0)
                 sequenceStr = String.valueOf(outletListBos.get(holder.getAdapterPosition()).getMasterSequence());
-            else
+            else if (!outletListBos.get(holder.getAdapterPosition()).getIsDeviated())
                 sequenceStr = (holder.getAdapterPosition()+1)+"";
 
             holder.tvSerialNumber.setText(sequenceStr);
