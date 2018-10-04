@@ -166,9 +166,9 @@ public class DiscountHelper {
             totalDiscOrAmtValue = SDUtil.formatAsPerCalculationConfig(totalDiscOrAmtValue);
 
 
-            if (discountId == 0) {
+            //if (discountId == 0) {
                 productBO.setApplyValue(totalDiscOrAmtValue);
-            }
+            //}
 
             if (isCompanyDiscount) {
                 productBO.setCompanyTypeDiscount(productBO.getCompanyTypeDiscount() + totalDiscOrAmtValue);

@@ -115,8 +115,9 @@ public class OrderDeliveryHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String sb = ("select OD.OrderID,OrderValue,LinesPerCall,OrderDate,invoicestatus,OD.RField3 from "
+            String sb = ("select OD.OrderID,OrderValue,LinesPerCall,OrderDate,invoicestatus,OD.rfield3,ODS.status from "
                     + DataMembers.tbl_orderHeader + " OD ") +
+                    " left join OrderDeliveryStatus ODS on ODS.orderid = OD.orderid "+
                     " where OD.upload='X' and OD.RetailerID="
                     + businessModel.QT(businessModel.getRetailerMasterBO().getRetailerID());
 
@@ -132,6 +133,7 @@ public class OrderDeliveryHelper {
                     orderHeader.setOrderDate(orderHeaderCursor.getString(3));
                     orderHeader.setInvoiceStatus(orderHeaderCursor.getInt(4));
                     orderHeader.setrField3(orderHeaderCursor.getString(5));
+                    orderHeader.setOrderStatus(orderHeaderCursor.getString(6)!=null?orderHeaderCursor.getString(6):"");
 
                     orderHeaders.add(orderHeader);
                 }
@@ -184,7 +186,7 @@ public class OrderDeliveryHelper {
 
                 orderDetailCursor.close();
 
-                loadSalesReturnData(orderId, db,mContext);
+                loadSalesReturnData(orderId, db, mContext);
             }
 
             db.closeDB();
@@ -228,7 +230,7 @@ public class OrderDeliveryHelper {
 
     }
 
-    private void loadSalesReturnData(String orderId, DBUtil db , Context mContext) {
+    private void loadSalesReturnData(String orderId, DBUtil db, Context mContext) {
         businessModel.reasonHelper.downloadSalesReturnReason();
         if (businessModel.reasonHelper.getReasonSalesReturnMaster().size() > 0) {
             SalesReturnHelper.getInstance(mContext).cloneReasonMaster(true);
@@ -374,6 +376,7 @@ public class OrderDeliveryHelper {
 
     /**
      * Is product has return or replacement quantity>0
+     *
      * @param productMasterBO Product
      * @return is quantity>0
      */
@@ -383,7 +386,7 @@ public class OrderDeliveryHelper {
             if (obj.getCaseQty() > 0 || obj.getPieceQty() > 0 || obj.getOuterQty() > 0)
                 return true;
 
-        return (productMasterBO.getRepPieceQty()>0||productMasterBO.getRepCaseQty()>0||productMasterBO.getRepOuterQty()>0);
+        return (productMasterBO.getRepPieceQty() > 0 || productMasterBO.getRepCaseQty() > 0 || productMasterBO.getRepOuterQty() > 0);
 
     }
 
@@ -453,6 +456,8 @@ public class OrderDeliveryHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+
+        downloadOrderTaxDetail(context,id);
     }
 
     private int getSchemeFreeProdCount(ProductMasterBO productMasterBO) {
@@ -477,11 +482,10 @@ public class OrderDeliveryHelper {
     }
 
     /* Total product count, value of total product,total tax are calculated here */
-    public double getProductTotalValue() {
+    public double getProductTotalValue(boolean isEdit) {
         double totalvalue = 0;
         int totalProdQty = 0;
-        //Product wise Tax amount will be calculated according to the tax rate
-        double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
+
         for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
             ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
             if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
@@ -502,13 +506,18 @@ public class OrderDeliveryHelper {
             }
         }
 
+        if (isEdit) {
+            //Product wise Tax amount will be calculated according to the tax rate
+            double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
+            setOrderDeliveryTaxAmount(String.valueOf(taxValue));
+        }else
+            businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
+
         setOrderDeliveryTotalValue(String.valueOf(totalvalue));
-        setOrderDeliveryTaxAmount(String.valueOf(taxValue));
         setTotalProductQty(totalProdQty);
 
         return totalvalue;
     }
-
 
 
     boolean isSIHAvailable(boolean isEdit) {
@@ -541,7 +550,7 @@ public class OrderDeliveryHelper {
         return true;
     }
 
-    boolean updateTableValues(Context context, String orderId, boolean isEdit,String menuCode,String referenceId) {
+    boolean updateTableValues(Context context, String orderId, boolean isEdit, String menuCode, String referenceId) {
         boolean status = true;
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -656,7 +665,7 @@ public class OrderDeliveryHelper {
                                 + productBo.getPcUomid() +
                                 "," + priceOffValue + "," + productBo.getPriceOffId() +
                                 "," + productBo.getWeight() +
-                                "," + businessModel.QT(productBo.getHsnCode())+
+                                "," + businessModel.QT(productBo.getHsnCode()) +
                                 "," + line_total_price;
 
                         db.insertSQL(DataMembers.tbl_InvoiceDetails, columns, sb);
@@ -665,18 +674,21 @@ public class OrderDeliveryHelper {
                     }
                 }
 
-                String invoiceHeaderQry = "Insert into InvoiceMaster (invoiceno,invoicedate,beatid,retailerId,invNetamount,discountedAmount," +
-                        "orderid,ImageName,invoiceAmount,latitude,longitude,return_amt," +
-                        "LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
-                        "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,totalamount,paidamount)" +
-                        " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," +
-                        (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + "," + (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + ",orderid," +
-                        "imagename," + (totalOrderValue) + ",latitude,longitude,ReturnValue," + linesPerCall + ",totalWeight,SalesType," +
-                        "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," + businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 +
-                        "," +totalAmount + ",0 from OrderHeader where OrderId = " + businessModel.QT(orderId);
+                if (linesPerCall > 0) {
+
+                    String invoiceHeaderQry = "Insert into InvoiceMaster (invoiceno,invoicedate,beatid,retailerId,invNetamount,discountedAmount," +
+                            "orderid,ImageName,invoiceAmount,latitude,longitude,return_amt," +
+                            "LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
+                            "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,totalamount,paidamount)" +
+                            " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," +
+                            (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + "," + (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + ",orderid," +
+                            "imagename," + (totalOrderValue) + ",latitude,longitude,ReturnValue," + linesPerCall + ",totalWeight,SalesType," +
+                            "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," + businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 +
+                            "," + totalAmount + ",0 from OrderHeader where OrderId = " + businessModel.QT(orderId);
 
 
-                db.executeQ(invoiceHeaderQry);
+                    db.executeQ(invoiceHeaderQry);
+                }
 
             } else {
 
@@ -685,10 +697,10 @@ public class OrderDeliveryHelper {
                         "discount_type,LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
                         "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount,totalamount,paidamount)" +
                         " select " + invoiceId + "," + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," + businessModel.QT(businessModel.formatBasedOnCurrency(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
-                        ",orderid,imagename,discount," + businessModel.QT(getOrderDeliveryTotalValue()) +",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
+                        ",orderid,imagename,discount," + businessModel.QT(getOrderDeliveryTotalValue()) + ",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," +
                         businessModel.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + businessModel.QT(businessModel.formatBasedOnCurrency(discountedAmount)) +
-                        "," +totalAmount + ",0 from OrderHeader where OrderId = " + businessModel.QT(orderId);
+                        "," + totalAmount + ",0 from OrderHeader where OrderId = " + businessModel.QT(orderId);
 
                 db.executeQ(invoiceHeaderQry);
 
@@ -707,15 +719,20 @@ public class OrderDeliveryHelper {
                 db.executeQ(invoiceDiscountQry);
 
                 db.updateSQL("update SchemeFreeProductDetail set upload='N',InvoiceID = " + businessModel.QT(invoiceId) + " where orderId = " + businessModel.QT(orderId));
+
+                String invoiceTaxDetail = "Insert into InvoiceTaxDetails (orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid) " +
+                        " select orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct," + invoiceId + " from OrderTaxDetails where OrderId = " + businessModel.QT(orderId);
+
+                db.executeQ(invoiceTaxDetail);
             }
 
-            if (businessModel.configurationMasterHelper.SHOW_TAX) {
+            if (isEdit && businessModel.configurationMasterHelper.SHOW_TAX) {
                 if (businessModel.productHelper.taxHelper.getmTaxListByProductId() != null
                         && businessModel.productHelper.taxHelper.getmTaxListByProductId().size() > 0)
                     saveProductLeveltax(orderId, db, totalOrderValue, invoiceId);
             }
 
-            db.updateSQL("update OrderHeader set is_vansales=1,invoicestatus = 1,totalamount =" + totalAmount +" where orderId = " + businessModel.QT(orderId));
+            db.updateSQL("update OrderHeader set is_vansales=1,invoicestatus = 1,totalamount =" + totalAmount + " where orderId = " + businessModel.QT(orderId));
             db.updateSQL("update SalesReturnHeader set IFLAG=0,upload='N',invoiceid = " + businessModel.QT(invoiceId) + " where RefModuleTId = " + businessModel.QT(orderId));
 
             String uid = "";
@@ -730,10 +747,10 @@ public class OrderDeliveryHelper {
             if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
                 salesReturnHelper.setSalesReturnID(businessModel.QT(uid));
-                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, businessModel.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),false);
+                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, businessModel.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(), false);
             }
 
-            updateOrderDeliverySIH(db, isEdit);
+            updateOrderDeliverySIH(db, isEdit,false);
 
             //For Print saved in Discount and invoice number
             businessModel.invoiceNumber = invoiceId;
@@ -867,14 +884,20 @@ public class OrderDeliveryHelper {
 
 
     /* To update SIH values in Product master and in Excess Stock master */
-    private void updateOrderDeliverySIH(DBUtil db, boolean isEdit) {
+    private void updateOrderDeliverySIH(DBUtil db, boolean isEdit, boolean isReject) {
         try {
 
             for (ProductMasterBO headProductMasterBO : businessModel.productHelper.getProductMaster()) {
-                int qty = 0;
+                int qty;
                 int updateExcessSih = 0;
-                if (!isEdit)
-                    qty = getSchemeFreeProdCount(headProductMasterBO);
+                int freeQty;
+
+                freeQty = getSchemeFreeProdCount(headProductMasterBO);
+
+                if (isEdit)
+                    qty = 0;
+                else
+                    qty = freeQty;
 
                 for (ProductMasterBO productBO : getOrderedProductMasterBOS()) {
                     if (productBO.getProductID().equals(headProductMasterBO.getProductID())) {
@@ -903,25 +926,31 @@ public class OrderDeliveryHelper {
                     }
                 }
 
+                if (isEdit)
+                    updateExcessSih = updateExcessSih + freeQty;
+
                 if (qty > 0 || updateExcessSih > 0) {
 
-                    int totalSIH = headProductMasterBO.getDSIH() - qty;
-
                     ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(headProductMasterBO.getProductID());
-                    productMasterBO.setDSIH(totalSIH);
-                    productMasterBO.setSIH(totalSIH);
-                    db.updateSQL("update stockinhandmaster set qty = " +
-                            totalSIH + " where pid=" + headProductMasterBO.getProductID() + " and batchid= 0");
-                    db.updateSQL("update ProductMaster set sih = " +
-                            totalSIH + " where PID=" + headProductMasterBO.getProductID());
 
+                    if (!isReject) {
+                        int totalSIH = headProductMasterBO.getDSIH() - qty;
+                        productMasterBO.setDSIH(totalSIH);
+                        productMasterBO.setSIH(totalSIH);
+                        db.updateSQL("update stockinhandmaster set qty = " +
+                                totalSIH + " where pid=" + headProductMasterBO.getProductID() + " and batchid= 0");
+                        db.updateSQL("update ProductMaster set sih = " +
+                                totalSIH + " where PID=" + headProductMasterBO.getProductID());
+                    } else
+                        updateExcessSih = qty;
 
                     if (updateExcessSih > 0) {
                         Cursor c = db.selectSQL("select qty from ExcessStockInHand where pid = " + headProductMasterBO.getProductID());
 
                         if (c.getCount() > 0 && c.moveToNext()) {
                             updateExcessSih = c.getInt(0) + updateExcessSih;
-                            db.executeQ("update ExcessStockInHand set qty=" + updateExcessSih + ",Upload='N' where pid = " + headProductMasterBO.getProductID());
+                            db.executeQ("update ExcessStockInHand set qty=" + updateExcessSih +
+                                    ",Upload='N' where pid = " + headProductMasterBO.getProductID());
                         } else {
                             db.executeQ("insert into ExcessStockInHand (qty,pid) values(" + updateExcessSih + "," + headProductMasterBO.getProductID() + ")");
                         }
@@ -929,7 +958,8 @@ public class OrderDeliveryHelper {
                         c.close();
                     }
 
-                    updateSalesReturnSIH(db, productMasterBO);
+                    if (!isReject)
+                        updateSalesReturnSIH(db, productMasterBO);
                 }
             }
         } catch (Exception e) {
@@ -1249,6 +1279,59 @@ public class OrderDeliveryHelper {
             }
         } catch (Exception e) {
             Commons.printException(e);
+        }
+    }
+
+    private void downloadOrderTaxDetail(Context context, String id){
+
+        double taxAmt = 0;
+
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor orderTax = db.selectSQL("select sum(taxValue) from OrderTaxDetails " +
+                    "where orderid=" + businessModel.QT(id));
+            if (orderTax.getCount() > 0 && orderTax.moveToNext()) {
+                taxAmt = orderTax.getDouble(0);
+            }
+            orderTax.close();
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        setOrderDeliveryTaxAmount(String.valueOf(taxAmt));
+    }
+
+
+    //OrderDelivery status insertion
+    public void updateRejectedOrder(Context context,String orderId,String referenceId){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+
+        try {
+
+            String orderDeliveryStatus = "OrderDeliveryStatus";
+            String orderDeliveryStatus_cols = "orderId,refId,status";
+            String values = businessModel.QT(orderId) + "," + businessModel.QT(referenceId)+", 'R'";
+            db.insertSQL(orderDeliveryStatus, orderDeliveryStatus_cols, values);
+
+            updateOrderDeliverySIH(db,false,true); //default true - order is rejected, default false - order is not edited
+
+            db.closeDB();
+        }catch (Exception e){
+            Commons.printException(e);
+
+            db.closeDB();
+
         }
     }
 }

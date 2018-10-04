@@ -25,6 +25,7 @@ public class OrderHeader {
     private int invoiceStatus;
     private int addressID = 0;
     private String rField3 = "";
+    private String orderStatus="";
 
     public int getInvoiceStatus() {
         return invoiceStatus;
@@ -286,4 +287,11 @@ public class OrderHeader {
         this.rField3 = rField3;
     }
 
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }

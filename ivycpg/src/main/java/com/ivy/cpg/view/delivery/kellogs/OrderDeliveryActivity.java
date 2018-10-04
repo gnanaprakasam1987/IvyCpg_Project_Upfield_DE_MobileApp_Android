@@ -37,10 +37,12 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
     private RecyclerView recyclerView;
     OrderDeliveryHelper orderDeliveryHelper;
-    ArrayList<OrderHeader> orderHeaders;
+    ArrayList<OrderHeader> orderHeaders = new ArrayList<>();
+    private MyAdapter myAdapter;
     final String Str_ACCEPT = "ACCEPT";
     final String Str_VIEW = "VIEW";
     final String Str_EDIT = "EDIT";
+    final String Str_REJECT = "REJECT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
 
         orderDeliveryHelper.downloadOrderDeliveryHeader(this);
-        orderHeaders = orderDeliveryHelper.getOrderHeaders();
+        orderHeaders.addAll(orderDeliveryHelper.getOrderHeaders());
 
         recyclerView = findViewById(R.id.order_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -95,7 +97,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void prepareScreenData() {
-        MyAdapter myAdapter = new MyAdapter();
+        myAdapter = new MyAdapter();
         recyclerView.setAdapter(myAdapter);
         myAdapter.notifyDataSetChanged();
     }
@@ -106,7 +108,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private TextView orderId, orderDate, orderValue, orderLine, invoiceGeneratedText;
-            private Button orderAccept, orderEdit;
+            private Button orderAccept, orderEdit,orderReject;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -116,6 +118,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 orderValue = view.findViewById(R.id.order_delivery_listview_ordervalue);
                 orderLine = view.findViewById(R.id.order_delivery_listview_orderlines);
                 invoiceGeneratedText = view.findViewById(R.id.invoice_generated_text);
+                orderReject = view.findViewById(R.id.reject_btn);
 
                 orderAccept = view.findViewById(R.id.accept_btn);
                 orderEdit = view.findViewById(R.id.edit_btn);
@@ -155,15 +158,23 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
 
-
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus(), orderHeaders.get(position).getrField3()).execute();
-                    if (orderHeaders.get(position).getInvoiceStatus() != 1) {
-                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus(), orderHeaders.get(position).getrField3()).execute();
-                    } else {
-                        Toast.makeText(
-                                OrderDeliveryActivity.this,
-                                "Already invoice has been generated",
-                                Toast.LENGTH_SHORT).show();
+                    if(orderHeaders.get(position).getInvoiceStatus()!=1 && !orderHeaders.get(position).getOrderStatus().equals("R")) {
+                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
+                                Str_VIEW,
+                                orderHeaders.get(position).getInvoiceStatus(),
+                                orderHeaders.get(position).getrField3()).execute();
+                    }
+                    else {
+                        if(orderHeaders.get(position).getInvoiceStatus()==1) {
+                            Toast.makeText(
+                                    OrderDeliveryActivity.this,
+                                    getResources().getString(R.string.already_invoice_has_been_generated),
+                                    Toast.LENGTH_SHORT).show();
+                        }else if(orderHeaders.get(position).getOrderStatus().equals("R"))
+                            Toast.makeText(
+                                    OrderDeliveryActivity.this,
+                                    getResources().getString(R.string.rejected_order),
+                                    Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -181,7 +192,10 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_EDIT, orderHeaders.get(position).getInvoiceStatus(), orderHeaders.get(position).getrField3()).execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
+                            Str_EDIT,
+                            orderHeaders.get(position).getInvoiceStatus(),
+                            orderHeaders.get(position).getrField3()).execute();
                 }
             });
 
@@ -197,15 +211,39 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                         return;
                     }
 
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_ACCEPT, orderHeaders.get(position).getInvoiceStatus(), orderHeaders.get(position).getrField3()).execute();
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
+                            Str_ACCEPT,
+                            orderHeaders.get(position).getInvoiceStatus(),
+                            orderHeaders.get(position).getrField3()).execute();
 
                 }
             });
 
-            if (orderHeaders.get(position).getInvoiceStatus() == 1) {
+            holder.orderReject.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),
+                            Str_REJECT,
+                            orderHeaders.get(position).getInvoiceStatus(),
+                            orderHeaders.get(position).getrField3()).execute();
+
+                }
+            });
+
+
+            if (orderHeaders.get(position).getInvoiceStatus() == 1
+                    || orderHeaders.get(position).getOrderStatus().equals("R")) {
                 holder.orderAccept.setVisibility(View.GONE);
                 holder.orderEdit.setVisibility(View.GONE);
+                holder.orderReject.setVisibility(View.GONE);
                 holder.invoiceGeneratedText.setVisibility(View.VISIBLE);
+
+                if (orderHeaders.get(position).getOrderStatus().equals("R"))
+                    holder.invoiceGeneratedText.setText(getResources().getString(R.string.order_rejected));
+                else
+                    holder.invoiceGeneratedText.setText(getResources().getString(R.string.invoice_already_generated));
+
             }
 
         }
@@ -214,6 +252,33 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         public int getItemCount() {
             return orderHeaders.size();
         }
+    }
+
+    private void rejectOrder(final String orderId, final String refId){
+        CommonDialog dialog = new CommonDialog(getApplicationContext(), OrderDeliveryActivity.this, "", getResources().getString(R.string.do_you_want_to_reject), false,
+                getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+
+                orderDeliveryHelper.updateRejectedOrder(OrderDeliveryActivity.this,orderId,refId);
+
+                for (OrderHeader orderHeader : orderHeaders){
+                    if (orderHeader.getOrderid().equals(orderId)) {
+                        orderHeader.setOrderStatus("R");
+                        break;
+                    }
+                }
+                myAdapter.notifyDataSetChanged();
+
+            }
+        }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
     }
 
     class downloadOrderDeliveryDetail extends AsyncTask<Void, Void, Void> {
@@ -238,7 +303,9 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             orderDeliveryHelper.downloadSchemeFreeProducts(OrderDeliveryActivity.this, orderId);
             orderDeliveryHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this, orderId);
             orderDeliveryHelper.downloadOrderedProducts();
-            orderDeliveryHelper.getProductTotalValue();
+            if (from.equalsIgnoreCase(Str_ACCEPT) || from.equalsIgnoreCase(Str_REJECT)) {
+                orderDeliveryHelper.getProductTotalValue(false);
+            }
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                 bmodel.collectionHelper.downloadDiscountSlab();
             }
@@ -249,7 +316,10 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            if (from.equalsIgnoreCase(Str_ACCEPT)) {
+            if (from.equalsIgnoreCase(Str_REJECT)) {
+                rejectOrder(orderId,referenceId);
+            }
+            else if (from.equalsIgnoreCase(Str_ACCEPT)) {
 
                 if (orderDeliveryHelper.getTotalProductQty() == 0)
                     Toast.makeText(
