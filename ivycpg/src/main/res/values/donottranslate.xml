@@ -256,4 +256,7 @@
     <string name="licensing">About Open Source Library</string>
     <string name="software_licensing">Open Source Library</string>
     <string name="click_to_show_licensing">Click to show the Open Source Library</string>
+
+    <string name="margin_price">Mgn Prc</string>
+    <string name="margin_per">Mgn Per</string>
 </resources>
