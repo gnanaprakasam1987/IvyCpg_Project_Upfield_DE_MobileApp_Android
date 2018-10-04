@@ -29,6 +29,9 @@ public class OrderHistoryBO {
     private double outStandingAmt;
     private String volume;
 
+    private double marginValue;
+    private double maginPerc;
+
     public String getNoorderReason() {
         return noorderReason;
     }
@@ -250,4 +253,19 @@ public class OrderHistoryBO {
         this.invoiceId = invoiceId;
     }
 
+    public double getMarginValue() {
+        return marginValue;
+    }
+
+    public void setMarginValue(double marginValue) {
+        this.marginValue = marginValue;
+    }
+
+    public double getMaginPerc() {
+        return maginPerc;
+    }
+
+    public void setMaginPerc(double maginPerc) {
+        this.maginPerc = maginPerc;
+    }
 }
