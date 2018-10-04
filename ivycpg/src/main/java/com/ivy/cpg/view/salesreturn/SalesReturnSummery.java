@@ -27,7 +27,6 @@ import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -780,7 +779,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             if (totalBalanceQty > 0) {
                 ProductMasterBO productMasterBO = new ProductMasterBO(product);
                 productMasterBO.setOrderedPcsQty(totalBalanceQty);
-                productMasterBO.setDiscount_order_value(totalBalanceAmount);
+                productMasterBO.setNetValue(totalBalanceAmount);
                 mPrintList.add(productMasterBO);
             }
 

@@ -25,7 +25,6 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderRemarkDialog;
@@ -443,25 +442,34 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                                     //
 
                                                                     batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + amount_free_batch);
+                                                                    if (batchProduct.getLineValueAfterSchemeApplied() > 0) {
+                                                                        batchProduct.setLineValueAfterSchemeApplied(batchProduct.getLineValueAfterSchemeApplied() - amount_free_batch);
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     } else {
                                                         productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
-                                                        if (productBO.getDiscount_order_value() > 0) {
-                                                            productBO.setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
+                                                        if (productBO.getNetValue() > 0) {
+                                                            productBO.setNetValue(productBO
+                                                                    .getNetValue()
                                                                     - amount_free);
 
+                                                        }
+                                                        if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                                                            productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - amount_free);
                                                         }
                                                     }
                                                 } else {
                                                     productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
-                                                    if (productBO.getDiscount_order_value() > 0) {
-                                                        productBO.setDiscount_order_value(productBO
-                                                                .getDiscount_order_value()
+                                                    if (productBO.getNetValue() > 0) {
+                                                        productBO.setNetValue(productBO
+                                                                .getNetValue()
                                                                 - amount_free);
 
+                                                    }
+                                                    if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                                                        productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - amount_free);
                                                     }
                                                 }
                                             } else if (schemeBO.isPriceTypeSeleted()) {
@@ -493,15 +501,15 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                                     "SCH_PR", false);
                                                 }
 
-                                                if (productBO.getDiscount_order_value() > 0) {
+                                                if (productBO.getNetValue() > 0) {
                                                     productBO
-                                                            .setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
+                                                            .setNetValue(productBO
+                                                                    .getNetValue()
                                                                     - totalpriceDiscount);
 
                                                 }
-                                                if (productBO.getSchemeAppliedValue() > 0) {
-                                                    productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalpriceDiscount);
+                                                if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                                                    productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - totalpriceDiscount);
                                                 }
 
                                                 schemeProductBo.setDiscountValue(totalpriceDiscount);
@@ -535,15 +543,15 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                                     "SCH_PER", false);
                                                 }
 
-                                                if (productBO.getDiscount_order_value() > 0) {
+                                                if (productBO.getNetValue() > 0) {
                                                     productBO
-                                                            .setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
+                                                            .setNetValue(productBO
+                                                                    .getNetValue()
                                                                     - totalPercentageDiscount);
                                                 }
 
-                                                if (productBO.getSchemeAppliedValue() > 0) {
-                                                    productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalPercentageDiscount);
+                                                if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                                                    productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - totalPercentageDiscount);
                                                 }
                                                 schemeProductBo.setDiscountValue(totalPercentageDiscount);
 

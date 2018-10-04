@@ -444,7 +444,7 @@ public class OrderSummaryDialogFragment extends DialogFragment {
                 holder.disc5TV.setText("0");
             }
             holder.taxValueTV.setText(SDUtil.format(holder.batchProductBO.getTaxApplyvalue(), 2, 0));
-            holder.lineValueTV.setText(SDUtil.format(holder.batchProductBO.getDiscount_order_value(), 2, 0));
+            holder.lineValueTV.setText(SDUtil.format(holder.batchProductBO.getNetValue(), 2, 0));
 
 
             return row;

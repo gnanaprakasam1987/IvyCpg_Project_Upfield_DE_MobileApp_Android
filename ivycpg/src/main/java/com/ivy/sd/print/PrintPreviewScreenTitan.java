@@ -412,9 +412,9 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                 ((TextView) v.findViewById(R.id.ucp)).setText(SDUtil.format((batchProductBO.getSrp() + batchProductBO.getPriceoffvalue()), 2, 0) + "");
 
 
-                                totalExcludeTaxvalue = totalExcludeTaxvalue + (batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getDiscount_order_value());
-                                total = total + batchProductBO.getDiscount_order_value();
-                                ((TextView) v.findViewById(R.id.payable)).setText(SDUtil.format(batchProductBO.getDiscount_order_value(), 2, 0) + "");
+                                totalExcludeTaxvalue = totalExcludeTaxvalue + (batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getNetValue());
+                                total = total + batchProductBO.getNetValue();
+                                ((TextView) v.findViewById(R.id.payable)).setText(SDUtil.format(batchProductBO.getNetValue(), 2, 0) + "");
                                 mProductContainerLL.addView(v);
 
                             }
@@ -457,9 +457,9 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                     ((TextView) v.findViewById(R.id.ucp)).setText(productBO.getSrp() + "");
 
 
-                    totalExcludeTaxvalue = totalExcludeTaxvalue + (productBO.getTaxValue() > 0 ? productBO.getTaxValue() : productBO.getDiscount_order_value());
-                    total = total + productBO.getDiscount_order_value();
-                    ((TextView) v.findViewById(R.id.payable)).setText(SDUtil.format(productBO.getDiscount_order_value(), 2, 0) + "");
+                    totalExcludeTaxvalue = totalExcludeTaxvalue + (productBO.getTaxValue() > 0 ? productBO.getTaxValue() : productBO.getNetValue());
+                    total = total + productBO.getNetValue();
+                    ((TextView) v.findViewById(R.id.payable)).setText(SDUtil.format(productBO.getNetValue(), 2, 0) + "");
 
                     mProductContainerLL.addView(v);
                 }
@@ -513,8 +513,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                                         int totalBatchQty = batchProductBO.getOrderedPcsQty() + batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize()
                                                                 + batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize();
 
-                                                        if (batchProductBO.getSchemeAppliedValue() > 0) {
-                                                            totalValue = batchProductBO.getSchemeAppliedValue();
+                                                        if (batchProductBO.getLineValueAfterSchemeApplied() > 0) {
+                                                            totalValue = batchProductBO.getLineValueAfterSchemeApplied();
                                                         } else {
                                                             totalValue = batchProductBO.getOrderedPcsQty()
                                                                     * batchProductBO.getSrp()
@@ -543,8 +543,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                                 double totalValue = 0;
                                                 double productDiscount = 0;
 
-                                                if (productMasterBO.getSchemeAppliedValue() > 0) {
-                                                    totalValue = productMasterBO.getSchemeAppliedValue();
+                                                if (productMasterBO.getLineValueAfterSchemeApplied() > 0) {
+                                                    totalValue = productMasterBO.getLineValueAfterSchemeApplied();
                                                 } else {
                                                     totalValue = productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
                                                             + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()
@@ -1041,11 +1041,11 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                         sb.append("T 5 0 280 " + x + " ");
                                         sb.append(SDUtil.format((batchProductBO.getSrp() + batchProductBO.getPriceoffvalue()), 2, 0) + "\r\n");
 //                                        sb.append("T 5 0 330 " + x + " ");
-                                        totalExcludeTaxvalue = totalExcludeTaxvalue + (batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getDiscount_order_value());
-//                                        sb.append(SDUtil.format(batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getDiscount_order_value(), 2, 0) + "\r\n");
+                                        totalExcludeTaxvalue = totalExcludeTaxvalue + (batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getNetValue());
+//                                        sb.append(SDUtil.format(batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getNetValue(), 2, 0) + "\r\n");
                                         sb.append("T 5 0 420 " + x + " ");
-                                        total = total + batchProductBO.getDiscount_order_value();
-                                        sb.append(SDUtil.format(batchProductBO.getDiscount_order_value(), 2, 0) + "\r\n");
+                                        total = total + batchProductBO.getNetValue();
+                                        sb.append(SDUtil.format(batchProductBO.getNetValue(), 2, 0) + "\r\n");
 
 
                                     }
@@ -1088,11 +1088,11 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                             sb.append("T 5 0 280 " + x + " ");
                             sb.append(productBO.getSrp() + "\r\n");
 //                            sb.append("T 5 0 330 " + x + " ");
-                            totalExcludeTaxvalue = totalExcludeTaxvalue + (productBO.getTaxValue() > 0 ? productBO.getTaxValue() : productBO.getDiscount_order_value());
-//                            sb.append(SDUtil.format(productBO.getTaxValue() > 0 ? productBO.getTaxValue() : productBO.getDiscount_order_value(), 2, 0) + "\r\n");
+                            totalExcludeTaxvalue = totalExcludeTaxvalue + (productBO.getTaxValue() > 0 ? productBO.getTaxValue() : productBO.getNetValue());
+//                            sb.append(SDUtil.format(productBO.getTaxValue() > 0 ? productBO.getTaxValue() : productBO.getNetValue(), 2, 0) + "\r\n");
                             sb.append("T 5 0 420 " + x + " ");
-                            total = total + productBO.getDiscount_order_value();
-                            sb.append(SDUtil.format(productBO.getDiscount_order_value(), 2, 0) + "\r\n");
+                            total = total + productBO.getNetValue();
+                            sb.append(SDUtil.format(productBO.getNetValue(), 2, 0) + "\r\n");
 
 
                         }
@@ -1159,8 +1159,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                                                 int totalBatchQty = batchProductBO.getOrderedPcsQty() + batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize()
                                                                         + batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize();
 
-                                                                if (batchProductBO.getSchemeAppliedValue() > 0) {
-                                                                    totalValue = batchProductBO.getSchemeAppliedValue();
+                                                                if (batchProductBO.getLineValueAfterSchemeApplied() > 0) {
+                                                                    totalValue = batchProductBO.getLineValueAfterSchemeApplied();
                                                                 } else {
                                                                     totalValue = batchProductBO.getOrderedPcsQty()
                                                                             * batchProductBO.getSrp()
@@ -1189,8 +1189,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                                                         double totalValue = 0;
                                                         double productDiscount = 0;
 
-                                                        if (productMasterBO.getSchemeAppliedValue() > 0) {
-                                                            totalValue = productMasterBO.getSchemeAppliedValue();
+                                                        if (productMasterBO.getLineValueAfterSchemeApplied() > 0) {
+                                                            totalValue = productMasterBO.getLineValueAfterSchemeApplied();
                                                         } else {
                                                             totalValue = productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
                                                                     + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()

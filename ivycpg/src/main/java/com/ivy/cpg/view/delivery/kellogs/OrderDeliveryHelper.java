@@ -484,7 +484,7 @@ public class OrderDeliveryHelper {
         double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
         for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
             ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
-            prodBo.setDiscount_order_value(0);
+            prodBo.setNetValue(0);
             if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
                     || prodBo.getOrderedOuterQty() != 0) {
                 double temp = (prodBo.getOrderedPcsQty() * prodBo.getSrp())
@@ -629,7 +629,7 @@ public class OrderDeliveryHelper {
 //                                + (productBo.getOrderedPcsQty() * productBo.getSrp())
 //                                + (productBo.getOrderedOuterQty() * productBo.getOsrp());
 
-                        double line_total_price = productBo.getDiscount_order_value();
+                        double line_total_price = productBo.getNetValue();
 
                         String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty," +
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +

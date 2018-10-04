@@ -208,7 +208,7 @@ public class ProductMasterBO {
 
     private String RField1;
 
-    private double discount_order_value;
+    private double netValue;
 
     public double getLineValue() {
         return lineValue;
@@ -223,6 +223,8 @@ public class ProductMasterBO {
     }
 
     private double lineValue;
+
+
 
     private boolean ispromo;
     private int isMustSell;
@@ -526,7 +528,7 @@ public class ProductMasterBO {
         this.schemeBO = productBO.schemeBO;
         this.orderPricePiece = productBO.orderPricePiece;
         this.RField1 = productBO.RField1;
-        this.discount_order_value = productBO.discount_order_value;
+        this.netValue = productBO.netValue;
         this.ispromo = productBO.ispromo;
         this.isMustSell = productBO.isMustSell;
         this.isFocusBrand = productBO.isFocusBrand;
@@ -696,12 +698,12 @@ public class ProductMasterBO {
      *
      * @return
      */
-    public double getDiscount_order_value() {
-        return discount_order_value;
+    public double getNetValue() {
+        return netValue;
     }
 
-    public void setDiscount_order_value(double discount_order_value) {
-        this.discount_order_value = discount_order_value;
+    public void setNetValue(double netValue) {
+        this.netValue = netValue;
     }
 
     private double d1;
@@ -1405,11 +1407,11 @@ public class ProductMasterBO {
         this.taxValue = taxValue;
     }
 
-    public double getSchemeAppliedValue() {
+    public double getLineValueAfterSchemeApplied() {
         return schemeAppliedValue;
     }
 
-    public void setSchemeAppliedValue(double schemeAppliedValue) {
+    public void setLineValueAfterSchemeApplied(double schemeAppliedValue) {
         this.schemeAppliedValue = schemeAppliedValue;
     }
 

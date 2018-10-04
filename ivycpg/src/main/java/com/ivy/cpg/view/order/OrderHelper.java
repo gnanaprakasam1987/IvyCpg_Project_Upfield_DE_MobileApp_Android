@@ -1137,7 +1137,7 @@ public class OrderHelper {
                     .getCsrp())
                     + (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
                     + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
-            totalValue = batchProductBO.getDiscount_order_value();
+            totalValue = batchProductBO.getNetValue();
             if (businessModel.configurationMasterHelper.SHOW_FOC)
                 rfield = String.valueOf(batchProductBO.getFoc());
             else rfield = batchProductBO.getRemarks();
@@ -1160,7 +1160,7 @@ public class OrderHelper {
                     .getCsrp())
                     + (productBo.getOrderedPcsQty() * productBo.getSrp())
                     + (productBo.getOrderedOuterQty() * productBo.getOsrp());
-            totalValue = productBo.getDiscount_order_value();
+            totalValue = productBo.getNetValue();
             if (!businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
                 line_total_price = line_total_price + businessModel.productHelper.taxHelper.getTaxAmountByProduct(productBo);
 
@@ -1718,7 +1718,7 @@ public class OrderHelper {
                             .getColumnIndex("DA")));
                     product.setTotalamount(OrderDetails.getDouble(OrderDetails
                             .getColumnIndex("totalamount")));
-                    product.setDiscount_order_value(OrderDetails
+                    product.setNetValue(OrderDetails
                             .getDouble(OrderDetails
                                     .getColumnIndex("totalamount")));
                     product.setWeight(weight);
@@ -2153,7 +2153,7 @@ public class OrderHelper {
                         .getCsrp())
                         + (batchWiseProductBO.getOrderedPcsQty() * batchWiseProductBO.getSrp())
                         + (batchWiseProductBO.getOrderedOuterQty() * batchWiseProductBO.getOsrp());
-                totalValue = batchWiseProductBO.getDiscount_order_value();
+                totalValue = batchWiseProductBO.getNetValue();
 
                 if (businessModel.configurationMasterHelper.SHOW_FOC)
                     rfield = String.valueOf(batchWiseProductBO.getFoc());
@@ -2181,7 +2181,7 @@ public class OrderHelper {
                         .getCsrp())
                         + (productBO.getOrderedPcsQty() * productBO.getSrp())
                         + (productBO.getOrderedOuterQty() * productBO.getOsrp());
-                totalValue = productBO.getDiscount_order_value();
+                totalValue = productBO.getNetValue();
 
                 if (businessModel.configurationMasterHelper.SHOW_FOC)
                     rfield = String.valueOf(productBO.getFoc());
@@ -2298,7 +2298,7 @@ public class OrderHelper {
 
         for (ProductMasterBO bo : mOrderedProductList) {
             if (bo.getIsFocusBrand() == 1 || bo.getIsFocusBrand2() == 1 || bo.getIsFocusBrand3() == 1 || bo.getIsFocusBrand4() == 1) {
-                focusBrandProdValues += bo.getDiscount_order_value();
+                focusBrandProdValues += bo.getNetValue();
             }
             if (bo.getIsFocusBrand() == 1) {
                 focusBrandProducts1 += 1;
@@ -2315,7 +2315,7 @@ public class OrderHelper {
 
 
             if (bo.getIsMustSell() == 1) {
-                mustSellProdValues += bo.getDiscount_order_value();
+                mustSellProdValues += bo.getNetValue();
                 mustSellProducts += 1;
             }
         }
@@ -3432,8 +3432,7 @@ public class OrderHelper {
                             + batchProductBO.getOrderedOuterQty()
                             * batchProductBO.getOsrp();
                     totalValue = totalValue + totalBatchValue;
-                    batchProductBO.setDiscount_order_value(totalBatchValue);
-                    batchProductBO.setSchemeAppliedValue(totalBatchValue);
+                    batchProductBO.setNetValue(totalBatchValue);
                 }
             }
         }

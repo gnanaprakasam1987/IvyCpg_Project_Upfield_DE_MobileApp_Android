@@ -4669,8 +4669,8 @@ public class BusinessModel extends Application {
                         for (TaxBO taxBO : mFreeProductTaxListByProductId.get(schemeProductBO.getProductId())) {
                             //Excluding tax for scheme free products
 
-                            //setting line value to discount_order_value, because it is neede for excluding tax values..
-                            schemeProduct.setDiscount_order_value(lineValue);
+                            //setting line value to discount_order_value, because it is needed for excluding tax values..
+                            schemeProduct.setNetValue(lineValue);
 
                             //just resetting values
                             schemeProduct.setOrderedPcsQty(0);

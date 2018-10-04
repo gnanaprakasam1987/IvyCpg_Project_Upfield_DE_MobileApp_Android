@@ -7,7 +7,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -93,8 +91,6 @@ import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -589,9 +585,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     productBO.setLineValue(lineValue);
                     productBO.setNetValue(lineValue);
-                    productBO.setDiscount_order_value(lineValue);
 
-                    productBO.setSchemeAppliedValue(lineValue);
                     totalOrderValue += lineValue;
 
                     // Purpose of setting this is not clear
@@ -781,8 +775,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     // Set the calculated flat line values in productBO
                     totalOrderValue += lineValue;
 
-                    productBO.setDiscount_order_value(lineValue);
-                    productBO.setSchemeAppliedValue(lineValue);
+                    productBO.setNetValue(lineValue);
                     productBO.setOrderPricePiece(productBO.getSrp());
 
                     productBO.setCompanyTypeDiscount(0);
@@ -2828,7 +2821,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             holder.shelfPieceQty.setText(String.valueOf(((holder.productBO.getLocations().get(bModel.productHelper.getmSelectedLocationIndex()).getShelfPiece() == -1) ? 0 : holder.productBO.getLocations().get(bModel.productHelper.getmSelectedLocationIndex()).getShelfPiece())));
             holder.foc.setText(String.valueOf(holder.productBO.getFoc()));
             holder.text_total.setText(String.valueOf(bModel.formatValue(holder.productBO
-                    .getDiscount_order_value())));
+                    .getNetValue())));
             int weight = holder.productBO.getOrderedPcsQty() + (holder.productBO.getOrderedCaseQty() * holder.productBO.getCaseSize()) + (holder.productBO.getOrderedOuterQty() * holder.productBO.getOutersize());
             holder.weight.setText(String.valueOf(weight * holder.productBO.getWeight()));
 

@@ -222,7 +222,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                                     totalAllQty = totalAllQty + totalQty;
                                     if (totalQty > 0) {
                                         batchProductBO.setProductShortName(productBO.getProductShortName());
-                                        batchProductBO.setTotalamount(batchProductBO.getDiscount_order_value());
+                                        batchProductBO.setTotalamount(batchProductBO.getNetValue());
                                         mProductsForAdapter.add(batchProductBO);
                                     }
                                 }
