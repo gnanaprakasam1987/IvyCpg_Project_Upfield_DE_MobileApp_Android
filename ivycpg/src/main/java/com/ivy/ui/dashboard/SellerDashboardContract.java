@@ -39,7 +39,13 @@ public interface SellerDashboardContract {
 
         void fetchSellerDashboardDataForUser(int selectedUser);
 
+        void fetchSellerDashboardDataForWeek(int selectedUser);
+
         void fetchSellerDashboardForUserAndInterval(int selectedUser, String interval);
+
+        void fetchRouteDashboardData(String interval);
+
+        void fetchRetailerDashboard(String retailerId,String interval);
 
         boolean isSMPBasedDash();
 
@@ -51,13 +57,11 @@ public interface SellerDashboardContract {
 
         boolean shouldShowTrendChart();
 
-        void getP3MSellerDashboardData();
+        void fetchP3MSellerDashboardData();
 
         void fetchDistributorList(boolean isMultiSelect);
 
-        void fetchUsersAndDistributors();
-
-        void fetchUserList(String userId);
+        void fetchUserList(String userId, boolean isMultiSelect);
 
         void fetchKPIDashboardData(String userid, String interval);
 

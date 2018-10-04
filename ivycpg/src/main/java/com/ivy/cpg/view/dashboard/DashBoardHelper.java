@@ -1546,6 +1546,11 @@ public class DashBoardHelper {
     }
 
     //Only for loading trend chart
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getP3MTrendChart(String)}
+     */
     public void loadP3MTrendChaart(String userid) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,

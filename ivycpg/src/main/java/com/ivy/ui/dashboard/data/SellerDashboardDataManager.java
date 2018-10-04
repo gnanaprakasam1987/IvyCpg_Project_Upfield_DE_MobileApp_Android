@@ -23,4 +23,8 @@ public interface SellerDashboardDataManager {
 
     Observable<ArrayList<DashBoardBO>> getKPIDashboard(String userId, String interval);
 
+    Observable<ArrayList<DashBoardBO>> getP3MTrendChart(String userId);
+
+    Observable<ArrayList<Double>> getCollectedValue();
+
 }

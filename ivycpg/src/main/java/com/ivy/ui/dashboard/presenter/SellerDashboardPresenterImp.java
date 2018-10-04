@@ -36,6 +36,7 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
@@ -143,11 +144,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     @Override
     public boolean shouldShowTrendChart() {
-        return getConfigurationMasterHelper().IS_SMP_BASED_DASH;
+        return isP3M || getConfigurationMasterHelper().IS_SMP_BASED_DASH;
     }
 
     @Override
-    public void getP3MSellerDashboardData() {
+    public void fetchP3MSellerDashboardData() {
 
     }
 
@@ -161,7 +162,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<DistributorMasterBO> distributorMasterBOS) {
                         if (isMultiSelect)
                             getIvyView().setupMultiSelectDistributorSpinner(distributorMasterBOS);
-
+                        else
+                            getIvyView().setUpDistributorSpinner(distributorMasterBOS);
 
                     }
 
@@ -177,48 +179,14 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 }));
     }
 
-    @Override
-    public void fetchUsersAndDistributors() {
-
-        getCompositeDisposable().add(Observable.zip(distributorDataManager.fetchDistributorList(), userDataManager.fetchUsers(),
-                new BiFunction<ArrayList<DistributorMasterBO>, ArrayList<UserMasterBO>, Boolean>() {
-                    @Override
-                    public Boolean apply(ArrayList<DistributorMasterBO> distributorMasterBOS, ArrayList<UserMasterBO> userMasterBOS) throws Exception {
-
-                        getIvyView().setUpDistributorSpinner(distributorMasterBOS);
-                        getIvyView().setUpUserSpinner(userMasterBOS);
-
-                        return true;
-                    }
-                }).subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<Boolean>() {
-                    @Override
-                    public void onNext(Boolean status) {
-
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                }));
-
-    }
 
     @Override
-    public void fetchUserList(String distributorIds) {
+    public void fetchUserList(String distributorIds, boolean isMultiSelect) {
 
         if (!distributorIds.equalsIgnoreCase("0")) {
-            fetchUsersMatchingDistributor(distributorIds);
+            fetchUsersMatchingDistributor(distributorIds, isMultiSelect);
         } else {
-            fetchAllUsers();
+            fetchAllUsers(isMultiSelect);
         }
 
 
@@ -275,8 +243,83 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
+    public void fetchSellerDashboardDataForWeek(int selectedUser) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForWeek(Integer.toString(selectedUser))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                    @Override
+                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+
+                        getIvyView().setDashboardListAdapter(dashBoardBOS);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+    @Override
     public void fetchSellerDashboardForUserAndInterval(int selectedUser, String interval) {
-        getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForInterval(Integer.toString(selectedUser),interval)
+        getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForInterval(Integer.toString(selectedUser), interval)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                    @Override
+                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+
+                        getIvyView().setDashboardListAdapter(dashBoardBOS);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+    @Override
+    public void fetchRouteDashboardData(String interval) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getRouteDashboardForInterval(interval)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                    @Override
+                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+
+                        getIvyView().setDashboardListAdapter(dashBoardBOS);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+    @Override
+    public void fetchRetailerDashboard(String retailerId, String interval) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getRetailerDashboardForInterval(retailerId, interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
@@ -330,7 +373,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 }));
     }
 
-    private void fetchUsersMatchingDistributor(String distributorIds) {
+    private void fetchUsersMatchingDistributor(String distributorIds, boolean isMultiSelect) {
         getCompositeDisposable().add(userDataManager.fetchUsersForDistributors(distributorIds)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -356,7 +399,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
 
-    private void fetchAllUsers() {
+    private void fetchAllUsers(boolean isMultiSelect) {
         getCompositeDisposable().add(userDataManager.fetchDashboardUsers()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())

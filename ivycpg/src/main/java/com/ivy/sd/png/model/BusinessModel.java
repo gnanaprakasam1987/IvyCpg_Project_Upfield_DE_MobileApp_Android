@@ -167,6 +167,7 @@ import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
+import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
 import com.ivy.utils.AppUtils;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
@@ -218,7 +219,7 @@ public class BusinessModel extends Application {
     public TimerCount timer;
     private String remarkType = "0";
 
-    public String userNameTemp="", passwordTemp="";
+    public String userNameTemp = "", passwordTemp = "";
     public RetailerMasterBO retailerMasterBO;
     public Vector<RetailerMasterBO> retailerMaster;
     public Vector<RetailerMasterBO> subDMaster;
@@ -2601,6 +2602,7 @@ public class BusinessModel extends Application {
     public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
         return attributeList;
     }
+
     /**
      * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#setRetailerAttribute }
@@ -3271,7 +3273,7 @@ public class BusinessModel extends Application {
     public void showAlertWithImage(String title, String msg, int id, boolean imgDisplay) {
 
         final int idd = id;
-        if(getContext() == null){
+        if (getContext() == null) {
             return;
         }
 
@@ -6875,7 +6877,7 @@ public class BusinessModel extends Application {
         }
     }
 
-     /* @See {@link com.ivy.utils.AppUtils}
+    /* @See {@link com.ivy.utils.AppUtils}
      * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#validateInput}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
@@ -8366,6 +8368,11 @@ public class BusinessModel extends Application {
         return str;
     }
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getCollectedValue()}
+     */
     public ArrayList<Double> getCollectedValue() {
         ArrayList<Double> collectedList = new ArrayList<>();
         double osAmt = 0, paidAmt = 0;

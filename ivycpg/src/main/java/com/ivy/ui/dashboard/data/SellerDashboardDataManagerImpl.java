@@ -11,6 +11,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -537,6 +538,134 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                 shutDownDb();
                 return dashBoardBOS;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<DashBoardBO>> getP3MTrendChart(final String userId) {
+        return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
+            @Override
+            public ArrayList<DashBoardBO> call() throws Exception {
+                ArrayList<DashBoardBO> dashBoardBOS = new ArrayList<>();
+                try {
+                    initDb();
+
+                    String monthText = "";
+                    if (configurationMasterHelper.IS_KPI_CALENDAR) {
+                        monthText = "SK.IntervalDesc ";
+                    } else {
+                        monthText = "IFNULL(strftime('%m', replace(fromdate,'/','-')),0) ";
+                    }
+
+                    String sql = "SELECT SLM.ListName,SKD.Target,SKD.Achievement,"
+                            + " ROUND(CASE WHEN (100-((SKD.Achievement*100)/((SKD.Target)*1.0))) < 0"
+                            + " THEN 100 ELSE ((SKD.Achievement*100)/((SKD.Target)*1.0)) END ,2) AS conv_ach_perc"
+                            + ",IFNULL(SKS.Score,0),IFNULL(SKS.Incentive,0),SK.KPIID,SKD.KPIParamLovId,SLM.Flex1,SLM.ListCode," + monthText + "FROM SellerKPI SK"
+                            + " inner join SellerKPIDetail SKD on SKD.KPIID= SK.KPIID"
+                            + " LEFT join SellerKPIScore SKS on SKD.KPIID= SKS.KPIID and SKD.KPIParamLovId = SKS.KPIParamLovId"
+                            + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
+                            + " where userid = "
+                            + QT(userId)
+                            + " and interval= 'P3M' "
+                            + (userId.equals("0") ? " and SK.isSummary=1" : "")
+                            + " order by DisplaySeq asc";
+                    Cursor c = mDbUtil.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            DashBoardBO sbo = new DashBoardBO();
+                            sbo.setPId(0);
+                            sbo.setText(c.getString(0));
+                            sbo.setKpiTarget(c.getString(1));
+                            sbo.setKpiAcheived(c.getString(2));
+
+
+                            sbo.setCalculatedPercentage(c.getFloat(3));
+                            if (sbo.getCalculatedPercentage() >= 100) {
+                                sbo.setConvTargetPercentage(0);
+                                sbo.setConvAcheivedPercentage(100);
+                            } else {
+                                sbo.setConvTargetPercentage(100 - sbo
+                                        .getCalculatedPercentage());
+                                sbo.setConvAcheivedPercentage(sbo
+                                        .getCalculatedPercentage());
+                            }
+                            sbo.setKpiScore(c.getString(4));
+                            sbo.setKpiIncentive(c.getString(5));
+                            sbo.setKpiID(c.getInt(6));
+                            sbo.setKpiTypeLovID(c.getInt(7));
+                            sbo.setFlex1(c.getInt(8));
+                            sbo.setCode(c.getString(9));
+                            if (configurationMasterHelper.IS_KPI_CALENDAR) {
+                                sbo.setMonthName(c.getString(10));
+                            } else {
+                                int value = SDUtil.convertToInt(c.getString(10));
+                                if (value > 0 && value <= 12)
+                                    sbo.setMonthName(MONTH_NAME[value - 1]);
+                            }
+
+                            String lovIdSql = "select count(*) from SellerKPISKUDetail where KPIParamLovId = " + sbo.getKpiTypeLovID();
+                            Cursor lovIdSqlCursor = mDbUtil.selectSQL(lovIdSql);
+                            if (lovIdSqlCursor != null) {
+                                while (lovIdSqlCursor.moveToNext()) {
+                                    sbo.setSubDataCount(c.getInt(0));
+                                }
+                                lovIdSqlCursor.close();
+                            }
+
+                            dashBoardBOS.add(sbo);
+                        }
+
+                        c.close();
+                    }
+
+                }catch (Exception ignored){
+
+                }
+                shutDownDb();
+
+                return dashBoardBOS;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<Double>> getCollectedValue() {
+        return Observable.fromCallable(new Callable<ArrayList<Double>>() {
+            @Override
+            public ArrayList<Double> call() throws Exception {
+
+                ArrayList<Double> collectedList = new ArrayList<>();
+                double osAmt = 0, paidAmt = 0;
+                try {
+                    initDb();
+
+                    String sb = "SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt," +
+                            " Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os " +
+                            " FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo" +
+                            " Where Inv.InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+
+                    Cursor c = mDbUtil
+                            .selectSQL(sb);
+
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                paidAmt = paidAmt + c.getDouble(c.getColumnIndex("RcvdAmt"));
+                                osAmt = osAmt + c.getDouble(c.getColumnIndex("os"));
+                            }
+
+                        }
+                        c.close();
+                    }
+
+                    collectedList.add(osAmt);
+                    collectedList.add(paidAmt);
+                }catch (Exception ignored){
+
+                }
+                shutDownDb();
+                return collectedList;
             }
         });
     }
