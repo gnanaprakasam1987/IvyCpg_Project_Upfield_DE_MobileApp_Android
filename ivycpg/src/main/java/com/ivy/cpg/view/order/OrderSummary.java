@@ -586,7 +586,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     // Set the calculated flat line values in productBO
                     double lineValue = calculateLineValue(productBO);
+
+                    productBO.setLineValue(lineValue);
+                    productBO.setNetValue(lineValue);
                     productBO.setDiscount_order_value(lineValue);
+
                     productBO.setSchemeAppliedValue(lineValue);
                     totalOrderValue += lineValue;
 
@@ -1199,7 +1203,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         isEditMode = true;
         discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
 
-        if (bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
+        if (bModel.configurationMasterHelper.SHOW_DISCOUNT||bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
             discountHelper.clearDiscountQuantity();
 
         if (bModel.remarksHelper.getRemarksBO().getModuleCode() == null

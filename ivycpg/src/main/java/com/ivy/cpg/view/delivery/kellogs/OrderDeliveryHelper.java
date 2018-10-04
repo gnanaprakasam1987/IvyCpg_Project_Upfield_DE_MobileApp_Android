@@ -484,6 +484,7 @@ public class OrderDeliveryHelper {
         double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
         for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
             ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
+            prodBo.setDiscount_order_value(0);
             if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
                     || prodBo.getOrderedOuterQty() != 0) {
                 double temp = (prodBo.getOrderedPcsQty() * prodBo.getSrp())
