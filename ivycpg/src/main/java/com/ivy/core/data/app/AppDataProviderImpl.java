@@ -3,6 +3,7 @@ package com.ivy.core.data.app;
 import android.content.Context;
 
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -36,6 +37,8 @@ public class AppDataProviderImpl implements AppDataProvider {
     /**/
     private int globalLocationIndex;
 
+
+    private BeatMasterBO todayBeatMaster;
 
     @Override
     public void setInTime(String inTime) {
@@ -141,5 +144,24 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public int getGlobalLocationIndex() {
         return globalLocationIndex;
+    }
+
+    @Override
+    public void setTodayBeatMaster(BeatMasterBO beatMaster) {
+
+        mContext.codeCleanUpUtil.setTodayBeatMaster(beatMaster);
+
+        this.todayBeatMaster = beatMaster;
+    }
+
+    @Override
+    public void setTodayBeatMaster(BeatMasterBO beatMaster, boolean isFromBModel) {
+
+        this.todayBeatMaster = beatMaster;
+    }
+
+    @Override
+    public BeatMasterBO getBeatMasterBo() {
+        return todayBeatMaster;
     }
 }

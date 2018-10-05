@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.beat.BeatDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BeatMasterBO;
@@ -201,11 +202,23 @@ public class BeatMasterHelper {
         return beatList;
     }
 
+    /**
+     * @deprecated
+     * @See {@link AppDataProviderImpl#getBeatMasterBo()}
+     * @return
+     */
     public BeatMasterBO getTodayBeatMasterBO() {
         return todayBeatMasterBO;
     }
 
+
+    /**
+     * @deprecated
+     * @See {@link com.ivy.core.data.app.AppDataProviderImpl#setTodayBeatMaster(BeatMasterBO)}
+     */
+    @Deprecated
     public void setTodayBeatMasterBO(BeatMasterBO todayBeatMasterBO) {
+        bmodel.codeCleanUpUtil.setTodayBeatMaster(todayBeatMasterBO);
         this.todayBeatMasterBO = todayBeatMasterBO;
     }
 

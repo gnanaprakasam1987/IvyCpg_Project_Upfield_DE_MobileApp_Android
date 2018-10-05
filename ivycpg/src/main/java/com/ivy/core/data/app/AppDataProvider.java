@@ -1,5 +1,6 @@
 package com.ivy.core.data.app;
 
+import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 
@@ -43,6 +44,13 @@ public interface AppDataProvider {
     void setGlobalLocationIndex(int locationId, boolean isFromBModel);
 
     int getGlobalLocationIndex();
+
+
+    void setTodayBeatMaster(BeatMasterBO beatMaster);
+
+    void setTodayBeatMaster(BeatMasterBO beatMaster,  boolean isFromBModel);
+
+    BeatMasterBO getBeatMasterBo();
 
 
 }

@@ -7,6 +7,7 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.db.DbHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -186,6 +187,21 @@ public class DataManagerImpl implements DataManager {
     @Override
     public int getGlobalLocationIndex() {
         return appDataProvider.getGlobalLocationIndex();
+    }
+
+    @Override
+    public void setTodayBeatMaster(BeatMasterBO beatMaster) {
+        appDataProvider.setTodayBeatMaster(beatMaster);
+    }
+
+    @Override
+    public void setTodayBeatMaster(BeatMasterBO beatMaster, boolean isFromBModel) {
+        appDataProvider.setTodayBeatMaster(beatMaster,isFromBModel);
+    }
+
+    @Override
+    public BeatMasterBO getBeatMasterBo() {
+        return appDataProvider.getBeatMasterBo();
     }
 
     @Override

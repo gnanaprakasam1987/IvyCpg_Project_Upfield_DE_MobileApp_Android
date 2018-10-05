@@ -3,6 +3,7 @@ package com.ivy.core;
 import android.content.Context;
 
 import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -74,6 +75,10 @@ public class CodeCleanUpUtil {
 
     public void setGlobalLocationId(int locationId){
         appDataProvider.setGlobalLocationIndex(locationId,true);
+    }
+
+    public void setTodayBeatMaster(BeatMasterBO beatMaster){
+        appDataProvider.setTodayBeatMaster(beatMaster,true);
     }
 
     public void setBmodelGlobalLocationId(){
