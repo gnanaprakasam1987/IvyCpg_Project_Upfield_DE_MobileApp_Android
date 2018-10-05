@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.beat.BeatDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -66,11 +67,13 @@ public class BeatMasterHelper {
     }
 
     /**
-     * Return beatId of the given beatname.
-     *
      * @param beatName - beatName
      * @return -BeatsId
+     * @See {@link com.ivy.core.data.beat.BeatDataManager#fetchBeatsId(String)}
+     * Return beatId of the given beatname.
+     * @deprecated
      */
+    @Deprecated
     public String getBeatsId(String beatName) {
         BeatMasterBO beat;
         int siz = getBeatMaster().size();
@@ -87,8 +90,11 @@ public class BeatMasterHelper {
     }
 
     /**
+     * @See {@link BeatDataManagerImpl#fetchBeats()}
      * Download beatamster and load in verctor
+     * @deprecated
      */
+    @Deprecated
     public void downloadBeats() {
         DBUtil db = null;
         try {
@@ -123,6 +129,14 @@ public class BeatMasterHelper {
     }
 
     /*User for Adhoc planning*/
+
+    /**
+     * @param userId
+     * @return
+     * @See {@link BeatDataManagerImpl#fetchBeatsForUser(int)}
+     * @deprecated
+     */
+    @Deprecated
     public ArrayList<BeatMasterBO> downloadBeats(int userId) {
         ArrayList<BeatMasterBO> beatList = new ArrayList<>();
         try {
@@ -153,6 +167,12 @@ public class BeatMasterHelper {
         return beatList;
     }
 
+    /**
+     * @return
+     * @See {@link BeatDataManagerImpl#fetchAdhocPlannedBeats()}
+     * @deprecated
+     */
+    @Deprecated
     public ArrayList<BeatMasterBO> downloadBeatsAdhocPlanned() {
         ArrayList<BeatMasterBO> beatList = new ArrayList<>();
         try {
@@ -189,6 +209,12 @@ public class BeatMasterHelper {
         this.todayBeatMasterBO = todayBeatMasterBO;
     }
 
+    /**
+     * @param beatid
+     * @return
+     * @See {@link BeatDataManagerImpl#fetchBeatMaster(String)}
+     * @deprecated
+     */
     public BeatMasterBO getBeatMasterBOByID(int beatid) {
         for (int i = 0; i < getBeatMaster().size(); i++) {
             if (getBeatMaster().get(i).getBeatId() == beatid)

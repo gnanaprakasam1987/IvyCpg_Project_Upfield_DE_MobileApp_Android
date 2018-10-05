@@ -195,7 +195,41 @@ public class BeatDataManagerImpl implements BeatDataManager {
     }
 
     @Override
-    public Single<BeatMasterBO> fetchBeatMaster(String beatId) {
-        return null;
+    public Single<BeatMasterBO> fetchBeatMaster(final String beatId) {
+        return Single.fromCallable(new Callable<BeatMasterBO>() {
+            @Override
+            public BeatMasterBO call() throws Exception {
+                BeatMasterBO beat = null;
+                try {
+                    initDb();
+
+                    String beatCols = "BeatID,BeatDescription,today,UserId,BeatCode";
+
+                    Cursor c = mDbUtil.selectSQL("SELECT distinct " + beatCols
+                            + " FROM " + DataMembers.tbl_beatMaster + " WHERE UserId = " +
+                            "ifnull((SELECT UserId FROM" + DataMembers.tbl_beatMaster +
+                            " WHERE UserId=" + appDataProvider.getUser().getUserid() + "),0) AND BeatID = "+beatId);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            beat = new BeatMasterBO();
+                            beat.setBeatId(c.getInt(0));
+                            beat.setBeatDescription(c.getString(1));
+                            beat.setToday(c.getInt(2));
+                            beat.setUserId(c.getInt(3));
+                            beat.setBeatCode(c.getString(4));
+                        }
+                        c.close();
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+
+                shutDownDb();
+
+                return beat;
+
+            }
+        });
     }
 }
