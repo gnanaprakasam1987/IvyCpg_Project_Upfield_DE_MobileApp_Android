@@ -16,6 +16,7 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -423,8 +424,12 @@ public class SurveyHelperNew {
             }
 
             sb.append(" and SM.SurveyId not in (select AH.surveyid from answerheader AH ");
-            sb.append("Where retailerid = " + bmodel.QT(retailerid) + " and AH.frequency='DAILY_PIRAMAL')");
-            sb.append(" ORDER BY SM.Sequence, SM.SurveyId, SMP.GroupName, SMP.Sequence, SMP.QID, OM.OptionId");
+            sb.append("Where retailerid = '" + retailerid + "' and AH.frequency='DAILY_PIRAMAL') ");
+            sb.append("AND SM.SurveyId NOT IN (SELECT SH.surveyid FROM SurveyHistroy SH WHERE SH.retailerid = '" + retailerid + "' and " +
+                    "(case when lower(freq) = 'daily' then Date = '" + SDUtil.now(SDUtil.DATE_GLOBAL) + "' " +
+                    "when lower(freq) = 'monthly' then Date like '%/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/%' " +
+                    "when lower(freq) = 'yearly' then Date like '" + Calendar.getInstance().get(Calendar.YEAR) + "/%' end)) ");
+            sb.append("ORDER BY SM.Sequence, SM.SurveyId, SMP.GroupName, SMP.Sequence, SMP.QID, OM.OptionId");
             Cursor c = db.selectSQL(sb.toString());
 
 
