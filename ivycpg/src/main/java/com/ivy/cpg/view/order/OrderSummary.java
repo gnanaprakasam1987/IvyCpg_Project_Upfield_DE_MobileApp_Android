@@ -7,7 +7,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -93,8 +91,6 @@ import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -194,6 +190,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar mCalendar = null;
     private String mImageName, attachedFilePath = "";
     private Toolbar toolbar;
+    private int linesPerCall = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -552,6 +549,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         int totalQuantityOrdered = 0;
         float totalWeight = 0;
+        linesPerCall = 0;
 
         bModel.getRetailerMasterBO().setBillWiseCompanyDiscount(0);
         bModel.getRetailerMasterBO().setBillWiseDistributorDiscount(0);
@@ -584,6 +582,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     mOrderedProductList.add(productBO);
 
+                    if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && totalQuantity > 0)
+                        linesPerCall++;
+
                     // Set the calculated flat line values in productBO
                     double lineValue = calculateLineValue(productBO);
                     productBO.setDiscount_order_value(lineValue);
@@ -602,6 +603,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 }
             }
+
+            if (linesPerCall == 0)
+                linesPerCall = mOrderedProductList.size();
 
             // Developed for JnJ ID : Sequencing based on user entry.
             if (bModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
@@ -731,7 +735,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
             //updating footer labels
             text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
-            text_LPC.setText(String.valueOf(mOrderedProductList.size()));
+            text_LPC.setText(String.valueOf(linesPerCall));
             text_totalOrderedQuantity.setText(String.valueOf(totalQuantityOrdered));
 
             if (bModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION &&
