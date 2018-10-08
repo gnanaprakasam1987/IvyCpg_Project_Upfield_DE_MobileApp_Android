@@ -1042,8 +1042,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             visitConfig = bmodel.mRetailerHelper.getVisitCoverage();
         }
 
-        for (VisitConfiguration configObj : visitConfig)
-            mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
+        if(visitConfig != null) {
+            for (VisitConfiguration configObj : visitConfig)
+                mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
+        }
     }
 
     private void updateRetailerProperty() {

@@ -465,7 +465,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     /**
      * download method call based on menu code wise
      */
-
+    float distance = 0;
     DownloadAsyncTaskInterface downloadAsyncTaskInterface = new DownloadAsyncTaskInterface() {
         @Override
         public void showProgress(AlertDialog.Builder builder, String message) {
@@ -510,7 +510,16 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     if (bmodel.stockreportmasterhelper.getStockReportMaster().size() > 0) {
                         navigateToActivity(menuName, menuCode, VanLoadStockApplyActivity.class);
                     } else {
-                        showMessage(getString(R.string.data_not_mapped));
+                        if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION
+                                && bmodel.stockreportmasterhelper.getStockReportMaster() == null) {
+                            if (distance == -1)
+                                showToastMessage(-1);
+                            else if (distance == -2 || distance == -3)
+                                showToastMessage(distance);
+                            else
+                                showToastMessage(distance);
+                        } else
+                            showMessage(getString(R.string.data_not_mapped));
                     }
                     break;
 
@@ -519,7 +528,16 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         bmodel.getRetailerMasterBO().setDistributorId(0);
                         navigateToActivity(menuName, menuCode, VanUnloadActivity.class);
                     } else {
-                        showMessage(getString(R.string.data_not_mapped));
+                        if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION
+                                && bmodel.stockreportmasterhelper.getStockReportMaster() == null) {
+                            if (distance == -1)
+                                showToastMessage(-1);
+                            else if (distance == -2 || distance == -3)
+                                showToastMessage(distance);
+                            else
+                                showToastMessage(distance);
+                        } else
+                            showMessage(getString(R.string.data_not_mapped));
                     }
                     break;
 
@@ -582,7 +600,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         bmodel.productHelper.getFilterProductLevels()));
             }
 
-            float distance = 0;
             if (menuCode.equals(MENU_VANLOAD_STOCK_VIEW)
                     || menuCode.equals(MENU_VAN_UNLOAD)) {
                 if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION)
@@ -601,14 +618,10 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 case MENU_VANLOAD_STOCK_VIEW:
                     if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-                        if (distance == -1)
-                            showToastMessage(-1);
-                        else if (distance == -2 || distance == -3)
-                            showToastMessage(distance);
-                        else if (distance <= ConfigurationMasterHelper.vanDistance)
+                        if (distance > -1
+                                && distance <= ConfigurationMasterHelper.vanDistance)
                             vanLoadSubRoutine();
-                        else
-                            showToastMessage(distance);
+
                     } else {
                         vanLoadSubRoutine();
                     }
@@ -617,17 +630,13 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 case MENU_VAN_UNLOAD:
                     if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
-                        if (distance == -1)
-                            showToastMessage(-1);
-                        else if (distance == -2 || distance == -3)
-                            showToastMessage(distance);
-                        else if (distance <= ConfigurationMasterHelper.vanDistance) {
+                        if (distance > -1
+                                && distance <= ConfigurationMasterHelper.vanDistance) {
                             bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                                     "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
 
                             bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_VAN_UNLOAD), 2);
-                        } else
-                            showToastMessage(distance);
+                        }
                     } else {
                         bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                                 "MENU_LOAD_MANAGEMENT", "MENU_VAN_UNLOAD");
