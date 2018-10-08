@@ -938,44 +938,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 // On/off the stock related text box
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_WC
-                        || screenCode
-                        .equals(ConfigurationMasterHelper.MENU_ORDER)) {
-                    findViewById(R.id.warehouseCaseTitle).setVisibility(
-                            View.GONE);
-                } else {
-                    try {
-                        ((TextView) findViewById(R.id.warehouseCaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                                R.id.warehouseCaseTitle).getTag()) != null)
-                            ((TextView) findViewById(R.id.warehouseCaseTitle))
-                                    .setText(bmodel.labelsMasterHelper
-                                            .applyLabels(findViewById(
-                                                    R.id.warehouseCaseTitle)
-                                                    .getTag()));
-                    } catch (Exception e) {
-                        Commons.printException(e + "");
-                    }
-                }
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_WP
-                        || screenCode
-                        .equals(ConfigurationMasterHelper.MENU_ORDER)) {
-                    findViewById(R.id.warehousePcsTitle).setVisibility(
-                            View.GONE);
-                } else {
-                    try {
-                        ((TextView) findViewById(R.id.warehousePcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                                R.id.warehousePcsTitle).getTag()) != null)
-                            ((TextView) findViewById(R.id.warehousePcsTitle))
-                                    .setText(bmodel.labelsMasterHelper
-                                            .applyLabels(findViewById(
-                                                    R.id.warehousePcsTitle)
-                                                    .getTag()));
-                    } catch (Exception e) {
-                        Commons.printException(e + "");
-                    }
-                }
 
                 // On/Off order case and pcs
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
@@ -1040,25 +1002,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                         Commons.printException(e + "");
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_WAREHOUSE_OUTER
-                        || screenCode
-                        .equals(ConfigurationMasterHelper.MENU_ORDER)) {
-                    findViewById(R.id.warehouseOuterTitle).setVisibility(
-                            View.GONE);
-                } else {
-                    try {
-                        ((TextView) findViewById(R.id.warehouseOuterTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-                        if (bmodel.labelsMasterHelper.applyLabels(findViewById(
-                                R.id.warehouseOuterTitle).getTag()) != null)
-                            ((TextView) findViewById(R.id.warehouseOuterTitle))
-                                    .setText(bmodel.labelsMasterHelper
-                                            .applyLabels(findViewById(
-                                                    R.id.warehouseOuterTitle)
-                                                    .getTag()));
-                    } catch (Exception e) {
-                        Commons.printException(e + "");
-                    }
-                }
+
                 if (!bmodel.configurationMasterHelper.SHOW_ICO) {
                     findViewById(R.id.icoTitle).setVisibility(View.GONE);
                 } else {

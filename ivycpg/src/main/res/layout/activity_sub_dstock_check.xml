@@ -232,30 +232,6 @@
                                 android:text="@string/avail" />
 
                             <TextView
-                                android:id="@+id/warehouseCaseTitle"
-                                style="?attr/customListTitle"
-                                android:layout_width="@dimen/order_stock_list_item_width_xlarge"
-                                android:layout_height="wrap_content"
-                                android:tag="warehouse_case"
-                                android:text="@string/wc" />
-
-                            <TextView
-                                android:id="@+id/warehouseOuterTitle"
-                                style="?attr/customListTitle"
-                                android:layout_width="@dimen/order_stock_list_item_width_xlarge"
-                                android:layout_height="wrap_content"
-                                android:tag="warehouse_outer"
-                                android:text="@string/wouter" />
-
-                            <TextView
-                                android:id="@+id/warehousePcsTitle"
-                                style="?attr/customListTitle"
-                                android:layout_width="@dimen/order_stock_list_item_width_xlarge"
-                                android:layout_height="wrap_content"
-                                android:tag="warehouse_piece"
-                                android:text="@string/wp" />
-
-                            <TextView
                                 android:id="@+id/shelfCaseTitle"
                                 style="?attr/customListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"

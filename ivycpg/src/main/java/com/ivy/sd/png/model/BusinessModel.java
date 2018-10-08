@@ -75,6 +75,7 @@ import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
@@ -204,7 +205,7 @@ public class BusinessModel extends Application {
     public TimerCount timer;
     private String remarkType = "0";
 
-    public String userNameTemp="", passwordTemp="";
+    public String userNameTemp = "", passwordTemp = "";
     public RetailerMasterBO retailerMasterBO;
     public Vector<RetailerMasterBO> retailerMaster;
     public Vector<RetailerMasterBO> subDMaster;
@@ -947,7 +948,7 @@ public class BusinessModel extends Application {
      * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
      * value will not be considered.
      */
-@Deprecated
+    @Deprecated
     public String QT(String data) {
         return "'" + data + "'";
     }
@@ -2550,6 +2551,7 @@ public class BusinessModel extends Application {
     public ArrayList<NewOutletAttributeBO> getRetailerAttribute() {
         return attributeList;
     }
+
     /**
      * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#setRetailerAttribute }
@@ -3057,20 +3059,43 @@ public class BusinessModel extends Application {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
+        StockCheckHelper stockCheckHelper = null;
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
             product = productHelper.getTaggedProductBOById(productid);
+            stockCheckHelper = StockCheckHelper.getInstance(ctx);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
 
-        if (!this.configurationMasterHelper.SHOW_STOCK_SP)
-            shelfpqty = -1;
-        if (!this.configurationMasterHelper.SHOW_STOCK_SC)
-            shelfcqty = -1;
-        if (!this.configurationMasterHelper.SHOW_SHELF_OUTER)
-            shelfoqty = -1;
-        if (!this.configurationMasterHelper.SHOW_STOCK_CB)
-            availability = -1;
+        if (menuCode.equals("MENU_STOCK")) {
+            if (!stockCheckHelper.SHOW_STOCK_SP)
+                shelfpqty = -1;
+            if (!stockCheckHelper.SHOW_STOCK_SC)
+                shelfcqty = -1;
+            if (!stockCheckHelper.SHOW_SHELF_OUTER)
+                shelfoqty = -1;
+            if (!stockCheckHelper.SHOW_STOCK_CB)
+                availability = -1;
+        } else if (menuCode.equals("MENU_COMBINE_STKCHK")) {
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SP)
+                shelfpqty = -1;
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SC)
+                shelfcqty = -1;
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                shelfoqty = -1;
+            if (!stockCheckHelper.SHOW_COMB_STOCK_CB)
+                availability = -1;
+        } else {
+            if (!this.configurationMasterHelper.SHOW_STOCK_SP)
+                shelfpqty = -1;
+            if (!this.configurationMasterHelper.SHOW_STOCK_SC)
+                shelfcqty = -1;
+            if (!this.configurationMasterHelper.SHOW_SHELF_OUTER)
+                shelfoqty = -1;
+            if (!this.configurationMasterHelper.SHOW_STOCK_CB)
+                availability = -1;
+        }
+
 
         if (product != null && product.getOwn() == isOwn) {
             for (int j = 0; j < product.getLocations().size(); j++) {
@@ -3220,7 +3245,7 @@ public class BusinessModel extends Application {
     public void showAlertWithImage(String title, String msg, int id, boolean imgDisplay) {
 
         final int idd = id;
-        if(getContext() == null){
+        if (getContext() == null) {
             return;
         }
 
@@ -4241,62 +4266,6 @@ public class BusinessModel extends Application {
             }
         }
         return false;
-    }
-
-    public boolean hasStockCheck(boolean flag) {
-
-        int siz;
-        if (!flag)
-            siz = productHelper.getTaggedProducts().size();
-        else
-            siz = productHelper.getProductMaster().size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = productHelper
-                    .getTaggedProducts().get(i);
-
-            int siz1 = product.getLocations().size();
-            for (int j = 0; j < siz1; j++) {
-                if ((this.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                        || (this.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                        || (this.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                        || (this.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)
-                        || product.getLocations().get(j).getWHPiece() > 0
-                        || product.getLocations().get(j).getWHCase() > 0
-                        || product.getLocations().get(j).getWHOuter() > 0
-                        || product.getLocations().get(j).getCockTailQty() > 0
-                        || product.getIsListed() > 0
-                        || product.getIsDistributed() > 0
-                        || product.getLocations().get(j).getReasonId() != 0)
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isReasonSelectedForAllProducts() {
-
-        int siz = productHelper.getProductMaster().size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = productHelper
-                    .getProductMaster().get(i);
-
-            int siz1 = product.getLocations().size();
-            for (int j = 0; j < siz1; j++) {
-                if (product.getIsFocusBrand() == 1 || product.getIsFocusBrand() == 2) {
-                    if ((this.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() == -1)
-                            && (this.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() == -1)
-                            && (this.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() == -1)
-                            && (this.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() == 0)
-                            && product.getLocations().get(j).getReasonId() == 0)
-                        return false;
-                }
-            }
-        }
-        return true;
     }
 
 
@@ -6215,7 +6184,7 @@ public class BusinessModel extends Application {
         }
     }
 
-     /* @See {@link com.ivy.utils.AppUtils}
+    /* @See {@link com.ivy.utils.AppUtils}
      * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#validateInput}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern

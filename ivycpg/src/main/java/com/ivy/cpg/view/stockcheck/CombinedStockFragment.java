@@ -137,6 +137,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private HorizontalScrollView hscrl_spl_filter;
     SearchAsync searchAsync;
     private boolean loadBothSalable;
+    private StockCheckHelper stockCheckHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -149,6 +150,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
+        stockCheckHelper = StockCheckHelper.getInstance(getContext());
 
         loadBothSalable = bmodel.configurationMasterHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU;
         try {
@@ -1400,14 +1402,13 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), mylist);
 
                 // save near expiry
-                OrderHelper orderHelper = OrderHelper.getInstance(getContext().getApplicationContext());
-                orderHelper.saveNearExpiry(getContext().getApplicationContext());
+                stockCheckHelper.saveNearExpiry(getContext().getApplicationContext());
 
                 // Save closing stock
-                orderHelper.saveClosingStock(getContext().getApplicationContext(),false);
+                stockCheckHelper.saveClosingStock(getContext().getApplicationContext(),false);
 
                 // update review plan in DB
-                orderHelper.setReviewPlanInDB(getContext().getApplicationContext());
+                stockCheckHelper.setReviewPlanInDB(getContext().getApplicationContext());
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMBINED_STOCK);
 
                 return Boolean.TRUE;

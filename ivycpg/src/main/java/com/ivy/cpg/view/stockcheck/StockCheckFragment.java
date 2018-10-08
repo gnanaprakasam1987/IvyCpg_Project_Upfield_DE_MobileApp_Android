@@ -87,6 +87,7 @@ import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
 import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,6 +140,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private LinearLayout ll_stockCheck_SharePercent;
     MyAdapter mSchedule;
 
+    private StockCheckHelper stockCheckHelper;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -146,7 +149,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 container, false);
 
         businessModel = (BusinessModel) getActivity().getApplicationContext();
-
+        stockCheckHelper = StockCheckHelper.getInstance(getActivity());
 
         initializeViews(view);
 
@@ -273,11 +276,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         viewFlipper =  view.findViewById(R.id.view_flipper);
         productName =  view.findViewById(R.id.productName);
-        productName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
 
         mEdt_searchProductName =  view.findViewById(
                 R.id.edt_searchproductName);
-        mEdt_searchProductName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        mEdt_searchProductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
         mBtn_Search =  view.findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
         mBtn_clear =  view.findViewById(R.id.btn_clear);
@@ -288,12 +291,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
         tv_total_stockCheckedProducts =  view.findViewById(R.id.tv_stockCheckedProductscount);
         tv_total_products =  view.findViewById(R.id.tv_productsCount);
 
-        tv_total_stockCheckedProducts.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        tv_total_products.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        tv_total_stockCheckedProducts.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,getActivity()));
+        tv_total_products.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,getActivity()));
 
 
         btn_save =  view.findViewById(R.id.btn_save);
-        btn_save.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btn_save.setTypeface(FontUtils.getFontBalooHai(getActivity(),FontUtils.FontType.REGULAR));
         btn_save.setOnClickListener(this);
         mEdt_searchProductName.setOnEditorActionListener(this);
 
@@ -334,7 +337,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         try {
 
 
-            if (!businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+            if (!stockCheckHelper.SHOW_STOCK_SC) {
                 view.findViewById(R.id.shelfCaseTitle).setVisibility(View.GONE);
             } else {
                 try {
@@ -349,7 +352,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
             }
 
-            if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP) {
+            if (!stockCheckHelper.SHOW_STOCK_SP) {
                 view.findViewById(R.id.shelfPcsTitle).setVisibility(View.GONE);
             } else {
                 try {
@@ -364,7 +367,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
             }
 
-            if (!businessModel.configurationMasterHelper.SHOW_STOCK_CB)
+            if (!stockCheckHelper.SHOW_STOCK_CB)
                 view.findViewById(R.id.shelfPcsCB).setVisibility(View.GONE);
             else {
                 try {
@@ -379,7 +382,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
             }
 
-            if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+            if (!stockCheckHelper.SHOW_SHELF_OUTER) {
                 view.findViewById(R.id.shelfOuterTitle).setVisibility(View.GONE);
             } else {
                 try {
@@ -394,14 +397,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 }
             }
 
-            if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
-                    && !businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                    && !businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+            if (!stockCheckHelper.SHOW_SHELF_OUTER
+                    && !stockCheckHelper.SHOW_STOCK_SP
+                    && !stockCheckHelper.SHOW_STOCK_SC) {
                 view.findViewById(R.id.shelf_layout).setVisibility(View.GONE);
 
             }
 
-            if (!businessModel.configurationMasterHelper.SHOW_STOCK_TOTAL) {
+            if (!stockCheckHelper.SHOW_STOCK_TOTAL) {
                 view.findViewById(R.id.exp_stktotalTitle).setVisibility(View.GONE);
             } else {
                 try {
@@ -418,7 +421,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
 
 
-            if (!businessModel.configurationMasterHelper.SHOW_STOCK_FC) {
+            if (!stockCheckHelper.SHOW_STOCK_FC) {
                 view.findViewById(R.id.et_facingQty).setVisibility(View.GONE);
             } else {
                 try {
@@ -432,9 +435,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     Commons.printException(e + "");
                 }
             }
-            if (businessModel.configurationMasterHelper.SHOW_STOCK_CB && !businessModel.configurationMasterHelper.SHOW_STOCK_FC &&
-                    !businessModel.configurationMasterHelper.SHOW_STOCK_SC && !businessModel.configurationMasterHelper.SHOW_STOCK_SP &&
-                    !businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+            if (stockCheckHelper.SHOW_STOCK_CB && !stockCheckHelper.SHOW_STOCK_FC &&
+                    !stockCheckHelper.SHOW_STOCK_SC && !stockCheckHelper.SHOW_STOCK_SP &&
+                    !stockCheckHelper.SHOW_SHELF_OUTER) {
                 view.findViewById(R.id.ll_keypad).setVisibility(View.GONE);
             }
 
@@ -528,17 +531,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.btn_audit);
                     holder.psname =  row
                             .findViewById(R.id.stock_and_order_listview_productname);
-                    holder.psname.setTypeface(businessModel.configurationMasterHelper.getProductNameFont());
+                    holder.psname.setTypeface(FontUtils.getProductNameFont(getActivity()));
                     holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                     holder.productCode =  row
                             .findViewById(R.id.stock_and_order_listview_produtCode);
-                    holder.productCode.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.productCode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
                     holder.ppq =  row
                             .findViewById(R.id.stock_and_order_listview_ppq);
-                    holder.ppq.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.ppq.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
                     holder.psq =  row
                             .findViewById(R.id.stock_and_order_listview_psq);
-                    holder.psq.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.psq.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
 
                     holder.mReason =  row.findViewById(R.id.reason);
 
@@ -548,9 +551,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.stock_and_order_listview_sc_qty);
                     holder.shelfouter =  row
                             .findViewById(R.id.stock_and_order_listview_shelfouter_qty);
-                    holder.shelfPcsQty.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.shelfCaseQty.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.shelfouter.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.shelfPcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.shelfouter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
 
                     holder.ll_stkCB =  row
                             .findViewById(R.id.ll_stock_and_order_listview_cb);
@@ -559,7 +562,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.btn_availability);
                     holder.total =  row
                             .findViewById(R.id.stock_check_listview_total);
-                    holder.total.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    holder.total.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
 
 
                     holder.facingQty =  row
@@ -576,27 +579,27 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         holder.ppq.setVisibility(View.GONE);
                     }
 
-                    if (!businessModel.configurationMasterHelper.SHOW_STOCK_FC)
+                    if (!stockCheckHelper.SHOW_STOCK_FC)
                         holder.facingQty.setVisibility(View.GONE);
-                    if (!businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                    if (!stockCheckHelper.SHOW_STOCK_SC)
                         holder.shelfCaseQty.setVisibility(View.GONE);
-                    if (!businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                    if (!stockCheckHelper.SHOW_STOCK_SP)
                         holder.shelfPcsQty.setVisibility(View.GONE);
-                    if (!businessModel.configurationMasterHelper.SHOW_STOCK_CB)
+                    if (!stockCheckHelper.SHOW_STOCK_CB)
                         holder.ll_stkCB.setVisibility(View.GONE);
 
-                    if (!businessModel.configurationMasterHelper.SHOW_STOCK_RSN)
+                    if (!stockCheckHelper.SHOW_STOCK_RSN)
                         holder.mReason.setVisibility(View.GONE);
 
 
-                    if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                    if (!stockCheckHelper.SHOW_SHELF_OUTER)
                         holder.shelfouter.setVisibility(View.GONE);
-                    if (!businessModel.configurationMasterHelper.SHOW_STOCK_TOTAL)
+                    if (!stockCheckHelper.SHOW_STOCK_TOTAL)
                         holder.total.setVisibility(View.GONE);
 
-                    if (!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
-                            && !businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                            && !businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                    if (!stockCheckHelper.SHOW_SHELF_OUTER
+                            && !stockCheckHelper.SHOW_STOCK_SP
+                            && !stockCheckHelper.SHOW_STOCK_SC) {
                         row.findViewById(R.id.layout_shelf).setVisibility(View.GONE);
 
                     }
@@ -633,7 +636,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.imageButton_availability.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (businessModel.configurationMasterHelper.CHANGE_AVAL_FLOW) {
+                            if (stockCheckHelper.CHANGE_AVAL_FLOW) {
                                 if (holder.productObj.getLocations()
                                         .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == -1) {
                                     holder.productObj.getLocations()
@@ -642,14 +645,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.RED)));
                                     holder.imageButton_availability.setChecked(true);
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    if (stockCheckHelper.SHOW_STOCK_SP)
                                         holder.shelfPcsQty.setText("0");
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    if (stockCheckHelper.SHOW_STOCK_SC)
                                         holder.shelfCaseQty.setText("0");
-                                    if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    if (stockCheckHelper.SHOW_SHELF_OUTER)
                                         holder.shelfouter.setText("0");
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    if (stockCheckHelper.SHOW_STOCK_RSN) {
                                         holder.mReason.setEnabled(true);
                                         holder.mReason.setSelected(true);
                                         holder.mReason.setSelection(0);
@@ -663,14 +666,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     holder.imageButton_availability.setChecked(false);
 
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    if (stockCheckHelper.SHOW_STOCK_SP)
                                         holder.shelfPcsQty.setText("");
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    if (stockCheckHelper.SHOW_STOCK_SC)
                                         holder.shelfCaseQty.setText("");
-                                    if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    if (stockCheckHelper.SHOW_SHELF_OUTER)
                                         holder.shelfouter.setText("");
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    if (stockCheckHelper.SHOW_STOCK_RSN) {
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
                                         holder.mReason.setSelection(0);
@@ -686,14 +689,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
                                     holder.imageButton_availability.setChecked(true);
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP)
+                                    if (stockCheckHelper.SHOW_STOCK_SP)
                                         holder.shelfPcsQty.setText("1");
-                                    else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC)
+                                    else if (stockCheckHelper.SHOW_STOCK_SC)
                                         holder.shelfCaseQty.setText("1");
-                                    else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                    else if (stockCheckHelper.SHOW_SHELF_OUTER)
                                         holder.shelfouter.setText("1");
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    if (stockCheckHelper.SHOW_STOCK_RSN) {
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
                                         holder.mReason.setSelection(0);
@@ -710,17 +713,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
                                     holder.imageButton_availability.setChecked(true);
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                                    if (stockCheckHelper.SHOW_STOCK_SP
                                             && holder.productObj.getPcUomid() != 0)
                                         holder.shelfPcsQty.setText("1");
-                                    else if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                                    else if (stockCheckHelper.SHOW_STOCK_SC
                                             && holder.productObj.getCaseUomId() != 0)
                                         holder.shelfCaseQty.setText("1");
-                                    else if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                                    else if (stockCheckHelper.SHOW_SHELF_OUTER
                                             && holder.productObj.getOuUomid() != 0)
                                         holder.shelfouter.setText("1");
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    if (stockCheckHelper.SHOW_STOCK_RSN) {
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
                                         holder.mReason.setSelection(0);
@@ -735,17 +738,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.RED)));
                                     holder.imageButton_availability.setChecked(true);
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                                    if (stockCheckHelper.SHOW_STOCK_SP
                                             && holder.productObj.getPcUomid() != 0)
                                         holder.shelfPcsQty.setText("0");
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                                    if (stockCheckHelper.SHOW_STOCK_SC
                                             && holder.productObj.getCaseUomId() != 0)
                                         holder.shelfCaseQty.setText("0");
-                                    if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
+                                    if (stockCheckHelper.SHOW_SHELF_OUTER
                                             && holder.productObj.getOuUomid() != 0)
                                         holder.shelfouter.setText("0");
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    if (stockCheckHelper.SHOW_STOCK_RSN) {
                                         holder.mReason.setEnabled(true);
                                         holder.mReason.setSelected(true);
                                         holder.mReason.setSelection(0);
@@ -765,17 +768,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                  *
                                  * so that remove config here
                                  * */
-                                //   if (businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                                // && holder.productObj.getPcUomid() != 0)
+
                                 holder.shelfPcsQty.setText("");
-                                // if (businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                                // && holder.productObj.getCaseUomId() != 0)
                                 holder.shelfCaseQty.setText("");
-                                // if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER
-                                // && holder.productObj.getOuUomid() != 0)
                                 holder.shelfouter.setText("");
 
-                                    if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                                    if (stockCheckHelper.SHOW_STOCK_RSN) {
                                         holder.mReason.setEnabled(false);
                                         holder.mReason.setSelected(false);
                                         holder.mReason.setSelection(0);
@@ -1349,12 +1347,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.checkbox_default_color)));
                 }
 
-                if (businessModel.configurationMasterHelper.SHOW_STOCK_FC) {
+                if (stockCheckHelper.SHOW_STOCK_FC) {
                     String strFacingQty = holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getFacingQty() + "";
                     holder.facingQty.setText(strFacingQty);
                 }
 
-                if (businessModel.configurationMasterHelper.SHOW_STOCK_SP) {
+                if (stockCheckHelper.SHOW_STOCK_SP) {
                     if (holder.productObj.getLocations()
                             .get(stockCheckPresenter.mSelectedLocationIndex).getShelfPiece() >= 0) {
                         String strShelfPiece = holder.productObj.getLocations()
@@ -1366,7 +1364,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     }
                 }
 
-                if (businessModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                if (stockCheckHelper.SHOW_STOCK_SC) {
                     if (holder.productObj.getLocations()
                             .get(stockCheckPresenter.mSelectedLocationIndex).getShelfCase() >= 0) {
                         String strShelfCase = holder.productObj.getLocations()
@@ -1377,7 +1375,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         holder.shelfCaseQty.setText("");
                     }
                 }
-                if (businessModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                if (stockCheckHelper.SHOW_SHELF_OUTER) {
                     if (holder.productObj.getLocations()
                             .get(stockCheckPresenter.mSelectedLocationIndex).getShelfOuter() >= 0) {
                         String strShelfOuter = holder.productObj.getLocations()
@@ -1389,7 +1387,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     }
                 }
 
-                if (businessModel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                if (stockCheckHelper.SHOW_STOCK_RSN) {
                     if (holder.productObj.getLocations()
                             .get(stockCheckPresenter.mSelectedLocationIndex)
                             .getShelfPiece() == 0 || holder.productObj.getLocations()
@@ -1551,12 +1549,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
                 menu.findItem(R.id.menu_competitor_filter).setVisible(true);
             }
-            /*if (businessModel.configurationMasterHelper.IS_FIVE_LEVEL_FILTER && stockCheckPresenter.mSelectedIdByLevelId != null
-                    && !businessModel.isMapEmpty(stockCheckPresenter.mSelectedIdByLevelId)) {
-                menu.findItem(R.id.menu_competitor_filter).setIcon(
-                        R.drawable.ic_action_filter_select);
-
-            }*/
 
             if (businessModel.configurationMasterHelper.SHOW_COMPETITOR_FILTER && mCompetitorSelectedIdByLevelId != null) {
                 for (Integer id : mCompetitorSelectedIdByLevelId.keySet()) {
@@ -1826,7 +1818,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            tab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
             tab.setTextColor(color);
             tab.setMaxLines(1);
             tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));

@@ -22,6 +22,7 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -278,6 +279,8 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
+
+                StockCheckHelper.getInstance(SubDHomeActivity.this).loadStockCheckConfiguration(SubDHomeActivity.this,bmodel.retailerMasterBO.getSubchannelid());
 
                 bmodel.productHelper.downloadTaggedProducts(MENU_SUBD_STOCK);
 
