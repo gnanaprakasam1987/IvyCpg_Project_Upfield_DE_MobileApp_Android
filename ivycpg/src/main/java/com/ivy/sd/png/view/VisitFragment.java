@@ -176,6 +176,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         }
 
+
         if (bmodel.configurationMasterHelper.SHOW_RETAILER_SELECTION_FILTER) {
             bmodel.mRetailerHelper.downloadRetailerFilterSelection(RETAILER_FILTER_MENU_TYPE);
             mRetailerSelectionList = bmodel.mRetailerHelper.getRetailerSelectionFilter();
@@ -1040,8 +1041,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             visitConfig = bmodel.mRetailerHelper.getVisitCoverage();
         }
 
-        for (VisitConfiguration configObj : visitConfig)
-            mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
+        if(visitConfig != null) {
+            for (VisitConfiguration configObj : visitConfig)
+                mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
+        }
     }
 
     private void updateRetailerProperty() {
@@ -1374,7 +1377,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
 
             if (!calledBy.equals(MENU_PLANNING)) {
-                bmodel.loadProductiveCallsConfig();
+               // bmodel.loadProductiveCallsConfig();
                 if (("Y").equals(retailerObj.isOrdered()) && (!bmodel.PRD_FOR_SKT)) {   // If ProductiveStockCheck is OFF
                     if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             && ("N").equals(retailerObj.isInvoiceDone())) {

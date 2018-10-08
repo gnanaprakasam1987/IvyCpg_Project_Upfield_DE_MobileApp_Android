@@ -629,7 +629,7 @@ public class DashBoardHelper {
             String sql = "SELECT SLM.ListName,RKD.Target,RKD.Achievement,"
                     + " ROUND(CASE WHEN (100-((RKD.Achievement*100)/((RKD.Target)*1.0))) < 0"
                     + " THEN 100 ELSE ((RKD.Achievement*100)/((RKD.Target)*1.0)) END ,2) AS conv_ach_perc"
-                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,count(rkdd.KPIParamLovId),BeatDescription FROM RouteKPI RK"
+                    + ",IFNULL(RKS.Score,0),IFNULL(RKS.Incentive,0),RK.KPIID,RKD.KPIParamLovId,SLM.Flex1,count(rkdd.KPIParamLovId),BeatDescription,SLM.ListCode as Code FROM RouteKPI RK"
                     + " inner join RouteKPIDetail RKD on RKD.KPIID= RK.KPIID"
                     + " LEFT join RouteKPIScore RKS on RKD.KPIID= RKS.KPIID and RKD.KPIParamLovId = RKS.KPIParamLovId"
                     + " inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId"
@@ -665,6 +665,7 @@ public class DashBoardHelper {
                     sbo.setFlex1(c.getInt(8));
                     sbo.setSubDataCount(c.getInt(9));
                     sbo.setMonthName(c.getString(10));
+                    sbo.setCode(c.getString(c.getColumnIndex("Code")));
                     getDashChartDataList().add(sbo);
                 }
                 c.close();
