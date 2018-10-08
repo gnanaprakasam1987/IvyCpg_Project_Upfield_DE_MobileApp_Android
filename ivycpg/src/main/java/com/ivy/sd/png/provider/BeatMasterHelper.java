@@ -14,6 +14,11 @@ import com.ivy.sd.png.util.DataMembers;
 import java.util.ArrayList;
 import java.util.Vector;
 
+/**
+ * @See {@link BeatDataManagerImpl}
+ * @deprecated
+ */
+@Deprecated
 public class BeatMasterHelper {
 
     private static BeatMasterHelper instance = null;
@@ -203,9 +208,9 @@ public class BeatMasterHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link AppDataProviderImpl#getBeatMasterBo()}
      * @return
+     * @See {@link AppDataProviderImpl#getBeatMasterBo()}
+     * @deprecated
      */
     public BeatMasterBO getTodayBeatMasterBO() {
         return todayBeatMasterBO;
@@ -213,8 +218,8 @@ public class BeatMasterHelper {
 
 
     /**
-     * @deprecated
      * @See {@link com.ivy.core.data.app.AppDataProviderImpl#setTodayBeatMaster(BeatMasterBO)}
+     * @deprecated
      */
     @Deprecated
     public void setTodayBeatMasterBO(BeatMasterBO todayBeatMasterBO) {
