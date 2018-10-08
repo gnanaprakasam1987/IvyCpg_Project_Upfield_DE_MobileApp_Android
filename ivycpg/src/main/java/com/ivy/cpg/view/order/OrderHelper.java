@@ -3419,6 +3419,9 @@ public class OrderHelper {
 
         ArrayList<ProductMasterBO> batchWiseList = businessModel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
+
+        ProductMasterBO productMasterBO=businessModel.productHelper.getProductMasterBOById(productBO.getProductID());
+
         double totalValue = 0.0;
         if (batchWiseList != null) {
             for (ProductMasterBO batchProductBO : batchWiseList) {
@@ -3432,6 +3435,12 @@ public class OrderHelper {
                             + batchProductBO.getOrderedOuterQty()
                             * batchProductBO.getOsrp();
                     totalValue = totalValue + totalBatchValue;
+
+                    int totalBatchQuantity = (batchProductBO.getOrderedPcsQty()
+                            + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                            + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize()));
+                    batchProductBO.setTotalOrderedQtyInPieces(totalBatchQuantity);
+                    batchProductBO.setLineValue(totalBatchValue);
                     batchProductBO.setNetValue(totalBatchValue);
                 }
             }

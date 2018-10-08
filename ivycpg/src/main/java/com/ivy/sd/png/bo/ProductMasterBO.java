@@ -224,6 +224,16 @@ public class ProductMasterBO {
 
     private double lineValue;
 
+    public int getTotalOrderedQtyInPieces() {
+        return totalOrderedQtyInPieces;
+    }
+
+    public void setTotalOrderedQtyInPieces(int totalOrderedQtyInPieces) {
+        this.totalOrderedQtyInPieces = totalOrderedQtyInPieces;
+    }
+
+    private int totalOrderedQtyInPieces;
+
 
 
     private boolean ispromo;

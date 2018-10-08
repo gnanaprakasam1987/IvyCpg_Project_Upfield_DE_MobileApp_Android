@@ -583,8 +583,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     // Set the calculated flat line values in productBO
                     double lineValue = calculateLineValue(productBO);
 
+                    productBO.setTotalOrderedQtyInPieces(totalQuantity);
                     productBO.setLineValue(lineValue);
                     productBO.setNetValue(lineValue);
+
 
                     totalOrderValue += lineValue;
 
