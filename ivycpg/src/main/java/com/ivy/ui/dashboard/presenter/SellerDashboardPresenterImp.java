@@ -311,9 +311,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     @Override
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
 
-                        getIvyView().setDashboardListAdapter(dashBoardBOS);
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
+                        getIvyView().setDashboardListAdapter(dashBoardList);
                     }
 
                     @Override
@@ -336,10 +336,10 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
                     @Override
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
-
-                        getIvyView().setDashboardListAdapter(dashBoardBOS);
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
+                        getIvyView().setDashboardListAdapter(dashBoardList);
+
                     }
 
                     @Override
