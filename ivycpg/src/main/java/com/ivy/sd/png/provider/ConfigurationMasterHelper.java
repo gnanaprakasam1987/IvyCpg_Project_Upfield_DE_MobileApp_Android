@@ -1535,6 +1535,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NO_COLLECTION_REASON = "COLL18";
     public boolean SHOW_NO_COLLECTION_REASON;
 
+    private static final String CODE_GLOBAL_SHOW_NO_ORDER_REASON = "FUN74";
+    public boolean SHOW_GLOBAL_NO_ORDER_REASON;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2678,6 +2680,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_NO_COLLECTION_REASON= hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) != null ? hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) : false;
         // Unload non salable product returns.
         this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
+        this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
     }
 
     private boolean isInOutModule() {

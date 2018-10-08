@@ -163,6 +163,7 @@ import com.ivy.sd.print.EODStockReportPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
+import com.ivy.utils.AppUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -3865,7 +3866,7 @@ public class BusinessModel extends Application {
         float total = 0;
         Cursor c = db
                 .selectSQL("select ifnull(sum(Amount),0) from Payment where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID()));
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
                 c.moveToNext();
@@ -5540,14 +5541,18 @@ public class BusinessModel extends Application {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select sum(LinesPerCall) from orderHeader where retailerid="
-                            + QT(getRetailerMasterBO().getRetailerID())
-                            + " and " + (isVansales ? "invoiceStatus=1" : "invoiceStatus=0") + " and upload='N'");
+            Cursor c;
+            if (isVansales) {
+                c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from invoicemaster where retailerid="
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            } else {
+                c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID())
+                        + " and upload='N'");
+            }
             if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    int count = c.getInt(0);
-                    return count;
+                if (c.moveToNext()) {
+                    return c.getInt(0);
                 }
             }
             c.close();
