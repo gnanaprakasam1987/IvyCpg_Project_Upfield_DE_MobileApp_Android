@@ -328,27 +328,21 @@ public class DiscountHelper {
                         }
                     }
 
-                    // for computing Final discount order value for  a product .
-                    // added because of Multiple discount applied for same product
-                    for (StoreWiseDiscountBO storeWiseDiscountBO : discountProductIdList) {
-
-                        for (ProductMasterBO productBo : orderedList) {
-                            if (productBo.getParentHierarchy().contains("/" + storeWiseDiscountBO
-                                    .getProductId() + "/")) {
-                                if (productBo.getOrderedPcsQty() > 0
-                                        || productBo.getOrderedCaseQty() > 0
-                                        || productBo.getOrderedOuterQty() > 0) {
-
-                                    if (productBo.getDiscount_order_value() > 0) {
-                                        productBo.setDiscount_order_value(productBo
-                                                .getDiscount_order_value() - productBo.getProductDiscAmount());
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
 
+            }
+            // for computing Final discount order value for  a product .
+            // added because of Multiple discount applied for same product
+            for (ProductMasterBO productBo : orderedList) {
+                if (productBo.getOrderedPcsQty() > 0
+                        || productBo.getOrderedCaseQty() > 0
+                        || productBo.getOrderedOuterQty() > 0) {
+
+                    if (productBo.getDiscount_order_value() > 0) {
+                        productBo.setDiscount_order_value(productBo
+                                .getDiscount_order_value() - productBo.getProductDiscAmount());
+                    }
+                }
             }
         }
 
