@@ -568,7 +568,14 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             else
                 holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.outlet_item_bg));
 
-            holder.tvSerialNumber.setText(String.valueOf(outletListBos.get(holder.getAdapterPosition()).getMasterSequence()));
+            String sequenceStr = "";
+
+            if (outletListBos.get(holder.getAdapterPosition()).getMasterSequence() != 0)
+                sequenceStr = String.valueOf(outletListBos.get(holder.getAdapterPosition()).getMasterSequence());
+            else if (!outletListBos.get(holder.getAdapterPosition()).getIsDeviated())
+                sequenceStr = (holder.getAdapterPosition()+1)+"";
+
+            holder.tvSerialNumber.setText(sequenceStr);
             holder.tvStoreName.setText(outletListBos.get(holder.getAdapterPosition()).getRetailerName());
             holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(holder.getAdapterPosition()).getInTime()));
             holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(holder.getAdapterPosition()).getOutTime()));
