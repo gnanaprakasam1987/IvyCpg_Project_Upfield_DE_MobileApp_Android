@@ -7,6 +7,7 @@ import android.arch.lifecycle.OnLifecycleEvent;
 
 import com.ivy.core.ViewTags;
 import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.core.data.label.LabelsDataManager;
@@ -48,6 +49,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     private DistributorDataManager distributorDataManager;
     private UserDataManager userDataManager;
     private LabelsDataManager labelsDataManager;
+    private AppDataProvider appDataProvider;
+
+    private ArrayList<DashBoardBO> dashBoardList = new ArrayList<>();
 
     private boolean isP3M;
 
@@ -57,13 +61,14 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     public SellerDashboardPresenterImp(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable,
                                        ConfigurationMasterHelper configurationMasterHelper, V view, @OutletTimeStampInfo OutletTimeStampDataManager outletTimeStampDataManager,
                                        SellerDashboardDataManager sellerDashboardDataManager, @DistributorInfo DistributorDataManager distributorDataManager,
-                                       @UserInfo UserDataManager userDataManager, @LabelMasterInfo LabelsDataManager labelsDataManager) {
+                                       @UserInfo UserDataManager userDataManager, @LabelMasterInfo LabelsDataManager labelsDataManager, AppDataProvider appDataProvider) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mOutletTimeStampDataManager = outletTimeStampDataManager;
         this.sellerDashboardDataManager = sellerDashboardDataManager;
         this.distributorDataManager = distributorDataManager;
         this.userDataManager = userDataManager;
         this.labelsDataManager = labelsDataManager;
+        this.appDataProvider = appDataProvider;
 
         if (view instanceof LifecycleOwner) {
             ((LifecycleOwner) view).getLifecycle().addObserver(this);
@@ -202,6 +207,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
 
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
+                        dashBoardList.clear();
+                        dashBoardList.addAll(dashBoardBOS);
 
                     }
 
@@ -227,7 +234,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
 
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
-
+                        dashBoardList.clear();
+                        dashBoardList.addAll(dashBoardBOS);
                     }
 
                     @Override
@@ -252,7 +260,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
 
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
-
+                        dashBoardList.clear();
+                        dashBoardList.addAll(dashBoardBOS);
                     }
 
                     @Override
@@ -277,7 +286,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
 
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
-
+                        dashBoardList.clear();
+                        dashBoardList.addAll(dashBoardBOS);
                     }
 
                     @Override
@@ -302,7 +312,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
 
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
-
+                        dashBoardList.clear();
+                        dashBoardList.addAll(dashBoardBOS);
                     }
 
                     @Override
@@ -318,8 +329,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
-    public void fetchRetailerDashboard(String retailerId, String interval) {
-        getCompositeDisposable().add(sellerDashboardDataManager.getRetailerDashboardForInterval(retailerId, interval)
+    public void fetchRetailerDashboard(String interval) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getRetailerDashboardForInterval(appDataProvider.getRetailMaster().getRetailerID(), interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
@@ -327,6 +338,31 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
 
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
+                        dashBoardList.clear();
+                        dashBoardList.addAll(dashBoardBOS);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+    @Override
+    public void fetchKpiMonths(boolean isFromRetailer) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getKpiMonths(isFromRetailer)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+                    @Override
+                    public void onNext(ArrayList<String> monthList) {
+
 
                     }
 
@@ -345,6 +381,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     @Override
     public HashMap<String, String> getLabelsMap() {
         return labelsMap;
+    }
+
+    @Override
+    public ArrayList<DashBoardBO> getDashboardListData() {
+        return dashBoardList;
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)

@@ -10,8 +10,12 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -19,6 +23,7 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 
 import static com.ivy.cpg.view.dashboard.DashBoardHelper.MONTH_NAME;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
 import static com.ivy.utils.AppUtils.QT;
 
 public class SellerDashboardDataManagerImpl implements SellerDashboardDataManager {
@@ -28,6 +33,8 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     private AppDataProvider appDataProvider;
 
     private ConfigurationMasterHelper configurationMasterHelper;
+
+    private int currentmonthindex = 0;
 
     @Inject
     public SellerDashboardDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
@@ -666,6 +673,67 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 }
                 shutDownDb();
                 return collectedList;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<String>> getKpiMonths(final boolean isFromRetailer) {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call() throws Exception {
+                ArrayList<String> monthNoList = new ArrayList<>();
+                try {
+                    initDb();
+
+                    String monthText = "";
+                    if (configurationMasterHelper.IS_KPI_CALENDAR) {
+                        monthText = "IntervalDesc";
+                    } else {
+                        monthText = "strftime('%m', replace(fromdate,'/','-'))";
+                    }
+
+                    String sb;
+                    if (!isFromRetailer) {
+                        sb = "SELECT distinct " + monthText + " AS Month FROM SellerKPI " +
+                                "WHERE Interval=" + QT(P3M) +
+                                " order by fromdate desc";
+                    } else {
+                        sb = "SELECT distinct " + monthText + " AS Month FROM RetailerKPI " +
+                                "WHERE RetailerId= " + appDataProvider.getRetailMaster().getRetailerID() + " AND Interval=" + QT(P3M) +
+                                " order by fromdate desc";
+                    }
+
+                    Cursor c = mDbUtil.selectSQL(sb);
+                    int index = 0;
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            if (configurationMasterHelper.IS_KPI_CALENDAR) {
+                                monthNoList.add(c.getString(0));
+                                Date date = new SimpleDateFormat("MMMM", Locale.ENGLISH).parse(c.getString(0));
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(date);
+                                index++;
+                                if ((Calendar.getInstance().get(Calendar.MONTH) + 1) == cal.get(Calendar.MONTH))
+                                    currentmonthindex = index - 1;
+                            } else {
+                                int monthValue = SDUtil.convertToInt(c.getString(0));
+                                if (monthValue > 0 && monthValue <= 12) {
+                                    monthNoList.add(MONTH_NAME[monthValue - 1]);
+                                    index++;
+                                    if ((Calendar.getInstance().get(Calendar.MONTH) + 1) == monthValue)
+                                        currentmonthindex = index - 1;
+                                }
+                            }
+                        }
+                    }
+
+                }catch (Exception ignored){
+
+                }
+                shutDownDb();
+
+                return monthNoList;
             }
         });
     }

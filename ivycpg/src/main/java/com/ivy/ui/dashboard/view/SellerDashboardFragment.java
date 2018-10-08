@@ -316,6 +316,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     }
 
+
+
     private void loadMultiSelectData() {
 
         presenter.fetchKPIDashboardData(mFilterUser, mSelectedDistributorId);
@@ -411,8 +413,15 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                         presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser,selectedInterval);
 
                 }
-            }
+            }else
+                presenter.fetchRetailerDashboard(selectedInterval);
 
+            monthSpinnerStub.setVisibility(View.GONE);
+
+            if(selectedInterval.equals(P3M)){
+                presenter.fetchKpiMonths(isFromRetailer);
+
+            }
         }
 
         @Override
@@ -420,6 +429,18 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
         }
     };
+
+    @Override
+    public void setUpMonthSpinner(ArrayList<String> monthList) {
+        monthSpinnerStub.setVisibility(View.VISIBLE);
+        weekSpinnerStub.setVisibility(View.GONE);
+        Spinner monthSpinner = (Spinner) monthSpinnerStub.inflate();
+        ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthList);
+        monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+        monthSpinner.setAdapter(monthdapter);
+        monthSpinner.setOnItemSelectedListener(monthSelectedListener);
+        monthSpinner.setSelection(0);
+    }
 
     @Override
     public void onFactorNameClick(int position) {
@@ -430,6 +451,19 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     public void onSkuWiseClick(int position) {
 
     }
+
+    private AdapterView.OnItemSelectedListener monthSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
 
     private AdapterView.OnItemSelectedListener userSpinnerListener = new AdapterView.OnItemSelectedListener() {
         @Override

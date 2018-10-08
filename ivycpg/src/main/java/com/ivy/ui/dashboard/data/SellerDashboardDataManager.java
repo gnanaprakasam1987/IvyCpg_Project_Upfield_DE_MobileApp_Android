@@ -27,4 +27,6 @@ public interface SellerDashboardDataManager {
 
     Observable<ArrayList<Double>> getCollectedValue();
 
+    Observable<ArrayList<String>> getKpiMonths(boolean isFromRetailer);
+
 }

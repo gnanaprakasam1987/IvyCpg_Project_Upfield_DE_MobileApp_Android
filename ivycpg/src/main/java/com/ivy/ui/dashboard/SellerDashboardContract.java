@@ -26,6 +26,8 @@ public interface SellerDashboardContract {
 
         void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS);
 
+        void setUpMonthSpinner(ArrayList<String> monthList);
+
     }
 
 
@@ -45,7 +47,9 @@ public interface SellerDashboardContract {
 
         void fetchRouteDashboardData(String interval);
 
-        void fetchRetailerDashboard(String retailerId,String interval);
+        void fetchRetailerDashboard(String interval);
+
+        void fetchKpiMonths(boolean isFromRetailer);
 
         boolean isSMPBasedDash();
 
@@ -66,6 +70,8 @@ public interface SellerDashboardContract {
         void fetchKPIDashboardData(String userid, String interval);
 
         HashMap<String, String> getLabelsMap();
+
+        ArrayList<DashBoardBO> getDashboardListData();
 
     }
 }

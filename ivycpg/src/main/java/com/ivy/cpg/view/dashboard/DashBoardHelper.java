@@ -208,7 +208,10 @@ public class DashBoardHelper {
      * @param isFromHomeScreenTwo
      * @return isFromHomeScreenTwo - false  Load Month List for Seller P3M interval
      * isFromHomeScreenTwo - true   Load Month List for Retailer P3M interval
+     * @See {@link SellerDashboardDataManagerImpl#getKpiMonths(boolean)}
+     * @deprecated
      */
+    @Deprecated
     public ArrayList<String> getKpiMonthNameList(boolean isFromHomeScreenTwo) {
         ArrayList<String> monthNoList = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -514,11 +517,10 @@ public class DashBoardHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link SDUtil#getWholeNumber(String)}
-     *
      * @param data
      * @return
+     * @See {@link SDUtil#getWholeNumber(String)}
+     * @deprecated
      */
     @Deprecated
     public String getWhole(String data) {
