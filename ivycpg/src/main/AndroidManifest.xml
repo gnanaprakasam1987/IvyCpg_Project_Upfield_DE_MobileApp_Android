@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ivy.sd.png.asean.view"
-    android:versionCode="1330"
-    android:versionName="2.133.0.2907">
+    android:versionCode="1340"
+    android:versionName="2.134.0.3059">
 
     <supports-screens
         android:anyDensity="true"
