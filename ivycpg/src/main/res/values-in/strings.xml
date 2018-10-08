@@ -1265,5 +1265,17 @@
     <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
 
+    <string name="Bill">Bill</string>
+    <string name="Line_value">Line value</string>
+    <string name="Tax_Value">Tax Value</string>
+    <!-- <string name="Disc">Disc</string>-->
+    <string name="Cash_Disc">Cash Disc</string>
+    <string name="TLS">TLS</string>
+    <string name="Payment_term">Payment term</string>
+    <string name="Oth_Disc">Oth. Disc (Other Discount)</string>
+    <string name="Sch_Disc">Sch. Disc (Scheme Discount)</string>
+    <!--<string name="Signature">Signature</string>-->
+    <string name="Attachment">Attachment</string>
+
 </resources>
 

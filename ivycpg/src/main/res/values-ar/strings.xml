@@ -1265,4 +1265,17 @@
     <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
 
+
+
+    <string name="Bill">فاتورة</string>
+    <string name="line_value">قيمة الصنف</string>
+    <string name="tax_Value">القيمة الضريبية</string>
+    //  <!--<string name="disc">المسافة</string>-->
+    <string name="cash_disc">نقداً المسافة</string>
+    <string name="tls">إجمالي البيع</string>
+    <string name="payment_term">شروط الدفع</string>
+    <string name="oth_disc">خصومات أخرى</string>
+    <string name="sch_disc">سياسة البيع</string>
+    <!--<string name="signature">الامضاء</string>-->
+    <string name="attachment">مرفق</string>
 </resources>
