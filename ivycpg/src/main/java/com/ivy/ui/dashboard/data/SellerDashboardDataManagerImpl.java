@@ -21,9 +21,13 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
 
 import static com.ivy.cpg.view.dashboard.DashBoardHelper.MONTH_NAME;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
 import static com.ivy.utils.AppUtils.QT;
 
 public class SellerDashboardDataManagerImpl implements SellerDashboardDataManager {
@@ -256,7 +260,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
                 ArrayList<DashBoardBO> dashBoardBOS = new ArrayList<>();
-                try{
+                try {
 
                     initDb();
 
@@ -313,7 +317,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         c.close();
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
                 }
 
                 shutDownDb();
@@ -395,7 +399,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         c.close();
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
@@ -473,7 +477,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
                 ArrayList<DashBoardBO> dashBoardBOS = new ArrayList<>();
-                try{
+                try {
                     initDb();
                     String sql =
                             "SELECT SLM.ListName,SUM(SKD.Target),SUM(SKD.Achievement),"
@@ -530,8 +534,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                                 }
                                 assert subDataCountCursor != null;
                                 subDataCountCursor.close();
-                            }
-                            else
+                            } else
                                 sbo.setSubDataCount(0);
                             dashBoardBOS.add(sbo);
                         }
@@ -539,7 +542,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     }
 
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
@@ -626,7 +629,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         c.close();
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
                 shutDownDb();
@@ -668,7 +671,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                     collectedList.add(osAmt);
                     collectedList.add(paidAmt);
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
                 shutDownDb();
@@ -728,12 +731,67 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         }
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
                 shutDownDb();
 
                 return monthNoList;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<String>> getKpiWeekList() {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call() throws Exception {
+                ArrayList<String> weekList = new ArrayList<>();
+                try {
+                    initDb();
+
+                    String sb = "SELECT distinct IntervalDesc AS Week FROM sellerkpi " +
+                            "WHERE Interval=" + QT(WEEK) +
+                            " order by Week desc";
+                    Cursor c = mDbUtil.selectSQL(sb);
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            weekList.add(c.getString(0));
+                        }
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+                shutDownDb();
+                return weekList;
+            }
+        });
+    }
+
+    @Override
+    public Single<Integer> getCurrentWeek(final ArrayList<String> weekList) {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int week =0;
+                try{
+                    initDb();
+
+                    String sb = "Select IntervalDesc from SellerKPI where " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + QT(WEEK);
+                    Cursor c = mDbUtil.selectSQL(sb);
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            return weekList.indexOf(c.getString(0));
+                        }
+                    }
+
+                }catch (Exception ignored){
+
+                }
+
+                shutDownDb();
+                return week;
             }
         });
     }

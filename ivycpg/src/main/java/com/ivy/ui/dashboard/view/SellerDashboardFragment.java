@@ -114,6 +114,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private DashboardListAdapter dashboardListAdapter;
 
+    private ArrayList<DashBoardBO> dashboardListData;
+
 
     private int mSelectedUser = 0;
 
@@ -141,7 +143,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     @Override
     public void initVariables(View view) {
-
+        dashboardListData = new ArrayList<>();
     }
 
     @Override
@@ -317,7 +319,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
 
-
     private void loadMultiSelectData() {
 
         presenter.fetchKPIDashboardData(mFilterUser, mSelectedDistributorId);
@@ -407,21 +408,21 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 else if (selectedInterval.equals(WEEK))
                     presenter.fetchSellerDashboardDataForWeek(mSelectedUser);
                 else {
-                    if(type.equals(ROUTE))
+                    if (type.equals(ROUTE))
                         presenter.fetchRouteDashboardData(selectedInterval);
                     else
-                        presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser,selectedInterval);
+                        presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval);
 
                 }
-            }else
+            } else
                 presenter.fetchRetailerDashboard(selectedInterval);
 
             monthSpinnerStub.setVisibility(View.GONE);
 
-            if(selectedInterval.equals(P3M)){
+            if (selectedInterval.equals(P3M))
                 presenter.fetchKpiMonths(isFromRetailer);
-
-            }
+            else if(selectedInterval.equals(WEEK))
+                presenter.fetchWeeks();
         }
 
         @Override
@@ -443,6 +444,22 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
+    public void setWeekSpinner(ArrayList<String> weekList) {
+        if(weekList.size()>0){
+            weekSpinnerStub.setVisibility(View.VISIBLE);
+            Spinner weekSpinner = (Spinner) weekSpinnerStub.inflate();
+            ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
+            monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+            weekSpinner.setAdapter(monthdapter);
+            weekSpinner.setOnItemSelectedListener(weekSelectedListener);
+        }else {
+            weekSpinnerStub.setVisibility(View.GONE);
+            presenter.fetchSellerDashboardDataForWeek(mSelectedUser);
+        }
+
+    }
+
+    @Override
     public void onFactorNameClick(int position) {
 
     }
@@ -452,10 +469,36 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     }
 
+    private AdapterView.OnItemSelectedListener weekSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
     private AdapterView.OnItemSelectedListener monthSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
+            String filterName = adapterView.getSelectedItem().toString();
+
+            dashboardListData.clear();
+
+            for (DashBoardBO dashBoardBO : presenter.getDashboardListData()) {
+                if (dashBoardBO.getMonthName().equalsIgnoreCase(filterName)) {
+                    dashboardListData.add(dashBoardBO);
+                }
+            }
+
+            dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), SellerDashboardFragment.this);
+            dashboardRecyclerView.setAdapter(dashboardListAdapter);
+
+            //TODO Handle P3M chart
 
         }
 

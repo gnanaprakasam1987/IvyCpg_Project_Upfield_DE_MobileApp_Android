@@ -28,6 +28,8 @@ public interface SellerDashboardContract {
 
         void setUpMonthSpinner(ArrayList<String> monthList);
 
+        void setWeekSpinner(ArrayList<String> weekList);
+
     }
 
 
@@ -50,6 +52,8 @@ public interface SellerDashboardContract {
         void fetchRetailerDashboard(String interval);
 
         void fetchKpiMonths(boolean isFromRetailer);
+
+        void fetchWeeks();
 
         boolean isSMPBasedDash();
 

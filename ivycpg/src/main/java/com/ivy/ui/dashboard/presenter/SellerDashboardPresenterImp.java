@@ -27,17 +27,13 @@ import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
@@ -362,8 +358,31 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .subscribeWith(new DisposableObserver<ArrayList<String>>() {
                     @Override
                     public void onNext(ArrayList<String> monthList) {
+                        getIvyView().setUpMonthSpinner(monthList);
 
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+    @Override
+    public void fetchWeeks() {
+        getCompositeDisposable().add(sellerDashboardDataManager.getKpiWeekList()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+                    @Override
+                    public void onNext(ArrayList<String> weekList) {
+                        getIvyView().setWeekSpinner(weekList);
                     }
 
                     @Override

@@ -279,6 +279,11 @@ public class DashBoardHelper {
         this.weekList = weekList;
     }
 
+    /**
+     * @See {@link SellerDashboardDataManagerImpl#getKpiWeekList()}
+     * @deprecated
+     */
+    @Deprecated
     public void getSellerKpiWeekList() {
         ArrayList<String> weekList = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -320,7 +325,7 @@ public class DashBoardHelper {
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     //WEEKTYPE.valueOf(c.getString(0)).toString()
-//                    int index = getWeekList().indexOf((c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
+//                    int index = getKpiWeekList().indexOf((c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
 //                            c.getString(0).length()) : "");
                     int index = getWeekList().indexOf(c.getString(0));
                     return index;

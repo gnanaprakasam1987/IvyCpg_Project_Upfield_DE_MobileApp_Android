@@ -6,6 +6,7 @@ import com.ivy.ui.dashboard.SellerDashboardConstants;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public interface SellerDashboardDataManager {
 
@@ -28,5 +29,9 @@ public interface SellerDashboardDataManager {
     Observable<ArrayList<Double>> getCollectedValue();
 
     Observable<ArrayList<String>> getKpiMonths(boolean isFromRetailer);
+
+    Observable<ArrayList<String>> getKpiWeekList();
+
+    Single<Integer> getCurrentWeek(ArrayList<String> weekList);
 
 }
