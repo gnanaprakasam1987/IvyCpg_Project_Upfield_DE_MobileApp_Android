@@ -29,11 +29,16 @@ import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.ObservableSource;
+import io.reactivex.SingleSource;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
@@ -382,7 +387,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .subscribeWith(new DisposableObserver<ArrayList<String>>() {
                     @Override
                     public void onNext(ArrayList<String> weekList) {
-                        getIvyView().setWeekSpinner(weekList);
+                        if (weekList.size() > 0)
+                            fetchCurrentWeek(weekList);
+
+
+
                     }
 
                     @Override
@@ -393,6 +402,18 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     @Override
                     public void onComplete() {
 
+                    }
+                }));
+    }
+
+    private void fetchCurrentWeek(final ArrayList<String> weekList){
+        getCompositeDisposable().add(sellerDashboardDataManager.getCurrentWeekInterval()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+
+                        getIvyView().setWeekSpinner(weekList,weekList.indexOf(s));
                     }
                 }));
     }

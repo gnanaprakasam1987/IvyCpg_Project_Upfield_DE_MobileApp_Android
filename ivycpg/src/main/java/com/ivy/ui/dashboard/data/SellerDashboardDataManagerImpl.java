@@ -770,28 +770,27 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Single<Integer> getCurrentWeek(final ArrayList<String> weekList) {
-        return Single.fromCallable(new Callable<Integer>() {
+    public Single<String> getCurrentWeekInterval() {
+        return Single.fromCallable(new Callable<String>() {
             @Override
-            public Integer call() throws Exception {
-                int week =0;
-                try{
+            public String call() throws Exception {
+                try {
                     initDb();
 
                     String sb = "Select IntervalDesc from SellerKPI where " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + QT(WEEK);
                     Cursor c = mDbUtil.selectSQL(sb);
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
-                            return weekList.indexOf(c.getString(0));
+                            return c.getString(0);
                         }
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
                 shutDownDb();
-                return week;
+                return "";
             }
         });
     }

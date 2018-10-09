@@ -28,7 +28,7 @@ public interface SellerDashboardContract {
 
         void setUpMonthSpinner(ArrayList<String> monthList);
 
-        void setWeekSpinner(ArrayList<String> weekList);
+        void setWeekSpinner(ArrayList<String> weekList, int currentWeek);
 
     }
 

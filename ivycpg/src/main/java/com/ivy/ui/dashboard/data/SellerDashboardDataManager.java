@@ -32,6 +32,6 @@ public interface SellerDashboardDataManager {
 
     Observable<ArrayList<String>> getKpiWeekList();
 
-    Single<Integer> getCurrentWeek(ArrayList<String> weekList);
+    Single<String> getCurrentWeekInterval();
 
 }

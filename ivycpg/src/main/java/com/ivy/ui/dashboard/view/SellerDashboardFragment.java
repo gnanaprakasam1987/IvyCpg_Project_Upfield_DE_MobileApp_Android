@@ -444,7 +444,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setWeekSpinner(ArrayList<String> weekList) {
+    public void setWeekSpinner(ArrayList<String> weekList, int currentWeek) {
         if(weekList.size()>0){
             weekSpinnerStub.setVisibility(View.VISIBLE);
             Spinner weekSpinner = (Spinner) weekSpinnerStub.inflate();
@@ -452,6 +452,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
             weekSpinner.setAdapter(monthdapter);
             weekSpinner.setOnItemSelectedListener(weekSelectedListener);
+            weekSpinner.setSelection(currentWeek);
         }else {
             weekSpinnerStub.setVisibility(View.GONE);
             presenter.fetchSellerDashboardDataForWeek(mSelectedUser);
