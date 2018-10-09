@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.supervisor.customviews.tooltip.Tooltip;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
@@ -52,7 +53,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
         private RelativeLayout statusLayout;
         private ImageView infoIconImg,userImage;
         private ProgressBar progressBar;
-        private LinearLayout routeLayout;
+        private LinearLayout routeLayout,messageLayout;
 
         public MyViewHolder(View view) {
             super(view);
@@ -67,6 +68,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
             progressBar = view.findViewById(R.id.progress_bar);
             routeLayout = view.findViewById(R.id.route_layout);
             userImage = view.findViewById(R.id.user_img);
+            messageLayout = view.findViewById(R.id.message_layout);
 
             userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             routeText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
@@ -150,6 +152,18 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                 intent.putExtra("Date",selectedDate);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
+            }
+        });
+
+        holder.messageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (!sellerListBos.get(holder.getAdapterPosition()).getUid().equals("")) {
+                    Intent intent = new Intent(context, StartChatActivity.class);
+                    intent.putExtra("UUID",sellerListBos.get(holder.getAdapterPosition()).getUid());
+                    context.startActivity(intent);
+                }
             }
         });
 

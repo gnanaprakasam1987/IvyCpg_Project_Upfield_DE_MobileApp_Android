@@ -1,5 +1,4 @@
-package com.ivy.cpg.locationservice.movementtracking;
-
+package com.ivy.cpg.locationservice.realtime;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -10,11 +9,12 @@ import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.util.Commons;
 
-public class MovementTrackingUploadService extends IntentService{
+
+public class RealtimeLocationUploadIntentService extends IntentService{
 
 
-    public MovementTrackingUploadService(){
-        super(MovementTrackingUploadService.class.getName());
+    public RealtimeLocationUploadIntentService(){
+        super(RealtimeLocationUploadIntentService.class.getName());
     }
 
     @Override
@@ -28,9 +28,9 @@ public class MovementTrackingUploadService extends IntentService{
                     UserMasterBO userMasterBO = LocationServiceHelper.getInstance().downloadUserDetails(context);
 
                     if(userMasterBO != null) {
-                        LocationServiceHelper.getInstance().saveUserLocation(context, location, userMasterBO );
-                        if (LocationServiceHelper.getInstance().isOnline(context) &&
-                                LocationServiceHelper.getInstance().isUserLocationAvailable(context,"LocationTracking")) {
+                        LocationServiceHelper.getInstance().saveUserRealtimeLocation(context, location, userMasterBO );
+                        if (LocationServiceHelper.getInstance().isOnline(context)
+                                && LocationServiceHelper.getInstance().isUserLocationAvailable(context,"MovementTrackingHistory")) {
                             LocationServiceHelper.getInstance().uploadRealTimeLocation(context);
                         }
                     }

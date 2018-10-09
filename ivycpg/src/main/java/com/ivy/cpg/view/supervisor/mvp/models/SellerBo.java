@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.Marker;
 public class SellerBo implements Parcelable {
 
     private int userId,billed,covered,target,retailerId,lpc,totallpc,productivityPercent,deviationCount;
-    private String userName,retailerName,imagePath;
+    private String userName,retailerName,imagePath,uid="";
     private boolean isAttendanceDone = false,isSellerWorking = true;
     private double latitude,longitude;
     private long orderValue, inTime, outTime,totalOrderValue,totalCallDuration;
@@ -23,20 +23,35 @@ public class SellerBo implements Parcelable {
 
     }
 
-    private SellerBo(Parcel in) {
+    public SellerBo(Parcel in) {
         userId = in.readInt();
         billed = in.readInt();
         covered = in.readInt();
         target = in.readInt();
+        retailerId = in.readInt();
+        lpc = in.readInt();
+        totallpc = in.readInt();
+        productivityPercent = in.readInt();
+        deviationCount = in.readInt();
         userName = in.readString();
         retailerName = in.readString();
+        imagePath = in.readString();
+        uid = in.readString();
         isAttendanceDone = in.readByte() != 0;
+        isSellerWorking = in.readByte() != 0;
         latitude = in.readDouble();
         longitude = in.readDouble();
         orderValue = in.readLong();
         inTime = in.readLong();
         outTime = in.readLong();
-        retailerId = in.readInt();
+        totalOrderValue = in.readLong();
+        totalCallDuration = in.readLong();
+        targetLines = in.readInt();
+        achievedLines = in.readInt();
+        targetCoverage = in.readInt();
+        achievedCoverage = in.readInt();
+        targetValue = in.readLong();
+        achievedValue = in.readLong();
     }
 
     public static final Creator<SellerBo> CREATOR = new Creator<SellerBo>() {
@@ -275,6 +290,15 @@ public class SellerBo implements Parcelable {
         isSellerWorking = sellerWorking;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -286,14 +310,29 @@ public class SellerBo implements Parcelable {
         dest.writeInt(billed);
         dest.writeInt(covered);
         dest.writeInt(target);
+        dest.writeInt(retailerId);
+        dest.writeInt(lpc);
+        dest.writeInt(totallpc);
+        dest.writeInt(productivityPercent);
+        dest.writeInt(deviationCount);
         dest.writeString(userName);
         dest.writeString(retailerName);
+        dest.writeString(imagePath);
+        dest.writeString(uid);
         dest.writeByte((byte) (isAttendanceDone ? 1 : 0));
+        dest.writeByte((byte) (isSellerWorking ? 1 : 0));
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeLong(orderValue);
         dest.writeLong(inTime);
         dest.writeLong(outTime);
-        dest.writeInt(retailerId);
+        dest.writeLong(totalOrderValue);
+        dest.writeLong(totalCallDuration);
+        dest.writeInt(targetLines);
+        dest.writeInt(achievedLines);
+        dest.writeInt(targetCoverage);
+        dest.writeInt(achievedCoverage);
+        dest.writeLong(targetValue);
+        dest.writeLong(achievedValue);
     }
 }

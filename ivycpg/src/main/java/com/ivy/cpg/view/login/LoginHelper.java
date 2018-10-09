@@ -9,29 +9,27 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-//import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,10 +41,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL_BASE;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_PASSWORD;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.USERS;
@@ -218,6 +215,9 @@ public class LoginHelper {
 
         if (checkPlayServices(mContext.getApplicationContext())) {
 
+            final String email = businessModel.userMasterHelper.getUserMasterBO().getLoginName()+FIREBASE_EMAIL_BASE;
+            FIREBASE_EMAIL = email;
+
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                         @Override
@@ -227,31 +227,39 @@ public class LoginHelper {
                                 return;
                             }
 
-                            OnCompleteListener<AuthResult> authResultOnCompleteListener = new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task1) {
-                                    // Get new Instance ID token
-                                    String token = task.getResult().getToken();
-
-                                    registerInBackground(mContext,token);
-
-                                    updateTokenInFirebase(token);
-                                }
-                            };
+                            final String fcmToken = task.getResult().getToken();
 
                             if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 
-                                String email = FIREBASE_EMAIL;
-                                String password = FIREBASE_PASSWORD;
+                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, FIREBASE_PASSWORD)
+                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task1) {
+                                                // Get new Instance ID token
 
-                                if(email.trim().length() > 0 && password.trim().length() > 0) {
-                                    FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                                            email, password).addOnCompleteListener(authResultOnCompleteListener);
-                                }else{
-                                    Commons.print("Firebase : No User Found");
-                                }
-                            }else{
-                                Commons.print("Firebase : User already Online");
+                                                if (!task1.isSuccessful()){
+                                                    if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
+                                                        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, FIREBASE_PASSWORD)
+                                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<AuthResult> task1) {
+
+                                                                        registerInBackground(mContext,fcmToken);
+
+                                                                        updateTokenInFirebase(mContext,fcmToken);
+
+                                                                    }
+                                                                });
+                                                    }
+                                                }else{
+
+                                                    registerInBackground(mContext,fcmToken);
+
+                                                    updateTokenInFirebase(mContext,fcmToken);
+                                                }
+
+                                            }
+                                        });
                             }
 
                         }
@@ -265,18 +273,48 @@ public class LoginHelper {
         }
     }
 
-    private void updateTokenInFirebase(String token){
+    private void updateTokenInFirebase(Context context,String token){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("token", token);
 
+        int positionId = getUserPositionId(context);
+
+        if (positionId == 0)
+            return;
+
         db.collection(FIRESTORE_BASE_PATH)
                 .document(USERS)
                 .collection(USER_INFO)
-                .document(businessModel.userMasterHelper.getUserMasterBO().getUserid()+"")
+                .document(positionId+"")
                 .set(userInfo);
+    }
+
+    private int getUserPositionId(Context context){
+        int posId = 0 ;
+
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db.selectSQL("select UserPositionId from usermaster where userid =" + AppUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getUserid()+""));
+            if (c.getCount() > 0) {
+                if (c.moveToNext()) {
+                    posId = c.getInt(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return posId;
+
+
     }
 
     /**

@@ -4645,4 +4645,32 @@ SynchronizationHelper {
 
     }
 
+    public Vector<String> getUploadResponseForLocation(String data,
+                                            String appendurl) {
+
+        StringBuilder url = new StringBuilder();
+        url.append(DataMembers.SERVER_URL);
+        url.append(appendurl);
+        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            try {
+                MyHttpConnectionNew http = new MyHttpConnectionNew();
+                http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                if (data != null) {
+                    http.addParam("Data", data);
+                }
+                http.connectMe();
+                Vector<String> result = http.getResult();
+                if (result == null) {
+                    return new Vector<>();
+                }
+                return result;
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return new Vector<>();
+            }
+        } else {
+            return new Vector<>();
+        }
+    }
+
 }

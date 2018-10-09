@@ -1,8 +1,12 @@
 package com.ivy.cpg.view.supervisor.chat;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
@@ -30,30 +34,50 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
     // This is a list of extras that are passed to the login view
     protected HashMap<String, Object> extras = new HashMap<>();
 
+    private String userChatId = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_chat);
 
+        setTaskDescription(getTaskDescriptionBitmap(), getTaskDescriptionLabel(), getTaskDescriptionColor());
 
-        if (ChatSDK.currentUser() == null)
+        userChatId = getIntent().getExtras()!=null?getIntent().getExtras().getString("UUID"):"";
+
+        if (ChatSDK.currentUser() == null) {
+            //showProgressDialog("Connecting ...");
             customAuth();
-        else
-            InterfaceManager.shared().a.startMainActivity(this);
+        }
+        else {
 
-        finish();
+            if (userChatId.equals("")) {
+                InterfaceManager.shared().a.startMainActivity(this);
+                finish();
+            }else
+                startChatActivity();
+        }
 
+    }
+
+    protected int getTaskDescriptionColor(){
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = this.getTheme();
+        theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        return typedValue.data;
+    }
+
+    protected String getTaskDescriptionLabel(){
+        return (String) getTitle();
+    }
+
+    protected Bitmap getTaskDescriptionBitmap(){
+        return BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
     }
 
     private void customAuth(){
 
-//        Map<String, Object> data = getMap(
-//                new String[]{AuthKeys.Type, AuthKeys.Email, AuthKeys.Password},
-//                AccountType.Password, SupervisorModuleConstants.FIREBASE_EMAIL, SupervisorModuleConstants.FIREBASE_PASSWORD);
-
-        AccountDetails accountDetails = new AccountDetails();
-        accountDetails = AccountDetails.username(SupervisorModuleConstants.FIREBASE_EMAIL, SupervisorModuleConstants.FIREBASE_PASSWORD);
-
+        AccountDetails accountDetails = AccountDetails.username(SupervisorModuleConstants.FIREBASE_EMAIL, SupervisorModuleConstants.FIREBASE_PASSWORD);
 
         NetworkManager.shared().a.auth.authenticate(accountDetails).observeOn(AndroidSchedulers.mainThread())
                 .doFinally(new Action() {
@@ -65,15 +89,34 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                 .subscribe(new Action() {
                     @Override
                     public void run() throws Exception {
-                        ChatSDK.ui().startMainActivity(StartChatActivity.this, extras);
+                        if (userChatId.equals(""))
+                            startMainActivity();
+                        else
+                            startChatActivity();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable e) throws Exception {
                         toastErrorMessage(e, false);
                         ChatSDK.logError(e);
+
+                        finish();
                     }
                 });
+    }
+
+    private void startChatActivity(){
+        Intent openChatIntent = new Intent(this, ChatSDK.ui().getChatActivity());
+        openChatIntent.putExtra(InterfaceManager.THREAD_ENTITY_ID, userChatId);
+        openChatIntent.setAction(userChatId);
+        openChatIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(openChatIntent);
+        finish();
+    }
+
+    private void startMainActivity(){
+        ChatSDK.ui().startMainActivity(StartChatActivity.this, extras);
+        finish();
     }
 
     public void toastErrorMessage(Throwable error, boolean login){

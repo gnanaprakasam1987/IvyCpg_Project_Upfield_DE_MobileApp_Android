@@ -105,6 +105,9 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         attendanceObj.put("userId",userId);
         attendanceObj.put("userName",userName);
 
+        String UId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        attendanceObj.put("uid",UId);
+
         String[] splitSupervisorIds = parentPositionIds.split("/");
 
         for(String ids :splitSupervisorIds) {

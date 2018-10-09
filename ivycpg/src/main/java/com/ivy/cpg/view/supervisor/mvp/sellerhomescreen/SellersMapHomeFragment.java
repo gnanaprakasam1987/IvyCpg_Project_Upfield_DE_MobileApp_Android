@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.customviews.ticker.TickerView;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
@@ -58,6 +59,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import co.chatsdk.core.session.NetworkManager;
+import co.chatsdk.core.types.AccountDetails;
 
 public class SellersMapHomeFragment extends IvyBaseFragment implements
         OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener,
@@ -129,6 +133,9 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        AccountDetails accountDetails = AccountDetails.username(SupervisorModuleConstants.FIREBASE_EMAIL, SupervisorModuleConstants.FIREBASE_PASSWORD);
+        NetworkManager.shared().a.auth.authenticate(accountDetails);
 
         return view;
     }

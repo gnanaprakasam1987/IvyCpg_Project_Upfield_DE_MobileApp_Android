@@ -299,6 +299,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         //Draw route based on sellers activity
         sellerMapViewPresenter.setSellerActivityDetailListener(userId,seletedDate);
 
+        sellerMapViewPresenter.downloadSellerRoute(String.valueOf(userId),seletedDate);
+
     }
 
     @Override

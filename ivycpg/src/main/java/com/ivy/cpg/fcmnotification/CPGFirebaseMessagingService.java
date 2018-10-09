@@ -25,6 +25,9 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class CPGFirebaseMessagingService extends FirebaseMessagingService{
@@ -166,11 +169,18 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
                     notificationManager.createNotificationChannel(channel);
                 }
 
-                notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+                int id = createID();
+
+                notificationManager.notify(id /* ID of notification */, notificationBuilder.build());
             }
         }catch (Exception e){
             Commons.printException(e);
         }
+    }
+
+    private int createID(){
+        Date now = new Date();
+        return Integer.parseInt(new SimpleDateFormat("ddHHmmss",  Locale.US).format(now));
     }
 
 

@@ -3,11 +3,16 @@ package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.text.format.DateUtils;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -30,23 +35,36 @@ import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.MyHttpConnectionNew;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.NetworkUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.Vector;
 
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
+import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_DATA_KEY;
+import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_FIELD_KEY;
+import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_MASTER_KEY;
 
 public class SellerDetailMapPresenter implements SellerDetailMapContractor.SellerDetailMapPresenter {
 
@@ -69,6 +87,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     private int retailersVisitedSequence = 0;
     private int lastVisited = 0;
+
+    private AlertDialog alertDialog;
+    private ArrayList<LatLng> valuesList = new ArrayList<>();
 
     @Override
     public void setView(SellerDetailMapContractor.SellerDetailMapView sellerMapView, Context context) {
@@ -476,9 +497,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
                     sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()), lastVisited);
 
-                    if (previousRetailerId != 0 && previousRetailerId != documentSnapshotBo.getRetailerId()) {
+                    /*if (previousRetailerId != 0 && previousRetailerId != documentSnapshotBo.getRetailerId()) {
                         fetchRouteUrl(previousRetailerLatLng, destLatLng);
-                    }
+                    }*/
 
                     previousRetailerId = documentSnapshotBo.getRetailerId();
                     previousRetailerLatLng = destLatLng;
@@ -494,7 +515,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private void fetchRouteUrl(LatLng startlatLng, LatLng endLatLng) {
 
         String url = getUrl(startlatLng, endLatLng);
-        Commons.print("drawRoute " + url);
+        Commons.print("drawRouteUrl " + url);
         FetchUrl fetchUrl = new FetchUrl(this);
         fetchUrl.execute(url);
     }
@@ -565,6 +586,173 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                 retailerMasterHashmap.get(retailerBo.getRetailerId()).getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red));
 
         }
+    }
+
+    public void downloadSellerRoute(String userId,String date){
+        new DownloadSellerRoute(userId, date).execute();
+    }
+
+    class DownloadSellerRoute extends AsyncTask<String, Void, Boolean> {
+
+        private String userId,date;
+
+        DownloadSellerRoute(String userId,String date){
+            this.userId = userId;
+            this.date = date;
+        }
+
+        protected void onPreExecute() {
+
+            if (alertDialog == null) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                customProgressDialog(builder,
+                        context.getResources().getString(R.string.progress_dialog_title_downloading));
+                alertDialog = builder.create();
+                alertDialog.show();
+
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            return NetworkUtils.isNetworkConnected(context) && prepareDownloadData(userId,date);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (result) {
+                drawRoute(valuesList);
+                Toast.makeText(context, "Route Download Successfull", Toast.LENGTH_SHORT).show();
+            }else
+                Toast.makeText(context, "Route Download Failed", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    public void customProgressDialog(AlertDialog.Builder builder, String message) {
+
+        try {
+            View view = View.inflate(context, R.layout.custom_alert_dialog, null);
+
+            TextView title = view.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            TextView messagetv = view.findViewById(R.id.text);
+            messagetv.setText(message);
+
+            builder.setView(view);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    private boolean prepareDownloadData(String userId,String date) {
+
+        boolean isSuccess = false;
+        try {
+
+            String downloadurl = DataMembers.SERVER_URL+"MovementTracking/Download?userId="+userId+"&routeDate="+date;
+
+            Vector<String> responseVector = getResponse(downloadurl);
+
+            try {
+                if (responseVector.size() > 0) {
+
+                    for (String s : responseVector) {
+
+                        JSONObject jsonObject = new JSONObject(s);
+                        Iterator itr = jsonObject.keys();
+                        while (itr.hasNext()) {
+
+                            String key = (String) itr.next();
+                            if (key.equals("Master")) {
+                                parseJSONAndInsert(jsonObject);
+                                Commons.print("Seller Route Downloaded");
+                                isSuccess = true;
+
+                            } else if (key.equals("Errorcode")) {
+                                String tokenResponse = jsonObject.getString("Errorcode");
+                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+
+                                    isSuccess = false;
+
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+        return isSuccess;
+
+    }
+
+    private Vector<String> getResponse(String url) {
+        try {
+            MyHttpConnectionNew http = new MyHttpConnectionNew();
+            http.create(MyHttpConnectionNew.POST, url, null);
+
+            http.connectMe();
+            Vector<String> result = http.getResult();
+            if (result == null) {
+                return new Vector<>();
+            }
+            return result;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return new Vector<>();
+        }
+    }
+
+    /**
+     * @param jsonObject - response json object
+     *                   Method to split table name and columns from json object
+     *                   response
+     */
+    public void parseJSONAndInsert(JSONObject jsonObject) {
+
+        try {
+
+            JSONArray first = jsonObject.getJSONArray(JSON_DATA_KEY);
+
+            for (int j = 0; j < first.length(); j++) {
+                JSONArray value = (JSONArray) first.get(j);
+
+                String firstValue = value.toString();
+
+                firstValue = firstValue.substring(1, firstValue.length() - 1);
+
+                firstValue = firstValue.replace("\\/", "/");
+
+                String[] strArray = firstValue.split(",");
+
+                LatLng latLng = new LatLng(SDUtil.convertToDouble(strArray[1]),SDUtil.convertToDouble(strArray[2]));
+
+                valuesList.add(latLng);
+
+            }
+
+            Commons.print("Route Values "+valuesList);
+
+        } catch (JSONException e) {
+            Commons.printException("" + e);
+        }
+
     }
 
 }

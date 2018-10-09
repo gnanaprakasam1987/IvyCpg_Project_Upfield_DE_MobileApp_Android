@@ -99,7 +99,9 @@
             android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingListenerService"
             android:enabled="true"
             android:exported="false" />
+
         <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingUploadService" />
+        <service android:name="com.ivy.cpg.locationservice.realtime.RealtimeLocationUploadIntentService" />
 
         <receiver
             android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceiver"

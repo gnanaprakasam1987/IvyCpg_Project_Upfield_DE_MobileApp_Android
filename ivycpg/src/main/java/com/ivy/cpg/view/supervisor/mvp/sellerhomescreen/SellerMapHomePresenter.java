@@ -347,6 +347,10 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
             if (sellerInfoHasMap.get(userId) != null) {
 
+                if (document.getData().get("uid") != null){
+                    sellerInfoHasMap.get(userId).setUid((String)document.getData().get("uid"));
+                }
+
                 if (document.getData().get("status") != null &&
                         ((String) document.getData().get("status")).equalsIgnoreCase("day closed")){
                     sellerInfoHasMap.get(userId).setSellerWorking(false);
