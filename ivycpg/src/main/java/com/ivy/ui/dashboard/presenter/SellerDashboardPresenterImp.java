@@ -430,6 +430,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         return dashBoardList;
     }
 
+    @Override
+    public UserMasterBO getCurrentUser() {
+        return appDataProvider.getUser();
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     private void fetchListRowLabels() {
         getCompositeDisposable().add(labelsDataManager.getLabels(ViewTags.DASHBOARD_ROW_ACHIEVED_TITLE, ViewTags.DASHBOARD_ROW_BALANCE_TITLE,

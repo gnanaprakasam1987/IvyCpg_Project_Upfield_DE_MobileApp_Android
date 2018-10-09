@@ -77,5 +77,7 @@ public interface SellerDashboardContract {
 
         ArrayList<DashBoardBO> getDashboardListData();
 
+        UserMasterBO getCurrentUser();
+
     }
 }
