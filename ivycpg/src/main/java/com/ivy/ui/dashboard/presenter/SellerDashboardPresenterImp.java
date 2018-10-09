@@ -389,6 +389,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<String> weekList) {
                         if (weekList.size() > 0)
                             fetchCurrentWeek(weekList);
+                        else
+                            getIvyView().setDashboardListAdapter(dashBoardList);
 
 
 

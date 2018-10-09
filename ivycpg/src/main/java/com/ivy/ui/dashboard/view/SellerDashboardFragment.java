@@ -165,6 +165,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         }
 
 
+
+
     }
 
     private void handleRetailerDashboard() {
@@ -198,7 +200,15 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 userSpinner = (Spinner) userSpinnerStub.inflate();
 
                 presenter.fetchDistributorList(false);
+
+                userSpinner.setOnItemSelectedListener(userSpinnerListener);
             }
+        }else if(presenter.isUserBasedDash()) {
+            dashSpinnerLayout.setVisibility(View.VISIBLE);
+            multiSelectStub.setVisibility(View.GONE);
+
+            userSpinnerStub.setVisibility(View.VISIBLE);
+            userSpinner = (Spinner) userSpinnerStub.inflate();
         }
 
     }
@@ -423,6 +433,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 presenter.fetchKpiMonths(isFromRetailer);
             else if(selectedInterval.equals(WEEK))
                 presenter.fetchWeeks();
+            else
+                weekSpinnerStub.setVisibility(View.GONE);
         }
 
         @Override
@@ -445,7 +457,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     @Override
     public void setWeekSpinner(ArrayList<String> weekList, int currentWeek) {
-        if(weekList.size()>0){
             weekSpinnerStub.setVisibility(View.VISIBLE);
             Spinner weekSpinner = (Spinner) weekSpinnerStub.inflate();
             ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
@@ -453,10 +464,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             weekSpinner.setAdapter(monthdapter);
             weekSpinner.setOnItemSelectedListener(weekSelectedListener);
             weekSpinner.setSelection(currentWeek);
-        }else {
-            weekSpinnerStub.setVisibility(View.GONE);
-            presenter.fetchSellerDashboardDataForWeek(mSelectedUser);
-        }
+
+            //TODO handle P3M Chart
 
     }
 
