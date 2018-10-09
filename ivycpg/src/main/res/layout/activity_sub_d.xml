@@ -5,11 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ivy.sd.png.view.SubDActivity">
-
-   <!-- <include
-        android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar" />-->
+    tools:context="com.ivy.cpg.view.subd.SubDActivity">
 
     <FrameLayout
         android:id="@+id/content_fragemnt"

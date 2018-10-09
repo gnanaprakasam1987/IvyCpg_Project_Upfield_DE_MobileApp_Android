@@ -1,5 +1,6 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.subd;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,14 +18,15 @@ import android.widget.Toast;
 
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.Map;
 import java.util.Vector;
@@ -56,7 +58,7 @@ public class SubDFragment extends IvyBaseFragment {
 
         context = getActivity();
         retailer = bmodel.getSubDMaster();
-        lvSubDId = (ListView) view.findViewById(R.id.lv_subdid);
+        lvSubDId = view.findViewById(R.id.lv_subdid);
 
         setScreenTitle(bmodel.configurationMasterHelper.getSubdtitle());
 
@@ -65,7 +67,7 @@ public class SubDFragment extends IvyBaseFragment {
         if (retailer.size() > 0) {
             if (retailer.size() == 1) {
                 bmodel.setRetailerMasterBO(retailer.get(0));
-                loadHomeScreenTwo(retailer.get(0));
+                loadHomeScreenTwo();
             } else {
                 adapter = new RetailerSelectionAdapter(retailer);
                 lvSubDId.setAdapter(adapter);
@@ -111,15 +113,14 @@ public class SubDFragment extends IvyBaseFragment {
 
                 holder.retailertNameTextView = convertView.findViewById(R.id.retailer_name_subdid);
                 holder.cardViewItem = convertView.findViewById(R.id.cardview);
-                holder.retailertNameTextView.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.retailertNameTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
                 convertView.setTag(holder);
 
                 holder.cardViewItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
-                        loadHomeScreenTwo(retailerObj);
+                        loadHomeScreenTwo();
                     }
                 });
 
@@ -142,7 +143,7 @@ public class SubDFragment extends IvyBaseFragment {
         }
     }
 
-    private void loadHomeScreenTwo(RetailerMasterBO ret) {
+    private void loadHomeScreenTwo() {
 
         // Time count Starts for the retailer
         if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
@@ -159,6 +160,7 @@ public class SubDFragment extends IvyBaseFragment {
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     private class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
@@ -172,13 +174,13 @@ public class SubDFragment extends IvyBaseFragment {
                         bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
                                 bmodel.productHelper.getFilterProductLevels()));
 
-                        GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                        GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                         if (genericObjectPair != null) {
                             bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                         }
 
-                    } else if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                    } else {
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);
                     }
@@ -216,7 +218,7 @@ public class SubDFragment extends IvyBaseFragment {
                 String temp = SDUtil.now(SDUtil.DATE_TIME_ID);
 
                 bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
-                bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));
+                bmodel.outletTimeStampHelper.setUid(AppUtils.QT("OTS" + temp));
 
                 bmodel.outletTimeStampHelper.saveTimeStamp(
                         SDUtil.now(SDUtil.DATE_GLOBAL), time

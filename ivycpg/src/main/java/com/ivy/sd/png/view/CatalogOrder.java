@@ -62,6 +62,7 @@ import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -1426,7 +1427,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        bmodel.saveClosingStock(true);
+                                        StockCheckHelper.getInstance(CatalogOrder.this).saveClosingStock(CatalogOrder.this,true);
 
                                         Toast.makeText(
                                                 CatalogOrder.this,

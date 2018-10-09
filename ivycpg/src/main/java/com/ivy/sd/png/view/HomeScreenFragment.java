@@ -71,6 +71,7 @@ import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
 import com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection;
 import com.ivy.cpg.view.quickcall.QuickCallFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
+import com.ivy.cpg.view.subd.SubDFragment;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;

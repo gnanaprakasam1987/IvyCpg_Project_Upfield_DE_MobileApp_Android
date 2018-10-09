@@ -1,6 +1,5 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.subd;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,8 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.VisitFragment;
+import com.ivy.utils.FontUtils;
 
 import java.util.Collections;
 import java.util.Vector;
@@ -27,9 +28,6 @@ public class SubDSelectionDialog extends DialogFragment {
 
     private BusinessModel bmodel;
     View v;
-    private ListView mCountLV;
-    private TextView mTitleTV;
-    Context context;
     SubIdSelectionListner subIdSelectionListner;
     int mSelectedSubId = -1;
 
@@ -52,10 +50,10 @@ public class SubDSelectionDialog extends DialogFragment {
         mSelectedSubId = getArguments().getInt("subDId");
         Commons.print("mSelectedSubId, " + "" + mSelectedSubId);
 
-        mTitleTV = v.findViewById(R.id.title);
-        mCountLV = v.findViewById(R.id.lvSubd);
+        TextView mTitleTV = v.findViewById(R.id.title);
+        ListView mCountLV = v.findViewById(R.id.lvSubd);
 
-        mTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mTitleTV.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
         Collections.sort(bmodel.getSubDMaster(), RetailerMasterBO.RetailerIsTodayComparator);
         mCountLV.setAdapter(new MyAdapter(bmodel.getSubDMaster()));
         mCountLV.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -117,10 +115,10 @@ public class SubDSelectionDialog extends DialogFragment {
 
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
 
-                convertView = inflater.inflate(R.layout.btn_radio, null);
+                convertView = inflater.inflate(R.layout.btn_radio, parent, false);
 
                 holder.tvRetailerName = convertView.findViewById(android.R.id.text1);
-                holder.tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tvRetailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
 
                 convertView.setTag(holder);
 
@@ -141,10 +139,7 @@ public class SubDSelectionDialog extends DialogFragment {
 
 
     public boolean isShowing() {
-        if (getDialog() != null) {
-            return true;
-        }
-        return false;
+        return getDialog() != null;
     }
 
 

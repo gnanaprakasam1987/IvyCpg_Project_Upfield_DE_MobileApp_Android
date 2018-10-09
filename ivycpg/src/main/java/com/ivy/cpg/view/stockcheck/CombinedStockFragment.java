@@ -50,6 +50,7 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
@@ -136,6 +137,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private HorizontalScrollView hscrl_spl_filter;
     SearchAsync searchAsync;
     private boolean loadBothSalable;
+    private StockCheckHelper stockCheckHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -148,6 +150,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
+        stockCheckHelper = StockCheckHelper.getInstance(getContext());
 
         loadBothSalable = bmodel.configurationMasterHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU;
         try {
@@ -1399,13 +1402,13 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), mylist);
 
                 // save near expiry
-                bmodel.saveNearExpiry();
+                stockCheckHelper.saveNearExpiry(getContext().getApplicationContext());
 
                 // Save closing stock
-                bmodel.saveClosingStock(false);
+                stockCheckHelper.saveClosingStock(getContext().getApplicationContext(),false);
 
                 // update review plan in DB
-                bmodel.setReviewPlanInDB();
+                stockCheckHelper.setReviewPlanInDB(getContext().getApplicationContext());
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMBINED_STOCK);
 
                 return Boolean.TRUE;

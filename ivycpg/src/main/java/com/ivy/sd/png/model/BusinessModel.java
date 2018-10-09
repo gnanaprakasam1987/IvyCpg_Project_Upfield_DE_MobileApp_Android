@@ -80,6 +80,7 @@ import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
@@ -153,7 +154,7 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
-import com.ivy.sd.png.view.CallAnalysisActivity;
+import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -326,7 +327,6 @@ public class BusinessModel extends Application {
     private Message mMessage;
     private File folder;
     private AWSCredentials myCredentials;
-    private String selectedDateFromDatePickerDialog = null;
     private OrderFullfillmentBO orderfullfillmentbo;
     public int photocount = 0;
     public int mSelectedSubId = -1;
@@ -1330,25 +1330,6 @@ public class BusinessModel extends Application {
         }
 
         return 0;
-    }
-
-    public String[] getRetailerNameAndTin(String invoiceNumber) {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        String str[] = new String[2];
-        Cursor c = db
-                .selectSQL("select Retailername,tinNumber from retailerMaster where retailerid "
-                        + "in(select retailerid from InvoiceMaster where invoiceno='"
-                        + invoiceNumber + "' )");
-        if (c != null) {
-            if (c.moveToNext()) {
-                str[0] = c.getString(0);
-                str[1] = c.getString(1);
-            }
-            c.close();
-        }
-        db.closeDB();
-        return str;
     }
 
     public ArrayList<RetailerMasterBO> downloadRetailerMasterData() {
@@ -3110,20 +3091,43 @@ public class BusinessModel extends Application {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
+        StockCheckHelper stockCheckHelper = null;
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
             product = productHelper.getTaggedProductBOById(productid);
+            stockCheckHelper = StockCheckHelper.getInstance(ctx);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
 
-        if (!this.configurationMasterHelper.SHOW_STOCK_SP)
-            shelfpqty = -1;
-        if (!this.configurationMasterHelper.SHOW_STOCK_SC)
-            shelfcqty = -1;
-        if (!this.configurationMasterHelper.SHOW_SHELF_OUTER)
-            shelfoqty = -1;
-        if (!this.configurationMasterHelper.SHOW_STOCK_CB)
-            availability = -1;
+        if (menuCode.equals("MENU_STOCK")) {
+            if (!stockCheckHelper.SHOW_STOCK_SP)
+                shelfpqty = -1;
+            if (!stockCheckHelper.SHOW_STOCK_SC)
+                shelfcqty = -1;
+            if (!stockCheckHelper.SHOW_SHELF_OUTER)
+                shelfoqty = -1;
+            if (!stockCheckHelper.SHOW_STOCK_CB)
+                availability = -1;
+        } else if (menuCode.equals("MENU_COMBINE_STKCHK")) {
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SP)
+                shelfpqty = -1;
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SC)
+                shelfcqty = -1;
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                shelfoqty = -1;
+            if (!stockCheckHelper.SHOW_COMB_STOCK_CB)
+                availability = -1;
+        } else {
+            if (!this.configurationMasterHelper.SHOW_STOCK_SP)
+                shelfpqty = -1;
+            if (!this.configurationMasterHelper.SHOW_STOCK_SC)
+                shelfcqty = -1;
+            if (!this.configurationMasterHelper.SHOW_SHELF_OUTER)
+                shelfoqty = -1;
+            if (!this.configurationMasterHelper.SHOW_STOCK_CB)
+                availability = -1;
+        }
+
 
         if (product != null && product.getOwn() == isOwn) {
             for (int j = 0; j < product.getLocations().size(); j++) {
@@ -3761,26 +3765,6 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-
-    /**
-     * Set Review plan in DB. This will update the isReviewPlan field in
-     * Retailermaster to 'Y'
-     */
-    public void setReviewPlanInDB() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            db.executeQ("update " + DataMembers.tbl_retailerMaster
-                    + " set isReviewPlan=" + QT("Y") + " where retailerid="
-                    + QT(getRetailerMasterBO().getRetailerID()));
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
     void setOrderMerchInDB(String flag) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
@@ -3912,7 +3896,7 @@ public class BusinessModel extends Application {
         float total = 0;
         Cursor c = db
                 .selectSQL("select ifnull(sum(Amount),0) from Payment where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID()));
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
                 c.moveToNext();
@@ -4306,33 +4290,6 @@ public class BusinessModel extends Application {
         }
     }
 
-    private void updateIsStockCheck() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            db.updateSQL("Update RetailerBeatMapping set isProductive='Y' where RetailerID ="
-                    + getRetailerMasterBO().getRetailerID() + " and BeatID=" + getRetailerMasterBO().getBeatID());
-
-            db.closeDB();
-
-            // update loaded retailerMaster flag.
-            int siz = getRetailerMaster().size();
-            for (int i = 0; i < siz; i++) {
-                RetailerMasterBO ret = retailerMaster.get(i);
-                if (ret.getRetailerID().equals(
-                        getRetailerMasterBO().getRetailerID())) {
-                    ret.setProductive("Y");
-                }
-            }
-
-            // Updated selected object flag
-            getRetailerMasterBO().setProductive("Y");
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
 
     public boolean hasStockInOrder() {
         int siz = productHelper.getProductMaster().size();
@@ -4357,238 +4314,6 @@ public class BusinessModel extends Application {
         return false;
     }
 
-    public boolean hasStockCheck(boolean flag) {
-
-        int siz;
-        if (!flag)
-            siz = productHelper.getTaggedProducts().size();
-        else
-            siz = productHelper.getProductMaster().size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = productHelper
-                    .getTaggedProducts().get(i);
-
-            int siz1 = product.getLocations().size();
-            for (int j = 0; j < siz1; j++) {
-                if ((this.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                        || (this.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                        || (this.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                        || (this.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)
-                        || product.getLocations().get(j).getWHPiece() > 0
-                        || product.getLocations().get(j).getWHCase() > 0
-                        || product.getLocations().get(j).getWHOuter() > 0
-                        || product.getLocations().get(j).getCockTailQty() > 0
-                        || product.getIsListed() > 0
-                        || product.getIsDistributed() > 0
-                        || product.getLocations().get(j).getReasonId() != 0)
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isReasonSelectedForAllProducts() {
-
-        int siz = productHelper.getProductMaster().size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = productHelper
-                    .getProductMaster().get(i);
-
-            int siz1 = product.getLocations().size();
-            for (int j = 0; j < siz1; j++) {
-                if (product.getIsFocusBrand() == 1 || product.getIsFocusBrand() == 2) {
-                    if ((this.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() == -1)
-                            && (this.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() == -1)
-                            && (this.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() == -1)
-                            && (this.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() == 0)
-                            && product.getLocations().get(j).getReasonId() == 0)
-                        return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public void saveClosingStock(boolean isFromOrder) {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            boolean isData;
-            String id = QT(userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID));
-            if (this.isEditStockCheck()) {
-                Cursor closingStockCursor = db
-                        .selectSQL("select StockID from ClosingStockHeader where RetailerID="
-                                + getRetailerMasterBO().getRetailerID() + "");
-
-                if (closingStockCursor.getCount() > 0) {
-                    closingStockCursor.moveToNext();
-                    id = QT(closingStockCursor.getString(0));
-                    db.deleteSQL("ClosingStockHeader", "StockID=" + id, false);
-                    db.deleteSQL("ClosingStockDetail", "StockID=" + id, false);
-                }
-                closingStockCursor.close();
-            }
-
-            if (PRD_FOR_SKT) // Update is Productive only when the config is enabled.
-                updateIsStockCheck();
-
-
-            //Weightage Calculation
-            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                fitscoreHelper.getWeightage(getRetailerMasterBO().getRetailerID(), DataMembers.FIT_STOCK);
-            }
-
-            String columns, values;
-
-            int moduleWeightage = 0, productWeightage = 0, sum = 0;
-
-            ProductMasterBO product;
-
-            // ClosingStock Detail entry
-
-            columns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
-                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3,isAvailable";
-
-            if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                columns = columns + ",Score";
-            }
-            isData = false;
-            int siz;
-
-            if (isFromOrder)
-                siz = productHelper.getProductMaster().size();
-            else
-                siz = productHelper.getTaggedProducts().size();
-
-            for (int i = 0; i < siz; ++i) {
-                if (isFromOrder)
-                    product = productHelper.getProductMaster().elementAt(i);
-                else
-                    product = productHelper.getTaggedProducts().elementAt(i);
-
-                int dd = product.getIsDistributed();
-                int ld = product.getIsListed();
-
-                int siz1 = product.getLocations().size();
-                for (int j = 0; j < siz1; j++) {
-                    if ((this.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                            || (this.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                            || (this.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                            || (this.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)
-                            || product.getLocations().get(j).getWHPiece() > 0
-                            || product.getLocations().get(j).getWHCase() > 0
-                            || product.getLocations().get(j).getWHOuter() > 0
-                            || product.getLocations().get(j).getIsPouring() > 0
-                            || product.getLocations().get(j).getCockTailQty() > 0
-                            || product.getLocations().get(j).getFacingQty() > 0
-                            || product.getLocations().get(j).getAudit() != 2
-                            || product.getLocations().get(j).getReasonId() != 0) {
-
-                        int count = product.getLocations().get(j)
-                                .getShelfPiece()
-                                + product.getLocations().get(j).getWHPiece();
-                        int rField1 = product.getLocations().get(j).getIsPouring();
-                        int rField2 = product.getLocations().get(j).getIsPouring();
-                        int rField3 = 0;
-                        if (configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
-                            rField1 = product.getQty_klgs();
-                            rField2 = product.getRfield1_klgs();
-                            rField3 = product.getRfield2_klgs();
-
-                        }
-
-                        int shelfCase = ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase());
-                        int shelfPiece = ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece());
-                        int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
-                        int availability = ((product.getLocations().get(j).getAvailability() == -1) ? 0 : product.getLocations().get(j).getAvailability());
-                        values = (id) + ","
-                                + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                                + QT(product.getProductID()) + ","
-                                + product.getCaseSize() + ","
-                                + QT(retailerMasterBO.getRetailerID()) + ","
-                                + product.getCaseUomId() + ","
-                                + product.getMSQty() + "," + count + ","
-                                + product.getOuUomid() + ","
-                                + product.getOutersize() + ","
-                                + shelfPiece
-                                + ","
-                                + shelfCase
-                                + ","
-                                + shelfOuter
-                                + ","
-                                + product.getLocations().get(j).getWHPiece()
-                                + ","
-                                + product.getLocations().get(j).getWHCase()
-                                + ","
-                                + product.getLocations().get(j).getWHOuter()
-                                + ","
-                                + product.getLocations().get(j).getLocationId()
-                                + "," + dd + "," + ld + ","
-                                + product.getLocations().get(j).getReasonId() + ","
-                                + product.getLocations().get(j).getAudit()
-                                + ","
-                                + product.getLocations().get(j).getFacingQty()
-                                + "," + product.getOwn()
-                                + "," + product.getPcUomid()
-                                + "," + rField1
-                                + "," + rField2
-                                + "," + rField3
-                                + "," + availability;
-
-
-                        if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                            int pieces = (shelfCase * product.getCaseSize())
-                                    + (shelfOuter * product.getOutersize())
-                                    + shelfPiece;
-                            productWeightage = fitscoreHelper.checkWeightage(product.getProductID(), pieces);
-                            values = values + "," + productWeightage;
-                            sum = sum + productWeightage;
-                        }
-
-                        db.insertSQL(DataMembers.tbl_closingstockdetail,
-                                columns, values);
-                        isData = true;
-                    }
-                }
-            }
-
-            // ClosingStock Header entry
-            if (isData) {
-                columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID,AvailabilityShare";
-
-                values = (id) + ", " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                        + ", " + QT(getRetailerMasterBO().getRetailerID()) + ", "
-                        + QT(getRetailerMasterBO().getRetailerCode()) + ","
-                        + QT(getStockCheckRemark()) + "," + getRetailerMasterBO().getDistributorId();
-
-                if (configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
-                    String availabilityShare = (getAvailablilityShare() == null ||
-                            getAvailablilityShare().trim().length() == 0) ? "0.0" : getAvailablilityShare();
-                    values = values + "," + QT(availabilityShare);
-                } else {
-                    values = values + "," + QT("0.0");
-                }
-
-                db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
-
-                if (configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                    calculateFitscoreandInsert(db, sum, DataMembers.FIT_STOCK);
-                }
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
 
     public void calculateFitscoreandInsert(DBUtil db, double sum, String module) {
         String headerID = "";
@@ -5527,20 +5252,6 @@ public class BusinessModel extends Application {
         this.isDoubleEdit_temp = isDoubleEdit_temp;
     }
 
-    /**
-     * @return the selectedDateFromDatePickerDialog
-     */
-    public String getSelectedDateFromDatePickerDialog() {
-        return selectedDateFromDatePickerDialog;
-    }
-
-    /**
-     * @param selectedDateFromDatePickerDialog the selectedDateFromDatePickerDialog to set
-     */
-    public void setSelectedDateFromDatePickerDialog(
-            String selectedDateFromDatePickerDialog) {
-        this.selectedDateFromDatePickerDialog = selectedDateFromDatePickerDialog;
-    }
 
     public int[] getGoldenPoints() {
         int i[] = new int[2];
@@ -5606,107 +5317,18 @@ public class BusinessModel extends Application {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select sum(LinesPerCall) from orderHeader where retailerid="
-                            + QT(getRetailerMasterBO().getRetailerID())
-                            + " and " + (isVansales ? "invoiceStatus=1" : "invoiceStatus=0") + " and upload='N'");
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    int count = c.getInt(0);
-                    return count;
-                }
-            }
-            c.close();
-            db.closeDB();
-            return 0;
-        } catch (Exception e) {
-            Commons.printException(e);
-            return 0;
-        }
-    }
-
-    public int getTotalLinesTarget() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select Lines from DTPMaster where retailerid="
-                            + QT(getRetailerMasterBO().getRetailerID()));
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    int count = c.getInt(0);
-                    return count;
-                }
-            }
-            c.close();
-            db.closeDB();
-            return 0;
-        } catch (Exception e) {
-            Commons.printException(e);
-            return 0;
-        }
-    }
-
-
-    /**
-     * this will get store balance = Monthly Target - Monthly Achieved *
-     */
-
-    public double getStoreBalance() {
-        try {
-            double mnth_acheive = (getRetailerMasterBO().getMonthly_acheived());
-            double day_acheive = 0;
-
-            if (configurationMasterHelper.IS_INVOICE) {
-                day_acheive = getInvoiceAmount();
+            Cursor c;
+            if (isVansales) {
+                c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from invoicemaster where retailerid="
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             } else {
-                day_acheive = getOrderValue();
+                c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID())
+                        + " and upload='N'");
             }
-
-            double mnth_actual = day_acheive + mnth_acheive;
-            return (getRetailerMasterBO().getMonthly_target() - mnth_actual);
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return 0;
-    }
-
-    public int getRetailerTarget() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT RKD.Target FROM RetailerKPI RK inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID  inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId where ListCode='TLS' and retailerid ="
-                            + QT(getRetailerMasterBO().getRetailerID()));
             if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    int count = c.getInt(0);
-                    return count;
-                }
-            }
-            c.close();
-            db.closeDB();
-            return 0;
-        } catch (Exception e) {
-            Commons.printException(e);
-            return 0;
-        }
-    }
-
-    public int getRetailerVisitTarget() {
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("SELECT RKD.Target FROM RetailerKPI RK inner join RetailerKPIDetail RKD on RKD.KPIID= RK.KPIID  inner join StandardListMaster SLM on SLM.Listid=RKD.KPIParamLovId where ListCode='VIP' and retailerid ="
-                            + QT(getRetailerMasterBO().getRetailerID()));
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    int count = c.getInt(0);
-                    return count;
+                if (c.moveToNext()) {
+                    return c.getInt(0);
                 }
             }
             c.close();
@@ -6152,245 +5774,6 @@ public class BusinessModel extends Application {
         return achieved;
     }
 
-    public void saveNearExpiry() {
-        SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
-                Locale.ENGLISH);
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_YEAR, 30);
-        DBUtil db = null;
-        try {
-            db = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String tid;
-            String sql;
-            Cursor headerCursor;
-            String refId = "0";
-
-            String headerColumns = "Tid, RetailerId, Date, TimeZone, RefId";
-            String detailColumns = "Tid, PId,LocId, UOMId, UOMQty,expdate,retailerid,isOwn";
-
-            String values;
-            boolean isData;
-
-            tid = userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + getRetailerMasterBO().getRetailerID() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
-
-            // delete transaction if exist
-            sql = "SELECT Tid, RefId FROM NearExpiry_Tracking_Header"
-                    + " WHERE RetailerId = "
-                    + getRetailerMasterBO().getRetailerID();
-
-            headerCursor = db.selectSQL(sql);
-
-            if (headerCursor.getCount() > 0) {
-                headerCursor.moveToNext();
-                db.deleteSQL("NearExpiry_Tracking_Header", "Tid="
-                        + QT(headerCursor.getString(0)), false);
-                db.deleteSQL("NearExpiry_Tracking_Detail", "Tid="
-                        + QT(headerCursor.getString(0)), false);
-                refId = headerCursor.getString(1);
-                headerCursor.close();
-            }
-
-            // Saving Transaction Detail
-            isData = false;
-            for (ProductMasterBO skubo : productHelper.getProductMaster()) {
-
-                for (int j = 0; j < skubo.getLocations().size(); j++) {
-
-                    if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
-                            .getNearexpPC().equals("0")) {
-
-                        values = QT(tid)
-                                + ","
-                                + skubo.getProductID()
-                                + ","
-                                + skubo.getLocations().get(j).getLocationId()
-                                + ","
-                                + skubo.getPcUomid()
-                                + ","
-                                + skubo.getLocations().get(j)
-                                .getNearexpiryDate().get(0)
-                                .getNearexpPC()
-                                + ","
-                                + QT(changeMonthNameToNoyyyymmdd(df.format(c
-                                .getTime()))) + ","
-                                + getRetailerMasterBO().getRetailerID()
-                                + "," + skubo.getOwn();
-
-                        db.insertSQL("NearExpiry_Tracking_Detail",
-                                detailColumns, values);
-                        isData = true;
-                    }
-                    if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
-                            .getNearexpOU().equals("0")) {
-                        values = QT(tid)
-                                + ","
-                                + skubo.getProductID()
-                                + ","
-                                + skubo.getLocations().get(j).getLocationId()
-                                + ","
-                                + skubo.getOuUomid()
-                                + ","
-                                + skubo.getLocations().get(j)
-                                .getNearexpiryDate().get(0)
-                                .getNearexpOU()
-                                + ","
-                                + QT(changeMonthNameToNoyyyymmdd(df.format(c
-                                .getTime()))) + ","
-                                + getRetailerMasterBO().getRetailerID()
-                                + "," + skubo.getOwn();
-
-                        db.insertSQL("NearExpiry_Tracking_Detail",
-                                detailColumns, values);
-                        isData = true;
-                    }
-                    if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
-                            .getNearexpCA().equals("0")) {
-                        values = QT(tid)
-                                + ","
-                                + skubo.getProductID()
-                                + ","
-                                + skubo.getLocations().get(j).getLocationId()
-                                + ","
-                                + skubo.getCaseUomId()
-                                + ","
-                                + skubo.getLocations().get(j)
-                                .getNearexpiryDate().get(0)
-                                .getNearexpCA()
-                                + ","
-                                + QT(changeMonthNameToNoyyyymmdd(df.format(c
-                                .getTime()))) + ","
-                                + getRetailerMasterBO().getRetailerID() + "," + skubo.getOwn();
-                        db.insertSQL("NearExpiry_Tracking_Detail",
-                                detailColumns, values);
-                        isData = true;
-                    }
-
-                }
-            }
-            if (productHelper.getTaggedProducts() != null) {
-                for (ProductMasterBO skubo : productHelper.getTaggedProducts()) {
-                    if (skubo.getOwn() == 0) {
-                        for (int j = 0; j < skubo.getLocations().size(); j++) {
-
-                            if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
-                                    .getNearexpPC().equals("0")) {
-
-                                values = QT(tid)
-                                        + ","
-                                        + skubo.getProductID()
-                                        + ","
-                                        + skubo.getLocations().get(j).getLocationId()
-                                        + ","
-                                        + skubo.getPcUomid()
-                                        + ","
-                                        + skubo.getLocations().get(j)
-                                        .getNearexpiryDate().get(0)
-                                        .getNearexpPC()
-                                        + ","
-                                        + QT(changeMonthNameToNoyyyymmdd(df.format(c
-                                        .getTime()))) + ","
-                                        + getRetailerMasterBO().getRetailerID()
-                                        + "," + skubo.getOwn();
-
-                                db.insertSQL("NearExpiry_Tracking_Detail",
-                                        detailColumns, values);
-                                isData = true;
-                            }
-                            if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
-                                    .getNearexpOU().equals("0")) {
-                                values = QT(tid)
-                                        + ","
-                                        + skubo.getProductID()
-                                        + ","
-                                        + skubo.getLocations().get(j).getLocationId()
-                                        + ","
-                                        + skubo.getOuUomid()
-                                        + ","
-                                        + skubo.getLocations().get(j)
-                                        .getNearexpiryDate().get(0)
-                                        .getNearexpOU()
-                                        + ","
-                                        + QT(changeMonthNameToNoyyyymmdd(df.format(c
-                                        .getTime()))) + ","
-                                        + getRetailerMasterBO().getRetailerID()
-                                        + "," + skubo.getOwn();
-
-                                db.insertSQL("NearExpiry_Tracking_Detail",
-                                        detailColumns, values);
-                                isData = true;
-                            }
-                            if (!skubo.getLocations().get(j).getNearexpiryDate().get(0)
-                                    .getNearexpCA().equals("0")) {
-                                values = QT(tid)
-                                        + ","
-                                        + skubo.getProductID()
-                                        + ","
-                                        + skubo.getLocations().get(j).getLocationId()
-                                        + ","
-                                        + skubo.getCaseUomId()
-                                        + ","
-                                        + skubo.getLocations().get(j)
-                                        .getNearexpiryDate().get(0)
-                                        .getNearexpCA()
-                                        + ","
-                                        + QT(changeMonthNameToNoyyyymmdd(df.format(c
-                                        .getTime()))) + ","
-                                        + getRetailerMasterBO().getRetailerID() + "," + skubo.getOwn();
-                                db.insertSQL("NearExpiry_Tracking_Detail",
-                                        detailColumns, values);
-                                isData = true;
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            // Saving Transaction Header if There is Any Detail
-            if (isData) {
-                values = QT(tid) + "," + getRetailerMasterBO().getRetailerID()
-                        + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                        + QT(getTimeZone()) + "," + QT(refId);
-
-                db.insertSQL("NearExpiry_Tracking_Header", headerColumns,
-                        values);
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-    }
-
-    private String changeMonthNameToNoyyyymmdd(String date) {
-        // Logs.debug("Utils", date);
-
-        if (null != date)
-            if (!date.equals("")) {
-                try {
-                    String[] dat = date.split(" ");
-
-                    SimpleDateFormat cf = new SimpleDateFormat("dd/MMM/yyyy",
-                            Locale.ENGLISH);
-                    Date dt = cf.parse(dat[0]);
-                    SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd",
-                            Locale.ENGLISH);
-                    return sf.format(dt);
-                } catch (Exception e) {
-                    Commons.printException("" + e);
-                }
-
-            }
-        // return DateFormat.getDateInstance().format(new Date(date));
-
-        return "";
-    }
-
     public Vector<LocationBO> downloadLocationMaster() {
         try {
             locvect = new Vector<LocationBO>();
@@ -6823,17 +6206,10 @@ public class BusinessModel extends Application {
         return counterId;
     }
 
-    public void setCounterId(int counterId) {
-        this.counterId = counterId;
-    }
-
     public String getCounterRetailerId() {
         return counterRetailerId;
     }
 
-    public void setCounterRetailerId(String counterRetailerId) {
-        this.counterRetailerId = counterRetailerId;
-    }
 
     private String counterRetailerId = "0";
 
@@ -7494,34 +6870,6 @@ public class BusinessModel extends Application {
         }
 
     }
-
-
-    /*public String getSupportNo() {
-        DBUtil db = null;
-        String suppot_no = "";
-
-        try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select listname from standardlistmaster ");
-            sb.append("where listtype= 'HELPLINE_TYPE' and ListCode = 'PHONE'");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    suppot_no = c.getString(0);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-            db.closeDB();
-        }
-        return suppot_no;
-    }*/
 
     // Download bank details
     public void downloadBankDetails() {
@@ -8417,17 +7765,10 @@ public class BusinessModel extends Application {
         return orderedBrands;
     }
 
-    public void setOrderedFocusBrands(ArrayList<String> orderedBrands) {
-        this.orderedBrands = orderedBrands;
-    }
-
     public ArrayList<String> getTotalFocusBrandList() {
         return totalFocusBrandList;
     }
 
-    public void setTotalFocusBrandList(ArrayList<String> totalFocusBrandList) {
-        this.totalFocusBrandList = totalFocusBrandList;
-    }
 
     private String getFocusFilterName(String filtername) {
         Vector<ConfigureBO> genfilter = configurationMasterHelper
