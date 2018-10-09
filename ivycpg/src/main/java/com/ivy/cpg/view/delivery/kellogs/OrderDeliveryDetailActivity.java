@@ -32,7 +32,6 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
@@ -831,7 +830,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
                     if(currentOrderedQty==0) {
                         //Clearing taxable amount, so that it will not shown in print
-                        productList.get(position).setTaxValue(0);
+                        productList.get(position).setTaxableAmount(0);
                     }
 
                     if (totalQty <= productList.get(position).getDSIH() &&
@@ -939,7 +938,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
                     if(currentOrderedQty==0) {
                         //Clearing taxable amount, so that it will not shown in print
-                        productList.get(position).setTaxValue(0);
+                        productList.get(position).setTaxableAmount(0);
                     }
 
                     if (totalQty <= productList.get(position).getDSIH() &&
@@ -1046,7 +1045,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                             + (productList.get(position).getOrderedPcsQty());
                     if(currentOrderedQty==0) {
                         //Clearing taxable amount, so that it will not shown in print
-                        productList.get(position).setTaxValue(0);
+                        productList.get(position).setTaxableAmount(0);
                     }
 
                     if (totalQty <= productList.get(position).getDSIH() &&

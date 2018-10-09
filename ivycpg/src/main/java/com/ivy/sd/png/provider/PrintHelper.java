@@ -963,8 +963,8 @@ public class PrintHelper {
                                         sb.append("T 5 0 280 " + x + " ");
                                         sb.append(SDUtil.format((batchProductBO.getSrp() + batchProductBO.getPriceoffvalue()), 2, 0) + "\r\n");
 //                                        sb.append("T 5 0 330 " + x + " ");
-                                        totalExcludeTaxvalue = totalExcludeTaxvalue + (batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getNetValue());
-//                                        sb.append(SDUtil.format(batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getNetValue(), 2, 0) + "\r\n");
+                                        totalExcludeTaxvalue = totalExcludeTaxvalue + (batchProductBO.getTaxableAmount() > 0 ? batchProductBO.getTaxableAmount() : batchProductBO.getNetValue());
+//                                        sb.append(SDUtil.format(batchProductBO.getTaxableAmount() > 0 ? batchProductBO.getTaxableAmount() : batchProductBO.getNetValue(), 2, 0) + "\r\n");
                                         sb.append("T 5 0 420 " + x + " ");
                                         total = total + batchProductBO.getNetValue();
                                         sb.append(SDUtil.format(batchProductBO.getNetValue(), 2, 0) + "\r\n");
@@ -1000,7 +1000,7 @@ public class PrintHelper {
                             sb.append(totalProductQty + "\r\n");
                             sb.append("T 5 0 280 " + x + " ");
                             sb.append(productBO.getSrp() + "\r\n");
-                            totalExcludeTaxvalue = totalExcludeTaxvalue + (productBO.getTaxValue() > 0 ? productBO.getTaxValue() : productBO.getNetValue());
+                            totalExcludeTaxvalue = totalExcludeTaxvalue + (productBO.getTaxableAmount() > 0 ? productBO.getTaxableAmount() : productBO.getNetValue());
                             sb.append("T 5 0 420 " + x + " ");
                             total = total + productBO.getNetValue();
                             sb.append(SDUtil.format(productBO.getNetValue(), 2, 0) + "\r\n");
@@ -1145,8 +1145,8 @@ public class PrintHelper {
                                         for (String productid : taxProductList) {
                                             ProductMasterBO prodcutBO = bmodel.productHelper.getProductMasterBOById(productid);
                                             if (prodcutBO != null) {
-                                                totalExcludeValue = totalExcludeValue + prodcutBO.getTaxValue();
-                                                totalTax = totalTax + (prodcutBO.getTaxValue() * taxpercentege) / 100;
+                                                totalExcludeValue = totalExcludeValue + prodcutBO.getTaxableAmount();
+                                                totalTax = totalTax + (prodcutBO.getTaxableAmount() * taxpercentege) / 100;
                                             }
                                         }
                                         if (totalTax > 0) {

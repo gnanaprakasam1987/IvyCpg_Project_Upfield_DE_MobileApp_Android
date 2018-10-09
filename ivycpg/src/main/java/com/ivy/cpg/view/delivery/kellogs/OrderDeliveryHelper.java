@@ -1069,7 +1069,7 @@ public class OrderDeliveryHelper {
             /*Updating master tax value for print purpose*/
             for (ProductMasterBO productMasterBO : mInvoiceDetailsList) {
                 if (businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()) != null)
-                    businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()).setTaxValue(productMasterBO.getTaxValue());
+                    businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()).setTaxableAmount(productMasterBO.getTaxableAmount());
             }
 
             mInvoiceDetailsList.get(mInvoiceDetailsList.size() - 1).setSchemeProducts(downloadSchemeFreePrint(context, orderId));

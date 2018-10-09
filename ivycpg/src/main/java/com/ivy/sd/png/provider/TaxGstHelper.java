@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -283,6 +284,54 @@ public class TaxGstHelper implements TaxInterface {
             }
         }
 
+    }
+
+    @Override
+    public HashMap<String, Double> prepareProductTaxForPrint(Context context, String orderId) {
+        DBUtil db = null;
+        HashMap<String,Double> mTaxesApplied=new HashMap<>();
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from OrderTaxDetails IT" +
+                    " where orderid="+orderId+"  order by taxType,taxRate,taxName desc");
+            Cursor c = db.selectSQL(sb.toString());
+            String lastTaxType="",lastTaxRate="",lastTaxName="";
+            double totalTaxByType=0,totalTaxableAmountByType=0;
+            while (c.moveToNext()){
+
+                String taxType=c.getString(0);
+                String taxRate=c.getString(1);
+                String taxName = c.getString(2);
+                double taxAmount=c.getDouble(4);
+                double taxableAmount=mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
+
+                if(!lastTaxType.equals("")&&!lastTaxType.equals(taxType)&&!lastTaxRate.equals(taxRate)){
+
+                    mTaxesApplied.put(lastTaxName +" "+ lastTaxRate+"% "+context.getResources().getString(R.string.tax_on)+" "+totalTaxableAmountByType,totalTaxByType);
+
+                    totalTaxByType=taxAmount;
+                    totalTaxableAmountByType=taxableAmount;
+
+                }
+                else {
+                    totalTaxByType+=taxAmount;
+                    totalTaxableAmountByType+=taxableAmount;
+                }
+
+                //
+                lastTaxName=taxName;
+                lastTaxRate=taxRate;
+                lastTaxType=taxType;
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        return mTaxesApplied;
     }
 
     /**
@@ -733,19 +782,19 @@ public class TaxGstHelper implements TaxInterface {
                         double appliedTaxValue = batchTaxValue * taxRate / 100;
                         taxValue = taxValue + batchTaxValue;
                         totalAppliedTaxValue = totalAppliedTaxValue + appliedTaxValue;
-                        batchProductBO.setTaxValue(batchTaxValue);
-                        batchProductBO.setTaxApplyvalue(appliedTaxValue);
+                        batchProductBO.setTaxableAmount(batchTaxValue);
+                        batchProductBO.setTaxAmount(appliedTaxValue);
                     }
                 }
-                productBO.setTaxValue(taxValue);
-                productBO.setTaxApplyvalue(totalAppliedTaxValue);
+                productBO.setTaxableAmount(taxValue);
+                productBO.setTaxAmount(totalAppliedTaxValue);
             }
 
         } else {
             taxValue = productBO.getNetValue() / (1 + (taxRate / 100));
             totalAppliedTaxValue = taxValue * taxRate / 100;
-            productBO.setTaxApplyvalue(totalAppliedTaxValue);
-            productBO.setTaxValue(taxValue);
+            productBO.setTaxAmount(totalAppliedTaxValue);
+            productBO.setTaxableAmount(taxValue);
         }
 
     }
@@ -951,8 +1000,8 @@ public class TaxGstHelper implements TaxInterface {
                                 }
 
                                 totalTaxAmount = totalTaxAmount + taxAmount;
-                                productBo.setTaxApplyvalue(taxAmount);
-                                productBo.setTaxValue(productBo.getNetValue());
+                                productBo.setTaxAmount(taxAmount);
+                                productBo.setTaxableAmount(productBo.getNetValue());
 
                                 productBo.setNetValue(productBo.getNetValue() + taxAmount);
                             }

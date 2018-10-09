@@ -169,15 +169,15 @@ public class ProductMasterBO {
         this.repCaseQty = repCaseQty;
     }
 
-    public double getTaxApplyvalue() {
-        return taxApplyvalue;
+    public double getTaxAmount() {
+        return taxAmount;
     }
 
-    public void setTaxApplyvalue(double taxApplyvalue) {
-        this.taxApplyvalue = taxApplyvalue;
+    public void setTaxAmount(double taxAmount) {
+        this.taxAmount = taxAmount;
     }
 
-    private double taxApplyvalue;
+    private double taxAmount;
 
     private String prevPrice_ca = "0";
     private String prevPrice_pc = "0";
@@ -326,7 +326,7 @@ public class ProductMasterBO {
     private int typeID;
     private String typeName;
     private String brandname;
-    private double taxValue;
+    private double taxableAmount;
     private double schemeAppliedValue;
     private double priceoffvalue;
     private int PriceOffId;
@@ -570,7 +570,7 @@ public class ProductMasterBO {
         this.ReasonID = productBO.ReasonID;
         this.priceChangeReasonID = productBO.priceChangeReasonID;
         this.oos = productBO.oos;
-        this.taxValue = productBO.taxValue;
+        this.taxableAmount = productBO.taxableAmount;
         this.schemeAppliedValue = productBO.schemeAppliedValue;
         this.own = productBO.own;
 
@@ -1409,12 +1409,12 @@ public class ProductMasterBO {
     }
 
 
-    public double getTaxValue() {
-        return taxValue;
+    public double getTaxableAmount() {
+        return taxableAmount;
     }
 
-    public void setTaxValue(double taxValue) {
-        this.taxValue = taxValue;
+    public void setTaxableAmount(double taxableAmount) {
+        this.taxableAmount = taxableAmount;
     }
 
     public double getLineValueAfterSchemeApplied() {

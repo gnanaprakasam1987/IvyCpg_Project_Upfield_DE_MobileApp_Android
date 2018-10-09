@@ -2148,7 +2148,7 @@ public class OrderHelper {
                 priceOffId = batchWiseProductBO.getPriceOffId();
                 schemeDisc = batchWiseProductBO.getSchemeDiscAmount();
                 prodDisc = batchWiseProductBO.getProductDiscAmount();
-                taxAmount = batchWiseProductBO.getTaxApplyvalue();
+                taxAmount = batchWiseProductBO.getTaxAmount();
                 line_total_price = (batchWiseProductBO.getOrderedCaseQty() * batchWiseProductBO
                         .getCsrp())
                         + (batchWiseProductBO.getOrderedPcsQty() * batchWiseProductBO.getSrp())
@@ -2176,7 +2176,7 @@ public class OrderHelper {
                 priceOffId = productBO.getPriceOffId();
                 schemeDisc = productBO.getSchemeDiscAmount();
                 prodDisc = productBO.getProductDiscAmount();
-                taxAmount = productBO.getTaxApplyvalue();
+                taxAmount = productBO.getTaxAmount();
                 line_total_price = (productBO.getOrderedCaseQty() * productBO
                         .getCsrp())
                         + (productBO.getOrderedPcsQty() * productBO.getSrp())
@@ -3119,7 +3119,7 @@ public class OrderHelper {
                     || productBO.getOrderedPcsQty() > 0
                     || productBO.getOrderedOuterQty() > 0) {
 
-                if (productBO.getTaxValue() > 0)
+                if (productBO.getTaxableAmount() > 0)
                     return true;
             }
         }

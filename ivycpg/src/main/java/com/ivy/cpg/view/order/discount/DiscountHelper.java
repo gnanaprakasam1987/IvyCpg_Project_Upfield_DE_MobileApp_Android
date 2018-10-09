@@ -1227,14 +1227,14 @@ public class DiscountHelper {
                 for (ProductMasterBO batchProduct : batchList) {
                     batchProduct.setProductDiscAmount(0);
                     batchProduct.setSchemeDiscAmount(0);
-                    batchProduct.setTaxValue(0);
+                    batchProduct.setTaxableAmount(0);
                 }
             }
 
         } else {
             productMasterBO.setProductDiscAmount(0);
             productMasterBO.setSchemeDiscAmount(0);
-            productMasterBO.setTaxValue(0);
+            productMasterBO.setTaxableAmount(0);
         }
     }
 
