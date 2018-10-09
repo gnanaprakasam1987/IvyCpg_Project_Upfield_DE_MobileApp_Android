@@ -642,8 +642,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_INIT_FOOTER;
     public boolean SHOW_REVIEW_AND_PO;
     // Order & stock flags
-    public boolean SHOW_STOCK_WP;
-    public boolean SHOW_STOCK_WC;
     public boolean SHOW_STOCK_SC;
     public boolean SHOW_STOCK_SP;
     public boolean SHOW_CAT_STOCK_SP;
@@ -655,19 +653,12 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CLEANED_ORDER;
     public boolean SHOW_ORDER_WEIGHT;
     public boolean SHOW_BARCODE;
-    public boolean SHOW_STOCK_FC;
-    public boolean SHOW_STOCK_NEAREXPIRY_PCS;
-    public boolean SHOW_STOCK_NEAREXPIRY_CB;
-    public boolean SHOW_STOCK_NEAREXPIRY_CS;
-    public boolean SHOW_STOCK_NEAREXPIRY_OU;
     public boolean SHOW_VANLOAD_OC;
     public boolean SHOW_VANLOAD_OO;
     public boolean SHOW_VANLOAD_OP;
     public boolean SHOW_STOCK_RSN;// available reason
     public boolean SHOW_STOCK_CB;// available checkbox
     public boolean CHANGE_AVAL_FLOW;// check box tristate flow
-    public boolean SHOW_STOCK_LD;// Listed checkbox
-    public boolean SHOW_STOCK_DD;// Distributes=d checkbox
     public boolean SHOW_STOCK_POURING;// Pouring
     public boolean SHOW_STOCK_COCKTAIL;// Distributes=d checkbox
 
@@ -869,7 +860,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_END_JOURNEY;
     public boolean SHOW_RETAILER_SELECTION_VALID;
     public boolean SHOW_CLOSE_DAY_VALID;
-    public boolean SHOW_WAREHOUSE_OUTER;
     public boolean SHOW_SHELF_OUTER;
     public boolean SHOW_ZEBRA_ATS;
     public boolean SHOW_INTERMEC_ATS;
@@ -1182,12 +1172,6 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_PRICECHECK_IN_STOCKCHECK;
     public String CODE_IS_PRICECHECK_IN_STOCKCHECK = "CSSTK02";
-    public boolean SHOW_STOCK_PRICECHECK_PCS;
-    public boolean SHOW_STOCK_PRICECHECK_CS;
-    public boolean SHOW_STOCK_PRICECHECK_OU;
-    public boolean SHOW_STOCK_PRICECHECK_MRP_PCS;
-    public boolean SHOW_STOCK_PRICECHECK_MRP_CS;
-    public boolean SHOW_STOCK_PRICECHECK_MRP_OU;
     public boolean IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN;
     public static final String CODE_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN = "PRICE_RETAINLV";
 
@@ -1398,10 +1382,6 @@ public class ConfigurationMasterHelper {
     public boolean IS_RESTRICT_ORDER_TAKING;
 
     public boolean IS_COMBINED_STOCK_CHECK_FROM_ORDER;
-    public boolean SHOW_COMB_STOCK_SC;
-    public boolean SHOW_COMB_STOCK_SP;
-    public boolean SHOW_COMB_STOCK_SHELF_OUTER;
-    public boolean SHOW_COMB_STOCK_CB;
 
     private static final String CODE_ORDER_SUMMERY_EXPORT_AND_EMAIL = "FUN65";
     public boolean IS_ORDER_SUMMERY_EXPORT_AND_EMAIL;
@@ -3831,20 +3811,14 @@ public class ConfigurationMasterHelper {
 
     public void loadOrderAndStockConfiguration(int subChannelID) {
         try {
-            SHOW_STOCK_FC = false;
-            SHOW_STOCK_WC = false;
-            SHOW_STOCK_WP = false;
             SHOW_STOCK_SP = false;
             SHOW_CAT_STOCK_SP = false;
             SHOW_STOCK_SC = false;
             SHOW_STOCK_CB = false;
             CHANGE_AVAL_FLOW = false;
-            SHOW_STOCK_LD = false;
-            SHOW_STOCK_DD = false;
             SHOW_STOCK_RSN = false;
             SHOW_STOCK_POURING = false;
             SHOW_STOCK_COCKTAIL = false;
-            SHOW_WAREHOUSE_OUTER = false;
             SHOW_STOCK_TOTAL = false;
             SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
@@ -3861,16 +3835,6 @@ public class ConfigurationMasterHelper {
             SHOW_D3 = false;
             SHOW_DA = false;
             SHOW_DISCOUNTED_PRICE = false;
-            SHOW_STOCK_PRICECHECK_PCS = false;
-            SHOW_STOCK_PRICECHECK_OU = false;
-            SHOW_STOCK_PRICECHECK_CS = false;
-            SHOW_STOCK_NEAREXPIRY_PCS = false;
-            SHOW_STOCK_NEAREXPIRY_CB = false;
-            SHOW_STOCK_NEAREXPIRY_OU = false;
-            SHOW_STOCK_NEAREXPIRY_CS = false;
-            SHOW_STOCK_PRICECHECK_MRP_PCS = false;
-            SHOW_STOCK_PRICECHECK_MRP_CS = false;
-            SHOW_STOCK_PRICECHECK_MRP_OU = false;
 
             SHOW_INDEX_DASH = false;
             SHOW_TARGET_DASH = false;
@@ -3962,11 +3926,7 @@ public class ConfigurationMasterHelper {
 
                 String codeSplit[] = codeValue.split(",");
                 for (String temp : codeSplit) {
-                    if (temp.equals("WC"))
-                        SHOW_STOCK_WC = true;
-                    else if (temp.equals("WP"))
-                        SHOW_STOCK_WP = true;
-                    else if (temp.equals("SP"))
+                     if (temp.equals("SP"))
                         SHOW_STOCK_SP = true;
                     else if (temp.equals("CASP"))
                         SHOW_CAT_STOCK_SP = true;
@@ -3974,20 +3934,12 @@ public class ConfigurationMasterHelper {
                         SHOW_STOCK_SC = true;
                     else if (temp.equals("CB"))
                         SHOW_STOCK_CB = true;
-                    else if (temp.equals("LM"))
-                        SHOW_STOCK_LD = true;
-                    else if (temp.equals("DB"))
-                        SHOW_STOCK_DD = true;
                     else if (temp.equals("REASON"))
                         SHOW_STOCK_RSN = true;
-                    else if (temp.equals("WO"))
-                        SHOW_WAREHOUSE_OUTER = true;
                     else if (temp.equals("SHO"))
                         SHOW_SHELF_OUTER = true;
                     else if (temp.equals("TOTAL"))
                         SHOW_STOCK_TOTAL = true;
-                    else if (temp.equals("FC"))
-                        SHOW_STOCK_FC = true;
                     else if (temp.equals("PUR"))
                         SHOW_STOCK_POURING = true;
                     else if (temp.equals("CTS"))
@@ -4002,14 +3954,6 @@ public class ConfigurationMasterHelper {
                         SHOW_STOCK_AVGDAYS = true;
                     else if (temp.equals("CSTK"))
                         IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
-                    else if (temp.equals("CSP"))
-                        SHOW_COMB_STOCK_SP = true;
-                    else if (temp.equals("CSC"))
-                        SHOW_COMB_STOCK_SC = true;
-                    else if (temp.equals("CSHO"))
-                        SHOW_COMB_STOCK_SHELF_OUTER = true;
-                    else if (temp.equals("CCB"))
-                        SHOW_COMB_STOCK_CB = true;
                     else if (temp.equals("SR"))
                         SHOW_SALES_RETURN_IN_ORDER = true;
                     else if (temp.equals("CB01"))
@@ -4126,64 +4070,6 @@ public class ConfigurationMasterHelper {
                 }
             }
 
-
-            if (SHOW_PRICECHECK_IN_STOCKCHECK) {
-                codeValue = null;
-
-                sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode='CSSTK02' and ForSwitchSeller = 0";
-                c = db.selectSQL(sql);
-                if (c != null && c.getCount() != 0) {
-                    if (c.moveToNext()) {
-                        codeValue = c.getString(0);
-                    }
-                    c.close();
-                }
-                if (codeValue != null) {
-                    String codeSplit[] = codeValue.split(",");
-                    for (String temp : codeSplit) {
-                        if (temp.equals("PS"))
-                            SHOW_STOCK_PRICECHECK_PCS = true;
-                        else if (temp.equals("OU"))
-                            SHOW_STOCK_PRICECHECK_OU = true;
-                        else if (temp.equals("CS"))
-                            SHOW_STOCK_PRICECHECK_CS = true;
-                        else if (temp.equals("MPS"))
-                            SHOW_STOCK_PRICECHECK_MRP_PCS = true;
-                        else if (temp.equals("MOU"))
-                            SHOW_STOCK_PRICECHECK_MRP_OU = true;
-                        else if (temp.equals("MCS"))
-                            SHOW_STOCK_PRICECHECK_MRP_CS = true;
-                    }
-                }
-            }
-            // if scheme is on disable product wise discount
-            if (SHOW_NEAREXPIRY_IN_STOCKCHECK) {
-                codeValue = null;
-
-                sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode='ORDB46' and ForSwitchSeller = 0";
-                c = db.selectSQL(sql);
-                if (c != null && c.getCount() != 0) {
-                    if (c.moveToNext()) {
-                        codeValue = c.getString(0);
-                    }
-                    c.close();
-                }
-                if (codeValue != null) {
-                    String codeSplit[] = codeValue.split(",");
-                    for (String temp : codeSplit) {
-                        if (temp.equals("PS"))
-                            SHOW_STOCK_NEAREXPIRY_PCS = true;
-                        else if (temp.equals("CB"))
-                            SHOW_STOCK_NEAREXPIRY_CB = true;
-                        else if (temp.equals("OU"))
-                            SHOW_STOCK_NEAREXPIRY_OU = true;
-                        else if (temp.equals("CS"))
-                            SHOW_STOCK_NEAREXPIRY_CS = true;
-                    }
-                }
-            }
             if (SHOW_VANLOAD_LABELS) {
                 codeValue = null;
 
@@ -4503,7 +4389,7 @@ public class ConfigurationMasterHelper {
             }
             c.close();
 
-            
+
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode=" + bmodel.QT(CODE_PRINT_SEQUENCE) + " and Flag=1";

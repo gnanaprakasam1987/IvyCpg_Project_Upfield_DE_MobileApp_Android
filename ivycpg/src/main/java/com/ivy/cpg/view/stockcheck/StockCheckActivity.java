@@ -19,15 +19,13 @@ import java.util.HashMap;
 
 public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface,FiveLevelFilterCallBack {
-    private BusinessModel bmodel;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_activity_stock_check);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
@@ -35,7 +33,7 @@ public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        bmodel = (BusinessModel) this.getApplicationContext();
+        BusinessModel bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
