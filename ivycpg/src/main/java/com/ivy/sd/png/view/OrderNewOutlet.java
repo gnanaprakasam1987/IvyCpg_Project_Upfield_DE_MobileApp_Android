@@ -60,6 +60,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -1587,8 +1588,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        bmodel.saveClosingStock(true);
-
+                                        StockCheckHelper.getInstance(OrderNewOutlet.this).saveClosingStock(OrderNewOutlet.this,true);
                                         Toast.makeText(
                                                 OrderNewOutlet.this,
                                                 getResources().getString(

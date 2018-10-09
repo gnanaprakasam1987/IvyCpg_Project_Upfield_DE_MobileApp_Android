@@ -1,10 +1,10 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.subd;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,18 +18,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.FontUtils;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -38,18 +40,13 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 
     public static final String MENU_SUBD_STOCK = "MENU_SUBD_STOCK";
     private static final String MENU_SUBD_ORD = "MENU_SUBD_ORD";
-    private RecyclerView activityView;
     private Vector<ConfigureBO> menuDB = new Vector<>();
-    private Vector<ConfigureBO> mTempMenuList = new Vector<>();
-    private Toolbar toolbar;
     private Vector<ConfigureBO> menuWithSequence;
     BusinessModel bmodel;
     private boolean isCreated;
-    private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
-    private SubDHomeActivity.ActivityAdapter mActivityAdapter;
+    private static final HashMap<String, Integer> menuIcons = new HashMap<>();
     private HashMap<String, String> menuCodeList = new HashMap<>();
     String menuCode = "";
-    private TextView tvRetailerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +56,8 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
 
-        activityView = findViewById(R.id.activity_list);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -71,9 +67,9 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
             toolbar.setTitle(bmodel.getRetailerMasterBO().getRetailerName());
         }
 
-        tvRetailerName = findViewById(R.id.retailer_name);
+        TextView tvRetailerName = findViewById(R.id.retailer_name);
         tvRetailerName.setText(bmodel.getRetailerMasterBO().getRetailerName());
-        tvRetailerName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tvRetailerName.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setElevation(0);
@@ -92,9 +88,9 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         menuDB = bmodel.configurationMasterHelper
                 .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_SUBD);
 
-        mTempMenuList = new Vector<>(menuDB);
+        Vector<ConfigureBO> mTempMenuList = new Vector<>(menuDB);
 
-        activityView = findViewById(R.id.activity_list);
+        RecyclerView  activityView = findViewById(R.id.activity_list);
         activityView.setHasFixedSize(true);
         activityView.setNestedScrollingEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -102,7 +98,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         activityView.setLayoutManager(linearLayoutManager);
 
 
-        mActivityAdapter = new ActivityAdapter(mTempMenuList);
+        ActivityAdapter mActivityAdapter = new ActivityAdapter(mTempMenuList);
         activityView.setAdapter(mActivityAdapter);
 
         if (savedInstanceState == null) {
@@ -127,20 +123,16 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         collapsingToolbar.setTitleEnabled(false);
 
         collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
-        collapsingToolbar.setCollapsedTitleTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        collapsingToolbar.setCollapsedTitleTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
         collapsingToolbar.setExpandedTitleColor(Color.WHITE);
-        collapsingToolbar.setExpandedTitleTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        collapsingToolbar.setExpandedTitleTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
 
     }
 
     private void prepareMenusInOrder() {
         menuWithSequence = new Vector<>();
 
-        for (ConfigureBO menu : menuDB) {
-
-            menuWithSequence.add(menu);
-
-        }
+        menuWithSequence.addAll(menuDB);
     }
 
     private ConfigureBO getNextActivity(String mCurrentMenuCode) {
@@ -168,7 +160,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         private ConfigureBO configTemp;
         private View itemView;
 
-        public ActivityAdapter(Vector<ConfigureBO> mActivityList) {
+        ActivityAdapter(Vector<ConfigureBO> mActivityList) {
             this.mActivityList = mActivityList;
         }
 
@@ -232,21 +224,21 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             public TextView activityname;
-            public ImageView iconIV, img_arrow;
+            ImageView iconIV, img_arrow;
             public String menuCode;
             public int hasLink;
             public ConfigureBO config;
-            public ListView childListView;
+            ListView childListView;
             public LinearLayout icon_ll;
 
             public MyViewHolder(View view) {
                 super(view);
-                iconIV = (ImageView) view.findViewById(R.id.list_item_icon_iv);
-                icon_ll = (LinearLayout) view.findViewById(R.id.icon_ll);
-                img_arrow = (ImageView) view.findViewById(R.id.img_arrow);
-                activityname = (TextView) view.findViewById(R.id.activityName);
-                childListView = (ListView) view.findViewById(R.id.childList);
-                activityname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                iconIV =  view.findViewById(R.id.list_item_icon_iv);
+                icon_ll =  view.findViewById(R.id.icon_ll);
+                img_arrow =  view.findViewById(R.id.img_arrow);
+                activityname =  view.findViewById(R.id.activityName);
+                childListView =  view.findViewById(R.id.childList);
+                activityname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDHomeActivity.this));
             }
         }
     }
@@ -288,9 +280,11 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
 
+                StockCheckHelper.getInstance(SubDHomeActivity.this).loadStockCheckConfiguration(SubDHomeActivity.this,bmodel.retailerMasterBO.getSubchannelid());
+
                 bmodel.productHelper.downloadTaggedProducts(MENU_SUBD_STOCK);
 
-                /** Download location to load in the filter. **/
+                // Download location to load in the filter.
                 bmodel.productHelper.downloadInStoreLocations();
 
 
@@ -325,7 +319,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                     bmodel.productHelper.updateProductColor();
 
 
-                    /** Load the screen **/
+                    //Load the screen
                     Intent intent;
                     intent = new Intent(SubDHomeActivity.this,
                             SubDStockCheckActivity.class);
@@ -425,16 +419,16 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                     .downloadProductDetailsList();
 
             if (bmodel.configurationMasterHelper.IS_INITIATIVE) {
-                /** Load Initiative **/
+                // Load Initiative
                 bmodel.productHelper.loadInitiativeProducts();
                 bmodel.initiativeHelper.downloadInitiativeHeader(bmodel
                         .getRetailerMasterBO().getSubchannelid());
-                /** Load Order History **/
+                // Load Order History
                 bmodel.initiativeHelper.loadLocalOrdersQty(bmodel
                         .getRetailerMasterBO().getRetailerID());
             }
 
-            /** Load SO Norm **/
+            // Load SO Norm
             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
                 bmodel.productHelper
                         .loadRetailerWiseInventoryOrderQty();
@@ -443,7 +437,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISPLAY_FOR_PIRAMAL)
                 bmodel.productHelper.updateProductColorAndSequance();
 
-            /** Settign color **/
+            // Settign color
             bmodel.configurationMasterHelper.downloadFilterList();
             bmodel.productHelper.updateProductColor();
 

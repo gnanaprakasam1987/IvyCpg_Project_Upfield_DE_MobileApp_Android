@@ -8,7 +8,6 @@ import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -47,11 +46,14 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     private ArrayAdapter<StandardListBO> mLocationAdapter;
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
     private boolean loadBothSalable;
+    private StockCheckHelper stockCheckHelper;
 
     StockCheckPresenterImpl(Context context) {
         this.context = context;
         businessModel = (BusinessModel) context.getApplicationContext();
         priceTrackingHelper = PriceTrackingHelper.getInstance(context);
+        stockCheckHelper = StockCheckHelper.getInstance(context);
+
     }
 
     @Override
@@ -80,8 +82,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
 
 
     public void saveClosingStock(ArrayList<ProductMasterBO> stockList) {
-        if (businessModel.hasStockCheck(false)) {
-            if (!businessModel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS || businessModel.isReasonSelectedForAllProducts()) {
+        if (stockCheckHelper.hasStockCheck()) {
+            if (!businessModel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS || stockCheckHelper.isReasonSelectedForAllProducts()) {
                 new SaveClosingStockAsyncTask(stockList).execute();
             } else {
                 String text = " ";
@@ -168,12 +170,12 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                     priceTrackingHelper.savePriceTransaction(context.getApplicationContext(), stockList);
 
                 // save near expiry
-                businessModel.saveNearExpiry();
+                stockCheckHelper.saveNearExpiry(context.getApplicationContext());
 
                 // Save closing stock
-                businessModel.saveClosingStock(false);
+                stockCheckHelper.saveClosingStock(context.getApplicationContext(),false);
                 // update review plan in DB
-                businessModel.setReviewPlanInDB();
+                stockCheckHelper.setReviewPlanInDB(context.getApplicationContext());
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_STOCK);
 
                 return Boolean.TRUE;
@@ -200,8 +202,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         }
     }
 
-    public void getFilteredList(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId,
-                                ArrayList<Integer> mAttributeProducts, String mFilterText) {
+    void getFilteredList(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId,
+                         ArrayList<Integer> mAttributeProducts, String mFilterText) {
         Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
         fiveFilter_productIDs = new ArrayList<>();
         brandButton = filtertext;
@@ -212,7 +214,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             stockCheckView.showAlert();
             return;
         }
-        if (mSelectedIdByLevelId != null && businessModel.isMapEmpty(mSelectedIdByLevelId) == false) {
+        if (mSelectedIdByLevelId != null && !businessModel.isMapEmpty(mSelectedIdByLevelId)) {
             mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();

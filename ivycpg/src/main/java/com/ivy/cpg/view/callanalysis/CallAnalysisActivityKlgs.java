@@ -1,5 +1,5 @@
 
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.callanalysis;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,8 +27,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -38,7 +39,6 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
     private TextView mTime;
     public static final String MENU_CALL_ANLYS = "MENU_CALL_ANALYS_KELGS";
     LinearLayout ll_content;
-    private Toolbar toolbar;
     TextView tv_duration, tv_edt_time_taken;
     private Vector<TaskDataBO> taskDataBO;
     Button btn_close;
@@ -52,11 +52,11 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        ll_content = (LinearLayout) findViewById(R.id.ll_content);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ll_content = findViewById(R.id.ll_content);
         taskDataBO = bmodel.taskHelper.getPendingTaskData();
 
-        /** Handling session out */
+        /* Handling session out */
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
@@ -73,10 +73,10 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
             setScreenTitle(getIntent().getStringExtra("screentitle"));
         }
 
-        mTime = (TextView) findViewById(R.id.edt_time_taken);
+        mTime = findViewById(R.id.edt_time_taken);
         createView();
 
-        /** set handler for the Timer class */
+        /* set handler for the Timer class */
         if (bmodel.timer != null) {
             bmodel.timer.setHandler(handler);
         }
@@ -93,14 +93,14 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                 finish();
             }
 
-            tv_duration = (TextView) findViewById(R.id.tv_duration);
-            tv_duration.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            tv_duration = findViewById(R.id.tv_duration);
+            tv_duration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
 
-            tv_edt_time_taken = (TextView) findViewById(R.id.edt_time_taken);
-            tv_edt_time_taken.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+            tv_edt_time_taken = findViewById(R.id.edt_time_taken);
+            tv_edt_time_taken.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, this));
 
-            btn_close = (Button) findViewById(R.id.button1);
-            btn_close.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            btn_close = findViewById(R.id.button1);
+            btn_close.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -114,16 +114,16 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
             if (taskDataBO != null) {
                 LayoutInflater inflater = LayoutInflater.from(this);
 
-                View cardView = null;
+                View cardView;
 
 
                 for (TaskDataBO taskBo : taskDataBO) {
                     cardView = inflater.inflate(R.layout.task_child_view, null);
-                    TextView tv_taskDesc = (TextView) cardView.findViewById(R.id.tv_task_desc);
-                    tv_taskDesc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    TextView tv_taskDesc = cardView.findViewById(R.id.tv_task_desc);
+                    tv_taskDesc.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
                     tv_taskDesc.setText(taskBo.getTaskDesc());
-                    TextView tv_taskOwner = (TextView) cardView.findViewById(R.id.tv_task_owner);
-                    tv_taskOwner.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    TextView tv_taskOwner = cardView.findViewById(R.id.tv_task_owner);
+                    tv_taskOwner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
                     tv_taskOwner.setText(taskBo.getTaskOwner());
                     ll_content.addView(cardView);
                 }
@@ -155,17 +155,6 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         }
     }
 
-    public void onBack(View v) {
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
-        resetRemarksBO();
-       /* BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
-                DataMembers.actHomeScreenTwo);*/
-        Intent myIntent = new Intent(this, HomeScreenTwo.class);
-        startActivityForResult(myIntent, 0);
-        finish();
-    }
-
     public void onClose(View v) {
 
         try {
@@ -177,10 +166,10 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
     }
 
 
-    private Vector<ConfigureBO> menuDB = new Vector<ConfigureBO>();
-    private Vector<ConfigureBO> mInStoreMenu = new Vector<>();
+    private Vector<ConfigureBO> menuDB = new Vector<>();
 
     private String getMessage() {
+        Vector<ConfigureBO> mInStoreMenu;
         StringBuilder sb = new StringBuilder();
         boolean isStoreCheckMenu = false;
 
@@ -219,7 +208,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
     /**
      * Check whether any activity is done on this call or not.
      *
-     * @return
+     * @return boolean
      */
     private boolean hasActivityDone() {
         try {
@@ -255,7 +244,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        doCallAnalysisCloseAction("0", "");
+                                        doCallAnalysisCloseAction();
 
                                     }
 
@@ -304,8 +293,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
     }
 
 
-    private void doCallAnalysisCloseAction(String collectionReasonID,
-                                           String collectionReasonType) {
+    private void doCallAnalysisCloseAction() {
         // stop timer
         if (bmodel.timer != null) {
             bmodel.timer.stopTimer();
@@ -351,7 +339,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
     /**
      * this would clear all the resources used of the layout.
      *
-     * @param view
+     * @param view unbind view
      */
     private void unbindDrawables(View view) {
         if (view != null) {
@@ -376,12 +364,14 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         return handler;
     }
 
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
             bmodel = (BusinessModel) getApplicationContext();
-            mTime.setText(msg.obj + "");
+            mTime.setText(msg.obj.toString());
+            return true;
         }
-    };
+    });
 
 
     /**
