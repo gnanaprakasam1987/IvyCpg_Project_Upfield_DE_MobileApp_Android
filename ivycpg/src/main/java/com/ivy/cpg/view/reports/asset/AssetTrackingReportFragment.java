@@ -282,12 +282,9 @@ public class AssetTrackingReportFragment extends IvyBaseFragment {
             final ViewHolder holder;
 
             if (convertView == null) {
-
-                holder = new ViewHolder(convertView);
-
                 LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
                 convertView = inflater.inflate(R.layout.row_asset_tracking_report, parent, false);
-
+                holder = new ViewHolder(convertView);
                 holder.txtAsset.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 convertView.setTag(holder);
 

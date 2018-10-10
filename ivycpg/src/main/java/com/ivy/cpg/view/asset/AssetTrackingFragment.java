@@ -327,8 +327,28 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
             drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         }
 
-        menu.findItem(R.id.menu_add).setTitle(R.string.addnewasset);
-        menu.findItem(R.id.menu_remove).setTitle(R.string.removeasset);
+        String str_addasset;
+        String str_removeasset;
+        String str_assetservice;
+
+        if (mBModel.labelsMasterHelper.applyLabels("add_asset") != null)
+            str_addasset = mBModel.labelsMasterHelper.applyLabels("add_asset");
+        else
+            str_addasset = getResources().getString(R.string.addnewasset);
+
+        if (mBModel.labelsMasterHelper.applyLabels("remove_asset") != null)
+            str_removeasset = mBModel.labelsMasterHelper.applyLabels("remove_asset");
+        else
+            str_removeasset = getResources().getString(R.string.removeasset);
+
+        if (mBModel.labelsMasterHelper.applyLabels("asset_service") != null)
+            str_assetservice = mBModel.labelsMasterHelper.applyLabels("asset_service");
+        else
+            str_assetservice = getResources().getString(R.string.asset_service);
+
+        menu.findItem(R.id.menu_add).setTitle(str_addasset);
+        menu.findItem(R.id.menu_remove).setTitle(str_removeasset);
+        menu.findItem(R.id.menu_assetservice).setTitle(str_assetservice);
 
         if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
