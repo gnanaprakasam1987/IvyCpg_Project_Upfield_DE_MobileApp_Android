@@ -20,6 +20,7 @@ import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 @SuppressLint("UseSparseArrays")
@@ -523,13 +524,42 @@ public class AssetTrackingHelper {
                 }
             }
 
+
+            String sb1 = "select  AssetId,serialNum,retailerid,Productid  from AssetAddDelete";
+            Cursor c5 = db.selectSQL(sb1);
+            AssetTrackingBO assetBoDelete = null;
+            List<AssetTrackingBO> deletedAssetList = new ArrayList<>();
+            if (c5.getCount() > 0) {
+                while (c5.moveToNext()) {
+                    assetBoDelete = new AssetTrackingBO();
+
+                    if (!"null".equals(c5.getString(1))) {
+                        assetBoDelete.setSerialNo(c5.getString(1));
+                    }
+                    deletedAssetList.add(assetBoDelete);
+                }
+            }
+
+
             if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
                 for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
-                    ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
-                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        clonedList.add(assetBO);
+                   // ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
+                    for (AssetTrackingBO assetDeleteBO : deletedAssetList) {
+                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                            if (assetDeleteBO.getSerialNo().equalsIgnoreCase(assetBO.getSerialNo())) {
+                                mAssetTrackingList.remove(assetBO);
+                                break;
+                            }
+
+                           // clonedList.add(assetBO);
+                        }
                     }
-                    standardListBO.setAssetTrackingList(clonedList);
+
+
+                  //  for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                      //  clonedList.add(assetBO);
+                   // }
+                    standardListBO.setAssetTrackingList(mAssetTrackingList);
                 }
 
             } else {
@@ -1826,7 +1856,7 @@ public class AssetTrackingHelper {
             for (int i = 0; i < size; i++) {
                 if (mAssetTrackingList.get(i).getProductId() == pid &&
                         mAssetTrackingList.get(i).getAssetID() == assetID &&
-                        mAssetTrackingList.get(i).getSerialNo() .equalsIgnoreCase(serialNo) ) {
+                        mAssetTrackingList.get(i).getSerialNo().equalsIgnoreCase(serialNo)) {
                     assetBO = mAssetTrackingList.get(i);
                     if (assetBO != null) {
 
