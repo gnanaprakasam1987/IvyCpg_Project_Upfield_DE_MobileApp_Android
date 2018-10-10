@@ -1267,7 +1267,7 @@
 
 
 
-    <string name="Bill">فاتورة</string>
+    <string name="bill">فاتورة</string>
     <string name="line_value">قيمة الصنف</string>
     <string name="tax_Value">القيمة الضريبية</string>
     //  <!--<string name="disc">المسافة</string>-->
