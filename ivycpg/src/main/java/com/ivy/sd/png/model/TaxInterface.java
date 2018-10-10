@@ -24,7 +24,7 @@ public interface TaxInterface {
     void downloadProductTaxDetails();
     void downloadBillWiseTaxDetails();
     void insertInvoiceTaxList(String invoiceid, DBUtil db);
-    void insertOrderTaxList(String orderId, DBUtil db);
+    void insertBillLevelTax(String orderId, DBUtil db);
     void loadTaxDetailsForPrint(String invoiceid);
     void loadTaxProductDetailsForPrint(String invoiceid);
     HashMap<String,Double> prepareProductTaxForPrint(Context context, String orderId);

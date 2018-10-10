@@ -169,15 +169,8 @@ public class ProductMasterBO {
         this.repCaseQty = repCaseQty;
     }
 
-    public double getTaxAmount() {
-        return taxAmount;
-    }
 
-    public void setTaxAmount(double taxAmount) {
-        this.taxAmount = taxAmount;
-    }
 
-    private double taxAmount;
 
     private String prevPrice_ca = "0";
     private String prevPrice_pc = "0";
@@ -208,21 +201,9 @@ public class ProductMasterBO {
 
     private String RField1;
 
-    private double netValue;
 
-    public double getLineValue() {
-        return lineValue;
-    }
 
-    /**
-     * Product Original Line Value
-     * @param lineValue
-     */
-    public void setLineValue(double lineValue) {
-        this.lineValue = lineValue;
-    }
 
-    private double lineValue;
 
     public int getTotalOrderedQtyInPieces() {
         return totalOrderedQtyInPieces;
@@ -259,17 +240,58 @@ public class ProductMasterBO {
         this.schemeDiscAmount = schemeDiscAmount;
     }
 
+
+    public double getProductLevelDiscountValue() {
+        return productLevelDiscountValue;
+    }
+
+    public void setProductLevelDiscountValue(double productDiscAmount) {
+        this.productLevelDiscountValue = productDiscAmount;
+    }
+
+    public double getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(double taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+    public double getTaxableAmount() {
+        return taxableAmount;
+    }
+
+    public void setTaxableAmount(double taxableAmount) {
+        this.taxableAmount = taxableAmount;
+    }
+    public double getNetValue() {
+        return netValue;
+    }
+
+    public void setNetValue(double netValue) {
+        this.netValue = netValue;
+    }
+    public double getLineValue() {
+        return lineValue;
+    }
+    /**
+     * Product Original Line Value
+     * @param lineValue
+     */
+    public void setLineValue(double lineValue) {
+        this.lineValue = lineValue;
+    }
+
+    private double taxAmount;
+    private double productLevelDiscountValue = 0;
     private double schemeDiscAmount = 0;
+    private double taxableAmount;
+    private double netValue;
+    private double lineValue;
 
-    public double getProductDiscAmount() {
-        return productDiscAmount;
-    }
 
-    public void setProductDiscAmount(double productDiscAmount) {
-        this.productDiscAmount = productDiscAmount;
-    }
 
-    private double productDiscAmount = 0;
+
 
     private int isDiscountable;
     private String mfgDate;
@@ -326,7 +348,6 @@ public class ProductMasterBO {
     private int typeID;
     private String typeName;
     private String brandname;
-    private double taxableAmount;
     private double schemeAppliedValue;
     private double priceoffvalue;
     private int PriceOffId;
@@ -708,13 +729,7 @@ public class ProductMasterBO {
      *
      * @return
      */
-    public double getNetValue() {
-        return netValue;
-    }
 
-    public void setNetValue(double netValue) {
-        this.netValue = netValue;
-    }
 
     private double d1;
     private double d2;
@@ -1409,13 +1424,7 @@ public class ProductMasterBO {
     }
 
 
-    public double getTaxableAmount() {
-        return taxableAmount;
-    }
 
-    public void setTaxableAmount(double taxableAmount) {
-        this.taxableAmount = taxableAmount;
-    }
 
     public double getLineValueAfterSchemeApplied() {
         return schemeAppliedValue;

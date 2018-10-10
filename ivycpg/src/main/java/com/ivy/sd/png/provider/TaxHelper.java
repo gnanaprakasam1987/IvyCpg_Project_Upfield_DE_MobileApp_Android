@@ -277,7 +277,7 @@ public class TaxHelper implements TaxInterface {
      * @param db
      * @author rajesh.k Method to use insert tax details in SQLite
      */
-    public void insertOrderTaxList(String orderId, DBUtil db) {
+    public void insertBillLevelTax(String orderId, DBUtil db) {
 
         db.deleteSQL("OrderTaxDetails", "OrderID=" + orderId,
                 false);
@@ -791,6 +791,7 @@ public class TaxHelper implements TaxInterface {
             totalTaxValue = totalTaxValue + SDUtil.formatAsPerCalculationConfig(taxValue);
             taxBO.setTotalTaxAmount(SDUtil.formatAsPerCalculationConfig(taxValue));
         }
+
         return totalTaxValue;
     }
 

@@ -720,7 +720,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     ////
                 } else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                     double entryLevelDiscountValue = 0;
-                    if (businessModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
+                    if (businessModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY) {
                         entryLevelDiscountValue = businessModel.printHelper.getEntryLevelDiscountValue(mProductsForAdapter);
                     }
 

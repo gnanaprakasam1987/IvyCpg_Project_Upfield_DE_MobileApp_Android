@@ -643,7 +643,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
 
             //  Apply product entry level discount
-            if (bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
+            if (bModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY) {
                 entryLevelDiscount = discountHelper.calculateUserEntryLevelDiscount(mOrderedProductList);
                 totalOrderValue = totalOrderValue - entryLevelDiscount;
             }
@@ -693,7 +693,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 // Automatically apply bill wise discount
                 final double billWiseDiscount = discountHelper.calculateBillWiseDiscount(totalOrderValue);
                 if (bModel.getOrderHeaderBO() != null) {
-                    bModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
+                    bModel.getOrderHeaderBO().setBillLevelDiscountValue(billWiseDiscount);
                 }
                 totalOrderValue = totalOrderValue - billWiseDiscount;
                 enteredDiscAmtOrPercent = billWiseDiscount;
@@ -713,7 +713,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 totalOrderValue = totalOrderValue - billWisePayTermDiscount;
             }
             // To open the dialog back while resuming
-            if (!isDiscountDialog() && bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT && discountDialog != null && discountDialog.isShowing()) {
+            if (!isDiscountDialog() && bModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY && discountDialog != null && discountDialog.isShowing()) {
                 setDiscountDialog(true);
                 discountDialog.dismiss();
                 discountDialog = null;
@@ -726,8 +726,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             //Applying bill wise tax
             if (bModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 bModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
+                double billLevelTax=bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
+                bModel.getOrderHeaderBO().setBillLevelTaxValue(billLevelTax);
+
                 if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
-                    totalOrderValue += bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
+                    totalOrderValue += billLevelTax;
+
             }
             //updating footer labels
             text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
@@ -870,7 +874,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
 
         menu.findItem(R.id.menu_review).setVisible(bModel.configurationMasterHelper.SHOW_REVIEW_AND_PO);
-        menu.findItem(R.id.menu_discount).setVisible(bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT);
+        menu.findItem(R.id.menu_product_discount_by_user_entry).setVisible(bModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY);
 
         // Empty returns.
         if (bModel.configurationMasterHelper.IS_SIH_VALIDATION
@@ -963,7 +967,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     OrderSummary.this, false);
             ordRemarkDialog.show();
             return true;
-        } else if (i1 == R.id.menu_discount) {
+        } else if (i1 == R.id.menu_product_discount_by_user_entry) {
 
             discountDialog = new DiscountDialog(OrderSummary.this, null,
                     discountDismissListener);
@@ -1198,7 +1202,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         isEditMode = true;
         discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
 
-        if (bModel.configurationMasterHelper.SHOW_DISCOUNT||bModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT)
+        if (bModel.configurationMasterHelper.SHOW_DISCOUNT||bModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY)
             discountHelper.clearDiscountQuantity();
 
         if (bModel.remarksHelper.getRemarksBO().getModuleCode() == null
@@ -1972,7 +1976,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             }
             if (bModel.getOrderHeaderBO() != null)
-                bModel.getOrderHeaderBO().setDiscountValue(discountValue);
+                bModel.getOrderHeaderBO().setBillLevelDiscountValue(discountValue);
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -3563,7 +3567,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private boolean hasSchemeApplied() {
         for (ProductMasterBO productMasterBO : mOrderedProductList) {
-            if (productMasterBO.getSchemeDiscAmount() > 0 || productMasterBO.getProductDiscAmount() > 0) {
+            if (productMasterBO.getSchemeDiscAmount() > 0 || productMasterBO.getProductLevelDiscountValue() > 0) {
                 return true;
             }
         }

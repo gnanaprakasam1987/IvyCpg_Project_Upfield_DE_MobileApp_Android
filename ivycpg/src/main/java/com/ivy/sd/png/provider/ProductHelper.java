@@ -1835,7 +1835,7 @@ public class ProductHelper {
                 product.setFreeOuterQty(0);
                 product.setFreePieceQty(0);
                 product.setSchemeDiscAmount(0);
-                product.setProductDiscAmount(0);
+                product.setProductLevelDiscountValue(0);
                 product.setDistributorTypeDiscount(0);
                 product.setCompanyTypeDiscount(0);
                 int size = product.getLocations().size();
@@ -4429,10 +4429,10 @@ public class ProductHelper {
                                 if (discountPer > 0) {
                                     final double batchDiscountValue = totalBatchOrderValue * (discountPer / 100);
                                     totalDiscValue = totalDiscValue + batchDiscountValue;
-                                    batchProductBo.setProductDiscAmount(batchProductBo.getProductDiscAmount() + batchDiscountValue);
+                                    batchProductBo.setProductLevelDiscountValue(batchProductBo.getProductLevelDiscountValue() + batchDiscountValue);
                                 } else if (productMasterBO.getDA() > 0) {
 
-                                    batchProductBo.setProductDiscAmount(batchProductBo.getProductDiscAmount() + batchDiscAmoutValue);
+                                    batchProductBo.setProductLevelDiscountValue(batchProductBo.getProductLevelDiscountValue() + batchDiscAmoutValue);
 
                                 }
 
@@ -4453,7 +4453,7 @@ public class ProductHelper {
 
                 }
 
-                productMasterBO.setProductDiscAmount(productMasterBO.getProductDiscAmount() + totalDiscValue);
+                productMasterBO.setProductLevelDiscountValue(productMasterBO.getProductLevelDiscountValue() + totalDiscValue);
 
 
             }
@@ -4469,9 +4469,9 @@ public class ProductHelper {
         StringBuffer sb = new StringBuffer();
         sb.append(uid + "," + "0,0,");
         if (bmodel.configurationMasterHelper.discountType == 1) {
-            sb.append(bmodel.getOrderHeaderBO().getDiscountValue() + "," + bmodel.getOrderHeaderBO().getDiscount());
+            sb.append(bmodel.getOrderHeaderBO().getBillLevelDiscountValue() + "," + bmodel.getOrderHeaderBO().getDiscount());
         } else if (bmodel.configurationMasterHelper.discountType == 2) {
-            sb.append(bmodel.getOrderHeaderBO().getDiscountValue() + ",0");
+            sb.append(bmodel.getOrderHeaderBO().getBillLevelDiscountValue() + ",0");
         }
 
         sb.append(",0," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "," + bmodel.getOrderHeaderBO().getDiscountId() + "," + bmodel.getOrderHeaderBO().getIsCompanyGiven());

@@ -454,7 +454,7 @@ public class OrderHelper {
             } else if (businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && businessModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
                 DiscountHelper.getInstance(mContext).insertBillWiseDiscount(db, this.getOrderId());
             } else if (businessModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
-                if (businessModel.getOrderHeaderBO().getDiscountValue() > 0) {
+                if (businessModel.getOrderHeaderBO().getBillLevelDiscountValue() > 0) {
                     if (businessModel.configurationMasterHelper.discountType == 1 || businessModel.configurationMasterHelper.discountType == 2)
                         businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                 }
@@ -480,7 +480,7 @@ public class OrderHelper {
                     && !businessModel.configurationMasterHelper.IS_INVOICE) {
                 businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                 businessModel.productHelper.taxHelper.applyBillWiseTax(businessModel.getOrderHeaderBO().getOrderValue());
-                businessModel.productHelper.taxHelper.insertOrderTaxList(uid, db);
+                businessModel.productHelper.taxHelper.insertBillLevelTax(uid, db);
             }
 
             // update discount in order header table
@@ -963,7 +963,7 @@ public class OrderHelper {
                 } else if (businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && businessModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
                     DiscountHelper.getInstance(mContext).insertBillWiseDiscount(db, this.getOrderId());
                 } else if (businessModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
-                    if (businessModel.getOrderHeaderBO().getDiscountValue() > 0) {
+                    if (businessModel.getOrderHeaderBO().getBillLevelDiscountValue() > 0) {
                         if (businessModel.configurationMasterHelper.discountType == 1 || businessModel.configurationMasterHelper.discountType == 2)
                             businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                     }
@@ -990,7 +990,7 @@ public class OrderHelper {
                         && !businessModel.configurationMasterHelper.IS_INVOICE) {
                     businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                     businessModel.productHelper.taxHelper.applyBillWiseTax(businessModel.getOrderHeaderBO().getOrderValue());
-                    businessModel.productHelper.taxHelper.insertOrderTaxList(uid, db);
+                    businessModel.productHelper.taxHelper.insertBillLevelTax(uid, db);
                 }
 
                 // update discount in order header table
@@ -2147,7 +2147,7 @@ public class OrderHelper {
                 priceOffValue = batchWiseProductBO.getPriceoffvalue() * totalqty;
                 priceOffId = batchWiseProductBO.getPriceOffId();
                 schemeDisc = batchWiseProductBO.getSchemeDiscAmount();
-                prodDisc = batchWiseProductBO.getProductDiscAmount();
+                prodDisc = batchWiseProductBO.getProductLevelDiscountValue();
                 taxAmount = batchWiseProductBO.getTaxAmount();
                 line_total_price = (batchWiseProductBO.getOrderedCaseQty() * batchWiseProductBO
                         .getCsrp())
@@ -2175,7 +2175,7 @@ public class OrderHelper {
                 priceOffValue = productBO.getPriceoffvalue() * totalqty;
                 priceOffId = productBO.getPriceOffId();
                 schemeDisc = productBO.getSchemeDiscAmount();
-                prodDisc = productBO.getProductDiscAmount();
+                prodDisc = productBO.getProductLevelDiscountValue();
                 taxAmount = productBO.getTaxAmount();
                 line_total_price = (productBO.getOrderedCaseQty() * productBO
                         .getCsrp())

@@ -238,7 +238,7 @@ public class DiscountHelper {
                     HashMap<Integer, Double> discountValueByDiscountId = mDiscountListByProductId.get(productWithBatchId);
                     if (discountValueByDiscountId == null)
                         discountValueByDiscountId = new HashMap<>();
-                    batchProductBo.setProductDiscAmount(batchProductBo.getProductDiscAmount() + totalDiscountValue);
+                    batchProductBo.setProductLevelDiscountValue(batchProductBo.getProductLevelDiscountValue() + totalDiscountValue);
 
 
                     discountValueByDiscountId.put(discountId, totalDiscountValue);
@@ -319,7 +319,8 @@ public class DiscountHelper {
                                             storeWiseDiscountBO.getDiscount(), percentageORAmountDiscount,
                                             isBatchWise, discountID, isCompanyWiseDisc);
 
-                                    productBo.setProductDiscAmount(productBo.getProductDiscAmount() + discountValue);
+                                    storeWiseDiscountBO.setDiscountValue(discountValue);
+                                    productBo.setProductLevelDiscountValue(productBo.getProductLevelDiscountValue() + discountValue);
 
                                     totalDiscountValue = totalDiscountValue + discountValue;
 
@@ -341,7 +342,7 @@ public class DiscountHelper {
 
                                     if (productBo.getNetValue() > 0) {
                                         productBo.setNetValue(productBo
-                                                .getNetValue() - productBo.getProductDiscAmount());
+                                                .getNetValue() - productBo.getProductLevelDiscountValue());
                                     }
                                 }
                             }
@@ -437,7 +438,7 @@ public class DiscountHelper {
                     discountValue=SDUtil.formatAsPerCalculationConfig(discountValue);
                     storeWiseDiscountBO.setDiscountValue(discountValue);
 
-                    businessModel.getOrderHeaderBO().setDiscountValue(discountValue);
+                    businessModel.getOrderHeaderBO().setBillLevelDiscountValue(discountValue);
                     businessModel.getOrderHeaderBO().setDiscount(storeWiseDiscountBO.getDiscount());
                     businessModel.getOrderHeaderBO().setDiscountId(storeWiseDiscountBO.getDiscountId());
                     businessModel.getOrderHeaderBO().setIsCompanyGiven(storeWiseDiscountBO.getIsCompanyGiven());
@@ -886,7 +887,7 @@ public class DiscountHelper {
 
                 storeWiseDiscountBO.setDiscountValue(discountValue);
 
-                businessModel.getOrderHeaderBO().setDiscountValue(discountValue);
+                businessModel.getOrderHeaderBO().setBillLevelDiscountValue(discountValue);
                 businessModel.getOrderHeaderBO().setDiscount(storeWiseDiscountBO.getDiscount());
                 businessModel.getOrderHeaderBO().setDiscountId(storeWiseDiscountBO.getDiscountId());
                 businessModel.getOrderHeaderBO().setIsCompanyGiven(storeWiseDiscountBO.getIsCompanyGiven());
@@ -1225,14 +1226,14 @@ public class DiscountHelper {
             ArrayList<ProductMasterBO> batchList = businessModel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
             if (batchList != null) {
                 for (ProductMasterBO batchProduct : batchList) {
-                    batchProduct.setProductDiscAmount(0);
+                    batchProduct.setProductLevelDiscountValue(0);
                     batchProduct.setSchemeDiscAmount(0);
                     batchProduct.setTaxableAmount(0);
                 }
             }
 
         } else {
-            productMasterBO.setProductDiscAmount(0);
+            productMasterBO.setProductLevelDiscountValue(0);
             productMasterBO.setSchemeDiscAmount(0);
             productMasterBO.setTaxableAmount(0);
         }
