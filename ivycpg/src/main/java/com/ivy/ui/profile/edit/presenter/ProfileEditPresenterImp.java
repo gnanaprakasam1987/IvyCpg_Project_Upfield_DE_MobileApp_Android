@@ -1990,7 +1990,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private boolean doValidateProdileEdit() {
-
+        validate = true;
         for (int i = 0; i < profileConfig.size(); i++) {
 
             String configCode = profileConfig.get(i).getConfigCode();
