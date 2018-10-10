@@ -31,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -4649,28 +4650,28 @@ SynchronizationHelper {
                                             String appendurl) {
 
         StringBuilder url = new StringBuilder();
-        url.append(DataMembers.SERVER_URL);
+//        url.append(DataMembers.SERVER_URL);
+        url.append("http://192.168.2.92/api");
         url.append(appendurl);
-        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-            try {
-                MyHttpConnectionNew http = new MyHttpConnectionNew();
-                http.create(MyHttpConnectionNew.POST, url.toString(), null);
-                if (data != null) {
-                    http.addParam("Data", data);
-                }
-                http.connectMe();
-                Vector<String> result = http.getResult();
-                if (result == null) {
-                    return new Vector<>();
-                }
-                return result;
-            } catch (Exception e) {
-                Commons.printException("" + e);
+
+        try {
+            MyHttpConnectionNew http = new MyHttpConnectionNew();
+            http.create(MyHttpConnectionNew.POST, url.toString(), null);
+            if (data != null) {
+                http.addParam("route",data);
+            }
+            http.connectMe();
+            Vector<String> result = http.getResult();
+
+            if (result == null) {
                 return new Vector<>();
             }
-        } else {
+            return result;
+        } catch (Exception e) {
+            Commons.printException("" + e);
             return new Vector<>();
         }
+
     }
 
 }

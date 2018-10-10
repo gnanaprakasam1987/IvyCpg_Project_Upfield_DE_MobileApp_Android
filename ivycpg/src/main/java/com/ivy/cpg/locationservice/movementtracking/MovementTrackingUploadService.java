@@ -31,7 +31,7 @@ public class MovementTrackingUploadService extends IntentService{
                         LocationServiceHelper.getInstance().saveUserLocation(context, location, userMasterBO );
                         if (LocationServiceHelper.getInstance().isOnline(context) &&
                                 LocationServiceHelper.getInstance().isUserLocationAvailable(context,"LocationTracking")) {
-                            LocationServiceHelper.getInstance().uploadRealTimeLocation(context);
+                            LocationServiceHelper.getInstance().uploadLocationTracking(context,userMasterBO);
                         }
                     }
                 }

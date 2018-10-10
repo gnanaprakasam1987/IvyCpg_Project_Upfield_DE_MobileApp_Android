@@ -18,13 +18,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import co.chatsdk.core.base.BaseNetworkAdapter;
+import co.chatsdk.core.dao.Message;
+import co.chatsdk.core.dao.User;
+import co.chatsdk.core.events.EventType;
+import co.chatsdk.core.events.NetworkEvent;
+import co.chatsdk.core.interfaces.ThreadType;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.session.InterfaceManager;
 import co.chatsdk.core.session.NetworkManager;
+import co.chatsdk.core.session.StorageManager;
 import co.chatsdk.core.types.AccountDetails;
 import co.chatsdk.core.types.AccountType;
 import co.chatsdk.core.types.AuthKeys;
+import co.chatsdk.core.types.ReadStatus;
+import co.chatsdk.core.utils.NotificationUtils;
 import co.chatsdk.ui.login.LoginActivity;
+import co.chatsdk.ui.utils.ToastHelper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
@@ -54,8 +63,11 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
             if (userChatId.equals("")) {
                 InterfaceManager.shared().a.startMainActivity(this);
                 finish();
-            }else
-                startChatActivity();
+            }else {
+                getmessageId();
+
+//                startChatActivity();
+            }
         }
 
     }
@@ -108,7 +120,7 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
     private void startChatActivity(){
         Intent openChatIntent = new Intent(this, ChatSDK.ui().getChatActivity());
         openChatIntent.putExtra(InterfaceManager.THREAD_ENTITY_ID, userChatId);
-        openChatIntent.setAction(userChatId);
+        //openChatIntent.setAction(userChatId);
         openChatIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(openChatIntent);
         finish();
@@ -117,6 +129,23 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
     private void startMainActivity(){
         ChatSDK.ui().startMainActivity(StartChatActivity.this, extras);
         finish();
+    }
+
+    private void getmessageId(){
+
+        User user = StorageManager.shared().fetchUserWithEntityID(userChatId);
+
+        ChatSDK.thread().createThread("", user, ChatSDK.currentUser())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    dismissProgressDialog();
+                })
+                .subscribe(thread -> {
+                    extras.put(InterfaceManager.THREAD_ENTITY_ID,thread.getEntityID());
+                    startMainActivity();
+                }, throwable -> {
+                    ToastHelper.show(getApplicationContext(), throwable.getLocalizedMessage());
+                });
     }
 
     public void toastErrorMessage(Throwable error, boolean login){

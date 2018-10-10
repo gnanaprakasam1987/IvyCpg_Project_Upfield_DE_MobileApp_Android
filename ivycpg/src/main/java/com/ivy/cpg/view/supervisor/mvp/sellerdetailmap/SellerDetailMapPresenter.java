@@ -30,13 +30,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -46,8 +46,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,10 +66,9 @@ import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_DATA_KEY;
-import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_FIELD_KEY;
-import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_MASTER_KEY;
 
 public class SellerDetailMapPresenter implements SellerDetailMapContractor.SellerDetailMapPresenter {
 
@@ -185,6 +189,28 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                         }
                     }
                 });
+    }
+
+    public void setSellerMovementListener(int userId, String date) {
+
+        if (isRealTimeLocationOn) {
+
+            DocumentReference documentReference = db
+                    .collection(FIRESTORE_BASE_PATH)
+                    .document(REALTIME_LOCATION_PATH)
+                    .collection(date)
+                    .document(userId + "");
+
+            registration = documentReference
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                            if (documentSnapshot != null) {
+                                setSellerMovementValues(documentSnapshot);
+                            }
+                        }
+                    });
+        }
     }
 
     @Override
@@ -359,10 +385,29 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
                 LatLng sellerCurrentLocation = null;
 
-                if (isRealTimeLocationOn)
-                    sellerCurrentLocation = new LatLng(latitude, longitude);
+                sellerCurrentLocation = new LatLng(latitude, longitude);
 
                 sellerMapView.updateSellerInfo(timeIn, retailerName, totalOutletCount, covered, sellerCurrentLocation);
+            }
+        }
+    }
+
+    private void setSellerMovementValues(DocumentSnapshot document) {
+
+        if (document.getData() != null) {
+
+            SellerBo sellerBo = document.toObject((SellerBo.class));
+
+            if (sellerBo != null) {
+
+                double latitude = sellerBo.getLatitude();
+                double longitude = sellerBo.getLongitude();
+
+                LatLng sellerCurrentLocation = null;
+
+                sellerCurrentLocation = new LatLng(latitude, longitude);
+
+                sellerMapView.updateSellerLocation(sellerCurrentLocation);
             }
         }
     }
@@ -625,12 +670,10 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
+            alertDialog.dismiss();
             if (result) {
                 drawRoute(valuesList);
-                Toast.makeText(context, "Route Download Successfull", Toast.LENGTH_SHORT).show();
-            }else
-                Toast.makeText(context, "Route Download Failed", Toast.LENGTH_SHORT).show();
-
+            }
         }
 
     }
@@ -658,9 +701,10 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         boolean isSuccess = false;
         try {
 
-            String downloadurl = DataMembers.SERVER_URL+"MovementTracking/Download?userId="+userId+"&routeDate="+date;
+//            String downloadurl = DataMembers.SERVER_URL+"MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
+            String downloadurl = "http://192.168.2.92/api/MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
 
-            Vector<String> responseVector = getResponse(downloadurl);
+            Vector<String> responseVector = connectMe(downloadurl);
 
             try {
                 if (responseVector.size() > 0) {
@@ -702,21 +746,40 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     }
 
-    private Vector<String> getResponse(String url) {
-        try {
-            MyHttpConnectionNew http = new MyHttpConnectionNew();
-            http.create(MyHttpConnectionNew.POST, url, null);
 
-            http.connectMe();
-            Vector<String> result = http.getResult();
-            if (result == null) {
-                return new Vector<>();
+    private Vector<String> connectMe(String url) {
+        URL uri;
+        HttpURLConnection con = null;
+        try {
+
+            uri = new URL(url.trim());
+            con = (HttpURLConnection) uri.openConnection();
+
+            return this.processEntity(con.getInputStream());
+
+        } catch (Exception var5) {
+            Commons.printException(this.getClass().getName() + ",Exception occured while connecting to server");
+        }finally {
+            if (con != null) {
+                con.disconnect();
             }
-            return result;
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            return new Vector<>();
         }
+
+        return new Vector<>();
+
+    }
+
+    private Vector<String> processEntity(InputStream in) throws IllegalStateException, IOException {
+        BufferedReader rd = new BufferedReader(new InputStreamReader(in));
+        String line ;
+        Vector<String> result = new Vector<>();
+
+        while ((line = rd.readLine()) != null) {
+            result.addElement(line);
+        }
+
+        return result;
+
     }
 
     /**

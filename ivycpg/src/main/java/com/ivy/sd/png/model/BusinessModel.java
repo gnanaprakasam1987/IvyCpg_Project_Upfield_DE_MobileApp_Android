@@ -715,12 +715,12 @@ public class BusinessModel extends Application {
 // Create a new configuration
             Configuration.Builder builder = new Configuration.Builder(context);
 
-// Perform any configuration steps (optional)
             builder.firebaseRootPath(CHAT_ROOT_PATH);
             builder.firebaseStorageURL(CHAT_FIREBASE_STORAGE_URL); // /files/new_folder_cpg/chat_img
             builder.firebaseCloudMessagingServerKey(CHAT_SERVER_KEY);
             builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
             builder.locationMessagesEnabled(true);
+            builder.setInboundPushHandlingEnabled(true);
 
 
             ChatSDK.initialize(builder.build(), new BaseInterfaceAdapter(context), new FirebaseNetworkAdapter());

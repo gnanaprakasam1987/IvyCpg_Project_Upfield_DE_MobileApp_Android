@@ -296,6 +296,9 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         //Sellers last visit info listener
         sellerMapViewPresenter.setSellerActivityListener(userId,seletedDate);
 
+        //Sellers last visit info listener
+        sellerMapViewPresenter.setSellerMovementListener(userId,seletedDate);
+
         //Draw route based on sellers activity
         sellerMapViewPresenter.setSellerActivityDetailListener(userId,seletedDate);
 
@@ -392,6 +395,21 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             }
         }
 
+    }
+
+    public void updateSellerLocation(LatLng sellerLatLng ){
+        if(sellerLatLng != null) {
+            if (sellerMarker == null) {
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(sellerLatLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker))
+                        .title("SELLER");
+                sellerMarker = mMap.addMarker(markerOptions);
+            } else {
+//                sellerMarker.setPosition(sellerLatLng);
+                sellerMapViewPresenter.animateSellerMarker(sellerLatLng,sellerMarker);
+            }
+        }
     }
 
     @Override

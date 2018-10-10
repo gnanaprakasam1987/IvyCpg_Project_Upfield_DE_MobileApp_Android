@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -43,7 +44,7 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView userName, retailerName,retailerVisit,target,covered;
-        private LinearLayout routeLayout;
+        private LinearLayout routeLayout,messageLayout;
         private ImageView userImage;
 
         public MyViewHolder(View view) {
@@ -56,6 +57,7 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
             userImage = view.findViewById(R.id.usr_img);
 
             routeLayout = view.findViewById(R.id.route_layout);
+            messageLayout = view.findViewById(R.id.message_layout);
 
             userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
             retailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
@@ -98,6 +100,18 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
                 intent.putExtra("Date",sellerMapHomePresenter.getSelectedDate());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
+            }
+        });
+
+        holder.messageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (!sellerArrayList.get(holder.getAdapterPosition()).getUid().equals("")) {
+                    Intent intent = new Intent(context, StartChatActivity.class);
+                    intent.putExtra("UUID",sellerArrayList.get(holder.getAdapterPosition()).getUid());
+                    context.startActivity(intent);
+                }
             }
         });
 

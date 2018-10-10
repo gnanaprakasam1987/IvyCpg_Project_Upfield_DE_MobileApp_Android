@@ -50,6 +50,8 @@ import java.util.Vector;
 import static android.content.Context.LOCATION_SERVICE;
 import static com.ivy.cpg.locationservice.LocationConstants.GPS_NOTIFICATION_ID;
 import static com.ivy.cpg.locationservice.LocationConstants.MOCK_NOTIFICATION_ID;
+import static com.ivy.sd.png.util.DataMembers.tbl_movement_tracking_history;
+import static com.ivy.sd.png.util.DataMembers.tbl_movement_tracking_history_cols;
 
 public class LocationServiceHelper {
 
@@ -653,27 +655,14 @@ public class LocationServiceHelper {
             db.createDataBase();
             db.openDataBase();
 
-            JSONObject jsonObjData;
-
-            Set<String> keys = DataMembers.uploadMovementTrackingHistoryColumn
-                    .keySet();
-
-            jsonObjData = new JSONObject();
-            for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
-                        db, tableName,
-                        DataMembers.uploadMovementTrackingHistoryColumn.get(tableName));
-
-                if (jsonArray.length() > 0)
-                    jsonObjData.put(tableName, jsonArray);
-            }
+            JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
+                    db, tbl_movement_tracking_history,
+                    tbl_movement_tracking_history_cols);
 
             String url = "/MovementTracking/Upload";
 
-            Commons.print("jsonObjData "+jsonObjData.toString());
-
             Vector<String> responseVector = synchronizationHelper
-                    .getUploadResponseForLocation(jsonObjData.toString(), url);
+                    .getUploadResponseForLocation(jsonArray.toString(), url);
 
             int response = 0;
 
@@ -714,13 +703,6 @@ public class LocationServiceHelper {
                     }
                 }
             }
-           /* if (responseVector != null) {
-
-                for (String s : responseVector) {
-                    JSONObject responseObject = new JSONObject(s);
-                    response = responseObject.getInt("Response");
-                }
-            }*/
 
             if (response == 1) {
 
@@ -732,7 +714,8 @@ public class LocationServiceHelper {
                     Commons.printException(e);
                 }
 
-            }else
+            }
+            else
                 db.closeDB();
 
         } catch (Exception e) {

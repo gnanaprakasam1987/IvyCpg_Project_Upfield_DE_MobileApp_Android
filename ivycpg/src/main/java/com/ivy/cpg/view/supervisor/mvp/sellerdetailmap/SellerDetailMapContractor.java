@@ -22,6 +22,8 @@ public interface SellerDetailMapContractor {
 
         void updateSellerInfo(String timeIn,String retailerName,String target,String covered,LatLng sellerCurrentLocation);
 
+        void updateSellerLocation(LatLng sellerCurrentLocation);
+
         void drawRoute(ArrayList<LatLng> points);
     }
 
