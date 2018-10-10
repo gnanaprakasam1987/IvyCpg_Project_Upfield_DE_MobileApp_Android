@@ -525,16 +525,16 @@ public class AssetTrackingHelper {
             }
 
 
-            String sb1 = "select  AssetId,serialNum,retailerid,Productid  from AssetAddDelete";
-            Cursor c5 = db.selectSQL(sb1);
+            String sb1 = "select  serialNum from AssetAddDelete";
+            Cursor cursorDelete = db.selectSQL(sb1);
             AssetTrackingBO assetBoDelete = null;
             List<AssetTrackingBO> deletedAssetList = new ArrayList<>();
-            if (c5.getCount() > 0) {
-                while (c5.moveToNext()) {
+            if (cursorDelete.getCount() > 0) {
+                while (cursorDelete.moveToNext()) {
                     assetBoDelete = new AssetTrackingBO();
 
-                    if (!"null".equals(c5.getString(1))) {
-                        assetBoDelete.setSerialNo(c5.getString(1));
+                    if (!"null".equals(cursorDelete.getString(0))) {
+                        assetBoDelete.setSerialNo(cursorDelete.getString(0));
                     }
                     deletedAssetList.add(assetBoDelete);
                 }
