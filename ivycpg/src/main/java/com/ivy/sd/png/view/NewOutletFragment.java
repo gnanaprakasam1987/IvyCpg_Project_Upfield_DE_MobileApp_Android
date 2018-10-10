@@ -124,6 +124,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
     private boolean isLatLong;
     private String imageName;
+    private int imageId = 0;
     private ArrayList<LocationBO> mLocationMasterList1;
     private ArrayList<LocationBO> mLocationMasterList2;
     private ArrayList<LocationBO> mLocationMasterList3;
@@ -5057,22 +5058,22 @@ public class NewOutletFragment extends IvyBaseFragment
                                                     + "/";
                                             Commons.print(TAG + ":Photo path :" + PHOTO_PATH);
 
-                                            int ImageId = bmodel.newOutletHelper
+                                            imageId = bmodel.newOutletHelper
                                                     .getImageTypeList()
                                                     .get(item).getListId();
                                             imageName = moduleName + uID + "_"
-                                                    + ImageId + "_img.jpg";
+                                                    + imageId + "_img.jpg";
                                             String fnameStarts = "";
                                             if (screenMode == EDIT) {
                                                 for (String img : outlet.getImageName()) {
-                                                    if ((img).contains(ImageId + "")) {
+                                                    if ((img).contains(imageId + "")) {
                                                         fnameStarts = img;
                                                         break;
                                                     }
                                                 }
                                             } else {
                                                 fnameStarts = moduleName + uID
-                                                        + "_" + ImageId;
+                                                        + "_" + imageId;
                                             }
 
                                             Commons.print(TAG + ",FName Starts :"
@@ -5086,8 +5087,6 @@ public class NewOutletFragment extends IvyBaseFragment
                                             } else {
 
                                                 captureCustom();
-                                                outlet.ImageId.add(ImageId);
-                                                outlet.ImageName.add(imageName);
                                                 dialog.dismiss();
                                                 return;
 
@@ -6207,8 +6206,6 @@ public class NewOutletFragment extends IvyBaseFragment
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         if (resultCode == RESULT_OK) {
-            if (imageName != null)
-                outlet.getImageName().add(imageName);
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
 
                 lattitude = data.getExtras().getDouble("lat");
@@ -6221,6 +6218,11 @@ public class NewOutletFragment extends IvyBaseFragment
                 }
             }
 
+        } else if (requestCode == CAMERA_REQUEST_CODE && resultCode == 1) {
+            if (imageName != null)
+                outlet.getImageName().add(imageName);
+            if (imageId != 0)
+                outlet.getImageId().add(imageId);
         }
 
     }

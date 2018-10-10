@@ -3850,7 +3850,7 @@ public class BusinessModel extends Application {
         float total = 0;
         Cursor c = db
                 .selectSQL("select ifnull(sum(Amount),0) from Payment where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID()));
+                        + QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
                 c.moveToNext();
@@ -5252,14 +5252,18 @@ public class BusinessModel extends Application {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select sum(LinesPerCall) from orderHeader where retailerid="
-                            + QT(getRetailerMasterBO().getRetailerID())
-                            + " and " + (isVansales ? "invoiceStatus=1" : "invoiceStatus=0") + " and upload='N'");
+            Cursor c;
+            if (isVansales) {
+                c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from invoicemaster where retailerid="
+                        + QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            } else {
+                c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
+                        + QT(getRetailerMasterBO().getRetailerID())
+                        + " and upload='N'");
+            }
             if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    int count = c.getInt(0);
-                    return count;
+                if (c.moveToNext()) {
+                    return c.getInt(0);
                 }
             }
             c.close();

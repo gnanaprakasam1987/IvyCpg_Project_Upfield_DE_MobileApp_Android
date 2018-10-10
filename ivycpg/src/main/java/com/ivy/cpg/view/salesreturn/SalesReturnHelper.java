@@ -1039,7 +1039,8 @@ public class SalesReturnHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             String sb = "select sum(SRH.Returnvalue) from SalesReturnHeader SRH inner join OrderHeader OH on OH.OrderID = SRH.RefModuleTId where SRH.RetailerId=" +
-                    bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId();
+                    QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
+                    " and date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
 
             if (isVansales) {
                 sb += " and OH.invoicestatus = 1";
