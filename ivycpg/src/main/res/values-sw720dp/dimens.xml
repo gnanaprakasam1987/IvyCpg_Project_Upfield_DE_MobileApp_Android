@@ -21,7 +21,6 @@
 
     <!-- UI Elements -->
     <dimen name="list_title_height">30dp</dimen>
-    <dimen name="list_product_name_width">400dp</dimen>
     <dimen name="list_item_width">150dp</dimen>
     <dimen name="list_item_width_large">160dp</dimen>
     <dimen name="list_item_width_dashboard_medium">250dp</dimen>
@@ -56,17 +55,7 @@
     <dimen name="sr_list_view_width_large">200dp</dimen>
 
     <!-- print preview -->
-    <dimen name="pp_case_unit">110dp</dimen>
-    <dimen name="pp_outer_price">150dp</dimen>
-    <dimen name="pp_case_price">150dp</dimen>
-    <dimen name="pp_unit_price">130dp</dimen>
-    <dimen name="pp_discount">140dp</dimen>
-    <dimen name="pp_row_case_unit">140dp</dimen>
-    <dimen name="pp_row_outer_price">160dp</dimen>
-    <dimen name="pp_row_discount">140dp</dimen>
-    <dimen name="pp_row_upc">250dp</dimen>
     <dimen name="pp_row_upc_padding">230dp</dimen>
-    <dimen name="pp_row_amount">120dp</dimen>
 
     <!-- New Visit Fragment -->
 

@@ -486,52 +486,17 @@ public class ProductHelper {
             if (c != null) {
                 while (c.moveToNext()) {
                     hasmap.put(c.getInt(0), c.getInt(1));
+                    int ico = c.getInt(1);
+                    ProductMasterBO pbo = productMasterById.get(c.getString(0));
+                    pbo.setICO(ico);
+                    pbo.setSoInventory(ico);
                 }
                 c.close();
             }
             db.closeDB();
-            if (hasmap.size() > 0) {
-                for (int i = 0; i < productMaster.size(); i++) {
-                    ProductMasterBO p = productMaster.get(i);
-                    int ico = 0;
-
-                    Integer value = hasmap
-                            .get(SDUtil.convertToInt(p.getProductID()));
-                    if (value != null)
-                        ico = value;
-
-                    p.setICO(ico);
-                    int size = p.getLocations().size();
-                    int shelfpcs = 0, whpcs = 0;
-                    for (int j = 0; j < size; j++) {
-                        if (p.getLocations().get(j).getShelfPiece() > 0)
-                            shelfpcs += (p.getLocations().get(j).getShelfOuter() *
-                                    p.getOutersize());
-
-                        whpcs += p.getLocations().get(j).getWHPiece();
-
-                        whpcs += (p.getLocations().get(j).getWHCase() * p
-                                .getCaseSize());
-
-                        whpcs += (p.getLocations().get(j).getWHOuter() * p
-                                .getOutersize());
-
-                        if (p.getLocations().get(j).getAvailability() > -1)
-                            shelfpcs += p.getLocations().get(j).getAvailability();
-                    }
-                    p.setSoInventory(calculateSO(ico, shelfpcs + whpcs, p.isRPS(),
-                            p.getIsInitiativeProduct(), p.getDropQty(),
-                            p.getInitDropSize()));
-
-
-                    productMaster.setElementAt(p, i);
-                    ico = 0;
-                }
-            }
         } catch (Exception e) {
             Commons.printException(e);
         }
-
     }
 
     /**
@@ -1628,68 +1593,6 @@ public class ProductHelper {
 //            e.printStackTrace();
             return "";
         }
-    }
-
-
-    public int calculateSO(int ap3m, int closingStock, boolean isSBD,
-                           int isInitiative, int sbdDropSize, int initiativeDropSize) {
-        double so = 0;
-
-        // Not a SBD or Initative SKU
-        if ((!isSBD) && isInitiative != 1) {
-
-            if (ap3m == 0 && (closingStock == 0 || closingStock <= -1)) {// Never distributed
-                so = 0;
-            } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
-                so = ((float) ap3m * (1.0 + getBuffer()));
-            } else { // Normal condition
-                if (closingStock <= -1)
-                    so = ap3m;
-                else
-                    so = ap3m - closingStock;
-
-            }
-
-        } else if ((isSBD) && isInitiative != 1) { // SBD but not initiative
-            if (ap3m == 0 && closingStock == 0) {// Never distributed
-                so = sbdDropSize;
-            } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
-                so = ((float) ap3m * (1.0 + getBuffer()));
-            } else { // Normal condition
-                if (closingStock <= -1)
-                    so = ap3m;
-                else
-                    so = ap3m - closingStock;
-            }
-        } else if ((!isSBD) && isInitiative == 1) { // initiative but not SBD
-            if (ap3m == 0 && closingStock == 0) {// Never distributed
-                so = 0;
-            } else if (ap3m > 0 && closingStock == 0) {// OutofStock condition
-                so = ((float) ap3m * (1.0 + getBuffer()));
-            } else { // Normal condition
-                if (closingStock <= -1)
-                    so = ap3m;
-                else
-                    so = ap3m - closingStock;
-            }
-            so = so > initiativeDropSize ? so : initiativeDropSize;
-        } else if ((isSBD) && isInitiative == 1) {
-            if (ap3m == 0 && closingStock == 0) {// Never distributed
-                so = sbdDropSize;
-            } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
-                so = ((float) ap3m * (1.0 + getBuffer()));
-            } else { // Normal condition
-                if (closingStock <= -1)
-                    so = ap3m;
-                else
-                    so = ap3m - closingStock;
-            }
-            so = so > initiativeDropSize ? so : initiativeDropSize;
-        }
-
-        int newso = (int) Math.ceil(so);
-
-        return newso > 0 ? newso : 0;
     }
 
     /**
