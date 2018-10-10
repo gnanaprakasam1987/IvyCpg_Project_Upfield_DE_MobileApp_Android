@@ -392,6 +392,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 longitude = data.getExtras().getDouble("lon") + "";
                 if (data.getExtras().getBoolean("isChanged")) {
                     latlongtextview.setText(lat + ", " + longitude);
+                    profileEditPresenter.updateLatLong(lat,longitude);
                     if (isLatLongCameravailable) {
                         latlongCameraBtn.setVisibility(View.VISIBLE);
                     }
