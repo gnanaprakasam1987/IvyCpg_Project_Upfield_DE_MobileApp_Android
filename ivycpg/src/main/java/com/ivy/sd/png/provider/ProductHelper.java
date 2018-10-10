@@ -1838,8 +1838,6 @@ public class ProductHelper {
                 product.setProductDiscAmount(0);
                 product.setDistributorTypeDiscount(0);
                 product.setCompanyTypeDiscount(0);
-                product.setApplyValue(0);
-
                 int size = product.getLocations().size();
                 for (int z = 0; z < size; z++) {
                     product.getLocations().get(z).setShelfOuter(-1);

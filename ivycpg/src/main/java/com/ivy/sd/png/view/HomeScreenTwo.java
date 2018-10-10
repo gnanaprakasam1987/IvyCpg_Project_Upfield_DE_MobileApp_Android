@@ -1720,15 +1720,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (!isClick) {
                     isClick = true;
 
-                    if (bmodel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK) {
-                        bmodel.productHelper.clearOrderTable();
-                        OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
-                        orderDeliveryHelper.updateProductWithExcessStock(this);
-
-                        if(bmodel.productHelper.getProductDiscountListByDiscountID()!=null)
-                            bmodel.productHelper.getProductDiscountListByDiscountID().clear();
-                    }
-
                     if (bmodel.configurationMasterHelper
                             .downloadFloatingSurveyConfig(MENU_ORDER)) {
                         SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
@@ -1962,9 +1953,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.productHelper.clearOrderTable();
                     OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
                     orderDeliveryHelper.updateProductWithExcessStock(this);
-
-                    if(bmodel.productHelper.getProductDiscountListByDiscountID()!=null)
-                        bmodel.productHelper.getProductDiscountListByDiscountID().clear();
                 }
 
                 // Tin Expiry validation

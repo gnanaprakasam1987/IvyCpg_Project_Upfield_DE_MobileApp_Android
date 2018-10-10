@@ -304,7 +304,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             orderDeliveryHelper.downloadOrderDeliveryAmountDetail(OrderDeliveryActivity.this, orderId);
             orderDeliveryHelper.downloadOrderedProducts();
             if (from.equalsIgnoreCase(ACCEPT) || from.equalsIgnoreCase(REJECT)) {
-                orderDeliveryHelper.getProductTotalValue(OrderDeliveryActivity.this, false);
+                orderDeliveryHelper.getProductTotalValue(false);
             }
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                 bmodel.collectionHelper.downloadDiscountSlab();

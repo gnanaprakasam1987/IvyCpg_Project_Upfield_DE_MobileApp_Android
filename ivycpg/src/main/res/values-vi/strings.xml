@@ -1268,16 +1268,16 @@
     <string name="ul">UL</string>
     <string name="salable">có thể bán được</string>
 
-    <string name="bill">Bill</string>
-    <string name="line_value">Line value</string>
-    <string name="tax_Value">Tax Value</string>
+    <string name="Bill">Bill</string>
+    <string name="Line_value">Line value</string>
+    <string name="Tax_Value">Tax Value</string>
     <!-- <string name="Disc">Disc</string>-->
-    <string name="cash_disc">Cash Disc</string>
-    <string name="tls">TLS</string>
-    <string name="payment_term">Payment term</string>
-    <string name="oth_disc">Oth. Disc (Other Discount)</string>
-    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
+    <string name="Cash_Disc">Cash Disc</string>
+    <string name="TLS">TLS</string>
+    <string name="Payment_term">Payment term</string>
+    <string name="Oth_Disc">Oth. Disc (Other Discount)</string>
+    <string name="Sch_Disc">Sch. Disc (Scheme Discount)</string>
     <!--<string name="Signature">Signature</string>-->
-    <string name="attachment">Attachment</string>
+    <string name="Attachment">Attachment</string>
 
 </resources>

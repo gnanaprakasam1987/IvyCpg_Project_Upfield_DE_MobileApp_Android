@@ -10,7 +10,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.cpg.view.order.OrderHelper;
-import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
@@ -484,7 +483,7 @@ public class OrderDeliveryHelper {
     }
 
     /* Total product count, value of total product,total tax are calculated here */
-    public double getProductTotalValue(Context context, boolean isEdit) {
+    public double getProductTotalValue(boolean isEdit) {
         double totalvalue = 0;
         int totalProdQty = 0;
 
@@ -508,14 +507,11 @@ public class OrderDeliveryHelper {
             }
         }
 
+        //Product wise Tax amount will be calculated according to the tax rate
+        double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
+
         if (isEdit) {
-            //Product wise Tax amount will be calculated according to the tax rate
-            double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
             setOrderDeliveryTaxAmount(String.valueOf(taxValue));
-        } else {
-            DiscountHelper discountHelper= DiscountHelper.getInstance(context);
-            discountHelper.calculateItemLevelDiscount(getOrderedProductMasterBOS()); //As instructed by Rajkumar
-            businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
         }
 
         setOrderDeliveryTotalValue(String.valueOf(totalvalue));
@@ -752,17 +748,17 @@ public class OrderDeliveryHelper {
             if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
                 salesReturnHelper.setSalesReturnID(AppUtils.QT(uid));
-                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, AppUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),true);
+                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, AppUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(), false);
             }
 
             updateOrderDeliverySIH(db, isEdit,false);
 
             //For Print saved in Discount and invoice number
             businessModel.invoiceNumber = invoiceId;
-            if (isEdit) {
-                if(businessModel.productHelper.getProductDiscountListByDiscountID()!=null)
-                    businessModel.productHelper.getProductDiscountListByDiscountID().clear();
-            }
+            if (isEdit)
+                OrderHelper.getInstance(context).invoiceDiscount = "0";
+            else
+                OrderHelper.getInstance(context).invoiceDiscount = getOrderDeliveryDiscountAmount();
 
             /* Invoice status 1 --> invoice generated for the order */
             for (int i = 0; i < getOrderHeaders().size(); i++) {

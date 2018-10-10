@@ -99,7 +99,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         else
             isEdit = false;
 
-        orderDeliveryPresenter.getAmountDetails(this, isEdit);
+        orderDeliveryPresenter.getAmountDetails(isEdit);
     }
 
     private void initializeViews(){
@@ -516,7 +516,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         findViewById(R.id.card_view).setVisibility(View.VISIBLE);
         findViewById(R.id.keypad).setVisibility(View.VISIBLE);
         initializeEditViewHeader();
-        orderDeliveryPresenter.getAmountDetails(this, isEdit);
+        orderDeliveryPresenter.getAmountDetails(isEdit);
         MyAdapter myAdapter = new MyAdapter(productList);
         recyclerView.setAdapter(myAdapter);
         myAdapter.notifyDataSetChanged();
@@ -841,7 +841,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
 
                         productList.get(position).setTotalamount(tot);
-                        orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
@@ -872,7 +872,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                             productList.get(position).setOrderedPcsQty(SDUtil
                                     .convertToInt(qty));
-                            orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
 
                         }
                     }
@@ -945,7 +945,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
                         productList.get(position).setTotalamount(tot);
-                        orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
@@ -977,7 +977,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                             productList.get(position).setOrderedCaseQty(SDUtil
                                     .convertToInt(qty));
-                            orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
                         }
                     }
                 }
@@ -1048,7 +1048,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
                         productList.get(position).setTotalamount(tot);
-                        orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
@@ -1079,7 +1079,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                             productList.get(position).setOrderedOuterQty(SDUtil
                                     .convertToInt(qty));
-                            orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
 
 
                         }

@@ -1556,6 +1556,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
                 Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
                                 getResources().getString(R.string.please_redownload),
