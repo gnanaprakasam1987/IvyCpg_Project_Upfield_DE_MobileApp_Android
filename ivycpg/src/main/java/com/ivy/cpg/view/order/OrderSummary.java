@@ -192,6 +192,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar mCalendar = null;
     private String mImageName, attachedFilePath = "";
     private Toolbar toolbar;
+    private boolean isWihtHoldApplied = false;
     private int linesPerCall = 0;
 
     @Override
@@ -701,7 +702,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.getOrderHeaderBO() != null) {
                     bModel.getOrderHeaderBO().setDiscountValue(billWiseDiscount);
                 }
-                totalOrderValue = totalOrderValue - billWiseDiscount;
+                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount, bModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
             } else {
