@@ -647,7 +647,7 @@
 
     <dimen name="text_sz_extra_small">8sp</dimen>
     <dimen name="text_sz_small">11.2sp</dimen>
-    <dimen name="text_sz_medium">12.8sp</dimen>
+
 
     <!-- user name in home menu, retailer name in profile and activity menu etc -->
     <dimen name="highlight_small">19.2sp</dimen>

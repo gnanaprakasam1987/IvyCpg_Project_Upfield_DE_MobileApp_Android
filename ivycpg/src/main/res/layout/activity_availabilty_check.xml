@@ -738,7 +738,7 @@
                                             android:button="@drawable/ic_tick_disable"
                                             android:paddingStart="@dimen/plano_rb_padding"
                                             android:text="@string/yes"
-                                            android:textSize="@dimen/text_sz_medium"
+                                            android:textSize="@dimen/list_secondary"
                                             android:layout_marginRight="@dimen/radio_margin"
                                             android:paddingLeft="@dimen/plano_rb_padding" />
 
@@ -752,7 +752,7 @@
                                             android:paddingStart="@dimen/plano_rb_padding"
                                             android:paddingEnd="@dimen/plano_rb_padding"
                                             android:text="@string/no"
-                                            android:textSize="@dimen/text_sz_medium"
+                                            android:textSize="@dimen/list_secondary"
                                             android:layout_toRightOf="@id/priceYes" />
 
                                     </RadioGroup>

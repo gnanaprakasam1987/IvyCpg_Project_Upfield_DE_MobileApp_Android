@@ -62,10 +62,10 @@
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitleBlue</item>
+        <item name="customListTitle">@style/TextViewListTitle</item>
         <item name="customListTitleSecondary">@style/TextViewListTitleSecondaryBlue</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimaryBlue</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondaryBlue</item>
+        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
+        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
@@ -231,10 +231,10 @@ negative button and neutral button -->
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitleBlue</item>
+        <item name="customListTitle">@style/TextViewListTitle</item>
         <item name="customListTitleSecondary">@style/TextViewListTitleSecondaryBlue</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimaryBlue</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondaryBlue</item>
+        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
+        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
@@ -374,10 +374,10 @@ negative button and neutral button -->
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitleBlue</item>
+        <item name="customListTitle">@style/TextViewListTitle</item>
         <item name="customListTitleSecondary">@style/TextViewListTitleSecondaryBlue</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimaryBlue</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondaryBlue</item>
+        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
+        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
@@ -517,10 +517,10 @@ negative button and neutral button -->
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitleBlue</item>
+        <item name="customListTitle">@style/TextViewListTitle</item>
         <item name="customListTitleSecondary">@style/TextViewListTitleSecondaryBlue</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimaryBlue</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondaryBlue</item>
+        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
+        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
@@ -658,10 +658,10 @@ negative button and neutral button -->
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitleBlue</item>
+        <item name="customListTitle">@style/TextViewListTitle</item>
         <item name="customListTitleSecondary">@style/TextViewListTitleSecondaryBlue</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimaryBlue</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondaryBlue</item>
+        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
+        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
@@ -799,10 +799,10 @@ negative button and neutral button -->
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitleBlue</item>
+        <item name="customListTitle">@style/TextViewListTitle</item>
         <item name="customListTitleSecondary">@style/TextViewListTitleSecondaryBlue</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimaryBlue</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondaryBlue</item>
+        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
+        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
         <item name="customListItemValue">@style/TextViewListItemValuesBlue</item>
         <item name="customListTitleBlack">@style/TextViewListTitleBlackBlue</item>
         <item name="customdialogLabel">@style/AssetDialogLabelBlue</item>
@@ -935,9 +935,9 @@ negative button and neutral button -->
     <!-- Custom TextView -->
     <style name="TextViewListTitle" parent="@android:style/Widget.TextView">
         <item name="android:gravity">center</item>
-        <!-- <item name="android:height">@dimen/list_title_height</item>-->
-        <item name="android:padding">@dimen/list_title_padding</item>
         <item name="android:textSize">@dimen/list_header_text_size</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TextViewListTitleSecondary" parent="@android:style/Widget.TextView">
@@ -947,10 +947,16 @@ negative button and neutral button -->
 
     <style name="TextViewListItemPrimary" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/list_primary</item>
+        <item name="android:textColor">@color/FullBlack</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextViewListItemSecondary" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/list_secondary</item>
+        <item name="android:textSize">@dimen/text_sz_small</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/date_picker_text_color</item>
     </style>
 
     <style name="TextViewListItemValues" parent="@android:style/Widget.TextView">
@@ -1045,21 +1051,11 @@ negative button and neutral button -->
     <!-- Activity Click Effect -->
     <!-- common Theme -->
 
-    <style name="TextViewListTitleBlue" parent="TextViewListTitle">
-        <item name="android:textColor">@color/list_header_text_color</item>
-    </style>
-
     <style name="TextViewListTitleSecondaryBlue" parent="TextViewListTitleSecondary">
         <item name="android:textColor">@color/list_header_secendory_text_color</item>
     </style>
 
-    <style name="TextViewListItemPrimaryBlue" parent="TextViewListItemPrimary">
-        <item name="android:textColor">@color/list_item_text_primary_color</item>
-    </style>
 
-    <style name="TextViewListItemSecondaryBlue" parent="TextViewListItemSecondary">
-        <item name="android:textColor">@color/list_item_secondary_text_color</item>
-    </style>
 
     <style name="TextViewListItemValuesBlue" parent="TextViewListItemValues">
         <item name="android:textColor">@color/list_item_values_text_color</item>
@@ -1330,6 +1326,20 @@ negative button and neutral button -->
         <item name="android:lineSpacingExtra">5dp</item>
         <item name="backgroundColor">@color/colorPrimary</item>
         <item name="cornerRadius">4dp</item>
+    </style>
+
+
+
+    <style name="SecondaryTextAppearance">
+        <item name="android:textSize">@dimen/text_size_body_1_material</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">?attr/textColorPrimary</item>
+    </style>
+
+    <style name="CaptionTextAppearance">
+        <item name="android:textSize">@dimen/text_size_caption_material</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@color/date_picker_text_color</item>
     </style>
 
 

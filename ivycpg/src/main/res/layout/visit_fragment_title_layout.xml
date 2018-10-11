@@ -43,7 +43,7 @@
                     android:tag="label_beat"
                     android:text="@string/beat_loc"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_medium" />
+                    android:textSize="@dimen/list_secondary" />
 
                 <TextView
                     android:id="@+id/daytv"
@@ -80,7 +80,7 @@
                     android:tag="label_storevst"
                     android:text="@string/stores_visit"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_medium" />
+                    android:textSize="@dimen/list_secondary" />
 
                 <TextView
                     android:id="@+id/tv_store_visit"
@@ -116,7 +116,7 @@
                     android:tag="label_todaytgt"
                     android:text="@string/today_achvd"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_medium" />
+                    android:textSize="@dimen/list_secondary" />
 
                 <TextView
                     android:id="@+id/tv_tgt"

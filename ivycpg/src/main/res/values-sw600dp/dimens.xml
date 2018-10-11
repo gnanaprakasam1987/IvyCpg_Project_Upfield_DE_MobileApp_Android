@@ -692,7 +692,7 @@
 
     <dimen name="text_sz_extra_small">10sp</dimen>
     <dimen name="text_sz_small">14sp</dimen>
-    <dimen name="text_sz_medium">16sp</dimen>
+
 
     <!-- user name in home menu, retailer name in profile and activity menu etc -->
     <dimen name="highlight_small">24sp</dimen>
