@@ -1553,18 +1553,13 @@ public class NewOutletFragment extends IvyBaseFragment
 //                            ? editText[i].getText().toString().trim().length() == 0
 //                            || editText[i].getText().toString().length() != profileConfig.get(i).getMaxLengthNo()
 //                            : editText[i].getText().toString().trim().length() == 0) {
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0)
-                            ? editText[i].getText().toString().trim().length() == 0
-                            || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && (mandatory == 1))
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
 
                         editText[i].addTextChangedListener(watcher);
                         break;
@@ -1572,10 +1567,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 } else if ((profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO2")
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0 ||
-                                    editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo() :
-                            editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1583,8 +1575,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
 
                         editText[i].addTextChangedListener(watcher);
                         break;
@@ -1738,10 +1728,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         .equalsIgnoreCase("FAX")
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0)
-                            ? editText[i].getText().toString().trim().length() == 0
-                            || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1749,8 +1736,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1813,10 +1799,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     Commons.print("pin code");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1824,8 +1807,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1835,10 +1816,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     Commons.print("rf");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1846,8 +1824,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1954,10 +1930,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         .equalsIgnoreCase("CREDITLIMIT"))
                         && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1965,8 +1938,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
