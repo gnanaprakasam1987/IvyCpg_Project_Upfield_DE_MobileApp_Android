@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -1430,6 +1431,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     @Override
     protected void onDestroy() {
+        dismissProgressDialog();
         super.onDestroy();
         unbindDrawables(findViewById(R.id.root));
         // force the garbage collector to run
@@ -1723,8 +1725,13 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             bmodel = (BusinessModel) getApplicationContext();
-            // isClicked = false;
-            SyncDownloadStatusDialog sdsd;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (CallAnalysisActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+            } else if (CallAnalysisActivity.this.isFinishing()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
             switch (msg.what) {
 
                 case DataMembers.NOTIFY_UPDATE:
@@ -1735,21 +1742,21 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     break;
 
                 case DataMembers.NOTIFY_NOT_USEREXIST:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.password_does_not_match), 0);
                     break;
 
                 case DataMembers.NOTIFY_NO_INTERNET:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources()
                                     .getString(R.string.no_network_connection), 0);
                     break;
 
                 case DataMembers.NOTIFY_CONNECTION_PROBLEM:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources()
                                     .getString(R.string.no_network_connection), 0);
@@ -1757,7 +1764,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                 case DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL:
                     //isClicked = false;
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(getResources().getString(R.string.sessionout_loginagain), 0);
                     break;
 
@@ -1775,34 +1782,34 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     break;
 
                 case DataMembers.NOTIFY_SIH_UPLOADED:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     presenter.upload();
                     break;
                 case DataMembers.NOTIFY_SIH_UPLOAD_ERROR:
                     Commons.print("SIH ," + "Error");
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     break;
 
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     presenter.upload();
                     break;
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOAD_ERROR:
                     Commons.print("Stock Apply Upload," + "Error");
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     break;
                 case DataMembers.NOTIFY_LP_UPLOADED:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     presenter.upload();
                     break;
                 case DataMembers.NOTIFY_LP_UPLOAD_ERROR:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
@@ -1820,7 +1827,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
 
                     } else {
-                        alertDialog.dismiss();
+                        dismissProgressDialog();
                         updateLastSync();
 
                         bmodel.showAlert(
@@ -1840,7 +1847,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     }
                     break;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
@@ -1853,7 +1860,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                                     R.string.images_sucessfully_uploaded), 0);
                     break;
                 case DataMembers.NOTIFY_UPLOAD_ERROR_IMAGE:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.images_upload_failed_please_try_again),
@@ -1863,13 +1870,13 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                 case DataMembers.NOTIFY_WEB_UPLOAD_ERROR:
 
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert((String) msg.obj, 0);
                     break;
                 case DataMembers.NOTIFY_WEB_UPLOAD_SUCCESS:
 
                     bmodel.photocount = 0;
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     //bmodel.showAlert(getResources().getString(R.string.successfully_uploaded), 0);
 //                    displaymetrics = new DisplayMetrics();
 //                    CallAnalysisActivity.this.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -1970,9 +1977,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     @Override
     public void showProgressLoading() {
 
-        if (alertDialog != null) {
-            alertDialog.dismiss();
-        }
+        dismissProgressDialog();
         builder = new AlertDialog.Builder(this);
         customProgressDialog(builder, getResources().getString(R.string.loading));
         alertDialog = builder.create();
@@ -1981,9 +1986,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     @Override
     public void showProgressUploading() {
-        if (alertDialog != null) {
-            alertDialog.dismiss();
-        }
+        dismissProgressDialog();
         builder = new AlertDialog.Builder(this);
         customProgressDialog(builder, getResources().getString(R.string.uploading_data));
         alertDialog = builder.create();
@@ -1992,9 +1995,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     @Override
     public void cancelProgress() {
-        if (alertDialog != null) {
-            alertDialog.dismiss();
-        }
+        dismissProgressDialog();
     }
 
     @Override
@@ -2059,5 +2060,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         bmodel.applyAlertDialogTheme(builder);
     }
 
+    private void dismissProgressDialog() {
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+    }
 
 }

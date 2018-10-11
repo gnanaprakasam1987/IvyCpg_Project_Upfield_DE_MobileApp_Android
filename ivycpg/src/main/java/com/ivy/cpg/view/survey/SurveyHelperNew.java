@@ -102,6 +102,8 @@ public class SurveyHelperNew {
     }
 
     public ArrayList<SurveyBO> getSurvey() {
+        if (survey == null)
+            survey = new ArrayList<>();
         return survey;
     }
 

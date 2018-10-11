@@ -5863,6 +5863,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                 imageNameStarts);
                         dialog.dismiss();
                         outlet.getImageName().remove(imageNameStarts);
+                        outlet.getImageId().remove(Integer.valueOf(imageId));
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
