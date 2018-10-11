@@ -4574,7 +4574,7 @@ public class ProductHelper {
         }
         sb = new StringBuffer();
         sb.append("update orderheader set ");
-        sb.append("discount=discount+" + bmodel.formatValue(totDiscVaue));
+        sb.append("discount=discount+" + totDiscVaue);
         sb.append(" where orderid=" + orderID);
         db.updateSQL(sb.toString());
 

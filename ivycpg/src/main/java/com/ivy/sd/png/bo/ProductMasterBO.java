@@ -281,13 +281,24 @@ public class ProductMasterBO {
     public void setLineValue(double lineValue) {
         this.lineValue = lineValue;
     }
+    public double getLineValueAfterSchemeApplied() {
+        return lineValueAfterSchemeApplied;
+    }
+
+    public void setLineValueAfterSchemeApplied(double schemeAppliedValue) {
+        this.lineValueAfterSchemeApplied = schemeAppliedValue;
+    }
 
     private double taxAmount;
     private double productLevelDiscountValue = 0;
     private double schemeDiscAmount = 0;
+
     private double taxableAmount;
-    private double netValue;
     private double lineValue;
+    private double lineValueAfterSchemeApplied;
+    private double netValue;
+
+
 
 
 
@@ -348,7 +359,6 @@ public class ProductMasterBO {
     private int typeID;
     private String typeName;
     private String brandname;
-    private double schemeAppliedValue;
     private double priceoffvalue;
     private int PriceOffId;
 
@@ -592,7 +602,7 @@ public class ProductMasterBO {
         this.priceChangeReasonID = productBO.priceChangeReasonID;
         this.oos = productBO.oos;
         this.taxableAmount = productBO.taxableAmount;
-        this.schemeAppliedValue = productBO.schemeAppliedValue;
+        this.lineValueAfterSchemeApplied = productBO.lineValueAfterSchemeApplied;
         this.own = productBO.own;
 
         this.csPiece = productBO.getCsPiece();
@@ -1426,13 +1436,7 @@ public class ProductMasterBO {
 
 
 
-    public double getLineValueAfterSchemeApplied() {
-        return schemeAppliedValue;
-    }
 
-    public void setLineValueAfterSchemeApplied(double schemeAppliedValue) {
-        this.schemeAppliedValue = schemeAppliedValue;
-    }
 
     public double getPriceoffvalue() {
         return priceoffvalue;
