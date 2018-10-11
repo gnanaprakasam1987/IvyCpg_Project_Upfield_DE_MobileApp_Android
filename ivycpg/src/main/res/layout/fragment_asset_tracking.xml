@@ -35,8 +35,7 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/list_padding_left_n_right"
-                    android:paddingEnd="@dimen/list_padding_left_n_right"
-                    android:weightSum="10">
+                    android:paddingEnd="@dimen/list_padding_left_n_right">
 
                     <TextView
                         android:id="@+id/audit"

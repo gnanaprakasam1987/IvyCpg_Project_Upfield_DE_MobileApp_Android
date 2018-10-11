@@ -703,8 +703,7 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
 
         @Override
         public int getCount() {
-            int count = mSpinnerAdapter.getCount();
-            return count;
+            return mSpinnerAdapter.getCount();
         }
 
         @Override
