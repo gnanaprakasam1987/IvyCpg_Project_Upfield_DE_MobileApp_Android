@@ -381,6 +381,19 @@ public class PriceTrackingHelper {
     //to check whether modification or data added
     public boolean hasDataTosave(List<ProductMasterBO> productList) {
 
+
+        for (ProductMasterBO sku : productList) {
+            if (sku.getPrice().equals(".") && sku.getPriceCompliance() != 0 && sku.getPriceChanged() != 0
+                    || sku.getPrice_ca().equals(".")
+                    || sku.getPrice_pc().equals(".")
+                    || sku.getPrice_oo().equals(".")
+                    || sku.getMrp_ca().equals(".")
+                    || sku.getMrp_pc().equals(".")
+                    || sku.getReasonID().equals(".")
+                    || sku.getMrp_ou().equals("."))
+                return false;
+        }
+
         for (ProductMasterBO sku : productList) {
             if (!sku.getPrice().equals("0") || sku.getPriceCompliance() != 0 ||sku.getPriceChanged() != 0
                     || !sku.getPrice_ca().equals("0")
