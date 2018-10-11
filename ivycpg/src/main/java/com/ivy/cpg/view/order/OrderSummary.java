@@ -871,7 +871,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
-            if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
+            if (bModel.getOrderHeaderBO() != null && bModel.getOrderHeaderBO().getOrderImageName() != null && bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_photo_camera_grey_24dp);
                 drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_capture).setIcon(drawable);
