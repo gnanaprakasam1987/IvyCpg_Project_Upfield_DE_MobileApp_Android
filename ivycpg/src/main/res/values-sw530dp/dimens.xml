@@ -34,7 +34,6 @@
     <dimen name="list_item_height">48dp</dimen>
     <dimen name="list_product_name_width_tiny">240dp</dimen>
     <dimen name="list_product_name_width_init">252.8dp</dimen>
-    <dimen name="list_product_name_width">288dp</dimen>
     <dimen name="list_product_name_width_medium">316dp</dimen>
     <dimen name="list_product_name_width_small">272dp</dimen>
     <dimen name="list_item_width">64dp</dimen>
@@ -104,25 +103,12 @@
     <dimen name="sr_list_view_width_large">136dp</dimen>
 
     <!-- print preview -->
-    <dimen name="pp_case_unit">64dp</dimen>
-    <dimen name="pp_outer_price">96dp</dimen>
-    <dimen name="pp_case_price">96dp</dimen>
-    <dimen name="pp_unit_price">80dp</dimen>
-    <dimen name="pp_discount">88dp</dimen>
-    <dimen name="pp_row_case_unit">72dp</dimen>
-    <dimen name="pp_row_outer_price">104dp</dimen>
-    <dimen name="pp_row_discount">88dp</dimen>
-    <dimen name="pp_row_upc">184dp</dimen>
     <dimen name="pp_row_upc_padding">160dp</dimen>
 
     <!-- print preview diageo -->
     <dimen name="ppd_code">68dp</dimen>
-    <dimen name="ppd_brand">240dp</dimen>
-    <dimen name="ppd_case">40dp</dimen>
-    <dimen name="ppd_bot">40dp</dimen>
     <dimen name="ppd_unit_price">68dp</dimen>
     <dimen name="ppd_amount">68dp</dimen>
-    <dimen name="ppd_batch">208dp</dimen>
 
     <!-- Scheme Dialog Height -->
     <dimen name="scheme_dialog_height">640dp</dimen>
@@ -230,7 +216,6 @@
     <dimen name="padding_rb">4dp</dimen>
     <dimen name="padding_l">18.4dp</dimen>
 
-    <dimen name="sih_so_w">80dp</dimen>
     <dimen name="no_btn_h">48dp</dimen>
 
     <dimen name="can_ok_btn_h">40dp</dimen>
@@ -680,8 +665,6 @@
     <dimen name="incentive_value_size">16sp</dimen>
     <dimen name="percent_value_size">14.4sp</dimen>
 
-
-    <dimen name="search_edt_text_size">11.2sp</dimen>
 
     <!-- List item text size -->
     <dimen name="list_item_primary_text_size">12.8sp</dimen>

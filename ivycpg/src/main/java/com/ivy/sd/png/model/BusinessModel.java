@@ -164,6 +164,7 @@ import com.ivy.sd.print.EODStockReportPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
+import com.ivy.utils.AppUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -3850,7 +3851,7 @@ public class BusinessModel extends Application {
         float total = 0;
         Cursor c = db
                 .selectSQL("select ifnull(sum(Amount),0) from Payment where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
                 c.moveToNext();
@@ -5255,10 +5256,10 @@ public class BusinessModel extends Application {
             Cursor c;
             if (isVansales) {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from invoicemaster where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             } else {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
-                        + QT(getRetailerMasterBO().getRetailerID())
+                        + AppUtils.QT(getRetailerMasterBO().getRetailerID())
                         + " and upload='N'");
             }
             if (c.getCount() > 0) {

@@ -91,7 +91,6 @@
     <string name="product_name">ຊື່ຜະລິດຕະພັນ</string>
     <string name="ou">OU</string>
     <string name="msq">MSQ</string>
-    <string name="wp">WP</string>
     <string name="sp">SP</string>
     <string name="item_piece">OP</string>
     <string name="collection">Collection</string>
@@ -128,14 +127,8 @@
     <string name="tin">TIN:</string>
     <string name="outlet_name">ຊື່ຮ້ານຄ້າ</string>
     <string name="item">ສິນຄ້າ</string>
-    <string name="vat">VAT:</string>
-    <string name="vatt">(+) VAT</string>
     <string name="discount">Discount</string>
-    <string name="bill_value">Bill Value</string>
-    <string name="signature">ລາຍເຊັນ S.O</string>
-    <string name="calculator">ເຄື່ອງຄິດໄລ່</string>
     <string name="print">ພີມ</string>
-    <string name="inv_print_prieview">ຕົວຢ່າງກ່ອນພິມບິນຂາຍ</string>
     <string name="plan_task">ແຜນຫນ້າວຽກ</string>
     <string name="applyto">ນຳໃຊ້ກັບ</string>
     <string name="day">ວັນ</string>
@@ -160,7 +153,6 @@
     <string name="start_sync">Start Sync</string>
     <string name="with_images">ພ້ອມຮູບພາບ</string>
     <string name="close_the_day">ປິດມື້</string>
-    <string name="reconnect">ເຊື່ອມຕໍ່ໃຫມ່</string>
     <string name="delete">ລົບ</string>
     <string name="balance">ຍອດຄ້າງ</string>
     <string name="sales">ຂາຍ</string>
@@ -173,7 +165,6 @@
     <string name="no_channels_download">ບໍ່ມີປະເພດຮ້ານໃຫ້ດາວໂຫລດ</string>
     <string name="no_sub_channels_download">ບໍ່ມີປະເພດຮ້ານຍ່ອຍໃຫ້ດາວໂຫລດ</string>
     <string name="no_beats_download">No Beats Download</string>
-    <string name="new_store_has_been_saved">ຮ້ານຄ້າໃຫມ່ຖືກບັນທຶກແລ້ວ</string>
     <string name="no_initiative_available">No Initiative Available</string>
     <string name="order_saved_locally_order_id_is">ບັນທຶກເລກທີໃບສັ່ງ. ເລກທີໃບສັ່ງແມ່ນ:</string>
     <string name="new_store_infn_not_saved">ຮ້ານຄ້າໃຫມ່ບໍ່​ໄດ້ຖືກບັນທຶກ</string>
@@ -191,7 +182,6 @@
     <string name="enable_gps">ເປີດ GPS.</string>
     <string name="no_data_exists">ບໍ່ພົບຂໍ້ມຸນ!</string>
     <string name="data_upload_completed_sucessfully">ອັບໂຫລດຂໍ້ມູນສຳເລັດແລ້ວ!</string>
-    <string name="connected">ເຊື່ອຕໍ່ແລ້ວ</string>
     <string name="saving_sales_return">ກຳລັງບັນທືກ</string>
     <string name="uploading_data">ກຳລັງອັບໂຫລດຂໍ້ມູນ</string>
     <string name="image_uploading">ກຳລັງອັບໂຫລດຮູບພາບ</string>
@@ -232,7 +222,6 @@
     <string name="order_po">PO</string>
     <string name="order_remarks">ຫມາຍເຫດ</string>
     <string name="order_dialog_barcode">ບາໂຄດ</string>
-    <string name="wc">WC</string>
     <string name="sc">SC</string>
     <string name="item_case">OC</string>
     <string name="distribution">ການຈຳຫນ່າຍ</string>
@@ -266,10 +255,7 @@
     <string name="select">--ເລືອກ--</string>
     <string name="select_prod">--Select Product--</string>
     <string name="retailer_name">ຊື່ຮ້ານຄ້າ</string>
-    <string name="gross_sales">ຍອດຂາຍລວມ</string>
     <string name="customer">ລູກຄ້າ:</string>
-    <string name="invoice_slip">ລູກຄ້າ\'s ກ໋ອບປີ້</string>
-    <string name="net_sales">Net Sales:</string>
     <string name="printer_not_connected">ເຄື່ອງພິມບໍ່ເຊື່ອມຕໍ່</string>
     <string name="print_preview">ເບີ່ງກ່ອນພິມ</string>
     <string name="invoice_report_details">Invoice Report Details</string>
@@ -278,38 +264,28 @@
     <string name="about">ກ່ຽວກັບ</string>
     <string name="capture">ບັນທືກ</string>
     <string name="avail">ມີ</string>
-    <string name="connecting">ກຳລັງເຊື່ອມຕໍ່</string>
     <string name="out_of_memory">ຫນວ່ຍຄວາມຈຳບໍ່ພໍ</string>
-    <string name="no_error">ບໍ່ມີຂໍ້ຜິດພາດ</string>
     <string name="low_voltage">ໄຟ​ຕົກ</string>
     <string name="normal_voltage">ໄຟປົກກະຕິ</string>
-    <string name="ph_no">ເບີໂທ</string>
     <string name="only_order">ໃບສັ່ງຢ່າງດຽວ</string>
     <string name="total_amount_due">Total Amount Due:</string>
     <string name="select_no_order_reason">Select No Order Reason</string>
     <string name="select_reason">ເລືອກເຫດຜົນ</string>
-    <string name="order_created_successfully">Order Created Successfully</string>
     <string name="done">ສຳເລັດ</string>
     <string name="lbl_continue">ດຳເນີນຕໍ່</string>
     <string name="brand">ຍີຫໍ້</string>
     <string name="please_finish_mandatory_modules">ກະລຸນນາສັ່ງໂມດູລ​ໃຫ້ສຳເລັດ</string>
     <string name="summary">ສະຫລຸບ</string>
     <string name="apply_so">ນຳໃຊ້ຈຳນວນທີ່ແນະນຳ</string>
-    <string name="cust">ລູກຄ້າ</string>
     <string name="tel">ເບີໂທ</string>
-    <string name="salesman">ພະນັກງານຂາຍ</string>
     <string name="route">ເສັ້ນທາງ</string>
-    <string name="itemno">ເລກທີສິນຄ້າ</string>
     <string name="description">ລາຍລະອຽດ</string>
-    <string name="case_unit">ລັງ/ຫນ່ວຍ</string>
-    <string name="case_price">ລັງ/ລາຄາ</string>
     <string name="amount">ມູນຄ່າ</string>
     <string name="your_name">ຊື່ຂອງທ່ານ</string>
     <string name="all_channel">ທຸກປະເພດຮ້ານ</string>
     <string name="id">ID</string>
     <string name="ico">ICO</string>
     <string name="so_case">SO C</string>
-    <string name="imagename">ຊື່ຮູບ</string>
     <string name="spl_filter">ຕົວກອງພິເສດ</string>
     <string name="prd_filter">ຕົວກອງຜະລິດຕະພັນ</string>
     <string name="barcode">ບາໂຄດ</string>
@@ -334,12 +310,10 @@
     <string name="unloadimage">ຮູບພາບບໍ່ມີ</string>
     <string name="deviate_retailers">ຮ້ານຄ້ານອກເສັ້ນທາງ</string>
     <string name="admin_contact_no">ເບີໂທຕິດຫ້ອງ​ການ</string>
-    <string name="ord_id">ORD NO</string>
     <string name="invno">INV NO</string>
     <string name="apply_sih">Apply SIH</string>
     <string name="please_answer_all_mandatory_questions">ກະລຸນນາຕອບຄຳຖາມບັງຄັບທັງຫມົດ</string>
     <string name="activation_key_should_be_sixteen_character">ລະຫັດເປີດນຳໃຊ້ຄວນມີ 16 ຕົວ</string>
-    <string name="p_qty">P Qty</string>
     <string name="stock_download_successfully">Stock Downloaded Successfully</string>
     <string name="seq_no">Seq No</string>
     <string name="musername">ຊື່ຜູ້ຂາຍ</string>
@@ -351,23 +325,12 @@
     <string name="no_paired_device">ບໍ່ມີການເຊື່ອມຕໍ່ອຸປະກອນ</string>
     <string name="paired_bluetooth_printers">Paired Bluetooth Printers</string>
     <string name="printed_successfully">ພີມສຳເລັດແລ້ວ</string>
-    <string name="printer_connected">ເຄື່ອງພິມເຊື່ອມຕໍ່ແລ້ວ</string>
-    <string name="complete_to_print">ພິມສຳເລັດ</string>
     <string name="cover_is_open">ຝາເປີດຢູ່</string>
     <string name="paper_not_present">Paper end sensor: paper not present</string>
-    <string name="bluetooth_connection_not_available">ສັນຍານບູທູດບໍ່ມີ</string>
-    <string name="total_print">ລວມ</string>
-    <string name="print_footer3"> Total TVA a 20.00%</string>
-    <string name="print_footer4"> Total TTC a payer </string>
     <string name="you_are_closing">ທ່ານກຳລັງປິດ</string>
     <string name="delete_stock_and_order">Del. Stock &amp; Order</string>
-    <string name="received_by">ຮັບໂດຍ:</string>
     <string name="post_dated_cheque_notallow">ບໍ່ອານຸຍາດລົງວັນທີແຊັກ</string>
     <string name="order_report_details">Order Report Details</string>
-    <string name="order_print_preview">Order Print Preview</string>
-    <string name="invoice_print_preview">Invoice Print Preview</string>
-    <string name="order_slip">Order Copy</string>
-    <string name="invoice_saved_and_print_preview_created_successfully">Invoice saved and print preview created successfully.</string>
     <string name="no_invoice_exist">No Invoice available.</string>
     <string name="scheme_name">ຊື່ແບບແຜນ</string>
     <string name="max_disc">ສ່ວນຫລຸດສູງສຸດ</string>
@@ -427,25 +390,12 @@
     <string name="journey_not_ended">ການເດີນທາງຍັງບໍ່ໝົດ</string>
     <string name="batch_no">ເລກທີ Batch</string>
     <string name="you_are">ທ່ານແມ່ນ</string>
-    <string name="wouter">WO</string>
     <string name="souter">SHO</string>
     <string name="enter_otp_skip_seq">ໃສ່ OTP ເພື່ອຂ້າມລຳດັບ</string>
     <string name="disc_amt">Disc. Amt</string>
     <string name="enter_cheque_no">Enter Cheque No</string>
-    <string name="arabian_trading_supplies">Arabian Trading Supplies</string>
-    <string name="cash_tc_invoice">CASH/TC INVOICE#</string>
     <string name="sales_date">Sales Date</string>
     <string name="time">ເວລາ</string>
-    <string name="upc">UPC</string>
-    <string name="good_returns">ສົ່ງສິນຄ້າຄືນ</string>
-    <string name="expiry_return">ສົ່ງຄືນຫມົດອາຍຸ</string>
-    <string name="free_goods">ສິນຄ້າຟຣີ</string>
-    <string name="net_due_invoice">ກຳຫນົດສຸດທິ</string>
-    <string name="cash_paid">ຈ່າຍເງີນສົດ</string>
-    <string name="tc_charged">Tc Charged</string>
-    <string name="salesman_signature">ລາຍເຊັນພະນັກງານຂາຍ</string>
-    <string name="customer_signature">ລາຍເຊັນລຸກຄ້າ</string>
-    <string name="orginal">ຕົ້ນສະບັບ</string>
     <string name="from">ຈາກ</string>
     <string name="to">ຫາ</string>
     <string name="scheme">Scheme</string>
@@ -456,7 +406,6 @@
     <string name="select_collection_reason">Select Collection Reason</string>
     <string name="reason_saved">ບັນທຶກເຫດຜົນ</string>
     <string name="acc_no">ເລກທີບັນຊີ</string>
-    <string name="emp_id">ອີເມວ</string>
     <string name="device_status">ສະຖານະເຄື່ອງ</string>
     <string name="current_date">ວັນທີປະຈຸບັນ</string>
     <string name="network_status">ສະຖານະເນັດເວີກ</string>
@@ -501,7 +450,6 @@
     <string name="invaliddate">ວັນທີບໍ່ຖຶກ</string>
     <string name="saverequired">ຕ້ອງການບັນທືກ</string>
     <string name="cant_skip_go_by_sequence">ບໍ່ສາມາດຂ້າມ. ຕ້ອງໄປຕາມລຳດັບ</string>
-    <string name="duplicate">ຊ້ຳກັນ</string>
     <string name="no_damaged_stock_to_unload">ບໍ່ມີສະຕ໋ອກແຕ່ກເສຍຫາຍເພື່ອອັບໂຫລດ</string>
     <string name="do_you_want_to_save_stock">Do you want to save stock</string>
     <string name="stock_saved">Stock saved</string>
@@ -520,7 +468,6 @@
     <string name="feedback">ຂໍ້ສະເຫນີ</string>
     <string name="tracking_list">ລາຍການຕິດຕາມ</string>
     <string name="vanno">ເລກລົດ:</string>
-    <string name="BATCH_NO">ເລກທີ Batch</string>
     <string name="select_reason_skip_seq">ເລືອກເຫດຜົນເພື່ອຂ້າມລຳດັບ</string>
     <string name="crown">ຂັ້ນ​ບໍ​ລິ​ຫານ​ສູງ​ສຸດ</string>
     <string name="crown_count">Crown Count</string>
@@ -544,13 +491,11 @@
     <string name="batch_no_already_exist">ເລກ Batch ມີແລ້ວ</string>
     <string name="select_sub_depot">ເລືອກສາງ​ຍ່ອຍເພື່ອ​ບັນ​ທຶກ</string>
     <string name="enter">ໃສ່</string>
-    <string name="code">ລະຫັດ</string>
     <string name="case_u">ລັງ</string>
     <string name="bottle">ແກ້ວ</string>
     <string name="totfullstockcs">Total Full Stock-Cs</string>
     <string name="totfullstockbtl">Total Full Stock-Btl</string>
     <string name="totempties">Total Empties</string>
-    <string name="totduecoll">Total Amount Due</string>
     <string name="already_another_user_login">ມີຜູ້ໃຊ້ອືນເຂົ້າລະບົບແລ້ວ</string>
     <string name="please_pay_old_invoice">ກະລຸນນາຈ່າຍບິນເກົ່າ</string>
     <string name="detail">ລາຍລະອຽດ</string>
@@ -564,9 +509,6 @@
     <string name="file_not_found">ບໍ່ພົບໄຟລ໌</string>
     <string name="order_number">Order No</string>
     <string name="invoice_number">Invoice No</string>
-    <string name="bt_not_enabled_turn_on_bluetooth">ບູທຸດຖຶກປິດ. ກະລຸນນາເປິດບູທູດ</string>
-    <string name="button_disconnect_text">ບໍ່ເຊື່ອມຕໍ່</string>
-    <string name="button_connect_text">ເຊື່ອມຕໍ່</string>
     <string name="exceed_free_product">ເກີນກຳຫນົດທີ່ສະເຫນີສູງສຸດ</string>
     <string name="exceed_allocation">ເກີນການແບ່ງປັນ</string>
     <string name="vat_no">VatNo</string>
@@ -575,12 +517,8 @@
     <string name="previous_activation_not_done_for_this_device">ກ່ານເປິດໃຊ້ງານກ່ອນຫນ້າບໍ່ສຳເລັດສຳລັບອຸປະກອນນີ້</string>
     <string name="minimum_amount">Min.Amt</string>
     <string name="enter_minimum_amount">Pay Minimum Amount to Proceed the Invoice</string>
-    <string name="total_stock_sold">Total Product Sold (Tax.Inc)</string>
     <string name="total_exec_tax">Total exec.Tax</string>
-    <string name="total_paid">Total Paid</string>
-    <string name="credit">Credit</string>
     <string name="customer_sign">ປ້າຍລຸກຄ້າ</string>
-    <string name="rep_sign">Rep. Sign</string>
     <string name="invoice_created_dou_wnt_print">Invoice created Successfully. Do you want to print ?</string>
     <string name="are_you_sure_you_want_to_print"> Do you want to print a copy of your Invoice ?</string>
     <string name="choose">ເລືອກ</string>
@@ -592,7 +530,6 @@
     <string name="shelf_max_shelf_count">ນັບຊັ້ນວ່າງສູງສຸດແມ່ນ:</string>
     <string name="label_check_box_do_not_show_again">ບໍ່ສະແດງອີກ</string>
     <string name="selectany">ເລືອກ</string>
-    <string name="tin_no">Tin:</string>
     <string name="currprice">ລາຄາປະຈຸບັນ</string>
     <string name="no_location_download">ບໍ່ມີສະຖານທີໃຫ້ດາວໂຫລດ</string>
     <string name="app_url_is_empty">App url is empty</string>
@@ -602,7 +539,6 @@
     <string name="choose_location">ເລຶອກສະຖານທີ</string>
     <string name="questscore">ຄະແນນຄຳຖາມ:</string>
     <string name="surevyscore">ຄະແນນແບບສອບຖາມ:</string>
-    <string name="outer_price">O.Price</string>
     <string name="photo_capture_not_saved_go_back">ຮູບທີ່ຖ່າຍບໍ່ໄດ້ບັນທືກ. ຕ້ອງການຖ່າຍໃຫມ່ບໍ?</string>
     <string name="addpromo">ເພີ່ມໂປຣໂມຊັ້ນ</string>
     <string name="startdate">ວັນທີເລີ່ມຕົ້ນ</string>
@@ -888,7 +824,6 @@
     <string name="selected_date_already_applied">Leave applied for selected date</string>
     <string name="download_date_mismatch">Download date Mismatch</string>
     <string name="user_account_locked">Account locked. Please contact system admin.</string>
-    <string name="scheme_discount">Scheme Discount</string>
     <string name="tab_text_images">Images</string>
     <string name="tab_text_audio">Audio</string>
     <string name="tab_text_video">Video</string>
@@ -1167,9 +1102,7 @@
     <string name="shipment_type_label">Shipment Type</string>
     <string name="payment_type_label">Payment Type</string>
     <string name="select_shipment_type">Select Shipment Type</string>
-    <string name="select_pay_term_type">Select PayTerm Type</string>
     <string name="shipment_mandatory">Please select shipment type</string>
-    <string name="pay_term_mandatory">Please select payterm type</string>
     <string name="dist_channel_mandatory">Please select Distribution channel</string>
     <string name="select_channel">Select channel</string>
     <string name="supplier_label">Supplier</string>
@@ -1234,22 +1167,6 @@
     <string name="profile">Profile</string>
     <string name="view">View</string>
     <string name="volume">Volume</string>
-
-    <string-array name="task_tab_header">
-        <item>ທັງ​ໜົດ</item>
-        <item>ກຳ​ນົດ​ໃຫ້</item>
-        <item>ໜ້າ​ວຽກ​ຂ້ອຍ</item>
-    </string-array>
-    <string-array name="days_in_week">
-        <item>Sun</item>
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-        <item>Sat</item>
-    </string-array>
-
     <string name="share_percent">Share %</string>
     <string name="total_value_less_than_actual_value">Total value is lesser than Actual value.</string>
     <string name="answer_to_take_photo">Answer to take photo.</string>
@@ -1267,17 +1184,137 @@
     <string name="ns">NS</string>
     <string name="ul">UL</string>
     <string name="salable">Salable</string>
-
-    <string name="bill">Bill</string>
     <string name="line_value">Line value</string>
     <string name="tax_Value">Tax Value</string>
-    <!-- <string name="Disc">Disc</string>-->
     <string name="cash_disc">Cash Disc</string>
-    <string name="tls">TLS</string>
-    <string name="payment_term">Payment term</string>
-    <string name="oth_disc">Oth. Disc (Other Discount)</string>
-    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
-    <!--<string name="Signature">Signature</string>-->
-    <string name="attachment">Attachment</string>
+    <string name="retailer_kpi_not_available">Retailer KPI not available.</string>
+    <string name="bill1_value">Bill1 Value</string>
+    <string name="bill1_line">Bill1 Line</string>
+    <string name="bill2_value">Bill2 Value</string>
+    <string name="bill2_line">Bill2 Line</string>
+    <string name="notification_text">Realtime location tracking enabled. </string>
+    <string name="status_time_mismatch">Start Time is Greater than end time</string>
+    <string name="status_location_accuracy">Change high location Accuracy</string>
+    <string name="status_mock_location">Mock Location is Enabled</string>
+    <string name="status_alarm_time_zero">Alarm time should not be zero</string>
+    <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
+    <string name="enter_account">Enter account no</string>
+    <string name="otp_download_url_empty">OTP Generate Url is Empty </string>
+    <string name="profile_edit_verify_email_id">Please verify Email Id</string>
+    <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
+    <string name="planogram_image_count_reached">Reached Maximum planogram image count</string>
+    <string name="planogram_image_count_not_reached">Planogram image not added</string>
+    <string name="enter_valid">Enter valid </string>
+    <string name="stock">Stock</string>
+    <string name="Order_Summary_dialog_header">Order_Summary_dialog_header</string>
+    <string name="collection_mandatory">Please do collection for Pending Invoice !</string>
+    <string name="todate_validation">To Date should be greater than From Date</string>
+    <string name="backup_seller">Backup Seller</string>
+    <string name="error_connecting_printer">Error connecting Printer</string>
+    <string name="allocation">Allocation</string>
+    <string name="you_have_unchecked_applicable_scheme">You have unchecked few applicable scheme ?</string>
+    <string name="regular_incentive_detail">Regular Incentive Detail</string>
+    <string name="top_up_incentive_detail">Top Up Incentive Detail</string>
+    <string name="rcpt_date">Rcpt Date</string>
+    <string name="rcpt_no">Rcpt NO</string>
+    <string name="seller_code">Seller Code</string>
+    <string name="pls_enter_rtgsno">Please Enter RTGS No </string>
+    <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
+    <string name="drug_license_expired">Drug License Expired</string>
+    <string name="uom_not_available">Uom Not Available</string>
+    <string name="pwd_policy_not_match">Password Policy Not Matched</string>
+    <string name="last_vist">Last Vist : </string>
+    <string name="visit_time">Visit Time : </string>
+    <string name="yet_to_visit">Yet to visit </string>
+    <string name="targeted">Targeted </string>
+    <string name="covered">Covered </string>
+    <string name="please_complete">Please Complete</string>
+    <string name="complete">Complete</string>
+    <string name="enter_receipt_no">Enter Receipt Number</string>
+    <string name="please_enter">Please Enter</string>
+    <string name="lpc">LPC</string>
+    <string name="return_value">Return Value</string>
+    <string name="salesreport_details">SalesReturn Report Details</string>
+    <string name="last_download_on">Last Download: </string>
+    <string name="last_upload_on">Last Upload: </string>
+    <string name="select_category">Select Category</string>
+    <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
+    <string name="retailer_contact_list">Contact data not Available!</string>
+    <string name="not_able_to_register_visit">Not able to register the visit</string>
+    <string name="outlet">Outlet</string>
+    <string name="contact">Contact</string>
+    <string name="isprimary">Is Primary</string>
+    <string name="contact_title">Contact Title</string>
+    <string name="enter_first_name">Enter Contact FirstName</string>
+    <string name="enter_last_name">Enter Contact LastName</string>
+    <string name="enter_other_name">Enter Contact Other Title</string>
+    <string name="select_contact_title">Select Contact Title</string>
+    <string name="primary_contact_available">Primary Contact already available!</string>
+    <string name="max_contacts_added">Maximum Contacts already added!</string>
+    <string name="discount_amt_cannot_be_higher_than_percentage">Discount Amount cannot be Higher than “%1$s” of product price.</string>
+    <string name="select_reason_for_price_change">Select Reason for Price Change.</string>
+    <string name="filter_by">Filter By</string>
+    <string name="show_results">Show Results</string>
+    <string name="please_choose_address">Please choose any one address</string>
+    <string name="mark_attendance_working">Please Mark Attendance As "Working" To Proceed.</string>
+    <string name="planned_activities">Planned Activities</string>
+    <string name="do_u_want_to_cancel">Do you want to cancel?</string>
+    <string name="asset_service">Asset Service</string>
+    <string name="select_asset_service">Nothing selected to Service.</string>
+    <string name="visit_plan_updated">Visit Plan Updated</string>
+    <string name="stock_allocated">Stock Allocated</string>
+    <string name="vanload_stock_applied">VanLoad Stock Applied </string>
+    <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
+    <string name="check_any_one_list">Check any one list</string>
+    <string name="new_order">New Order</string>
+    <string name="new_outlet_order">You have changed the Distributor, Order will be lost. Do you want to Continue?</string>
+    <string name="outlet_code">Outlet Code</string>
+    <string name="sub_channel">Sub Channel</string>
+    <string name="contract_id">Contract ID</string>
+    <string name="type_of_trade_offer">Type of Trade Offer</string>
+    <string name="days_to_expire">Days to Expire</string>
+    <string name="selected">selected</string>
+    <string name="select_order_type">Select order type</string>
+    <string name="withold_title">With Hold Tax</string>
+    <string name="no_collection_reason">No collection \nReason</string>
+    <string name="invoice_with_no_collection">Invoice With No Collection Reason Found</string>
+    <string name="skip">Skip</string>
+    <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
+    <string name="Orde_Saved">Order Saved.</string>
+    <string name="Order_id">Order ID is: </string>
+    <string name="denomination_error">Total amount not match with you denomination count amount </string>
+    <string name="pay">Pay</string>
+    <string name="order_id">Order ID</string>
+    <string name="ordered_cases">Ordered Cases</string>
+    <string name="ordered_pieces">Ordered Pieces</string>
+    <string name="fulfilled_cases">Fulfilled Cases</string>
+    <string name="fulfilled_pieces">Fulfilled Pieces</string>
+    <string name="order_fulfillment_detail">Order Fulfillment Detail</string>
+    <string name="logout_joint_user">Please logout JointCall User before downloading</string>
+    <string name="licensing">About Open Source Library</string>
+    <string name="software_licensing">Open Source Library</string>
+    <string name="click_to_show_licensing">Open Source Library - Licence</string>
+    <string name="margin_price">Mgn Prc</string>
+    <string name="margin_per">Mgn Per</string>
+    <string name="invoice_already_generated">* Invoice Generated</string>
+    <string name="order_rejected">* Order Rejected</string>
+    <string name="do_you_want_to_reject">Do you want to reject?</string>
+    <string name="already_invoice_has_been_generated">Already invoice has been generated.</string>
+    <string name="rejected_order">Rejected Order</string>
+
+    <string-array name="task_tab_header">
+        <item>ທັງ​ໜົດ</item>
+        <item>ກຳ​ນົດ​ໃຫ້</item>
+        <item>ໜ້າ​ວຽກ​ຂ້ອຍ</item>
+    </string-array>
+    <string-array name="days_in_week">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
 
 </resources>

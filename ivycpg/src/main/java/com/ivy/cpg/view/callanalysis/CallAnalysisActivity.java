@@ -188,7 +188,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             mNoOrderCameraBTN.setOnClickListener(this);
 
-            if ((hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
+            if (bmodel.configurationMasterHelper.SHOW_GLOBAL_NO_ORDER_REASON && (hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
                     && bmodel.getRetailerMasterBO().getIsOrdered().equals("N"))) {
                 spinnerNoOrderReason.setVisibility(View.VISIBLE);
                 spinnerNoOrderReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -943,7 +943,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             ReasonMaster reason = (ReasonMaster) spinnerNoOrderReason
                     .getSelectedItem();
             String mSelectedReasonId = reason.getReasonID();
-            if ((hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
+            if (bmodel.configurationMasterHelper.SHOW_GLOBAL_NO_ORDER_REASON && (hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
                     && bmodel.getRetailerMasterBO().getIsOrdered().equals("N"))) {
                 if (reason.getReasonID().equals("-1")) {
                     Toast.makeText(
@@ -1350,7 +1350,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.timer = null;
         }
 
-        if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON) {
+        if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_GLOBAL_NO_ORDER_REASON) {
             bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
             bmodel.outletTimeStampHelper.deleteTimeStamp();
             bmodel.outletTimeStampHelper.deleteTimeStampImages();
