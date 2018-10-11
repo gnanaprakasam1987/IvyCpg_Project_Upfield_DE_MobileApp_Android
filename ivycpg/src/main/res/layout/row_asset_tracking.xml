@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:maxLines="2"
-                android:text="dzxfczxczxvzxvxvgggggggggggggggggggggggggggggggggggggggggggg" />
+                android:text="" />
         </LinearLayout>
 
 
