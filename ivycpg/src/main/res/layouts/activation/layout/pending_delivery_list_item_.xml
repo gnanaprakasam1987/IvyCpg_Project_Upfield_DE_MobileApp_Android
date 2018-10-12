@@ -36,7 +36,7 @@
                 android:layout_marginTop="7dp"
                 android:text="@string/store_name"
                 android:textColor="@color/history_label_color"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:textSize="@dimen/text_size_primary" />
 
             <TextView
                 android:id="@+id/txtStorename"
@@ -45,7 +45,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
                 android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,14 +67,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/invoice_number"
                         android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/list_item_primary_text_size" />
+                        android:textSize="@dimen/text_size_secondary" />
 
                     <TextView
                         android:id="@+id/txtInvoiceNo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
 
                     <TextView
@@ -84,14 +84,14 @@
                         android:layout_marginTop="7dp"
                         android:text="@string/Amount"
                         android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/list_item_primary_text_size" />
+                        android:textSize="@dimen/text_size_secondary" />
 
                     <TextView
                         android:id="@+id/txtInvNetamount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
 
@@ -109,14 +109,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/invoice_date"
                         android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/list_item_primary_text_size" />
+                        android:textSize="@dimen/text_size_secondary" />
 
                     <TextView
                         android:id="@+id/txtInvoiceDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/status_title"
@@ -125,14 +125,14 @@
                         android:layout_marginTop="7dp"
                         android:text="@string/status"
                         android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/list_item_primary_text_size" />
+                        android:textSize="@dimen/text_size_secondary" />
 
                     <TextView
                         android:id="@+id/txtStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
 

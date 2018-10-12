@@ -85,7 +85,7 @@
                 android:gravity="center"
                 android:text="Non Filed Activity"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
 
             <ListView
                 android:id="@+id/list_nfd"

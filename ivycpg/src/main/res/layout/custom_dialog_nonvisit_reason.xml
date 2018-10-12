@@ -38,7 +38,7 @@
         android:padding="@dimen/profile_header_txt_layout_marginleft"
         android:text="@string/reason_for_visit"
         android:textColor="?attr/colorAccent"
-        android:textSize="@dimen/font_micro_small"
+        android:textSize="@dimen/text_size_primary"
         android:textStyle="bold"
         android:layout_marginLeft="@dimen/profile_history_20dp" />
 

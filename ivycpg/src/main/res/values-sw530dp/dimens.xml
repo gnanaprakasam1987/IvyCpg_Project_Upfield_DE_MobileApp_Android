@@ -630,8 +630,8 @@
 
     <!-- Generic text size-->
 
-    <dimen name="text_sz_extra_small">8sp</dimen>
-    <dimen name="text_sz_small">11.2sp</dimen>
+
+
 
 
     <!-- user name in home menu, retailer name in profile and activity menu etc -->
@@ -641,15 +641,31 @@
     <!-- Beat name in trade coverage etc -->
     <dimen name="highlight_large">27.2sp</dimen>
 
-    <dimen name="list_primary">12.8sp</dimen>
-    <dimen name="list_secondary">11.2sp</dimen>
+
 
     <dimen name="actionbar_title_text_size">19.2sp</dimen>
+    <dimen name="text_size_primary">12.8sp</dimen>
+    <dimen name="text_size_secondary">11.2sp</dimen>
+    <dimen name="text_size_caption">8.8sp</dimen>
+
+    <!-- List header text size -->
+    <dimen name="list_header_text_size">11.2sp</dimen>
+    <dimen name="list_header_secondary_text_size">8.8sp</dimen>
+
+
+    <!-- Button text size -->
+    <dimen name="btn_small_round_corner_text_size">11.2sp</dimen>
+    <dimen name="btn_round_corner_text_size">14.4sp</dimen>
+
+
+    <!-- Footer text size -->
+    <dimen name="footer_label_size">9.6sp</dimen>
+    <dimen name="footer_label_value">12.8sp</dimen>
 
     <!-- ALL test size -->
 
-    <dimen name="font_nano_small">11.2sp</dimen>
-    <dimen name="font_micro_small">12.8sp</dimen>
+
+
     <dimen name="font_small">14.4sp</dimen>
     <dimen name="font_medium">16sp</dimen>
     <dimen name="font_large">17.6sp</dimen>
@@ -666,8 +682,7 @@
     <dimen name="percent_value_size">14.4sp</dimen>
 
 
-    <!-- List item text size -->
-    <dimen name="list_item_primary_text_size">12.8sp</dimen>
+
 
 
     <!-- Login - clear it later -->
@@ -675,17 +690,7 @@
     <dimen name="forgot_text_size">14.4sp</dimen>
     <dimen name="login_edittext_text_size">16sp</dimen>
 
-    <!-- List header text size -->
-    <dimen name="list_header_text_size">9.6sp</dimen>
-    <dimen name="list_header_secondary_text_size">8.8sp</dimen>
 
-    <!-- Button text size -->
-    <dimen name="btn_small_round_corner_text_size">11.2sp</dimen>
-    <dimen name="btn_round_corner_text_size">14.4sp</dimen>
-
-    <!-- Footer text size -->
-    <dimen name="greyed_text_size">9.6sp</dimen>
-    <dimen name="footer_lbl_text_size">12.8sp</dimen>
 
     <!-- Five level filter text size -->
     <dimen name="filter_level_text_size">14.4sp</dimen>
@@ -698,6 +703,7 @@
     <dimen name="activation_edittext_text_size">14.4sp</dimen>
     <dimen name="survey_answer_left">28dp</dimen>
     <dimen name="gallery_card_margin">1.6dp</dimen>
+
 
     <!-- For Fitscore Dashboard -->
     <dimen name="header_card_margin_top">200dp</dimen>

@@ -28,7 +28,7 @@
             android:singleLine="true"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:paddingLeft="3dp" />
     </LinearLayout>
 
@@ -53,7 +53,7 @@
                 android:paddingStart="3dp"
                 android:text="@string/advance_payment"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:paddingLeft="3dp" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:paddingStart="3dp"
                 android:text=""
                 android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/font_nano_small"
+                android:textSize="@dimen/text_size_secondary"
                 android:paddingLeft="3dp" />
         </LinearLayout>
 
@@ -93,7 +93,7 @@
                 android:paddingStart="4dp"
                 android:text="@string/date"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:paddingLeft="4dp" />
 
             <TextView
@@ -104,7 +104,7 @@
                 android:paddingStart="4dp"
                 android:text=""
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_nano_small"
+                android:textSize="@dimen/text_size_secondary"
                 android:paddingLeft="4dp" />
         </LinearLayout>
 
@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/amount"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small"/>
+                android:textSize="@dimen/text_size_caption"/>
 
             <TextView
                 android:id="@+id/adv_amount"

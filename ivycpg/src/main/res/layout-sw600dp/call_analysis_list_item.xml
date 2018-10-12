@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <TextView
@@ -61,7 +61,7 @@
                 android:layout_below="@+id/tv_menuvalue_lty"
                 android:layout_centerVertical="true"
                 android:textColor="@color/kpi_value_text_color"
-                android:textSize="@dimen/text_sz_small"/>
+                android:textSize="@dimen/text_size_caption"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <TextView
@@ -145,7 +145,7 @@
                 android:layout_below="@+id/tv_menuvalue_lty2"
                 android:layout_centerVertical="true"
                 android:textColor="@color/kpi_value_text_color"
-                android:textSize="@dimen/text_sz_small"/>
+                android:textSize="@dimen/text_size_caption"/>
         </RelativeLayout>
 
         <LinearLayout

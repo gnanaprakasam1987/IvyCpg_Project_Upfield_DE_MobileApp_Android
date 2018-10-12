@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/total"
                 android:textColor="?attr/accentcolor"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/totalValue"
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/lines"
                 android:textColor="?attr/accentcolor"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/lcpValue"

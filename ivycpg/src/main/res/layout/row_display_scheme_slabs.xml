@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/get_type"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/text_type"
@@ -75,7 +75,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -91,7 +91,7 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center"
                         android:text="@string/value"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/text_value"
@@ -99,7 +99,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <ImageView
                         android:id="@+id/imageView_free_products"

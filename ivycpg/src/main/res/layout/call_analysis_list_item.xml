@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/kpi_value_text_color"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
 
         <TextView
@@ -56,8 +56,8 @@
             android:layout_below="@+id/tv_menuvalue_lty"
             android:layout_centerVertical="true"
             android:textColor="@color/kpi_value_text_color"
-            android:textSize="@dimen/font_nano_small"
-            tools:ignore="UnknownId"></TextView>
+            android:textSize="@dimen/text_size_secondary"
+            tools:ignore="UnknownId"/>
     </RelativeLayout>
 
     <LinearLayout

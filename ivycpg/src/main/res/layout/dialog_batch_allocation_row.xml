@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/mfg_date"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/tv_mfg_date"
@@ -91,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/exp_date"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/tv_exp_date"
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:tag="item_piece"
                 android:text="@string/item_piece"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
 
             <EditText
@@ -159,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:tag="item_case"
                 android:text="@string/item_case"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <EditText
                 android:id="@+id/orderQTYinCase"
@@ -189,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:tag="item_outer"
                 android:text="@string/item_outer"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <EditText
                 android:id="@+id/outerorderQTYinCase"
@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/total"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/total"

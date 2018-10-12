@@ -926,7 +926,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 radioButton.setId(answers.get(i).getAnswerID());
                 radioButton.setText(answers.get(i).getAnswer());
                 radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
-                radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
+                radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
                 if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
                         answers.get(i).getAnswerID())) {
                     radioButton.setChecked(true);
@@ -1227,7 +1227,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             checkBox.setId(answers.get(i).getAnswerID());
             checkBox.setText(answers.get(i).getAnswer());
             checkBox.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
-            checkBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
+            checkBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
             if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
                     answers.get(i).getAnswerID())) {
                 checkBox.setChecked(true);
@@ -1647,7 +1647,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         else
             et.setText("");
         et.setMinLines(1);
-        et.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
+        et.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
         et.setMaxLines(1);
         et.setCursorVisible(true);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);

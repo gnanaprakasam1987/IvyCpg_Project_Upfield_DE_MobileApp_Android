@@ -69,7 +69,7 @@
                         android:layout_marginStart="5dp"
                         android:text="@string/Amount"
                         android:textColor="@color/Black"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:textStyle="bold"
                         android:visibility="visible"
                         android:layout_marginLeft="5dp" />
@@ -102,7 +102,7 @@
                         android:layout_marginStart="5dp"
                         android:text="Cash RefNo"
                         android:textColor="@color/Black"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:visibility="visible"
                         android:textStyle="bold"
                         android:layout_marginLeft="5dp" />
@@ -156,7 +156,7 @@
             android:layout_marginEnd="@dimen/dimens_6dp"
             android:text="@string/cancel"
             android:textColor="@color/Black"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:textStyle="bold"
             android:layout_marginRight="@dimen/dimens_6dp" />
 
@@ -168,7 +168,7 @@
             android:layout_marginStart="@dimen/dimens_6dp"
             android:layout_marginEnd="@dimen/dimens_6dp"
             android:text="@string/apply"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:textStyle="bold" />
     </LinearLayout>
 

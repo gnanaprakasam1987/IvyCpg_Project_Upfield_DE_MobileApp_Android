@@ -15,7 +15,7 @@
         android:padding="5dp"
         android:singleLine="true"
         android:text=""
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/txtTarget"
@@ -26,7 +26,7 @@
         android:padding="5dp"
         android:singleLine="true"
         android:visibility="gone"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/txtAchieved"
@@ -36,7 +36,7 @@
         android:gravity="center"
         android:padding="5dp"
         android:text=""
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/txtWeightage"
@@ -47,7 +47,7 @@
         android:padding="5dp"
         android:text=""
         android:visibility="gone"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/txtScore"
@@ -59,7 +59,7 @@
         android:paddingEnd="5dp"
         android:text=""
         android:visibility="gone"
-        android:textSize="@dimen/font_micro_small"
+        android:textSize="@dimen/text_size_primary"
         android:paddingRight="5dp" />
 
 </LinearLayout>

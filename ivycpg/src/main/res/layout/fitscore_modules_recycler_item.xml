@@ -16,7 +16,7 @@
         android:paddingEnd="15dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:textSize="@dimen/font_micro_small"
+        android:textSize="@dimen/text_size_primary"
         android:minHeight="@dimen/store_card_image"
         android:layout_gravity="center_vertical"
         android:minWidth="100dp"

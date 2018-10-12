@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
 
             <TextView
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
         <TextView
             android:id="@+id/tax_tv"
@@ -41,7 +41,7 @@
             android:gravity="center"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
 
 
@@ -54,7 +54,7 @@
             android:paddingEnd="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:paddingRight="5dp" />
 
 

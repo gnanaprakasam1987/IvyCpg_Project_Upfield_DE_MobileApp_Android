@@ -82,7 +82,7 @@ public class AssetAdapter extends BaseAdapter {
 
         ReasonMaster reason1 = new ReasonMaster();
         reason1.setReasonID(Integer.toString(0));
-        reason1.setReasonDesc(context.getResources().getString(R.string.select_reason));
+        reason1.setReasonDesc(context.getString(R.string.plain_select));
         mAssetReasonList = mAssetPresenter.getAssetReasonList();
 
         if (mAssetReasonList.size() > 0) {
@@ -95,7 +95,7 @@ public class AssetAdapter extends BaseAdapter {
         mAssetReasonSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-        String select_condition = "Select Condition";
+        String select_condition = mContext.getString(R.string.plain_select);
         try {
             if (LabelsMasterHelper.getInstance(context).applyLabels("select_condition") != null)
                 select_condition = LabelsMasterHelper.getInstance(context).applyLabels("select_condition");
@@ -151,7 +151,7 @@ public class AssetAdapter extends BaseAdapter {
                     .findViewById(R.id.btn_audit);
             holder.assetNameTV = (TextView) row
                     .findViewById(R.id.tv_asset_name);
-            holder.assetNameTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            //holder.assetNameTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.reason1Spin = (Spinner) row
                     .findViewById(R.id.spin_reason1);
 
@@ -162,12 +162,12 @@ public class AssetAdapter extends BaseAdapter {
                     .findViewById(R.id.Btn_install_Date);
             holder.llInstallDate = (LinearLayout) row
                     .findViewById(R.id.ll_install_date);
-            holder.mInstallDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            //holder.mInstallDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.mServiceDate = (Button) row
                     .findViewById(R.id.Btn_service_Date);
             holder.ll_service_date = (LinearLayout) row
                     .findViewById(R.id.ll_service_date);
-            holder.mServiceDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            //holder.mServiceDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.photoBTN = (ImageView) row
                     .findViewById(R.id.btn_photo);
             holder.availQtyRB = (CheckBox) row
@@ -176,9 +176,9 @@ public class AssetAdapter extends BaseAdapter {
                     .findViewById(R.id.ll_avail_qty);
             holder.serialNoTV = (TextView) row
                     .findViewById(R.id.tv_serialNo);
-            holder.serialNoTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            //holder.serialNoTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.grpTV = (TextView) row.findViewById(R.id.tv_grp);
-            holder.grpTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            //holder.grpTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.execQtyLL = (LinearLayout) row.findViewById(R.id.ll_exec_qty);
             holder.execQtyRB = (CheckBox) row.findViewById(R.id.radio_exec_qty);
 

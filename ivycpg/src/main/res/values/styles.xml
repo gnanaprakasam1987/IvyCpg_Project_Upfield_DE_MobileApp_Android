@@ -915,6 +915,8 @@ negative button and neutral button -->
         <item name="android:paddingLeft">@dimen/btn_small_round_corner_padding</item>
         <item name="android:paddingRight">@dimen/btn_small_round_corner_padding</item>
         <item name="android:minWidth">@dimen/btn_small_round_corner_width</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="ButtonNormal" parent="Base.Widget.AppCompat.Button">
@@ -925,6 +927,8 @@ negative button and neutral button -->
         <item name="android:paddingLeft">@dimen/btn_round_corner_padding</item>
         <item name="android:paddingRight">@dimen/btn_round_corner_padding</item>
         <item name="android:minWidth">@dimen/btn_round_corner_width</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="ButtonSmallRoundCornerDisable" parent="@style/ButtonNormal">
@@ -946,21 +950,21 @@ negative button and neutral button -->
     </style>
 
     <style name="TextViewListItemPrimary" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/list_primary</item>
+        <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:textColor">@color/FullBlack</item>
-        <item name="android:fontFamily">@font/roboto_light</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+       <!-- <item name="android:textStyle">bold</item>-->
     </style>
 
     <style name="TextViewListItemSecondary" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/text_sz_small</item>
+        <item name="android:textSize">@dimen/text_size_caption</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/date_picker_text_color</item>
     </style>
 
     <style name="TextViewListItemValues" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/list_item_primary_text_size</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
     </style>
 
     <style name="TextViewListTitleBlack" parent="@android:style/Widget.TextView">
@@ -968,13 +972,13 @@ negative button and neutral button -->
         <item name="android:gravity">center</item>
         <item name="android:textStyle">bold</item>
         <item name="android:height">@dimen/list_title_height</item>
-        <item name="android:textSize">@dimen/font_micro_small</item>
+        <item name="android:textSize">@dimen/text_size_primary</item>
     </style>
     <!-- Custom TextView -->
 
     <!-- Custom Dialog -->
     <style name="AssetDialogLabel" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/font_micro_small</item>
+        <item name="android:textSize">@dimen/text_size_primary</item>
     </style>
     <!-- Custom Dialog -->
 
@@ -990,7 +994,7 @@ negative button and neutral button -->
         <item name="android:background">@drawable/edittext_bottom_border</item>
         <item name="android:drawableRight">@drawable/ic_date_picker</item>
         <item name="android:textColor">@color/date_picker_text_color</item>
-        <item name="android:textSize">@dimen/list_secondary</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
         <item name="android:drawablePadding">@dimen/date_picker_drawable_padding</item>
 
     </style>
@@ -1018,7 +1022,7 @@ negative button and neutral button -->
         <item name="android:selectAllOnFocus">false</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
-        <item name="android:textSize">@dimen/list_primary</item>
+        <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:textColorHighlight">?attr/accentcolor</item>
     </style>
@@ -1081,7 +1085,7 @@ negative button and neutral button -->
     </style>
 
     <style name="descriptionTextView" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/font_nano_small</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
         <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
@@ -1146,7 +1150,7 @@ negative button and neutral button -->
         <item name="android:selectAllOnFocus">true</item>
         <item name="android:singleLine">false</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
-        <item name="android:textSize">@dimen/list_item_primary_text_size</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
     </style>
 
     <style name="FontStyle"></style>
@@ -1304,7 +1308,7 @@ negative button and neutral button -->
     </style>
 
     <style name="NormalTabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/font_nano_small</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -1331,13 +1335,13 @@ negative button and neutral button -->
 
 
     <style name="SecondaryTextAppearance">
-        <item name="android:textSize">@dimen/text_size_body_1_material</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textColor">?attr/textColorPrimary</item>
+        <item name="android:textColor">?attr/primarycolor</item>
     </style>
 
     <style name="CaptionTextAppearance">
-        <item name="android:textSize">@dimen/text_size_caption_material</item>
+        <item name="android:textSize">@dimen/text_size_caption</item>
         <item name="android:fontFamily">@font/roboto_light</item>
         <item name="android:textColor">@color/date_picker_text_color</item>
     </style>

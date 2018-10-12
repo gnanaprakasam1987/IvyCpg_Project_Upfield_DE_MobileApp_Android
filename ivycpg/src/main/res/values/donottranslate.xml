@@ -86,7 +86,7 @@
         <item quantity="one">@string/pclabels</item>
         <item quantity="other">@string/pcs</item>
     </plurals>
-
+    <string name="condition">Condition</string>
 
 
 </resources>

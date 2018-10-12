@@ -55,7 +55,7 @@
                         android:tag="retailername"
                         android:text="@string/store_name"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/list_item_primary_text_size"
+                        android:textSize="@dimen/text_size_secondary"
                         android:layout_marginLeft="@dimen/store_margin_top" />
                 </RelativeLayout>
 
@@ -69,7 +69,7 @@
                     android:tag="value_or_volume"
                     android:text="@string/pre_post"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/list_item_primary_text_size" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <TextView
                     android:id="@+id/lpc"
@@ -81,7 +81,7 @@
                     android:tag="lines"
                     android:text="@string/lines"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/list_item_primary_text_size"
+                    android:textSize="@dimen/text_size_secondary"
                     android:layout_marginRight="@dimen/plano_list_left_margin" />
 
                 <TextView
@@ -92,7 +92,7 @@
                     android:layout_gravity="center"
                     android:text="@string/value"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/list_item_primary_text_size" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <TextView
                     android:id="@+id/orderidtitle"
@@ -102,7 +102,7 @@
                     android:layout_gravity="center"
                     android:text="@string/order_number"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/list_item_primary_text_size"
+                    android:textSize="@dimen/text_size_secondary"
                     android:visibility="gone" />
 
                 <TextView
@@ -114,7 +114,7 @@
                     android:tag="weighttitle"
                     android:text="@string/weight"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/list_item_primary_text_size" />
+                    android:textSize="@dimen/text_size_secondary" />
             </LinearLayout>
 
             <ListView

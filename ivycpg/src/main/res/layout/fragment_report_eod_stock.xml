@@ -56,7 +56,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/loading_stock_ou_title"
@@ -64,7 +64,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/loading_stock_pc_title"
@@ -72,7 +72,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -102,7 +102,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_return_ou_title"
@@ -110,7 +110,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_return_pc_title"
@@ -118,7 +118,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -145,7 +145,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_sold_stock_ou_title"
@@ -153,7 +153,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_sold_stock_pc_title"
@@ -161,7 +161,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -190,7 +190,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_free_issued_ou_title"
@@ -198,7 +198,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_free_issued_pc_title"
@@ -206,7 +206,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -235,7 +235,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_replacement_ou_title"
@@ -243,7 +243,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_replacement_pc_title"
@@ -251,7 +251,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -280,7 +280,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_case"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_unload_ou_title"
@@ -288,7 +288,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_outer"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_unload_pc_title"
@@ -296,7 +296,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_piece"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -323,7 +323,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_sih_ou_title"
@@ -331,7 +331,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_sih_pc_title"
@@ -339,7 +339,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -368,7 +368,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_empty_ou_title"
@@ -376,7 +376,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_empty_pc_title"
@@ -384,7 +384,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -412,7 +412,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_case"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_nonsalable_ou_title"
@@ -420,7 +420,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_outer"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <TextView
                                 android:id="@+id/tv_nonsalable_pc_title"
@@ -428,7 +428,7 @@
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_piece"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
                     </LinearLayout>
 
