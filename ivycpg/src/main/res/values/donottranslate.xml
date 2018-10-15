@@ -238,4 +238,6 @@
   <string name="Orde_Saved">Order Saved.</string>
     <string name="Order_id">Order ID is: </string>
 
+    <string name="please_provide_valid_reason_or_Availability">Please Provide Valid Reason or Availability</string>
+
 </resources>

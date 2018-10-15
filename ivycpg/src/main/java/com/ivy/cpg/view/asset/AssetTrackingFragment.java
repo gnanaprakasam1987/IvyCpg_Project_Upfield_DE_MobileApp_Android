@@ -49,7 +49,6 @@ import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.sd.png.view.ScannedUnmappedDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -545,22 +544,27 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     }
 
     @Override
-    public void isDataExistToSave(boolean isExist) {
-        if(isExist){
+    public void isDataExistToSave(boolean isAssetExist,String errorMsg) {
+        if (isAssetExist) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
             alertDialog.show();
 
             assetPresenter.save(MENU_ASSET);
-        }
-        else{
+        } else {
+            String titleText;
+            if (errorMsg.isEmpty())
+                titleText = getString(R.string.no_assets_exists);
+            else
+                titleText = errorMsg;
+
             AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
                     getActivity());
             alertDialogBuilder1
                     .setIcon(null)
                     .setCancelable(false)
-                    .setTitle(getResources().getString(R.string.no_assets_exists))
+                    .setTitle(titleText)
                     .setPositiveButton(getResources().getString(R.string.ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,

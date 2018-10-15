@@ -49,7 +49,7 @@ public interface AssetContractor {
          void updateInitialLoad(Vector<StandardListBO> mList);
          void updateAssets(ArrayList<AssetTrackingBO> mList, boolean isUnMapped, Bundle mBundle);
          void updateFiveFilteredList(ArrayList<AssetTrackingBO> mFilteredList);
-         void isDataExistToSave(boolean isExist);
+         void isDataExistToSave(boolean isPExist,String errorMsg);
          void cancelProgressDialog();
 
     }
