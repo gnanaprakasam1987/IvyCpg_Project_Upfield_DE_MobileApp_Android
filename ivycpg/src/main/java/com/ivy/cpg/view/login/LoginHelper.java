@@ -83,9 +83,10 @@ public class LoginHelper {
         DBUtil db;
         db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuffer sb;
         try {
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb;
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
             sb.append(businessModel.QT(CODE_PWD_LOCK) +" and ForSwitchSeller = 0");
@@ -151,6 +152,7 @@ public class LoginHelper {
 
         } catch (Exception e) {
             db.closeDB();
+            Commons.printException(e);
         }
     }
 
