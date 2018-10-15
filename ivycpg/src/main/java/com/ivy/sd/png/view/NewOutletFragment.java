@@ -5167,12 +5167,10 @@ public class NewOutletFragment extends IvyBaseFragment
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-//                                        HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
-//                                        if (currentFragment != null) {
-//                                            currentFragment.detach("MENU_NEW_RET");
-//                                        }
-                                        startActivity(new Intent(getActivity(),
-                                                HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
+                                        HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                                        if (currentFragment != null) {
+                                            currentFragment.detach("MENU_NEW_RET");
+                                        }
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder);
