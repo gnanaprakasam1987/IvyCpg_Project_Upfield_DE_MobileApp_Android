@@ -54,9 +54,9 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                         if (task.isSuccessful()) {
                             Commons.print("Service Firebase Uth Success");
 
-                            if (from.equalsIgnoreCase("AttendandanceIn")){
+                            if (from.equalsIgnoreCase("AttendanceIn")){
                                 updateAttendanceIn(context,pathNode);
-                            }else if (from.equalsIgnoreCase("AttendandanceOut")){
+                            }else if (from.equalsIgnoreCase("AttendanceOut")){
                                 updateAttendanceOut(context,pathNode);
                             }else if (from.equalsIgnoreCase("Location")){
                                 updateFirebaseData(context, locationDetailBO);
@@ -73,9 +73,9 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         }else{
             Commons.print("Firebase : User already Online");
 
-            if (from.equalsIgnoreCase("AttendandanceIn")){
+            if (from.equalsIgnoreCase("AttendanceIn")){
                 updateAttendanceIn(context,pathNode);
-            }else if (from.equalsIgnoreCase("AttendandanceOut")){
+            }else if (from.equalsIgnoreCase("AttendanceOut")){
                 updateAttendanceOut(context,pathNode);
             }else if (from.equalsIgnoreCase("Location")){
                 updateFirebaseData(context, locationDetailBO);

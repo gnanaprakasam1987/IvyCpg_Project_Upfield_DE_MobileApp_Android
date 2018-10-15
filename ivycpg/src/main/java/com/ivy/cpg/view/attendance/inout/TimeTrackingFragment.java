@@ -481,7 +481,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
-            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendandanceIn");
+            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendanceIn");
             int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
             if (statusCode == LocationConstants.STATUS_SUCCESS)
                 success = true;
@@ -505,7 +505,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
             RealTimeLocationTracking.stopLocationTracking(getContext());
-            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendandanceOut");
+            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendanceOut");
         }
 
         uploadAttendance("OUT", reasonId);
@@ -519,9 +519,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
             if (IN_OUT.equalsIgnoreCase("IN")) {
-                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendandanceIn");
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendanceIn");
             } else {
-                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendandanceOut");
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendanceOut");
             }
         }
     }
