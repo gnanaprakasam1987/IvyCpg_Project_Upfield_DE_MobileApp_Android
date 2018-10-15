@@ -480,8 +480,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         boolean success = false;
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
-            realTimeLocation.updateAttendanceIn(getContext(), "movement_tracking");
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendandanceIn");
             int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
             if (statusCode == LocationConstants.STATUS_SUCCESS)
                 success = true;
@@ -503,9 +503,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
             RealTimeLocationTracking.stopLocationTracking(getContext());
-            realTimeLocation.updateAttendanceOut(getContext(), REALTIME_LOCATION_PATH);
+            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendandanceOut");
         }
 
         uploadAttendance("OUT", reasonId);
@@ -517,12 +517,11 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     private void uploadAttendance(String IN_OUT, String reasonId) {
         if (bmodel.configurationMasterHelper.IS_UPLOAD_ATTENDANCE
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
-
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
             if (IN_OUT.equalsIgnoreCase("IN")) {
-                realTimeLocation.updateAttendanceIn(getContext(), ATTENDANCE_PATH);
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendandanceIn");
             } else {
-                realTimeLocation.updateAttendanceOut(getContext(), ATTENDANCE_PATH);
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendandanceOut");
             }
         }
     }
