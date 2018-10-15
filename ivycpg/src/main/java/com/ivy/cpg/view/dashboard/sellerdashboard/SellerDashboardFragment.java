@@ -385,9 +385,19 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         public SellerDashboardFragment.DashBoardListViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
             View v;
-            if (bmodel.configurationMasterHelper.IS_SWITCH_WITH_OUT_TGT
-                    && (bmodel.configurationMasterHelper.SELLER_KPI_CODES.contains(dashboardList.get(viewType).getCode()) ||
-                    SDUtil.convertToInt(dashboardList.get(viewType).getKpiTarget()) == 0)) {
+
+            String[] codeArray = bmodel.configurationMasterHelper.SELLER_KPI_CODES.split(",");
+            boolean isCode = false;
+            if (codeArray != null && codeArray.length > 0) {
+                for (int i = 0; i < codeArray.length; i++) {
+                    if (codeArray[i].equalsIgnoreCase(dashboardList.get(viewType).getCode())) {
+                        isCode = true;
+                        break;
+                    }
+                }
+            }
+
+            if (bmodel.configurationMasterHelper.IS_SWITCH_WITH_OUT_TGT && isCode) {
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.seller_dashboard_without_target_row_layout, parent, false);
             } else {
@@ -510,9 +520,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 double balanceValue = SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived());
                 holder.balance.setText(balanceValue > 0 ? dashBoardHelper.getWhole(bmodel.formatValue(balanceValue)) : "0");
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
-                float temp_ach =0;
-                if(Float.parseFloat(dashboardData.getKpiTarget())>0)
-                    temp_ach=Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                float temp_ach = 0;
+                if (Float.parseFloat(dashboardData.getKpiTarget()) > 0)
+                    temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
                 if (temp_ach > 0) {
                     int bonus = Math.round(SDUtil.convertToFloat(dashboardData.getKpiAcheived()) /
                             (SDUtil.convertToFloat(dashboardData.getKpiTarget())) * 100);
@@ -533,9 +543,9 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     Commons.printException(e + "");
                 }
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
-                float temp_ach =0;
-                if(Float.parseFloat(dashboardData.getKpiTarget())>0)
-                    temp_ach=Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                float temp_ach = 0;
+                if (Float.parseFloat(dashboardData.getKpiTarget()) > 0)
+                    temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
                 if (temp_ach > 0) {
                     int bonus = Math.round(SDUtil.convertToFloat(dashboardData.getKpiAcheived()) /
                             (SDUtil.convertToFloat(dashboardData.getKpiTarget())) * 100);
@@ -596,7 +606,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
                 double balanceValue = SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived());
                 entries.add(new PieEntry(SDUtil.convertToFloat(dashboardData.getKpiAcheived())));
-                entries.add(new PieEntry(balanceValue>=0?SDUtil.convertToFloat(balanceValue+""):0));
+                entries.add(new PieEntry(balanceValue >= 0 ? SDUtil.convertToFloat(balanceValue + "") : 0));
 
                 PieDataSet dataSet = new PieDataSet(entries, "");
 
