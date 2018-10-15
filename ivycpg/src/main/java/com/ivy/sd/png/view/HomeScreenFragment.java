@@ -534,8 +534,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             gotoNextActivity(configureBO);
                             break;
                         }
+                        if (configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH)) {
+                            gotoNextActivity(configureBO);
+                            break;
+                        }
                     } else if (configureBO.getConfigCode().equalsIgnoreCase(MENU_VISIT)
-                            || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
+                            //|| configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_DAY)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_INC)
@@ -961,16 +965,18 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
 
-            } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.mark_attendance),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.leaveToday),
-                            Toast.LENGTH_SHORT).show();
-            } else {
+            }
+//            else if (isLeave_today) {
+//                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+//                    Toast.makeText(getActivity(),
+//                            getResources().getString(R.string.mark_attendance),
+//                            Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getActivity(),
+//                            getResources().getString(R.string.leaveToday),
+//                            Toast.LENGTH_SHORT).show();
+//            }
+            else {
                 DashBoardHelper.getInstance(getActivity()).checkDayAndP3MSpinner(false);
                 bmodel.distributorMasterHelper.downloadDistributorsList();
 

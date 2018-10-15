@@ -1370,17 +1370,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.timer = null;
         }
 
-        if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON) {
-            bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
-            bmodel.outletTimeStampHelper.deleteTimeStamp();
-            bmodel.outletTimeStampHelper.deleteTimeStampImages();
-            bmodel.outletTimeStampHelper.deleteImagesFromFolder();
-
-        }
-        resetRemarksBO();
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
-
         if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_EDITTEXT) {
             if (edt_noOrderReason.getText().length() > 0) {
                 bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
@@ -1393,11 +1382,22 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     .now(SDUtil.TIME), mFeedbackReasonId);
         }
 
+        if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON) {
+            bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
+            bmodel.outletTimeStampHelper.deleteTimeStamp();
+            bmodel.outletTimeStampHelper.deleteTimeStampImages();
+            bmodel.outletTimeStampHelper.deleteImagesFromFolder();
+
+        } else {
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                    .now(SDUtil.TIME));
+            bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
+        }
+        resetRemarksBO();
         if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
             resetSellerConfiguration();
         }
 
-        bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
         bmodel.productHelper.clearProductHelper();
 
         if (isSubmitButtonClicked) {
