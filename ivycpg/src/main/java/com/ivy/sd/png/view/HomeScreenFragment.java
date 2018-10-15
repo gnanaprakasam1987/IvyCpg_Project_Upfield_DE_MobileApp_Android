@@ -534,7 +534,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             gotoNextActivity(configureBO);
                             break;
                         }
-                        if (configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH)) {
+                        if (configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)) {
                             gotoNextActivity(configureBO);
                             break;
                         }
