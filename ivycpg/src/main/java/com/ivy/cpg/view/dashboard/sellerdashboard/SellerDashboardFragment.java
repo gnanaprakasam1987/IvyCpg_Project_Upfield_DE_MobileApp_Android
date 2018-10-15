@@ -45,6 +45,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.google.android.gms.common.stats.StatsUtils;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
@@ -521,8 +522,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 holder.balance.setText(balanceValue > 0 ? dashBoardHelper.getWhole(bmodel.formatValue(balanceValue)) : "0");
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
                 float temp_ach = 0;
-                if (Float.parseFloat(dashboardData.getKpiTarget()) > 0)
-                    temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                if (SDUtil.convertToFloat(dashboardData.getKpiTarget()) > 0)
+                    temp_ach = SDUtil.convertToFloat(dashboardData.getKpiAcheived()) - SDUtil.convertToFloat(dashboardData.getKpiTarget());
                 if (temp_ach > 0) {
                     int bonus = Math.round(SDUtil.convertToFloat(dashboardData.getKpiAcheived()) /
                             (SDUtil.convertToFloat(dashboardData.getKpiTarget())) * 100);
@@ -544,8 +545,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 }
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
                 float temp_ach = 0;
-                if (Float.parseFloat(dashboardData.getKpiTarget()) > 0)
-                    temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                if (SDUtil.convertToFloat(dashboardData.getKpiTarget()) > 0)
+                    temp_ach = SDUtil.convertToFloat(dashboardData.getKpiAcheived()) - SDUtil.convertToFloat(dashboardData.getKpiTarget());
                 if (temp_ach > 0) {
                     int bonus = Math.round(SDUtil.convertToFloat(dashboardData.getKpiAcheived()) /
                             (SDUtil.convertToFloat(dashboardData.getKpiTarget())) * 100);
