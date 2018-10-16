@@ -266,7 +266,10 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            alertDialog.dismiss();
+            if (alertDialog != null && alertDialog.isShowing()) {
+                alertDialog.dismiss();
+                alertDialog = null;
+            }
             new ParserTask(color).execute(result);
         }
     }

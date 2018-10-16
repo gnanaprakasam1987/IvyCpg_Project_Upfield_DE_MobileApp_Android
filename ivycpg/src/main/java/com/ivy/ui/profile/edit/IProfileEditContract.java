@@ -202,5 +202,7 @@ public interface IProfileEditContract {
 
         void updateProfile();
 
+        void updateLatLong(String lat, String longitude);
+
     }
 }

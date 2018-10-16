@@ -1843,6 +1843,7 @@ public class CommonPrintHelper {
                                             } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
                                                 productDiscount = totalProductQty * storeWiseDiscountBO.getDiscount();
                                             }
+                                            productDiscount = SDUtil.convertToDouble(SDUtil.formatAsPerCalculationConfig(productDiscount) + "");
 
                                             totalDiscountValue = totalDiscountValue + productDiscount;
                                         }
@@ -1941,7 +1942,11 @@ public class CommonPrintHelper {
 
                                         } else {
                                             totalExcludeValue = totalExcludeValue + prodcutBO.getTaxValue();
-                                            totalTax = totalTax + (prodcutBO.getTaxValue() * taxpercentege) / 100;
+
+                                            double  tax=(prodcutBO.getTaxValue() * taxpercentege) / 100;
+                                            tax = SDUtil.convertToDouble(SDUtil.formatAsPerCalculationConfig(tax) + "");
+
+                                            totalTax = totalTax +tax ;
 
                                         }
                                     } else {

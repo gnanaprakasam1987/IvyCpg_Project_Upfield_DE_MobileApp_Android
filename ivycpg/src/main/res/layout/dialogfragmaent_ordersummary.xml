@@ -167,7 +167,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:singleLine="true"
-                    android:text="Cash Disc"
+                    android:text="@string/cash_disc"
                     android:textStyle="normal"
                     android:visibility="gone" />
 
@@ -178,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:singleLine="true"
-                    android:text="Tax Value"
+                    android:text="@string/tax_Value"
                     android:textStyle="normal"
                     android:visibility="gone" />
 
@@ -189,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:singleLine="true"
-                    android:text="Line Value"
+                    android:text="@string/line_value"
                     android:textStyle="normal" />
 
 

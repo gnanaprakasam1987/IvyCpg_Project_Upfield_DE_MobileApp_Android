@@ -15,7 +15,7 @@ public class RealtimeLocationReceiver extends BroadcastReceiver {
 
         if(intent.getAction()!=null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             if (isInWork && !LocationServiceHelper.getInstance().isMyServiceRunning(context, RealTimeLocationService.class.getName())) {
-                RealTimeLocationTracking.startLocationTracking(new FireBaseRealtimeLocationUpload(context),context);
+                RealTimeLocationTracking.startLocationTracking(new FireBaseRealtimeLocationUpload(),context);
             }
         }
     }

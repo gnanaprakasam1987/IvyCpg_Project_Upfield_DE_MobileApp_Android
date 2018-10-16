@@ -21,9 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +34,8 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -64,13 +62,14 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
     private Button btnSave;
     private PriceTrackingHelper priceTrackingHelper;
     private AppCompatCheckBox chkAvailability;
+    private StockCheckHelper stockCheckHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_availabilty_check);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
@@ -83,6 +82,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
         priceTrackingHelper = PriceTrackingHelper.getInstance(this);
+        stockCheckHelper = StockCheckHelper.getInstance(this);
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
@@ -108,80 +108,80 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void initializeViews() {
-        view_dotted_line = (View) findViewById(R.id.view_dotted_line);
+        view_dotted_line =  findViewById(R.id.view_dotted_line);
         view_dotted_line.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mSelectedET = null;
 
-        chkAvailability = (AppCompatCheckBox) findViewById(R.id.chk_availability);
+        chkAvailability =  findViewById(R.id.chk_availability);
 
-        rbYesPrice = (RadioButton) findViewById(R.id.priceYes);
-        rbNoPrice = (RadioButton) findViewById(R.id.priceno);
+        rbYesPrice =  findViewById(R.id.priceYes);
+        rbNoPrice =  findViewById(R.id.priceno);
 
-        chkStockListed = (AppCompatCheckBox) findViewById(R.id.is_listed);
-        chkStkDistributed = (AppCompatCheckBox) findViewById(R.id.is_distributed);
-        facingQty = (EditText) findViewById(R.id.et_faceqty_csValue);
-        mReason = (Spinner) findViewById(R.id.mreason);
+        chkStockListed =  findViewById(R.id.is_listed);
+        chkStkDistributed =  findViewById(R.id.is_distributed);
+        facingQty =  findViewById(R.id.et_faceqty_csValue);
+        mReason =  findViewById(R.id.mreason);
 
-        etShelfPiece = (EditText) findViewById(R.id.et_avail_pcValue);
-        etShelfCase = (EditText) findViewById(R.id.et_avail_csValue);
-        etShelfOuter = (EditText) findViewById(R.id.et_avail_ouValue);
+        etShelfPiece =  findViewById(R.id.et_avail_pcValue);
+        etShelfCase =  findViewById(R.id.et_avail_csValue);
+        etShelfOuter =  findViewById(R.id.et_avail_ouValue);
 
-        etPricePiece = (EditText) findViewById(R.id.et_price_pcValue);
-        etPriceCase = (EditText) findViewById(R.id.et_price_csValue);
-        etPriceOuter = (EditText) findViewById(R.id.et_price_ouValue);
+        etPricePiece =  findViewById(R.id.et_price_pcValue);
+        etPriceCase =  findViewById(R.id.et_price_csValue);
+        etPriceOuter =  findViewById(R.id.et_price_ouValue);
 
-        etMrpPricePiece = (EditText) findViewById(R.id.et_priceMrp_pcValue);
-        etMrpPriceCase = (EditText) findViewById(R.id.et_priceMrp_csValue);
-        etMrpPriceOuter = (EditText) findViewById(R.id.et_priceMrp_ouValue);
+        etMrpPricePiece =  findViewById(R.id.et_priceMrp_pcValue);
+        etMrpPriceCase =  findViewById(R.id.et_priceMrp_csValue);
+        etMrpPriceOuter =  findViewById(R.id.et_priceMrp_ouValue);
 
 
-        etExpPiece = (EditText) findViewById(R.id.et_exp_pcValue);
-        etExpCase = (EditText) findViewById(R.id.et_exp_csValue);
-        etExpOuter = (EditText) findViewById(R.id.et_exp_ouValue);
+        etExpPiece =  findViewById(R.id.et_exp_pcValue);
+        etExpCase =  findViewById(R.id.et_exp_csValue);
+        etExpOuter =  findViewById(R.id.et_exp_ouValue);
 
-        btnSave = (Button) findViewById(R.id.btn_save);
+        btnSave =  findViewById(R.id.btn_save);
 
-        rbYesPrice.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        rbNoPrice.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        rbYesPrice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        rbNoPrice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
 
-        etShelfPiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etShelfCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etShelfOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etPricePiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etPriceCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etPriceOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etMrpPricePiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etMrpPriceCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etMrpPriceOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etExpPiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etExpCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etExpOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
+        etShelfPiece.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etShelfCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etShelfOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etPricePiece.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etPriceCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etPriceOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etMrpPricePiece.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etMrpPriceCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etMrpPriceOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etExpPiece.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etExpCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        etExpOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        btnSave.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
 
-        ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tvTitleCurrentStock)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tv_avail_pctitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_avail_cstitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_avail_outitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tvTitlePriceCheck)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tv_price_pcTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_price_csTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_price_ouTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_priceMrp_pcTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_priceMrp_csTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_priceMrp_ouTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_change_price)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tvTitleExpiryCheck)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tv_exp_pcTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_exp_csTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_exp_ouTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_is_distributed)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_is_listed)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_faceqty_cstitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_avg_qty_label)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_avg_rfield1_label)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_avg_rfield2_label)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_avg_rfield3_label)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        ((TextView) findViewById(R.id.tvTitleCurrentStock)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        ((TextView) findViewById(R.id.tv_avail_pctitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_avail_cstitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_avail_outitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tvTitlePriceCheck)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        ((TextView) findViewById(R.id.tv_price_pcTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_price_csTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_price_ouTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_priceMrp_pcTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_priceMrp_csTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_priceMrp_ouTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_change_price)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tvTitleExpiryCheck)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        ((TextView) findViewById(R.id.tv_exp_pcTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_exp_csTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_exp_ouTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_is_distributed)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_is_listed)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_faceqty_cstitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_avg_qty_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_avg_rfield1_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_avg_rfield2_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        ((TextView) findViewById(R.id.tv_avg_rfield3_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -258,26 +258,26 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
         if (mProductMasterBO != null) {
 
             //is Distributed
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_DD)
-                ((LinearLayout) findViewById(R.id.ll_is_distributed)).setVisibility(View.GONE);
+            if (!stockCheckHelper.SHOW_STOCK_DD)
+                ( findViewById(R.id.ll_is_distributed)).setVisibility(View.GONE);
 
             //isListed
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_LD)
-                ((LinearLayout) findViewById(R.id.ll_is_listed)).setVisibility(View.GONE);
+            if (!stockCheckHelper.SHOW_STOCK_LD)
+                ( findViewById(R.id.ll_is_listed)).setVisibility(View.GONE);
 
             //face Qty
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_FC)
-                ((LinearLayout) findViewById(R.id.ll_face_qty)).setVisibility(View.GONE);
+            if (!stockCheckHelper.SHOW_STOCK_FC)
+                ( findViewById(R.id.ll_face_qty)).setVisibility(View.GONE);
 
             //reason spinner
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_RSN)
-                ((LinearLayout) findViewById(R.id.ll_reason)).setVisibility(View.GONE);
+            if (!stockCheckHelper.SHOW_STOCK_RSN)
+                ( findViewById(R.id.ll_reason)).setVisibility(View.GONE);
 
             //shelf
-            if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_CB)
+            if (!stockCheckHelper.SHOW_COMB_STOCK_CB)
                 (findViewById(R.id.ll_availability)).setVisibility(View.GONE);
-            if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
-                ((LinearLayout) findViewById(R.id.ll_avail_case)).setVisibility(View.GONE);
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SC)
+                ( findViewById(R.id.ll_avail_case)).setVisibility(View.GONE);
             else {
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -291,8 +291,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     Commons.printException(e + "");
                 }
             }
-            if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
-                ((LinearLayout) findViewById(R.id.ll_avail_piece)).setVisibility(View.GONE);
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SP)
+                ( findViewById(R.id.ll_avail_piece)).setVisibility(View.GONE);
             else {
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -306,8 +306,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     Commons.printException(e + "");
                 }
             }
-            if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
-                ((LinearLayout) findViewById(R.id.ll_avail_outer)).setVisibility(View.GONE);
+            if (!stockCheckHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+                ( findViewById(R.id.ll_avail_outer)).setVisibility(View.GONE);
             else {
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -322,12 +322,12 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 }
             }
             if (!bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
-                ((LinearLayout) findViewById(R.id.ll_avgdays)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_avgdays)).setVisibility(View.GONE);
 
-                if (!bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC &&
-                        !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP &&
-                        !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER) {
-                    ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_COMB_STOCK_SC &&
+                        !stockCheckHelper.SHOW_COMB_STOCK_SP &&
+                        !stockCheckHelper.SHOW_COMB_STOCK_SHELF_OUTER) {
+                    ( findViewById(R.id.tvTitleAvaialabilty)).setVisibility(View.GONE);
                     findViewById(R.id.ll_availability).setVisibility(View.GONE);
                 }
 
@@ -339,15 +339,15 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 ((TextView) findViewById(R.id.tv_avg_rfield3_value)).
                         setText(mProductMasterBO.getCalc_klgs() != null ? mProductMasterBO.getCalc_klgs() + "" : "0");
             }
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_DD && !bmodel.configurationMasterHelper.SHOW_STOCK_LD
-                    && !bmodel.configurationMasterHelper.SHOW_COMB_STOCK_CB)
-                ((RelativeLayout) findViewById(R.id.availability_lty)).setVisibility(View.GONE);
+            if (!stockCheckHelper.SHOW_STOCK_DD && !stockCheckHelper.SHOW_STOCK_LD
+                    && !stockCheckHelper.SHOW_COMB_STOCK_CB)
+                ( findViewById(R.id.availability_lty)).setVisibility(View.GONE);
 
 
             //price
             if (bmodel.configurationMasterHelper.SHOW_PRICECHECK_IN_STOCKCHECK) {
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_CS)
-                    ((LinearLayout) findViewById(R.id.ll_price_case)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_PRICECHECK_CS)
+                    ( findViewById(R.id.ll_price_case)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -361,8 +361,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                         Commons.printException(e + "");
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_OU)
-                    ((LinearLayout) findViewById(R.id.ll_price_outer)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_PRICECHECK_OU)
+                    ( findViewById(R.id.ll_price_outer)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -376,8 +376,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                         Commons.printException(e + "");
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_PCS)
-                    ((LinearLayout) findViewById(R.id.ll_price_piece)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_PRICECHECK_PCS)
+                    ( findViewById(R.id.ll_price_piece)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -392,38 +392,38 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     }
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_MRP_CS)
-                    ((LinearLayout) findViewById(R.id.ll_priceMrp_case)).setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_MRP_OU)
-                    ((LinearLayout) findViewById(R.id.ll_priceMrp_outer)).setVisibility(View.GONE);
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_MRP_PCS)
-                    ((LinearLayout) findViewById(R.id.ll_priceMrp_piece)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_PRICECHECK_MRP_CS)
+                    ( findViewById(R.id.ll_priceMrp_case)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_PRICECHECK_MRP_OU)
+                    ( findViewById(R.id.ll_priceMrp_outer)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_PRICECHECK_MRP_PCS)
+                    ( findViewById(R.id.ll_priceMrp_piece)).setVisibility(View.GONE);
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_CS &&
-                        !bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_OU &&
-                        !bmodel.configurationMasterHelper.SHOW_STOCK_PRICECHECK_PCS)
-                    ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_PRICECHECK_CS &&
+                        !stockCheckHelper.SHOW_STOCK_PRICECHECK_OU &&
+                        !stockCheckHelper.SHOW_STOCK_PRICECHECK_PCS)
+                    ( findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
 
             } else {
-                ((LinearLayout) findViewById(R.id.ll_price_parentLty)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_price_case)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_price_outer)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_price_piece)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_priceMrp_case)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_priceMrp_outer)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_priceMrp_piece)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_price_parentLty)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_price_case)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_price_outer)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_price_piece)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_priceMrp_case)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_priceMrp_outer)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_priceMrp_piece)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
             }
             if (!priceTrackingHelper.SHOW_PRICE_CHANGED) {
-                ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
             } else {
-                ((LinearLayout) findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.VISIBLE);
+                ( findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.VISIBLE);
             }
 
             //Expiry
             if (bmodel.configurationMasterHelper.SHOW_NEAREXPIRY_IN_STOCKCHECK) {
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_NEAREXPIRY_CS)
-                    ((LinearLayout) findViewById(R.id.ll_exp_outer)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_NEAREXPIRY_CS)
+                    ( findViewById(R.id.ll_exp_outer)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -437,8 +437,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                         Commons.printException(e + "");
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_NEAREXPIRY_OU)
-                    ((LinearLayout) findViewById(R.id.ll_exp_case)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_NEAREXPIRY_OU)
+                    ( findViewById(R.id.ll_exp_case)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -452,8 +452,8 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                         Commons.printException(e + "");
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_NEAREXPIRY_PCS)
-                    ((LinearLayout) findViewById(R.id.ll_exp_piece)).setVisibility(View.GONE);
+                if (!stockCheckHelper.SHOW_STOCK_NEAREXPIRY_PCS)
+                    ( findViewById(R.id.ll_exp_piece)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -469,10 +469,10 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 }
 
             } else {
-                ((LinearLayout) findViewById(R.id.ll_expriyCheck_parentLty)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_exp_outer)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_exp_case)).setVisibility(View.GONE);
-                ((LinearLayout) findViewById(R.id.ll_exp_piece)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_expriyCheck_parentLty)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_exp_outer)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_exp_case)).setVisibility(View.GONE);
+                ( findViewById(R.id.ll_exp_piece)).setVisibility(View.GONE);
             }
 
 
@@ -659,7 +659,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
 
                             }
 
-                            if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                            if (stockCheckHelper.SHOW_STOCK_RSN) {
                                 int totValue = getProductTotalValue(mProductMasterBO);
                                 if (totValue > 0) {
                                     mReason.setEnabled(false);
@@ -752,7 +752,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                 }
                             }
 
-                            if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                            if (stockCheckHelper.SHOW_STOCK_RSN) {
                                 int totValue = getProductTotalValue(mProductMasterBO);
                                 if (totValue > 0) {
                                     mReason.setEnabled(false);
@@ -853,7 +853,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                         }
                     }
 
-                    if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                    if (stockCheckHelper.SHOW_STOCK_RSN) {
                         int totValue = getProductTotalValue(mProductMasterBO);
                         if (totValue > 0) {
                             mReason.setEnabled(false);
@@ -1373,7 +1373,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                 .get(mSelectedLocationIndex).setAvailability(1);
                         updateCheckBoxStatus();
 
-                        if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                        if (stockCheckHelper.SHOW_STOCK_RSN) {
                             mReason.setEnabled(false);
                             mReason.setSelected(false);
                             mReason.setSelection(0);
@@ -1381,13 +1381,13 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .get(mSelectedLocationIndex).setReasonId(0);
                         }
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                        if (stockCheckHelper.SHOW_COMB_STOCK_SP
                                 && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("1");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                        else if (stockCheckHelper.SHOW_COMB_STOCK_SC
                                 && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("1");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                        else if (stockCheckHelper.SHOW_COMB_STOCK_SHELF_OUTER
                                 && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("1");
 
@@ -1397,7 +1397,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                 .get(mSelectedLocationIndex).setAvailability(0);
                         updateCheckBoxStatus();
 
-                        if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                        if (stockCheckHelper.SHOW_STOCK_RSN) {
                             mReason.setEnabled(true);
                             mReason.setSelected(true);
                             mReason.setSelection(0);
@@ -1406,13 +1406,13 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                         }
 
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                        if (stockCheckHelper.SHOW_COMB_STOCK_SP
                                 && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("0");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                        else if (stockCheckHelper.SHOW_COMB_STOCK_SC
                                 && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("0");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                        else if (stockCheckHelper.SHOW_COMB_STOCK_SHELF_OUTER
                                 && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("0");
 
@@ -1422,7 +1422,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                 .get(mSelectedLocationIndex).setAvailability(-1);
                         updateCheckBoxStatus();
 
-                        if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+                        if (stockCheckHelper.SHOW_STOCK_RSN) {
                             mReason.setEnabled(false);
                             mReason.setSelected(false);
                             mReason.setSelection(0);
@@ -1430,13 +1430,13 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                                     .get(mSelectedLocationIndex).setReasonId(0);
                         }
 
-                        if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP
+                        if (stockCheckHelper.SHOW_COMB_STOCK_SP
                                 && mProductMasterBO.getPcUomid() != 0)
                             etShelfPiece.setText("");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC
+                        else if (stockCheckHelper.SHOW_COMB_STOCK_SC
                                 && mProductMasterBO.getCaseUomId() != 0)
                             etShelfPiece.setText("");
-                        else if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER
+                        else if (stockCheckHelper.SHOW_COMB_STOCK_SHELF_OUTER
                                 && mProductMasterBO.getOuUomid() != 0)
                             etShelfPiece.setText("");
 
@@ -1513,7 +1513,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     + "";
             facingQty.setText(strFacingQty);
 
-            if (bmodel.configurationMasterHelper.SHOW_STOCK_RSN) {
+            if (stockCheckHelper.SHOW_STOCK_RSN) {
                 if (mProductMasterBO.getLocations()
                         .get(mSelectedLocationIndex)
                         .getShelfPiece() > -1 || mProductMasterBO.getLocations()
@@ -1529,8 +1529,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 }
             }
 
-
-            if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SP)
+            if (stockCheckHelper.SHOW_COMB_STOCK_SP)
                 if (mProductMasterBO.getLocations()
                         .get(mSelectedLocationIndex).getShelfPiece() > -1) {
                     String strShelfPiece = mProductMasterBO.getLocations()
@@ -1541,7 +1540,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     etShelfPiece.setText("");
                 }
 
-            if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SC)
+            if (stockCheckHelper.SHOW_COMB_STOCK_SC)
                 if (mProductMasterBO.getLocations()
                         .get(mSelectedLocationIndex).getShelfCase() > -1) {
                     String strShelfCase = mProductMasterBO.getLocations()
@@ -1552,7 +1551,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     etShelfCase.setText("");
                 }
 
-            if (bmodel.configurationMasterHelper.SHOW_COMB_STOCK_SHELF_OUTER)
+            if (stockCheckHelper.SHOW_COMB_STOCK_SHELF_OUTER)
                 if (mProductMasterBO.getLocations()
                         .get(mSelectedLocationIndex).getShelfOuter() > -1) {
                     String strShelfOuter = mProductMasterBO.getLocations()

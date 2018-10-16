@@ -1267,4 +1267,17 @@
     <string name="ns">NS</string>
     <string name="ul">UL</string>
     <string name="salable">实用</string>
+
+
+    <string name="bill">Bill</string>
+    <string name="line_value">Line value</string>
+    <string name="tax_Value">Tax Value</string>
+    <!-- <string name="Disc">Disc</string>-->
+    <string name="cash_disc">Cash Disc</string>
+    <string name="tls">TLS</string>
+    <string name="payment_term">Payment term</string>
+    <string name="oth_disc">Oth. Disc (Other Discount)</string>
+    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
+    <!--<string name="Signature">Signature</string>-->
+    <string name="attachment">Attachment</string>
 </resources>

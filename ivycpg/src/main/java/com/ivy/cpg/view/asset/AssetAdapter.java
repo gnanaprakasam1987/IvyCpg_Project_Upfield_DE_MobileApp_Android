@@ -362,8 +362,8 @@ public class AssetAdapter extends BaseAdapter {
                         holder.assetBO.setAvailQty(1);
                         holder.reason1Spin.setEnabled(false);
 
-                        if ((holder.assetBO.getImageName() != null)
-                                && (!holder.assetBO.getImageName().isEmpty())
+                        if ((holder.assetBO.getImgName() != null)
+                                && (!holder.assetBO.getImgName().isEmpty())
                                 ) {
                             holder.photoBTN.setEnabled(true);
                             setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
@@ -452,9 +452,8 @@ public class AssetAdapter extends BaseAdapter {
         if (holder.assetBO.getAvailQty() > 0) {
 
             holder.reason1Spin.setEnabled(false);
-            if ((holder.assetBO.getImageName() != null)
-                    && (!holder.assetBO.getImageName().isEmpty())
-                    ) {
+            if ((holder.assetBO.getImgName() != null)
+                    && (!holder.assetBO.getImgName().isEmpty())) {
                 holder.photoBTN.setEnabled(true);
                 setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
             } else {
@@ -525,8 +524,8 @@ public class AssetAdapter extends BaseAdapter {
             holder.execQtyLL.setVisibility(View.GONE);
         }
 
-        if ((holder.assetBO.getImageName() != null)
-                && (!holder.assetBO.getImageName().isEmpty())
+        if ((holder.assetBO.getImgName() != null)
+                && (!holder.assetBO.getImgName().isEmpty())
                 ) {
             setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
 

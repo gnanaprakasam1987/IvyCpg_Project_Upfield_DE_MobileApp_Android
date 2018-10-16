@@ -45,6 +45,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.jointcall.JoinCallActivity;
+import com.ivy.cpg.view.subd.SubDSelectionDialog;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -1054,8 +1055,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             visitConfig = bmodel.mRetailerHelper.getVisitCoverage();
         }
 
-        for (VisitConfiguration configObj : visitConfig)
-            mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
+        if(visitConfig != null) {
+            for (VisitConfiguration configObj : visitConfig)
+                mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
+        }
     }
 
     private void updateRetailerProperty() {

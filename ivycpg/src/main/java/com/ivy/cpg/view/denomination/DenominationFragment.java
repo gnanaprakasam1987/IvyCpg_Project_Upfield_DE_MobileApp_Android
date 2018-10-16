@@ -30,6 +30,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,6 +91,8 @@ public class DenominationFragment extends IvyBaseFragment {
 
     CompositeDisposable compositeDisposable;
 
+    private AppSchedulerProvider appSchedulerProvider;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -138,19 +141,19 @@ public class DenominationFragment extends IvyBaseFragment {
 
     ArrayList<DenominationBO> denominationInputValues = new ArrayList<>();
 
+
+
     private void downloadDenomintionData() {
 
         compositeDisposable.add((Disposable) DenominationHelper.getInstance().downloadDenomintionData(getActivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
                 .subscribeWith(new DisposableObserver<ArrayList<DenominationBO>>() {
                     @Override
                     public void onNext(ArrayList<DenominationBO> denominationBOS) {
 
                         denominationInputValues.addAll(denominationBOS);
-                        for (int i = 0; i < denominationInputValues.size(); i++) {
-                            createDynamicRowForDenominationValues(i, denominationInputValues.get(i));
-                        }
+
                     }
 
                     @Override
@@ -160,7 +163,9 @@ public class DenominationFragment extends IvyBaseFragment {
 
                     @Override
                     public void onComplete() {
-
+                        for (int i = 0; i < denominationInputValues.size(); i++) {
+                            createDynamicRowForDenominationValues(i, denominationInputValues.get(i));
+                        }
                     }
                 }));
 
@@ -174,6 +179,7 @@ public class DenominationFragment extends IvyBaseFragment {
             setScreenTitle("Denomination");
             Commons.printException(e);
         }
+        appSchedulerProvider = new AppSchedulerProvider();
         compositeDisposable = new CompositeDisposable();
         currencyTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         quentyTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
@@ -188,8 +194,8 @@ public class DenominationFragment extends IvyBaseFragment {
     private void downLoadTotalCashInHand() {
 
         compositeDisposable.add((Disposable) DenominationHelper.getInstance().downLoadTotalCashInHand(getActivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
@@ -214,10 +220,11 @@ public class DenominationFragment extends IvyBaseFragment {
 
     private void createDynamicRowForDenominationValues(final int mNumber, DenominationBO denominationBO) {
 
-        View view;
+
         LayoutInflater inflater = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         assert inflater != null;
-        view = inflater.inflate(R.layout.fragment_denomination_item_view, null);
+        View view = inflater.inflate(R.layout.fragment_denomination_item_view, null);
 
         TextView dinominationTextview = view.findViewById(R.id.dinomination_textview);
         EditText dinominationValues = view.findViewById(R.id.dinomination_values_edittext);

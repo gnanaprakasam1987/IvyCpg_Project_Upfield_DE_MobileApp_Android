@@ -38,8 +38,12 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
      * Firebase Authentication Method
      * Authenticate with Firebase, and request location updates
      */
-    public FireBaseRealtimeLocationUpload(Context context) {
+    public FireBaseRealtimeLocationUpload() {
 
+    }
+
+    @Override
+    public void validateLoginAndUpdate(final Context context, final String pathNode, final LocationDetailBO locationDetailBO, final String from){
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 
             String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL, "");
@@ -56,6 +60,15 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Commons.print("Service Firebase Uth Success");
+
+                            if (from.equalsIgnoreCase("AttendanceIn")){
+                                updateAttendanceIn(context,pathNode);
+                            }else if (from.equalsIgnoreCase("AttendanceOut")){
+                                updateAttendanceOut(context,pathNode);
+                            }else if (from.equalsIgnoreCase("Location")){
+                                updateFirebaseData(context, locationDetailBO);
+                            }
+
                             BusinessModel businessModel = (BusinessModel)context.getApplicationContext();
                             businessModel.initializeChatSdk();
 
@@ -69,6 +82,14 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             }
         }else{
             Commons.print("Firebase : User already Online");
+
+            if (from.equalsIgnoreCase("AttendanceIn")){
+                updateAttendanceIn(context,pathNode);
+            }else if (from.equalsIgnoreCase("AttendanceOut")){
+                updateAttendanceOut(context,pathNode);
+            }else if (from.equalsIgnoreCase("Location")){
+                updateFirebaseData(context, locationDetailBO);
+            }
         }
     }
 
@@ -85,7 +106,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         locationDetailBO.setOutTime("");
         locationDetailBO.setStatus("IN");
 
-        updateFirebaseData(context, locationDetailBO);
+        validateLoginAndUpdate(context,"", locationDetailBO,"Location");
 
     }
 

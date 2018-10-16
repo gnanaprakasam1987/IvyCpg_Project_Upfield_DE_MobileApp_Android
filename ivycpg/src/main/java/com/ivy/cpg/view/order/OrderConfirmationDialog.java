@@ -428,7 +428,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                 if (isMandatory_payterm
                         && ((ReasonMaster) spinner_payment.getSelectedItem())
                         .getReasonID().equals("0")) {
-                    Toast.makeText(context, context.getResources().getString(R.string.pay_term_mandatory), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Please " + ((ReasonMaster) spinner_payment.getSelectedItem()).getReasonDesc(), Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (isMandatory_channel

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.ivy.sd.png.asean.view"
-    android:versionCode="1340"
-    android:versionName="2.134.0.2907">
+    package="com.ivy.sd.png.asean.view">
 
     <supports-screens
         android:anyDensity="true"
@@ -327,7 +325,7 @@
             android:name="com.ivy.cpg.primarysale.view.InvoiceStatusActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CallAnalysisActivity"
+            android:name="com.ivy.cpg.view.callanalysis.CallAnalysisActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.HomeScreenTwo"
@@ -342,7 +340,7 @@
             android:name="com.ivy.sd.png.view.BatchAllocation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CloseCallActivity"
+            android:name="com.ivy.cpg.view.callanalysis.CloseCallActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.TaskCreation"
@@ -530,7 +528,7 @@
             android:name="com.ivy.cpg.view.sf.SOSKUActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CallAnalysisActivityKlgs"
+            android:name="com.ivy.cpg.view.callanalysis.CallAnalysisActivityKlgs"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.ChangePasswordActivity"
@@ -699,15 +697,15 @@
             android:name="com.ivy.cpg.view.reports.soho.SalesReturnValidationReportSOHO"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SubDHomeActivity"
+            android:name="com.ivy.cpg.view.subd.SubDHomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SubDStockCheckActivity"
+            android:name="com.ivy.cpg.view.subd.SubDStockCheckActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SubDStockOrderActivity"
+            android:name="com.ivy.cpg.view.subd.SubDStockOrderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
