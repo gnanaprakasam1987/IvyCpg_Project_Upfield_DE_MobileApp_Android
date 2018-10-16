@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
@@ -28,7 +29,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.utils.AppUtils;
 
 import java.io.File;
@@ -40,12 +40,13 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL_BASE;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_PASSWORD;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.USERS;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.USER_INFO;
 
@@ -206,17 +207,15 @@ public class LoginHelper {
     }*/
 
     public void onFCMRegistration(final Context mContext) {
-        final SharedPreferences prefs = getGcmPreferences(mContext);
+        final SharedPreferences prefs = AppUtils.getSharedPreferences(mContext);
         boolean registrationId = prefs.getBoolean(PROPERTY_IS_REG_ID_NEW, false);
-        if (registrationId) {
-            Commons.printInformation("Already Registered.");
-            return;
-        }
 
-        if (checkPlayServices(mContext.getApplicationContext())) {
+        if (checkPlayServices(mContext.getApplicationContext()) && !registrationId) {
 
-            final String email = businessModel.userMasterHelper.getUserMasterBO().getLoginName()+FIREBASE_EMAIL_BASE;
-            FIREBASE_EMAIL = email;
+            final String domainName = getDomainName(mContext);
+            final String topicName = getFCMTopicName(mContext);
+            final String loginName = businessModel.userMasterHelper.getUserMasterBO().getLoginName();
+            final String email = loginName + "@" + domainName+".com";
 
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -229,7 +228,9 @@ public class LoginHelper {
 
                             final String fcmToken = task.getResult().getToken();
 
-                            if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+                            registerInBackground(mContext,fcmToken);
+
+                            if(FirebaseAuth.getInstance().getCurrentUser() == null && !email.equals("")) {
 
                                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, FIREBASE_PASSWORD)
                                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -244,18 +245,26 @@ public class LoginHelper {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task<AuthResult> task1) {
 
-                                                                        registerInBackground(mContext,fcmToken);
+                                                                        updateTokenInFirebase(mContext,fcmToken,domainName);
 
-                                                                        updateTokenInFirebase(mContext,fcmToken);
+                                                                        storeFireBaseCredentials(mContext,
+                                                                                email,
+                                                                                domainName);
+
+                                                                        businessModel.initializeChatSdk();
 
                                                                     }
                                                                 });
                                                     }
                                                 }else{
+                                                    updateTokenInFirebase(mContext,fcmToken,domainName);
 
-                                                    registerInBackground(mContext,fcmToken);
+                                                    storeFireBaseCredentials(mContext,
+                                                            email,
+                                                            domainName);
 
-                                                    updateTokenInFirebase(mContext,fcmToken);
+                                                    businessModel.initializeChatSdk();
+
                                                 }
 
                                             }
@@ -265,15 +274,127 @@ public class LoginHelper {
                         }
                     });
 
-//            FirebaseMessaging.getInstance().subscribeToTopic("APP");
+            if (topicName != null && !topicName.equals("")) {
 
+                String[] topicNameArr = topicName.split(",");
+
+                for (String topic : topicNameArr) {
+
+                    if (validate(topic)) {
+                        Commons.printInformation("Valid FCMTopic");
+
+                        FirebaseMessaging.getInstance().subscribeToTopic(topic);
+                    } else {
+                        Commons.printInformation("Invalid FCMTopic");
+                    }
+                }
+            }
 
         } else {
-            Commons.printInformation("No valid Google Play Services APK found.");
+            Commons.printInformation("No valid Google Play Services APK found,Or Already Registered.");
         }
     }
 
-    private void updateTokenInFirebase(Context context,String token){
+    private boolean validate(final String name){
+
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9-_.~%]{1,900}");
+
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
+
+    }
+
+    private String getDomainName(Context context){
+        String rootPath ="";
+
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db.selectSQL("select DomainName from AppVariables");
+            if (c.getCount() > 0) {
+                if (c.moveToNext()) {
+                    rootPath = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return rootPath==null?"":rootPath;
+    }
+
+    private String getFCMTopicName(Context context){
+        StringBuilder topicName = new StringBuilder();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db.selectSQL("select ListCode from StandardListMaster where ListType='PUSH_TOPICS'");
+            if(c.getCount()>0){
+                while(c.moveToNext()) {
+
+                    topicName.append(",").append(c.getString(0));
+                }
+
+            }
+            c.close();
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+
+        return topicName.length()>0?topicName.substring(1):"";
+    }
+
+    private String getloginUserName(Context context){
+        String userName ="";
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = db.selectSQL("select loginid from UserMaster where isDeviceuser=1");
+            if(c.getCount() > 0 && c.moveToNext()) {
+
+                    userName= c.getString(0);
+            }
+            c.close();
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+
+        return userName;
+    }
+
+    /**
+     * Stores the FIREBASE_ROOT_PATH and the FIREBASE_EMAIL in the application's
+     * {@code SharedPreferences}.
+     *
+     * @param context application's context.
+     * @param domainName FIREBASE_ROOT_PATH
+     */
+    private void storeFireBaseCredentials(Context context, String email,String domainName) {
+
+        final SharedPreferences prefs = AppUtils.getSharedPreferences(context);
+        int appVersion = getAppVersion(context);
+        Commons.printInformation("Saving Domain on app version " + appVersion);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(FIREBASE_ROOT_PATH, domainName);
+        editor.putString(FIREBASE_EMAIL, email);
+        editor.apply();
+    }
+
+    private void updateTokenInFirebase(Context context,String token,String rootPath){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -285,7 +406,7 @@ public class LoginHelper {
         if (positionId == 0)
             return;
 
-        db.collection(FIRESTORE_BASE_PATH)
+        db.collection(rootPath)
                 .document(USERS)
                 .collection(USER_INFO)
                 .document(positionId+"")
@@ -314,48 +435,6 @@ public class LoginHelper {
 
         return posId;
 
-
-    }
-
-    /**
-     * Gets the current registration ID for application on GCM service, if there
-     * is one.
-     * <p>
-     * If result is empty, the app needs to register.
-     *
-     * @return registration ID, or empty string if there is no existing
-     * registration ID.
-     */
-
-    private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGcmPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-        if (registrationId.isEmpty()) {
-            Commons.printInformation("Registration not found.");
-            return "";
-        }
-        // Check if app was updated; if so, it must clear the registration ID
-        // since the existing regID is not guaranteed to work with the new
-        // app version.
-        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION,
-                Integer.MIN_VALUE);
-        int currentVersion = getAppVersion(context);
-        if (registeredVersion != currentVersion) {
-            Commons.printInformation("App version changed.");
-            return "";
-        }
-        return registrationId;
-    }
-
-    /**
-     * @return Application's {@code SharedPreferences}.
-     */
-    private SharedPreferences getGcmPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences,
-        // but
-        // how you store the regID in your app is up to you.
-        return context.getSharedPreferences(HomeScreenActivity.class.getSimpleName(),
-                MODE_PRIVATE);
     }
 
     /**
@@ -443,7 +522,7 @@ public class LoginHelper {
      * @param regId   registration ID
      */
     private void storeRegistrationId(Context context, String regId) {
-        final SharedPreferences prefs = getGcmPreferences(context);
+        final SharedPreferences prefs = AppUtils.getSharedPreferences(context);
         int appVersion = getAppVersion(context);
         Commons.printInformation("Saving regId on app version " + appVersion);
         SharedPreferences.Editor editor = prefs.edit();

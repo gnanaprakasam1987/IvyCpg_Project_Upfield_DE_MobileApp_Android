@@ -293,10 +293,10 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         //Focus all the retailer location in map
         sellerMapViewPresenter.getMarkerForFocus();
 
-        //Sellers last visit info listener
+        //Current Seller last visit info listener
         sellerMapViewPresenter.setSellerActivityListener(userId,seletedDate);
 
-        //Sellers last visit info listener
+        //Current Seller Realtime Location listener
         sellerMapViewPresenter.setSellerMovementListener(userId,seletedDate);
 
         //Draw route based on sellers activity
@@ -356,7 +356,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             @Override
             public void onMapLoaded() {
                 if(builder != null) {
-                    if (sellerMapViewPresenter.checkAreaBoundsTooSmall(builder.build(), 300)) {
+                    if (sellerMapViewPresenter.checkAreaBoundsTooSmall(builder.build())) {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
                     } else {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
@@ -406,8 +406,9 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                         .title("SELLER");
                 sellerMarker = mMap.addMarker(markerOptions);
             } else {
-//                sellerMarker.setPosition(sellerLatLng);
                 sellerMapViewPresenter.animateSellerMarker(sellerLatLng,sellerMarker);
+
+                sellerMapViewPresenter.addRoutePoint(sellerLatLng);
             }
         }
     }

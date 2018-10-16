@@ -623,7 +623,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         }
 
-        menu.findItem(R.id.menu_chat).setVisible(true);
+        if (bmodel.configurationMasterHelper.IS_MENU_FIREBASE_CHAT)
+            menu.findItem(R.id.menu_chat).setVisible(true);
 
         super.onPrepareOptionsMenu(menu);
     }

@@ -55,7 +55,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.firebase.storage.FirebaseStorage;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
@@ -134,7 +133,6 @@ import com.ivy.sd.png.provider.ProfileHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
 import com.ivy.sd.png.provider.ReportHelper;
-import com.ivy.cpg.view.retailercontract.RetailerContractHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.RoadActivityHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -164,6 +162,7 @@ import com.ivy.sd.print.EODStockReportPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
+import com.ivy.utils.AppUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -194,18 +193,16 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
 
-import co.chatsdk.core.error.ChatSDKException;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.session.Configuration;
-import co.chatsdk.core.utils.ImageUtils;
 import co.chatsdk.firebase.FirebaseNetworkAdapter;
 import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
 import co.chatsdk.firebase.push.FirebasePushModule;
 import co.chatsdk.ui.manager.BaseInterfaceAdapter;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_FIREBASE_STORAGE_URL;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_SERVER_KEY;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 
 public class BusinessModel extends Application {
 
@@ -700,7 +697,7 @@ public class BusinessModel extends Application {
 
             mApplicationComponent.inject(this);
 
-            initialeChatSdk();
+            initializeChatSdk();
 
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -708,30 +705,40 @@ public class BusinessModel extends Application {
 
     }
 
-    public void initialeChatSdk(){
-
+    public void initializeChatSdk(){
         try {
             Context context = getApplicationContext();
+
+            String rootPath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
+
+            if (!rootPath.equals("")) {
 // Create a new configuration
-            Configuration.Builder builder = new Configuration.Builder(context);
+                Configuration.Builder builder = new Configuration.Builder(context);
 
-            builder.firebaseRootPath(CHAT_ROOT_PATH);
-            builder.firebaseStorageURL(CHAT_FIREBASE_STORAGE_URL); // /files/new_folder_cpg/chat_img
-            builder.firebaseCloudMessagingServerKey(CHAT_SERVER_KEY);
-            builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
-            builder.locationMessagesEnabled(true);
-            builder.setInboundPushHandlingEnabled(true);
+                builder.firebaseRootPath(rootPath);
+                builder.firebaseStorageURL(CHAT_FIREBASE_STORAGE_URL); // /files/new_folder_cpg/chat_img
+                builder.firebaseCloudMessagingServerKey(CHAT_SERVER_KEY);
+                builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
+                builder.locationMessagesEnabled(true);
+                builder.setInboundPushHandlingEnabled(true);
+
+                builder.groupsEnabled(false);
+                builder.threadDetailsEnabled(false);
+                builder.publicRoomCreationEnabled(false);
+                builder.setClientPushEnabled(false);
+                builder.pushNotificationColor(R.attr.primarycolor);
+                builder.pushNotificationImageDefaultResourceId(R.drawable.launchericon);
 
 
-            ChatSDK.initialize(builder.build(), new BaseInterfaceAdapter(context), new FirebaseNetworkAdapter());
+                ChatSDK.initialize(builder.build(), new BaseInterfaceAdapter(context), new FirebaseNetworkAdapter());
 
-            FirebaseFileStorageModule.activate();
-            FirebasePushModule.activateForFirebase();
+                FirebaseFileStorageModule.activate();
+                FirebasePushModule.activateForFirebase();
+            }
 
-        }catch(ChatSDKException e){
+        }catch(Exception e){
             Commons.printException(e);
         }
-
     }
 
     public IvyAppComponent getComponent() {

@@ -58,6 +58,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.NetworkUtils;
 import com.ivy.utils.network.TLSSocketFactory;
 
 import org.json.JSONArray;
@@ -4407,7 +4408,7 @@ SynchronizationHelper {
 
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
-        if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
+        if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && NetworkUtils.isNetworkConnected(context))
             LoginHelper.getInstance(context).onFCMRegistration(context);
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)

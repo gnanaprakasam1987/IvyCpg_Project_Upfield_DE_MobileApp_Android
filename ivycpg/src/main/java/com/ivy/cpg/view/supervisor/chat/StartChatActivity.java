@@ -4,20 +4,33 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import co.chatsdk.core.base.BaseNetworkAdapter;
+import co.chatsdk.core.dao.DaoCore;
+import co.chatsdk.core.dao.Keys;
 import co.chatsdk.core.dao.Message;
 import co.chatsdk.core.dao.User;
 import co.chatsdk.core.events.EventType;
@@ -30,13 +43,19 @@ import co.chatsdk.core.session.StorageManager;
 import co.chatsdk.core.types.AccountDetails;
 import co.chatsdk.core.types.AccountType;
 import co.chatsdk.core.types.AuthKeys;
+import co.chatsdk.core.types.ConnectionType;
 import co.chatsdk.core.types.ReadStatus;
 import co.chatsdk.core.utils.NotificationUtils;
+import co.chatsdk.firebase.wrappers.ThreadWrapper;
 import co.chatsdk.ui.login.LoginActivity;
 import co.chatsdk.ui.utils.ToastHelper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.USERS;
 
 public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
 
@@ -45,14 +64,21 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
 
     private String userChatId = "";
 
+    private boolean isUserValidated = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_chat);
 
-        setTaskDescription(getTaskDescriptionBitmap(), getTaskDescriptionLabel(), getTaskDescriptionColor());
 
-        userChatId = getIntent().getExtras()!=null?getIntent().getExtras().getString("UUID"):"";
+        if (AppUtils.getSharedPreferences(this).getString(FIREBASE_EMAIL, "").equals("")) {
+            Toast.makeText(this, "No Chat SDk Initialized", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        userChatId = getIntent().getExtras() != null ? getIntent().getExtras().getString("UUID") : "";
 
         if (ChatSDK.currentUser() == null) {
             //showProgressDialog("Connecting ...");
@@ -64,7 +90,8 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                 InterfaceManager.shared().a.startMainActivity(this);
                 finish();
             }else {
-                getmessageId();
+                final User user = DaoCore.fetchEntityWithEntityID(User.class, userChatId);
+                getmessageId(user);
 
 //                startChatActivity();
             }
@@ -72,24 +99,31 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
 
     }
 
-    protected int getTaskDescriptionColor(){
+    protected int getTaskDescriptionColor() {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = this.getTheme();
         theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
         return typedValue.data;
     }
 
-    protected String getTaskDescriptionLabel(){
+    protected String getTaskDescriptionLabel() {
         return (String) getTitle();
     }
 
-    protected Bitmap getTaskDescriptionBitmap(){
+    protected Bitmap getTaskDescriptionBitmap() {
         return BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
     }
 
-    private void customAuth(){
+    private void customAuth() {
 
-        AccountDetails accountDetails = AccountDetails.username(SupervisorModuleConstants.FIREBASE_EMAIL, SupervisorModuleConstants.FIREBASE_PASSWORD);
+        String email = AppUtils.getSharedPreferences(this).getString(FIREBASE_EMAIL, "");
+
+        if (email.equals("")) {
+            Toast.makeText(this, "Some Error Occured", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        AccountDetails accountDetails = AccountDetails.username(email, SupervisorModuleConstants.FIREBASE_PASSWORD);
 
         NetworkManager.shared().a.auth.authenticate(accountDetails).observeOn(AndroidSchedulers.mainThread())
                 .doFinally(new Action() {
@@ -101,10 +135,15 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                 .subscribe(new Action() {
                     @Override
                     public void run() throws Exception {
-                        if (userChatId.equals(""))
-                            startMainActivity();
-                        else
-                            startChatActivity();
+
+                        if (userChatId.equals("")) {
+                            InterfaceManager.shared().a.startMainActivity(StartChatActivity.this);
+                            finish();
+                        } else {
+
+                            final User user = DaoCore.fetchEntityWithEntityID(User.class, userChatId);
+                            getmessageId(user);
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -117,23 +156,64 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                 });
     }
 
-    private void startChatActivity(){
+    private void getUserInfo() {
+        DatabaseReference mDatabase;
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.child(AppUtils.getSharedPreferences(this).getString(FIREBASE_ROOT_PATH, ""))
+                .child(USERS).child(userChatId).child("meta")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        User user = StorageManager.shared().fetchOrCreateEntityWithEntityID(User.class, userChatId);
+
+                        HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
+
+                        if (value != null) {
+
+                            Commons.print("user in On Datachange= " + user);
+
+                            user.setEntityID(userChatId);
+                            user.setEmail(value.get(Keys.Email) != null ? value.get(Keys.Email).toString() : "");
+                            user.setName(value.get(Keys.Name) != null ? value.get(Keys.Name).toString() : "");
+                            user.setLocation(value.get(Keys.Location) != null ? value.get(Keys.Location).toString() : "");
+                            user.setAvatarURL(value.get(Keys.AvatarURL) != null ? value.get(Keys.AvatarURL).toString() : "");
+
+                            ChatSDK.contact().addContact(user, ConnectionType.Contact);
+
+                            getmessageId(user);
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        databaseError.toException();
+
+                    }
+                });
+
+    }
+
+    private void startChatActivity() {
         Intent openChatIntent = new Intent(this, ChatSDK.ui().getChatActivity());
-        openChatIntent.putExtra(InterfaceManager.THREAD_ENTITY_ID, userChatId);
+        openChatIntent.putExtra(InterfaceManager.THREAD_ENTITY_ID, extras);
         //openChatIntent.setAction(userChatId);
         openChatIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(openChatIntent);
         finish();
     }
 
-    private void startMainActivity(){
+    private void startMainActivity() {
         ChatSDK.ui().startMainActivity(StartChatActivity.this, extras);
         finish();
     }
 
-    private void getmessageId(){
-
-        User user = StorageManager.shared().fetchUserWithEntityID(userChatId);
+    private void getmessageId(User user) {
 
         ChatSDK.thread().createThread("", user, ChatSDK.currentUser())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -141,33 +221,45 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                     dismissProgressDialog();
                 })
                 .subscribe(thread -> {
-                    extras.put(InterfaceManager.THREAD_ENTITY_ID,thread.getEntityID());
+
+                    Commons.print("Thread Created");
+
+                    extras.put(InterfaceManager.THREAD_ENTITY_ID, thread.getEntityID());
                     startMainActivity();
+
                 }, throwable -> {
                     ToastHelper.show(getApplicationContext(), throwable.getLocalizedMessage());
+
+                    Commons.print("Thread not created, Error");
+
+                    if (isUserValidated) {
+                        InterfaceManager.shared().a.startMainActivity(this);
+                        finish();
+                    } else {
+                        isUserValidated = true;
+                        getUserInfo();
+                    }
                 });
     }
 
-    public void toastErrorMessage(Throwable error, boolean login){
+    public void toastErrorMessage(Throwable error, boolean login) {
         String errorMessage = "";
 
         if (StringUtils.isNotBlank(error.getMessage())) {
             errorMessage = error.getMessage();
-        }
-        else if (login) {
+        } else if (login) {
             errorMessage = getString(co.chatsdk.ui.R.string.login_activity_failed_to_login_toast);
-        }
-        else {
+        } else {
             errorMessage = getString(co.chatsdk.ui.R.string.login_activity_failed_to_register_toast);
         }
 
         showToast(errorMessage);
     }
 
-    public static Map<String, Object> getMap(String[] keys,  Object...values){
+    public static Map<String, Object> getMap(String[] keys, Object... values) {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        for (int i = 0 ; i < keys.length; i++){
+        for (int i = 0; i < keys.length; i++) {
 
             // More values then keys entered.
             if (i == values.length)
@@ -185,11 +277,13 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
         updateExtras(intent.getExtras());
     }
 
-    protected void updateExtras (Bundle bundle) {
+    protected void updateExtras(Bundle bundle) {
         if (bundle != null) {
             for (String s : bundle.keySet()) {
                 extras.put(s, bundle.get(s));
             }
         }
     }
+
+
 }

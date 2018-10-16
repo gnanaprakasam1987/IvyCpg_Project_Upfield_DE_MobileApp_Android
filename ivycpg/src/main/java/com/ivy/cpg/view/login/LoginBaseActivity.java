@@ -40,9 +40,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.UnknownFormatConversionException;
 
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL_BASE;
-
 public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar implements LoginContract.LoginBaseView {
 
     private BusinessModel businessModel;
@@ -313,8 +310,6 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
 
                     // This call will help to intiatiate catalog image download services.
                     CatalogImageDownloadProvider.getInstance(businessModel).checkCatalogDownload();
-
-                    FIREBASE_EMAIL = businessModel.userMasterHelper.getUserMasterBO().getLoginName()+FIREBASE_EMAIL_BASE;
 
                     finish();
                     break;

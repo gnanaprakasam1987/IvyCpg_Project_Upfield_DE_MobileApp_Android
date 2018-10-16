@@ -2215,7 +2215,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             case MENU_SUPERVISOR_CALLANALYSIS:
 
-                SupervisorActivityHelper.getInstance().loginToFirebase();
+                SupervisorActivityHelper.getInstance().loginToFirebase(getContext());
                 SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(), SDUtil.now(SDUtil.DATE_GLOBAL));
 
                 bndl = new Bundle();

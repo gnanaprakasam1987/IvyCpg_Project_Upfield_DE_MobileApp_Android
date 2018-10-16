@@ -40,6 +40,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONArray;
@@ -65,7 +66,7 @@ import java.util.Vector;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_DATA_KEY;
@@ -94,11 +95,13 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     private AlertDialog alertDialog;
     private ArrayList<LatLng> valuesList = new ArrayList<>();
+    private String basePath = "";
 
     @Override
     public void setView(SellerDetailMapContractor.SellerDetailMapView sellerMapView, Context context) {
         this.sellerMapView = sellerMapView;
         this.context = context;
+        basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
     }
 
     @Override
@@ -175,7 +178,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     public void setSellerActivityListener(int userId, String date) {
 
         DocumentReference documentReference = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date)
                 .document(userId + "");
@@ -196,7 +199,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         if (isRealTimeLocationOn) {
 
             DocumentReference documentReference = db
-                    .collection(FIRESTORE_BASE_PATH)
+                    .collection(basePath)
                     .document(REALTIME_LOCATION_PATH)
                     .collection(date)
                     .document(userId + "");
@@ -217,7 +220,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     public void setSellerActivityDetailListener(int userId, String date) {
 
         CollectionReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date)
                 .document(userId + "")
@@ -403,12 +406,26 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                 double latitude = sellerBo.getLatitude();
                 double longitude = sellerBo.getLongitude();
 
-                LatLng sellerCurrentLocation = null;
+                if (latitude > 0 && longitude > 0) {
+                    LatLng sellerCurrentLocation = null;
 
-                sellerCurrentLocation = new LatLng(latitude, longitude);
+                    sellerCurrentLocation = new LatLng(latitude, longitude);
 
-                sellerMapView.updateSellerLocation(sellerCurrentLocation);
+                    sellerMapView.updateSellerLocation(sellerCurrentLocation);
+                }
             }
+        }
+    }
+
+    public void addRoutePoint(LatLng sellerCurrentLocation){
+        ArrayList<LatLng> routeLatLngList = new ArrayList<>();
+        if (valuesList.size() > 0) {
+            routeLatLngList.add(valuesList.get(valuesList.size() - 1));
+            routeLatLngList.add(sellerCurrentLocation);
+
+            valuesList.add(sellerCurrentLocation);
+
+            sellerMapView.drawRoute(routeLatLngList);
         }
     }
 
@@ -416,8 +433,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
         try {
             RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
-
-            System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
             if (documentSnapshotBo != null) {
 
@@ -582,7 +597,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return new ArrayList<>(retailerVisitDetailsByRId.values());
     }
 
-    boolean checkAreaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
+    boolean checkAreaBoundsTooSmall(LatLngBounds bounds) {
+        int minDistanceInMeter = 300;
         float[] result = new float[1];
         Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
         return result[0] < minDistanceInMeter;
@@ -637,6 +653,11 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         new DownloadSellerRoute(userId, date).execute();
     }
 
+    /**
+     * Downloading Seller Realtime location from server to draw route
+     * Process Starts here
+     */
+
     class DownloadSellerRoute extends AsyncTask<String, Void, Boolean> {
 
         private String userId,date;
@@ -676,24 +697,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             }
         }
 
-    }
-
-    public void customProgressDialog(AlertDialog.Builder builder, String message) {
-
-        try {
-            View view = View.inflate(context, R.layout.custom_alert_dialog, null);
-
-            TextView title = view.findViewById(R.id.title);
-            title.setText(DataMembers.SD);
-            TextView messagetv = view.findViewById(R.id.text);
-            messagetv.setText(message);
-
-            builder.setView(view);
-            builder.setCancelable(false);
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
     }
 
     private boolean prepareDownloadData(String userId,String date) {
@@ -746,7 +749,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     }
 
-
     private Vector<String> connectMe(String url) {
         URL uri;
         HttpURLConnection con = null;
@@ -782,11 +784,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     }
 
-    /**
-     * @param jsonObject - response json object
-     *                   Method to split table name and columns from json object
-     *                   response
-     */
     public void parseJSONAndInsert(JSONObject jsonObject) {
 
         try {
@@ -817,5 +814,26 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         }
 
     }
+
+    public void customProgressDialog(AlertDialog.Builder builder, String message) {
+
+        try {
+            View view = View.inflate(context, R.layout.custom_alert_dialog, null);
+
+            TextView title = view.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            TextView messagetv = view.findViewById(R.id.text);
+            messagetv.setText(message);
+
+            builder.setView(view);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    // Download Process Ends
+
 
 }

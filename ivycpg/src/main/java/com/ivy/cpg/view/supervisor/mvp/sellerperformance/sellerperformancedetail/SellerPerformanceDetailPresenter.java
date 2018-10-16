@@ -33,6 +33,7 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONArray;
@@ -40,7 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 
 public class SellerPerformanceDetailPresenter implements SellerPerformanceDetailContractor.SellerPerformancePresenter{
@@ -78,12 +78,15 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     private BusinessModel bmodel;
     private JSONObject json = new JSONObject();
     private AlertDialog alertDialog;
+    private String basePath = "";
+
 
     @Override
     public void setDetailView(SellerPerformanceDetailContractor.SellerPerformanceDetailView view, Context context) {
         this.sellerPerformanceView =view;
         this.context = context;
         bmodel = (BusinessModel) context.getApplicationContext();
+        basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
     }
 
     @Override
@@ -234,7 +237,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     public void setSellerActivityListener(final int userId, final String date) {
 
         DocumentReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date).document(userId+"");
 
@@ -271,7 +274,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     public void setSellerActivityDetailListener(int userId,String date) {
 
         CollectionReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date)
                 .document(userId + "")
@@ -299,7 +302,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     public void prepareChartData(final int userId,final String date){
 
         DocumentReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date).document(userId+"");
 

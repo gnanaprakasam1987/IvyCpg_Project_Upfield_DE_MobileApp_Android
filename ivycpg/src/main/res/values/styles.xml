@@ -1332,5 +1332,16 @@ negative button and neutral button -->
         <item name="cornerRadius">4dp</item>
     </style>
 
+    <style name="SdkTheme"
+        parent="@style/Theme.AppCompat.Light">
+        <!-- App Bar -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/sdkTextColorPrimary</item>
+        <item name="actionBarWidgetTheme">@style/Widget.SdkTheme.ActionBar</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.SdkTheme.ActionBar</item>
+    </style>
+
 
 </resources>

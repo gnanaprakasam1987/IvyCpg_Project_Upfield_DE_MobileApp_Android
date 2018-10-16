@@ -22,6 +22,7 @@ import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +36,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 
 public class SellerPerformancePresenter implements SellerPerformanceContractor.SellerPerformancePresenter {
@@ -52,11 +53,13 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     private ArrayList<BarEntry> barChartEntry = new ArrayList<>();
 
     private LinkedHashMap<Integer,SellerBo> sellerInfoHasMap = new LinkedHashMap<>();
+    private String basePath="";
 
     @Override
     public void setView(SellerPerformanceContractor.SellerPerformanceView sellerPerformanceView, Context context) {
         this.sellerPerformanceView = sellerPerformanceView;
         this.context = context;
+        basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
     }
 
     @Override
@@ -107,7 +110,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     public void sellerActivityInfoListener(final int userId, final String date) {
 
         CollectionReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date);
 
@@ -143,7 +146,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     public void prepareChartData(final int userId,final String date){
 
         CollectionReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date);
 

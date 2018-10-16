@@ -146,14 +146,25 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
                     PendingIntent.FLAG_ONE_SHOT);
 
             String channelId = "channelId";
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri soundUri ;
+
+            try {
+                soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notify);
+            }catch (Exception e){
+                Commons.printException(e);
+                soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
+
+            if (soundUri == null)
+                soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, channelId)
                             .setSmallIcon(R.drawable.launchericon)
                             .setContentTitle(notification.getTitle())
                             .setContentText(notification.getBody())
                             .setAutoCancel(true)
-                            .setSound(defaultSoundUri)
+                            .setSound(soundUri)
                             .setContentIntent(pendingIntent);
 
             NotificationManager notificationManager =
@@ -164,7 +175,7 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
                 // Since android Oreo notification channel is needed.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationChannel channel = new NotificationChannel(channelId,
-                            "Channel human readable title",
+                            "IvyCpg Notify Channel",
                             NotificationManager.IMPORTANCE_DEFAULT);
                     notificationManager.createNotificationChannel(channel);
                 }

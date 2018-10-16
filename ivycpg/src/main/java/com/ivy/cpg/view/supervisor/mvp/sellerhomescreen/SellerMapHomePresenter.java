@@ -38,8 +38,8 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
-import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -49,6 +49,7 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONException;
@@ -68,7 +69,8 @@ import java.util.Vector;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 
@@ -90,12 +92,16 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     private BusinessModel bmodel;
     private String selectedDate;
 
+    private String basePath = "";
+
 
     @Override
     public void setView(SellerMapHomeContract.SellerMapHomeView sellerMapHomeView, Context context) {
         this.sellerMapHomeView = sellerMapHomeView;
         this.context = context;
         bmodel = (BusinessModel) context.getApplicationContext();
+
+        basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
     }
 
     @Override
@@ -212,7 +218,13 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     public void loginToFirebase(final Context context, final int userId) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            String email = SupervisorModuleConstants.FIREBASE_EMAIL;
+            String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL,"");
+
+            if (email.equals("")){
+                sellerMapHomeView.firebaseLoginFailure();
+                return;
+            }
+
             String password = SupervisorModuleConstants.FIREBASE_PASSWORD;
             // Authenticate with Firebase and subscribe to updates
 
@@ -243,7 +255,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     public void sellerActivityInfoListener(int userId,String date) {
 
         CollectionReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date);
 
@@ -278,7 +290,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     public void realtimeLocationInfoListener(int userId,String date){
 
         CollectionReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(REALTIME_LOCATION_PATH)
                 .collection(date);
 
@@ -313,7 +325,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     public void sellerAttendanceInfoListener(int userId,String date){
 
         CollectionReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(ATTENDANCE_PATH)
                 .collection(date);
 
@@ -943,7 +955,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     private void notifyAttendance(){
         try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri notification = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.notify);
             Ringtone r = RingtoneManager.getRingtone(context, notification);
             r.play();
         } catch (Exception e) {

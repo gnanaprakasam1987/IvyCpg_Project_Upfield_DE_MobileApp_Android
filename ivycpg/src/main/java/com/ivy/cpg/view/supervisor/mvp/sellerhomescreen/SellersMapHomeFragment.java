@@ -134,9 +134,6 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        AccountDetails accountDetails = AccountDetails.username(SupervisorModuleConstants.FIREBASE_EMAIL, SupervisorModuleConstants.FIREBASE_PASSWORD);
-        NetworkManager.shared().a.auth.authenticate(accountDetails);
-
         return view;
     }
 

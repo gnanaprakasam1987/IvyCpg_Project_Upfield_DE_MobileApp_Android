@@ -16,8 +16,11 @@ import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.LinkedHashMap;
+
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
 
 public class SupervisorActivityHelper {
 
@@ -34,10 +37,10 @@ public class SupervisorActivityHelper {
         return instance;
     }
 
-    public void loginToFirebase() {
+    public void loginToFirebase(Context context) {
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null || FirebaseDatabase.getInstance() == null) {
-            String email = SupervisorModuleConstants.FIREBASE_EMAIL;
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL,"");
             String password = SupervisorModuleConstants.FIREBASE_PASSWORD;
             // Authenticate with Firebase and subscribe to updates
 
