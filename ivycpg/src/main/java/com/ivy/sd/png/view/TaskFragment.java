@@ -282,8 +282,7 @@ public class TaskFragment extends IvyBaseFragment {
             if (title.equals(""))
                 title = getResources().getString(R.string.task);
             setScreenTitle(title);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
             setScreenTitle(getResources().getString(R.string.task));
         }
@@ -352,7 +351,10 @@ public class TaskFragment extends IvyBaseFragment {
         menu.findItem(R.id.menu_save).setVisible(false);
         if (!hide_new_menu)
             menu.findItem(R.id.menu_new_task).setVisible(false);
-        menu.findItem(R.id.menu_reason).setVisible(bmodel.configurationMasterHelper.floating_np_reason_photo);
+
+        if (!fromHomeScreen)//this is applicable for store wise task
+            menu.findItem(R.id.menu_reason).setVisible(bmodel.configurationMasterHelper.floating_np_reason_photo);
+
         if (drawerOpen)
             menu.clear();
     }
