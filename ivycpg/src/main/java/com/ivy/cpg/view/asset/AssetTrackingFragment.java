@@ -56,8 +56,8 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class
-AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener, BrandDialogInterface,
-        DataPickerDialogFragment.UpdateDateInterface,AssetContractor.AssetView,FiveLevelFilterCallBack{
+AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener, BrandDialogInterface,
+        DataPickerDialogFragment.UpdateDateInterface, AssetContractor.AssetView, FiveLevelFilterCallBack {
 
     private DrawerLayout mDrawerLayout;
     private AlertDialog alertDialog;
@@ -74,7 +74,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     private ArrayAdapter<StandardListBO> mLocationAdapter;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
 
-    private AssetTrackingHelper assetTrackingHelper ;
+    private AssetTrackingHelper assetTrackingHelper;
     private AssetPresenterImpl assetPresenter;
     private AssetAdapter adapter;
     private BusinessModel mBModel;
@@ -115,7 +115,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         return view;
     }
 
-    private void initializeViews(View view){
+    private void initializeViews(View view) {
 
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
@@ -194,12 +194,13 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         listview = (ListView) view.findViewById(R.id.list);
         listview.setCacheColorHint(0);
 
-        if (mBModel.configurationMasterHelper.IS_TEAMLEAD ) {
+        if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
             TextView tvAudit = (TextView) view.findViewById(R.id.audit);
             tvAudit.setVisibility(View.VISIBLE);
 
         }
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -476,7 +477,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
 
     @Override
-    public void updateAssets(ArrayList<AssetTrackingBO> mList,boolean isUnMapped,Bundle mBundle) {
+    public void updateAssets(ArrayList<AssetTrackingBO> mList, boolean isUnMapped, Bundle mBundle) {
 
         updateListView(mList);
 
@@ -498,7 +499,6 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         assetPresenter.setBarcode(ALL);
         assetPresenter.updateList();
     }
-
 
 
     @Override
@@ -544,8 +544,9 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     }
 
     @Override
-    public void isDataExistToSave(boolean isAssetExist,String errorMsg) {
-        if (isAssetExist) {
+    public void isDataExistToSave(boolean isAssetExist, boolean isPhotoExist, boolean isReasonExist, String errorMsg) {
+        if (isAssetExist && isPhotoExist
+                && isReasonExist) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
@@ -580,7 +581,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
     @Override
     public void cancelProgressDialog() {
         assetPresenter.updateTimeStamp();
-        if(alertDialog!=null){
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
 
@@ -645,7 +646,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        assetPresenter.updateFiveFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts,mFilterText);
+        assetPresenter.updateFiveFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
 
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
     }
@@ -661,12 +662,12 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
         mDrawerLayout.closeDrawers();
     }
 
-    private void updateListView(ArrayList<AssetTrackingBO> list){
+    private void updateListView(ArrayList<AssetTrackingBO> list) {
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
         AssetTrackingFragment fragment = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
 
-        adapter = new AssetAdapter(getActivity(),mBModel,assetPresenter,fragment,list);
+        adapter = new AssetAdapter(getActivity(), mBModel, assetPresenter, fragment, list);
         listview.setAdapter(adapter);
 
         int size = list.size();
@@ -711,7 +712,7 @@ AssetTrackingFragment extends IvyBaseFragment implements  OnEditorActionListener
 
     @Override
     public void updateDate(Date date, String tag) {
-        adapter.updateDate(date,tag);
+        adapter.updateDate(date, tag);
 
     }
 
