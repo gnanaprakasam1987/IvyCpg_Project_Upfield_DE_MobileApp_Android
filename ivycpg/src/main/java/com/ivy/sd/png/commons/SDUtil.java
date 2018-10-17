@@ -143,6 +143,12 @@ public class SDUtil {
         return st;
     }
 
+    /**
+     * Comments added
+     * @param value
+     * @param numberofDecimals
+     * @return
+     */
     public static BigDecimal truncateDecimal(double value, int numberofDecimals) {
 
         if (numberofDecimals == -1)
