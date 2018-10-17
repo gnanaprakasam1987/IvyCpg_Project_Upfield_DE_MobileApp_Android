@@ -83,6 +83,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -1866,6 +1867,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                             bmodel.setEditStockCheck(true);
                         }
+
+                        StockCheckHelper.getInstance(StockAndOrder.this).loadCmbStkChkConfiguration(StockAndOrder.this,bmodel.retailerMasterBO.getSubchannelid());
 
                         Intent intent = new Intent(StockAndOrder.this,
                                 CombinedStockDetailActivity.class);
@@ -4673,7 +4676,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (bmodel.isOrderTaken() && bmodel.isEdit())
                     orderHelper.deleteOrder(getApplicationContext(), bmodel.getRetailerMasterBO().getRetailerID());
-
+                StockCheckHelper stockCheckHelper = StockCheckHelper.getInstance(StockAndOrder.this);
                 if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                     // save price check
                     PriceTrackingHelper priceTrackingHelper = PriceTrackingHelper.getInstance(StockAndOrder.this);
@@ -4681,11 +4684,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         priceTrackingHelper.savePriceTransaction(getApplicationContext(), mylist);
 
                     // save near expiry
-                    bmodel.saveNearExpiry();
+                    stockCheckHelper.saveNearExpiry(getApplicationContext());
                 }
 
                 // Save closing stock
-                bmodel.saveClosingStock(true);
+                stockCheckHelper.saveClosingStock(getApplicationContext(),true);
 
                 bmodel.saveModuleCompletion(OrderedFlag);
 
@@ -5031,11 +5034,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     } else if (mSelectedFilter.equals(getResources().getString(
                             R.string.prod_code))) {
-                        if (ret.getRField1() != null && ret.getRField1()
+                        if (((ret.getRField1() != null && ret.getRField1()
                                 .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText().toString()
-                                                .toLowerCase()) && ret.getIsSaleable() == 1) {
+                                .contains(mEdt_searchproductName.getText().toString()
+                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase()))) && ret.getIsSaleable() == 1) {
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                                 mylist.add(ret);
                             else if (applyProductAndSpecialFilter(ret))

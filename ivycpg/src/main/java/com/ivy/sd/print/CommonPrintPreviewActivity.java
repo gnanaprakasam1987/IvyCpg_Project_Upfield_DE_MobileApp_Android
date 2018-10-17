@@ -484,9 +484,9 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 //Attachment
                 DataSource source;
                 if (bmodel.configurationMasterHelper.IS_ATTACH_PDF) {
-                    LayoutInflater inflater = (LayoutInflater) CommonPrintPreviewActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-                    RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
-                    root.setDrawingCacheEnabled(true);
+                   // LayoutInflater inflater = (LayoutInflater) CommonPrintPreviewActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                   // RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
+                   // root.setDrawingCacheEnabled(true);
                     screen = getBitmapFromView(CommonPrintPreviewActivity.this.getWindow().findViewById(R.id.root_print));
                     createPdf(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber);
                    /* File newFile = new File(Environment.getExternalStorageDirectory().getPath() + "/IvyInvoice/"

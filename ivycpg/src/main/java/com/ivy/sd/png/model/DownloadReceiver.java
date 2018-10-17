@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.ivy.cpg.view.login.LoginScreen.MyReceiver;
+import com.ivy.cpg.view.login.LoginBaseActivity;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.view.AdhocPlanningFragment;
@@ -26,7 +26,7 @@ public class DownloadReceiver extends BroadcastReceiver {
 
         switch (fromWhere) {
             case LOGIN:
-                broadCIntent.setAction(MyReceiver.PROCESS_RESPONSE);
+                broadCIntent.setAction(LoginBaseActivity.MyReceiver.PROCESS_RESPONSE);
                 broadCIntent.putExtras(bundle);
                 context.sendBroadcast(broadCIntent);
                 break;

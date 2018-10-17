@@ -430,6 +430,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     @Override
+    public void updateLatLong(String lat, String longitude) {
+        this.lat= lat;
+        this.longitude=longitude;
+    }
+
+    @Override
     public void getImageLongClickListener(boolean isForLatLong) {
         if (!isLatLong && configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE
                 && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0) || (configurationMasterHelper.retailerLocAccuracyLvl != 0
@@ -1984,7 +1990,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private boolean doValidateProdileEdit() {
-
+        validate = true;
         for (int i = 0; i < profileConfig.size(); i++) {
 
             String configCode = profileConfig.get(i).getConfigCode();

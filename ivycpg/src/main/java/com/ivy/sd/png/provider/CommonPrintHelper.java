@@ -993,21 +993,23 @@ public class CommonPrintHelper {
                 mProductLineValueTotal = 0;
                 for (LoadManagementBO unLoadBo : vanUnLoadModuleHelper.getVanUnLoadListHashMap().get(reasonBo)) {
 
-                    if (unLoadBo.getPieceqty() > 0 || unLoadBo.getCaseqty() > 0
-                            || unLoadBo.getOuterQty() > 0) {
+                    if (unLoadBo.getOrderedPcsQty() > 0 || unLoadBo.getOrderedCaseQty() > 0
+                            || unLoadBo.getOuterOrderedCaseQty() > 0) {
                         mLengthUptoPName = 0;
                         for (AttributeListBO attr : mAttributeList) {
                             if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                                 mProductValue = (unLoadBo.getProductname());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
-                                mProductValue = (unLoadBo.getPieceqty()
+                                mProductValue = (unLoadBo.getOrderedPcsQty()
                                         + (unLoadBo.getOrderedCaseQty() * unLoadBo.getCaseSize())
-                                        + (unLoadBo.getOuterQty() * unLoadBo.getOuterSize())) + "";
+                                        + (unLoadBo.getOuterOrderedCaseQty() * unLoadBo.getOuterSize())) + "";
                                 mProductQtyInPieceTotal = mProductQtyInPieceTotal + Integer.parseInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_MRP)) {
-                                mProductValue = formatValueInPrint(unLoadBo.getMrp(), attr.getmAttributePrecision());
+                                mProductValue = formatValueInPrint(unLoadBo.getBaseprice(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
-                                double lineTotal = (mProductQtyInPieceTotal * unLoadBo.getMrp());
+                                double lineTotal = (unLoadBo.getOuterOrderedCaseQty() * unLoadBo.getBaseprice())
+                                        + (unLoadBo.getOrderedCaseQty() * unLoadBo.getBaseprice())
+                                        + (unLoadBo.getOrderedPcsQty() * unLoadBo.getBaseprice());
                                 mProductValue = formatValueInPrint(lineTotal, attr.getmAttributePrecision());
                                 mProductLineValueTotal = mProductLineValueTotal + Double.parseDouble(mProductValue.replace(",", ""));
                             }

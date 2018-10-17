@@ -94,6 +94,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -391,6 +392,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 longitude = data.getExtras().getDouble("lon") + "";
                 if (data.getExtras().getBoolean("isChanged")) {
                     latlongtextview.setText(lat + ", " + longitude);
+                    profileEditPresenter.updateLatLong(lat,longitude);
                     if (isLatLongCameravailable) {
                         latlongCameraBtn.setVisibility(View.VISIBLE);
                     }
@@ -647,8 +649,13 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void setlatlongtextview(String lat, String longitude) {
+
         if (latlongtextview != null)
-            latlongtextview.setText(lat + "," + longitude);
+            if ("0.0".equalsIgnoreCase(lat) || "0.0".equalsIgnoreCase(longitude))
+                latlongtextview.setText(LocationUtil.latitude + "," + LocationUtil.longitude);
+            else
+                latlongtextview.setText(lat + "," + longitude);
+
     }
 
     @Override
@@ -2286,12 +2293,15 @@ public class ProfileEditFragmentNew extends BaseFragment
         else
             in = new Intent(getActivity(), MapDialogue.class);
 
-        double latdoub = Double.valueOf(lat);
-        double longdoub = Double.valueOf(longitude);
-
-        in.putExtra("lat", latdoub);
-        in.putExtra("lon", longdoub);
-        startActivityForResult(in, REQUEST_CODE);
+        String latLag = latlongtextview.getText().toString();
+        if (!AppUtils.isEmptyString(latLag)) {
+            String[] latLagList = latLag.split(",");
+            double latdoub = Double.valueOf(latLagList[0]);
+            double longdoub = Double.valueOf(latLagList[1]);
+            in.putExtra("lat", latdoub);
+            in.putExtra("lon", longdoub);
+            startActivityForResult(in, REQUEST_CODE);
+        }
     }
 
 

@@ -124,6 +124,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
     private boolean isLatLong;
     private String imageName;
+    private int imageId = 0;
     private ArrayList<LocationBO> mLocationMasterList1;
     private ArrayList<LocationBO> mLocationMasterList2;
     private ArrayList<LocationBO> mLocationMasterList3;
@@ -1552,18 +1553,13 @@ public class NewOutletFragment extends IvyBaseFragment
 //                            ? editText[i].getText().toString().trim().length() == 0
 //                            || editText[i].getText().toString().length() != profileConfig.get(i).getMaxLengthNo()
 //                            : editText[i].getText().toString().trim().length() == 0) {
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0)
-                            ? editText[i].getText().toString().trim().length() == 0
-                            || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && (mandatory == 1))
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
 
                         editText[i].addTextChangedListener(watcher);
                         break;
@@ -1571,10 +1567,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 } else if ((profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO2")
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0 ||
-                                    editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo() :
-                            editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1582,8 +1575,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
 
                         editText[i].addTextChangedListener(watcher);
                         break;
@@ -1737,10 +1728,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         .equalsIgnoreCase("FAX")
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0)
-                            ? editText[i].getText().toString().trim().length() == 0
-                            || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1748,8 +1736,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1812,10 +1799,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     Commons.print("pin code");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1823,8 +1807,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1834,10 +1816,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     Commons.print("rf");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1845,8 +1824,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1953,10 +1930,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         .equalsIgnoreCase("CREDITLIMIT"))
                         && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1964,8 +1938,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -5057,22 +5029,22 @@ public class NewOutletFragment extends IvyBaseFragment
                                                     + "/";
                                             Commons.print(TAG + ":Photo path :" + PHOTO_PATH);
 
-                                            int ImageId = bmodel.newOutletHelper
+                                            imageId = bmodel.newOutletHelper
                                                     .getImageTypeList()
                                                     .get(item).getListId();
                                             imageName = moduleName + uID + "_"
-                                                    + ImageId + "_img.jpg";
+                                                    + imageId + "_img.jpg";
                                             String fnameStarts = "";
                                             if (screenMode == EDIT) {
                                                 for (String img : outlet.getImageName()) {
-                                                    if ((img).contains(ImageId + "")) {
+                                                    if ((img).contains(imageId + "")) {
                                                         fnameStarts = img;
                                                         break;
                                                     }
                                                 }
                                             } else {
                                                 fnameStarts = moduleName + uID
-                                                        + "_" + ImageId;
+                                                        + "_" + imageId;
                                             }
 
                                             Commons.print(TAG + ",FName Starts :"
@@ -5086,8 +5058,6 @@ public class NewOutletFragment extends IvyBaseFragment
                                             } else {
 
                                                 captureCustom();
-                                                outlet.ImageId.add(ImageId);
-                                                outlet.ImageName.add(imageName);
                                                 dialog.dismiss();
                                                 return;
 
@@ -5864,6 +5834,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                 imageNameStarts);
                         dialog.dismiss();
                         outlet.getImageName().remove(imageNameStarts);
+                        outlet.getImageId().remove(Integer.valueOf(imageId));
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -6033,8 +6004,11 @@ public class NewOutletFragment extends IvyBaseFragment
             super.onPostExecute(result);
             if (result) {
                 bmodel.setNewlyaddedRetailer("");
-                getHandler().sendEmptyMessage(
-                        DataMembers.NOTIFY_NEW_OUTLET_SAVED);
+                /*getHandler().sendEmptyMessage(
+                        DataMembers.NOTIFY_NEW_OUTLET_SAVED);*/
+                alertDialog.dismiss();
+                bmodel = (BusinessModel) getActivity().getApplicationContext();
+                onCreateDialogNew(2);
             }
 
 
@@ -6042,17 +6016,19 @@ public class NewOutletFragment extends IvyBaseFragment
 
     }
 
-    private final Handler handler = new Handler() {
+    private final Handler handler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case DataMembers.NOTIFY_NEW_OUTLET_SAVED:
                     alertDialog.dismiss();
-                    bmodel.showAlert(
+                    bmodel = (BusinessModel) getActivity().getApplicationContext();
+                    onCreateDialogNew(2);
+                   /* bmodel.showAlert(
                             getResources().getString(
                                     R.string.new_store_has_been_saved),
-                            DataMembers.NOTIFY_NEW_OUTLET_SAVED);
-                    break;
+                            DataMembers.NOTIFY_NEW_OUTLET_SAVED);*/
+                    return true;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -6060,13 +6036,14 @@ public class NewOutletFragment extends IvyBaseFragment
                             "Error: "
                                     + getResources().getString(
                                     R.string.new_store_infn_not_saved), 0);
-                    break;
+                    return true;
                 case DataMembers.SAVENEWOUTLET:
                     alertDialog.dismiss();
                     showToast(getResources().getString(
                             R.string.saved_successfully));
                     startActivity(new Intent(getActivity(), HomeScreenActivity.class));
                     getActivity().finish();
+                    return true;
                 case DataMembers.RETAILER_DOWNLOAD_FAILED:
                     alertDialog.dismiss();
                     showToast(getResources().getString(
@@ -6074,23 +6051,25 @@ public class NewOutletFragment extends IvyBaseFragment
                     startActivity(new Intent(getActivity(), HomeScreenActivity.class));
                     getActivity().finish();
 
-                    break;
+                    return true;
                 case DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL:
                     alertDialog.dismiss();
                     showToast(getResources().getString(
                             R.string.sessionout_loginagain));
                     getActivity().finish();
+                    return true;
                 case DataMembers.NOTIFY_URL_NOT_CONFIGURED:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
                     bmodel.showAlert(
                             getResources().getString(R.string.url_not_mapped), 0);
-                    break;
+                    return true;
                 default:
-                    break;
+                    return false;
+
             }
         }
-    };
+    });
 
     public Handler getHandler() {
         return handler;
@@ -6199,8 +6178,6 @@ public class NewOutletFragment extends IvyBaseFragment
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         if (resultCode == RESULT_OK) {
-            if (imageName != null)
-                outlet.getImageName().add(imageName);
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
 
                 lattitude = data.getExtras().getDouble("lat");
@@ -6213,6 +6190,11 @@ public class NewOutletFragment extends IvyBaseFragment
                 }
             }
 
+        } else if (requestCode == CAMERA_REQUEST_CODE && resultCode == 1) {
+            if (imageName != null)
+                outlet.getImageName().add(imageName);
+            if (imageId != 0)
+                outlet.getImageId().add(imageId);
         }
 
     }
@@ -6251,9 +6233,11 @@ public class NewOutletFragment extends IvyBaseFragment
                                 Toast.LENGTH_SHORT).show();
                     }
                     alertDialog.dismiss();
-                    Intent i = new Intent(getActivity(), HomeScreenActivity.class);
-                    startActivity(i);
-                    getActivity().finish();
+                    if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
+                        /*startActivity(new Intent(getActivity(),
+                                HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));*/
+                        getActivity().finish();
+                    }
                 }
                 break;
             case SynchronizationHelper.DOWNLOAD_FINISH_UPDATE:
@@ -6264,9 +6248,11 @@ public class NewOutletFragment extends IvyBaseFragment
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.data_download_successfully),
                         Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(getActivity(), HomeScreenActivity.class);
-                startActivity(i);
-                getActivity().finish();
+                if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
+                   /* startActivity(new Intent(getActivity(),
+                            HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));*/
+                    getActivity().finish();
+                }
                 break;
         }
 

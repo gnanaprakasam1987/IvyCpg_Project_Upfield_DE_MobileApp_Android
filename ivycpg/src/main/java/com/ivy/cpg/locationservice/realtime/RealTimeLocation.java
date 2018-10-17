@@ -13,4 +13,6 @@ public interface RealTimeLocation extends Serializable,Parcelable {
     void updateAttendanceIn(Context context, String pathNode);
 
     void updateAttendanceOut(Context context, String pathNode);
+
+    void validateLoginAndUpdate(final Context context, final String pathNode, final LocationDetailBO locationDetailBO, final String from);
 }

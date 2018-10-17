@@ -234,8 +234,39 @@
     <string name="skip">Skip</string>
 
 
+    <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
+
     <string name="Orde_Saved">Order Saved.</string>
     <string name="Order_id">Order ID is: </string>
-    <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
+    <string name="denomination_error">Total amount not match with you denomination count amount </string>
+
     <string name="pay">Pay</string>
+
+
+    <string name="order_id">Order ID</string>
+    <string name="fulfilled">Fulfilled</string>
+    <string name="ordered_cases">Ordered Cases</string>
+    <string name="ordered_pieces">Ordered Pieces</string>
+    <string name="fulfilled_cases">Fulfilled Cases</string>
+    <string name="fulfilled_pieces">Fulfilled Pieces</string>
+    <string name="order_fulfillment_detail">Order Fulfillment Detail</string>
+
+    <string name="logout_joint_user">Please logout the JointCall User before downloading</string>
+
+    <string name="licensing">About Open Source Library</string>
+    <string name="software_licensing">Open Source Library</string>
+    <string name="click_to_show_licensing">Click to show the Open Source Library</string>
+
+    <string name="margin_price">Mgn Prc</string>
+    <string name="margin_per">Mgn Per</string>
+
+    <string name="invoice_already_generated">* Invoice Generated</string>
+    <string name="order_rejected">* Order Rejected</string>
+    <string name="do_you_want_to_reject">Do you want to reject ?</string>
+
+    <string name="already_invoice_has_been_generated">Already invoice has been generated</string>
+    <string name="rejected_order">Rejected Order</string>
+
+    <string name="please_provide_valid_reason_or_Availability">Please Provide Valid Reason or Availability</string>
+
 </resources>

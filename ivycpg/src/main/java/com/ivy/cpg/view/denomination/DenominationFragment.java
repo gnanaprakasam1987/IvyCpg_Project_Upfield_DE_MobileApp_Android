@@ -2,6 +2,7 @@ package com.ivy.cpg.view.denomination;
 
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -18,13 +20,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.reports.damageReturn.DamageReturenReportHelper;
+import com.ivy.cpg.view.reports.damageReturn.PendingDeliveryBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +39,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by murugan on 30/8/18.
@@ -72,6 +86,13 @@ public class DenominationFragment extends IvyBaseFragment {
     @SuppressLint("UseSparseArrays")
     private HashMap<Integer, EditText> editTextHashMap = new HashMap<>();
 
+    @SuppressLint("UseSparseArrays")
+    private HashMap<Integer, TextView> textViewHashMap = new HashMap<>();
+
+    CompositeDisposable compositeDisposable;
+
+    private AppSchedulerProvider appSchedulerProvider;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -104,6 +125,15 @@ public class DenominationFragment extends IvyBaseFragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (compositeDisposable != null
+                && !compositeDisposable.isDisposed())
+            compositeDisposable.clear();
+
+    }
+
     @OnClick(R.id.denomination_save)
     public void saveOnclick() {
         saveCollectionReference();
@@ -111,25 +141,34 @@ public class DenominationFragment extends IvyBaseFragment {
 
     ArrayList<DenominationBO> denominationInputValues = new ArrayList<>();
 
-    private void downloadDenomintionData() {
-        DBUtil dbUtil = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
-        dbUtil.openDataBase();
-        Cursor cursor = dbUtil.selectSQL("Select * from DenominationMaster");
 
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                DenominationBO denominationBO = new DenominationBO();
-                denominationBO.setDenomintionId(cursor.getString(0));
-                denominationBO.setDenominationDisplayName(cursor.getString(1));
-                denominationBO.setDenominationDisplayNameValues(cursor.getString(2));
-                denominationInputValues.add(denominationBO);
-            }
-            cursor.close();
-        }
-        dbUtil.closeDB();
-        for (int i = 0; i < denominationInputValues.size(); i++) {
-            createDynamicRowForDenominationValues(i, denominationInputValues.get(i));
-        }
+
+    private void downloadDenomintionData() {
+
+        compositeDisposable.add((Disposable) DenominationHelper.getInstance().downloadDenomintionData(getActivity())
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
+                .subscribeWith(new DisposableObserver<ArrayList<DenominationBO>>() {
+                    @Override
+                    public void onNext(ArrayList<DenominationBO> denominationBOS) {
+
+                        denominationInputValues.addAll(denominationBOS);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        for (int i = 0; i < denominationInputValues.size(); i++) {
+                            createDynamicRowForDenominationValues(i, denominationInputValues.get(i));
+                        }
+                    }
+                }));
+
     }
 
     private void init() {
@@ -140,6 +179,8 @@ public class DenominationFragment extends IvyBaseFragment {
             setScreenTitle("Denomination");
             Commons.printException(e);
         }
+        appSchedulerProvider = new AppSchedulerProvider();
+        compositeDisposable = new CompositeDisposable();
         currencyTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         quentyTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         amountTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
@@ -150,23 +191,19 @@ public class DenominationFragment extends IvyBaseFragment {
 
     }
 
-
-
-
     private void downLoadTotalCashInHand() {
 
-        DBUtil dbUtil = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
-        dbUtil.openDataBase();
-        Cursor cursor = dbUtil.selectSQL("SELECT ifnull(sum(amount),0) FROM Payment pt inner join StandardListMaster sd on sd.ListId = pt.CashMode where sd.ListCode = 'CA'");
+        compositeDisposable.add((Disposable) DenominationHelper.getInstance().downLoadTotalCashInHand(getActivity())
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        initialTotalAmount = s;
+                        mTodayCollectionTextview.setText(initialTotalAmount);
+                    }
+                }));
 
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                initialTotalAmount = cursor.getString(0);
-            }
-            cursor.close();
-        }
-        dbUtil.closeDB();
-        mTodayCollectionTextview.setText(initialTotalAmount);
     }
 
 
@@ -180,74 +217,62 @@ public class DenominationFragment extends IvyBaseFragment {
         return mRootLinearLayout;
     }
 
-     TextView dinominationAmount;
 
     private void createDynamicRowForDenominationValues(final int mNumber, DenominationBO denominationBO) {
 
-        View view;
-        LayoutInflater inflater = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assert inflater != null;
-        view = inflater.inflate(R.layout.fragment_denomination_item_view, null);
 
-        TextView dinominationTextview = (TextView) view.findViewById(R.id.dinomination_textview);
-        EditText dinominationValues = (EditText) view.findViewById(R.id.dinomination_values_edittext);
-        dinominationAmount = (TextView) view.findViewById(R.id.dinomination_amount_edittext);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        assert inflater != null;
+        View view = inflater.inflate(R.layout.fragment_denomination_item_view, null);
+
+        TextView dinominationTextview = view.findViewById(R.id.dinomination_textview);
+        EditText dinominationValues = view.findViewById(R.id.dinomination_values_edittext);
+        TextView dinominationAmount = view.findViewById(R.id.dinomination_amount_textview);
+
         dinominationTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
         dinominationValues.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         dinominationAmount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
 
         dinominationTextview.setText(denominationBO.getDenominationDisplayName() + " *");
-        dinominationAmount.setTag(mNumber);
         getRootLinearLayout().addView(view);
 
         editTextHashMap.put(mNumber, dinominationValues);
+        textViewHashMap.put(mNumber, dinominationAmount);
 
         editTextHashMap.get(mNumber).addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
 
             @Override
             public void afterTextChanged(Editable et) {
 
-                String s = et.toString();
-
                 double totalValues = 0;
-
                 for (Integer key : editTextHashMap.keySet()) {
-
                     String values = getDynamicEditTextValues(key);
-
-                    if (!isEmptyString(values)) {
-
+                    if (!AppUtils.isEmptyString(values)) {
                         double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
-
                         totalValues = totalValues + (Double.valueOf(values) * temp);
-
-                        if (totalValues <= Double.valueOf(initialTotalAmount))
-                            if (key == dinominationAmount.getTag()) {
-                                double amount = Double.valueOf(values) * temp;
-                                dinominationAmount.setText(String.valueOf(amount));
-                            }
-                    } else if (key == dinominationAmount.getTag()){
-                        dinominationAmount.setText("0");
-                    }
+                        if (totalValues <= Double.valueOf(initialTotalAmount)) {
+                            double amount = Double.valueOf(values) * temp;
+                            textViewHashMap.get(key).setText(String.valueOf(amount));
+                        }
+                    } else
+                        textViewHashMap.get(key).setText("0");
                 }
 
                 if (totalValues <= Integer.valueOf(initialTotalAmount))
-                    mTotalCollectionTextview.setText("Total :" + String.valueOf(totalValues));
-                 else
-                    Toast.makeText(getActivity(), "Total amount not match with you denomination count amount", Toast.LENGTH_SHORT).show();
+                    mTotalCollectionTextview.setText(getActivity().getResources().getString(R.string.total) + ":" + String.valueOf(totalValues));
+                else
+                    Toast.makeText(getActivity(), "" + getActivity().getResources().getString(R.string.denomination_error), Toast.LENGTH_SHORT).show();
+
             }
         });
-    }
-
-
-    private static boolean isEmptyString(String text) {
-        return (text == null || text.trim().equals("null") || text.trim()
-                .length() <= 0);
     }
 
 
@@ -275,7 +300,7 @@ public class DenominationFragment extends IvyBaseFragment {
 
             String count = getDynamicEditTextValues(key);
 
-            if (!isEmptyString(count)) {
+            if (!AppUtils.isEmptyString(count)) {
 
                 double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
 
@@ -283,43 +308,48 @@ public class DenominationFragment extends IvyBaseFragment {
             }
         }
 
-        if (totalValues != Double.valueOf(initialTotalAmount)){
-            Toast.makeText(getActivity(), "Total amount not match with you denomination count amount", Toast.LENGTH_SHORT).show();
-        }else {
+        if (totalValues != Double.valueOf(initialTotalAmount)) {
+            Toast.makeText(getActivity(), "" + getActivity().getResources().getString(R.string.denomination_error), Toast.LENGTH_SHORT).show();
+        } else {
+            if(totalValues>0)
             insertData();
+            else
+                Toast.makeText(getActivity(), "" + getActivity().getResources().getString(R.string.no_data_tosave), Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private void insertData(){
-         try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.createDataBase();
-
-            db.openDataBase();
-
-            for (Integer key : editTextHashMap.keySet()) {
-
-                String count = getDynamicEditTextValues(key);
-
-                if (!isEmptyString(count)) {
-
-                    String id=denominationInputValues.get(key).getDenomintionId();
-
-                    String columns = "Uid,Total";
-
-                    db.deleteSQL("DenominationDetails", "Uid=" + AppUtils.QT(id), false);
-
-                    String values = id + "," + AppUtils.QT(count);
-
-                    db.insertSQL("DenominationDetails", columns, values);
-                }
+    private void insertData() {
+        ArrayList<DenominationBO> denominationList = new ArrayList<>();
+        for (Integer key : editTextHashMap.keySet()) {
+            String count = getDynamicEditTextValues(key);
+            if (!AppUtils.isEmptyString(count)) {
+                DenominationBO denominationBO = new DenominationBO();
+                denominationBO.setDenomintionId(denominationInputValues.get(key).getDenomintionId());
+                denominationBO.setDenominationDisplayName(denominationInputValues.get(key).getDenominationDisplayName());
+                denominationBO.setDenominationDisplayNameValues(denominationInputValues.get(key).getDenominationDisplayNameValues());
+                denominationBO.setCount(count);
+                denominationBO.setIsCoin(denominationInputValues.get(key).getIsCoin());
+                denominationList.add(denominationBO);
             }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("DenominationDetails insert Error" + e);
         }
+        compositeDisposable.add(DenominationHelper.getInstance().insertDenomination(getActivity(), denominationList, initialTotalAmount)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean s) throws Exception {
+
+                        if (s) {
+                            for (Integer key : editTextHashMap.keySet()) {
+                                editTextHashMap.get(key).setText("");
+                                textViewHashMap.get(key).setText("0");
+                            }
+                            Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }));
     }
+
 }

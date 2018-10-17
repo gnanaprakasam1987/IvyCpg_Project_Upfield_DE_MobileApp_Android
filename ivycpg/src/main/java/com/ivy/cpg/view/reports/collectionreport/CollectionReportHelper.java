@@ -51,9 +51,16 @@ public class CollectionReportHelper {
 
             StringBuffer sb = new StringBuffer();
             sb.append("SELECT DISTINCT RM.RetailerName, PY.BeatID, PY.InvoiceAmount, PY.Amount, PY.Balance,ListCode,");
-
             sb.append("PY.ChequeNumber, PY.ChequeDate, PY.Date, PY.BillNumber, PY.ReceiptDate, ListName,inv.paidamount,PY.uid,PY.totaldiscount,PY.GroupId,RM.RetailerCode,PY.dateTime,PY.refno FROM Payment PY ");
             sb.append("INNER JOIN InvoiceMaster inv on PY.BillNumber=Inv.InvoiceNo ");
+            sb.append("INNER JOIN RetailerMaster RM on RM.RetailerID = PY .RetailerID INNER JOIN StandardListMaster ");
+            sb.append("ON PY.CashMode = ListId ");
+
+            sb.append(" UNION ALL ");
+
+            sb.append("SELECT DISTINCT RM.RetailerName, PY.BeatID, PY.InvoiceAmount, PY.Amount, PY.Balance,ListCode,");
+            sb.append("PY.ChequeNumber, PY.ChequeDate, PY.Date, PY.BillNumber, PY.ReceiptDate, ListName,(D.debitnoteamount-D.balanceamount) as paidamount,PY.uid,PY.totaldiscount,PY.GroupId,RM.RetailerCode,PY.dateTime,PY.refno FROM Payment PY ");
+            sb.append("INNER JOIN DebitNoteMaster D on PY.BillNumber=D.debitnoteno ");
             sb.append("INNER JOIN RetailerMaster RM on RM.RetailerID = PY .RetailerID INNER JOIN StandardListMaster ");
             sb.append("ON PY.CashMode = ListId ORDER BY RM.RetailerName, PY.BillNumber,PY.GroupId");
             Cursor c = db.selectSQL(sb.toString());

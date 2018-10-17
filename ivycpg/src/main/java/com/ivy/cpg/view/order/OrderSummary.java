@@ -190,6 +190,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar mCalendar = null;
     private String mImageName, attachedFilePath = "";
     private Toolbar toolbar;
+    private boolean isWihtHoldApplied = false;
+    private int linesPerCall = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -548,6 +550,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         int totalQuantityOrdered = 0;
         float totalWeight = 0;
+        linesPerCall = 0;
 
         bModel.getRetailerMasterBO().setBillWiseCompanyDiscount(0);
         bModel.getRetailerMasterBO().setBillWiseDistributorDiscount(0);
@@ -580,6 +583,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     mOrderedProductList.add(productBO);
 
+                    if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && totalQuantity > 0)
+                        linesPerCall++;
+
                     // Set the calculated flat line values in productBO
                     double lineValue = calculateLineValue(productBO);
 
@@ -602,6 +608,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 }
             }
+
+            if (linesPerCall == 0)
+                linesPerCall = mOrderedProductList.size();
 
             // Developed for JnJ ID : Sequencing based on user entry.
             if (bModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
@@ -695,7 +704,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (bModel.getOrderHeaderBO() != null) {
                     bModel.getOrderHeaderBO().setBillLevelDiscountValue(billWiseDiscount);
                 }
-                totalOrderValue = totalOrderValue - billWiseDiscount;
+                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount, bModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
             } else if(bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
@@ -735,7 +744,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
             //updating footer labels
             text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
-            text_LPC.setText(String.valueOf(mOrderedProductList.size()));
+            text_LPC.setText(String.valueOf(linesPerCall));
             text_totalOrderedQuantity.setText(String.valueOf(totalQuantityOrdered));
 
             if (bModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION &&
@@ -861,7 +870,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
-            if (bModel.getOrderHeaderBO().getOrderImageName() != null && bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
+            if (bModel.getOrderHeaderBO() != null && bModel.getOrderHeaderBO().getOrderImageName() != null && bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_photo_camera_grey_24dp);
                 drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_capture).setIcon(drawable);
@@ -1777,6 +1786,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
 
                     if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                            && bModel.retailerMasterBO.getRpTypeCode() != null && "CASH".equals(bModel.retailerMasterBO.getRpTypeCode())
                             && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
                         Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
                         isClick = false;

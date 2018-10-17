@@ -24,6 +24,7 @@ public class OrderHeader {
     private int invoiceStatus;
     private int addressID = 0;
     private String rField3 = "";
+    private String orderStatus="";
 
     private double billLevelDiscountValue;
     private double billLevelTaxValue;
@@ -299,4 +300,11 @@ public class OrderHeader {
         this.billLevelDiscountValue = discountValue;
     }
 
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }

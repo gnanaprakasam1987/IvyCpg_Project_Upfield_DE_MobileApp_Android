@@ -166,9 +166,9 @@ public class DiscountHelper {
             totalDiscOrAmtValue = SDUtil.formatAsPerCalculationConfig(totalDiscOrAmtValue);
 
 
-            if (discountId == 0) {
+            //if (discountId == 0) {
                 productBO.setApplyValue(totalDiscOrAmtValue);
-            }
+            //}
 
             if (isCompanyDiscount) {
                 productBO.setCompanyTypeDiscount(productBO.getCompanyTypeDiscount() + totalDiscOrAmtValue);
@@ -329,16 +329,15 @@ public class DiscountHelper {
                         }
                     }
 
-                    // for computing Final discount order value for  a product .
-                    // added because of Multiple discount applied for same product
-                    for (StoreWiseDiscountBO storeWiseDiscountBO : discountProductIdList) {
+                }
 
-                        for (ProductMasterBO productBo : orderedList) {
-                            if (productBo.getParentHierarchy().contains("/" + storeWiseDiscountBO
-                                    .getProductId() + "/")) {
-                                if (productBo.getOrderedPcsQty() > 0
-                                        || productBo.getOrderedCaseQty() > 0
-                                        || productBo.getOrderedOuterQty() > 0) {
+            }
+            // for computing Final discount order value for  a product .
+            // added because of Multiple discount applied for same product
+            for (ProductMasterBO productBo : orderedList) {
+                if (productBo.getOrderedPcsQty() > 0
+                        || productBo.getOrderedCaseQty() > 0
+                        || productBo.getOrderedOuterQty() > 0) {
 
                                     if (productBo.getNetValue() > 0) {
                                         productBo.setNetValue(productBo
@@ -349,7 +348,6 @@ public class DiscountHelper {
                         }
                     }
                 }
-
             }
         }
 

@@ -63,6 +63,7 @@ import com.ivy.cpg.view.denomination.DenominationFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.expense.ExpenseFragment;
+import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
@@ -70,6 +71,7 @@ import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
 import com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection;
 import com.ivy.cpg.view.quickcall.QuickCallFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
+import com.ivy.cpg.view.subd.SubDFragment;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
@@ -534,8 +536,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             gotoNextActivity(configureBO);
                             break;
                         }
+                        if (configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)) {
+                            gotoNextActivity(configureBO);
+                            break;
+                        }
                     } else if (configureBO.getConfigCode().equalsIgnoreCase(MENU_VISIT)
-                            || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
+                            //|| configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_DAY)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_INC)
@@ -961,16 +967,18 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
 
-            } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.mark_attendance),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.leaveToday),
-                            Toast.LENGTH_SHORT).show();
-            } else {
+            }
+//            else if (isLeave_today) {
+//                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+//                    Toast.makeText(getActivity(),
+//                            getResources().getString(R.string.mark_attendance),
+//                            Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getActivity(),
+//                            getResources().getString(R.string.leaveToday),
+//                            Toast.LENGTH_SHORT).show();
+//            }
+            else {
                 DashBoardHelper.getInstance(getActivity()).checkDayAndP3MSpinner(false);
                 bmodel.distributorMasterHelper.downloadDistributorsList();
 
@@ -1467,7 +1475,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1478,7 +1486,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+                //getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1489,7 +1497,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1499,7 +1507,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-                getActivity().finish();
+               // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1554,15 +1562,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
-            } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.mark_attendance),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.leaveToday),
-                            Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
                 Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
                                 getResources().getString(R.string.please_redownload),

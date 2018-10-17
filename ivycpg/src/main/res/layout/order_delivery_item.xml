@@ -177,7 +177,6 @@
                 android:maxLines="1"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:text="* Invoice Generated"
                 android:textColor="@color/RED"
                 android:visibility="gone" />
 
@@ -188,7 +187,7 @@
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginStart="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/activity_margin1"
-                android:text="Edit"
+                android:text="@string/edit"
                 android:textColor="@color/Black"
                 android:textAllCaps="false"
                 android:layout_toLeftOf="@+id/accept_btn"/>
@@ -200,7 +199,18 @@
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginStart="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/activity_margin1"
-                android:text="Approve"
+                android:text="@string/text_approve"
+                android:textAllCaps="false"
+                android:layout_toLeftOf="@+id/reject_btn"/>
+
+            <Button
+                android:id="@+id/reject_btn"
+                style="@style/ButtonSmallRoundCornerOrange"
+                android:layout_marginBottom="@dimen/activity_margin1"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/activity_margin1"
+                android:text="@string/reject"
                 android:textAllCaps="false"
                 android:layout_alignParentRight="true"/>
 

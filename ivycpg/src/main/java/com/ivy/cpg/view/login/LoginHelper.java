@@ -20,8 +20,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -83,12 +85,13 @@ public class LoginHelper {
         DBUtil db;
         db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
-        db.openDataBase();
-        StringBuffer sb;
         try {
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb;
             sb = new StringBuffer();
             sb.append("select flag from hhtmodulemaster where hhtcode =");
-            sb.append(businessModel.QT(CODE_PWD_LOCK) +" and ForSwitchSeller = 0");
+            sb.append(businessModel.QT(CODE_PWD_LOCK) + " and ForSwitchSeller = 0");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -151,6 +154,7 @@ public class LoginHelper {
 
         } catch (Exception e) {
             db.closeDB();
+            Commons.printException(e);
         }
     }
 
@@ -320,7 +324,8 @@ public class LoginHelper {
 
                     businessModel.regid = token;
                     msg = "Device registered, registration ID=" + businessModel.regid;
-                    businessModel.synchronizationHelper.updateAuthenticateToken(false);
+                    if (BuildConfig.FLAVOR.equalsIgnoreCase("aws"))
+                        businessModel.synchronizationHelper.updateAuthenticateToken(false);
                 } catch (Exception ex) {
                     msg = "Error :" + ex.getMessage();
                     Commons.printException(ex);

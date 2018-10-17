@@ -93,6 +93,19 @@
             android:gravity="center"
             android:text="@string/zero" />
 
+        <LinearLayout
+            android:id="@+id/ll_exec_qty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <CheckBox
+                android:id="@+id/check_exec_qty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
 
         <EditText
             android:id="@+id/edit_competitor_qty"

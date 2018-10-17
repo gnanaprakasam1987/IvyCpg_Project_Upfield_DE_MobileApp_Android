@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.ivy.sd.png.bo.LevelBO;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
@@ -16,7 +16,6 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 
 /**
  * Created by rajkumar.s on 11/20/2017.
@@ -176,7 +175,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                     assetBO.setAvailQty(1);
                     mAssetList.add(assetBO);
                 } else {
-                        mAllAssetTrackingList.remove(assetBO);
+                    mAllAssetTrackingList.remove(assetBO);
                 }
             }
         }
@@ -219,7 +218,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         mAssetList.addAll(mAssetTrackingList);
                     } else {
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            if (assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
+                            if (assetBO.getParentHierarchy() != null && assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                                 if (ALL.equals(mCapturedBarcode)) {
                                     if ("".equals(mCapturedNFCTag)) {
@@ -344,7 +343,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     @Override
     public void checkDataExistToSave() {
-        mAssetView.isDataExistToSave(hasAssetTaken());
+        mAssetView.isDataExistToSave(hasAssetTaken(), hasAssetPhotoTaken(), hasAssetReasonTaken(), errorMsg);
     }
 
     /**
@@ -352,26 +351,78 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
      *
      * @return true if asset already taken
      */
+    String errorMsg = "";
+
     private boolean hasAssetTaken() {
         ArrayList<AssetTrackingBO> mAssetTrackingList;
+
         for (StandardListBO standardListBO : mBModel.productHelper.getInStoreLocation()) {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
             if (mAssetTrackingList != null
                     && mAssetTrackingList.size() > 0) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION) {
-                        if (assetBO.getAvailQty() > 0 && (!assetBO.getImageName().equals("") || !assetBO.getImgName().equals("")))
-                            return true;
-                    } else if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
+                    if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2
+                            || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
                         return true;
-                    } else if (assetBO.getReason1ID() != null) {
-                        if (!assetBO.getReason1ID().equals(Integer.toString(0))) {
-                            return true;
-                        }
                     }
                 }
             }
         }
         return false;
     }
+
+
+    /**
+     * Method to check Asset Photo already taken or not
+     *
+     * @return true if asset photo taken
+     */
+    private boolean hasAssetReasonTaken() {
+        ArrayList<AssetTrackingBO> mAssetTrackingList;
+        boolean isFlag = true;
+        if (mAssetTrackingHelper.SHOW_ASSET_REASON) {
+            for (StandardListBO standardListBO : mBModel.productHelper.getInStoreLocation()) {
+                mAssetTrackingList = standardListBO.getAssetTrackingList();
+                if (mAssetTrackingList != null
+                        && mAssetTrackingList.size() > 0) {
+                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                        if (assetBO.getReason1ID().equals(Integer.toString(0))
+                                && assetBO.getAvailQty() == 0 && assetBO.getAudit() == 2
+                                && assetBO.getCompetitorQty() == 0 && assetBO.getExecutorQty() == 0) {
+                            isFlag = false;
+                            errorMsg = mContext.getString(R.string.please_provide_valid_reason_or_Availability);
+                        }
+                    }
+                }
+            }
+        }
+        return isFlag;
+    }
+
+    /**
+     * Method to check Asset reason taken or not
+     *
+     * @return true if asset reason already taken
+     */
+    private boolean hasAssetPhotoTaken() {
+        ArrayList<AssetTrackingBO> mAssetTrackingList;
+        boolean isFlag = true;
+        if (mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION) {
+            for (StandardListBO standardListBO : mBModel.productHelper.getInStoreLocation()) {
+                mAssetTrackingList = standardListBO.getAssetTrackingList();
+                if (mAssetTrackingList != null
+                        && mAssetTrackingList.size() > 0) {
+                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                        if (assetBO.getAvailQty() == 0 && (assetBO.getImageName().equals("") || assetBO.getImgName().equals(""))) {
+                            isFlag = false;
+                            errorMsg = mContext.getString(R.string.photo_mandatory);
+                        }
+                    }
+                }
+            }
+        }
+        return isFlag;
+    }
+
+
 }

@@ -4,22 +4,25 @@ import android.app.Activity;
 import android.os.Handler;
 
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
+import com.ivy.cpg.view.login.LoginBaseActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BatchAllocation;
-import com.ivy.sd.png.view.CallAnalysisActivity;
+import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.ReAllocationActivity;
-import com.ivy.sd.png.view.SubDStockOrderActivity;
+import com.ivy.cpg.view.subd.SubDStockOrderActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 
@@ -55,11 +58,12 @@ public class MyThread extends Thread {
         BusinessModel bmodel = (BusinessModel) ctx.getApplicationContext();
         bmodel.setContext(ctx);
         OrderHelper orderHelper = OrderHelper.getInstance(ctx);
+        StockCheckHelper stockCheckHelper = StockCheckHelper.getInstance(ctx);
         //FragmentManager fm = ((FragmentActivity)ctx).getSupportFragmentManager();
         //HomeScreenFragment fragment = (HomeScreenFragment)fm.findFragmentById(R.id.synchronization_fragment);
 
         if (opt == DataMembers.LOCAL_LOGIN) {
-            LoginScreen frm = (LoginScreen) ctx;
+            LoginBaseActivity frm = (LoginScreen) ctx;
             int count = frm.loginPresenter.mPasswordLockCountPref.getInt("passwordlock", 0);
             if (bmodel.synchronizationHelper.validateUser(
                     bmodel.userNameTemp.toLowerCase(Locale.US),
@@ -153,19 +157,20 @@ public class MyThread extends Thread {
                 int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD, ctx.getApplicationContext());
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 0);
 
-                if (bool == 1) {
+                if (BuildConfig.FLAVOR.equalsIgnoreCase("aws"))
+                    if (bool == 1) {
 
-                    handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOADED);
-                } else if (bool == -1) {
-                    handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+                        handler.sendEmptyMessage(
+                                DataMembers.NOTIFY_UPLOADED);
+                    } else if (bool == -1) {
+                        handler.sendEmptyMessage(
+                                DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
 
 
-                } else {
-                    handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOAD_ERROR);
-                }
+                    } else {
+                        handler.sendEmptyMessage(
+                                DataMembers.NOTIFY_UPLOAD_ERROR);
+                    }
             } else {
                 handler.sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
@@ -275,12 +280,12 @@ public class MyThread extends Thread {
 
 
                     // Update review plan in DB
-                    bmodel.setReviewPlanInDB();
+                    stockCheckHelper.setReviewPlanInDB(ctx.getApplicationContext());
 
                     // If Stock and order is enabled , then save stock too.
                     if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                             && bmodel.hasStockInOrder()) {
-                        bmodel.saveClosingStock(true);
+                        stockCheckHelper.saveClosingStock(ctx.getApplicationContext(),true);
 
                         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                             // save price check
@@ -289,7 +294,7 @@ public class MyThread extends Thread {
                                 priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
                             // save near expiry
-                            bmodel.saveNearExpiry();
+                            stockCheckHelper.saveNearExpiry(ctx.getApplicationContext());
                         }
                     }
 
@@ -330,12 +335,12 @@ public class MyThread extends Thread {
 
 
                     // Update review plan in DB
-                    bmodel.setReviewPlanInDB();
+                    stockCheckHelper.setReviewPlanInDB(ctx.getApplicationContext());
 
                     // If Stock and order is enabled , then save stock too.
                     if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                             && bmodel.hasStockInOrder()) {
-                        bmodel.saveClosingStock(true);
+                        stockCheckHelper.saveClosingStock(ctx.getApplicationContext(),true);
 
                         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                             // save price check
@@ -344,7 +349,7 @@ public class MyThread extends Thread {
                                 priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
                             // save near expiry
-                            bmodel.saveNearExpiry();
+                            stockCheckHelper.saveNearExpiry(ctx.getApplicationContext());
                         }
                     }
 
@@ -388,7 +393,7 @@ public class MyThread extends Thread {
 
 
                 // Update review plan in DB
-                bmodel.setReviewPlanInDB();
+                stockCheckHelper.setReviewPlanInDB(ctx.getApplicationContext());
 
                 // Set Order Flag
                 bmodel.setIsOrdered("Y");
@@ -593,11 +598,11 @@ public class MyThread extends Thread {
 
 
                 // Update review plan in DB
-                bmodel.setReviewPlanInDB();
+                stockCheckHelper.setReviewPlanInDB(ctx.getApplicationContext());
 
                 if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                         && bmodel.hasStockInOrder()) {
-                    bmodel.saveClosingStock(true);
+                    stockCheckHelper.saveClosingStock(ctx.getApplicationContext(),true);
 
                     if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                         // save price check
@@ -606,7 +611,7 @@ public class MyThread extends Thread {
                             priceTrackingHelper.savePriceTransaction(ctx.getApplicationContext(), bmodel.productHelper.getProductMaster());
 
                         // save near expiry
-                        bmodel.saveNearExpiry();
+                        stockCheckHelper.saveNearExpiry(ctx.getApplicationContext());
                     }
                 }
 

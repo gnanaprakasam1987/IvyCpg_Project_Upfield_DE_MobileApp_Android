@@ -36,10 +36,12 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -70,6 +72,7 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -163,7 +166,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
 
         btnSave = (Button) view.findViewById(R.id.btn_save);
-        btnSave.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btnSave.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -220,11 +223,11 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
 
         if (getView() != null) {
-            mListView = (ListView) getView().findViewById(R.id.list);
+            mListView = getView().findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
 
-        FrameLayout drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);
+        FrameLayout drawer = getView().findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -268,8 +271,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
 
         if (mBModel.configurationMasterHelper.IS_TEAMLEAD && getView() != null) {
-            TextView tvAudit = (TextView) getView().findViewById(R.id.audit);
+            TextView tvAudit = getView().findViewById(R.id.audit);
             tvAudit.setVisibility(View.VISIBLE);
+            tvAudit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
         }
 
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
@@ -588,40 +592,46 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                 row.setTag(holder);
 
-                holder.audit = (ImageButton) row
+                holder.audit = row
                         .findViewById(R.id.btn_audit);
-                holder.assetNameTV = (TextView) row
+                holder.assetNameTV = row
                         .findViewById(R.id.tv_asset_name);
-                holder.targetTV = (TextView) row
+                holder.assetNameTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.targetTV = row
                         .findViewById(R.id.tv_target);
-                holder.availQtyET = (EditText) row
+                holder.availQtyET = row
                         .findViewById(R.id.edit_availability_qty);
-                holder.reason1Spin = (Spinner) row
+                holder.reason1Spin = row
                         .findViewById(R.id.spin_reason1);
 
                 holder.reason1Spin.setAdapter(mPOSMReasonSpinAdapter);
-                holder.mConditionSpin = (Spinner) row
+                holder.mConditionSpin = row
                         .findViewById(R.id.spin_condition);
                 holder.mConditionSpin.setAdapter(mPOSMConditionAdapter);
 
-                holder.mLocationSpin = (Spinner) row
+                holder.mLocationSpin = row
                         .findViewById(R.id.spin_location);
                 holder.mLocationSpin.setAdapter(mInStoreLocationAdapter);
 
-                holder.mInstallDate = (Button) row
+                holder.mInstallDate = row
                         .findViewById(R.id.Btn_install_Date);
-                holder.mServiceDate = (Button) row
+                holder.mInstallDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.mServiceDate = row
                         .findViewById(R.id.Btn_service_Date);
-                holder.photoBTN = (ImageView) row
+                holder.mServiceDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.photoBTN = row
                         .findViewById(R.id.btn_photo);
-                holder.photoCount = (TextView) row
+                holder.photoCount = row
                         .findViewById(R.id.txt_count);
 
-                holder.compQtyET = (EditText) row.findViewById(R.id.edit_competitor_qty);
-                holder.execQtyET = (EditText) row.findViewById(R.id.edit_exe_qty);
-                holder.grpTV = (TextView) row.findViewById(R.id.tv_grp);
-                holder.locationNameTv = (TextView) row.findViewById(R.id.tv_location_name);
-
+                holder.compQtyET = row.findViewById(R.id.edit_competitor_qty);
+                holder.execQtyET = row.findViewById(R.id.edit_exe_qty);
+                holder.grpTV = row.findViewById(R.id.tv_grp);
+                holder.grpTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.locationNameTv = row.findViewById(R.id.tv_location_name);
+                holder.locationNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getActivity()));
+                holder.executeLL = row.findViewById(R.id.ll_exec_qty);
+                holder.execQtyCheckBox = row.findViewById(R.id.check_exec_qty);
 
                 holder.audit.setOnClickListener(new OnClickListener() {
 
@@ -750,7 +760,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                 holder.execQtyET.setInputType(inType);
                                 holder.execQtyET.requestFocus();
                                 if (holder.execQtyET.getText().length() > 0)
-                                    holder.execQtyET.setSelection(holder.execQtyET .getText().length());
+                                    holder.execQtyET.setSelection(holder.execQtyET.getText().length());
                                 view.performClick();
                                 break;
                             default:
@@ -933,6 +943,58 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                     }
                 });
 
+                holder.execQtyCheckBox.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (holder.assetBO.getExecutorQty() == 0) {
+                            holder.execQtyCheckBox.setChecked(true);
+                            holder.assetBO.setExecutorQty(1);
+                        } else {
+                            holder.execQtyCheckBox.setChecked(false);
+                            holder.assetBO.setExecutorQty(0);
+                        }
+
+
+                        if (holder.assetBO.getExecutorQty() > 0) {
+
+                            if (assetTrackingHelper.SHOW_LOCATION_POSM) {
+                                if (holder.assetBO.getTargetLocId() == holder.assetBO.getLocationID()) {
+                                    holder.reason1Spin.setEnabled(false);
+                                    holder.reason1Spin.setSelection(0);
+                                } else
+                                    holder.reason1Spin.setEnabled(true);
+                            } else {
+                                holder.reason1Spin.setEnabled(false);
+                                holder.reason1Spin.setSelection(0);
+                            }
+
+                            holder.photoBTN.setEnabled(true);
+                            holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
+                            holder.photoCount.setText("" + holder.assetBO.getImageList().size());
+                            holder.mConditionSpin.setEnabled(true);
+                            holder.mConditionSpin.setSelection(0);
+                            holder.mInstallDate.setEnabled(true);
+                            holder.mServiceDate.setEnabled(true);
+
+                        } else {
+
+                            holder.reason1Spin.setEnabled(true);
+                            holder.photoBTN.setEnabled(false);
+                            holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
+                            holder.photoCount.setText("0");
+                            holder.mConditionSpin.setEnabled(false);
+                            holder.mConditionSpin.setSelection(0);
+                            holder.mInstallDate.setEnabled(false);
+                            holder.mServiceDate.setEnabled(false);
+                            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+
+                        }
+                    }
+                });
+
 
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -951,8 +1013,13 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
             String availQty = holder.assetBO.getAvailQty() + "";
             holder.availQtyET.setText(availQty);
+
+            String excutedQty = holder.assetBO.getExecutorQty() + "";
+            holder.execQtyET.setText(excutedQty);
+
             String competitorQty = holder.assetBO.getCompetitorQty() + "";
             holder.compQtyET.setText(competitorQty);
+
             String strTarget = holder.assetBO.getTarget() + "";
             holder.targetTV.setText(strTarget);
 
@@ -972,12 +1039,13 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             holder.locationNameTv.setText(holder.assetBO.getLocationName());
 
             //First time when screen appears
-            if (holder.assetBO.getAvailQty() > 0) {
+            if (holder.assetBO.getAvailQty() > 0
+                    || holder.assetBO.getExecutorQty() > 0) {
 
                 holder.reason1Spin.setEnabled(false);
                 holder.photoBTN.setEnabled(true);
                 holder.photoBTN.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
-                holder.photoCount.setText("" + holder.assetBO.getImageList().size());
+                holder.photoCount.setText(String.valueOf(holder.assetBO.getImageList().size()));
                 holder.reason1Spin.setSelection(0);
                 holder.mConditionSpin.setEnabled(true);
                 holder.mConditionSpin.setSelection(assetTrackingHelper
@@ -1051,7 +1119,13 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                     mBModel.productHelper.getInStoreLocation()));
             }
 
-            if (!assetTrackingHelper.SHOW_POSM_EXECUTED) {
+            if (assetTrackingHelper.SHOW_POSM_EXECUTED
+                    && assetTrackingHelper.SHOW_POSM_QTY) {
+                holder.executeLL.setVisibility(View.GONE);
+            } else if (assetTrackingHelper.SHOW_POSM_EXECUTED) {
+                holder.execQtyET.setVisibility(View.GONE);
+            } else {
+                holder.executeLL.setVisibility(View.GONE);
                 holder.execQtyET.setVisibility(View.GONE);
             }
 
@@ -1114,6 +1188,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         TextView grpTV;
         TextView locationNameTv;
         TextView photoCount;
+        CheckBox execQtyCheckBox;
+        LinearLayout executeLL;
     }
 
 
@@ -1405,6 +1481,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             view.findViewById(R.id.tv_header_target).setVisibility(View.GONE);
         } else {
             try {
+                ((TextView) view.findViewById(R.id.tv_header_target)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
                 if (view != null && mBModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_header_target).getTag()) != null) {
                     ((TextView) view.findViewById(R.id.tv_header_target))
@@ -1421,6 +1498,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         if (view != null && !assetTrackingHelper.SHOW_POSM_QTY) {
             view.findViewById(R.id.tv_header_qty).setVisibility(View.GONE);
         } else {
+            ((TextView) view.findViewById(R.id.tv_header_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
             try {
                 if (view != null && mBModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_header_qty).getTag()) != null) {
@@ -1437,6 +1515,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
 
         try {
+            ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
             if (view != null && mBModel.labelsMasterHelper.applyLabels(getView().findViewById(
                     R.id.tv_header_asset_name).getTag()) != null) {
                 ((TextView) view.findViewById(R.id.tv_header_asset_name))
@@ -1451,7 +1530,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         if (view != null && !assetTrackingHelper.SHOW_POSM_COMPETITOR_QTY)
             view.findViewById(R.id.tv_competitor_qty).setVisibility(View.GONE);
         else {
-
+            ((TextView) view.findViewById(R.id.tv_competitor_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
             try {
                 if (view != null && mBModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_competitor_qty).getTag()) != null) {
@@ -1468,7 +1547,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         if (view != null && !assetTrackingHelper.SHOW_POSM_EXECUTED)
             view.findViewById(R.id.tv_executed_qty).setVisibility(View.GONE);
         else {
-
+            ((TextView) view.findViewById(R.id.tv_executed_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
             try {
                 if (view != null && mBModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_executed_qty).getTag()) != null) {
@@ -1593,7 +1672,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
         if (mAttributeProducts != null && mProductId != 0) {//Both Product and attribute filter selected
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                if (assetBO.getParentHierarchy()!=null&&assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
+                if (assetBO.getParentHierarchy() != null && assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                     if (ALL.equals(strBarCodeSearch)) {
                         if (mCapturedNFCTag.isEmpty()) {
@@ -1615,7 +1694,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 myList.addAll(mAssetTrackingList);
             } else {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (assetBO.getParentHierarchy()!=null&&assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
+                    if (assetBO.getParentHierarchy() != null && assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                         if (ALL.equals(strBarCodeSearch)) {
                             if (mCapturedNFCTag.isEmpty()) {

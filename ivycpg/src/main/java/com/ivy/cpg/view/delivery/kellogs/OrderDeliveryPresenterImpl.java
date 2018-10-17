@@ -89,14 +89,14 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     }
 
     @Override
-    public void getAmountDetails(boolean isEdit) {
-        orderDeliveryHelper.getProductTotalValue();
+    public void getAmountDetails(Context context, boolean isEdit) {
+        orderDeliveryHelper.getProductTotalValue(context, isEdit);
 
         double discountVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryDiscountAmount());
         double orderValue = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTotalValue());
         double totalTaxVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount());
-        double orderTaxIncludeVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount()) +
-                orderValue - (isEdit ? 0.0 : discountVal);
+        double orderTaxIncludeVal = (SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTaxAmount()) +
+                orderValue) - (isEdit ? 0.0 : discountVal);
 
         orderDeliveryView.updateAmountDetails(String.valueOf(bmodel.formatBasedOnCurrency(orderValue)),
                 isEdit ? "0.0" : String.valueOf(bmodel.formatBasedOnCurrency(discountVal)),
@@ -113,7 +113,9 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     Toast.LENGTH_SHORT).show();
         else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
 
-            if(totalOrderValue<totalReturnValue){
+            if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                    && bmodel.retailerMasterBO.getRpTypeCode() != null
+                    && "CASH".equals(bmodel.retailerMasterBO.getRpTypeCode()) && totalOrderValue<totalReturnValue){
                 Toast.makeText(context
                         ,context.getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
                 return;

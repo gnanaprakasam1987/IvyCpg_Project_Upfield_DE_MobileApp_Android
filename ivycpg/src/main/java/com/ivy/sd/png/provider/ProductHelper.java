@@ -1839,6 +1839,8 @@ public class ProductHelper {
                 product.setProductLevelDiscountValue(0);
                 product.setDistributorTypeDiscount(0);
                 product.setCompanyTypeDiscount(0);
+                product.setApplyValue(0);
+
                 int size = product.getLocations().size();
                 for (int z = 0; z < size; z++) {
                     product.getLocations().get(z).setShelfOuter(-1);
@@ -2038,42 +2040,6 @@ public class ProductHelper {
             }
         }
         return isSkuFilled;
-    }
-
-    public boolean isCSMustSellFilled() {//For counter Sales
-        if (bmodel.configurationMasterHelper.IS_GROUP_PRODUCTS_IN_COUNTER_SALES) {
-
-            ProductMasterBO product;
-            int siz = productMaster.size();
-            for (int i = 0; i < siz; ++i) {
-                product = productMaster.get(i);
-                if (product.isChildProduct()) {
-                    if (product.getIsMustSell() == 1
-                            && product.getCsCase() == 0
-                            && product.getCsOuter() == 0
-                            && product.getCsPiece() == 0) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-
-        } else {
-
-            ProductMasterBO product;
-            int siz = productMaster.size();
-            for (int i = 0; i < siz; ++i) {
-                product = productMaster.get(i);
-                if (product.getIsMustSell() == 1
-                        && product.getCsCase() == 0
-                        && product.getCsOuter() == 0
-                        && product.getCsPiece() == 0) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
     }
 
     public void updateProductColor() {
