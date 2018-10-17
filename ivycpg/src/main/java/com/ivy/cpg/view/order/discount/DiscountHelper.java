@@ -344,10 +344,9 @@ public class DiscountHelper {
                                                 .getNetValue() - productBo.getProductLevelDiscountValue());
                                     }
                                 }
-                            }
-                        }
-                    }
-                }
+
+
+
             }
         }
 

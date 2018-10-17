@@ -282,7 +282,7 @@ public class TaxHelper implements TaxInterface {
         db.deleteSQL("OrderTaxDetails", "OrderID=" + orderId,
                 false);
         if (mBillTaxList != null) {
-            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid";
+            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid,taxName,parentType";
             StringBuffer sb;
             for (TaxBO taxBO : mBillTaxList) {
                 sb = new StringBuffer();
@@ -290,7 +290,7 @@ public class TaxHelper implements TaxInterface {
                         .getRetailerID()) + ",");
                 sb.append(orderId + "," + taxBO.getTaxRate() + ",");
                 sb.append(mBusinessModel.QT(taxBO.getTaxType()) + ","
-                        + taxBO.getTotalTaxAmount());
+                        + taxBO.getTotalTaxAmount()+",0,'"+taxBO.getTaxDesc2()+"',"+taxBO.getParentType());
                 db.insertSQL("OrderTaxDetails", columns, sb.toString());
 
             }
@@ -752,14 +752,14 @@ public class TaxHelper implements TaxInterface {
      */
     private void insertProductLevelTax(String orderId, DBUtil db,
                                        ProductMasterBO productBO, TaxBO taxBO) {
-        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
+        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,taxName,parentType";
         StringBuffer values = new StringBuffer();
 
         values.append(orderId + "," + productBO.getProductID() + ","
                 + taxBO.getTaxRate() + ",");
         values.append(taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
                 + "," + mBusinessModel.getRetailerMasterBO().getRetailerID());
-        values.append("," + taxBO.getGroupId() + ",0");
+        values.append("," + taxBO.getGroupId() + ",0,"+taxBO.getTaxDesc2()+","+taxBO.getParentType());
 
         db.insertSQL("OrderTaxDetails", columns, values.toString());
         if (mBusinessModel.getRetailerMasterBO().getIsVansales() == 1 || mBusinessModel.configurationMasterHelper.IS_INVOICE)
