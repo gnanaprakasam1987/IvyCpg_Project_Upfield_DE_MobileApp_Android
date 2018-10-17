@@ -572,14 +572,14 @@ public class CommonPrintHelper {
                                     calculateSchemeAmountDiscountValue();
 
                                 //Bill discount
-                                double billDiscountValue = bmodel.getOrderHeaderBO().getBillLevelDiscountValue();
+                                double billDiscountValue = bmodel.getOrderHeaderBO()!=null?bmodel.getOrderHeaderBO().getBillLevelDiscountValue():0;
                                 if (bmodel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT && !DiscountHelper.getInstance(context).isWihtHoldApplied())
                                     billDiscountValue -= orderHelper.withHoldDiscount;
                                 mBillLevelDiscountValue = billDiscountValue;
                                 //
 
                                 //Bill tax
-                                double billLevelTax=bmodel.getOrderHeaderBO().getBillLevelTaxValue();
+                                double billLevelTax=bmodel.getOrderHeaderBO()!=null?bmodel.getOrderHeaderBO().getBillLevelTaxValue():0;
 
                                 getEmptyReturnValue();
                                 if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)

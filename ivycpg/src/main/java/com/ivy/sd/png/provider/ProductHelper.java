@@ -1806,6 +1806,7 @@ public class ProductHelper {
 
     public void clearOrderTable() {
         ProductMasterBO product;
+        bmodel.setOrderHeaderBO(null);
         if (productMaster != null) {
             int siz = productMaster.size();
             for (int i = 0; i < siz; ++i) {
