@@ -35,8 +35,12 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
      * Firebase Authentication Method
      * Authenticate with Firebase, and request location updates
      */
-    public FireBaseRealtimeLocationUpload(Context context) {
+    public FireBaseRealtimeLocationUpload() {
 
+    }
+
+    @Override
+    public void validateLoginAndUpdate(final Context context, final String pathNode, final LocationDetailBO locationDetailBO, final String from){
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 
             String email = FIREBASE_EMAIL;
@@ -49,6 +53,15 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Commons.print("Service Firebase Uth Success");
+
+                            if (from.equalsIgnoreCase("AttendanceIn")){
+                                updateAttendanceIn(context,pathNode);
+                            }else if (from.equalsIgnoreCase("AttendanceOut")){
+                                updateAttendanceOut(context,pathNode);
+                            }else if (from.equalsIgnoreCase("Location")){
+                                updateFirebaseData(context, locationDetailBO);
+                            }
+
                         } else {
                             Commons.print("Service firebase onComplete: Failed=");
                         }
@@ -59,6 +72,14 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             }
         }else{
             Commons.print("Firebase : User already Online");
+
+            if (from.equalsIgnoreCase("AttendanceIn")){
+                updateAttendanceIn(context,pathNode);
+            }else if (from.equalsIgnoreCase("AttendanceOut")){
+                updateAttendanceOut(context,pathNode);
+            }else if (from.equalsIgnoreCase("Location")){
+                updateFirebaseData(context, locationDetailBO);
+            }
         }
     }
 
@@ -75,7 +96,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         locationDetailBO.setOutTime("");
         locationDetailBO.setStatus("IN");
 
-        updateFirebaseData(context, locationDetailBO);
+        validateLoginAndUpdate(context,"", locationDetailBO,"Location");
 
     }
 
@@ -209,35 +230,6 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         }
 
         return userMasterBO;
-    }
-
-    /**
-     * Get User Id from usermaster with Relation Parent as SupervisorIds
-     */
-    private String getSupervisorIds(Context context) {
-        StringBuilder supervisorIds = new StringBuilder("/");
-
-        DBUtil db;
-        try {
-
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            Cursor cursor = db.selectSQL("select parentpositionids from usermaster where isDeviceuser=1");
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    supervisorIds.append(cursor.getString(0));
-                }
-            } else
-                supervisorIds = new StringBuilder();
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        return supervisorIds.toString();
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
