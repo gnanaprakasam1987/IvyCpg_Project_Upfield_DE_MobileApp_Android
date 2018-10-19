@@ -689,9 +689,11 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     this.sendBroadcast(i);
                     Thread.sleep(100);
 
+                    String _path = HomeScreenFragment.photoPath + "/" + imageName;
+                    bmodel.getPhotosTakeninCurrentCompetitorTracking().put(trackinglistId +"", _path);
+
                     Intent intent = new Intent(this,
                             CameraActivity.class);
-                    String _path = HomeScreenFragment.photoPath + "/" + imageName;
                     intent.putExtra(getResources().getString(R.string.quality),
                             40);
                     intent.putExtra(getResources().getString(R.string.path),
@@ -882,6 +884,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
             alertDialog.dismiss();
             //	progressDialogue.dismiss();
+            bmodel.getPhotosTakeninCurrentCompetitorTracking().clear();
             Toast.makeText(SubCompetitorTrackingActivity.this,
                     getResources().getString(R.string.saved_successfully),
                     Toast.LENGTH_SHORT).show();
