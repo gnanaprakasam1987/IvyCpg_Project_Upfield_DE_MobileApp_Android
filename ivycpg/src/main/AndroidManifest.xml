@@ -344,7 +344,7 @@
             android:name="com.ivy.cpg.view.callanalysis.CloseCallActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.TaskCreation"
+            android:name="com.ivy.cpg.view.task.TaskCreation"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CollectionScreen"
@@ -379,7 +379,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.Task"
+            android:name="com.ivy.cpg.view.task.Task"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.photocapture.PhotoCaptureActivity"
@@ -500,7 +500,7 @@
             android:name="com.ivy.cpg.view.nonfield.NonFieldActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.RoadActivity"
+            android:name="com.ivy.cpg.view.roadactivity.RoadActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.ReportActivity"
@@ -536,7 +536,7 @@
             android:name="com.ivy.sd.png.view.ChangePasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.MVPActivity"
+            android:name="com.ivy.cpg.view.mvp.MVPActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.distorderreport.DistOrderreportdetail"
@@ -590,10 +590,10 @@
             android:name="com.ivy.sd.png.view.NewOutletEdit"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.MVPNotification"
+            android:name="com.ivy.cpg.view.mvp.MVPNotification"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.LoyaltyPointsFragmentActivity"
+            android:name="com.ivy.cpg.view.loyality.LoyaltyPointsFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CatalogOrder"
@@ -684,15 +684,15 @@
             android:name="com.ivy.sd.png.view.PlanDeviationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DisplaySchemeActivity"
+            android:name="com.ivy.cpg.view.displayscheme.DisplaySchemeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DisplaySchemeDetailActivity"
+            android:name="com.ivy.cpg.view.displayscheme.DisplaySchemeDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DisplaySchemeTrackingActivity"
+            android:name="com.ivy.cpg.view.displayscheme.DisplaySchemeTrackingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
@@ -711,7 +711,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.OfflinePlanningActivity"
+            android:name="com.ivy.cpg.view.offlineplanning.OfflinePlanningActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize" />
@@ -753,6 +753,7 @@
             android:name="com.ivy.cpg.view.order.scheme.QPSSchemeApply"
             android:screenOrientation="portrait" />
 
+
         <activity
             android:name="com.ivy.ui.activation.view.ActivationActivity"
             android:exported="false"
@@ -761,6 +762,15 @@
         <activity
             android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.ui.photocapture.view.PhotoGalleryActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ivy.ui.photocapture.view.PhotoCaptureActivity"
+            android:screenOrientation="portrait" />
+
 
         <activity
             android:name="com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsActivity"

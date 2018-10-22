@@ -1,7 +1,5 @@
 package com.ivy.cpg.view.delivery.kellogs;
 
-import android.content.Context;
-
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 
@@ -15,7 +13,7 @@ public interface OrderDeliveryContractor {
         void setView(OrderDeliveryView orderDeliveryView);
         void getProductData(String from);
         void getSchemeData();
-        void getAmountDetails(Context context, boolean isEdit);
+        void getAmountDetails(boolean isEdit);
         void saveOrderDeliveryDetail(boolean isEdit,String orderId,String menuCode,double totalOrderValue,double totalReturnValue,String referenceId);
         void doPrintActivity(String orderId);
         int getRemainingStock(String productId);

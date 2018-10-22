@@ -14,6 +14,7 @@ import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -429,7 +430,7 @@ public class MyThread extends Thread {
                 // Insert Product Details to Empty Reconciliation tables if Type
                 // wise Group products Edited or updated
                 if (!bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-                    bmodel.mEmptyReconciliationhelper.saveSKUWiseTransaction();
+                    EmptyReconciliationHelper.getInstance(ctx).saveSKUWiseTransaction();
             }
             bmodel.setOrderHeaderBO(null);
             OrderSummary frm = (OrderSummary) ctx;
@@ -492,7 +493,7 @@ public class MyThread extends Thread {
             // value while deleting the Order
             if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
                 bmodel.productHelper.clearBomReturnProductsTable();
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper.getInstance(ctx)
                         .deleteEmptyReconciliationOrder();
             }
             bmodel.setOrderHeaderBO(null);
@@ -558,7 +559,7 @@ public class MyThread extends Thread {
             // value while deleting the Order
             if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
                 bmodel.productHelper.clearBomReturnProductsTable();
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper.getInstance(ctx)
                         .deleteEmptyReconciliationOrder();
             }
             bmodel.setOrderHeaderBO(null);

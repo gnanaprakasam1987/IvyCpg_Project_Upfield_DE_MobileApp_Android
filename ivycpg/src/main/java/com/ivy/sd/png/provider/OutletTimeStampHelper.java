@@ -6,6 +6,8 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.BatteryManager;
 
+import com.ivy.core.data.app.AppDataProviderImpl;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -63,19 +65,41 @@ public class OutletTimeStampHelper {
         return instance;
     }
 
+    /**
+     * @See {@link AppDataProviderImpl#getInTime()}
+     * @deprecated
+     */
     public String getTimeIn() {
         return timeIn;
     }
 
+    /**
+     * @param timeIn
+     * @See {@link com.ivy.core.data.app.AppDataProviderImpl#setInTime(String)}
+     * @deprecated
+     */
     public void setTimeIn(String timeIn) {
+        // Until all the code is refactored, Timein is updated in the Appdataprovider and business model
+        bmodel.codeCleanUpUtil.setInTime(timeIn);
         this.timeIn = timeIn;
     }
 
+    /**
+     * @See {@link AppDataProviderImpl#getUniqueId()}
+     * @deprecated
+     */
     public String getUid() {
         return uid;
     }
 
+    /**
+     * @param uid Unique Identifier
+     * @See {@link com.ivy.core.data.app.AppDataProviderImpl#setUniqueId(String)}
+     * @deprecated
+     */
     public void setUid(String uid) {
+        // Until all the code is refactored, Unique is updated in the Appdataprovider and business model
+        bmodel.codeCleanUpUtil.setUniqueId(uid);
         this.uid = uid;
     }
 
@@ -83,8 +107,16 @@ public class OutletTimeStampHelper {
         return "'" + data + "'";
     }
 
+    public void setTimeInModuleWise(String timeInModuleWise) {
+        this.timeInModuleWise = timeInModuleWise;
+    }
+
+
     /**
      * Used to delete timeStamp.
+     *
+     * @See {@link OutletTimeStampDataManagerImpl#deleteTimeStamps()}
+     * @deprecated
      */
     public void deleteTimeStamp() {
 
@@ -103,6 +135,9 @@ public class OutletTimeStampHelper {
 
     /**
      * Used to delete timeStamp.
+     *
+     * @See {@link OutletTimeStampDataManagerImpl#deleteTimeStamps()}
+     * @deprecated
      */
     public void deleteTimeStampAllModule() {
         try {
@@ -120,6 +155,9 @@ public class OutletTimeStampHelper {
 
     /**
      * Used to delete timeStamp.
+     *
+     * @See {@link OutletTimeStampDataManagerImpl#deleteTimeStamps()}
+     * @deprecated
      */
     public void deleteTimeStampImages() {
         try {
@@ -146,7 +184,6 @@ public class OutletTimeStampHelper {
             Commons.printException(e);
         }
     }
-
 
     public void deleteImagesFromFolder() {
 
@@ -181,9 +218,7 @@ public class OutletTimeStampHelper {
                     Commons.print("Image Delete," + "Sucess");
             }
         }
-    }
-
-    /**
+    }/**
      * Used to set Time Stamp.
      *
      * @param date   date of last user visited retailer
@@ -192,21 +227,18 @@ public class OutletTimeStampHelper {
     public boolean saveTimeStamp(String date, String timeIn, float distance, String folderPath, String fName, String mVisitMode, String mNFCREasonId) {
 
         ArrayList<UserMasterBO> joinCallList = bmodel.userMasterHelper.getUserMasterBO().getJoinCallUserList();
-        boolean sucessFlag = true;
+        boolean sucessFlag=true;
         try {
-
-            try {
-                if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED)
-                    saveOutletTimeStampImages(folderPath, fName);
-            } catch (Exception e) {
+		try {
+			if(bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED)
+			  saveOutletTimeStampImages(folderPath,fName);} catch (Exception e) {
                 Commons.printException(e);
             }
 
-            float dist = 0f;
+			float dist = 0f;
             try {
-                dist = LocationUtil.calculateDistance(
-                        bmodel.getRetailerMasterBO().getLatitude(), bmodel.getRetailerMasterBO().getLongitude());
-            } catch (Exception e) {
+                dist =LocationUtil.calculateDistance(
+					bmodel.getRetailerMasterBO().getLatitude(), bmodel.getRetailerMasterBO().getLongitude());} catch (Exception e) {
                 Commons.printException(e);
             }
 
@@ -240,17 +272,18 @@ public class OutletTimeStampHelper {
                     + "," + QT(String.valueOf(bmodel.getOrderValue()))
                     + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
 
-            db.insertSQL("OutletTimestamp", columns, values);
+			db.insertSQL("OutletTimestamp", columns, values);
 
-            if (joinCallFlag == 1) {  // insert join call details
-                for (UserMasterBO userBo : joinCallList) {
-                    if (userBo.getIsJointCall() == 1) {
-                        String joinCallColumns = "timestampid,supid";
-                        String joinCallValues = getUid() + "," + userBo.getUserid();
-                        db.insertSQL("OutletJoinCall", joinCallColumns, joinCallValues);
-                    }
-                }
-            }
+			if(joinCallFlag==1){  // insert join call details
+				for(UserMasterBO userBo:joinCallList){
+					if(userBo.getIsJointCall()==1){
+				String joinCallColumns="timestampid,supid";
+
+				String joinCallValues=getUid()+","+userBo.getUserid();
+				db.insertSQL("OutletJoinCall", joinCallColumns, joinCallValues);
+				}
+				}
+			}
 
             if (!("".equals(mVisitMode))) {
                 String ret_columns = "UId, EntryMode, ReasonId, RetailerId";
@@ -260,13 +293,13 @@ public class OutletTimeStampHelper {
                 db.insertSQL("RetailerEntryDetails", ret_columns, ret_values);
             }
 
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-            sucessFlag = false;
+			db.closeDB();
+		} catch (Exception e) {
+			Commons.printException(e);
+		sucessFlag = false;
         }
         return sucessFlag;
-    }
+	}
 
     /**
      * Set Time Out
@@ -302,11 +335,14 @@ public class OutletTimeStampHelper {
         }
     }
 
+
     /**
      * Used to set Time Stamp.
      *
      * @param date   module start-in date
      * @param timeIn module start-in time
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#saveTimeStampModuleWise(String, String, String)}
+     * @deprecated This has been Migrated to MVP pattern
      */
     public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
         try {
@@ -314,7 +350,10 @@ public class OutletTimeStampHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
+
             timeInModuleWise = QT(date + " " + timeIn);
+
+            bmodel.codeCleanUpUtil.setModuleTime(timeInModuleWise);
             String values = getUid() + ","
                     + QT(moduleCode) + ","
                     + timeInModuleWise + "," + timeInModuleWise
@@ -327,10 +366,12 @@ public class OutletTimeStampHelper {
         }
     }
 
+
     /**
-     * Set Time Out
-     *
      * @param timeOut module exit time
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#updateTimeStampModuleWise(String)}
+     * Set Time Out
+     * @deprecated This has been Migrated to MVP pattern
      */
     public void updateTimeStampModuleWise(String timeOut) {
         try {
@@ -471,6 +512,12 @@ public class OutletTimeStampHelper {
         return false;
     }
 
+    /**
+     * @param retailerId
+     * @return
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#isVisited(String)}
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public boolean isVisited(String retailerId) {
         DBUtil db = null;
         try {
@@ -508,21 +555,23 @@ public class OutletTimeStampHelper {
 
     /**
      * Get current battery percentage
+     * @deprecated
+     * @See {@link com.ivy.utils.DeviceUtils#getBatteryPercentage(Context)}
      */
+    @Deprecated
     private int getBatteryPercentage(Context context) {
 
-        int batteryPercentage = 0;
-        try {
-            IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-            Intent batteryStatus = context.registerReceiver(null, iFilter);
+		int batteryPercentage = 0;
+        try {IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		Intent batteryStatus = context.registerReceiver(null, iFilter);
 
-            int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : -1;
-            int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : -1;
+		int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : -1;
+		int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : -1;
 
-            float batteryPct = level / (float) scale;
+		float batteryPct = level / (float) scale;
 
-            batteryPercentage = (int) (batteryPct * 100);
-        } catch (Exception e) {
+		batteryPercentage = (int) (batteryPct * 100);
+	}catch (Exception e) {
             Commons.printException(e);
         }
         return batteryPercentage;

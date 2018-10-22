@@ -61,6 +61,10 @@ import com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
+import com.ivy.cpg.view.displayscheme.DisplaySchemeActivity;
+import com.ivy.cpg.view.displayscheme.DisplaySchemeTrackingActivity;
+import com.ivy.cpg.view.loyality.LoyalityHelper;
+import com.ivy.cpg.view.loyality.LoyaltyPointsFragmentActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -95,6 +99,8 @@ import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.cpg.view.task.Task;
+import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -839,7 +845,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), MENU_PHOTO);
                     startActivity(new Intent(HomeScreenTwo.this,
-                            PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
+                            com.ivy.ui.photocapture.view.PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
                     finish();
 
                 } else if (count >= bmodel.configurationMasterHelper.photocount) {
@@ -857,7 +863,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), MENU_PHOTO);
                     startActivity(new Intent(HomeScreenTwo.this,
-                            PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
+                            com.ivy.ui.photocapture.view.PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
                     finish();
                 }
             }
@@ -1720,15 +1726,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (!isClick) {
                     isClick = true;
 
-                    if (bmodel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK) {
-                        bmodel.productHelper.clearOrderTable();
-                        OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
-                        orderDeliveryHelper.updateProductWithExcessStock(this);
-
-                        if(bmodel.productHelper.getProductDiscountListByDiscountID()!=null)
-                            bmodel.productHelper.getProductDiscountListByDiscountID().clear();
-                    }
-
                     if (bmodel.configurationMasterHelper
                             .downloadFloatingSurveyConfig(MENU_ORDER)) {
                         SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(this);
@@ -1962,9 +1959,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.productHelper.clearOrderTable();
                     OrderDeliveryHelper orderDeliveryHelper = OrderDeliveryHelper.getInstance(this);
                     orderDeliveryHelper.updateProductWithExcessStock(this);
-
-                    if(bmodel.productHelper.getProductDiscountListByDiscountID()!=null)
-                        bmodel.productHelper.getProductDiscountListByDiscountID().clear();
                 }
 
                 // Tin Expiry validation
@@ -2371,7 +2365,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (!isClick) {
                     isClick = true;
                     // finish();
-                    if (bmodel.taskHelper.getTaskData(bmodel.getRetailerMasterBO().getRetailerID()).size() > 0) {
+                    if (TaskHelper.getInstance(this).getTaskData(bmodel.getRetailerMasterBO().getRetailerID()).size() > 0) {
                         bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_TASK);
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -3605,9 +3599,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if ((bmodel.productHelper.getProductloyalties() != null)
                         && (bmodel.productHelper.getProductloyalties().size() > 0)) {
-
-                    if (bmodel.mLoyalityHelper.hasUpdatedLoyalties(bmodel.getRetailerMasterBO().getRetailerID()))
-                        bmodel.mLoyalityHelper.updatedLoyaltyPoints(bmodel.getRetailerMasterBO().getRetailerID());
+                    LoyalityHelper loyalityHelper = LoyalityHelper.getInstance(this);
+                    if (loyalityHelper.hasUpdatedLoyalties(bmodel.getRetailerMasterBO().getRetailerID()))
+                        loyalityHelper.updatedLoyaltyPoints(bmodel.getRetailerMasterBO().getRetailerID());
 
                     Intent i = new Intent(HomeScreenTwo.this, LoyaltyPointsFragmentActivity.class);
                     i.putExtra("screentitle", menu.getMenuName());

@@ -14,9 +14,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.android.gms.common.internal.service.Common;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.TaskDataBO;
+import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;

@@ -15,13 +15,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.reports.taskreport.TaskReportHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**

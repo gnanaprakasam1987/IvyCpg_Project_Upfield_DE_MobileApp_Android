@@ -54,6 +54,11 @@ import static com.ivy.cpg.view.photocapture.Gallery.isPhotoDelete;
  * Filter 2 based on ConfigActivityTable (filter is based on ProductContent
  * level in the Table)
  */
+
+/**
+ * @See {@link com.ivy.ui.photocapture.view.PhotoCaptureActivity}
+ * @deprecated
+ */
 public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         OnClickListener, DataPickerDialogFragment.UpdateDateInterface {
 
@@ -136,8 +141,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         }
 
         if (isFromMenuClick) {
-            mBModel.productHelper.downloadInStoreLocationsForStockCheck();
-            mBModel.productHelper.getInStoreLocation();
+            // mBModel.productHelper.downloadInStoreLocationsForStockCheck();
+            // mBModel.productHelper.getInStoreLocation();
             mPhotoCaptureHelper.downloadLocations(getApplicationContext());
             mPhotoCaptureHelper.downloadPhotoCaptureProducts(getApplicationContext());
             mPhotoCaptureHelper.downloadPhotoTypeMaster(getApplicationContext());
@@ -432,54 +437,35 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 break;
                             }
                         } else {
-                            imgViewImage
-                                    .setImageResource(R.drawable.no_image_available);
-
-
-                            imageView_capture.setImageResource(android.R.color.transparent);
-                            imageView_reTake.setVisibility(View.GONE);
-                            imageView_dummyCapture.setVisibility(View.VISIBLE);
-                            toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                            handleNoImage();
 
                         }
                     } else if (productID == 0) {
-                        imgViewImage
-                                .setImageResource(R.drawable.no_image_available);
-
-
-                        imageView_capture.setImageResource(android.R.color.transparent);
-                        imageView_reTake.setVisibility(View.GONE);
-                        imageView_dummyCapture.setVisibility(View.VISIBLE);
-                        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                        handleNoImage();
 
                     } else {
-                        imgViewImage
-                                .setImageResource(R.drawable.no_image_available);
-
-
-//                        imageView_capture.setVisibility(View.INVISIBLE);
-                        imageView_capture.setImageResource(android.R.color.transparent);
-                        imageView_reTake.setVisibility(View.GONE);
-                        imageView_dummyCapture.setVisibility(View.VISIBLE);
-                        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                        handleNoImage();
 
                     }
                 }
                 break;
             } else {
-                imgViewImage
-                        .setImageResource(R.drawable.no_image_available);
-
-
-//                imageView_capture.setVisibility(View.INVISIBLE);
-                imageView_capture.setImageResource(android.R.color.transparent);
-                imageView_reTake.setVisibility(View.GONE);
-                imageView_dummyCapture.setVisibility(View.VISIBLE);
-                toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                handleNoImage();
 
             }
         }
 
+    }
+
+    private void handleNoImage() {
+        imgViewImage
+                .setImageResource(R.drawable.no_image_available);
+
+
+        imageView_capture.setImageResource(android.R.color.transparent);
+        imageView_reTake.setVisibility(View.GONE);
+        imageView_dummyCapture.setVisibility(View.VISIBLE);
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
     }
 
     @Override
@@ -837,13 +823,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                         mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFromDate("");
                         mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate("");
                         mProductID = 0;
-                        imgViewImage
-                                .setImageResource(R.drawable.no_image_available);
-
-                        imageView_capture.setImageResource(android.R.color.transparent);
-                        imageView_reTake.setVisibility(View.GONE);
-                        imageView_dummyCapture.setVisibility(View.VISIBLE);
-                        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+                        handleNoImage();
 
                     }
                 }
@@ -887,13 +867,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
     public void ClearAll() {
         mImageName = "";
         mImagePath = "";
-        imgViewImage.setImageResource(R.drawable.no_image_available);
-
-
-        imageView_capture.setImageResource(android.R.color.transparent);
-        imageView_reTake.setVisibility(View.GONE);
-        imageView_dummyCapture.setVisibility(View.VISIBLE);
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+        handleNoImage();
 
         photoTypeAdapter.notifyDataSetChanged();
         productSelectionAdapter.notifyDataSetChanged();

@@ -31,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -156,12 +157,11 @@ SynchronizationHelper {
         SYNC(1),
         NEW_RETAILER(2),
         VISIT_SCREEN(3),
-        LOAD_MANAGEMENT(4),
-        RETAILER_SELECTION(5),
-        COUNTER_SALES_SELECTION(6),
-        TL_ALLOCATION(7),
-        MOBILE_EMAIL_VERIFY(8),
-        ORDER_SCREEN(9);
+        RETAILER_SELECTION(4),
+        COUNTER_SALES_SELECTION(5),
+        TL_ALLOCATION(6),
+        MOBILE_EMAIL_VERIFY(7),
+        ORDER_SCREEN(8);
 
         private int value;
 
@@ -334,9 +334,10 @@ SynchronizationHelper {
 
 
     /**
-     * This will return number of images left in mobile SDCard.
-     *
      * @return imageCount
+     * @See {@link DataManagerImpl#getSavedImageCount()}
+     * This will return number of images left in mobile SDCard.
+     * @deprecated
      */
     public int countImageFiles() {
         int imageSize = 0;
@@ -1910,6 +1911,7 @@ SynchronizationHelper {
                     mandatory = mMandatoryByUrl.get(successUrl);
                 }
                 try {
+                    label:
                     while (itr.hasNext()) {
                         String key = (String) itr.next();
 
@@ -1965,56 +1967,58 @@ SynchronizationHelper {
                             context.startService(i);
                             break;
                         } else {
-                            if (key.equals("Master")) {
-                                tableName = jsonObject.getString("Master");
+                            switch (key) {
+                                case "Master":
+                                    tableName = jsonObject.getString("Master");
 
-                                long endTime = (System.nanoTime() - startTime) / 1000000;
-                                if (mURLList != null) {
-                                    mURLList.get(url).setTime(endTime + "");
-                                    mURLList.get(url).setServerResponse("Data - " + tableName);
-                                    mURLList.get(url).setDataSize((jsonObject.toString().getBytes().length / 1024.0) + "");
-                                }
-
-                                mJsonObjectResponseByTableName.put(tableName, jsonObject);
-                                tableList.add(tableName);
-                                i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
-                                context.startService(i);
-                                break;
-                            } else if (key.equals(ERROR_CODE)) {
-                                String errorCode = jsonObject.getString(key);
-                                if (!errorCode.equals("0") && !errorCode.equals(DATA_NOT_AVAILABLE_ERROR)) {
-                                    if (mandatory == 1) {
-                                        i.putExtra(VOLLEY_RESPONSE, VOLLEY_FAILURE_RESPONSE);
-                                        i.putExtra(ERROR_CODE, jsonObject.getString(key));
-                                        context.startService(i);
-                                        deleteAllRequestQueue();
-                                        return;
-
-                                    } else {
-                                        tableName = jsonObject.getString(ERROR_CODE);
-
-                                        long endTime = (System.nanoTime() - startTime) / 1000000;
-                                        if (mURLList != null) {
-                                            mURLList.get(url).setTime(endTime + "");
-                                            mURLList.get(url).setServerResponse("ErrorCode - " + tableName);
-                                            mURLList.get(url).setDataSize((jsonObject.toString().getBytes().length / 1024.0) + "");
-                                        }
-
-                                        mJsonObjectResponseByTableName.put(tableName, jsonObject);
-                                        tableList.add(tableName);
-                                        i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
-                                        context.startService(i);
-                                        break;
+                                    long endTime = (System.nanoTime() - startTime) / 1000000;
+                                    if (mURLList != null) {
+                                        mURLList.get(url).setTime(endTime + "");
+                                        mURLList.get(url).setServerResponse("Data - " + tableName);
+                                        mURLList.get(url).setDataSize((jsonObject.toString().getBytes().length / 1024.0) + "");
                                     }
-                                }
 
-                            } else if (key.equals("Response")) {
+                                    mJsonObjectResponseByTableName.put(tableName, jsonObject);
+                                    tableList.add(tableName);
+                                    i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
+                                    context.startService(i);
+                                    break label;
 
-                                mJsonObjectResponseByTableName.put(SynchronizationHelper.ERROR_CODE, jsonObject);
-                                tableList.add(SynchronizationHelper.ERROR_CODE);
-                                i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
-                                context.startService(i);
+                                case ERROR_CODE:
+                                    String errorCode = jsonObject.getString(key);
+                                    if (!errorCode.equals("0") && !errorCode.equals(DATA_NOT_AVAILABLE_ERROR)) {
+                                        if (mandatory == 1) {
+                                            i.putExtra(VOLLEY_RESPONSE, VOLLEY_FAILURE_RESPONSE);
+                                            i.putExtra(ERROR_CODE, jsonObject.getString(key));
+                                            context.startService(i);
+                                            deleteAllRequestQueue();
+                                            return;
 
+                                        } else {
+                                            tableName = jsonObject.getString(ERROR_CODE);
+
+                                            long endTime1 = (System.nanoTime() - startTime) / 1000000;
+                                            if (mURLList != null) {
+                                                mURLList.get(url).setTime(endTime1 + "");
+                                                mURLList.get(url).setServerResponse("ErrorCode - " + tableName);
+                                                mURLList.get(url).setDataSize((jsonObject.toString().getBytes().length / 1024.0) + "");
+                                            }
+
+                                            mJsonObjectResponseByTableName.put(tableName, jsonObject);
+                                            tableList.add(tableName);
+                                            i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
+                                            context.startService(i);
+                                            break label;
+                                        }
+                                    }
+                                    break;
+
+                                case "Response":
+                                    mJsonObjectResponseByTableName.put(SynchronizationHelper.ERROR_CODE, jsonObject);
+                                    tableList.add(SynchronizationHelper.ERROR_CODE);
+                                    i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
+                                    context.startService(i);
+                                    break;
                             }
                         }
                     }
@@ -3215,66 +3219,6 @@ SynchronizationHelper {
         return appendUrl;
     }
 
-
-    public void downloadSIH(FROM_SCREEN fromWhere, String appendSihUrl) {
-        mJsonObjectResponseByTableName = new HashMap<>();
-
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-
-            db.deleteSQL(DataMembers.tbl_SIH, null, true);
-
-            db.closeDB();
-
-            JSONObject json = new JSONObject();
-            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
-            json.put("VersionCode", bmodel.getApplicationVersionNumber());
-            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
-
-            callVolley(DataMembers.SERVER_URL + appendSihUrl, fromWhere, 1, SIH_DOWNLOAD, json);
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-
-    }
-
-    public void downloadVanloadFromServer() {
-        mJsonObjectResponseByTableName = new HashMap<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        String downloadurl = "";
-        try {
-            db.openDataBase();
-            db.createDataBase();
-            Cursor c = db.selectSQL("select url from urldownloadmaster where mastername='VANLOAD'");
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    while (c.moveToNext()) {
-                        downloadurl = c.getString(0);
-                    }
-                }
-            }
-
-            JSONObject json = new JSONObject();
-            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
-            json.put("VersionCode", bmodel.getApplicationVersionNumber());
-            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
-
-
-            downloadurl = DataMembers.SERVER_URL + downloadurl;
-            callVolley(downloadurl, FROM_SCREEN.LOAD_MANAGEMENT, 1, VANLOAD_DOWNLOAD, json);
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        } finally {
-            db.closeDB();
-        }
-
-
-    }
 
     public String downloadWareHouseStockURL() {
         mJsonObjectResponseByTableName = new HashMap<>();

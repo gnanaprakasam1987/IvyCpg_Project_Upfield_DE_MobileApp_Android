@@ -19,9 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.TaskDataBO;
+import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -54,7 +55,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         Toolbar toolbar = findViewById(R.id.toolbar);
         ll_content = findViewById(R.id.ll_content);
-        taskDataBO = bmodel.taskHelper.getPendingTaskData();
+        taskDataBO = TaskHelper.getInstance(this).getPendingTaskData();
 
         /* Handling session out */
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {

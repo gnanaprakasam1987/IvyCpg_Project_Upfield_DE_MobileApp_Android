@@ -62,20 +62,28 @@ import com.ivy.cpg.view.delivery.invoice.DeliveryManagementRetailersFragment;
 import com.ivy.cpg.view.denomination.DenominationFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationFragment;
 import com.ivy.cpg.view.expense.ExpenseFragment;
 import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.mvp.MVPFragment;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
+import com.ivy.cpg.view.offlineplanning.OfflinePlanningActivity;
 import com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection;
 import com.ivy.cpg.view.quickcall.QuickCallFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
+import com.ivy.cpg.view.roadactivity.RoadActivityHelper;
+import com.ivy.cpg.view.roadactivity.RoadFragment;
 import com.ivy.cpg.view.subd.SubDFragment;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.cpg.view.task.Task;
+import com.ivy.cpg.view.task.TaskFragment;
+import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
@@ -94,6 +102,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
@@ -599,7 +608,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             getActivity().finish();
         }
 
-        intcounter = bmodel.taskHelper.getTaskCount();
+        intcounter = TaskHelper.getInstance(getActivity()).getTaskCount();
 
         getActivity().supportInvalidateOptionsMenu();
     }
@@ -1320,12 +1329,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.mEmptyReconciliationhelper.downloadProducts();
-                bmodel.mEmptyReconciliationhelper.downloadNonGenericProductID();
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper emptyReconciliationHelper = EmptyReconciliationHelper.getInstance(getActivity());
+                emptyReconciliationHelper.downloadProducts();
+                emptyReconciliationHelper.downloadNonGenericProductID();
+                emptyReconciliationHelper
                         .downloadReturnProductsTypeNew();
-                if (bmodel.mEmptyReconciliationhelper.getSkuTypeBO() != null
-                        && bmodel.mEmptyReconciliationhelper.getSkuTypeBO()
+                if (emptyReconciliationHelper.getSkuTypeBO() != null
+                        && emptyReconciliationHelper.getSkuTypeBO()
                         .size() > 0) {
                     switchFragment(MENU_EMPTY_RECONCILIATION, menuItem.getMenuName());
                 } else {
@@ -1611,7 +1621,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         DeliveryManagementRetailersFragment deliveryRetailersFragment = (DeliveryManagementRetailersFragment) fm
                 .findFragmentByTag(MENU_DELMGMT_RET);
 
-        SellerDashboardFragment mSellerDashFragment = (SellerDashboardFragment) fm
+        com.ivy.ui.dashboard.view.SellerDashboardFragment mSellerDashFragment = (com.ivy.ui.dashboard.view.SellerDashboardFragment) fm
                 .findFragmentByTag(MENU_DASH_KPI);
 
         SellerDashboardFragment mRouteDashFragment = (SellerDashboardFragment) fm
@@ -1964,7 +1974,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putString("retid", "0");
                 bndl.putString("type", "MONTH");
-                fragment = new SellerDashboardFragment();
+                fragment = new com.ivy.ui.dashboard.view.SellerDashboardFragment();
+               // fragment = new SellerDashboardFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DASH_KPI);
@@ -2495,14 +2506,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         @Override
         protected Boolean doInBackground(Integer... params) {
-
-            bmodel.mroadActivityHelper.loadTypeSpinnerData();
-            bmodel.mroadActivityHelper.loadProductSpinnerData();
+            RoadActivityHelper roadActivityHelper = RoadActivityHelper.getInstance(getActivity());
+            roadActivityHelper.loadTypeSpinnerData();
+            roadActivityHelper.loadProductSpinnerData();
 
             // Location spinners
-            bmodel.mroadActivityHelper.loadLocationNames();
-            bmodel.mroadActivityHelper.loadLocation1SpinnerData();
-            bmodel.mroadActivityHelper.loadLocation2SpinnerData();
+            roadActivityHelper.loadLocationNames();
+            roadActivityHelper.loadLocation1SpinnerData();
+            roadActivityHelper.loadLocation2SpinnerData();
 
             return true;
         }

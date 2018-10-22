@@ -2,6 +2,7 @@ package com.ivy.cpg.view.reports.dayreport;
 
 import android.content.Context;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
@@ -26,6 +27,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
     private DayReportView mDayReportView;
     private BusinessModel mBusinessModel;
     private Vector<ConfigureBO> mDayList = null;
+    private DashBoardHelper dashBoardHelper;
 
     @Inject
     public DayReportHelper dayReportHelper;
@@ -36,6 +38,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
         this.mBusinessModel = mBusinessModel;
         ReportComponent reportComponent = DaggerReportComponent.builder().reportModule(new ReportModule((BusinessModel) mContext.getApplicationContext())).build();
         reportComponent.inject(this);
+        dashBoardHelper = DashBoardHelper.getInstance(mContext);
 
     }
 
@@ -68,8 +71,8 @@ public class DayReportPresenterImpl implements DayReportPresenter {
 
         DailyReportBO outlet = dayReportHelper.getDailyRep();
 
-        int totalcalls = mBusinessModel.getTotalCallsForTheDay();
-        int visitedcalls = mBusinessModel.getVisitedCallsForTheDay();
+        int totalcalls = dashBoardHelper.getTotalCallsForTheDay();
+        int visitedcalls = dashBoardHelper.getVisitedCallsForTheDay();
         ArrayList<ConfigureBO> removable_config = new ArrayList<>();
         for (ConfigureBO con : mDayList) {
 
@@ -92,9 +95,9 @@ public class DayReportPresenterImpl implements DayReportPresenter {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT04")|| con.getConfigCode().equalsIgnoreCase("DAYRT32")) {
                 int productivecalls = 0;
                 if (con.getConfigCode().equalsIgnoreCase("DAYRT04"))
-                    productivecalls = mBusinessModel.getProductiveCallsForTheDay();
-                else if (con.getConfigCode().equalsIgnoreCase("DAYRT31"))
-                    productivecalls = mBusinessModel.getProductiveCallsForTheDayKlgs();
+                    productivecalls = dashBoardHelper.getProductiveCallsForTheDay();
+                else if (con.getConfigCode().equalsIgnoreCase("DAYRT32"))
+                    productivecalls = dashBoardHelper.getProductiveCallsForTheDayKlgs();
 
                     con.setMenuNumber(productivecalls + "/" + visitedcalls);
 
@@ -136,7 +139,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 con.setMenuNumber(SDUtil.roundIt(avg1, 2));
 
             }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT08")) {
-                int val[] = mBusinessModel.getSDBDistTargteAndAcheived();
+                int val[] = dayReportHelper.getSDBDistTargteAndAcheived();
                 con.setMenuNumber(val[0] + "/" + val[1]);
             }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT10")) {
                 removable_config.add(con);
@@ -146,8 +149,6 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 //hasInitiative = true;
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT12")) {
                 int pre = 0, post = 0;
-                //ArrayList<OrderReportBO> mylist = mBusinessModel.reportHelper.downloadOrderreport();
-
                 ArrayList<OrderReportBO> mylist = dayReportHelper.downloadOrderReport();
 
                 // Calculate the total order value.
@@ -178,7 +179,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 }
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT13")) {
-                int val[] = mBusinessModel.getGoldenPoints();
+                int val[] = dayReportHelper.getGoldenPoints();
                 if (val[1] != 0)
                     con.setMenuNumber(val[0]
                             + "/"
@@ -189,7 +190,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 else
                     con.setMenuNumber(val[0] + "/" + val[1] + " (" + "0%)");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT14")) {
-                con.setMenuNumber(mBusinessModel.formatValue(mBusinessModel
+                con.setMenuNumber(mBusinessModel.formatValue(dayReportHelper
                         .getStrikeRateValue()));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT15")) {
                 int value = 0;
@@ -197,8 +198,6 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 ArrayList<OrderReportBO> myOrder;
                 if (mBusinessModel.configurationMasterHelper.IS_INVOICE) {
 
-                    //TODO:
-                    //  mylist = mBusinessModel.reportHelper.downloadInvoicereport();
                     mylist = dayReportHelper.downloadInvoiceReport();
 
                     for (InvoiceReportBO inv : mylist) {
@@ -211,8 +210,6 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                         con.setMenuNumber("0");
 
                 } else {
-                    //TODO:
-                    // myOrder = mBusinessModel.reportHelper.downloadOrderreport();
                     myOrder = dayReportHelper.downloadOrderReport();
                     for (OrderReportBO inv : myOrder) {
                         value += inv.getOrderTotal();
@@ -229,11 +226,6 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 String productIds = mBusinessModel.productHelper
                         .getTaggingDetails("FCBND");
 
-
-                //TODO:
-                //ArrayList<OrderDetail> mylist = mBusinessModel.reportHelper
-                //   .downloadFBOrderDetailForDayReport(productIds);
-
                 ArrayList<OrderDetail> mylist = dayReportHelper
                         .downloadFBOrderDetailForDayReport(productIds);
 
@@ -247,11 +239,6 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 String productIds = mBusinessModel.productHelper
                         .getTaggingDetails("FCBND2");
 
-                //TODO:
-
-                // ArrayList<OrderDetail> mylist = mBusinessModel.reportHelper
-                // .downloadFBOrderDetailForDayReport(productIds);
-
                 ArrayList<OrderDetail> mylist = dayReportHelper
                         .downloadFBOrderDetailForDayReport(productIds);
 
@@ -261,20 +248,19 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 }
                 con.setMenuNumber(mBusinessModel.formatValue(FB2value) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT18")) {
-                final float totalWeight = mBusinessModel.productHelper.getTotalWeight("");
+                final float totalWeight = dashBoardHelper.getTotalWeight("");
                 con.setMenuNumber(mBusinessModel.formatValue(totalWeight) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT19")) {
                 con.setMenuNumber(mBusinessModel.formatValue((SDUtil.convertToDouble(outlet.getTotValues())) - SalesReturnHelper.getInstance(mContext).getTotalSalesReturnValue(mContext.getApplicationContext())));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT20")) {
-                final int totalOrderedQty = mBusinessModel.productHelper.getTotalOrderQty();
+                final int totalOrderedQty = dayReportHelper.getTotalOrderQty();
                 con.setMenuNumber(totalOrderedQty + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT21")) {
-                con.setMenuNumber(SDUtil.format(mBusinessModel.getFITscoreForAllRetailers(), 2, 0) + "");
+                con.setMenuNumber(SDUtil.format(dayReportHelper.getFITscoreForAllRetailers(), 2, 0) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT22")) {
-                con.setMenuNumber(SDUtil.format((mBusinessModel.getFITscoreForAllRetailers() / mBusinessModel.getTotalCallsForTheDay()), 2, 0) + "");
+                con.setMenuNumber(SDUtil.format((dayReportHelper.getFITscoreForAllRetailers() / totalcalls), 2, 0) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT23")) {
-
-                con.setMenuNumber(mBusinessModel.getGreenFITscoreRetailersCount() + "/" + mBusinessModel.getTotalCallsForTheDay());
+                con.setMenuNumber(dayReportHelper.getGreenFITscoreRetailersCount() + "/" + totalcalls);
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT24")) {
 
                 con.setMenuNumber(outlet.getNoofOrder() + "");
