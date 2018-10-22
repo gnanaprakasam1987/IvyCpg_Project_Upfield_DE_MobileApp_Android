@@ -218,7 +218,7 @@ public class CommonReasonDialog extends Dialog {
                 }
             });
             holder.reason_radio_btn.setChecked(position == lastCheckedPosition);
-            if (holder.reason_radio_btn.isChecked() && holder.reason_radio_btn.getText().toString().equals("Others")) {
+            if (holder.reason_radio_btn.isChecked() && holder.reason_radio_btn.getText().toString().equals(context.getResources().getString(R.string.other_reason))) {
                 holder.edt_other_remarks.setVisibility(View.VISIBLE);
             } else {
                 hideKeyboard();

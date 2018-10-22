@@ -850,7 +850,7 @@
     <string name="lbl_forgot_pswd">Olvidó su contraseña</string>
     <string name="cnfrm_pswd">Confirmar Contraseña</string>
     <string name="about_ivy">Acerca de IvyMobility</string>
-    <string name="task">Tarea</string>
+    <string name="task">Tareas</string>
     <string name="task_created_on">Creado</string>
     <string name="taskexecution">Ejecución</string>
     <string name="search">Buscar</string>
@@ -937,10 +937,10 @@
     <string name="rtgs_date">Fecha RTGS</string>
     <string name="cheque_date">Fecha Cheque</string>
     <string name="dd_no_date">Fecha Solicitud Draft</string>
-    <string name="total_sih">Total Inv</string>
+    <string name="total_sih">SIH en Total</string>
     <string name="total_cases">Total Cajas</string>
     <string name="total_outer">Total Outer</string>
-    <string name="total_piece">Total Piezas</string>
+    <string name="total_piece">Piezas Totales</string>
     <string name="title_activity_product_scheme_details">Detalles de Promoción</string>
     <string name="is_Listed">Está catalogado</string>
     <string name="is_distributed">Está distribuído</string>
@@ -1158,7 +1158,7 @@
     <string name="tot_lines_sold">Lines Sold</string>
     <string name="start">Start</string>
     <string name="end">End</string>
-    <string name="click_to_export">Click to export</string>
+    <string name="click_to_export">Click para Exportar</string>
     <string name="click_to_switch">Click to switch</string>
     <string name="click_to_change_password">Click to change password</string>
     <string name="click_to_show_device_status">Click to show device status</string>
@@ -1180,7 +1180,7 @@
     <string name="return_products_not_matching_replacing_product_price">El regreso y el reemplazo deben ser equivalentes</string>
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
     <string name="language">Language</string>
-    <string name="printer_settings">Printer Settings</string>
+    <string name="printer_settings">Configuracion de impresora</string>
     <string name="ns">NS</string>
     <string name="ul">UL</string>
     <string name="salable">Vendible</string>
@@ -1317,4 +1317,12 @@
         <item>Sat</item>
     </string-array>
 
+    <string name="stores">Clientes</string>
+    <string name="check_anyone_fromlist">No ha seleccionado carga</string>
+    <string name="login_joint_Call_user">Por favor ingresa visita con supervisor</string>
+    <string name="enter_mac_address">Ingresar dirección de MAC</string>
+    <string name="paid">Pagado</string>
+    <string name="tos_amount">Cantidad Total</string>
+    <string name="other_reason_with_credit">Problema con su crédito Otros</string>
+    <string name="store_activities">Actividades a realizar</string>
 </resources>

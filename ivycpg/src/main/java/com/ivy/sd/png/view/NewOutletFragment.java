@@ -96,6 +96,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2216,6 +2217,12 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
                         editText[i].addTextChangedListener(watcher);
                         break;
+                    }
+                } else {
+                    ArrayList<RetailerContactBo> contactList = bmodel.newOutletHelper.getRetailerContactList();
+                    if(contactList.size() == 0){
+                        validate = false;
+                        Toast.makeText(getContext(), getResources().getString(R.string.contact_list_mandatory), Toast.LENGTH_LONG).show();
                     }
                 }
 

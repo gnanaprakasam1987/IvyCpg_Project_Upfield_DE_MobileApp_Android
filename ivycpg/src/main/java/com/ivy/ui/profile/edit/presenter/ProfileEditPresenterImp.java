@@ -1995,7 +1995,19 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
             String configCode = profileConfig.get(i).getConfigCode();
 
-            if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CHANNEL)
+            if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.STORENAME)
+                    && profileConfig.get(i).getModule_Order() == 1) {
+                try {
+                    if (getIvyView().getDynamicEditTextValues(i).length() == 0) {
+                        getIvyView().setDynamicEditTextFocus(i);
+                        getIvyView().showMessage(profileConfig.get(i).getMenuName() + " should not Be Empty");
+                        validate = false;
+                        break;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CHANNEL)
                     && profileConfig.get(i).getModule_Order() == 1) {
                 try {
                     if (getIvyView().getChennalSelectedItem().contains("select")) {

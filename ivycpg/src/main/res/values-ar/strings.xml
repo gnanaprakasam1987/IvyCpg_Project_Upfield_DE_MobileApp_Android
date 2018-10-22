@@ -1187,6 +1187,21 @@
     <string name="line_value">قيمة الصنف</string>
     <string name="tax_Value">القيمة الضريبية</string>
     <string name="cash_disc">نقداً المسافة</string>
+    <string name="tls">إجمالي البيع</string>
+    <string name="payment_term">شروط الدفع</string>
+    <string name="oth_disc">خصومات أخرى</string>
+    <string name="sch_disc">سياسة البيع</string>
+    <!--<string name="signature">الامضاء</string>-->
+    <string name="attachment">مرفق</string>
+
+    <string name="stores">Stores</string>
+    <string name="check_anyone_fromlist">Check anyone from the List</string>
+    <string name="login_joint_Call_user">Please login as Joint call user</string>
+    <string name="enter_mac_address">Enter MAC address</string>
+    <string name="paid">Paid</string>
+    <string name="tos_amount">TOS Amount</string>
+    <string name="other_reason_with_credit">Others</string>
+    <string name="store_activities">Store Activities</string>
     <string name="retailer_kpi_not_available">Retailer KPI not available.</string>
     <string name="bill1_value">Bill1 Value</string>
     <string name="bill1_line">Bill1 Line</string>
