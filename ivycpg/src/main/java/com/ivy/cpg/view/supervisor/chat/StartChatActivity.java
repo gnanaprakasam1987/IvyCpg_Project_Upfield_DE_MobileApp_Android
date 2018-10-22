@@ -103,7 +103,8 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                 finish();
             }else {
                 final User user = DaoCore.fetchEntityWithEntityID(User.class, userChatId);
-                user.setName(name);
+                if (user != null)
+                    user.setName(name);
                 getmessageId(user);
 
 //                startChatActivity();
@@ -155,7 +156,8 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                         } else {
 
                             final User user = DaoCore.fetchEntityWithEntityID(User.class, userChatId);
-                            user.setName(name);
+                            if (user != null)
+                                user.setName(name);
                             getmessageId(user);
                         }
                     }
