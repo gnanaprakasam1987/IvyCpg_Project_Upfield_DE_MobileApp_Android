@@ -369,24 +369,32 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             try {
                 if (configlist.get(position).getKpiTarget().equals("-1")) {
-                    holder.ll_seekbar.setVisibility(View.GONE);
-                    holder.tv_progress_text.setVisibility(View.GONE);
+                    //  holder.ll_seekbar.setVisibility(View.GONE);
+                    // holder.tv_progress_text.setVisibility(View.GONE);
 
                     holder.tv_achieved_value.setText(configlist.get(position).getMenuNumber());
-                    holder.tv_target_value.setVisibility(View.GONE);
+                    //holder.tv_target_value.setVisibility(View.GONE);
 
                 } else {
-                    holder.ll_seekbar.setVisibility(View.VISIBLE);
-                    holder.tv_progress_text.setVisibility(View.VISIBLE);
-                    holder.tv_target_value.setVisibility(View.VISIBLE);
+                    // holder.ll_seekbar.setVisibility(View.VISIBLE);
+                    StringBuilder sb = new StringBuilder();
+                    // holder.tv_progress_text.setVisibility(View.VISIBLE);
+                    // holder.tv_target_value.setVisibility(View.VISIBLE);
 
-                    holder.seekBar.setEnabled(false);
-                    holder.seekBar.setProgress((int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved()));
-                    holder.seekBar.setMax((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()));
+                    //holder.seekBar.setEnabled(false);
+                    //  holder.seekBar.setProgress((int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved()));
+                    //holder.seekBar.setMax((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()));
+
+                    sb.append(bmodel.formatValue
+                            (SDUtil.convertToDouble(configlist.get(position)
+                                    .getKpiAchieved())));
+
+                    sb.append("/" + bmodel.formatValue(SDUtil.convertToDouble
+                            (configlist.get(position).getKpiTarget())));
 
 
-                    holder.tv_achieved_value.setText(bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiAchieved())));
-                    holder.tv_target_value.setText("/" + bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiTarget())));
+                    // holder.tv_achieved_value.setText(bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiAchieved())));
+                    //  holder.tv_target_value.setText("/" + bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiTarget())));
 
                     if ((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()) > 0) {
                         int ach = (int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved());
@@ -395,8 +403,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         if (percent > 100) {
                             percent = 100;
                         }
-                        holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
+                        sb.append(" (" + percent + "%" + ")");
+                        //holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
                     }
+                    holder.tv_achieved_value.setText(sb.toString());
                 }
             } catch (Exception ex) {
                 Commons.printException(ex);
@@ -419,11 +429,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         class MyViewHolder extends RecyclerView.ViewHolder {
 
             TextView Name;
-            TextView tv_target_value;
+            // TextView tv_target_value;
             TextView tv_achieved_value;
-            LinearLayout ll_seekbar;
-            SeekBar seekBar;
-            TextView tv_progress_text;
+            // LinearLayout ll_seekbar;
+            //  SeekBar seekBar;
+            //   TextView tv_progress_text;
 
             MyViewHolder(View row) {
                 super(row);
@@ -431,12 +441,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 Name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tv_achieved_value = row.findViewById(R.id.tv_menuvalue_achieved);
                 tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                tv_target_value = row.findViewById(R.id.tv_menuvalue_target);
-                tv_target_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ll_seekbar = row.findViewById(R.id.ll_seekbar);
-                seekBar = row.findViewById(R.id.seek);
-                tv_progress_text = row.findViewById(R.id.tv_progress_text);
-                tv_progress_text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
 
@@ -943,7 +947,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             if (bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE
                     && bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH")
-                    && bmodel.hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL),bmodel.getRetailerMasterBO().getRetailerID())) {
+                    && bmodel.hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.getRetailerMasterBO().getRetailerID())) {
 
                 Toast.makeText(this, getResources().getString(R.string.collection_mandatory), Toast.LENGTH_SHORT).show();
                 return;
@@ -977,7 +981,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     bmodel.outletTimeStampHelper.deleteTimeStampModuleWise("MENU_STK_ORD");
                     showCollectionReasonOrDialog();
                 }
-            }  else if (!hasActivityDone() && bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
+            } else if (!hasActivityDone() && bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL) {
                 showFeedbackReasonOrDialog();
             } else {
                 showCollectionReasonOrDialog();
@@ -1019,11 +1023,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     }
 
 
-
     private String getMessage() {
         StringBuilder sb = new StringBuilder();
         boolean isStoreCheckMenu = false;
-        boolean isStockOrder=false;
+        boolean isStockOrder = false;
 
         menuDB = bmodel.configurationMasterHelper.getActivityMenu();
 
@@ -1036,13 +1039,12 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 sb.append(config.getMenuName()).append(" ").append(getResources().getString(R.string.is_not_done)).append("\n");
             }
 
-            if(config.getHasLink() == 1 && !config.isDone()
-                    && config.getConfigCode().equals("MENU_STK_ORD")){
-                isStockOrder=true;
+            if (config.getHasLink() == 1 && !config.isDone()
+                    && config.getConfigCode().equals("MENU_STK_ORD")) {
+                isStockOrder = true;
             }
 
         }
-
 
 
         if (isStoreCheckMenu) {
@@ -1062,9 +1064,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         if (bmodel.configurationMasterHelper.IS_FOCUS_PACK_NOT_DONE && !isStockOrder) {
             bmodel.getOrderedFocusBrandList();
             if (bmodel.getTotalFocusBrandLines() < bmodel.getTotalFocusBrands()) {
-                StringBuilder msg= new StringBuilder();
-                for (String focusBrand:bmodel.getTotalFocusBrandList()){
-                    if(!bmodel.getOrderedFocusBrands().contains(focusBrand))
+                StringBuilder msg = new StringBuilder();
+                for (String focusBrand : bmodel.getTotalFocusBrandList()) {
+                    if (!bmodel.getOrderedFocusBrands().contains(focusBrand))
                         msg.append(focusBrand).append(", ");
                 }
 
@@ -1345,7 +1347,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             Toast.makeText(CallAnalysisActivity.this,
                     getResources().getString(R.string.reason_saved),
                     Toast.LENGTH_SHORT).show();
-        } else if (!mFeedBackId.equals("0")||hasActivityDone()) {
+        } else if (!mFeedBackId.equals("0") || hasActivityDone()) {
             bmodel.updateIsVisitedFlag();
         }
 
@@ -1411,15 +1413,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     }
 
-    private void resetSellerConfiguration(){
+    private void resetSellerConfiguration() {
         bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
         bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
         bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
         SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_ON = SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_ON_MASTER;
         SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_SHOW_SCREEN = SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_SHOW_SCREEN_MASTER;
         bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
-        bmodel.configurationMasterHelper.IS_INVOICE=bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+        bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
     }
+
     private void resetRemarksBO() {
         bmodel.setOrderHeaderNote("");
         bmodel.setRField1("");
@@ -1714,7 +1717,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }

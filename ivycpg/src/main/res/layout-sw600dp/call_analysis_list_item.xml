@@ -21,67 +21,17 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/font_small" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/tv_menuvalue_lty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true">
-
-                <TextView
-                    android:id="@+id/tv_menuvalue_achieved"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/highlight_small"/>
-
-                <TextView
-                    android:id="@+id/tv_menuvalue_target"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_micro_small" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_progress_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/tv_menuvalue_lty"
-                android:layout_centerVertical="true"
-                android:textColor="@color/kpi_value_text_color"
-                android:textSize="@dimen/text_sz_small"/>
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_seekbar"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_menuvalue_achieved"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:textColor="@color/kpi_value_text_color"
+            android:textSize="@dimen/highlight_small" />
 
-            <SeekBar
-                android:id="@+id/seek"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/seekbar_height"
-                android:layout_marginBottom="@dimen/seekbar_margin_top_n_bottom"
-                android:layout_marginTop="@dimen/seekbar_margin_top_n_bottom"
-                android:enabled="false"
-                android:padding="@dimen/dimen_0dp"
-                android:progressDrawable="@drawable/seekbar_bg"
-                android:thumb="@null" />
 
-        </LinearLayout>
     </LinearLayout>
 
     <View
@@ -106,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:textSize="@dimen/font_small"/>
+            android:textSize="@dimen/font_small" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -125,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/highlight_small"/>
+                    android:textSize="@dimen/highlight_small" />
 
                 <TextView
                     android:id="@+id/tv_menuvalue_target_two"
@@ -145,7 +95,7 @@
                 android:layout_below="@+id/tv_menuvalue_lty2"
                 android:layout_centerVertical="true"
                 android:textColor="@color/kpi_value_text_color"
-                android:textSize="@dimen/text_sz_small"/>
+                android:textSize="@dimen/text_sz_small" />
         </RelativeLayout>
 
         <LinearLayout
