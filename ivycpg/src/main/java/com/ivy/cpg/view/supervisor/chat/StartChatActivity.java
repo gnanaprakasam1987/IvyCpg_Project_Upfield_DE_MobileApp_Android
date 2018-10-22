@@ -47,6 +47,7 @@ import co.chatsdk.core.types.AuthKeys;
 import co.chatsdk.core.types.ConnectionType;
 import co.chatsdk.core.types.ReadStatus;
 import co.chatsdk.core.utils.NotificationUtils;
+import co.chatsdk.firebase.FirebaseEventHandler;
 import co.chatsdk.firebase.wrappers.ThreadWrapper;
 import co.chatsdk.ui.login.LoginActivity;
 import co.chatsdk.ui.utils.ToastHelper;
@@ -92,6 +93,10 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
             customAuth();
         }
         else {
+
+            // To-do Need To Check authenticateWithUser in FirebaseAuthenticationHandler for further implementation
+
+            FirebaseEventHandler.shared().currentUserOn(ChatSDK.currentUser().getEntityID());
 
             if (userChatId.equals("")) {
                 InterfaceManager.shared().a.startMainActivity(this);

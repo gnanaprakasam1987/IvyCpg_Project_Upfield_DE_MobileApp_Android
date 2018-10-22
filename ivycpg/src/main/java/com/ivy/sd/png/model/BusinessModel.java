@@ -712,16 +712,20 @@ public class BusinessModel extends Application {
             String rootPath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
 
             if (!rootPath.equals("")) {
+
+                Commons.print("Check CHAT SDK INITIALIZATION");
+
 // Create a new configuration
                 Configuration.Builder builder = new Configuration.Builder(context);
 
                 builder.firebaseRootPath(rootPath);
                 builder.firebaseStorageURL(CHAT_FIREBASE_STORAGE_URL); // /files/new_folder_cpg/chat_img
-               // builder.firebaseCloudMessagingServerKey(CHAT_SERVER_KEY);
+                //builder.firebaseCloudMessagingServerKey(CHAT_SERVER_KEY);
                 builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
                 builder.locationMessagesEnabled(true);
                 //builder.imageMessagesEnabled(false);
                 builder.setInboundPushHandlingEnabled(true);
+                builder.setShowLocalNotifications(true);
 
                 builder.groupsEnabled(false);
                 builder.threadDetailsEnabled(false);
