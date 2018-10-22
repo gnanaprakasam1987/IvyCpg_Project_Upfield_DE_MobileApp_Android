@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.AppUtils;
 
@@ -62,7 +63,7 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
     // This is a list of extras that are passed to the login view
     protected HashMap<String, Object> extras = new HashMap<>();
 
-    private String userChatId = "";
+    private String userChatId = "",name="";
 
     private boolean isUserValidated = false;
 
@@ -79,6 +80,12 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
         }
 
         userChatId = getIntent().getExtras() != null ? getIntent().getExtras().getString("UUID") : "";
+        name = getIntent().getExtras() != null ? getIntent().getExtras().getString("name") : "";
+
+        if (ChatSDK.shared().context == null){
+            BusinessModel businessModel = (BusinessModel)getApplicationContext();
+            businessModel.initializeChatSdk();
+        }
 
         if (ChatSDK.currentUser() == null) {
             //showProgressDialog("Connecting ...");
@@ -91,6 +98,7 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                 finish();
             }else {
                 final User user = DaoCore.fetchEntityWithEntityID(User.class, userChatId);
+                user.setName(name);
                 getmessageId(user);
 
 //                startChatActivity();
@@ -142,6 +150,7 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                         } else {
 
                             final User user = DaoCore.fetchEntityWithEntityID(User.class, userChatId);
+                            user.setName(name);
                             getmessageId(user);
                         }
                     }
@@ -180,6 +189,9 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                             user.setName(value.get(Keys.Name) != null ? value.get(Keys.Name).toString() : "");
                             user.setLocation(value.get(Keys.Location) != null ? value.get(Keys.Location).toString() : "");
                             user.setAvatarURL(value.get(Keys.AvatarURL) != null ? value.get(Keys.AvatarURL).toString() : "");
+
+                            if (user.getName().equals(""))
+                                user.setName(name);
 
                             ChatSDK.contact().addContact(user, ConnectionType.Contact);
 

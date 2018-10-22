@@ -109,6 +109,9 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     @Override
     public void sellerActivityInfoListener(final int userId, final String date) {
 
+        if (basePath.equals(""))
+            return;
+
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -144,6 +147,9 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
 
     @Override
     public void prepareChartData(final int userId,final String date){
+
+        if (basePath.equals(""))
+            return;
 
         CollectionReference queryRef = db
                 .collection(basePath)

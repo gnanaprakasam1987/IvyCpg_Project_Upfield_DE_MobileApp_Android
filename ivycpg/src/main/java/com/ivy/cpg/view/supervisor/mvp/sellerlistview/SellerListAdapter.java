@@ -16,10 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.supervisor.customviews.tooltip.Tooltip;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -150,6 +152,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                 intent.putExtra("SellerId", sellerListBos.get(holder.getAdapterPosition()).getUserId());
                 intent.putExtra("screentitle", sellerListBos.get(holder.getAdapterPosition()).getUserName() );
                 intent.putExtra("Date",selectedDate);
+                intent.putExtra("UUID",sellerListBos.get(holder.getAdapterPosition()).getUid());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
@@ -159,10 +162,16 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
             @Override
             public void onClick(View view) {
 
-                if (!sellerListBos.get(holder.getAdapterPosition()).getUid().equals("")) {
-                    Intent intent = new Intent(context, StartChatActivity.class);
-                    intent.putExtra("UUID",sellerListBos.get(holder.getAdapterPosition()).getUid());
-                    context.startActivity(intent);
+                if (SupervisorActivityHelper.getInstance().isChatConfigAvail(context)) {
+                    if (!sellerListBos.get(holder.getAdapterPosition()).getUid().equals("")) {
+                        Intent intent = new Intent(context, StartChatActivity.class);
+                        intent.putExtra("UUID", sellerListBos.get(holder.getAdapterPosition()).getUid());
+                        intent.putExtra("name",sellerListBos.get(holder.getAdapterPosition()).getUserName());
+                        context.startActivity(intent);
+                    } else
+                        Toast.makeText(context, "No Chat Found..", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(context, "No Chat Config Enabled..", Toast.LENGTH_SHORT).show();
                 }
             }
         });

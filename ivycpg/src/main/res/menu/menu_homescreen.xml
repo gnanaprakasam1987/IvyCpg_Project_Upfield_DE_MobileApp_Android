@@ -57,4 +57,12 @@
         android:title="Feedback"
         ivydist:showAsAction="collapseActionView"/>
 
+    <item
+        android:id="@+id/menu_firebase_chat"
+        android:icon="@drawable/icn_24_chat"
+        android:orderInCategory="104"
+        android:title="Chat"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+
 </menu>

@@ -39,7 +39,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity;
 import com.ivy.lib.DialogFragment;
@@ -59,7 +61,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
     private GoogleMap mMap;
     private int userId;
-    private String userName,seletedDate;
+    private String userName,seletedDate,sellerUId="";
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName, tvInfoVisitTime, tvSellerName, tvSellerStartTime, tvSellerLastVisit, tvTarget, tvCovered;
@@ -102,6 +104,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 userId = extras.getInt("SellerId");
                 userName = extras.getString("screentitle");
                 seletedDate = extras.getString("Date");
+                sellerUId = extras.getString("UUID");
                 setScreenTitle(userName);
             }
         } catch (Exception e) {
@@ -161,7 +164,17 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         imgMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (SupervisorActivityHelper.getInstance().isChatConfigAvail(SellerDetailMapActivity.this)) {
+                    if (!sellerUId.equals("")) {
+                        Intent intent = new Intent(SellerDetailMapActivity.this, StartChatActivity.class);
+                        intent.putExtra("name",userName);
+                        intent.putExtra("UUID", sellerUId);
+                        startActivity(intent);
+                    } else
+                        Toast.makeText(SellerDetailMapActivity.this, "No Chat Found..", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(SellerDetailMapActivity.this, "No Chat Config Enabled..", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -175,6 +188,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 startActivity(intent);
             }
         });
+
+
 
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.user_info_layout));
 

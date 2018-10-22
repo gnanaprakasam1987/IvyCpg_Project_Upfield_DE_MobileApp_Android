@@ -254,6 +254,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     @Override
     public void sellerActivityInfoListener(int userId,String date) {
 
+        if (basePath.equals(""))
+            return;
+
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -289,6 +292,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     @Override
     public void realtimeLocationInfoListener(int userId,String date){
 
+        if (basePath.equals(""))
+            return;
+
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(REALTIME_LOCATION_PATH)
@@ -323,6 +329,9 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     @Override
     public void sellerAttendanceInfoListener(int userId,String date){
+
+        if (basePath.equals(""))
+            return;
 
         CollectionReference queryRef = db
                 .collection(basePath)

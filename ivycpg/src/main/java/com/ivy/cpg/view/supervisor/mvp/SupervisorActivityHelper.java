@@ -140,4 +140,27 @@ public class SupervisorActivityHelper {
         return latLng;
     }
 
+    public boolean isChatConfigAvail(Context context){
+        boolean isChatConfigAvail =false;
+
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor moduleCursor = db.selectSQL("select hhtcode from HhtModuleMaster where hhtCode = 'CHAT02'");
+            if (moduleCursor != null && moduleCursor.getCount() > 0) {
+                isChatConfigAvail = true;
+                moduleCursor.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return isChatConfigAvail;
+
+    }
+
 }

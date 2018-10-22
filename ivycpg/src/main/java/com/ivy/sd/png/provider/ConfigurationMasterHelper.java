@@ -1515,8 +1515,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NO_COLLECTION_REASON = "COLL18";
     public boolean SHOW_NO_COLLECTION_REASON;
 
-    private static final String CODE_MENU_FIREBASE_CHAT = "REALTIME04";
-    public boolean IS_MENU_FIREBASE_CHAT;
+    private static final String CODE_MENU_FIREBASE_CHAT = "CHAT02";
+    public boolean IS_FIREBASE_CHAT_ENABLED;
 
 
     private ConfigurationMasterHelper(Context context) {
@@ -2662,7 +2662,7 @@ public class ConfigurationMasterHelper {
         // Unload non salable product returns.
         this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
 
-        this.IS_MENU_FIREBASE_CHAT = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : true;
+        this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
     }
 
     private boolean isInOutModule() {

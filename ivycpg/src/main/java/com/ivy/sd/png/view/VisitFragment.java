@@ -624,9 +624,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         }
 
-        if (bmodel.configurationMasterHelper.IS_MENU_FIREBASE_CHAT)
-            menu.findItem(R.id.menu_chat).setVisible(true);
-
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -661,12 +658,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 subDSelectionDialog.setSubIdSelectionInterface(this);
                 subDSelectionDialog.show(getActivity().getSupportFragmentManager(), "SubDSelectionDialog");
             }
-        }
-        else if (i1 == R.id.menu_chat){
-
-            Intent intent = new Intent(getContext(), StartChatActivity.class);
-            startActivity(intent);
-
         }
 
         return super.onOptionsItemSelected(item);

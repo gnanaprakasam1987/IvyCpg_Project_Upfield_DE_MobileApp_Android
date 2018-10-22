@@ -94,6 +94,13 @@
                 android:background="@drawable/ic_remark"
                 android:visibility="gone" />
 
+            <ImageButton
+                android:id="@+id/img_chat_firebase"
+                android:layout_width="@dimen/ret_card_image"
+                android:layout_height="@dimen/ret_card_image"
+                android:background="@drawable/icn_24_chat"
+                android:visibility="gone" />
+
         </LinearLayout>
 
 

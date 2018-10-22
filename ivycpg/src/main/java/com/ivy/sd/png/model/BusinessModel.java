@@ -717,15 +717,16 @@ public class BusinessModel extends Application {
 
                 builder.firebaseRootPath(rootPath);
                 builder.firebaseStorageURL(CHAT_FIREBASE_STORAGE_URL); // /files/new_folder_cpg/chat_img
-                builder.firebaseCloudMessagingServerKey(CHAT_SERVER_KEY);
+               // builder.firebaseCloudMessagingServerKey(CHAT_SERVER_KEY);
                 builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
                 builder.locationMessagesEnabled(true);
+                //builder.imageMessagesEnabled(false);
                 builder.setInboundPushHandlingEnabled(true);
 
                 builder.groupsEnabled(false);
                 builder.threadDetailsEnabled(false);
                 builder.publicRoomCreationEnabled(false);
-                builder.setClientPushEnabled(false);
+                builder.setClientPushEnabled(true);
                 builder.pushNotificationColor(R.attr.primarycolor);
                 builder.pushNotificationImageDefaultResourceId(R.drawable.launchericon);
 

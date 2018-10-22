@@ -177,6 +177,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     @Override
     public void setSellerActivityListener(int userId, String date) {
 
+        if (basePath.equals(""))
+            return;
+
         DocumentReference documentReference = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -194,7 +197,11 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                 });
     }
 
+    @Override
     public void setSellerMovementListener(int userId, String date) {
+
+        if (basePath.equals(""))
+            return;
 
         if (isRealTimeLocationOn) {
 
@@ -218,6 +225,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     @Override
     public void setSellerActivityDetailListener(int userId, String date) {
+
+        if (basePath.equals(""))
+            return;
 
         CollectionReference queryRef = db
                 .collection(basePath)
@@ -557,7 +567,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
                     sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()), lastVisited);
 
-                    /*if (previousRetailerId != 0 && previousRetailerId != documentSnapshotBo.getRetailerId()) {
+                    /*if (previousRetailerId != 0 &&
+                            previousRetailerId != documentSnapshotBo.getRetailerId()) {
                         fetchRouteUrl(previousRetailerLatLng, destLatLng);
                     }*/
 
@@ -649,6 +660,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         }
     }
 
+    @Override
     public void downloadSellerRoute(String userId,String date){
         new DownloadSellerRoute(userId, date).execute();
     }
@@ -704,8 +716,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         boolean isSuccess = false;
         try {
 
-//            String downloadurl = DataMembers.SERVER_URL+"MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
-            String downloadurl = "http://192.168.2.92/api/MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
+
+            String downloadurl = DataMembers.SERVER_URL+"/MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
+//            String downloadurl = "http://192.168.2.92/api/MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
 
             Vector<String> responseVector = connectMe(downloadurl);
 

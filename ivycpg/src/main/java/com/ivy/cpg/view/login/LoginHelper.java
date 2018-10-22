@@ -195,29 +195,11 @@ public class LoginHelper {
         return support_no;
     }
 
-    /*public void onGCMRegistration(Context mContext) {
-        businessModel.regid = getRegistrationId(mContext);
-        Commons.printInformation("REG ID IS : " + businessModel.regid);
-        if (businessModel.regid.isEmpty()) {
-            if (checkPlayServices(mContext.getApplicationContext())) {
-                gcm = GoogleCloudMessaging.getInstance(mContext.getApplicationContext());
-                registerInBackground(mContext);
-            } else {
-                Commons.printInformation("No valid Google Play Services APK found.");
-            }
-        }
-    }*/
-
     public void onFCMRegistration(final Context mContext) {
         final SharedPreferences prefs = AppUtils.getSharedPreferences(mContext);
         boolean registrationId = prefs.getBoolean(PROPERTY_IS_REG_ID_NEW, false);
 
-        if (checkPlayServices(mContext.getApplicationContext()) && !registrationId) {
-
-            final String domainName = getDomainName(mContext);
-            final String topicName = getFCMTopicName(mContext);
-            final String loginName = businessModel.userMasterHelper.getUserMasterBO().getLoginName();
-            final String email = loginName + "@" + domainName+".com";
+        if (checkPlayServices(mContext.getApplicationContext()) ) {
 
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -230,64 +212,79 @@ public class LoginHelper {
 
                             final String fcmToken = task.getResult().getToken();
 
-                            registerInBackground(mContext,fcmToken);
+                            //Send FCM Token to aws server if change in Fcm Reg id
+                            if (!registrationId)
+                                registerInBackground(mContext, fcmToken);
 
-                            if(FirebaseAuth.getInstance().getCurrentUser() == null && !email.equals("")) {
 
-                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, FIREBASE_PASSWORD)
-                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<AuthResult> task1) {
-                                                // Get new Instance ID token
+                            if (isRealTimeConfigAvail(mContext) || isSupervisorMenuAvail(mContext)) {
+                                final String domainName = getDomainName(mContext);
+                                final String loginName = businessModel.userMasterHelper.getUserMasterBO().getLoginName();
 
-                                                if (!task1.isSuccessful()){
-                                                    if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
-                                                        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, FIREBASE_PASSWORD)
-                                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<AuthResult> task1) {
+                                final String email = loginName + "@" + domainName + ".com";
 
-                                                                        updateTokenInFirebase(mContext,fcmToken,domainName);
+                                if (FirebaseAuth.getInstance().getCurrentUser() == null && !email.equals("")) {
 
-                                                                        storeFireBaseCredentials(mContext,
-                                                                                email,
-                                                                                domainName);
+                                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, FIREBASE_PASSWORD)
+                                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task1) {
+                                                    // Get new Instance ID token
 
-                                                                        businessModel.initializeChatSdk();
+                                                    if (!task1.isSuccessful()) {
+                                                        if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
+                                                            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, FIREBASE_PASSWORD)
+                                                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<AuthResult> task1) {
 
-                                                                    }
-                                                                });
+                                                                            if (isSupervisorMenuAvail(mContext))
+                                                                                updateTokenInFirebase(mContext, fcmToken, domainName);
+
+                                                                            storeFireBaseCredentials(mContext,
+                                                                                    email,
+                                                                                    domainName);
+
+                                                                            if (businessModel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
+                                                                                businessModel.initializeChatSdk();
+
+                                                                        }
+                                                                    });
+                                                        }
+                                                    } else {
+
+                                                        if (isSupervisorMenuAvail(mContext))
+                                                            updateTokenInFirebase(mContext, fcmToken, domainName);
+
+                                                        storeFireBaseCredentials(mContext,
+                                                                email,
+                                                                domainName);
+
+                                                        if (businessModel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
+                                                            businessModel.initializeChatSdk();
+
                                                     }
-                                                }else{
-                                                    updateTokenInFirebase(mContext,fcmToken,domainName);
-
-                                                    storeFireBaseCredentials(mContext,
-                                                            email,
-                                                            domainName);
-
-                                                    businessModel.initializeChatSdk();
 
                                                 }
+                                            });
+                                }
 
-                                            }
-                                        });
                             }
-
                         }
                     });
 
+
+
+            //Subscribe Topic Name
+            final String topicName = getFCMTopicName(mContext);
             if (topicName != null && !topicName.equals("")) {
 
                 String[] topicNameArr = topicName.split(",");
 
                 for (String topic : topicNameArr) {
 
-                    if (validate(topic)) {
-                        Commons.printInformation("Valid FCMTopic");
-
+                    if (validateTopicName(topic)) {
                         FirebaseMessaging.getInstance().subscribeToTopic(topic);
-                    } else {
-                        Commons.printInformation("Invalid FCMTopic");
                     }
                 }
             }
@@ -297,7 +294,54 @@ public class LoginHelper {
         }
     }
 
-    private boolean validate(final String name){
+    private boolean isRealTimeConfigAvail(Context context){
+        boolean isRealTimeConfigAvail =false;
+
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor moduleCursor = db.selectSQL("select hhtcode from HhtModuleMaster where hhtCode = 'REALTIME01' OR hhtCode = 'CHAT02' OR hhtCode = 'UPLOADATTENDANCE'");
+            if (moduleCursor != null && moduleCursor.getCount() > 0) {
+                isRealTimeConfigAvail = true;
+                moduleCursor.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return isRealTimeConfigAvail;
+
+    }
+
+    private boolean isSupervisorMenuAvail(Context context){
+        boolean isSupervisorMenuAvail =false;
+
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor menuCursor = db.selectSQL("select hhtcode from HhtMenuMaster where hhtcode = 'MENU_SUPERVISOR_ACTIVITY'");
+            if (menuCursor != null && menuCursor.getCount() > 0) {
+                isSupervisorMenuAvail = true;
+                menuCursor.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return isSupervisorMenuAvail;
+
+    }
+
+    //Validating Topic Name to match the regex
+    private boolean validateTopicName(final String name){
 
         Pattern pattern = Pattern.compile("[a-zA-Z0-9-_.~%]{1,900}");
 
@@ -306,6 +350,8 @@ public class LoginHelper {
 
     }
 
+
+    //Get Domain Name to make base node in Firebase Database
     private String getDomainName(Context context){
         String rootPath ="";
 
@@ -329,6 +375,8 @@ public class LoginHelper {
         return rootPath==null?"":rootPath;
     }
 
+
+    //Get Fcm Topic Names to Subscribe
     private String getFCMTopicName(Context context){
         StringBuilder topicName = new StringBuilder();
         try {
@@ -355,28 +403,6 @@ public class LoginHelper {
         return topicName.length()>0?topicName.substring(1):"";
     }
 
-    private String getloginUserName(Context context){
-        String userName ="";
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = db.selectSQL("select loginid from UserMaster where isDeviceuser=1");
-            if(c.getCount() > 0 && c.moveToNext()) {
-
-                    userName= c.getString(0);
-            }
-            c.close();
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-
-        return userName;
-    }
 
     /**
      * Stores the FIREBASE_ROOT_PATH and the FIREBASE_EMAIL in the application's
@@ -396,6 +422,7 @@ public class LoginHelper {
         editor.apply();
     }
 
+    //Set User Fcm Registration Id in Firestore Database Node
     private void updateTokenInFirebase(Context context,String token,String rootPath){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -415,6 +442,8 @@ public class LoginHelper {
                 .set(userInfo);
     }
 
+
+    //Get User Position Id to save Users Fcm Reg id (Notification Purpose)
     private int getUserPositionId(Context context){
         int posId = 0 ;
 

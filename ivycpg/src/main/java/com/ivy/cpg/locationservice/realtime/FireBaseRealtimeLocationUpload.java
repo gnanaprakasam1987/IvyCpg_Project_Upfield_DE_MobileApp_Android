@@ -70,7 +70,8 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                             }
 
                             BusinessModel businessModel = (BusinessModel)context.getApplicationContext();
-                            businessModel.initializeChatSdk();
+                            if (businessModel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
+                                businessModel.initializeChatSdk();
 
                         } else {
                             Commons.print("Service firebase onComplete: Failed=");

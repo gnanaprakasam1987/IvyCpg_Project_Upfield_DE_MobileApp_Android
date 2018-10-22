@@ -80,6 +80,10 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
     @Override
     public void setOutletActivityDetail(int userId, String date) {
+
+        if (basePath.equals(""))
+            return;
+
         Query queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)

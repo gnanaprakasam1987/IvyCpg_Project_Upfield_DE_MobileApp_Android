@@ -236,6 +236,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     @Override
     public void setSellerActivityListener(final int userId, final String date) {
 
+        if (basePath.equals(""))
+            return;
+
         DocumentReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -273,6 +276,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     @Override
     public void setSellerActivityDetailListener(int userId,String date) {
 
+        if (basePath.equals(""))
+            return;
+
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -300,6 +306,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
     @Override
     public void prepareChartData(final int userId,final String date){
+
+        if (basePath.equals(""))
+            return;
 
         DocumentReference queryRef = db
                 .collection(basePath)
