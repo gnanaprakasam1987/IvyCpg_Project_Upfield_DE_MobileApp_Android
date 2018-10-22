@@ -374,7 +374,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
 
                         getActivity().invalidateOptionsMenu();
                     } else {
-                        Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
                         onBackButtonClick();
                     }
 

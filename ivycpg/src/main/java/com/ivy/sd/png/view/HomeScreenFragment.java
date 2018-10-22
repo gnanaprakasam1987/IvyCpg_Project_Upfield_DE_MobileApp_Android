@@ -1189,7 +1189,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 } else {
                     Toast.makeText(getActivity(),
-                            "Please login joint call user", Toast.LENGTH_SHORT)
+                            getString(R.string.login_joint_Call_user), Toast.LENGTH_SHORT)
                             .show();
                 }
             }
