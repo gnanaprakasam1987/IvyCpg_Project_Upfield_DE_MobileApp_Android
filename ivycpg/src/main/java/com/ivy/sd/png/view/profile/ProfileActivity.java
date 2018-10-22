@@ -545,7 +545,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(TASK));
                 } else {
-                    TASK = "Task";
+                    TASK = getString(R.string.task);
                     tabLayout.addTab(tabLayout.newTab().setText(TASK));
                 }
             } catch (Exception e) {
@@ -562,7 +562,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(SALES_PER_LEVEL));
                 } else {
-                    SALES_PER_LEVEL = "Sales";
+                    SALES_PER_LEVEL = getString(R.string.sales);
                     tabLayout.addTab(tabLayout.newTab().setText(SALES_PER_LEVEL));
                 }
             } catch (Exception e) {
