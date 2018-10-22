@@ -97,6 +97,7 @@ import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1202,7 +1203,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 } else {
                     Toast.makeText(getActivity(),
-                            "Please login joint call user", Toast.LENGTH_SHORT)
+                            getString(R.string.login_joint_Call_user), Toast.LENGTH_SHORT)
                             .show();
                 }
             }
@@ -1922,7 +1923,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 //clear distributor id and group id
                 bmodel.getRetailerMasterBO().setDistributorId(0);
                 bmodel.getRetailerMasterBO().setGroupId(0);
-
+                bmodel.newOutletHelper.setRetailerContactList(new ArrayList<RetailerContactBo>());
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 fragment = new NewoutletContainerFragment();

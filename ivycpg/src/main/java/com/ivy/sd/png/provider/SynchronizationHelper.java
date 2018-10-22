@@ -4209,7 +4209,7 @@ SynchronizationHelper {
         if(isSFDC){
             return new AccountData(context).isUserAvailable();
         }else {
-
+            //if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
             LoginHelper.getInstance(context).loadPasswordConfiguration(context);
             boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
             boolean isPwd;
@@ -4229,6 +4229,7 @@ SynchronizationHelper {
         boolean isUser;
         boolean isPwd;
         try {
+            //if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
             LoginHelper.getInstance(context).loadPasswordConfiguration(context);
             ArrayList<UserMasterBO> mjoinCallUserList = bmodel.userMasterHelper.getUserMasterBO()
                     .getJoinCallUserList();

@@ -391,8 +391,8 @@ public class FitScoreHelper {
                                 "INNER JOIN HHTModuleWeightageMapping HMWM ON HMW.GroupID = HMWM.GroupID " +
                                 "LEFT JOIN RetailerMaster RM ON HMWM.CriteriaId IN (RM.subchannelid, RM.Channelid) AND HMWM.CriteriaType = 'CHANNEL' " +
                                 "LEFT JOIN RetailerAttribute RA ON (RA.AttributeId = HMWM.CriteriaId AND HMWM.CriteriaType = 'RTR_ATTRIBUTE') " +
-                                "LEFT JOIN RetailerScoreDetails RS ON HMW.Module = RS.ModuleCode " +
-                                "LEFT JOIN RetailerScoreHeader RH ON RS.Tid = RH.Tid " +
+                                "LEFT JOIN RetailerScoreDetails RS ON HMW.Module = RS.ModuleCode AND " +
+                                "RS.Tid in (Select RH.Tid from RetailerScoreHeader RH where RS.Tid = RH.Tid and RH.RetailerId = '"+ retailerID +"') " +
                                 "WHERE HMW.Module = '" + hhtModule.getModule() + "' AND (RM.RetailerID = '" + retailerID + "' OR RA.RetailerID = '" + retailerID + "') LIMIT 1;");
                 if (c != null) {
                     while (c.moveToNext()) {

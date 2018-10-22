@@ -215,7 +215,7 @@
 
     <string name="vanload_stock_applied">VanLoad Stock Applied </string>
     <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
-    <string name="check_any_one_list">Check any one list</string>
+
     <string name="new_order">New Order</string>
     <string name="new_outlet_order">You have changed the Distributor, Order will be lost. Do you want to Continue?</string>
     <string name="outlet_code">Outlet Code</string>
@@ -268,5 +268,5 @@
     <string name="rejected_order">Rejected Order</string>
 
     <string name="please_provide_valid_reason_or_Availability">Please Provide Valid Reason or Availability</string>
-
+    <string name="contact_list_mandatory">Contact List is Mandatory</string>
 </resources>
