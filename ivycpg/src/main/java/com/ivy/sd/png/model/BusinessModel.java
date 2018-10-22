@@ -6385,7 +6385,7 @@ public class BusinessModel extends Application {
 
 
                     // Download Date
-                    else if (mRules.get(i).contains("YYYY")) {
+                    else if (mRules.get(i).contains("yyyy")) {
                         mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(),
                                 mRules.get(i).replace("{", "").replace("}", "")));
                     }

@@ -366,24 +366,32 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             try {
                 if (configlist.get(position).getKpiTarget().equals("-1")) {
-                    holder.ll_seekbar.setVisibility(View.GONE);
-                    holder.tv_progress_text.setVisibility(View.GONE);
+                    //  holder.ll_seekbar.setVisibility(View.GONE);
+                    // holder.tv_progress_text.setVisibility(View.GONE);
 
                     holder.tv_achieved_value.setText(configlist.get(position).getMenuNumber());
-                    holder.tv_target_value.setVisibility(View.GONE);
+                    //holder.tv_target_value.setVisibility(View.GONE);
 
                 } else {
-                    holder.ll_seekbar.setVisibility(View.VISIBLE);
-                    holder.tv_progress_text.setVisibility(View.VISIBLE);
-                    holder.tv_target_value.setVisibility(View.VISIBLE);
+                    // holder.ll_seekbar.setVisibility(View.VISIBLE);
+                    StringBuilder sb = new StringBuilder();
+                    // holder.tv_progress_text.setVisibility(View.VISIBLE);
+                    // holder.tv_target_value.setVisibility(View.VISIBLE);
 
-                    holder.seekBar.setEnabled(false);
-                    holder.seekBar.setProgress((int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved()));
-                    holder.seekBar.setMax((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()));
+                    //holder.seekBar.setEnabled(false);
+                    //  holder.seekBar.setProgress((int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved()));
+                    //holder.seekBar.setMax((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()));
+
+                    sb.append(bmodel.formatValue
+                            (SDUtil.convertToDouble(configlist.get(position)
+                                    .getKpiAchieved())));
+
+                    sb.append("/" + bmodel.formatValue(SDUtil.convertToDouble
+                            (configlist.get(position).getKpiTarget())));
 
 
-                    holder.tv_achieved_value.setText(bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiAchieved())));
-                    holder.tv_target_value.setText("/" + bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiTarget())));
+                    // holder.tv_achieved_value.setText(bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiAchieved())));
+                    //  holder.tv_target_value.setText("/" + bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiTarget())));
 
                     if ((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()) > 0) {
                         int ach = (int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved());
@@ -392,8 +400,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         if (percent > 100) {
                             percent = 100;
                         }
-                        holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
+                        sb.append(" (" + percent + "%" + ")");
+                        //holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
                     }
+                    holder.tv_achieved_value.setText(sb.toString());
                 }
             } catch (Exception ex) {
                 Commons.printException(ex);
@@ -416,24 +426,18 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         class MyViewHolder extends RecyclerView.ViewHolder {
 
             TextView Name;
-            TextView tv_target_value;
+            // TextView tv_target_value;
             TextView tv_achieved_value;
-            LinearLayout ll_seekbar;
-            SeekBar seekBar;
-            TextView tv_progress_text;
+            // LinearLayout ll_seekbar;
+            //  SeekBar seekBar;
+            //   TextView tv_progress_text;
 
             MyViewHolder(View row) {
                 super(row);
                 Name = row.findViewById(R.id.menunametxt);
                 Name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, CallAnalysisActivity.this));
                 tv_achieved_value = row.findViewById(R.id.tv_menuvalue_achieved);
-                tv_achieved_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, CallAnalysisActivity.this));
-                tv_target_value = row.findViewById(R.id.tv_menuvalue_target);
-                tv_target_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, CallAnalysisActivity.this));
-                ll_seekbar = row.findViewById(R.id.ll_seekbar);
-                seekBar = row.findViewById(R.id.seek);
-                tv_progress_text = row.findViewById(R.id.tv_progress_text);
-                tv_progress_text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, CallAnalysisActivity.this));
+                tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
 
