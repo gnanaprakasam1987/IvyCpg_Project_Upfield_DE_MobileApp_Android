@@ -9,6 +9,7 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -438,4 +439,196 @@ public class DayReportHelper {
         return "'" + data + "'";
     }
 
+    /**
+     * this method will count number of today's retailer for which SBD Dist is
+     * Mapped vs number of retailers where SBDDistributionActual is equals to
+     * SBDDistributionTarget
+     *
+     * @return SBDDistributionActual/SBDDistributionTarget
+     */
+    public int[] getSDBDistTargteAndAcheived() {
+
+        int i[] = new int[2];
+        int target = 0;
+        int acheived = 0;
+        try {
+            for (RetailerMasterBO tempObj : mBusinessModel.retailerMaster) {
+                if (tempObj.getIsToday() == 1
+                        || tempObj.getIsDeviated().equals("Y")) {
+
+                    if (tempObj.getSbdDistributionTarget() > 0) {
+
+                        target = target + 1;
+
+                        float sbdDistTarget = (float) tempObj
+                                .getSbdDistributionTarget()
+                                * mBusinessModel.configurationMasterHelper
+                                .getSbdDistTargetPCent() / 100;
+                        Commons.print("Business model," +
+                                tempObj.getSbdDistributionAchieve()
+                                + "target : " + sbdDistTarget);
+                        if (tempObj.getSbdDistributionAchieve() != 0)
+                            if (sbdDistTarget <= (float) tempObj
+                                    .getSbdDistributionAchieve())
+                                acheived = acheived + 1;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        i[0] = acheived;
+        i[1] = target;
+        return i;
+    }
+
+
+    public int[] getGoldenPoints() {
+        int i[] = new int[2];
+        try {
+            if (mBusinessModel.retailerMaster != null) {
+                for (RetailerMasterBO tempObj : mBusinessModel.retailerMaster) {
+                    if (tempObj.getIsToday() == 1
+                            || (tempObj.getIsDeviated() != null && (tempObj.getIsDeviated().equals("Y")))) {
+                        i[0] += tempObj.getSbdDistributionAchieve();
+                        i[1] += tempObj.getSbdDistributionTarget();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return i;
+    }
+    /**
+     * Get Gold Store acheived count from retailer master and Total number of
+     * retailer planned for today. Value used to display in VisitActivity Screen
+     *
+     * @return String goldStores/TotalStore
+     */
+
+    public double getStrikeRateValue() {
+
+        double strikeValue = 0, planned = 0, storesInvoiced = 0;
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
+                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                            + " WHERE (RMI.isToday=1)");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    c.moveToNext();
+                    planned = c.getFloat(0);
+                }
+            }
+            c.close();
+
+
+            Cursor c1;
+            if (mBusinessModel.configurationMasterHelper.IS_INVOICE) {
+                c1 = db.selectSQL("select  COUNT(distinct RETAILERID)  from InvoiceMaster");
+            } else {
+                c1 = db.selectSQL("select  COUNT(distinct RETAILERID)  from OrderHeader");
+            }
+            if (c1 != null) {
+                if (c1.getCount() > 0) {
+                    c1.moveToNext();
+                    storesInvoiced = c1.getFloat(0);
+                }
+            }
+            c1.close();
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        strikeValue = (storesInvoiced / planned);
+        return strikeValue;
+    }
+
+
+    public int getTotalOrderQty() {
+        DBUtil db = null;
+        int totQty = 0;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select sum(qty) from invoicedetails ");
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    totQty = c.getInt(0);
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+        }
+
+        return totQty;
+    }
+
+
+    public double getFITscoreForAllRetailers() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
+                            "INNER JOIN  AnswerHeader AH ON AH.uid=AD.uid " +
+                            "LEFT JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid " +
+                            "where AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW')");
+            if (c.getCount() > 0) {
+                if (c.moveToNext()) {
+                    return (c.getDouble(0));
+                }
+            }
+            c.close();
+            db.closeDB();
+            return 0;
+        } catch (Exception e) {
+            Commons.printException(e);
+            return 0;
+        }
+    }
+
+    public int getGreenFITscoreRetailersCount() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            int count = 0;
+            Cursor c = db
+                    .selectSQL("select distinct AH.retailerid, Sum(score), Sum(SM.weight) from AnswerScoreDetail AD"
+                            + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
+                            + " INNER JOIN SurveyMapping SM ON SM.surveyid=AD.surveyId and SM.qid=AD.qid"
+                            + " where menuCode in('MENU_SURVEY','MENU_SURVEY_SW') group by AH.retailerid");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    if (((c.getInt(1) * c.getInt(2)) / 100) > 80) {
+                        count += 1;
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+            return count;
+        } catch (Exception e) {
+            Commons.printException(e);
+            return 0;
+        }
+    }
 }

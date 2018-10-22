@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -26,8 +27,8 @@ import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
-import com.ivy.sd.png.bo.LoyaltyBO;
-import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
+import com.ivy.cpg.view.loyality.LoyaltyBO;
+import com.ivy.cpg.view.loyality.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -36,7 +37,7 @@ import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.TaxInterface;
+import com.ivy.cpg.view.order.tax.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -156,12 +157,23 @@ public class ProductHelper {
         this.mSelectedLocationIndex = mSelectedLocationIndex;
     }
 
+    /**
+     * @deprecated
+     * @See {@link AppDataProvider#getGlobalLocationIndex()}
+     * @return
+     */
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
     }
 
+    /**
+     * @deprecated
+     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
+     * @param mSelectedGLobalLocationIndex
+     */
     public void setmSelectedGLobalLocationIndex(int mSelectedGLobalLocationIndex) {
         this.mSelectedGLobalLocationIndex = mSelectedGLobalLocationIndex;
+        bmodel.codeCleanUpUtil.setGlobalLocationId(mSelectedGLobalLocationIndex);
     }
 
     public Vector<StandardListBO> getInStoreLocation() {
@@ -1741,8 +1753,6 @@ public class ProductHelper {
                 product.setProductDiscAmount(0);
                 product.setDistributorTypeDiscount(0);
                 product.setCompanyTypeDiscount(0);
-                product.setApplyValue(0);
-
                 int size = product.getLocations().size();
                 for (int z = 0; z < size; z++) {
                     product.getLocations().get(z).setShelfOuter(-1);
@@ -3900,60 +3910,6 @@ public class ProductHelper {
         }
         return priceOffText;
 
-    }
-
-    public float getTotalWeight(String retailerid) {
-        DBUtil db = null;
-        float totalWeight = 0;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select sum(totalweight) from orderheader where OrderDate=");
-            sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            if (!retailerid.equals("")) {
-                sb.append("and upload!='X' and retailerid=" + bmodel.QT(retailerid));
-            }
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                if (c.moveToFirst()) {
-                    totalWeight = c.getFloat(0);
-
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-        return totalWeight;
-    }
-
-    public int getTotalOrderQty() {
-        DBUtil db = null;
-        int totQty = 0;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select sum(qty) from invoicedetails ");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    totQty = c.getInt(0);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-
-        return totQty;
     }
 
 

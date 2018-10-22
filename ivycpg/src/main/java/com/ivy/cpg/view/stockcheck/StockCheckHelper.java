@@ -142,10 +142,15 @@ public class StockCheckHelper {
     }
 
     public void loadCmbStkChkConfiguration(Context context, int subChannelID) {
-        SHOW_COMB_STOCK_SP = true;
-        SHOW_COMB_STOCK_SC = true;
-        SHOW_COMB_STOCK_SHELF_OUTER = true;
-        SHOW_COMB_STOCK_CB = true;
+        SHOW_COMB_STOCK_SP = false;
+        SHOW_COMB_STOCK_SC = false;
+        SHOW_COMB_STOCK_SHELF_OUTER = false;
+        SHOW_COMB_STOCK_CB = false;
+        SHOW_STOCK_RSN = false;
+        SHOW_STOCK_DD = false;
+        SHOW_STOCK_FC = false;
+        SHOW_STOCK_LD = false;
+        CHANGE_AVAL_FLOW = false;
 
         SHOW_STOCK_PRICECHECK_PCS = false;
         SHOW_STOCK_PRICECHECK_CS = false;
@@ -213,6 +218,9 @@ public class StockCheckHelper {
                         break;
                     case "REASON":
                         SHOW_STOCK_RSN = true;
+                        break;
+                    case "CB01":
+                        CHANGE_AVAL_FLOW = true;
                         break;
 
                 }

@@ -1294,6 +1294,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     // bmodel.activationHelper.clearAppUrl();
                     clearAppUrl();
                     bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
+                    bmodel.codeCleanUpUtil.setUserId(0);
                     try {
                         Uri path;
                         if (Build.VERSION.SDK_INT >= 24) {

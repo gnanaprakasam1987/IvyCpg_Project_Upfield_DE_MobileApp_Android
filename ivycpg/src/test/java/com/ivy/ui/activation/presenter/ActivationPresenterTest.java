@@ -1,6 +1,6 @@
 package com.ivy.ui.activation.presenter;
 
-import com.ivy.TestDataFactory;
+import com.ivy.ui.activation.ActivationDataFactory;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.ActivationBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -40,9 +39,6 @@ public class ActivationPresenterTest {
     private ActivationPresenterImpl<ActivationContract.ActivationView> mPresenter;
 
     private TestScheduler testScheduler = new TestScheduler();
-
-    @Mock
-    ArrayList<ActivationBO> mockActivationBo;
 
     @Mock
     private
@@ -88,7 +84,7 @@ public class ActivationPresenterTest {
 
     @Test
     public void testDoActivation() {
-        JSONObject jsonObject = TestDataFactory.getValidActivationObject();
+        JSONObject jsonObject = ActivationDataFactory.getValidActivationObject();
 
         given(mActivationDataManager.doActivationAtHttp("abcd", "abcd",
                 "abcd", "abcd")).willReturn(Observable.just(jsonObject));
@@ -107,7 +103,7 @@ public class ActivationPresenterTest {
     @Test
     public void testDoActivationEmptyUrl() {
 
-        JSONObject jsonObject = TestDataFactory.getValidActivationFailureObject();
+        JSONObject jsonObject = ActivationDataFactory.getValidActivationFailureObject();
 
         given(mActivationDataManager.doActivationAtHttp("abcd", "abcd",
                 "abcd", "abcd")).willReturn(Observable.just(jsonObject));
@@ -139,7 +135,7 @@ public class ActivationPresenterTest {
     @Test
     public void testTriggerImEiActivation() {
 
-        JSONObject jsonObject = TestDataFactory.getValidImeiResponse();
+        JSONObject jsonObject = ActivationDataFactory.getValidImeiResponse();
 
 
         given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
@@ -156,7 +152,7 @@ public class ActivationPresenterTest {
 
     @Test
     public void testTriggerImEiActivationWithEmptyUrl() {
-        JSONObject jsonObject = TestDataFactory.getValidActivationFailureObject();
+        JSONObject jsonObject = ActivationDataFactory.getValidActivationFailureObject();
         given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
                 "abcd")).willReturn(Observable.just(jsonObject));
         //When
@@ -171,7 +167,7 @@ public class ActivationPresenterTest {
     @Test
     public void testTriggerImEiActivationWithEmptyArray() {
 
-        JSONObject jsonObject = TestDataFactory.getValidActivationWithEmptyArray();
+        JSONObject jsonObject = ActivationDataFactory.getValidActivationWithEmptyArray();
 
         given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
                 "abcd")).willReturn(Observable.just(jsonObject));
@@ -187,7 +183,7 @@ public class ActivationPresenterTest {
     @Test
     public void testTriggerActivationWithJsonException() {
 
-        JSONObject jsonObject = TestDataFactory.getInValidResponse();
+        JSONObject jsonObject = ActivationDataFactory.getInValidResponse();
 
         given(mActivationDataManager.doActivationAtHttp("abcd", "abcd",
                 "abcd", "abcd")).willReturn(Observable.just(jsonObject));
@@ -203,7 +199,7 @@ public class ActivationPresenterTest {
     @Test
     public void testTriggerImEiActivationSingleResponse() {
 
-        JSONObject jsonObject = TestDataFactory.getValidateSingleImEiResponse();
+        JSONObject jsonObject = ActivationDataFactory.getValidateSingleImEiResponse();
 
         given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
                 "abcd")).willReturn(Observable.just(jsonObject));
@@ -229,7 +225,7 @@ public class ActivationPresenterTest {
     @Test
     public void testTriggerImEiActivationSingleResponseException() {
 
-        JSONObject jsonObject = TestDataFactory.getInValidResponse();
+        JSONObject jsonObject = ActivationDataFactory.getInValidResponse();
         given(mActivationDataManager.doIMEIActivationAtHttp("abcd", "abcd",
                 "abcd")).willReturn(Observable.just(jsonObject));
         //When

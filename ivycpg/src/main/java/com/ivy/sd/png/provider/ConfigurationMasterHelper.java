@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -19,6 +20,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -529,7 +531,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_CONTACT_TAB;
 
 
-    private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
+    public static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
     private static final String CODE_LICENSE_VALIDATION = "ORDB73";
@@ -644,7 +646,6 @@ public class ConfigurationMasterHelper {
     // Order & stock flags
     public boolean SHOW_STOCK_SC;
     public boolean SHOW_STOCK_SP;
-    public boolean SHOW_CAT_STOCK_SP;
     public boolean SHOW_ORDER_PCS;
     public boolean SHOW_FOC;
     public boolean SHOW_ORDER_CASE;
@@ -659,8 +660,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_RSN;// available reason
     public boolean SHOW_STOCK_CB;// available checkbox
     public boolean CHANGE_AVAL_FLOW;// check box tristate flow
-    public boolean SHOW_STOCK_POURING;// Pouring
-    public boolean SHOW_STOCK_COCKTAIL;// Distributes=d checkbox
 
     public boolean SHOW_DISCOUNT_ACTIVITY;// FUN03
     public boolean SHOW_REPLACED_QTY_PC;
@@ -2746,6 +2745,11 @@ public class ConfigurationMasterHelper {
         }
     }
 
+
+    /**
+     * @See {@link UserDataManagerImpl#fetchUsers()}
+     * @deprecated
+     */
     public void loadDashboardUserFilter() {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3815,13 +3819,10 @@ public class ConfigurationMasterHelper {
     public void loadOrderAndStockConfiguration(int subChannelID) {
         try {
             SHOW_STOCK_SP = false;
-            SHOW_CAT_STOCK_SP = false;
             SHOW_STOCK_SC = false;
             SHOW_STOCK_CB = false;
             CHANGE_AVAL_FLOW = false;
             SHOW_STOCK_RSN = false;
-            SHOW_STOCK_POURING = false;
-            SHOW_STOCK_COCKTAIL = false;
             SHOW_STOCK_TOTAL = false;
             SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
@@ -3931,8 +3932,6 @@ public class ConfigurationMasterHelper {
                 for (String temp : codeSplit) {
                      if (temp.equals("SP"))
                         SHOW_STOCK_SP = true;
-                    else if (temp.equals("CASP"))
-                        SHOW_CAT_STOCK_SP = true;
                     else if (temp.equals("SC"))
                         SHOW_STOCK_SC = true;
                     else if (temp.equals("CB"))
@@ -3943,10 +3942,6 @@ public class ConfigurationMasterHelper {
                         SHOW_SHELF_OUTER = true;
                     else if (temp.equals("TOTAL"))
                         SHOW_STOCK_TOTAL = true;
-                    else if (temp.equals("PUR"))
-                        SHOW_STOCK_POURING = true;
-                    else if (temp.equals("CTS"))
-                        SHOW_STOCK_COCKTAIL = true;
                     else if (temp.equals("REPPC"))
                         SHOW_REPLACED_QTY_PC = true;
                     else if (temp.equals("REPCS"))
@@ -5576,8 +5571,12 @@ public class ConfigurationMasterHelper {
 
     private Typeface mFontBaloobhaiRegular;
 
-    @Deprecated
-    //this method moved into FontUitils class
+    /**
+     * @deprecated
+     * @See {@link com.ivy.utils.FontUtils#getFontBalooHai(Context, FontUtils.FontType)}
+     * @param mFontType
+     * @return
+     */
     public Typeface getFontBaloobhai(FontType mFontType) {
         if (mFontType == FontType.REGULAR) {
             if (mFontBaloobhaiRegular == null)
@@ -5593,8 +5592,12 @@ public class ConfigurationMasterHelper {
     private Typeface mFontRobotoMedium;
     private Typeface mFontRobotoThin;
 
-    @Deprecated
-    //this method moved into FontUtils class
+    /**
+     * @deprecated
+     * @See {@link FontUtils#getFontRoboto(FontUtils.FontType, Context)}
+     * @param mFontType
+     * @return
+     */
     public Typeface getFontRoboto(FontType mFontType) {
         if (mFontType == FontType.LIGHT) {
             if (mFontRobotoLight == null)

@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -311,7 +312,7 @@ public class ManualVanLoadHelper {
                 db.insertSQL(DataMembers.tbl_SubDepotSettlement,
                         subDepotColumns, values);
 
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper.getInstance(context)
                         .updateEmptyReconilationTable();
 
             }

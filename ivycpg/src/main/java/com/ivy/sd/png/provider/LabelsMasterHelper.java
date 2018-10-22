@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
 
+import com.ivy.core.data.label.LabelsDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -14,10 +15,14 @@ import com.ivy.utils.AppUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @See {@link com.ivy.core.data.label.LabelsDataManagerImpl}
+ * @deprecated
+ */
 public class LabelsMasterHelper {
 
     private final Context mContext;
-   // private final BusinessModel bmodel;
+    // private final BusinessModel bmodel;
 
     private static LabelsMasterHelper instance = null;
     private Map<String, String> labelsMap;
@@ -34,6 +39,10 @@ public class LabelsMasterHelper {
         return instance;
     }
 
+    /**
+     * @See {@link LabelsDataManagerImpl#getAllLabels()}
+     * @deprecated
+     */
     public void downloadLabelsMaster() {
         labelsMap = new HashMap<>();
 
@@ -56,7 +65,7 @@ public class LabelsMasterHelper {
             }
             db.closeDB();
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
     }
 
@@ -64,6 +73,10 @@ public class LabelsMasterHelper {
         return labelsMap;
     }
 
+    /**
+     * @See {@link LabelsDataManagerImpl#getLabel(String)} ()}
+     * @deprecated
+     */
     public String applyLabels(Object tag) {
         try {
             if (tag != null) {
@@ -75,11 +88,15 @@ public class LabelsMasterHelper {
                 }
             }
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return null;
     }
 
+    /**
+     * @See {@link LabelsDataManagerImpl#getLabel(String)} ()}
+     * @deprecated
+     */
     //used for dashboard incentive label Month or day or year
     public String applyLabels(String tag) {
         try {
@@ -91,17 +108,25 @@ public class LabelsMasterHelper {
                 }
             }
         } catch (Exception e) {
-            Commons.printException(""+e);
+            Commons.printException("" + e);
         }
         return null;
     }
 
+    /**
+     * @See {@link LabelsDataManagerImpl#getLabel(String)} ()}
+     * @deprecated
+     */
     public String getSyncContentHTML() {
         return SyncContentHTML;
     }
 
     private String SyncContentHTML = "";
 
+    /**
+     * @See {@link LabelsDataManagerImpl#getLabel(String)} ()}
+     * @deprecated
+     */
     public void downloadSyncContent() {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,

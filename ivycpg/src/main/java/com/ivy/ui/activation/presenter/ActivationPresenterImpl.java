@@ -327,4 +327,5 @@ public class ActivationPresenterImpl<V extends ActivationContract.ActivationView
     public List<ActivationBO> getAppUrls() {
         return appUrls;
     }
+
 }

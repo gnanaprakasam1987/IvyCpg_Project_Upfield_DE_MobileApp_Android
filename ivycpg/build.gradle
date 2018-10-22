@@ -46,7 +46,7 @@ android {
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode "$minorVersion$patchVersion".toInteger()
         versionName "${majorVersion}.${minorVersion}.${patchVersion}.${revNumber}"
@@ -97,6 +97,7 @@ android {
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
             testCoverageEnabled = true
+            debuggable false
 
         }
         release {
@@ -162,6 +163,8 @@ android {
         main {
             // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
             res.srcDirs = [
+                    'src/main/res/layouts/dashboard',
+                    'src/main/res/layouts/photocapture',
                     'src/main/res/layouts/activation',
                     'src/main/res/layouts',
                     'src/main/res'

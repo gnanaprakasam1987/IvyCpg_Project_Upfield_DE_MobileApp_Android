@@ -101,7 +101,7 @@ import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
-import com.ivy.sd.png.view.TaskListFragment;
+import com.ivy.cpg.view.task.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
 
 import org.json.JSONObject;

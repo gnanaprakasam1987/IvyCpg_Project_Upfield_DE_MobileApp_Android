@@ -39,6 +39,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
@@ -767,7 +768,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA29")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    final float totalWeight = bmodel.productHelper.getTotalWeight(bmodel.getRetailerMasterBO().getRetailerID());
+                    final float totalWeight = DashBoardHelper.getInstance(this).getTotalWeight(bmodel.getRetailerMasterBO().getRetailerID());
                     con.setMenuNumber(totalWeight + "");
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA30")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
@@ -1819,7 +1820,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                             0);
                     return true;
 
-
                 case DataMembers.NOTIFY_WEB_UPLOAD_ERROR:
 
                     dismissProgressDialog();
@@ -1829,7 +1829,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                     bmodel.photocount = 0;
                     dismissProgressDialog();
-
 
                     bmodel.showAlert(
                             getResources().getString(

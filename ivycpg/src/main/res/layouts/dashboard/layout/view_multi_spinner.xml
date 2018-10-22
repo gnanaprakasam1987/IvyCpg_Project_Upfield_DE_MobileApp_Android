@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?mtdDashboardBackground">
+
+    <TextView
+        android:id="@+id/tv_distributor_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="@string/distributor_name"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/kpi_spinner_title_size"
+        app:layout_constraintBottom_toTopOf="@+id/seperator"
+        app:layout_constraintEnd_toStartOf="@id/distributorSpinner1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.ivy.sd.png.commons.MultiSpinner
+        android:id="@+id/distributorSpinner1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/drop_down_black"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_distributor_title"
+        app:layout_constraintBottom_toTopOf="@+id/seperator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_distributor_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/seperator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_distributor_title" />
+
+    <TextView
+        android:id="@+id/tv_username_title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:text="@string/username"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/kpi_spinner_title_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/userSpinner1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seperator" />
+
+    <com.ivy.sd.png.commons.MultiSpinner
+        android:id="@+id/userSpinner1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/drop_down_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_username_title"
+        app:layout_constraintTop_toBottomOf="@id/seperator" />
+
+</android.support.constraint.ConstraintLayout>
