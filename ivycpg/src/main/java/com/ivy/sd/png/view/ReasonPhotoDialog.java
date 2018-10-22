@@ -104,7 +104,7 @@ public class ReasonPhotoDialog extends DialogFragment {
         reasonAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
         reasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         reasonAdapter.add(new ReasonMaster("0", getActivity().getResources()
-                .getString(R.string.select_str) + " Reason"));
+                .getString(R.string.select_reason)));
         for (ReasonMaster temp : bmodel.reasonHelper.getNonVisitReasonMaster()) {
             reasonAdapter.add(temp);
         }

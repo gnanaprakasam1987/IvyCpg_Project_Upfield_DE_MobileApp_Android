@@ -700,6 +700,11 @@ public class OrderDeliveryHelper {
                         " ,NetAmount from OrderDetail where OrderId = " + AppUtils.QT(orderId);
                 db.executeQ(invoiceDetailQry);
 
+                for (ProductMasterBO productBo : getOrderedProductMasterBOS()) {
+                    db.updateSQL("Update InvoiceDetails set DiscountAmount = '" + productBo.getProductDiscAmount() + "' where ProductID = '" +
+                            productBo.getProductID() + "' and invoiceID = '" + invoiceId + "'");
+                }
+
                 String invoiceDiscountQry = "Insert into InvoiceDiscountDetail (OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
                         " RetailerId,DiscountId,isCompanyGiven,invoiceID) select OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
                         " RetailerId,DiscountId,isCompanyGiven," + invoiceId + " from OrderDiscountDetail where OrderId = " + AppUtils.QT(orderId);

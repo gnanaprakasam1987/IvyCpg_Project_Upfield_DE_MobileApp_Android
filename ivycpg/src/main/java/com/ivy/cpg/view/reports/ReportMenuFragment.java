@@ -258,7 +258,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
     }
 
     private void showToast() {
-        Toast.makeText(getActivity(), R.string.no_data_exists, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), R.string.data_not_mapped, Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -352,7 +352,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                             || holder.menuCode.equals("MENU_SCHEME_REPORT") || holder.menuCode.equals("MENU_STORERANK_REPORT")
                             || holder.menuCode.equals("MENU_TIME_REPORT") || holder.menuCode.equals("MENU_REPORT01") || holder.menuCode.equals("MENU_SUP_TEST_SCORE")) {
 
-                        Toast.makeText(getActivity(), "Report not exist.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
 
                     } else {
                         gotoSelectedFragement(holder.config);
@@ -459,7 +459,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                         intent.putExtras(bun);
                         startActivity(intent);
                     } else {
-                        Toast.makeText(getActivity(), "Data Not Available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.data_not_mapped), Toast.LENGTH_LONG).show();
                     }
 
                 } else {

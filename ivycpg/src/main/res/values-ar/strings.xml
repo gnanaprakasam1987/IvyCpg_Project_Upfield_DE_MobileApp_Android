@@ -1278,4 +1278,13 @@
     <string name="sch_disc">سياسة البيع</string>
     <!--<string name="signature">الامضاء</string>-->
     <string name="attachment">مرفق</string>
+
+    <string name="stores">Stores</string>
+    <string name="check_anyone_fromlist">Check anyone from the List</string>
+    <string name="login_joint_Call_user">Please login as Joint call user</string>
+    <string name="enter_mac_address">Enter MAC address</string>
+    <string name="paid">Paid</string>
+    <string name="tos_amount">TOS Amount</string>
+    <string name="other_reason_with_credit">Others</string>
+    <string name="store_activities">Store Activities</string>
 </resources>
