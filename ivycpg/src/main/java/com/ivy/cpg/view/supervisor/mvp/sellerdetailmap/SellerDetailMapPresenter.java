@@ -3,11 +3,16 @@ package com.ivy.cpg.view.supervisor.mvp.sellerdetailmap;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.text.format.DateUtils;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -25,28 +30,46 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.NetworkUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.Vector;
 
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
+import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_DATA_KEY;
 
 public class SellerDetailMapPresenter implements SellerDetailMapContractor.SellerDetailMapPresenter {
 
@@ -70,10 +93,15 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private int retailersVisitedSequence = 0;
     private int lastVisited = 0;
 
+    private AlertDialog alertDialog;
+    private ArrayList<LatLng> valuesList = new ArrayList<>();
+    private String basePath = "";
+
     @Override
     public void setView(SellerDetailMapContractor.SellerDetailMapView sellerMapView, Context context) {
         this.sellerMapView = sellerMapView;
         this.context = context;
+        basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
     }
 
     @Override
@@ -149,8 +177,11 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     @Override
     public void setSellerActivityListener(int userId, String date) {
 
+        if (basePath.equals(""))
+            return;
+
         DocumentReference documentReference = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date)
                 .document(userId + "");
@@ -167,10 +198,39 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
+    public void setSellerMovementListener(int userId, String date) {
+
+        if (basePath.equals(""))
+            return;
+
+        if (isRealTimeLocationOn) {
+
+            DocumentReference documentReference = db
+                    .collection(basePath)
+                    .document(REALTIME_LOCATION_PATH)
+                    .collection(date)
+                    .document(userId + "");
+
+            registration = documentReference
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                            if (documentSnapshot != null) {
+                                setSellerMovementValues(documentSnapshot);
+                            }
+                        }
+                    });
+        }
+    }
+
+    @Override
     public void setSellerActivityDetailListener(int userId, String date) {
 
+        if (basePath.equals(""))
+            return;
+
         CollectionReference queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date)
                 .document(userId + "")
@@ -338,11 +398,44 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
                 LatLng sellerCurrentLocation = null;
 
-                if (isRealTimeLocationOn)
-                    sellerCurrentLocation = new LatLng(latitude, longitude);
+                sellerCurrentLocation = new LatLng(latitude, longitude);
 
                 sellerMapView.updateSellerInfo(timeIn, retailerName, totalOutletCount, covered, sellerCurrentLocation);
             }
+        }
+    }
+
+    private void setSellerMovementValues(DocumentSnapshot document) {
+
+        if (document.getData() != null) {
+
+            SellerBo sellerBo = document.toObject((SellerBo.class));
+
+            if (sellerBo != null) {
+
+                double latitude = sellerBo.getLatitude();
+                double longitude = sellerBo.getLongitude();
+
+                if (latitude > 0 && longitude > 0) {
+                    LatLng sellerCurrentLocation = null;
+
+                    sellerCurrentLocation = new LatLng(latitude, longitude);
+
+                    sellerMapView.updateSellerLocation(sellerCurrentLocation);
+                }
+            }
+        }
+    }
+
+    public void addRoutePoint(LatLng sellerCurrentLocation){
+        ArrayList<LatLng> routeLatLngList = new ArrayList<>();
+        if (valuesList.size() > 0) {
+            routeLatLngList.add(valuesList.get(valuesList.size() - 1));
+            routeLatLngList.add(sellerCurrentLocation);
+
+            valuesList.add(sellerCurrentLocation);
+
+            sellerMapView.drawRoute(routeLatLngList);
         }
     }
 
@@ -350,8 +443,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
         try {
             RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
-
-            System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
             if (documentSnapshotBo != null) {
 
@@ -476,9 +567,10 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
                     sellerMapView.setOutletListAdapter(new ArrayList<>(retailerMasterHashmap.values()), lastVisited);
 
-                    if (previousRetailerId != 0 && previousRetailerId != documentSnapshotBo.getRetailerId()) {
+                    /*if (previousRetailerId != 0 &&
+                            previousRetailerId != documentSnapshotBo.getRetailerId()) {
                         fetchRouteUrl(previousRetailerLatLng, destLatLng);
-                    }
+                    }*/
 
                     previousRetailerId = documentSnapshotBo.getRetailerId();
                     previousRetailerLatLng = destLatLng;
@@ -494,7 +586,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private void fetchRouteUrl(LatLng startlatLng, LatLng endLatLng) {
 
         String url = getUrl(startlatLng, endLatLng);
-        Commons.print("drawRoute " + url);
+        Commons.print("drawRouteUrl " + url);
         FetchUrl fetchUrl = new FetchUrl(this);
         fetchUrl.execute(url);
     }
@@ -516,7 +608,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return new ArrayList<>(retailerVisitDetailsByRId.values());
     }
 
-    boolean checkAreaBoundsTooSmall(LatLngBounds bounds, int minDistanceInMeter) {
+    boolean checkAreaBoundsTooSmall(LatLngBounds bounds) {
+        int minDistanceInMeter = 300;
         float[] result = new float[1];
         Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
         return result[0] < minDistanceInMeter;
@@ -566,5 +659,194 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
         }
     }
+
+    @Override
+    public void downloadSellerRoute(String userId,String date){
+        new DownloadSellerRoute(userId, date).execute();
+    }
+
+    /**
+     * Downloading Seller Realtime location from server to draw route
+     * Process Starts here
+     */
+
+    class DownloadSellerRoute extends AsyncTask<String, Void, Boolean> {
+
+        private String userId,date;
+
+        DownloadSellerRoute(String userId,String date){
+            this.userId = userId;
+            this.date = date;
+        }
+
+        protected void onPreExecute() {
+
+            if (alertDialog == null) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                customProgressDialog(builder,
+                        context.getResources().getString(R.string.progress_dialog_title_downloading));
+                alertDialog = builder.create();
+                alertDialog.show();
+
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            return NetworkUtils.isNetworkConnected(context) && prepareDownloadData(userId,date);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            alertDialog.dismiss();
+            if (result) {
+                drawRoute(valuesList);
+            }
+        }
+
+    }
+
+    private boolean prepareDownloadData(String userId,String date) {
+
+        boolean isSuccess = false;
+        try {
+
+
+            String downloadurl = DataMembers.SERVER_URL+"/MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
+//            String downloadurl = "http://192.168.2.92/api/MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
+
+            Vector<String> responseVector = connectMe(downloadurl);
+
+            try {
+                if (responseVector.size() > 0) {
+
+                    for (String s : responseVector) {
+
+                        JSONObject jsonObject = new JSONObject(s);
+                        Iterator itr = jsonObject.keys();
+                        while (itr.hasNext()) {
+
+                            String key = (String) itr.next();
+                            if (key.equals("Master")) {
+                                parseJSONAndInsert(jsonObject);
+                                Commons.print("Seller Route Downloaded");
+                                isSuccess = true;
+
+                            } else if (key.equals("Errorcode")) {
+                                String tokenResponse = jsonObject.getString("Errorcode");
+                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+
+                                    isSuccess = false;
+
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (JSONException jsonException) {
+                Commons.print(jsonException.getMessage());
+            }
+
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+        return isSuccess;
+
+    }
+
+    private Vector<String> connectMe(String url) {
+        URL uri;
+        HttpURLConnection con = null;
+        try {
+
+            uri = new URL(url.trim());
+            con = (HttpURLConnection) uri.openConnection();
+
+            return this.processEntity(con.getInputStream());
+
+        } catch (Exception var5) {
+            Commons.printException(this.getClass().getName() + ",Exception occured while connecting to server");
+        }finally {
+            if (con != null) {
+                con.disconnect();
+            }
+        }
+
+        return new Vector<>();
+
+    }
+
+    private Vector<String> processEntity(InputStream in) throws IllegalStateException, IOException {
+        BufferedReader rd = new BufferedReader(new InputStreamReader(in));
+        String line ;
+        Vector<String> result = new Vector<>();
+
+        while ((line = rd.readLine()) != null) {
+            result.addElement(line);
+        }
+
+        return result;
+
+    }
+
+    public void parseJSONAndInsert(JSONObject jsonObject) {
+
+        try {
+
+            JSONArray first = jsonObject.getJSONArray(JSON_DATA_KEY);
+
+            for (int j = 0; j < first.length(); j++) {
+                JSONArray value = (JSONArray) first.get(j);
+
+                String firstValue = value.toString();
+
+                firstValue = firstValue.substring(1, firstValue.length() - 1);
+
+                firstValue = firstValue.replace("\\/", "/");
+
+                String[] strArray = firstValue.split(",");
+
+                LatLng latLng = new LatLng(SDUtil.convertToDouble(strArray[1]),SDUtil.convertToDouble(strArray[2]));
+
+                valuesList.add(latLng);
+
+            }
+
+            Commons.print("Route Values "+valuesList);
+
+        } catch (JSONException e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    public void customProgressDialog(AlertDialog.Builder builder, String message) {
+
+        try {
+            View view = View.inflate(context, R.layout.custom_alert_dialog, null);
+
+            TextView title = view.findViewById(R.id.title);
+            title.setText(DataMembers.SD);
+            TextView messagetv = view.findViewById(R.id.text);
+            messagetv.setText(message);
+
+            builder.setView(view);
+            builder.setCancelable(false);
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    // Download Process Ends
+
 
 }

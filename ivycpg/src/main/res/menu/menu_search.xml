@@ -36,4 +36,12 @@
         android:visible="false"
         ivydist:showAsAction="always"/>
 
+    <item
+        android:id="@+id/menu_chat"
+        android:icon="@drawable/icn_24_chat"
+        android:orderInCategory="104"
+        android:title="Chat"
+        android:visible="false"
+        ivydist:showAsAction="always"/>
+
 </menu>

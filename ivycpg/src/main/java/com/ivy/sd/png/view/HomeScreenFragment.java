@@ -77,6 +77,7 @@ import com.ivy.cpg.view.reports.ReportMenuFragment;
 import com.ivy.cpg.view.roadactivity.RoadActivityHelper;
 import com.ivy.cpg.view.roadactivity.RoadFragment;
 import com.ivy.cpg.view.subd.SubDFragment;
+import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
@@ -229,7 +230,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private String imageFileName;
     private ListView listView;
     private ChannelSelectionDialog dialogFragment;
-    private ImageButton chatBtn, divStatusBtn, feedBackBtn;
+    private ImageButton chatBtn, divStatusBtn, feedBackBtn,firebaseChat;
 
 
     @Nullable
@@ -401,6 +402,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
         chatBtn = (ImageButton) view.findViewById(R.id.img_chat);
+        firebaseChat = (ImageButton) view.findViewById(R.id.img_chat_firebase);
         divStatusBtn = (ImageButton) view.findViewById(R.id.img_div_status);
         feedBackBtn = (ImageButton) view.findViewById(R.id.img_user_feedback);
 
@@ -412,6 +414,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (bmodel.configurationMasterHelper.SHOW_FEEDBACK)
             feedBackBtn.setVisibility(View.VISIBLE);
+
+        if (bmodel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
+            firebaseChat.setVisibility(View.VISIBLE);
 
 
         chatBtn.setOnClickListener(new OnClickListener() {
@@ -428,6 +433,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(), R.string.not_registered, Toast.LENGTH_LONG).show();
                 }
 
+            }
+        });
+
+        firebaseChat.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), StartChatActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -2225,7 +2238,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             case MENU_SUPERVISOR_CALLANALYSIS:
 
-                SupervisorActivityHelper.getInstance().loginToFirebase();
+                SupervisorActivityHelper.getInstance().loginToFirebase(getContext());
                 SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(), SDUtil.now(SDUtil.DATE_GLOBAL));
 
                 bndl = new Bundle();
@@ -2366,6 +2379,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menu.findItem(R.id.menu_chat).setVisible(
                 bmodel.configurationMasterHelper.IS_CHAT_ENABLED);
 
+        menu.findItem(R.id.menu_firebase_chat).setVisible(
+                bmodel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED);
+
         if (intcounter == 0) {
             tv_counter.setVisibility(View.GONE);
         } else if (intcounter < 100) {
@@ -2417,6 +2433,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 Toast.makeText(getActivity(), R.string.not_registered, Toast.LENGTH_LONG).show();
             }
             return true;
+        }else if (i1 == R.id.menu_firebase_chat){
+
+            Intent intent = new Intent(getContext(), StartChatActivity.class);
+            startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }

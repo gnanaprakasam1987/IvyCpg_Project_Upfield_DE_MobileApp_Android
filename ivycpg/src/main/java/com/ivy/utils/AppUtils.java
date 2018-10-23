@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.res.TypedArray;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
@@ -39,6 +41,8 @@ import java.io.FileInputStream;
 import java.util.regex.Pattern;
 
 import java.io.File;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class AppUtils {
 
@@ -393,6 +397,17 @@ public class AppUtils {
                 }
             }
         }
+    }
+
+    /**
+     * @return Application's {@code SharedPreferences}.
+     */
+    public static SharedPreferences getSharedPreferences(Context context) {
+        // This sample app persists the registration ID in shared preferences,
+        // but
+        // how you store the regID in your app is up to you.
+        return context.getSharedPreferences(HomeScreenActivity.class.getSimpleName(),
+                MODE_PRIVATE);
     }
 
 }
