@@ -205,7 +205,7 @@ public class TaxGstHelper implements TaxInterface {
             db.openDataBase();
 
             StringBuilder sb = new StringBuilder();
-            sb.append("select TM.TaxType,TM.TaxRate,TM.Sequence,SLM.ListName,TM.ParentType,TM.applylevelid from  TaxMaster TM ");
+            sb.append("select TM.TaxType,TM.TaxRate,TM.Sequence,SLM.ListName,TM.ParentType,TM.applylevelid,TM.groupId from  TaxMaster TM ");
             sb.append("inner JOIN ProductTaxMaster PTM on  PTM.groupid = TM.groupid ");
             sb.append("INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType ");
             sb.append("inner JOIN (select listid from standardlistmaster where  listcode='BILL' and ListType='TAX_APPLY_TYPE') SD ON TM.applylevelid =SD.listid ");
@@ -223,6 +223,7 @@ public class TaxGstHelper implements TaxInterface {
                     taxBO.setTaxDesc(c.getString(3));
                     taxBO.setParentType(c.getString(4));
                     taxBO.setApplyLevelId(c.getInt(5));
+                    taxBO.setGroupId(c.getInt(6));
 
                     mBillTaxList.add(taxBO);
                 }
@@ -270,7 +271,7 @@ public class TaxGstHelper implements TaxInterface {
         db.deleteSQL("OrderTaxDetails", "OrderID=" + orderId,
                 false);
         if (mBillTaxList != null) {
-            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid";
+            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid,taxName,parentType,groupId";
             StringBuffer sb;
             for (TaxBO taxBO : mBillTaxList) {
                 sb = new StringBuffer();
@@ -278,7 +279,7 @@ public class TaxGstHelper implements TaxInterface {
                         .getRetailerID()) + ",");
                 sb.append(orderId + "," + taxBO.getTaxRate() + ",");
                 sb.append(mBusinessModel.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.roundIt(taxBO.getTotalTaxAmount(), 2) + "," + "0");
+                        + SDUtil.roundIt(taxBO.getTotalTaxAmount(), 2) + "," + "0,'"+taxBO.getTaxDesc2()+"',"+taxBO.getParentType()+","+taxBO.getGroupId());
                 db.insertSQL("OrderTaxDetails", columns, sb.toString());
 
             }

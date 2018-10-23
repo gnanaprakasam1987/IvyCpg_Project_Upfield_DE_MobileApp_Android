@@ -719,7 +719,7 @@ public class OrderDeliveryHelper {
                 db.executeQ(invoiceDetailQry);
 
                 for (ProductMasterBO productBo : getOrderedProductMasterBOS()) {
-                    db.updateSQL("Update InvoiceDetails set DiscountAmount = '" + productBo.getProductDiscAmount() + "' where ProductID = '" +
+                    db.updateSQL("Update InvoiceDetails set DiscountAmount = '" + productBo.getProductLevelDiscountValue() + "' where ProductID = '" +
                             productBo.getProductID() + "' and invoiceID = '" + invoiceId + "'");
                 }
 
