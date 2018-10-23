@@ -1621,7 +1621,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         DeliveryManagementRetailersFragment deliveryRetailersFragment = (DeliveryManagementRetailersFragment) fm
                 .findFragmentByTag(MENU_DELMGMT_RET);
 
-        com.ivy.ui.dashboard.view.SellerDashboardFragment mSellerDashFragment = (com.ivy.ui.dashboard.view.SellerDashboardFragment) fm
+        SellerDashboardFragment mSellerDashFragment = (SellerDashboardFragment) fm
                 .findFragmentByTag(MENU_DASH_KPI);
 
         SellerDashboardFragment mRouteDashFragment = (SellerDashboardFragment) fm
@@ -1974,7 +1974,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putString("retid", "0");
                 bndl.putString("type", "MONTH");
-                fragment = new com.ivy.ui.dashboard.view.SellerDashboardFragment();
+                fragment = new SellerDashboardFragment();
                // fragment = new SellerDashboardFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
