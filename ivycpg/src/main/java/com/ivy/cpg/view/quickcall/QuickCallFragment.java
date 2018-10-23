@@ -533,11 +533,12 @@ public class QuickCallFragment extends IvyBaseFragment {
         retailer = new Vector<>();
         for (int i = 0; i < bmodel.retailerMaster.size(); i++) {
             if (searchText != null) {
-                if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                if ((bmodel.getRetailerMaster().get(i)
+                        .getRetailerCode() != null) && ((bmodel.getRetailerMaster().get(i).getRetailerName()
                         .toLowerCase()).contains(searchText.toLowerCase()) ||
                         (bmodel.getRetailerMaster().get(i)
                                 .getRetailerCode().toLowerCase())
-                                .contains(searchText.toLowerCase()))
+                                .contains(searchText.toLowerCase())))
 
                     retailer.add(bmodel.getRetailerMaster().get(i));
 

@@ -96,6 +96,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -397,7 +398,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 mcontactTitleList.add(bmodel.newOutletHelper.getContactTitleList().size() + 1, new NewOutletBO(0, "OTHERS"));
                 Commons.print("Size Contact List title : " + bmodel.newOutletHelper.getContactTitleList().size());
                 contactTitleAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontactTitleList);
-                contactTitleAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                contactTitleAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
             }
         }
 
@@ -425,7 +426,7 @@ public class NewOutletFragment extends IvyBaseFragment
         ArrayAdapter<SpinnerBO> subchannelAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item);
         subchannelAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
         subchannelAdapter.add(new SpinnerBO(0, getActivity().getResources()
                 .getString(R.string.select_str) + " " + sub_chanel_mname));
 
@@ -2217,6 +2218,12 @@ public class NewOutletFragment extends IvyBaseFragment
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
+                } else {
+                    ArrayList<RetailerContactBo> contactList = bmodel.newOutletHelper.getRetailerContactList();
+                    if(contactList.size() == 0){
+                        validate = false;
+                        Toast.makeText(getContext(), getResources().getString(R.string.contact_list_mandatory), Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }
@@ -2731,7 +2738,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                     mn_textview.setTextColor(Color.RED);
                     if (Build.VERSION.SDK_INT >= 21) {
-                        linearlayout.addView(mn_textview, paramsaflollipop);
+                        linearlayout.addView(mn_textview, params6aflollipop);
                     } else {
                         linearlayout.addView(mn_textview, params6);
                     }
@@ -2805,7 +2812,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                     mn_textview.setTextColor(Color.RED);
                     if (Build.VERSION.SDK_INT >= 21) {
-                        linearlayout.addView(mn_textview, paramsaflollipop);
+                        linearlayout.addView(mn_textview, params6aflollipop);
                     } else {
                         linearlayout.addView(mn_textview, params6);
                     }
@@ -3820,7 +3827,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 layout.addView(firstlayout, params10);
             }
             ArrayAdapter<ChannelBO> channelAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
-            channelAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            channelAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
             if (bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER && bmodel.newOutletHelper.getmSelectedChannelid() > 0)
                 channelAdapter.add(new ChannelBO(bmodel.newOutletHelper.getmSelectedChannelid(), bmodel.newOutletHelper.getmSelectedChannelname()));
 
@@ -3888,7 +3895,7 @@ public class NewOutletFragment extends IvyBaseFragment
             mcontractStatusList.addAll(bmodel.newOutletHelper.getContractStatusList());
             ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontractStatusList);
             contractStatusAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                    .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
             contractSpinner.setAdapter(contractStatusAdapter);
             contractSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -3944,7 +3951,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 routeAdapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 routeAdapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 routeAdapter.add(new BeatMasterBO(0, getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName, 0));
                 routeMname = MName;
@@ -4008,7 +4015,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 locationAdapter1 = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, mLocationMasterList1);
-                locationAdapter1.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                locationAdapter1.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 location1.setAdapter(locationAdapter1);
                 location1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
@@ -4056,7 +4063,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 locationAdapter2 = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, mLocationMasterList2);
-                locationAdapter2.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                locationAdapter2.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
 
                 location2.setAdapter(locationAdapter2);
                 location2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -4099,7 +4106,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 locationAdapter3 = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, mLocationMasterList3);
-                locationAdapter3.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                locationAdapter3.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 location3.setAdapter(locationAdapter3);
                 location3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
@@ -4145,7 +4152,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 mretailertypeMasterList.addAll(bmodel.newOutletHelper.getRetailerTypeList());
                 Commons.print("Size Payment type : " + bmodel.newOutletHelper.getRetailerTypeList().size());
                 ArrayAdapter<NewOutletBO> retailertypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mretailertypeMasterList);
-                retailertypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                retailertypeAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 paymentType.setAdapter(retailertypeAdapter);
                 paymentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -4190,7 +4197,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 Commons.print("Size Distributor  : " + bmodel.distributorMasterHelper.getDistributors().size());
                 distributortypeAdapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, mdistributortypeMasterList);
-                distributortypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                distributortypeAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 distributorSpinner.setAdapter(distributortypeAdapter);
                 distributorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -4261,7 +4268,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 standardListBO.setListName("Select " + MName);
                 mTaxTypeList.add(0, standardListBO);
                 ArrayAdapter<StandardListBO> taxTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mTaxTypeList);
-                taxTypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                taxTypeAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 taxTypeSpinner.setAdapter(taxTypeAdapter);
                 taxTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -4313,7 +4320,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     priorityProductSpinner.setFloatingLabelText(MName);
                     ArrayAdapter<StandardListBO> priorityProductAdapter = new ArrayAdapter<>(getActivity(),
                             android.R.layout.simple_spinner_item, mPriorityProductList);
-                    priorityProductAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                    priorityProductAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                     priorityProductSpinner.setAdapter(priorityProductAdapter);
                     priorityProductSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -4365,7 +4372,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 standardListBO.setListName("Select " + MName);
                 mClassTypeList.add(0, standardListBO);
                 ArrayAdapter<StandardListBO> classTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mClassTypeList);
-                classTypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                classTypeAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 classSpinner.setAdapter(classTypeAdapter);
                 classSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -4459,7 +4466,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 rField5Adapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 rField5Adapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 rField5Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName));
 
@@ -4506,7 +4513,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 rField6Adapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 rField6Adapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 rField6Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName));
 
@@ -4553,7 +4560,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 rField7Adapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 rField7Adapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 rField7Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName));
 
@@ -4600,7 +4607,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 rField4Adapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 rField4Adapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 rField4Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName));
 
@@ -4788,7 +4795,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
                                 android.R.layout.simple_spinner_item, attrbList);
                         spinner.setAdapter(arrayAdapter);
-                        arrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        arrayAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                         spinner.setLayoutParams(innerParams);
                         innerHL.addView(spinner);
                         spinnerAdapterMap.put(attribName + index, arrayAdapter);
@@ -4824,7 +4831,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
                                 android.R.layout.simple_spinner_item, attrbList);
                         spinner.setAdapter(arrayAdapter);
-                        arrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        arrayAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                         spinner.setLayoutParams(innerParams);
                         innerHL.addView(spinner);
                         spinnerAdapterMap.put(attribName + index, arrayAdapter);

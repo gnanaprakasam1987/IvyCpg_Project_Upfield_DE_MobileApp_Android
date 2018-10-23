@@ -1785,13 +1785,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         signatureName = bModel.getOrderHeaderBO().getSignatureName();
                     }
 
-                    if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
-                            && bModel.retailerMasterBO.getRpTypeCode() != null && "CASH".equals(bModel.retailerMasterBO.getRpTypeCode())
-                            && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
-                        Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
-                        isClick = false;
-                        return;
-                    }
+                    //Removed as per the JIRA changes
+//                    if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+//                            && bModel.retailerMasterBO.getRpTypeCode() != null && "CASH".equals(bModel.retailerMasterBO.getRpTypeCode())
+//                            && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
+//                        Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
+//                        isClick = false;
+//                        return;
+//                    }
 
                     // Don't write any code  after this dialog.. because it is just a confirmation dialog
                     orderConfirmationDialog = new OrderConfirmationDialog(this, false, mOrderedProductList, totalOrderValue);
@@ -1928,13 +1929,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
-
-                            if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
-                                    && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
-                                Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
-                                isClick = false;
-                                return;
-                            }
+                        //Removed as per the JIRA changes
+//                            if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+//                                    && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
+//                                Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
+//                                isClick = false;
+//                                return;
+//                            }
 
                             // Don't write any code  after this dialog.. because it is just a confirmation dialog
                             orderConfirmationDialog = new OrderConfirmationDialog(this, true, mOrderedProductList, totalOrderValue);

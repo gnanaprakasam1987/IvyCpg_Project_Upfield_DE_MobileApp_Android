@@ -339,7 +339,7 @@ public class ReasonHelper {
         }
         reason = new ReasonMaster();
         reason.setReasonID("0");
-        reason.setReasonDesc(context.getResources().getString(R.string.other_reason));
+        reason.setReasonDesc(context.getResources().getString(R.string.other_reason_with_credit));
         getNonProductiveReasonMaster().add(reason);
         db.closeDB();
     }
