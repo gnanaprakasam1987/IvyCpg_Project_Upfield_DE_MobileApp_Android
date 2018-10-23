@@ -965,6 +965,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     private void notifyAttendance(){
         try {
             Uri notification = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.notify);
+
             Ringtone r = RingtoneManager.getRingtone(context, notification);
             r.play();
         } catch (Exception e) {

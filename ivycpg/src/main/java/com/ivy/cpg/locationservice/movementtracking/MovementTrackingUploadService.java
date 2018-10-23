@@ -9,6 +9,7 @@ import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.NetworkUtils;
 
 public class MovementTrackingUploadService extends IntentService{
 
@@ -29,7 +30,7 @@ public class MovementTrackingUploadService extends IntentService{
 
                     if(userMasterBO != null) {
                         LocationServiceHelper.getInstance().saveUserLocation(context, location, userMasterBO );
-                        if (LocationServiceHelper.getInstance().isOnline(context) &&
+                        if (NetworkUtils.isNetworkConnected(context) &&
                                 LocationServiceHelper.getInstance().isUserLocationAvailable(context,"LocationTracking")) {
                             LocationServiceHelper.getInstance().uploadLocationTracking(context,userMasterBO);
                         }

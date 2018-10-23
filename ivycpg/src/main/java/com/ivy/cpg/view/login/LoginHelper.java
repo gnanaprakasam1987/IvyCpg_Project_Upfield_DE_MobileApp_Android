@@ -290,7 +290,7 @@ public class LoginHelper {
             }
 
         } else {
-            Commons.printInformation("No valid Google Play Services APK found,Or Already Registered.");
+            Commons.printInformation("No valid Google Play Services APK found.");
         }
     }
 

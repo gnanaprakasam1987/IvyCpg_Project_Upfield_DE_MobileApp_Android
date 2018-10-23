@@ -91,8 +91,10 @@ android {
     }
     buildTypes {
         debug {
-            resValue "string", "google_maps_api_key", "AIzaSyBrL2q-4N0xGxS7Y_f3FcF9Ec1XdL6VDk4"
+            resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
             buildConfigField("boolean", "ACTIVATION", "false");
+            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
+            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
 
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
@@ -102,7 +104,11 @@ android {
         release {
             def googleapikey = System.getenv('googleapikey')
             resValue "string", "google_maps_api_key", "${googleapikey}"
-            buildConfigField("boolean", "ACTIVATION", "true");
+            buildConfigField("boolean", "ACTIVATION", "true")
+
+            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
+            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
+
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -110,7 +116,11 @@ android {
         }
         devrelease {
             resValue "string", "google_maps_api_key", keystoreProperties['mapKey']
-            buildConfigField("boolean", "ACTIVATION", "true");
+            buildConfigField("boolean", "ACTIVATION", "true")
+
+            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
+            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
+
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

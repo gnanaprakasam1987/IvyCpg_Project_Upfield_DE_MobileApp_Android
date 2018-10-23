@@ -37,6 +37,7 @@ import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,6 +53,9 @@ import static com.ivy.cpg.locationservice.LocationConstants.GPS_NOTIFICATION_ID;
 import static com.ivy.cpg.locationservice.LocationConstants.MOCK_NOTIFICATION_ID;
 import static com.ivy.sd.png.util.DataMembers.tbl_movement_tracking_history;
 import static com.ivy.sd.png.util.DataMembers.tbl_movement_tracking_history_cols;
+import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.AppUtils.getApplicationVersionName;
+import static com.ivy.utils.AppUtils.getApplicationVersionNumber;
 
 public class LocationServiceHelper {
 
@@ -423,7 +427,6 @@ public class LocationServiceHelper {
         try {
 
             SynchronizationHelper synchronizationHelper = SynchronizationHelper.getInstance(ctx);
-            ActivationHelper activationHelper = ActivationHelper.getInstance(ctx);
 
             db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
@@ -455,7 +458,7 @@ public class LocationServiceHelper {
                 jsonFormatter.addParameter("DistributorId", userMasterBO.getDistributorid());
                 jsonFormatter.addParameter("BranchId", userMasterBO.getBranchId());
                 jsonFormatter.addParameter("LoginId", userMasterBO.getLoginName());
-                jsonFormatter.addParameter("DeviceId",activationHelper.getIMEINumber());
+                jsonFormatter.addParameter("DeviceId", DeviceUtils.getIMEINumber(ctx));
                 jsonFormatter.addParameter("VersionCode",getApplicationVersionNumber(ctx));
                 jsonFormatter.addParameter("OrganisationId", userMasterBO.getOrganizationId());
                 jsonFormatter.addParameter("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
@@ -578,47 +581,6 @@ public class LocationServiceHelper {
         return ohRowsArray;
     }
 
-
-    public boolean isOnline(Context context) {
-
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
-
-    }
-
-    private String getApplicationVersionName(Context context) {
-        String versionName = "";
-        try {
-            PackageInfo pinfo = context.getPackageManager().getPackageInfo(
-                    context.getPackageName(), 0);
-            versionName = pinfo.versionName;
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return versionName;
-    }
-
-    // *****************************************************
-
-    private String getApplicationVersionNumber(Context context) {
-        int versionNumber = 0;
-        try {
-            PackageInfo pinfo = context.getPackageManager().getPackageInfo(
-                    context.getPackageName(), 0);
-            versionNumber = pinfo.versionCode;
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return versionNumber + "";
-    }
-
-    public String QT(String data) {
-        return "'" + data + "'";
-    }
 
     /**
      * Upload Transaction Sequence Table after Data Upload through seperate

@@ -146,17 +146,7 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
                     PendingIntent.FLAG_ONE_SHOT);
 
             String channelId = "channelId";
-            Uri soundUri ;
-
-            try {
-                soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notify);
-            }catch (Exception e){
-                Commons.printException(e);
-                soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            }
-
-            if (soundUri == null)
-                soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notify);
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, channelId)
