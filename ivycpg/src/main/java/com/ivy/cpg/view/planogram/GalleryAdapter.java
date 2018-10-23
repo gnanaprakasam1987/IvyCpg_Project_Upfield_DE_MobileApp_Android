@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.Commons;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -127,12 +128,15 @@ public class GalleryAdapter extends PagerAdapter {
             container.removeView((View) object);
 
             // Try to clear resources used for displaying this view
-            Glide.clear(((View) object).findViewById(R.id.image_item));
+
+            View v = ((View) object).findViewById(R.id.image_item);
+            Glide.clear(v);
+
             // Remove any resources used by this view
             unbindDrawables((View) object);
             // Invalidate the object
         } catch (Exception e) {
-            Log.w(TAG, "destroyItem: failed to destroy item and clear it's used resources", e);
+            Commons.printException(e);
         }
     }
 
