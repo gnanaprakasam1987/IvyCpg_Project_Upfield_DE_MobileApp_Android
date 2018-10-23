@@ -42,7 +42,7 @@ def revNumber = fetchRevisionNumber()
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
