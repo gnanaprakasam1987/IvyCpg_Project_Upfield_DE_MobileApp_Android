@@ -242,6 +242,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             case android.R.id.home:
                 if (isFromOrder) {
                     bmodel.productHelper.clearOrderTable();
+                    bmodel.setOrderHeaderBO(null);
 
                     if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
                         bmodel.resetSRPvalues();

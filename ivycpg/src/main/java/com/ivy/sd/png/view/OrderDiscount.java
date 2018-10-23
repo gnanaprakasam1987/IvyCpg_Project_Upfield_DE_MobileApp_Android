@@ -159,7 +159,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                 temp = (ret.getOrderedPcsQty() * ret.getSrp())
                         + (ret.getOrderedCaseQty() * ret.getCsrp())
                         + (ret.getOrderedOuterQty() * ret.getOsrp());
-                ret.setDiscount_order_value(temp);
+                ret.setNetValue(temp);
                 totalOrderValue = totalOrderValue + temp;
                 mylist.add(ret);
             }
@@ -525,7 +525,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                 double total = bmodel.batchAllocationHelper
                         .updateDiscontBatchwise(productBO, 0);
                 total = total - amount;
-                productBO.setDiscount_order_value(total);
+                productBO.setNetValue(total);
                 updateDiscountedOrderValue();
                 return total;
             }
@@ -539,7 +539,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                 + (productBO.getOrderedOuterQty() * productBO.getOsrp());
 
         double total = line_total_price - amount;
-        productBO.setDiscount_order_value(total);
+        productBO.setNetValue(total);
         updateDiscountedOrderValue();
         return total;
     }
@@ -552,7 +552,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
             if (productBO.getBatchwiseProductCount() > 0) {
                 double total = bmodel.batchAllocationHelper
                         .updateDiscontBatchwise(productBO, sum);
-                productBO.setDiscount_order_value(total);
+                productBO.setNetValue(total);
                 updateDiscountedOrderValue();
                 return total;
             }
@@ -566,7 +566,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
 
         double total = line_total_price - (line_total_price * sum / 100);
 
-        productBO.setDiscount_order_value(total);
+        productBO.setNetValue(total);
 
         updateDiscountedOrderValue();
 
@@ -582,7 +582,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
             ProductMasterBO ret = items.elementAt(i);
             if (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0
                     || ret.getOrderedOuterQty() > 0) {
-                value = value + ret.getDiscount_order_value();
+                value = value + ret.getNetValue();
             }
         }
         totalval.setText(bmodel.formatValue(value) + "");
@@ -679,7 +679,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                 + (productBO.getOrderedOuterQty() * productBO.getOsrp());
 
         double total = line_total_price - amount;
-        productBO.setDiscount_order_value(total);
+        productBO.setNetValue(total);
         updateDiscountedOrderValue();
         return total;
     }

@@ -20,12 +20,15 @@ public class OrderHeader {
     private String SignaturePath;
     private boolean isSignCaptured;
     private float totalWeight;
-    private double discountValue;
     private String orderDate;
     private int invoiceStatus;
     private int addressID = 0;
     private String rField3 = "";
     private String orderStatus="";
+
+    private double billLevelDiscountValue;
+    private double billLevelTaxValue;
+
 
     public int getInvoiceStatus() {
         return invoiceStatus;
@@ -43,13 +46,7 @@ public class OrderHeader {
         this.orderDate = orderDate;
     }
 
-    public double getDiscountValue() {
-        return discountValue;
-    }
 
-    public void setDiscountValue(double discountValue) {
-        this.discountValue = discountValue;
-    }
 
     private int orderedFocusBrands, orderedMustSellCount;
 
@@ -285,6 +282,22 @@ public class OrderHeader {
 
     public void setrField3(String rField3) {
         this.rField3 = rField3;
+    }
+
+    public double getBillLevelTaxValue() {
+        return billLevelTaxValue;
+    }
+
+    public void setBillLevelTaxValue(double billLevelTaxValue) {
+        this.billLevelTaxValue = billLevelTaxValue;
+    }
+
+    public double getBillLevelDiscountValue() {
+        return billLevelDiscountValue;
+    }
+
+    public void setBillLevelDiscountValue(double discountValue) {
+        this.billLevelDiscountValue = discountValue;
     }
 
     public String getOrderStatus() {

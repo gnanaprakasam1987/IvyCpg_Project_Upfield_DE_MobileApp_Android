@@ -963,11 +963,11 @@ public class PrintHelper {
                                         sb.append("T 5 0 280 " + x + " ");
                                         sb.append(SDUtil.format((batchProductBO.getSrp() + batchProductBO.getPriceoffvalue()), 2, 0) + "\r\n");
 //                                        sb.append("T 5 0 330 " + x + " ");
-                                        totalExcludeTaxvalue = totalExcludeTaxvalue + (batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getDiscount_order_value());
-//                                        sb.append(SDUtil.format(batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getDiscount_order_value(), 2, 0) + "\r\n");
+                                        totalExcludeTaxvalue = totalExcludeTaxvalue + (batchProductBO.getTaxableAmount() > 0 ? batchProductBO.getTaxableAmount() : batchProductBO.getNetValue());
+//                                        sb.append(SDUtil.format(batchProductBO.getTaxableAmount() > 0 ? batchProductBO.getTaxableAmount() : batchProductBO.getNetValue(), 2, 0) + "\r\n");
                                         sb.append("T 5 0 420 " + x + " ");
-                                        total = total + batchProductBO.getDiscount_order_value();
-                                        sb.append(SDUtil.format(batchProductBO.getDiscount_order_value(), 2, 0) + "\r\n");
+                                        total = total + batchProductBO.getNetValue();
+                                        sb.append(SDUtil.format(batchProductBO.getNetValue(), 2, 0) + "\r\n");
                                     }
                                 }
                             }
@@ -1000,10 +1000,10 @@ public class PrintHelper {
                             sb.append(totalProductQty + "\r\n");
                             sb.append("T 5 0 280 " + x + " ");
                             sb.append(productBO.getSrp() + "\r\n");
-                            totalExcludeTaxvalue = totalExcludeTaxvalue + (productBO.getTaxValue() > 0 ? productBO.getTaxValue() : productBO.getDiscount_order_value());
+                            totalExcludeTaxvalue = totalExcludeTaxvalue + (productBO.getTaxableAmount() > 0 ? productBO.getTaxableAmount() : productBO.getNetValue());
                             sb.append("T 5 0 420 " + x + " ");
-                            total = total + productBO.getDiscount_order_value();
-                            sb.append(SDUtil.format(productBO.getDiscount_order_value(), 2, 0) + "\r\n");
+                            total = total + productBO.getNetValue();
+                            sb.append(SDUtil.format(productBO.getNetValue(), 2, 0) + "\r\n");
                         }
                     }
                     x = x + 70;
@@ -1054,8 +1054,8 @@ public class PrintHelper {
                                                                 int totalBatchQty = batchProductBO.getOrderedPcsQty() + batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize()
                                                                         + batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize();
 
-                                                                if (batchProductBO.getSchemeAppliedValue() > 0) {
-                                                                    totalValue = batchProductBO.getSchemeAppliedValue();
+                                                                if (batchProductBO.getLineValueAfterSchemeApplied() > 0) {
+                                                                    totalValue = batchProductBO.getLineValueAfterSchemeApplied();
                                                                 } else {
                                                                     totalValue = batchProductBO.getOrderedPcsQty()
                                                                             * batchProductBO.getSrp()
@@ -1076,8 +1076,8 @@ public class PrintHelper {
                                                         double totalValue;
                                                         double productDiscount = 0;
 
-                                                        if (productMasterBO.getSchemeAppliedValue() > 0) {
-                                                            totalValue = productMasterBO.getSchemeAppliedValue();
+                                                        if (productMasterBO.getLineValueAfterSchemeApplied() > 0) {
+                                                            totalValue = productMasterBO.getLineValueAfterSchemeApplied();
                                                         } else {
                                                             totalValue = productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
                                                                     + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()
@@ -1145,8 +1145,8 @@ public class PrintHelper {
                                         for (String productid : taxProductList) {
                                             ProductMasterBO prodcutBO = bmodel.productHelper.getProductMasterBOById(productid);
                                             if (prodcutBO != null) {
-                                                totalExcludeValue = totalExcludeValue + prodcutBO.getTaxValue();
-                                                totalTax = totalTax + (prodcutBO.getTaxValue() * taxpercentege) / 100;
+                                                totalExcludeValue = totalExcludeValue + prodcutBO.getTaxableAmount();
+                                                totalTax = totalTax + (prodcutBO.getTaxableAmount() * taxpercentege) / 100;
                                             }
                                         }
                                         if (totalTax > 0) {
@@ -1436,7 +1436,7 @@ public class PrintHelper {
                         int totalQty = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize()
                                 + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
-                        total = total + productBO.getDiscount_order_value();
+                        total = total + productBO.getNetValue();
 
                         String productname;
                         // For Printer Space issue , restriced to 10 character.
@@ -1460,7 +1460,7 @@ public class PrintHelper {
 
                         productPrice = productBO.getSrp();
 
-                        amount = productBO.getDiscount_order_value();
+                        amount = productBO.getNetValue();
                         sb.append("T 7 0 10 " + x + " ");
                         sb.append(sno + "\r\n");
 
@@ -1635,7 +1635,7 @@ public class PrintHelper {
                                 + (productBO.getOrderedPcsQty() * productBO.getSrp());
                     }
                     mTotalOrderValue = mTotalOrderValue
-                            + productBO.getDiscount_order_value();
+                            + productBO.getNetValue();
                 }
             }
 

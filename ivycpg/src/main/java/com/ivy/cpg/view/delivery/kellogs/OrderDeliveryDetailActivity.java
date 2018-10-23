@@ -32,7 +32,6 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
@@ -829,6 +828,10 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     int currentOrderedQty = (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
                             + (SDUtil.convertToInt(qty))
                             + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
+                    if(currentOrderedQty==0) {
+                        //Clearing taxable amount, so that it will not shown in print
+                        productList.get(position).setTaxableAmount(0);
+                    }
 
                     if (totalQty <= productList.get(position).getDSIH() &&
                             currentOrderedQty <= storedPieceQty ) {
@@ -933,6 +936,10 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     int currentOrderedQty = (SDUtil.convertToInt(qty) * productList.get(position).getCaseSize())
                             + (productList.get(position).getOrderedPcsQty())
                             + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOutersize());
+                    if(currentOrderedQty==0) {
+                        //Clearing taxable amount, so that it will not shown in print
+                        productList.get(position).setTaxableAmount(0);
+                    }
 
                     if (totalQty <= productList.get(position).getDSIH() &&
                             currentOrderedQty <= storedcaseQty) {
@@ -1036,6 +1043,10 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     int currentOrderedQty = (SDUtil.convertToInt(qty) * productList.get(position).getOutersize())
                             + (productList.get(position).getOrderedCaseQty() * productList.get(position).getCaseSize())
                             + (productList.get(position).getOrderedPcsQty());
+                    if(currentOrderedQty==0) {
+                        //Clearing taxable amount, so that it will not shown in print
+                        productList.get(position).setTaxableAmount(0);
+                    }
 
                     if (totalQty <= productList.get(position).getDSIH() &&
                             currentOrderedQty <= storedouterQty) {

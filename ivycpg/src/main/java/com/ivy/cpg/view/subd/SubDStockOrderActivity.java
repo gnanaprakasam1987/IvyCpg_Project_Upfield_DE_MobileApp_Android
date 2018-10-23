@@ -2333,8 +2333,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
 
                         // Set the calculated values in productBO **/
-                        productBO.setDiscount_order_value(lineValue);
-                        productBO.setSchemeAppliedValue(lineValue);
+                        productBO.setNetValue(lineValue);
+                        productBO.setLineValueAfterSchemeApplied(lineValue);
                         productBO.setOrderPricePiece(productBO.getSrp());
 
                         productBO.setCompanyTypeDiscount(0);

@@ -389,19 +389,19 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 /*temp = (ret.getOrderedPcsQty() * ret.getSrp())
                         + (ret.getOrderedCaseQty() * ret.getCsrp())
 						+ (ret.getOrderedOuterQty() * ret.getOsrp());
-				ret.setDiscount_order_value(temp);*/
+				ret.setNetValue(temp);*/
                 if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && ret.getBatchwiseProductCount() > 0) {
                     ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(ret.getProductID());
                     if (batchList != null) {
                         for (ProductMasterBO batchProductBO : batchList) {
-                            batchProductBO.setDiscount_order_value(batchProductBO.getDiscount_order_value() + batchProductBO.getApplyValue());
+                            batchProductBO.setNetValue(batchProductBO.getNetValue() + batchProductBO.getApplyValue());
                         }
                     }
 
                 } else {
-                    ret.setDiscount_order_value(ret.getDiscount_order_value() + ret.getApplyValue());
+                    ret.setNetValue(ret.getNetValue() + ret.getApplyValue());
                 }
-                totalOrderValue = totalOrderValue + ret.getDiscount_order_value();
+                totalOrderValue = totalOrderValue + ret.getNetValue();
 
                 if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
                     if (ret.getGroupid() == 0 && !ret.isCbsihAvailable()) {
@@ -846,12 +846,12 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         productBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(totalQty * amount));
         double total = 0;
         if (bmodel.configurationMasterHelper.IS_DISCOUNT_PRICE_PER) {
-            if (productBO.getApplyValue() > productBO.getDiscount_order_value() * (bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER / 100))
+            if (productBO.getApplyValue() > productBO.getNetValue() * (bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER / 100))
                 total = -1;//to avoid entering greater than given percentage value
             else
-                total = productBO.getDiscount_order_value() - productBO.getApplyValue();
+                total = productBO.getNetValue() - productBO.getApplyValue();
         } else {
-            total = productBO.getDiscount_order_value() - productBO.getApplyValue();
+            total = productBO.getNetValue() - productBO.getApplyValue();
         }
 
         updateDiscountedOrderValue();
@@ -867,19 +867,19 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             if (productBO.getBatchwiseProductCount() > 0) {
                 double total = bmodel.batchAllocationHelper
                         .updateDiscontBatchwise(productBO, sum);
-//				productBO.setDiscount_order_value(total);
+//				productBO.setNetValue(total);
                 updateDiscountedOrderValue();
                 return total;
             }
         }
         /* apply batchwise discount ends */
 
-        double line_total_price = productBO.getDiscount_order_value();
+        double line_total_price = productBO.getNetValue();
         productBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(line_total_price * sum / 100));
 
-        double total = productBO.getDiscount_order_value() - productBO.getApplyValue();
+        double total = productBO.getNetValue() - productBO.getApplyValue();
 
-//		productBO.setDiscount_order_value(total);
+//		productBO.setNetValue(total);
 
         updateDiscountedOrderValue();
 
@@ -907,11 +907,11 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                     + productBO.getOrderedOuterQty()
                                     * productBO.getOutersize();
                             if (totalQty > 0)
-                                totalProductValue = totalProductValue + (productBO.getDiscount_order_value() - productBO.getApplyValue());
+                                totalProductValue = totalProductValue + (productBO.getNetValue() - productBO.getApplyValue());
                         }
                     }
                 } else {
-                    totalProductValue = ret.getDiscount_order_value() - ret.getApplyValue();
+                    totalProductValue = ret.getNetValue() - ret.getApplyValue();
                 }
 
                 value = value + totalProductValue;

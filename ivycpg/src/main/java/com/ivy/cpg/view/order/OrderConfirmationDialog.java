@@ -406,7 +406,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
     private boolean isExceptionalOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
         for (ProductMasterBO bo : mOrderedProductList) {
-            if ((bo.getD1() + bo.getD2() + bo.getD3()) > 0.0 || bo.getDiscount_order_value() <= 0) {
+            if ((bo.getD1() + bo.getD2() + bo.getD3()) > 0.0 || bo.getNetValue() <= 0) {
                 return true;
             }
         }

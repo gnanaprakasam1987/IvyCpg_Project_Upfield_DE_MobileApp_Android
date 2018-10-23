@@ -1,5 +1,6 @@
 package com.ivy.sd.png.model;
 
+import android.content.Context;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
@@ -13,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by mansoor on 18/1/18.
@@ -24,9 +24,10 @@ public interface TaxInterface {
     void downloadProductTaxDetails();
     void downloadBillWiseTaxDetails();
     void insertInvoiceTaxList(String invoiceid, DBUtil db);
-    void insertOrderTaxList(String orderId, DBUtil db);
+    void insertBillLevelTax(String orderId, DBUtil db);
     void loadTaxDetailsForPrint(String invoiceid);
     void loadTaxProductDetailsForPrint(String invoiceid);
+    HashMap<String,Double> prepareProductTaxForPrint(Context context, String orderId);
     void updateProductWiseExcludeTax();
     void saveProductLeveltax(String orderId, DBUtil db);
     void updateInvoiceIdInProductLevelTax(DBUtil db, String invid, String orderId);
