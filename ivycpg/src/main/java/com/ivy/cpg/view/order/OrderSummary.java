@@ -1686,10 +1686,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 Calendar maxCalendar = Calendar.getInstance();
                 if (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER != 0) {
+                    mCalendar.setTimeInMillis(System.currentTimeMillis() - 1000);
                     if (bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
                         mCalendar.add(Calendar.DAY_OF_MONTH, bModel.configurationMasterHelper.MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);
                     } else {
-                        mCalendar.setTimeInMillis(System.currentTimeMillis() - 1000);
+                        mCalendar.add(Calendar.DAY_OF_MONTH, 1);
                     }
                     if (bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER > 0) {
                         maxCalendar.add(Calendar.DAY_OF_YEAR, bModel.configurationMasterHelper.MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER);

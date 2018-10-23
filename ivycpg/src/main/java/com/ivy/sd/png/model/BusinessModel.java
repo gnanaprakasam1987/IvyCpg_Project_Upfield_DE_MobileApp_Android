@@ -7236,11 +7236,16 @@ public class BusinessModel extends Application {
 
 
                     // Download Date
-                    else if (mRules.get(i).contains("yyyy")) {
+                    if (mRules.get(i).contains("YYYY") || mRules.get(i).contains("yyyy")) {
+                        String str = mRules.get(i).replace("{", "").replace("}", "");
+                        str = str.replace("YYYY", "yyyy");
+                        mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), str));
+                    }
+                   /* else if (mRules.get(i).contains("yyyy")) {
                         mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(),
                                 mRules.get(i).replace("{", "").replace("}", "")));
                     }
-
+*/
                     // Get Sequence ID
                     else if (mRules.get(i).contains("{SEQ")) {
                         seqNo = 0L;

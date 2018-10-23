@@ -143,8 +143,8 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     payment_adapter = new ArrayAdapter<>(context,
                             R.layout.spinner_bluetext_layout);
                     payment_adapter.add(new ReasonMaster(0 + "",
-                            context.getResources().getString(R.string.plain_select)+" "
-                                    +configureBO.getMenuName()));
+                            context.getResources().getString(R.string.plain_select) + " "
+                                    + configureBO.getMenuName()));
                     int count = 0, selectedPos = -1;
                     for (ReasonMaster temp : businessModel.reasonHelper
                             .getPayTermType()) {
@@ -153,6 +153,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                         payment_adapter.add(temp);
                         count++;
                     }
+                    selectedPos = (selectedPos == -1 ? 0 : selectedPos);
                     payment_adapter
                             .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
                     spinner_payment.setAdapter(payment_adapter);
