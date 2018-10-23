@@ -22,6 +22,8 @@ public interface SellerDetailMapContractor {
 
         void updateSellerInfo(String timeIn,String retailerName,String target,String covered,LatLng sellerCurrentLocation);
 
+        void updateSellerLocation(LatLng sellerCurrentLocation);
+
         void drawRoute(ArrayList<LatLng> points);
     }
 
@@ -35,6 +37,8 @@ public interface SellerDetailMapContractor {
 
         void setSellerActivityListener(int userId,String date);
 
+        void setSellerMovementListener(int userId, String date);
+
         void setSellerActivityDetailListener(int userId,String date);
 
         void getMarkerForFocus();
@@ -46,6 +50,8 @@ public interface SellerDetailMapContractor {
         void animateSellerMarker(final LatLng destination, final Marker marker);
 
         void drawRoute(ArrayList<LatLng> points);
+
+        void downloadSellerRoute(String userId,String date);
 
         void removeFirestoreListener();
     }

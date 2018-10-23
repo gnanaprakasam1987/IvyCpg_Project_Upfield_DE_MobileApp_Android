@@ -197,6 +197,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:orientation="horizontal"
                     android:paddingBottom="@dimen/_5sdp"
+                    android:id="@+id/message_layout"
                     android:paddingTop="@dimen/_5sdp">
 
                     <ImageView

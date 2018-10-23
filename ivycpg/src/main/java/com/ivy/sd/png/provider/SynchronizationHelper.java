@@ -31,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -57,6 +58,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.NetworkUtils;
 import com.ivy.utils.network.TLSSocketFactory;
 
 import org.json.JSONArray;
@@ -4407,7 +4409,7 @@ SynchronizationHelper {
 
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
-        if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
+        if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && NetworkUtils.isNetworkConnected(context))
             LoginHelper.getInstance(context).onFCMRegistration(context);
 
         if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
@@ -4642,6 +4644,34 @@ SynchronizationHelper {
             Commons.printException("" + e);
             db.closeDB();
             return hasData;
+        }
+
+    }
+
+    public Vector<String> getUploadResponseForLocation(String data,
+                                            String appendurl) {
+
+        StringBuilder url = new StringBuilder();
+//        url.append(DataMembers.SERVER_URL);
+        url.append("http://192.168.2.92/api");
+        url.append(appendurl);
+
+        try {
+            MyHttpConnectionNew http = new MyHttpConnectionNew();
+            http.create(MyHttpConnectionNew.POST, url.toString(), null);
+            if (data != null) {
+                http.addParam("route",data);
+            }
+            http.connectMe();
+            Vector<String> result = http.getResult();
+
+            if (result == null) {
+                return new Vector<>();
+            }
+            return result;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return new Vector<>();
         }
 
     }

@@ -636,6 +636,10 @@ public class DataMembers {
     public static final String tbl_order_delivery_status_cols = "orderId,refId,status";
 
 
+    public static final String tbl_movement_tracking_history = "MovementTrackingHistory";
+    public static final String tbl_movement_tracking_history_cols = "userid,latitude,longitude,date_time";
+
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -1013,6 +1017,14 @@ public class DataMembers {
     static {
         uploadLocationTrackingColumn.put(tbl_location_tracking,
                 tbl_location_tracking_cols);
+    }
+
+
+    public static final HashMap<String, String> uploadMovementTrackingHistoryColumn = new HashMap<>();
+
+    static {
+        uploadMovementTrackingHistoryColumn.put(tbl_movement_tracking_history,
+                tbl_movement_tracking_history_cols);
     }
 
     public static final HashMap<String, String> uploadAttendanceColumn = new HashMap<>();
