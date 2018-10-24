@@ -297,6 +297,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     private void loadListData() {
+
+        if( surveyHelperNew.getSurvey() == null){
+            return;
+        }
+
         if (isFromDragDrop == -1) {
             if (!mFrom.equalsIgnoreCase("HomeScreenTwo"))
                 surveyHelperNew

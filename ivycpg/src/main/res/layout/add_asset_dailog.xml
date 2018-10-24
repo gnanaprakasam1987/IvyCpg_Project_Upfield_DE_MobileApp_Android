@@ -25,53 +25,53 @@
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dimen_10dp"
-            android:layout_weight="1"
-            android:text="@string/addasset"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/dimen_10dp" />
+            android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_weight="1"
+            android:text="@string/addasset" />
 
         <TextView
+            android:id="@+id/brand_spinner_txt"
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
-            android:id="@+id/brand_spinner_txt"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:text="@string/addassetbrand"
-            android:layout_marginLeft="@dimen/dimen_10dp" />
+            android:text="@string/addassetbrand" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2.05"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="2.05">
 
         <Spinner
             android:id="@+id/spinner_asset"
             android:layout_width="0dp"
             android:layout_height="@dimen/spinner_height"
-            android:layout_marginEnd="@dimen/dimen_10dp"
-            android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:background="@android:color/transparent"
-            android:overlapAnchor="false"
+            android:layout_marginEnd="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:layout_toRightOf="@+id/spin_reason1" />
+            android:layout_toRightOf="@+id/spin_reason1"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:overlapAnchor="false" />
 
         <Spinner
             android:id="@+id/spinner_brand"
             android:layout_width="0dp"
             android:layout_height="@dimen/spinner_height"
-            android:layout_marginStart="@dimen/dimen_10dp"
-            android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:background="@android:color/transparent"
-            android:overlapAnchor="false"
             android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_toRightOf="@+id/spin_reason1" />
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_toRightOf="@+id/spin_reason1"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:overlapAnchor="false" />
     </LinearLayout>
 
     <LinearLayout
@@ -85,18 +85,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_weight="1"
-            android:text="@string/addassetsno"
-            android:layout_marginRight="@dimen/dimen_10dp" />
+            android:text="@string/addassetsno" />
 
         <TextView
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_weight="1"
-            android:text="@string/addassetinstall"
-            android:layout_marginLeft="@dimen/dimen_10dp" />
+            android:text="@string/addassetinstall" />
     </LinearLayout>
 
     <LinearLayout
@@ -111,12 +111,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_weight="1"
+            android:cursorVisible="true"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
             android:hint="@string/zero"
             android:maxLength="50"
-            android:paddingBottom="10dp"
-            android:layout_marginRight="@dimen/dimen_10dp" />
+            android:paddingBottom="10dp" />
 
         <Button
             android:id="@+id/date_button"
@@ -124,11 +125,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/servicedate"
-            android:layout_marginLeft="@dimen/dimen_10dp" />
+            android:text="@string/servicedate" />
     </LinearLayout>
 
     <LinearLayout

@@ -1306,6 +1306,46 @@ public class NewOutletFragment extends IvyBaseFragment
 
     }
 
+    private void scrollToSpecificTextView(final TextView secificEditText) {
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // Determine where to set the scroll-to to by measuring the distance from the top of the scroll view
+                    // to the control to focus on by summing the "top" position of each view in the hierarchy.
+                    int yDistanceToControlsView = 0;
+                    View parentView = secificEditText;
+                    if (parentView != null) {
+                        while (true) {
+                            if (parentView.equals(scrollview2)) {
+                                break;
+                            }
+                            yDistanceToControlsView += parentView.getTop();
+                            parentView = (View) parentView.getParent();
+                        }
+
+                        // Compute the final position value for the top and bottom of the control in the scroll view.
+                        final int topInScrollView = yDistanceToControlsView + secificEditText.getTop();
+                        final int bottomInScrollView = yDistanceToControlsView + secificEditText.getBottom();
+
+                        // Post the scroll action to happen on the scrollView with the UI thread.
+                        scrollview2.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int height = secificEditText.getHeight();
+                                scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
+
+                            }
+                        });
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+
+        }
+
+    }
+
     private void scrollToSpecificSpinner(final MaterialSpinner specificSpinner) {
         try {
 
@@ -1699,8 +1739,9 @@ public class NewOutletFragment extends IvyBaseFragment
 
                     if (latlongtextview.getText().toString().startsWith("0.0")) {
                         validate = false;
+                        latlongtextview.setFocusableInTouchMode(true);
                         latlongtextview.requestFocus();
-                        scrollview2.smoothScrollTo(0, latlongtextview.getTop());
+                        scrollToSpecificTextView(latlongtextview);
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.choose_location),
                                 Toast.LENGTH_SHORT).show();
@@ -2218,7 +2259,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
-                } else {
+                } else if(bmodel.configurationMasterHelper.IS_CONTACT_TAB){
                     ArrayList<RetailerContactBo> contactList = bmodel.newOutletHelper.getRetailerContactList();
                     if(contactList.size() == 0){
                         validate = false;

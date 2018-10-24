@@ -173,30 +173,67 @@
                 android:text="@string/servicedate" />
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spin_reason1"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginEnd="@dimen/dimen_2dp"
-            android:layout_marginRight="@dimen/dimen_2dp"
+
+        <LinearLayout
+            android:id="@+id/container_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/ll_service_date"
             android:layout_toRightOf="@+id/ll_service_date"
-            android:background="@android:color/transparent"
-            android:overlapAnchor="false"
-            android:textAlignment="center" />
+            android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/spin_condition"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginEnd="@dimen/dimen_2dp"
-            android:layout_marginRight="@dimen/dimen_2dp"
-            android:layout_toEndOf="@+id/spin_reason1"
-            android:layout_toRightOf="@+id/spin_reason1"
-            android:background="@android:color/transparent"
-            android:overlapAnchor="false"
-            android:textAlignment="center" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:paddingLeft="@dimen/dimen_4dp"
+                android:paddingStart="@dimen/dimen_4dp"
+                android:text="@string/reason"
+                android:textSize="@dimen/text_sz_extra_small" />
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:paddingLeft="@dimen/dimen_4dp"
+                android:paddingStart="@dimen/dimen_4dp"
+                android:text="@string/condition"
+                android:textSize="@dimen/text_sz_extra_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/container_title"
+            android:layout_toEndOf="@+id/ll_service_date"
+            android:layout_toRightOf="@+id/ll_service_date"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spin_reason1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:overlapAnchor="false"
+                android:textAlignment="center" />
+
+            <Spinner
+                android:id="@+id/spin_condition"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:overlapAnchor="false"
+                android:textAlignment="center" />
+        </LinearLayout>
 
     </RelativeLayout>
 </LinearLayout>
