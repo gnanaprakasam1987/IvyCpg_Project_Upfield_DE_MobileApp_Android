@@ -1721,6 +1721,7 @@ public class ProductHelper {
 
     public void clearOrderTable() {
         ProductMasterBO product;
+        bmodel.setOrderHeaderBO(null);
         if (productMaster != null) {
             int siz = productMaster.size();
             for (int i = 0; i < siz; ++i) {
@@ -1750,7 +1751,7 @@ public class ProductHelper {
                 product.setFreeOuterQty(0);
                 product.setFreePieceQty(0);
                 product.setSchemeDiscAmount(0);
-                product.setProductDiscAmount(0);
+                product.setProductLevelDiscountValue(0);
                 product.setDistributorTypeDiscount(0);
                 product.setCompanyTypeDiscount(0);
                 int size = product.getLocations().size();
@@ -1779,7 +1780,7 @@ public class ProductHelper {
                 product.setRepCaseQty(0);
                 product.setRepOuterQty(0);
                 product.setSelectedSalesReturnPosition(0);
-                product.setTaxValue(0);
+                product.setTaxableAmount(0);
 
                 if (product.getSalesReturnReasonList() != null && product.getSalesReturnReasonList().size() != 0) {
                     for (SalesReturnReasonBO bo : product
@@ -4259,10 +4260,10 @@ public class ProductHelper {
                                 if (discountPer > 0) {
                                     final double batchDiscountValue = totalBatchOrderValue * (discountPer / 100);
                                     totalDiscValue = totalDiscValue + batchDiscountValue;
-                                    batchProductBo.setProductDiscAmount(batchProductBo.getProductDiscAmount() + batchDiscountValue);
+                                    batchProductBo.setProductLevelDiscountValue(batchProductBo.getProductLevelDiscountValue() + batchDiscountValue);
                                 } else if (productMasterBO.getDA() > 0) {
 
-                                    batchProductBo.setProductDiscAmount(batchProductBo.getProductDiscAmount() + batchDiscAmoutValue);
+                                    batchProductBo.setProductLevelDiscountValue(batchProductBo.getProductLevelDiscountValue() + batchDiscAmoutValue);
 
                                 }
 
@@ -4283,7 +4284,7 @@ public class ProductHelper {
 
                 }
 
-                productMasterBO.setProductDiscAmount(productMasterBO.getProductDiscAmount() + totalDiscValue);
+                productMasterBO.setProductLevelDiscountValue(productMasterBO.getProductLevelDiscountValue() + totalDiscValue);
 
 
             }
@@ -4299,9 +4300,9 @@ public class ProductHelper {
         StringBuffer sb = new StringBuffer();
         sb.append(uid + "," + "0,0,");
         if (bmodel.configurationMasterHelper.discountType == 1) {
-            sb.append(bmodel.getOrderHeaderBO().getDiscountValue() + "," + bmodel.getOrderHeaderBO().getDiscount());
+            sb.append(bmodel.getOrderHeaderBO().getBillLevelDiscountValue() + "," + bmodel.getOrderHeaderBO().getDiscount());
         } else if (bmodel.configurationMasterHelper.discountType == 2) {
-            sb.append(bmodel.getOrderHeaderBO().getDiscountValue() + ",0");
+            sb.append(bmodel.getOrderHeaderBO().getBillLevelDiscountValue() + ",0");
         }
 
         sb.append(",0," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "," + bmodel.getOrderHeaderBO().getDiscountId() + "," + bmodel.getOrderHeaderBO().getIsCompanyGiven());
@@ -4404,7 +4405,7 @@ public class ProductHelper {
         }
         sb = new StringBuffer();
         sb.append("update orderheader set ");
-        sb.append("discount=discount+" + SDUtil.convertToDouble(SDUtil.format(totDiscVaue, bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0)));
+        sb.append("discount=discount+" + totDiscVaue);
         sb.append(" where orderid=" + orderID);
         db.updateSQL(sb.toString());
 

@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -209,7 +210,7 @@ public class TaxHelper implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
 
-            String sb = "select TM.TaxType,TM.TaxRate,TM.Sequence,SLM.ListName,TM.ParentType,TM.applylevelid from  TaxMaster TM " +
+            String sb = "select TM.TaxType,TM.TaxRate,TM.Sequence,SLM.ListName,TM.ParentType,TM.applylevelid,TM.groupId from  TaxMaster TM " +
                     "inner JOIN ProductTaxMaster PTM on  PTM.groupid = TM.groupid " +
                     "INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType " +
                     "inner JOIN (select listid from standardlistmaster where  listcode='BILL' and ListType='TAX_APPLY_TYPE') SD ON TM.applylevelid =SD.listid " +
@@ -226,6 +227,7 @@ public class TaxHelper implements TaxInterface {
                     taxBO.setTaxDesc(c.getString(3));
                     taxBO.setParentType(c.getString(4));
                     taxBO.setApplyLevelId(c.getInt(5));
+                    taxBO.setGroupId(c.getInt(6));
 
                     mBillTaxList.add(taxBO);
                 }
@@ -266,12 +268,12 @@ public class TaxHelper implements TaxInterface {
      * @param db db
      * @author rajesh.k Method to use insert tax details in SQLite
      */
-    public void insertOrderTaxList(String orderId, DBUtil db) {
+    public void insertBillLevelTax(String orderId, DBUtil db) {
 
         db.deleteSQL("OrderTaxDetails", "OrderID=" + orderId,
                 false);
         if (mBillTaxList != null) {
-            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid";
+            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid,taxName,parentType,groupId";
             for (TaxBO taxBO : mBillTaxList) {
                 String sb = (AppUtils.QT(mBusinessModel.getRetailerMasterBO()
                         .getRetailerID()) + ",") +
@@ -284,6 +286,56 @@ public class TaxHelper implements TaxInterface {
         }
 
     }
+
+    @Override
+    public HashMap<String, Double> prepareProductTaxForPrint(Context context, String orderId) {
+        DBUtil db = null;
+        HashMap<String,Double> mTaxesApplied=new HashMap<>();
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from OrderTaxDetails IT" +
+                    " where orderid="+orderId+"  order by taxType,taxRate,taxName desc");
+            Cursor c = db.selectSQL(sb.toString());
+            String lastTaxType="",lastTaxRate="",lastTaxName="";
+            double totalTaxByType=0,totalTaxableAmountByType=0;
+            while (c.moveToNext()){
+
+                String taxType=c.getString(0);
+                String taxRate=c.getString(1);
+                String taxName = c.getString(2);
+                double taxAmount=c.getDouble(4);
+                double taxableAmount=mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
+
+                if(!lastTaxType.equals("")&&!lastTaxType.equals(taxType)&&!lastTaxRate.equals(taxRate)){
+
+                    mTaxesApplied.put(lastTaxName +" "+ lastTaxRate+"% "+context.getResources().getString(R.string.tax_on)+" "+totalTaxableAmountByType,totalTaxByType);
+
+                    totalTaxByType=taxAmount;
+                    totalTaxableAmountByType=taxableAmount;
+
+                }
+                else {
+                    totalTaxByType+=taxAmount;
+                    totalTaxableAmountByType+=taxableAmount;
+                }
+
+                //
+                lastTaxName=taxName;
+                lastTaxRate=taxRate;
+                lastTaxType=taxType;
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        return mTaxesApplied;
+    }
+
+
 
     /**
      * Method to use load tax information for print zebra 3inch in titan project
@@ -499,7 +551,7 @@ public class TaxHelper implements TaxInterface {
                                     + productBo.getOrderedOuterQty()
                                     * productBo.getOutersize();
                             double totalValue = productBo
-                                    .getDiscount_order_value();
+                                    .getNetValue();
                             double remainingValue = totalValue / totalQty;
                             double taxRate = 0;
                             for (TaxBO taxBO : taxList) {
@@ -565,7 +617,7 @@ public class TaxHelper implements TaxInterface {
                     if (batchProductBO.getOrderedPcsQty() > 0
                             || batchProductBO.getOrderedCaseQty() > 0
                             || batchProductBO.getOrderedOuterQty() > 0) {
-                        double batchTaxValue = batchProductBO.getDiscount_order_value() / (1 + (taxRate / 100));
+                        double batchTaxValue = batchProductBO.getNetValue() / (1 + (taxRate / 100));
                         double appliedTaxValue = batchTaxValue * taxRate / 100;
 
                         batchTaxValue=SDUtil.formatAsPerCalculationConfig(batchTaxValue);
@@ -573,23 +625,23 @@ public class TaxHelper implements TaxInterface {
 
                         taxValue = taxValue + batchTaxValue;
                         totalAppliedTaxValue = totalAppliedTaxValue + appliedTaxValue;
-                        batchProductBO.setTaxValue(batchTaxValue);
-                        batchProductBO.setTaxApplyvalue(appliedTaxValue);
+                        batchProductBO.setTaxableAmount(batchTaxValue);
+                        batchProductBO.setTaxAmount(appliedTaxValue);
                     }
                 }
-                productBO.setTaxValue(taxValue);
-                productBO.setTaxApplyvalue(totalAppliedTaxValue);
+                productBO.setTaxableAmount(taxValue);
+                productBO.setTaxAmount(totalAppliedTaxValue);
             }
 
         } else {
-            taxValue = productBO.getDiscount_order_value() / (1 + (taxRate / 100));
+            taxValue = productBO.getNetValue() / (1 + (taxRate / 100));
             totalAppliedTaxValue = taxValue * taxRate / 100;
 
             taxValue=SDUtil.formatAsPerCalculationConfig(taxValue);
             totalAppliedTaxValue=SDUtil.formatAsPerCalculationConfig(totalAppliedTaxValue);
 
-            productBO.setTaxApplyvalue(totalAppliedTaxValue);
-            productBO.setTaxValue(taxValue);
+            productBO.setTaxAmount(totalAppliedTaxValue);
+            productBO.setTaxableAmount(taxValue);
         }
 
     }
@@ -617,7 +669,7 @@ public class TaxHelper implements TaxInterface {
                                     + productBo.getOrderedOuterQty()
                                     * productBo.getOutersize();
                             double totalValue = productBo
-                                    .getDiscount_order_value();
+                                    .getNetValue();
                             double remainingValue = totalValue / totalQty;
                             for (TaxBO taxBO : taxList) {
                                 if (mBusinessModel.configurationMasterHelper.SHOW_MRP_LEVEL_TAX) {
@@ -667,12 +719,12 @@ public class TaxHelper implements TaxInterface {
      */
     private void insertProductLevelTax(String orderId, DBUtil db,
                                        ProductMasterBO productBO, TaxBO taxBO) {
-        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
+        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,taxName,parentType";
         StringBuilder values = new StringBuilder();
 
         values.append(orderId).append(",").append(productBO.getProductID()).append(",").append(taxBO.getTaxRate()).append(",");
         values.append(taxBO.getTaxType()).append(",").append(taxBO.getTotalTaxAmount()).append(",").append(mBusinessModel.getRetailerMasterBO().getRetailerID());
-        values.append(",").append(taxBO.getGroupId()).append(",0");
+        values.append(",").append(taxBO.getGroupId()).append(",0,"+taxBO.getTaxDesc2()+","+taxBO.getParentType());
 
         db.insertSQL("OrderTaxDetails", columns, values.toString());
         if (mBusinessModel.getRetailerMasterBO().getIsVansales() == 1 || mBusinessModel.configurationMasterHelper.IS_INVOICE)
@@ -704,6 +756,7 @@ public class TaxHelper implements TaxInterface {
             totalTaxValue = totalTaxValue + SDUtil.formatAsPerCalculationConfig(taxValue);
             taxBO.setTotalTaxAmount(SDUtil.formatAsPerCalculationConfig(taxValue));
         }
+
         return totalTaxValue;
     }
 
@@ -789,7 +842,7 @@ public class TaxHelper implements TaxInterface {
                 if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID()) != null) {
                     for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(bo.getProductID())) {
                         if (taxBO.getParentType().equals("0")) {
-                            double taxValue=bo.getDiscount_order_value() * (taxBO.getTaxRate() / 100);
+                            double taxValue=bo.getNetValue() * (taxBO.getTaxRate() / 100);
                             finalAmount += SDUtil.formatAsPerCalculationConfig(taxValue);
 
                         }
@@ -797,7 +850,7 @@ public class TaxHelper implements TaxInterface {
                 }
             }
 
-            bo.setDiscount_order_value((bo.getDiscount_order_value() + finalAmount));
+            bo.setNetValue((bo.getNetValue() + finalAmount));
         }
 
     }
@@ -820,7 +873,7 @@ public class TaxHelper implements TaxInterface {
                                 for (TaxBO taxBO : taxList) {
                                     if (taxBO.getParentType().equals("0")) {
                                         double calTax;
-                                        calTax=SDUtil.formatAsPerCalculationConfig(productMasterBO.getDiscount_order_value() * (taxBO.getTaxRate() / 100));
+                                        calTax=SDUtil.formatAsPerCalculationConfig(productMasterBO.getNetValue() * (taxBO.getTaxRate() / 100));
 
                                         taxBO.setTotalTaxAmount(calTax);
                                         taxAmount += calTax;
@@ -828,10 +881,10 @@ public class TaxHelper implements TaxInterface {
                                 }
 
                                 totalTaxAmount = totalTaxAmount + taxAmount;
-                                productMasterBO.setTaxApplyvalue(taxAmount);
-                                productMasterBO.setTaxValue(productMasterBO.getDiscount_order_value());
+                                productMasterBO.setTaxAmount(taxAmount);
+                                productMasterBO.setTaxableAmount(productMasterBO.getNetValue());
 
-                                productMasterBO.setDiscount_order_value(productMasterBO.getDiscount_order_value() + taxAmount);
+                                productMasterBO.setNetValue(productMasterBO.getNetValue() + taxAmount);
                             }
                         }
                     }

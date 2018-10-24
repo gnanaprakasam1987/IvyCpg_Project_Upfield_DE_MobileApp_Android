@@ -1675,10 +1675,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 mSupplierAdapter = new ArrayAdapter<>(this,
                         android.R.layout.select_dialog_singlechoice, mSupplierList);
 
+                String dialog_title;
+                if ((bmodel.labelsMasterHelper.applyLabels("select_dist") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("select_dist").length() > 0)) {
+                    dialog_title = bmodel.labelsMasterHelper.applyLabels("select_dist");
+                } else {
+                    dialog_title = getResources().getString(R.string.select_distributor);
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.select_distributor))
+                        .setTitle(dialog_title)
 
                         .setSingleChoiceItems(mSupplierAdapter,
                                 0,

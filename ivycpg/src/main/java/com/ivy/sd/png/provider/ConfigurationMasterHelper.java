@@ -160,7 +160,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_REVIEW_PO = "ORDB14";
     private static final String CODE_IS_WSIH = "ORDB16"; // ORDB16
     private static final String CODE_SHOW_HIGHLIGHT_FOR_OOS = "ORDB15"; // ORDB15
-    private static final String CODE_SHOW_DISCOUNT_DIALOG = "FUN02"; // FUN02
+    private static final String CODE_SHOW_PRODUCT_DISCOUNT_DIALOG = "FUN02"; // FUN02
     private static final String CODE_SHOW_DISCOUNT_ACTIVITY = "FUN03";
     // code added in v 33
     private static final String CODE_SHOW_CREDIT_BALANCE = "PROFILE20";//
@@ -682,7 +682,7 @@ public class ConfigurationMasterHelper {
     // Added in 32 version
     public boolean IS_WSIH; // ORDB16
     public boolean SHOW_HIGHLIGHT_FOR_OOS; // ORDB15
-    public boolean IS_ENTRY_LEVEL_DISCOUNT; // FUN02
+    public boolean IS_PRODUCT_DISCOUNT_BY_USER_ENTRY; // FUN02
     // Added in 33 version
     public boolean SHOW_CREDIT_BALANCE;//
     public boolean SHOW_CREDIT_DAYS;//
@@ -2043,7 +2043,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_INIT_FOOTER = hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) : false;
         this.SHOW_REVIEW_AND_PO = hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) : false;
         this.SHOW_HIGHLIGHT_FOR_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) : false;
-        this.IS_ENTRY_LEVEL_DISCOUNT = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
+        this.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY = hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_DISCOUNT_DIALOG) : false;
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
 
         //this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;

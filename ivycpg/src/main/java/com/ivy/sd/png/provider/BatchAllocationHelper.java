@@ -130,6 +130,7 @@ public class BatchAllocationHelper {
                     productBO.setPriceoffvalue(c.getDouble(19));
                     productBO.setPriceOffId(c.getInt(20));
 
+
                     if (!productid.equals(productBO.getProductID())) {
                         if (!productid.equals("")) {
                             mBatchListByproductID.put(productid, batchList);
@@ -197,7 +198,7 @@ public class BatchAllocationHelper {
                     productBO.setD2(c.getDouble(6));
                     productBO.setD3(c.getDouble(7));
                     productBO.setDA(c.getDouble(8));
-                    productBO.setDiscount_order_value(c.getDouble(9));
+                    productBO.setNetValue(c.getDouble(9));
                     productBO.setPriceoffvalue(c.getDouble(10));
                     productBO.setSrp(c.getFloat(11));
                     productBO.setCsrp(c.getFloat(12));
@@ -356,7 +357,7 @@ public class BatchAllocationHelper {
                 product.setOrderedPcsQty(0);
                 product.setOrderedCaseQty(0);
                 product.setOrderedOuterQty(0);
-                product.setDiscount_order_value(0);
+                product.setNetValue(0);
 
                 if (product.getSIH() < pieceQty) {
 
@@ -447,9 +448,9 @@ public class BatchAllocationHelper {
                             + (product.getOrderedOuterQty() * product.getOsrp());
 
 
-                    product.setDiscount_order_value(batchwiseTotalvalue
+                    product.setNetValue(batchwiseTotalvalue
                             - batchwiseDiscountvalue);
-                    totalValue = totalValue + product.getDiscount_order_value();
+                    totalValue = totalValue + product.getNetValue();
                 }
 
             }
@@ -716,10 +717,10 @@ public class BatchAllocationHelper {
                 .getBatchlistByProductID().get(productBO.getProductID());
         if (batchList != null) {
             for (ProductMasterBO batchProductBO : batchList) {
-                double lineValue = batchProductBO.getDiscount_order_value();
+                double lineValue = batchProductBO.getNetValue();
                 if (lineValue > 0) {
                     batchProductBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(lineValue * discountValue / 100));
-                    totalVaue = totalVaue + batchProductBO.getDiscount_order_value() - batchProductBO.getApplyValue();
+                    totalVaue = totalVaue + batchProductBO.getNetValue() - batchProductBO.getApplyValue();
                 }
 
             }
@@ -751,7 +752,7 @@ public class BatchAllocationHelper {
 
                 if (totalQty > 0) {
                     batchProductBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(totalQty * discountValue));
-                    totalVaue = totalVaue + batchProductBO.getDiscount_order_value() - (batchProductBO.getApplyValue());
+                    totalVaue = totalVaue + batchProductBO.getNetValue() - (batchProductBO.getApplyValue());
                 }
             }
         }
@@ -784,7 +785,7 @@ public class BatchAllocationHelper {
 
                     for (ProductMasterBO batchProductBO : batchList) {
                         if (batchid.equals(batchProductBO.getBatchid())) {
-                            batchProductBO.setDiscount_order_value(0);
+                            batchProductBO.setNetValue(0);
 
                             batchProductBO.setOrderedPcsQty(pieceqty);
                             batchProductBO.setOrderedCaseQty(caseqty);
@@ -810,7 +811,7 @@ public class BatchAllocationHelper {
                                 produBo.setTotalamount(OrderDetails
                                         .getDouble(OrderDetails
                                                 .getColumnIndex("totalamount")));
-                                batchProductBO.setDiscount_order_value(totalValue);
+                                batchProductBO.setNetValue(totalValue);
 
 
                             }

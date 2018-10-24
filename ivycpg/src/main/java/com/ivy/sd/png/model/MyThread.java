@@ -279,7 +279,6 @@ public class MyThread extends Thread {
 
                 if (orderHelper.saveOrder(ctx, bill2Products, false)) {
 
-                    bmodel.setOrderHeaderBO(null);
 
                     // Update review plan in DB
                     stockCheckHelper.setReviewPlanInDB(ctx.getApplicationContext());
@@ -335,7 +334,6 @@ public class MyThread extends Thread {
                     // Save Discount
 //            bmodel.saveInvoiceDiscountDetails();
 
-                    bmodel.setOrderHeaderBO(null);
 
                     // Update review plan in DB
                     stockCheckHelper.setReviewPlanInDB(ctx.getApplicationContext());
@@ -394,7 +392,6 @@ public class MyThread extends Thread {
             // Save Order
             if (orderHelper.saveOrder(ctx, false)) {
 
-                bmodel.setOrderHeaderBO(null);
 
                 // Update review plan in DB
                 stockCheckHelper.setReviewPlanInDB(ctx.getApplicationContext());
@@ -432,7 +429,6 @@ public class MyThread extends Thread {
                 if (!bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
                     EmptyReconciliationHelper.getInstance(ctx).saveSKUWiseTransaction();
             }
-            bmodel.setOrderHeaderBO(null);
             OrderSummary frm = (OrderSummary) ctx;
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
 
@@ -496,7 +492,6 @@ public class MyThread extends Thread {
                 EmptyReconciliationHelper.getInstance(ctx)
                         .deleteEmptyReconciliationOrder();
             }
-            bmodel.setOrderHeaderBO(null);
 
 
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_DELETED);
@@ -562,7 +557,6 @@ public class MyThread extends Thread {
                 EmptyReconciliationHelper.getInstance(ctx)
                         .deleteEmptyReconciliationOrder();
             }
-            bmodel.setOrderHeaderBO(null);
 
 
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_DELETED);
@@ -642,7 +636,6 @@ public class MyThread extends Thread {
                 // Save Discount
 //            bmodel.saveInvoiceDiscountDetails();
 
-                bmodel.setOrderHeaderBO(null);
 
                 bmodel.setIsOrdered("Y");
                 bmodel.setOrderedInDB("Y");

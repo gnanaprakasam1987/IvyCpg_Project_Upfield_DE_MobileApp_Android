@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.order.tax;
 
+import android.content.Context;
 import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
@@ -23,9 +24,10 @@ public interface TaxInterface {
     void downloadProductTaxDetails();
     void downloadBillWiseTaxDetails();
     void insertInvoiceTaxList(String invoiceid, DBUtil db);
-    void insertOrderTaxList(String orderId, DBUtil db);
+    void insertBillLevelTax(String orderId, DBUtil db);
     void loadTaxDetailsForPrint(String invoiceid);
     void loadTaxProductDetailsForPrint(String invoiceid);
+    HashMap<String,Double> prepareProductTaxForPrint(Context context, String orderId);
     void updateProductWiseExcludeTax();
     void saveProductLeveltax(String orderId, DBUtil db);
     void updateInvoiceIdInProductLevelTax(DBUtil db, String invid, String orderId);

@@ -455,7 +455,7 @@ public class OrderHelper {
             } else if (businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && businessModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
                 DiscountHelper.getInstance(mContext).insertBillWiseDiscount(db, this.getOrderId());
             } else if (businessModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
-                if (businessModel.getOrderHeaderBO().getDiscountValue() > 0) {
+                if (businessModel.getOrderHeaderBO().getBillLevelDiscountValue() > 0) {
                     if (businessModel.configurationMasterHelper.discountType == 1 || businessModel.configurationMasterHelper.discountType == 2)
                         businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                 }
@@ -481,7 +481,7 @@ public class OrderHelper {
                     && !businessModel.configurationMasterHelper.IS_INVOICE) {
                 businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                 businessModel.productHelper.taxHelper.applyBillWiseTax(businessModel.getOrderHeaderBO().getOrderValue());
-                businessModel.productHelper.taxHelper.insertOrderTaxList(uid, db);
+                businessModel.productHelper.taxHelper.insertBillLevelTax(uid, db);
             }
 
             // update discount in order header table
@@ -964,7 +964,7 @@ public class OrderHelper {
                 } else if (businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && businessModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
                     DiscountHelper.getInstance(mContext).insertBillWiseDiscount(db, this.getOrderId());
                 } else if (businessModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
-                    if (businessModel.getOrderHeaderBO().getDiscountValue() > 0) {
+                    if (businessModel.getOrderHeaderBO().getBillLevelDiscountValue() > 0) {
                         if (businessModel.configurationMasterHelper.discountType == 1 || businessModel.configurationMasterHelper.discountType == 2)
                             businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                     }
@@ -991,7 +991,7 @@ public class OrderHelper {
                         && !businessModel.configurationMasterHelper.IS_INVOICE) {
                     businessModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
                     businessModel.productHelper.taxHelper.applyBillWiseTax(businessModel.getOrderHeaderBO().getOrderValue());
-                    businessModel.productHelper.taxHelper.insertOrderTaxList(uid, db);
+                    businessModel.productHelper.taxHelper.insertBillLevelTax(uid, db);
                 }
 
                 // update discount in order header table
@@ -1138,7 +1138,7 @@ public class OrderHelper {
                     .getCsrp())
                     + (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp())
                     + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
-            totalValue = batchProductBO.getDiscount_order_value();
+            totalValue = batchProductBO.getNetValue();
             if (businessModel.configurationMasterHelper.SHOW_FOC)
                 rfield = String.valueOf(batchProductBO.getFoc());
             else rfield = batchProductBO.getRemarks();
@@ -1161,7 +1161,7 @@ public class OrderHelper {
                     .getCsrp())
                     + (productBo.getOrderedPcsQty() * productBo.getSrp())
                     + (productBo.getOrderedOuterQty() * productBo.getOsrp());
-            totalValue = productBo.getDiscount_order_value();
+            totalValue = productBo.getNetValue();
             if (!businessModel.configurationMasterHelper.IS_EXCLUDE_TAX)
                 line_total_price = line_total_price + businessModel.productHelper.taxHelper.getTaxAmountByProduct(productBo);
 
@@ -1719,7 +1719,7 @@ public class OrderHelper {
                             .getColumnIndex("DA")));
                     product.setTotalamount(OrderDetails.getDouble(OrderDetails
                             .getColumnIndex("totalamount")));
-                    product.setDiscount_order_value(OrderDetails
+                    product.setNetValue(OrderDetails
                             .getDouble(OrderDetails
                                     .getColumnIndex("totalamount")));
                     product.setWeight(weight);
@@ -2148,13 +2148,13 @@ public class OrderHelper {
                 priceOffValue = batchWiseProductBO.getPriceoffvalue() * totalqty;
                 priceOffId = batchWiseProductBO.getPriceOffId();
                 schemeDisc = batchWiseProductBO.getSchemeDiscAmount();
-                prodDisc = batchWiseProductBO.getProductDiscAmount();
-                taxAmount = batchWiseProductBO.getTaxApplyvalue();
+                prodDisc = batchWiseProductBO.getProductLevelDiscountValue();
+                taxAmount = batchWiseProductBO.getTaxAmount();
                 line_total_price = (batchWiseProductBO.getOrderedCaseQty() * batchWiseProductBO
                         .getCsrp())
                         + (batchWiseProductBO.getOrderedPcsQty() * batchWiseProductBO.getSrp())
                         + (batchWiseProductBO.getOrderedOuterQty() * batchWiseProductBO.getOsrp());
-                totalValue = batchWiseProductBO.getDiscount_order_value();
+                totalValue = batchWiseProductBO.getNetValue();
 
                 if (businessModel.configurationMasterHelper.SHOW_FOC)
                     rfield = String.valueOf(batchWiseProductBO.getFoc());
@@ -2176,13 +2176,13 @@ public class OrderHelper {
                 priceOffValue = productBO.getPriceoffvalue() * totalqty;
                 priceOffId = productBO.getPriceOffId();
                 schemeDisc = productBO.getSchemeDiscAmount();
-                prodDisc = productBO.getProductDiscAmount();
-                taxAmount = productBO.getTaxApplyvalue();
+                prodDisc = productBO.getProductLevelDiscountValue();
+                taxAmount = productBO.getTaxAmount();
                 line_total_price = (productBO.getOrderedCaseQty() * productBO
                         .getCsrp())
                         + (productBO.getOrderedPcsQty() * productBO.getSrp())
                         + (productBO.getOrderedOuterQty() * productBO.getOsrp());
-                totalValue = productBO.getDiscount_order_value();
+                totalValue = productBO.getNetValue();
 
                 if (businessModel.configurationMasterHelper.SHOW_FOC)
                     rfield = String.valueOf(productBO.getFoc());
@@ -2299,7 +2299,7 @@ public class OrderHelper {
 
         for (ProductMasterBO bo : mOrderedProductList) {
             if (bo.getIsFocusBrand() == 1 || bo.getIsFocusBrand2() == 1 || bo.getIsFocusBrand3() == 1 || bo.getIsFocusBrand4() == 1) {
-                focusBrandProdValues += bo.getDiscount_order_value();
+                focusBrandProdValues += bo.getNetValue();
             }
             if (bo.getIsFocusBrand() == 1) {
                 focusBrandProducts1 += 1;
@@ -2316,7 +2316,7 @@ public class OrderHelper {
 
 
             if (bo.getIsMustSell() == 1) {
-                mustSellProdValues += bo.getDiscount_order_value();
+                mustSellProdValues += bo.getNetValue();
                 mustSellProducts += 1;
             }
         }
@@ -3120,7 +3120,7 @@ public class OrderHelper {
                     || productBO.getOrderedPcsQty() > 0
                     || productBO.getOrderedOuterQty() > 0) {
 
-                if (productBO.getTaxValue() > 0)
+                if (productBO.getTaxableAmount() > 0)
                     return true;
             }
         }
@@ -3233,6 +3233,13 @@ public class OrderHelper {
      */
     public boolean isStockCheckMenuEnabled() {
         Vector<ConfigureBO> config = businessModel.configurationMasterHelper.getActivityMenu();
+
+        // No need to show delete stock&order button if stock columns disabled even if the call from MENU_STK_ORD
+        if(!businessModel.configurationMasterHelper.SHOW_STOCK_SC
+                &&!businessModel.configurationMasterHelper.SHOW_STOCK_SP
+                &&!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER){
+            return false;
+        }
         for (int i = 0; i < config.size(); i++) {
             ConfigureBO con = config.get(i);
             if (con.getConfigCode().equals("MENU_STK_ORD"))
@@ -3413,6 +3420,9 @@ public class OrderHelper {
 
         ArrayList<ProductMasterBO> batchWiseList = businessModel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
+
+        ProductMasterBO productMasterBO=businessModel.productHelper.getProductMasterBOById(productBO.getProductID());
+
         double totalValue = 0.0;
         if (batchWiseList != null) {
             for (ProductMasterBO batchProductBO : batchWiseList) {
@@ -3426,8 +3436,13 @@ public class OrderHelper {
                             + batchProductBO.getOrderedOuterQty()
                             * batchProductBO.getOsrp();
                     totalValue = totalValue + totalBatchValue;
-                    batchProductBO.setDiscount_order_value(totalBatchValue);
-                    batchProductBO.setSchemeAppliedValue(totalBatchValue);
+
+                    int totalBatchQuantity = (batchProductBO.getOrderedPcsQty()
+                            + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                            + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize()));
+                    batchProductBO.setTotalOrderedQtyInPieces(totalBatchQuantity);
+                    batchProductBO.setLineValue(totalBatchValue);
+                    batchProductBO.setNetValue(totalBatchValue);
                 }
             }
         }

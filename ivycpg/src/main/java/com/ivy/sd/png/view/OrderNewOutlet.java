@@ -1485,7 +1485,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                         line_total_price = line_total_price + each_total;
 
-                        productBO.setDiscount_order_value(each_total);
+                        productBO.setNetValue(each_total);
                     }
                 }
                 bmodel.getOrderHeaderBO().setTotalWeight(totalWeight);

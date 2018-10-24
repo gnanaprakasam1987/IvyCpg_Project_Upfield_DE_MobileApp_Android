@@ -489,6 +489,7 @@ public class OrderDeliveryHelper {
 
         for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
             ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
+            prodBo.setNetValue(0);
             if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
                     || prodBo.getOrderedOuterQty() != 0) {
                 double temp = (prodBo.getOrderedPcsQty() * prodBo.getSrp())
@@ -638,7 +639,7 @@ public class OrderDeliveryHelper {
 //                                + (productBo.getOrderedPcsQty() * productBo.getSrp())
 //                                + (productBo.getOrderedOuterQty() * productBo.getOsrp());
 
-                        double line_total_price = productBo.getDiscount_order_value();
+                        double line_total_price = productBo.getNetValue();
 
                         String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty," +
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +
@@ -714,7 +715,7 @@ public class OrderDeliveryHelper {
                 db.executeQ(invoiceDetailQry);
 
                 for (ProductMasterBO productBo : getOrderedProductMasterBOS()) {
-                    db.updateSQL("Update InvoiceDetails set DiscountAmount = '" + productBo.getProductDiscAmount() + "' where ProductID = '" +
+                    db.updateSQL("Update InvoiceDetails set DiscountAmount = '" + productBo.getProductLevelDiscountValue() + "' where ProductID = '" +
                             productBo.getProductID() + "' and invoiceID = '" + invoiceId + "'");
                 }
 
@@ -1104,7 +1105,7 @@ public class OrderDeliveryHelper {
             /*Updating master tax value for print purpose*/
             for (ProductMasterBO productMasterBO : mInvoiceDetailsList) {
                 if (businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()) != null)
-                    businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()).setTaxValue(productMasterBO.getTaxValue());
+                    businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()).setTaxableAmount(productMasterBO.getTaxableAmount());
             }
 
             mInvoiceDetailsList.get(mInvoiceDetailsList.size() - 1).setSchemeProducts(downloadSchemeFreePrint(context, orderId));

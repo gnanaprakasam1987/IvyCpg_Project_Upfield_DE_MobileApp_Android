@@ -4148,8 +4148,8 @@ public class BusinessModel extends Application {
                         for (TaxBO taxBO : mFreeProductTaxListByProductId.get(schemeProductBO.getProductId())) {
                             //Excluding tax for scheme free products
 
-                            //setting line value to discount_order_value, because it is neede for excluding tax values..
-                            schemeProduct.setDiscount_order_value(lineValue);
+                            //setting line value to discount_order_value, because it is needed for excluding tax values..
+                            schemeProduct.setNetValue(lineValue);
 
                             //just resetting values
                             schemeProduct.setOrderedPcsQty(0);
@@ -6088,11 +6088,16 @@ public class BusinessModel extends Application {
 
 
                     // Download Date
-                    else if (mRules.get(i).contains("yyyy")) {
+                    if (mRules.get(i).contains("YYYY") || mRules.get(i).contains("yyyy")) {
+                        String str = mRules.get(i).replace("{", "").replace("}", "");
+                        str = str.replace("YYYY", "yyyy");
+                        mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), str));
+                    }
+                   /* else if (mRules.get(i).contains("yyyy")) {
                         mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(),
                                 mRules.get(i).replace("{", "").replace("}", "")));
                     }
-
+*/
                     // Get Sequence ID
                     else if (mRules.get(i).contains("{SEQ")) {
                         seqNo = 0L;
