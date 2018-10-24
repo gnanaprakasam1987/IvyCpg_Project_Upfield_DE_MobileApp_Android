@@ -141,7 +141,7 @@ public class SupplierSelectionDialog extends Dialog {
                 childHolder.chk = (CheckBox) row.findViewById(R.id.chk_selected);
                 childHolder.chk.setClickable(false);
 
-                childHolder.tv_supplier.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+                childHolder.tv_supplier.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
 
                 childHolder.tv_supplier.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -195,8 +195,8 @@ public class SupplierSelectionDialog extends Dialog {
                 groupHolder.chk = (CheckBox) row.findViewById(R.id.chk_selected);
                 groupHolder.chk.setClickable(false);
 
-                groupHolder.tv_header.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, mContext));
-                groupHolder.tv_supplier.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, mContext));
+                groupHolder.tv_header.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.REGULAR));
+                groupHolder.tv_supplier.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.REGULAR));
 
                 groupHolder.tv_header.setTextColor(ContextCompat.getColor(mContext, R.color.black_bg1));
                 groupHolder.tv_header.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimension(R.dimen.font_large));

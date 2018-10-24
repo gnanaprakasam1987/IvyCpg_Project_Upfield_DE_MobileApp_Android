@@ -47,13 +47,13 @@ public class OutletInfoHorizontalAdapter extends RecyclerView.Adapter<OutletInfo
             totalOrderValue = view.findViewById(R.id.tv_order_value);
             statusView = view.findViewById(R.id.status_color_view);
 
-            userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            statusText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            retailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
-            retailerAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            totalOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
-            ((TextView) view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            ((TextView) view.findViewById(R.id.tv_assigned_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            userName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            statusText.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            retailerName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+            retailerAddress.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            totalOrderValue.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+            ((TextView) view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            ((TextView) view.findViewById(R.id.tv_assigned_txt)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
 
         }
     }

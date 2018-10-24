@@ -9,11 +9,7 @@ import android.content.res.TypedArray;
 import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
-import android.os.StatFs;
-import android.support.v4.content.FileProvider;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.content.FileProvider;
@@ -30,15 +26,12 @@ import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.regex.Pattern;
-
-import java.io.File;
 
 public class AppUtils {
 
@@ -236,11 +229,11 @@ public class AppUtils {
         alertTitle.setTextColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0)); // change title text color
 
         Button negativeBtn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        negativeBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+        negativeBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
         negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
 
         Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        postiveBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+        postiveBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
         postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
 
         // Set title divider color

@@ -38,15 +38,15 @@ public class LicenseActivity extends IvyBaseActivityNoActionBar {
 
         lnrLicense = findViewById(R.id.licenseLayout);
         TextView txtTitle = new CustomTextView(this);
-        txtTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        txtTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         txtTitle.setText(Html.fromHtml(getString(R.string.license_header)));
 
         TextView txtVersion = new CustomTextView(this);
-        txtVersion.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        txtVersion.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         txtVersion.setText(Html.fromHtml(getString(R.string.license_version)));
 
         TextView txtLink = new CustomTextView(this);
-        txtLink.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        txtLink.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         txtLink.setMovementMethod(LinkMovementMethod.getInstance());
         txtLink.setText(Html.fromHtml(getString(R.string.license_link)));
 

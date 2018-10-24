@@ -373,7 +373,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             }
 
             holder.config = configTemp;
-            holder.menuBTN.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            holder.menuBTN.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             holder.menuBTN.setText(configTemp.getMenuName());
 
             return convertView;
@@ -536,8 +536,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
             if (!menuCode.equals(MENU_VANLOAD_STOCK_VIEW)
                     || !menuCode.equals(MENU_DAMAGE_STOCK)) {
                 bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
-                        bmodel.productHelper.getFilterProductLevels()));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                        bmodel.productHelper.getFilterProductLevels(),false));
             }
 
             if (menuCode.equals(MENU_VANLOAD_STOCK_VIEW)
@@ -745,8 +745,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private void loadStockProposalData(String menuCode) {
 
         bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuCode));
-        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuCode,
-                bmodel.productHelper.getFilterProductLevels()));
+        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                bmodel.productHelper.getFilterProductLevels(),false));
 
         bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                 menuCode, menuCode);

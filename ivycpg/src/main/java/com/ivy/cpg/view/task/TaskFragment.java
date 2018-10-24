@@ -140,12 +140,12 @@ public class TaskFragment extends IvyBaseFragment {
         // Add tabs to Tablayout
         for (String tab_name : reason) {
             TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
-            tabOne.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+            tabOne.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             tabOne.setText(tab_name);
             tabOne.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             tabLayout.addTab(tabLayout.newTab().setCustomView(tabOne));
             if (first_tab == 0) {
-                tabOne.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                tabOne.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             }
             first_tab++;
         }
@@ -493,11 +493,11 @@ public class TaskFragment extends IvyBaseFragment {
 
         View view = inflater.inflate(R.layout.row_task_heading, null);
         TextView task_tv =  view.findViewById(R.id.task_tv);
-        task_tv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        task_tv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         TextView task_created =  view.findViewById(R.id.task_created_on);
-        task_created.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        task_created.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         TextView task_execution =  view.findViewById(R.id.task_execution);
-        task_execution.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        task_execution.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         LinearLayout layoutTaskExecution =  view.findViewById(R.id.layoutTaskExecution);
         LinearLayout layoutTaskHeader =  view.findViewById(R.id.layoutTaskHeader);
 
@@ -547,9 +547,9 @@ public class TaskFragment extends IvyBaseFragment {
 
                 holder.taskTitle =  v
                         .findViewById(R.id.task_title_tv);
-                holder.taskTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                holder.taskCreatedDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                holder.taskTaskOwner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.taskTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.taskCreatedDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.taskTaskOwner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.taskTitle.setText(task.getTasktitle());
                 holder.taskTitle.setOnClickListener(new View.OnClickListener() {
 
@@ -562,7 +562,7 @@ public class TaskFragment extends IvyBaseFragment {
 
                 holder.taskDescription =  v
                         .findViewById(R.id.task_description_tv);
-                holder.taskDescription.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.taskDescription.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.taskDescription.setText(task.getTaskDesc());
                 if (task.isUpload() && task.getIsdone().equals("1")) {
                     holder.taskCB.setEnabled(false);

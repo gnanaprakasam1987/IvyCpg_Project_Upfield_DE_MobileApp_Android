@@ -520,8 +520,8 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 bmodel.configurationMasterHelper
                         .loadStockUOMConfiguration();
                 bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
-                        bmodel.productHelper.getFilterProductLevels()));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                        bmodel.productHelper.getFilterProductLevels(),false));
                 bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                         "MENU_LOAD_MANAGEMENT", "MENU_CUR_STK_BATCH");
 

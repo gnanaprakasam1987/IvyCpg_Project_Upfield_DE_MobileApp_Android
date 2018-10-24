@@ -188,14 +188,14 @@ public class QuickCallFragment extends IvyBaseFragment {
                     }
 
 
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
-                            bmodel.productHelper.getFilterProductLevels()));
                     GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getFilterProductLevels(),true));
 
 
                     bmodel.configurationMasterHelper
@@ -436,7 +436,7 @@ public class QuickCallFragment extends IvyBaseFragment {
             bmodel.productHelper.downloadInStoreLocations();
             SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getActivity());
             if (schemeHelper.IS_SCHEME_ON_MASTER) {
-                OrderHelper orderHelper=OrderHelper.getInstance(getActivity());
+                OrderHelper orderHelper = OrderHelper.getInstance(getActivity());
                 schemeHelper.downloadSchemeHistoryDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID(), bmodel.isEdit(), orderHelper.selectedOrderId);
             }
             schemeHelper.downloadOffInvoiceSchemeDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID());

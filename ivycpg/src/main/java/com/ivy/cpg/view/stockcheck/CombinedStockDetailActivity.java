@@ -141,47 +141,47 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
 
         btnSave = findViewById(R.id.btn_save);
 
-        rbYesPrice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        rbNoPrice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        rbYesPrice.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        rbNoPrice.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
-        etShelfPiece.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etShelfCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etShelfOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etPricePiece.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etPriceCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etPriceOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etMrpPricePiece.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etMrpPriceCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etMrpPriceOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etExpPiece.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etExpCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        etExpOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        etShelfPiece.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etShelfCase.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etShelfOuter.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etPricePiece.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etPriceCase.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etPriceOuter.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etMrpPricePiece.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etMrpPriceCase.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etMrpPriceOuter.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etExpPiece.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etExpCase.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        etExpOuter.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         btnSave.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
-        ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.tvTitleCurrentStock)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.tv_avail_pctitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_avail_cstitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_avail_outitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tvTitlePriceCheck)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.tv_price_pcTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_price_csTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_price_ouTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_priceMrp_pcTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_priceMrp_csTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_priceMrp_ouTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_change_price)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tvTitleExpiryCheck)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.tv_exp_pcTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_exp_csTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_exp_ouTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_is_distributed)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_is_listed)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_faceqty_cstitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_avg_qty_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_avg_rfield1_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_avg_rfield2_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.tv_avg_rfield3_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvTitleCurrentStock)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tv_avail_pctitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_avail_cstitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_avail_outitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tvTitlePriceCheck)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tv_price_pcTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_price_csTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_price_ouTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_priceMrp_pcTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_priceMrp_csTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_priceMrp_ouTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_change_price)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tvTitleExpiryCheck)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tv_exp_pcTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_exp_csTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_exp_ouTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_is_distributed)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_is_listed)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_faceqty_cstitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_avg_qty_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_avg_rfield1_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_avg_rfield2_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_avg_rfield3_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(

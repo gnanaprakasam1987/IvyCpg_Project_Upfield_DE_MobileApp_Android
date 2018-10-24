@@ -132,20 +132,20 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         ImageView imgMessage = findViewById(R.id.message_img);
 
-        tvSellerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerStartTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerLastVisit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerPerformanceBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvTarget.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvCovered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvSellerName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvSellerStartTime.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvSellerLastVisit.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvSellerPerformanceBtn.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvTarget.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvCovered.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
-        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
-        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.store_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.time_in_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.time_out_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.store_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.time_in_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.time_out_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
@@ -543,11 +543,11 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 tvTimeOut = view.findViewById(R.id.time_out_text);
                 tvSkipped = view.findViewById(R.id.skipped_text);
 
-                tvSerialNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvSkipped.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvSerialNumber.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvStoreName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvTimeIn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvTimeOut.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvSkipped.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
 
             }
         }

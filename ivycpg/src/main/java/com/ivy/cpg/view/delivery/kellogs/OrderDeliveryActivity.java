@@ -123,15 +123,15 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 orderAccept = view.findViewById(R.id.accept_btn);
                 orderEdit = view.findViewById(R.id.edit_btn);
 
-                orderId.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
-                orderDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
-                orderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
-                orderLine.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryActivity.this));
+                orderId.setTypeface(FontUtils.getFontRoboto(OrderDeliveryActivity.this, FontUtils.FontType.MEDIUM));
+                orderDate.setTypeface(FontUtils.getFontRoboto(OrderDeliveryActivity.this, FontUtils.FontType.MEDIUM));
+                orderValue.setTypeface(FontUtils.getFontRoboto(OrderDeliveryActivity.this, FontUtils.FontType.MEDIUM));
+                orderLine.setTypeface(FontUtils.getFontRoboto(OrderDeliveryActivity.this, FontUtils.FontType.MEDIUM));
 
-                ((TextView) view.findViewById(R.id.order_delivery_listview_id_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
-                ((TextView) view.findViewById(R.id.order_delivery_listview_date_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
-                ((TextView) view.findViewById(R.id.order_delivery_listview_line_head)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
-                ((TextView) view.findViewById(R.id.order_delivery_listview_value_heading)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryActivity.this));
+                ((TextView) view.findViewById(R.id.order_delivery_listview_id_heading)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryActivity.this, FontUtils.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.order_delivery_listview_date_heading)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryActivity.this, FontUtils.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.order_delivery_listview_line_head)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryActivity.this, FontUtils.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.order_delivery_listview_value_heading)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryActivity.this, FontUtils.FontType.LIGHT));
 
                 (view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }

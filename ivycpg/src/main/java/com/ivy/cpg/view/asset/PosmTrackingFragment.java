@@ -273,7 +273,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         if (mBModel.configurationMasterHelper.IS_TEAMLEAD && getView() != null) {
             TextView tvAudit = getView().findViewById(R.id.audit);
             tvAudit.setVisibility(View.VISIBLE);
-            tvAudit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            tvAudit.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         }
 
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
@@ -596,7 +596,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                         .findViewById(R.id.btn_audit);
                 holder.assetNameTV = row
                         .findViewById(R.id.tv_asset_name);
-                holder.assetNameTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.assetNameTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 holder.targetTV = row
                         .findViewById(R.id.tv_target);
                 holder.availQtyET = row
@@ -615,10 +615,10 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                 holder.mInstallDate = row
                         .findViewById(R.id.Btn_install_Date);
-                holder.mInstallDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.mInstallDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.mServiceDate = row
                         .findViewById(R.id.Btn_service_Date);
-                holder.mServiceDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.mServiceDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.photoBTN = row
                         .findViewById(R.id.btn_photo);
                 holder.photoCount = row
@@ -627,9 +627,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 holder.compQtyET = row.findViewById(R.id.edit_competitor_qty);
                 holder.execQtyET = row.findViewById(R.id.edit_exe_qty);
                 holder.grpTV = row.findViewById(R.id.tv_grp);
-                holder.grpTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.grpTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 holder.locationNameTv = row.findViewById(R.id.tv_location_name);
-                holder.locationNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getActivity()));
+                holder.locationNameTv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.REGULAR));
                 holder.executeLL = row.findViewById(R.id.ll_exec_qty);
                 holder.execQtyCheckBox = row.findViewById(R.id.check_exec_qty);
 
@@ -1481,7 +1481,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             view.findViewById(R.id.tv_header_target).setVisibility(View.GONE);
         } else {
             try {
-                ((TextView) view.findViewById(R.id.tv_header_target)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                ((TextView) view.findViewById(R.id.tv_header_target)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 if (view != null && mBModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_header_target).getTag()) != null) {
                     ((TextView) view.findViewById(R.id.tv_header_target))
@@ -1498,7 +1498,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         if (view != null && !assetTrackingHelper.SHOW_POSM_QTY) {
             view.findViewById(R.id.tv_header_qty).setVisibility(View.GONE);
         } else {
-            ((TextView) view.findViewById(R.id.tv_header_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            ((TextView) view.findViewById(R.id.tv_header_qty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             try {
                 if (view != null && mBModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_header_qty).getTag()) != null) {
@@ -1515,7 +1515,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
 
         try {
-            ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             if (view != null && mBModel.labelsMasterHelper.applyLabels(getView().findViewById(
                     R.id.tv_header_asset_name).getTag()) != null) {
                 ((TextView) view.findViewById(R.id.tv_header_asset_name))
@@ -1530,7 +1530,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         if (view != null && !assetTrackingHelper.SHOW_POSM_COMPETITOR_QTY)
             view.findViewById(R.id.tv_competitor_qty).setVisibility(View.GONE);
         else {
-            ((TextView) view.findViewById(R.id.tv_competitor_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            ((TextView) view.findViewById(R.id.tv_competitor_qty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             try {
                 if (view != null && mBModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_competitor_qty).getTag()) != null) {
@@ -1547,7 +1547,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         if (view != null && !assetTrackingHelper.SHOW_POSM_EXECUTED)
             view.findViewById(R.id.tv_executed_qty).setVisibility(View.GONE);
         else {
-            ((TextView) view.findViewById(R.id.tv_executed_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            ((TextView) view.findViewById(R.id.tv_executed_qty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             try {
                 if (view != null && mBModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_executed_qty).getTag()) != null) {

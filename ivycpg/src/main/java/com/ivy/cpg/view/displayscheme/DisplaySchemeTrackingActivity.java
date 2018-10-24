@@ -172,8 +172,8 @@ public class DisplaySchemeTrackingActivity extends IvyBaseActivityNoActionBar {
                 card = v.findViewById(R.id.card);
                 imageView_selected = v.findViewById(R.id.ivAvailable);
 
-                text_scheme_name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DisplaySchemeTrackingActivity.this));
-                text_slab_name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DisplaySchemeTrackingActivity.this));
+                text_scheme_name.setTypeface(FontUtils.getFontRoboto(DisplaySchemeTrackingActivity.this, FontUtils.FontType.MEDIUM));
+                text_slab_name.setTypeface(FontUtils.getFontRoboto(DisplaySchemeTrackingActivity.this, FontUtils.FontType.LIGHT));
 
             }
 

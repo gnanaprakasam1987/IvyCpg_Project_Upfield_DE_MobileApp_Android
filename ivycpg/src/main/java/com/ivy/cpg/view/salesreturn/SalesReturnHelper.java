@@ -1568,13 +1568,14 @@ public class SalesReturnHelper {
             mSalesReturnProductById = new HashMap<>();
 
             if (bmodel.productHelper.isFilterAvaiable("MENU_SALES_RET") && isSameContentLevel(mContext) == 0) {
-                filterProductLevels = bmodel.productHelper.downloadFilterLevel("MENU_SALES_RET");
-                filterProductsByLevelId = bmodel.productHelper.downloadFilterLevelProducts("MENU_SALES_RET", filterProductLevels);
+
                 GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts("MENU_SALES_RET");
                 if (genericObjectPair != null) {
                     mSalesReturnProducts = genericObjectPair.object1;
                     mSalesReturnProductById = genericObjectPair.object2;
                 }
+                filterProductLevels = bmodel.productHelper.downloadFilterLevel("MENU_SALES_RET");
+                filterProductsByLevelId = bmodel.productHelper.downloadFilterLevelProducts(filterProductLevels,true);
             } else {
 
                 for (ProductMasterBO sku : bmodel.productHelper.getProductMaster()) {

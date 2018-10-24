@@ -16,7 +16,6 @@ import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.VisitFragment;
 import com.ivy.utils.FontUtils;
@@ -118,7 +117,7 @@ public class SubDSelectionDialog extends DialogFragment {
                 convertView = inflater.inflate(R.layout.btn_radio, parent, false);
 
                 holder.tvRetailerName = convertView.findViewById(android.R.id.text1);
-                holder.tvRetailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                holder.tvRetailerName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
                 convertView.setTag(holder);
 

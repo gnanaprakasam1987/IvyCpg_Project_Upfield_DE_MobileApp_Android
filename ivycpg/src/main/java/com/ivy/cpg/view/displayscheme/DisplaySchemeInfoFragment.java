@@ -64,18 +64,18 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
                 TextView label_booking_period =  getView().findViewById(R.id.label_booking_period);
                 TextView label_qualifier =  getView().findViewById(R.id.label_qualifiers);
 
-                label_display_period.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-                label_booking_period.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-                label_qualifier.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                label_display_period.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                label_booking_period.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                label_qualifier.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
                 TextView textView_scheme_desc =  getView().findViewById(R.id.text_scheme_desc);
-                textView_scheme_desc.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                textView_scheme_desc.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 TextView textView_display_period =  getView().findViewById(R.id.text_display_period);
                 TextView textView_booking_period =  getView().findViewById(R.id.text_booking_period);
                 TextView textView_qualifier =  getView().findViewById(R.id.text_qualifiers);
-                textView_display_period.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                textView_booking_period.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                textView_qualifier.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                textView_display_period.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                textView_booking_period.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                textView_qualifier.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
                 SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
                 for (SchemeBO schemeBO : schemeHelper.getDisplaySchemeMasterList()) {
@@ -90,7 +90,7 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
                 getView().findViewById(R.id.view_dotted).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 getView().findViewById(R.id.view_dotted_line).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 TextView text_products_label =  getView().findViewById(R.id.text_product_title);
-                text_products_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                text_products_label.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 listView =  getView().findViewById(R.id.list);
                 listView.setHasFixedSize(true);
                 final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -150,7 +150,7 @@ public class DisplaySchemeInfoFragment extends IvyBaseFragment {
                 super(v);
                 text_product_name =  v.findViewById(R.id.text_product_name);
 
-                text_product_name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                text_product_name.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
             }
 

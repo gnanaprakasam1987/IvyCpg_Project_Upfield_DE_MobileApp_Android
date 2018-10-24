@@ -33,8 +33,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -173,8 +171,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             contentCloseCall = findViewById(R.id.content_closeCallCard);
             TVMenuName = findViewById(R.id.tvMenuName);
             TVMenuValue = findViewById(R.id.tv_menuValue);
-            TVMenuName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            TVMenuValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+            TVMenuName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            TVMenuValue.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
             contentCloseCall.setVisibility(View.GONE);
 
@@ -322,10 +320,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
 
             TextView tv_duration = findViewById(R.id.tv_duration);
-            tv_duration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            tv_duration.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
             tv_edt_time_taken = findViewById(R.id.edt_time_taken);
-            tv_edt_time_taken.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, this));
+            tv_edt_time_taken.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
 
             Button btn_close = findViewById(R.id.button1);
             btn_close.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
@@ -436,7 +434,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             MyViewHolder(View row) {
                 super(row);
                 Name = row.findViewById(R.id.menunametxt);
-                Name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, CallAnalysisActivity.this));
+                Name.setTypeface(FontUtils.getFontRoboto(CallAnalysisActivity.this, FontUtils.FontType.MEDIUM));
                 tv_achieved_value = row.findViewById(R.id.tv_menuvalue_achieved);
                 tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 

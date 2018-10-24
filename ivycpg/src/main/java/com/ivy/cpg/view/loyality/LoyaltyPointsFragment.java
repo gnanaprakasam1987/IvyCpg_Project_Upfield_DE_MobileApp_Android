@@ -32,7 +32,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +47,6 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -139,10 +137,10 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
             givenPointsTxt = getView().findViewById(R.id.tos_amount);
             selectedPointsTxt = getView().findViewById(R.id.totalProducts_redeem_points);
 
-            givenPointsTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-            selectedPointsTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-            ((TextView) getView().findViewById(R.id.tv_selectedpts)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-            ((TextView) getView().findViewById(R.id.tv_givenpts)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+            givenPointsTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+            selectedPointsTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+            ((TextView) getView().findViewById(R.id.tv_selectedpts)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+            ((TextView) getView().findViewById(R.id.tv_givenpts)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
             final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
             if (actionBar != null) {
@@ -444,8 +442,8 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
                 qtyIncreaseBtn = itemView.findViewById(R.id.qty_increase);
                 qtyDecreaseBtn = itemView.findViewById(R.id.qty_decrease);
 
-                productDescriptionTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                productDescriptionTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                productDescriptionTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                productDescriptionTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
                 if (!bmodel.configurationMasterHelper.IS_LOYALTY_AUTO_PAYOUT) {
                     qtyIncreaseBtn.setVisibility(View.VISIBLE);

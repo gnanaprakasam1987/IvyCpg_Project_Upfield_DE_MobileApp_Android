@@ -88,9 +88,9 @@ public class MVPFragment extends IvyBaseFragment {
         teamBadgeView = view.findViewById(R.id.ll_teambadge);
         badgeView = view.findViewById(R.id.ll_badge);
         rank = view.findViewById(R.id.txtRank);
-        rank.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        rank.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
         badgepoints_count = view.findViewById(R.id.badgepoints_count);
-        badgepoints_count.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        badgepoints_count.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
         if (bmodel.configurationMasterHelper.IS_TEAMLEAD) {
             mvpHelper.downloadMVPIdBySuperwisorId();
@@ -105,21 +105,21 @@ public class MVPFragment extends IvyBaseFragment {
             actionBar.setDisplayHomeAsUpEnabled(true);
 
         TextView rankTxtv = view.findViewById(R.id.txtRankTitle);
-        rankTxtv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        rankTxtv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
         TextView pointTxtv = view.findViewById(R.id.txtpointsTitle);
-        pointTxtv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        pointTxtv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
         TextView badgesTxtv = view.findViewById(R.id.textview411);
         badgesTxtv.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         TextView peerTxtv = view.findViewById(R.id.peer_textview);
-        peerTxtv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        peerTxtv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
         userName = view.findViewById(R.id.tv_username);
         userName.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
         userDesignation = view.findViewById(R.id.tv_designation);
-        userDesignation.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        userDesignation.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
         return view;
     }
@@ -158,7 +158,7 @@ public class MVPFragment extends IvyBaseFragment {
 
     private void getBadgeViews(int userid) {
         TextView points = view.findViewById(R.id.txtPoints);
-        points.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        points.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
 
         for (MvpBO mvp : mvpData) {
             if (mvp.getUserID() == userid) {
@@ -206,8 +206,8 @@ public class MVPFragment extends IvyBaseFragment {
                     ((TextView) view.findViewById(R.id.badge_count)).setText(strBadgeCount);
                 }
 
-                ((TextView) view.findViewById(R.id.badge_count)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                ((TextView) view.findViewById(R.id.tv_badge_name)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                ((TextView) view.findViewById(R.id.badge_count)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.tv_badge_name)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
                 String strBadgename = mvpbadge.getBadgeName() + "";
                 ((TextView) view.findViewById(R.id.tv_badge_name)).setText(strBadgename);
@@ -300,9 +300,9 @@ public class MVPFragment extends IvyBaseFragment {
                     View view = inflater.inflate(
                             R.layout.row_mvp_peer_card, nullParent);
 
-                    ((TextView) view.findViewById(R.id.tv_name)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                    ((TextView) view.findViewById(R.id.tv_rank)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                    ((TextView) view.findViewById(R.id.tv_score)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                    ((TextView) view.findViewById(R.id.tv_name)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                    ((TextView) view.findViewById(R.id.tv_rank)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                    ((TextView) view.findViewById(R.id.tv_score)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
                     String strUsername = mvp.getUsername() + "";
                     ((TextView) view.findViewById(R.id.tv_name)).setText(strUsername);
@@ -385,7 +385,7 @@ public class MVPFragment extends IvyBaseFragment {
 
             // Add textviews
             final TextView textView1 = new TextView(getActivity());
-            textView1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+            textView1.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
             LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -400,7 +400,7 @@ public class MVPFragment extends IvyBaseFragment {
             linearLayout.addView(textView1);
 
             final TextView textView2 = new TextView(getActivity());
-            textView2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+            textView2.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             linearLayoutParams.gravity = Gravity.START | Gravity.CENTER;

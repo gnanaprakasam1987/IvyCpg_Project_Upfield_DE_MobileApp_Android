@@ -121,7 +121,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         set1.setValueFormatter(new PercentageValueFormatter());
         set1.setDrawIcons(false);
         set1.setValueTextColor(Color.WHITE);
-        set1.setValueTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT ,getActivity()));
+        set1.setValueTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         set1.setColors(MATERIAL_COLORS);
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
@@ -136,7 +136,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         XAxis xLabels = mbarChart.getXAxis();
         xLabels.setTextColor(Color.WHITE);
         xLabels.setTextSize(10f);
-        xLabels.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT ,getActivity()));
+        xLabels.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         xLabels.setGranularity(1f);
         xLabels.setValueFormatter(new IndexAxisValueFormatter(mStringList));
         xLabels.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -147,7 +147,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         yAxisRight.setEnabled(false);
 
         YAxis yAxis = mbarChart.getAxisLeft();
-        yAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT ,getActivity()));
+        yAxis.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         yAxis.setTextColor(Color.WHITE);
         yAxis.setTextSize(10f);
         yAxis.setAxisMinimum(0f);

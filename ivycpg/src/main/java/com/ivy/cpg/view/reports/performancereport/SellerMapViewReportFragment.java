@@ -2,7 +2,6 @@ package com.ivy.cpg.view.reports.performancereport;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -46,7 +45,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.profile.DirectionsJSONParser;
 import com.ivy.utils.FontUtils;
 
@@ -211,17 +209,17 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
         this.iv_deviated = infoWindow.findViewById(R.id.iv_deviate);
         this.infoSeller = infoWindow.findViewById(R.id.tv_seller);
 
-        this.infoTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        this.infoLocName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        this.infoAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        this.infoTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        this.infoTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        this.infoSalesValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        this.infoSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        this.infoTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        this.infoLocName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        this.infoAddress.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        this.infoTimeIn.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        this.infoTimeOut.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        this.infoSalesValue.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        this.infoSeller.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
-        ((TextView) infoWindow.findViewById(R.id.lbl_time_in)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-        ((TextView) infoWindow.findViewById(R.id.lbl_time_out)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-        ((TextView) infoWindow.findViewById(R.id.lbl_sales_value)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        ((TextView) infoWindow.findViewById(R.id.lbl_time_in)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        ((TextView) infoWindow.findViewById(R.id.lbl_time_out)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        ((TextView) infoWindow.findViewById(R.id.lbl_sales_value)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMyLocationEnabled(false);

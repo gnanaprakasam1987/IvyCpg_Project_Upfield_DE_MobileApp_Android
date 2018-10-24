@@ -184,8 +184,8 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
                 card = v.findViewById(R.id.card);
                 imageView_selected = v.findViewById(R.id.ivAvailable);
 
-                text_scheme_name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DisplaySchemeActivity.this));
-                text_scheme_desc.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DisplaySchemeActivity.this));
+                text_scheme_name.setTypeface(FontUtils.getFontRoboto(DisplaySchemeActivity.this, FontUtils.FontType.MEDIUM));
+                text_scheme_desc.setTypeface(FontUtils.getFontRoboto(DisplaySchemeActivity.this, FontUtils.FontType.LIGHT));
 
             }
         }

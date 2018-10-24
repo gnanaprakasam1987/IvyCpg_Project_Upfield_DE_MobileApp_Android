@@ -356,7 +356,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         setHasOptionsMenu(true);
         getActivity().invalidateOptionsMenu();
 
-        spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
         dashboardRecyclerView.setAdapter(dashboardListAdapter);
 

@@ -39,7 +39,6 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.BatchAllocation;
@@ -219,7 +218,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
 //        }
         try {
             ((TextView) findViewById(R.id.tv_schemetype_header)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+                    FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_schemetype_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_schemetype_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_schemetype_header).getTag()));
@@ -228,7 +227,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_cumulative_purchase_header)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+                    FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_cumulative_purchase_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_cumulative_purchase_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_cumulative_purchase_header).getTag()));
@@ -237,7 +236,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_curslab_sch_amt_header)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+                    FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_curslab_sch_amt_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_curslab_sch_amt_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_curslab_sch_amt_header).getTag()));
@@ -246,7 +245,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_curslab_rs_per_header)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+                    FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_curslab_rs_per_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_curslab_rs_per_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_curslab_rs_per_header).getTag()));
@@ -255,7 +254,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_nextslab_header)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+                    FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_nextslab_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_nextslab_header).getTag()));
@@ -264,7 +263,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_nextslab_sch_amt_header)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+                    FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_sch_amt_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_nextslab_sch_amt_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_nextslab_sch_amt_header).getTag()));
@@ -273,7 +272,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         try {
             ((TextView) findViewById(R.id.tv_nextslab_rs_per_header)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+                    FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
             if (bModel.labelsMasterHelper.applyLabels(findViewById(R.id.tv_nextslab_rs_per_header).getTag()) != null)
                 ((TextView) findViewById(R.id.tv_nextslab_rs_per_header)).setText(bModel.labelsMasterHelper
                         .applyLabels(findViewById(R.id.tv_nextslab_rs_per_header).getTag()));
@@ -858,17 +857,17 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             holder.lnrSchemeHeader = view.findViewById(R.id.lnrSchemeHeader);
 
             //typeface
-            holder.tv_productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-            holder.tv_pcs_ordered_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-            holder.tv_cases_ordered_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-            holder.tv_uom.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-            holder.tv_pcs_final_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-            holder.tv_cases_final_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-            holder.tv_gqt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+            holder.tv_productName.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+            holder.tv_pcs_ordered_qty.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+            holder.tv_cases_ordered_qty.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+            holder.tv_uom.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+            holder.tv_pcs_final_qty.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+            holder.tv_cases_final_qty.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+            holder.tv_gqt.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
 
             try {
                 ((TextView) view.findViewById(R.id.tv_header_productName)).setTypeface(
-                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                        FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_productName).getTag()) != null)
                     ((TextView) view.findViewById(R.id.tv_header_productName)).setText(bModel.labelsMasterHelper
                             .applyLabels(view.findViewById(R.id.tv_header_productName).getTag()));
@@ -877,7 +876,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             }
             try {
                 ((TextView) view.findViewById(R.id.tv_header_pcs_ordered_qty)).setTypeface(
-                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                        FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_pcs_ordered_qty).getTag()) != null)
                     ((TextView) view.findViewById(R.id.tv_header_pcs_ordered_qty)).setText(bModel.labelsMasterHelper
                             .applyLabels(view.findViewById(R.id.tv_header_pcs_ordered_qty).getTag()));
@@ -886,7 +885,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             }
             try {
                 ((TextView) view.findViewById(R.id.tv_header_cases_ordered_qty)).setTypeface(
-                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                        FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_cases_ordered_qty).getTag()) != null)
                     ((TextView) view.findViewById(R.id.tv_header_cases_ordered_qty)).setText(bModel.labelsMasterHelper
                             .applyLabels(view.findViewById(R.id.tv_header_cases_ordered_qty).getTag()));
@@ -895,7 +894,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             }
             try {
                 ((TextView) view.findViewById(R.id.tv_header_uom)).setTypeface(
-                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                        FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_uom).getTag()) != null)
                     ((TextView) view.findViewById(R.id.tv_header_uom)).setText(bModel.labelsMasterHelper
                             .applyLabels(view.findViewById(R.id.tv_header_uom).getTag()));
@@ -904,7 +903,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             }
             try {
                 ((TextView) view.findViewById(R.id.tv_header_pcs_final_qty)).setTypeface(
-                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                        FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_pcs_final_qty).getTag()) != null)
                     ((TextView) view.findViewById(R.id.tv_header_pcs_final_qty)).setText(bModel.labelsMasterHelper
                             .applyLabels(view.findViewById(R.id.tv_header_pcs_final_qty).getTag()));
@@ -913,7 +912,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             }
             try {
                 ((TextView) view.findViewById(R.id.tv_header_cases_final_qty)).setTypeface(
-                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                        FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_cases_final_qty).getTag()) != null)
                     ((TextView) view.findViewById(R.id.tv_header_cases_final_qty)).setText(bModel.labelsMasterHelper
                             .applyLabels(view.findViewById(R.id.tv_header_cases_final_qty).getTag()));
@@ -922,7 +921,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             }
             try {
                 ((TextView) view.findViewById(R.id.tv_header_gqt)).setTypeface(
-                        FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                        FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 if (bModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.tv_header_gqt).getTag()) != null)
                     ((TextView) view.findViewById(R.id.tv_header_gqt)).setText(bModel.labelsMasterHelper
                             .applyLabels(view.findViewById(R.id.tv_header_gqt).getTag()));
@@ -1145,23 +1144,23 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
                 holder.qpsSchemeHeaderLayout = (CardView) view.findViewById(R.id.qpsSchemeHeaderLayout);
                 //typeface
                 //typeface
-                holder.tv_scheme.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_scheme_secondary_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_scheme.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_scheme_secondary_title.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 //holder.tv_schemeDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_schemeType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_cumulative_purchase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_curslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_curslab_rs_per.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_nextslab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_nextslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_nextslab_rs_per.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_schemeType.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_cumulative_purchase.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_curslab_sch_amt.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_curslab_rs_per.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_nextslab.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_nextslab_sch_amt.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_nextslab_rs_per.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
 
-                holder.tv_calculated_cumulative_purchase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_calculated_curslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_calculated_curslab_rs_per.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_calculated_nextslab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_calculated_nextslab_sch_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
-                holder.tv_calculated_nextslab_rs_per.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, QPSSchemeApply.this));
+                holder.tv_calculated_cumulative_purchase.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_calculated_curslab_sch_amt.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_calculated_curslab_rs_per.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_calculated_nextslab.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_calculated_nextslab_sch_amt.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
+                holder.tv_calculated_nextslab_rs_per.setTypeface(FontUtils.getFontRoboto(QPSSchemeApply.this, FontUtils.FontType.MEDIUM));
                 view.setTag(holder);
             } else {
                 holder = (SchemeProductHolder) view.getTag();

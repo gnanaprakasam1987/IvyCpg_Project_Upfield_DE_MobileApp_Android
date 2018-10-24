@@ -80,8 +80,8 @@ public class PhotoGridAdapter extends BaseAdapter {
             holder.RLCheckBg = (RelativeLayout) convertView.findViewById(R.id.layout_share_select);
             holder.CBSelect = (CheckBox) convertView.findViewById(R.id.check_share_select);
 
-            holder.type_loc_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-            holder.loc_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, mContext));
+            holder.type_loc_txt.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+            holder.loc_txt.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.THIN));
 
             holder.RLCheckBg.setOnClickListener(new View.OnClickListener() {
                 @Override

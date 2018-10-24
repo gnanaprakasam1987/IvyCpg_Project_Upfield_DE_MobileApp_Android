@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,7 +134,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
                 selectedfilters = view.findViewById(R.id.selectedfilters);
                 gridItem = view.findViewById(R.id.GridItem);
 
-                text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
+                text.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
 
                 text.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
                 gridItem.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.total_seller_bg));
@@ -209,7 +208,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
                 selectedfilters = view.findViewById(R.id.selectedfilters);
                 gridItem = view.findViewById(R.id.GridItem);
 
-                text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,context));
+                text.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
                 selectedfilters.setImageResource(R.drawable.ic_action_selected_filter);
             }
         }

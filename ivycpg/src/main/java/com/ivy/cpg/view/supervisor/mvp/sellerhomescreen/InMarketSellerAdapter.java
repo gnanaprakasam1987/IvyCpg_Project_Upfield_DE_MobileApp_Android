@@ -57,14 +57,14 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
 
             routeLayout = view.findViewById(R.id.route_layout);
 
-            userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            retailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            retailerVisit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            target.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            covered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            userName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            retailerName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            retailerVisit.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            target.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            covered.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
 
-            ((TextView) view.findViewById(R.id.tv_message)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            ((TextView) view.findViewById(R.id.tv_route)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            ((TextView) view.findViewById(R.id.tv_message)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            ((TextView) view.findViewById(R.id.tv_route)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
         }
     }
 

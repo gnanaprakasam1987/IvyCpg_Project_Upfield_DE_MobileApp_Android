@@ -166,11 +166,11 @@ public class StockProposalFragment extends IvyBaseFragment implements
         Button mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
         Button saveBtn = (Button) view.findViewById(R.id.btn_next);
         saveBtn.setText(getResources().getString(R.string.save));
-        ((TextView) view.findViewById(R.id.productname)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.itemcasetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.outeritemcasetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.itempiecetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.unitpricetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.productname)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.itemcasetitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.outeritemcasetitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.itempiecetitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.unitpricetitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         mBtn_Search.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
@@ -178,7 +178,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         saveBtn.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
 
-        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
         getOverflowMenu();
@@ -227,18 +227,18 @@ public class StockProposalFragment extends IvyBaseFragment implements
         totalValueText = (TextView) view.findViewById(R.id.totalValue);
         lpcText = (TextView) view.findViewById(R.id.lcp);
 
-        lpcText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
-        totalValueText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
-        ((TextView) view.findViewById(R.id.tv_unload_sih)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
-        ((TextView) view.findViewById(R.id.tv_unload_total_case)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
-        ((TextView) view.findViewById(R.id.tv_unload_total_outer)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
-        ((TextView) view.findViewById(R.id.tv_unload_total_piece)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
-        ((TextView) view.findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.unload_total_sihTxt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.unload_total_caseTxt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.unload_total_outerTxt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.unload_total_pieceTxt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        lpcText.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        totalValueText.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        ((TextView) view.findViewById(R.id.tv_unload_sih)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        ((TextView) view.findViewById(R.id.tv_unload_total_case)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        ((TextView) view.findViewById(R.id.tv_unload_total_outer)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        ((TextView) view.findViewById(R.id.tv_unload_total_piece)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        ((TextView) view.findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.unload_total_sihTxt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.unload_total_caseTxt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.unload_total_outerTxt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.unload_total_pieceTxt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         productName = (TextView) view.findViewById(R.id.productName);
         productName.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -574,16 +574,16 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
                 holder.pname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.pname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.newProposalQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.newproposalpcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.proposalQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.sihCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.sihOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.unitprice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.distinv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.pname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.newProposalQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.newproposalpcsQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.proposalQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.sihCase.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.sihOuter.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.unitprice.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.distinv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
 
                 if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {

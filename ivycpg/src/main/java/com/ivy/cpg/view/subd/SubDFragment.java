@@ -113,7 +113,7 @@ public class SubDFragment extends IvyBaseFragment {
 
                 holder.retailertNameTextView = convertView.findViewById(R.id.retailer_name_subdid);
                 holder.cardViewItem = convertView.findViewById(R.id.cardview);
-                holder.retailertNameTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+                holder.retailertNameTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 convertView.setTag(holder);
 
                 holder.cardViewItem.setOnClickListener(new View.OnClickListener() {
@@ -170,15 +170,14 @@ public class SubDFragment extends IvyBaseFragment {
             try {
                 if (!isCancelled()) {
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
-                                bmodel.productHelper.getFilterProductLevels()));
-
                         GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                         if (genericObjectPair != null) {
                             bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                         }
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                                bmodel.productHelper.getFilterProductLevels(),true));
 
                     } else {
                         //to reload product filter if diffrent retailer selected

@@ -211,11 +211,11 @@ public class TaskListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.row_task_heading, null);
         TextView task_tv =  view.findViewById(R.id.task_tv);
-        task_tv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        task_tv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         TextView task_created =  view.findViewById(R.id.task_created_on);
-        task_created.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        task_created.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         TextView task_execution =  view.findViewById(R.id.task_execution);
-        task_execution.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+        task_execution.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         LinearLayout layoutTaskExecution =  view.findViewById(R.id.layoutTaskExecution);
         LinearLayout layoutTaskHeader =  view.findViewById(R.id.layoutTaskHeader);
 
@@ -283,9 +283,9 @@ public class TaskListFragment extends Fragment {
 
                 holder.taskTitle =  v
                         .findViewById(R.id.task_title_tv);
-                holder.taskTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                holder.taskCreatedDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
-                holder.taskTaskOwner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.taskTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.taskCreatedDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.taskTaskOwner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.taskTitle.setText(task.getTasktitle());
                 holder.taskTitle.setOnClickListener(new OnClickListener() {
 
@@ -298,7 +298,7 @@ public class TaskListFragment extends Fragment {
 
                 holder.taskDescription =  v
                         .findViewById(R.id.task_description_tv);
-                holder.taskDescription.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                holder.taskDescription.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.taskDescription.setText(task.getTaskDesc());
                 if (holder.taskBO.isUpload() && task.getIsdone().equals("1")) {
                     holder.taskCB.setEnabled(false);
