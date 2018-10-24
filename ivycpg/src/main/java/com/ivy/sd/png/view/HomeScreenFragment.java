@@ -2276,7 +2276,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_DENOMINATION);
                 break;
         }
-        ft.commit();
+        ft.commitAllowingStateLoss();
 
     }
 
@@ -2678,6 +2678,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         protected void onPostExecute(Integer result) {
             try {
+                if (getFragmentManager() != null)
                 getFragmentManager().executePendingTransactions();
                 Activity activity = getActivity();
                 if (activity != null && isAdded()) {
