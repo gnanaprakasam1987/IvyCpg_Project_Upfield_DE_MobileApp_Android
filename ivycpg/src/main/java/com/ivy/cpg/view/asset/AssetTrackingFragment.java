@@ -471,8 +471,35 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             startActivity(intent);
 
             return true;
+        }else if(i== R.id.menu_assetScan){
+
+            scanBarCode();
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void scanBarCode(){
+        {
+            ((AssetTrackingActivity) getActivity()).checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.CAMERA);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        AssetTrackingFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
+            } else {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.permission_enable_msg)
+                                + " " + getResources().getString(R.string.permission_camera)
+                        , Toast.LENGTH_LONG).show();
+            }
+        }
+
     }
 
 

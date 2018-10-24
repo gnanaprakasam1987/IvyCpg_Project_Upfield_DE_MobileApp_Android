@@ -61,5 +61,12 @@
         android:orderInCategory="98"
         android:title="Asset Service"
         ivydist:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_assetScan"
+        android:icon="@drawable/barcode_scan"
+        android:orderInCategory="98"
+        android:title="Asset Scan"
+        ivydist:showAsAction="always" />
 </menu>
 
