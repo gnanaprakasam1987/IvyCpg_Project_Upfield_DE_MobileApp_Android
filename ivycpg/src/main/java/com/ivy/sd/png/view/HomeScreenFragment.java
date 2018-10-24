@@ -1600,6 +1600,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
         }
 
+
     }
 
     private void switchFragment(String fragmentName, String menuName) {
