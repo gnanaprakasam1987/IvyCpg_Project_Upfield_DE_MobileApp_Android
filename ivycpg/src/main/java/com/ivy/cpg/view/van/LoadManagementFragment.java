@@ -507,7 +507,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     break;
 
                 case MENU_VANLOAD_STOCK_VIEW:
-                    if (bmodel.stockreportmasterhelper.getStockReportMaster().size() > 0) {
+                    if (bmodel.stockreportmasterhelper.getStockReportMaster()!=null &&
+                            bmodel.stockreportmasterhelper.getStockReportMaster().size() > 0) {
                         navigateToActivity(menuName, menuCode, VanLoadStockApplyActivity.class);
                     } else {
                         if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION
@@ -524,7 +525,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     break;
 
                 case MENU_VAN_UNLOAD:
-                    if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                    if (bmodel.productHelper.getLoadMgmtProducts() != null &&
+                            bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
                         bmodel.getRetailerMasterBO().setDistributorId(0);
                         navigateToActivity(menuName, menuCode, VanUnloadActivity.class);
                     } else {

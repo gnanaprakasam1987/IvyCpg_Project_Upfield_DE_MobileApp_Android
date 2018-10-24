@@ -1599,6 +1599,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_DENOMINATION)) {
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
         }
+        else
+            Toast.makeText(getActivity(), "Menu Code Not Available", Toast.LENGTH_SHORT).show();
 
     }
 
