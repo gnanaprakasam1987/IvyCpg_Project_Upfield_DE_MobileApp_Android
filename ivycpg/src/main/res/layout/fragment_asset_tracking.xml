@@ -106,7 +106,8 @@
                     android:layout_margin="@dimen/dimen_10dp"
                     android:elevation="@dimen/floating_btn_elevation"
                     android:src="@drawable/barcode_scan"
-                    android:visibility="visible"
+                    android:visibility="gone"
+
                     app:backgroundTint="?attr/primarycolor"
                     app:borderWidth="0dp" />
 

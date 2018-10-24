@@ -970,7 +970,7 @@ public class SurveyHelperNew {
                 for (QuestionBO qus : mParentQuestions) {
                     if ((qus.getSelectedAnswer() != null && !qus.getSelectedAnswer().isEmpty()
                             && !qus.getSelectedAnswer().contains(context.getResources().
-                                    getString(R.string.plain_select)))
+                            getString(R.string.plain_select)))
                             || (qus.getSelectedAnswerIDs() != null && !qus.getSelectedAnswerIDs().isEmpty() &&
                             !qus.getSelectedAnswerIDs().contains(-1)) && !qus.getQuestionType().equals("EMAIL")) {
                         return true;
@@ -1615,177 +1615,178 @@ public class SurveyHelperNew {
 
         boolean isLocalData = false;// to check whether transaction record is there or not
 
-        for (SurveyBO sBO : getSurvey()) {
+        if (getSurvey() != null)
+            for (SurveyBO sBO : getSurvey()) {
 
-            surveyId = sBO.getSurveyID();
-            Vector<QuestionBO> mAllQuestions = new Vector<>();
+                surveyId = sBO.getSurveyID();
+                Vector<QuestionBO> mAllQuestions = new Vector<>();
 
-            uid = "0";
+                uid = "0";
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("SELECT uid FROM AnswerHeader  ");
-            sb.append(" WHERE retailerid = " + QT(retailerid) + " AND distributorID = " + distID + " AND surveyid = ");
-            sb.append(+surveyId + " AND date = ");
-            sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            sb.append(" and upload='N' and supervisiorId = " + supervisiorId + " AND userid = " + userid);
-            sb.append(" and frequency!='MULTIPLE'");
+                StringBuilder sb = new StringBuilder();
+                sb.append("SELECT uid FROM AnswerHeader  ");
+                sb.append(" WHERE retailerid = " + QT(retailerid) + " AND distributorID = " + distID + " AND surveyid = ");
+                sb.append(+surveyId + " AND date = ");
+                sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                sb.append(" and upload='N' and supervisiorId = " + supervisiorId + " AND userid = " + userid);
+                sb.append(" and frequency!='MULTIPLE'");
 
-            Cursor answerHeaderCursor = db.selectSQL(sb.toString());
-            if (answerHeaderCursor != null) {
-                if (answerHeaderCursor.moveToNext()) {
-                    uid = answerHeaderCursor.getString(0);
-                    isLocalData = true;
+                Cursor answerHeaderCursor = db.selectSQL(sb.toString());
+                if (answerHeaderCursor != null) {
+                    if (answerHeaderCursor.moveToNext()) {
+                        uid = answerHeaderCursor.getString(0);
+                        isLocalData = true;
+                    }
+                    answerHeaderCursor.close();
                 }
-                answerHeaderCursor.close();
-            }
-            qsize = sBO.getQuestions().size();
-            mAllQuestions.addAll(sBO.getQuestions());
+                qsize = sBO.getQuestions().size();
+                mAllQuestions.addAll(sBO.getQuestions());
 
-            if (!"0".equals(uid)) {
+                if (!"0".equals(uid)) {
 //                qsize = sBO.getQuestions().size();
 //                mAllQuestions.addAll(sBO.getQuestions());
 
-                boolean check = false;
-                String sql1 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
-                        + " uid = " + QT(uid) + " and isSubQuest=0";
-                Cursor c = db.selectSQL(sql1);
-                if (c != null) {
+                    boolean check = false;
+                    String sql1 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
+                            + " uid = " + QT(uid) + " and isSubQuest=0";
+                    Cursor c = db.selectSQL(sql1);
+                    if (c != null) {
 
-                    while (c.moveToNext()) {
+                        while (c.moveToNext()) {
 
 
-                        for (int ii = 0; ii < qsize; ii++) {
-                            questionBO = mAllQuestions.get(ii);
-                            if (surveyId == questionBO.getSurveyid()
-                                    && questionBO.getQuestionID() == c
-                                    .getInt(0)) {
-                                questionBO.setSelectedAnswerID(c.getInt(1));
-                                questionBO.setSelectedAnswer(c.getString(2));
-                                if (questionBO.getQuestionID() == c.getInt(0))
-                                    questionBO.setQuestScore(questionBO.getQuestScore() + c.getFloat(3));
-                                else
-                                    questionBO.setQuestScore(c.getFloat(3));
-                                check = true;
-                                break;
+                            for (int ii = 0; ii < qsize; ii++) {
+                                questionBO = mAllQuestions.get(ii);
+                                if (surveyId == questionBO.getSurveyid()
+                                        && questionBO.getQuestionID() == c
+                                        .getInt(0)) {
+                                    questionBO.setSelectedAnswerID(c.getInt(1));
+                                    questionBO.setSelectedAnswer(c.getString(2));
+                                    if (questionBO.getQuestionID() == c.getInt(0))
+                                        questionBO.setQuestScore(questionBO.getQuestScore() + c.getFloat(3));
+                                    else
+                                        questionBO.setQuestScore(c.getFloat(3));
+                                    check = true;
+                                    break;
+                                }
                             }
                         }
+                        c.close();
                     }
-                    c.close();
+                    if (check) {
+                        String sql2 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
+                                + " uid = " + QT(uid) + " and isSubQuest=1";
+
+                        StringBuilder sb1 = new StringBuilder();
+                        int counter = 0;
+                        Cursor c1 = db.selectSQL(sql2);
+                        if (c1 != null) {
+
+                            while (c1.moveToNext()) {
+                                for (QuestionBO subqBO : getDependentQuestions()) {
+                                    questions = new ArrayList<>();
+                                    if (subqBO.getQuestionID() == c1.getInt(0)) {
+                                        subqBO.setSurveyid(surveyId);
+                                        subqBO.setIsSubQuestion(1);
+                                        subqBO.setSelectedAnswerID(c1.getInt(1));
+                                        subqBO.setSelectedAnswer(c1.getString(2));
+
+                                        if (subqBO.getQuestionID() == c1.getInt(0))
+                                            subqBO.setQuestScore(subqBO.getQuestScore() + c1.getFloat(3));
+                                        else
+                                            subqBO.setQuestScore(c1.getFloat(3));
+
+                                        sb1.append("Select IFNULL(ImgName,'') FROM AnswerImageDetail WHERE uid = ");
+                                        sb1.append(QT(uid));
+                                        sb1.append(" and qid=");
+                                        sb1.append(c1.getInt(0));
+                                        Cursor c3 = db.selectSQL(sb1.toString());
+
+                                        if (c3 != null) {
+                                            while (c3.moveToNext()) {
+                                                if (counter == 0) {
+                                                    subqBO.setImage1Captured(true);
+                                                    String imgName = null;
+                                                    try {
+                                                        imgName = c3.getString(0).substring(c3.getString(0).lastIndexOf("/"));
+                                                    } catch (Exception e) {
+                                                        imgName = c3.getString(0);
+                                                    }
+                                                    subqBO.setImage1Path(HomeScreenFragment.folder
+                                                            .getPath() + imgName);
+                                                    subqBO.setImage2Captured(false);
+                                                    subqBO.setImage2Path("");
+                                                    counter++;
+                                                } else if (counter == 1) {
+                                                    String imgName = null;
+                                                    try {
+                                                        imgName = c3.getString(0).substring(c3.getString(0).lastIndexOf("/"));
+                                                    } catch (Exception e) {
+                                                        imgName = c3.getString(0);
+                                                    }
+                                                    subqBO.setImage2Captured(true);
+                                                    subqBO.setImage2Path(HomeScreenFragment.folder
+                                                            .getPath() + imgName);
+                                                    break;
+                                                }
+                                            }
+                                            c3.close();
+                                        } else {
+                                            questionBO.setImage1Captured(false);
+                                            questionBO.setImage1Path("");
+                                            questionBO.setImage2Captured(false);
+                                            questionBO.setImage2Path("");
+                                        }
+                                        sb1.setLength(0);
+                                        counter = 0;
+
+                                        questions.add(subqBO);
+                                        sBO.getQuestions().addAll(questions);
+                                    }
+
+
+                                }
+                            }
+                            c1.close();
+                        }
+
+                    }
+
+
                 }
-                if (check) {
-                    String sql2 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
-                            + " uid = " + QT(uid) + " and isSubQuest=1";
 
-                    StringBuilder sb1 = new StringBuilder();
-                    int counter = 0;
-                    Cursor c1 = db.selectSQL(sql2);
-                    if (c1 != null) {
+                if (!"0".equals(uid)) {
 
-                        while (c1.moveToNext()) {
-                            for (QuestionBO subqBO : getDependentQuestions()) {
-                                questions = new ArrayList<>();
-                                if (subqBO.getQuestionID() == c1.getInt(0)) {
-                                    subqBO.setSurveyid(surveyId);
-                                    subqBO.setIsSubQuestion(1);
-                                    subqBO.setSelectedAnswerID(c1.getInt(1));
-                                    subqBO.setSelectedAnswer(c1.getString(2));
 
-                                    if (subqBO.getQuestionID() == c1.getInt(0))
-                                        subqBO.setQuestScore(subqBO.getQuestScore() + c1.getFloat(3));
-                                    else
-                                        subqBO.setQuestScore(c1.getFloat(3));
-
-                                    sb1.append("Select IFNULL(ImgName,'') FROM AnswerImageDetail WHERE uid = ");
-                                    sb1.append(QT(uid));
-                                    sb1.append(" and qid=");
-                                    sb1.append(c1.getInt(0));
-                                    Cursor c3 = db.selectSQL(sb1.toString());
-
-                                    if (c3 != null) {
-                                        while (c3.moveToNext()) {
-                                            if (counter == 0) {
-                                                subqBO.setImage1Captured(true);
-                                                String imgName = null;
-                                                try {
-                                                    imgName = c3.getString(0).substring(c3.getString(0).lastIndexOf("/"));
-                                                } catch (Exception e) {
-                                                    imgName = c3.getString(0);
-                                                }
-                                                subqBO.setImage1Path(HomeScreenFragment.folder
-                                                        .getPath() + imgName);
-                                                subqBO.setImage2Captured(false);
-                                                subqBO.setImage2Path("");
-                                                counter++;
-                                            } else if (counter == 1) {
-                                                String imgName = null;
-                                                try {
-                                                    imgName = c3.getString(0).substring(c3.getString(0).lastIndexOf("/"));
-                                                } catch (Exception e) {
-                                                    imgName = c3.getString(0);
-                                                }
-                                                subqBO.setImage2Captured(true);
-                                                subqBO.setImage2Path(HomeScreenFragment.folder
-                                                        .getPath() + imgName);
-                                                break;
+                    String sql1 = "SELECT qid, imgName FROM AnswerImageDetail WHERE"
+                            + " uid = " + QT(uid);
+                    Cursor c = db.selectSQL(sql1);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            for (int ii = 0; ii < qsize; ii++) {
+                                questionBO = mAllQuestions.get(ii);
+                                if (surveyId == questionBO.getSurveyid()
+                                        && questionBO.getQuestionID() == c
+                                        .getInt(0)) {
+                                    if (questionBO.getImageNames() != null && questionBO.getImageNames().size() > 0) {
+                                        for (int i = 0; i < questionBO.getImageNames().size(); i++) {
+                                            if (!questionBO.getImageNames().get(i).equals(c.getString(1))) {
+                                                questionBO.getImageNames().add(c.getString(1));
                                             }
                                         }
-                                        c3.close();
                                     } else {
-                                        questionBO.setImage1Captured(false);
-                                        questionBO.setImage1Path("");
-                                        questionBO.setImage2Captured(false);
-                                        questionBO.setImage2Path("");
+                                        questionBO.getImageNames().add(c.getString(1));
                                     }
-                                    sb1.setLength(0);
-                                    counter = 0;
-
-                                    questions.add(subqBO);
-                                    sBO.getQuestions().addAll(questions);
+                                    break;
                                 }
-
-
                             }
                         }
-                        c1.close();
+                        c.close();
                     }
 
+
                 }
-
-
             }
-
-            if (!"0".equals(uid)) {
-
-
-                String sql1 = "SELECT qid, imgName FROM AnswerImageDetail WHERE"
-                        + " uid = " + QT(uid);
-                Cursor c = db.selectSQL(sql1);
-                if (c != null) {
-                    while (c.moveToNext()) {
-                        for (int ii = 0; ii < qsize; ii++) {
-                            questionBO = mAllQuestions.get(ii);
-                            if (surveyId == questionBO.getSurveyid()
-                                    && questionBO.getQuestionID() == c
-                                    .getInt(0)) {
-                                if (questionBO.getImageNames() != null && questionBO.getImageNames().size() > 0) {
-                                    for (int i = 0; i < questionBO.getImageNames().size(); i++) {
-                                        if (!questionBO.getImageNames().get(i).equals(c.getString(1))) {
-                                            questionBO.getImageNames().add(c.getString(1));
-                                        }
-                                    }
-                                } else {
-                                    questionBO.getImageNames().add(c.getString(1));
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    c.close();
-                }
-
-
-            }
-        }
 
         //Load last visit data
         if (!isLocalData && bmodel.configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN) {
@@ -1796,6 +1797,7 @@ public class SurveyHelperNew {
             if (c != null) {
                 while (c.moveToNext()) {
 
+                    if(getSurvey() !=null)
                     for (SurveyBO surveyBO : getSurvey()) {
                         if (surveyBO.getSurveyID() == c.getInt(0)) {
 
