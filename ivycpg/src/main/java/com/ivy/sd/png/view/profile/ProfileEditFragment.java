@@ -3350,6 +3350,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 lat = data.getExtras().getDouble("lat") + "";
                 longitude = data.getExtras().getDouble("lon") + "";
                 if (data.getExtras().getBoolean("isChanged")) {
+                    if (latlongtextview != null)
                     latlongtextview.setText(lat + ", " + longitude);
                     if (isLatLongCameravailable) {
                         latlongCameraBtn.setVisibility(View.VISIBLE);

@@ -53,9 +53,9 @@ public class ReasonPhotoDialog extends DialogFragment {
 
         if (getDialog() != null) {
             getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getDialog().setCancelable(false);
         }
 
-        getDialog().setCancelable(false);
         this.setCancelable(false);
 
         v = inflater.inflate(R.layout.fragment_reason_with_image, container, false);
