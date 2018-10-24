@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.digitalcontent;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -494,6 +495,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 mDigitalContentList = new ArrayList<>();
                 mImageList = new ArrayList<>();
                 items = mDigitalContentHelper.getDigitalMaster();
+                Activity activity = getActivity();
+                if(activity != null && isAdded())
                 if (items == null) {
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
@@ -579,14 +582,13 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             // result is the value returned from doInBackground
 
             progressDialogue.dismiss();
-            //if (mDigitalContentList.size() > 0) {
-
-            if (tabLayout != null) {
-                tabLayout.removeAllTabs();
-            }
 
             tabLayout = view.findViewById(R.id.tab_layout);
-            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+            if (tabLayout != null) {
+                tabLayout.removeAllTabs();
+                tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+            }
+
             ViewPager viewPager = view.findViewById(R.id.pager);
             PagerAdapter adapter = new PagerAdapter
                     (getChildFragmentManager());
@@ -603,9 +605,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             if (mOthersCount > 0)
                 adapter.addFragment(new DigitalContentOthersFragment(), getResources().getString(R.string.tab_text_others) + ":" + mOthersCount);
 
-            //}
-
-            if (viewPager != null && adapter != null) {
+            if (viewPager != null) {
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);
                 viewPager.setCurrentItem(mSelectedTab);
