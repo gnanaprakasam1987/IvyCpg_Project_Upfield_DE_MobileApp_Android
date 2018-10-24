@@ -3852,7 +3852,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
         } else {
             isCreated = false;
-            Toast.makeText(this, "Menu Code Not Available", Toast.LENGTH_SHORT).show();
         }
 
     }
