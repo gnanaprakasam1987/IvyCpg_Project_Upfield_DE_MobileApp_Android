@@ -2050,14 +2050,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
 
-                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
-                                bmodel.productHelper.getFilterProductLevels()));
+                        Commons.print("time start : "+SDUtil.now(5));
                         GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                         if (genericObjectPair != null) {
                             bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                         }
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                                bmodel.productHelper.getFilterProductLevels(),true));
+
+                        Commons.print("time stop : "+SDUtil.now(5));
+
 
                     } else {
                         //to reload product filter if diffrent retailer selected

@@ -204,8 +204,8 @@ public class FilterFiveFragment<E> extends Fragment {
                     case "STK":
                         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
                             bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_STK_ORD"));
-                            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_STK_ORD",
-                                    bmodel.productHelper.getFilterProductLevels()));
+                            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                                    bmodel.productHelper.getFilterProductLevels(),true));
                         }
                         filterProductsByLevelId.putAll(bmodel.productHelper.getFilterProductsByLevelId());
                         filterProductLevels.addAll(bmodel.productHelper.getFilterProductLevels());

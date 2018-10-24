@@ -132,8 +132,8 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
 
 
         ListView lvwplist = (ListView) findViewById(R.id.list);
-        headerText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
-        addLoadBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+        headerText.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+        addLoadBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
 
         MyAdapter mSchedule = new MyAdapter(product.getBatchlist());
         lvwplist.setAdapter(mSchedule);
@@ -325,10 +325,10 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
                         .findViewById(R.id.outerproductqtyCases);
                 holder.batchno = (MaterialSpinner) row.findViewById(R.id.batchno);
 
-                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
-                holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
-                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
-                holder.batchno.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+                holder.pieceQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+                holder.batchno.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
 
 
                 holder.caseQty.clearFocus();

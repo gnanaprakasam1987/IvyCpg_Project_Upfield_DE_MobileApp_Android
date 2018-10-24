@@ -281,7 +281,6 @@ public class NewOutletFragment extends IvyBaseFragment
         }
 
 
-
         if (Build.VERSION.SDK_INT >= 14) {
             Point size = new Point();
             getActivity().getWindowManager().getDefaultDisplay().getSize(size);
@@ -2220,7 +2219,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     }
                 } else {
                     ArrayList<RetailerContactBo> contactList = bmodel.newOutletHelper.getRetailerContactList();
-                    if(contactList.size() == 0){
+                    if (contactList.size() == 0) {
                         validate = false;
                         Toast.makeText(getContext(), getResources().getString(R.string.contact_list_mandatory), Toast.LENGTH_LONG).show();
                     }
@@ -5097,15 +5096,14 @@ public class NewOutletFragment extends IvyBaseFragment
                         bmodel.getRetailerMasterBO().setDistributorId(Integer.parseInt(distBo.getDId()));
 
                     bmodel.updatePriceGroupId(false);
-
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
-                            bmodel.productHelper.getFilterProductLevels()));
                     GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getFilterProductLevels(),true));
                 }
             }
 

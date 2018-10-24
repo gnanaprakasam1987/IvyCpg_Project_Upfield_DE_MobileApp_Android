@@ -1191,8 +1191,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                 .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);*/
 
                         bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_SW));
-                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_SW,
-                                bmodel.productHelper.getRetailerModuleSequenceValues()));
+                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                                bmodel.productHelper.getRetailerModuleSequenceValues(),false));
 
                     }
 
@@ -1249,8 +1249,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                    /* bmodel.productHelper
                             .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");*/
                     bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY01_SW"));
-                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY01_SW",
-                            bmodel.productHelper.getRetailerModuleSequenceValues()));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getRetailerModuleSequenceValues(),false));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1305,8 +1305,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     /*bmodel.productHelper
                             .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);*/
                     bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_BA_CS));
-                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_BA_CS,
-                            bmodel.productHelper.getRetailerModuleSequenceValues()));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getRetailerModuleSequenceValues(),false));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1921,14 +1921,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
-                            bmodel.productHelper.getFilterProductLevels()));
+
                     GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(bmodel.productHelper.getFilterProductLevels(),true));
                 }
                 //clear distributor id and group id
                 bmodel.getRetailerMasterBO().setDistributorId(0);

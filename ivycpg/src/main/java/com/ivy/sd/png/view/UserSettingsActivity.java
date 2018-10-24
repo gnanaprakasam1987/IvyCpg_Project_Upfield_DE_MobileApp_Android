@@ -35,7 +35,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
@@ -43,8 +42,6 @@ import com.ivy.utils.FontUtils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import jxl.format.Font;
 
 //import android.support.v7.widget.Toolbar;
 
@@ -297,12 +294,12 @@ public class UserSettingsActivity extends PreferenceActivity {
         //dialog.setContentView(R.layout.settings_printer_dialog);
 
         TextView textView9 = (TextView) view.findViewById(R.id.textView9);
-        textView9.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+        textView9.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
         textView9.setText("Enter MAC Address");
         TextView uname = (TextView) view.findViewById(R.id.uname);
         uname.setVisibility(View.GONE);
         final EditText eText = (EditText) view.findViewById(R.id.edit_username);
-        eText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+        eText.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
         eText.setHint("MAC Address");
 
         eText.setInputType(InputType.TYPE_CLASS_TEXT);

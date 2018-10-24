@@ -125,7 +125,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
         collapsingToolbar.setCollapsedTitleTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
         collapsingToolbar.setExpandedTitleColor(Color.WHITE);
-        collapsingToolbar.setExpandedTitleTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        collapsingToolbar.setExpandedTitleTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
     }
 
@@ -238,7 +238,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                 img_arrow =  view.findViewById(R.id.img_arrow);
                 activityname =  view.findViewById(R.id.activityName);
                 childListView =  view.findViewById(R.id.childList);
-                activityname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDHomeActivity.this));
+                activityname.setTypeface(FontUtils.getFontRoboto(SubDHomeActivity.this, FontUtils.FontType.LIGHT));
             }
         }
     }

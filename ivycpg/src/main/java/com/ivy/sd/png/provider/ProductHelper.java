@@ -158,18 +158,18 @@ public class ProductHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link AppDataProvider#getGlobalLocationIndex()}
      * @return
+     * @See {@link AppDataProvider#getGlobalLocationIndex()}
+     * @deprecated
      */
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
     }
 
     /**
-     * @deprecated
-     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
      * @param mSelectedGLobalLocationIndex
+     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
+     * @deprecated
      */
     public void setmSelectedGLobalLocationIndex(int mSelectedGLobalLocationIndex) {
         this.mSelectedGLobalLocationIndex = mSelectedGLobalLocationIndex;
@@ -816,24 +816,12 @@ public class ProductHelper {
         return filterLevel;
     }
 
-    public HashMap<Integer, Vector<LevelBO>> downloadFilterLevelProducts(String moduleName, Vector<LevelBO> filterProductLevels) {
+    public HashMap<Integer, Vector<LevelBO>> downloadFilterLevelProducts(Vector<LevelBO> filterProductLevels, boolean isDsdModule) {
         HashMap<Integer, Vector<LevelBO>> filterLevelPrdByLevelId = new HashMap<>();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-
-            int contentLevelId = 0;
-
-            Cursor seqCur = db
-                    .selectSQL("SELECT IFNULL(PL.LevelId,0) "
-                            + "FROM ConfigActivityFilter CF "
-                            // Left join is to ensure configured level id is valid.
-                            + "LEFT JOIN ProductLevel PL ON PL.LevelId = CF.ProductContent "
-                            + "WHERE  CF.ActivityCode= '" + moduleName + "'");
-            if (seqCur.moveToNext()) {
-                contentLevelId = seqCur.getInt(0);
-            }
 
             if (filterProductLevels != null) {
 
@@ -848,8 +836,6 @@ public class ProductHelper {
                 }
 
                 String query = "SELECT DISTINCT PM.PID, PM.PName,PM.ParentHierarchy,PM.PLid,PM.ParentId FROM ProductMaster PM "
-                        // Inner join is ensure filtered category or brand has at least one child sku
-                        //+ " INNER JOIN ProductMaster prdm on prdm.ParentHierarchy LIKE '%/' || PM.PID || '/%' and prdm.PLid =" + contentLevelId
                         + " WHERE PM.PLid in (" + pLIds + ") ";
 
                 if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
@@ -857,7 +843,7 @@ public class ProductHelper {
 
                 query = query + " Order By PM.RowId";
 
-                seqCur = db.selectSQL(query);
+                Cursor seqCur = db.selectSQL(query);
                 if (seqCur != null) {
 
 
@@ -867,17 +853,26 @@ public class ProductHelper {
                         mLevelBO.setLevelName(seqCur.getString(1));
                         mLevelBO.setParentHierarchy(seqCur.getString(2));
                         mLevelBO.setParentID(seqCur.getInt(4));
-
-                        if (filterLevelPrdByLevelId.get(seqCur.getInt(3)) != null) {
-                            filterLevelPrdByLevelId.get(seqCur.getInt(3)).add(mLevelBO);
+                        if (isDsdModule) {
+                            if (isPrdAvailable(mLevelBO.getProductID())) {
+                                if (filterLevelPrdByLevelId.get(seqCur.getInt(3)) != null) {
+                                    filterLevelPrdByLevelId.get(seqCur.getInt(3)).add(mLevelBO);
+                                } else {
+                                    Vector<LevelBO> filterProducts = new Vector<>();
+                                    filterProducts.add(mLevelBO);
+                                    filterLevelPrdByLevelId.put(seqCur.getInt(3), filterProducts);
+                                }
+                            }
                         } else {
-                            Vector<LevelBO> filterProducts = new Vector<>();
-                            filterProducts.add(mLevelBO);
-                            filterLevelPrdByLevelId.put(seqCur.getInt(3), filterProducts);
+                            if (filterLevelPrdByLevelId.get(seqCur.getInt(3)) != null) {
+                                filterLevelPrdByLevelId.get(seqCur.getInt(3)).add(mLevelBO);
+                            } else {
+                                Vector<LevelBO> filterProducts = new Vector<>();
+                                filterProducts.add(mLevelBO);
+                                filterLevelPrdByLevelId.put(seqCur.getInt(3), filterProducts);
+                            }
                         }
-
                     }
-
                     seqCur.close();
                 }
             }
@@ -888,6 +883,23 @@ public class ProductHelper {
         }
 
         return filterLevelPrdByLevelId;
+    }
+
+
+    private boolean isPrdAvailable(int pid) {
+        boolean isAvailable = false;
+        if (productMaster != null) {
+            for (ProductMasterBO productMasterBO : productMaster) {
+                if (productMasterBO.getParentHierarchy().contains("/" + pid + "/")) {
+                    isAvailable = true;
+                    break;
+                }
+            }
+        } else
+            isAvailable = true;
+
+        return isAvailable;
+
     }
 
     public GenericObjectPair downloadProducts(String moduleCode) {
@@ -964,7 +976,7 @@ public class ProductHelper {
                     + "dOuomQty as outersize ,dOuomid as dOuomid,caseBarcode as caseBarcode,outerBarcode as outerBarcode,"
                     + " piece_uomid as piece_uomid ,A.mrp as mrp,"
                     + " A.isSalable as isSalable,A.isReturnable as isReturnable,A.TypeID as TypeID,A.baseprice as baseprice,"
-                    + " A.weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,"
+                    + " A.weight as weight,"
                     + " A.Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId()
                     + " THEN F.scid ELSE 0 END) as groupid,"
                     + " A.tagDescription as tagDescription,"
@@ -976,22 +988,11 @@ public class ProductHelper {
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
                     + " from ProductMaster A";
 
-            /*if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
-                //downloading product distribution and preparing query to get products mapped..
-                String pdQuery = downloadProductDistribution(mContentLevelId, mContentLevel);
-                if (pdQuery.length() > 0) {
-                    sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
-                }
-            }*/
-
-            sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = "
-                    + bmodel.getRetailerMasterBO().getGroupId()
+            sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = " + bmodel.getRetailerMasterBO().getGroupId()
                     + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
                     + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
-                    + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid="
-                    + bmodel.getRetailerMasterBO().getChannelID()
+                    + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid=" + bmodel.getRetailerMasterBO().getChannelID()
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                    + " LEFT JOIN DiscountProductMapping DPM ON A.ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
                     + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
                     + " WHERE A.PLid IN(" + mContentLevelId + ") ";
 
@@ -1024,12 +1025,12 @@ public class ProductHelper {
                     product.setBarCode(c.getString(c.getColumnIndex("barcode")));
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));
 
-                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    product.setPrevPrice_pc(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
-                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    product.setPrevPrice_ca(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
-                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    product.setPrevPrice_oo(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
+                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    product.setPrevPrice_pc(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
+                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    product.setPrevPrice_ca(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
+                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    product.setPrevPrice_oo(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
 
                     product.setMSQty(c.getInt(c.getColumnIndex("msqqty")));
                     product.setCaseSize(c.getInt(c.getColumnIndex("caseQty")));
@@ -1070,7 +1071,6 @@ public class ProductHelper {
                     }
                     product.setIsNMustSell(c.getInt(c.getColumnIndex("IsNMustSell")));
                     product.setWeight(c.getFloat(c.getColumnIndex("weight")));
-                    product.setIsDiscountable(c.getInt(c.getColumnIndex("IsDiscount")));
                     product.setScannedProduct(c.getInt(c.getColumnIndex("Hasserial")));
 
                     product.setIsFocusBrand3(c.getInt(c.getColumnIndex("IsFocusBrand3")));
@@ -3190,7 +3190,7 @@ public class ProductHelper {
     public Vector<LoadManagementBO> downloadLoadMgmtProductsWithFiveLevel(
             String moduleCode, String batchmenucode) {
         mLoadManagementBOByProductId = new SparseArray<>();
-        String sql = "", sql1 = "", sql2 = "", sql3 = "",sql4="";
+        String sql = "", sql1 = "", sql2 = "", sql3 = "", sql4 = "";
         productlist = new Vector<>();
         LoadManagementBO bo;
         Vector<LoadManagementBO> list;
@@ -3443,11 +3443,11 @@ public class ProductHelper {
 
     public void downloadProductDiscountDetails() {
 
-        mProductIdListByDiscoutId = new HashMap<Integer, ArrayList<StoreWiseDiscountBO>>();
+        mProductIdListByDiscoutId = new HashMap<>();
 
-        mDiscountIdList = new ArrayList<Integer>();
-        DBUtil db = null;
-        StringBuilder sb = null;
+        mDiscountIdList = new ArrayList<>();
+        DBUtil db;
+        StringBuilder sb;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
@@ -3509,11 +3509,16 @@ public class ProductHelper {
                         } else {
                             productdiscountList.add(storeWiseDiscountBO);
                         }
+                        ProductMasterBO productMasterBO = getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
+                        if (productMasterBO != null) {
+                            productMasterBO.setIsDiscountable(1);
+                        }
 
                     }
                     if (productdiscountList.size() > 0) {
                         mProductIdListByDiscoutId.put(discountid,
                                 productdiscountList);
+                        updateProductColor();
                     }
 
                 }

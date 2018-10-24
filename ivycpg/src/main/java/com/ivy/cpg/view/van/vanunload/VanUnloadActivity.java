@@ -157,16 +157,16 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
         mEdt_searchproductName.setOnEditorActionListener(this);
 
 
-        ((TextView) findViewById(R.id.productListTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.itemcasetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.outeritemcasetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.itempiecetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.productListTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.itemcasetitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.outeritemcasetitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.itempiecetitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
         if (!bModel.configurationMasterHelper.SHOW_NON_SALABLE_UNLOAD)
             ((TextView) findViewById(R.id.tv_nonsalable_title)).setVisibility(View.GONE);
         else
-            ((TextView) findViewById(R.id.tv_nonsalable_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            ((TextView) findViewById(R.id.tv_nonsalable_title)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,

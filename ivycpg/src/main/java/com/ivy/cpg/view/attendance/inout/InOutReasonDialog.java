@@ -15,8 +15,6 @@ import android.widget.TextView;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
@@ -72,7 +70,7 @@ public class InOutReasonDialog extends Dialog {
                 });
         btn_ok.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
         titleBar.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
-        must_sell_message_tv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+        must_sell_message_tv.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
     }
 
     private void loadInOutReason() {

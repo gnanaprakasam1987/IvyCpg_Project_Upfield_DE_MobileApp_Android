@@ -21,7 +21,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderFulfillmentReportListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
@@ -68,7 +67,7 @@ public class OrderFulfillmentDetailReport extends IvyBaseFragment {
     private void setLabels(View view){
         try {
             ((TextView) view.findViewById(R.id.txtHeaderProductName)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                    FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.txtHeaderProductName).getTag()) != null)
                 ((TextView) view.findViewById(R.id.txtHeaderProductName)).setText(bmodel.labelsMasterHelper
                         .applyLabels(view.findViewById(R.id.txtHeaderProductName).getTag()));
@@ -77,7 +76,7 @@ public class OrderFulfillmentDetailReport extends IvyBaseFragment {
         }
         try {
             ((TextView) view.findViewById(R.id.txtHeaderOrderedCases)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                    FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.txtHeaderOrderedCases).getTag()) != null)
                 ((TextView) view.findViewById(R.id.txtHeaderOrderedCases)).setText(bmodel.labelsMasterHelper
                         .applyLabels(view.findViewById(R.id.txtHeaderOrderedCases).getTag()));
@@ -86,7 +85,7 @@ public class OrderFulfillmentDetailReport extends IvyBaseFragment {
         }
         try {
             ((TextView) view.findViewById(R.id.txtHeaderOrderedPieces)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                    FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.txtHeaderOrderedPieces).getTag()) != null)
                 ((TextView) view.findViewById(R.id.txtHeaderOrderedPieces)).setText(bmodel.labelsMasterHelper
                         .applyLabels(view.findViewById(R.id.txtHeaderOrderedPieces).getTag()));
@@ -95,7 +94,7 @@ public class OrderFulfillmentDetailReport extends IvyBaseFragment {
         }
         try {
             ((TextView) view.findViewById(R.id.txtHeaderFulfilledCases)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                    FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.txtHeaderFulfilledCases).getTag()) != null)
                 ((TextView) view.findViewById(R.id.txtHeaderFulfilledCases)).setText(bmodel.labelsMasterHelper
                         .applyLabels(view.findViewById(R.id.txtHeaderFulfilledCases).getTag()));
@@ -104,7 +103,7 @@ public class OrderFulfillmentDetailReport extends IvyBaseFragment {
         }
         try {
             ((TextView) view.findViewById(R.id.txtHeaderFulfilledPieces)).setTypeface(
-                    FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                    FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(R.id.txtHeaderFulfilledPieces).getTag()) != null)
                 ((TextView) view.findViewById(R.id.txtHeaderFulfilledPieces)).setText(bmodel.labelsMasterHelper
                         .applyLabels(view.findViewById(R.id.txtHeaderFulfilledPieces).getTag()));

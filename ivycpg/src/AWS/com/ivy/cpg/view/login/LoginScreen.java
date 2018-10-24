@@ -1,65 +1,43 @@
 package com.ivy.cpg.view.login;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.content.FileProvider;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApkDownloaderThread;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.DownloaderThreadNew;
-import com.ivy.sd.png.model.MyThread;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.About;
-import com.ivy.cpg.view.attendance.AttendanceActivity;
 import com.ivy.sd.png.view.ChangePasswordActivity;
-import com.ivy.sd.png.view.DistributorSelectionActivity;
 import com.ivy.sd.png.view.PasswordLockDialogFragment;
 import com.ivy.sd.png.view.ResetPasswordDialog;
 import com.ivy.sd.png.view.UserSettingsActivity;
@@ -68,8 +46,6 @@ import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.HashMap;
-import java.util.UnknownFormatConversionException;
 
 
 public class LoginScreen extends LoginBaseActivity
@@ -109,13 +85,13 @@ public class LoginScreen extends LoginBaseActivity
         //progressDialog = null;
 
         mForgotPasswordTV = findViewById(R.id.txtResetPassword);
-        mForgotPasswordTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        mForgotPasswordTV.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         editTextUserName = findViewById(R.id.EditText011);
-        editTextUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        editTextUserName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         editTextPassword = findViewById(R.id.EditText022);
-        editTextPassword.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        editTextPassword.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         Button buttonLogin = findViewById(R.id.loginButton);
         buttonLogin.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
@@ -140,7 +116,7 @@ public class LoginScreen extends LoginBaseActivity
         /* Display version information on the login screen. */
         TextView version = (TextView) findViewById(R.id.version);
         version.setText(getResources().getString(R.string.version) + AppUtils.getApplicationVersionName(this));
-        version.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        version.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         LinearLayout ll_footer = (LinearLayout) findViewById(R.id.ll_footer);
         ll_footer.setOnClickListener(new OnClickListener() {

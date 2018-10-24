@@ -21,7 +21,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
@@ -67,7 +66,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 pieceQty.setVisibility(View.GONE);
             else {
                 try {
-                    pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                    pieceQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(pieceQty.getTag()) != null)
                         pieceQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(pieceQty.getTag()));
@@ -80,7 +79,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 caseQty.setVisibility(View.GONE);
             else {
                 try {
-                    caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                    caseQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(caseQty.getTag()) != null)
                         caseQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(caseQty.getTag()));
@@ -93,7 +92,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 outerQty.setVisibility(View.GONE);
             else {
                 try {
-                    outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                    outerQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(outerQty.getTag()) != null)
                         outerQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(outerQty.getTag()));
@@ -106,7 +105,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 sihQty.setVisibility(View.GONE);
             else {
                 try {
-                    sihQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                    sihQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(sihQty.getTag()) != null)
                         sihQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(sihQty.getTag()));
@@ -119,7 +118,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 srpQty.setVisibility(View.GONE);
             else {
                 try {
-                    srpQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                    srpQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(srpQty.getTag()) != null)
                         srpQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(srpQty.getTag()));
@@ -132,7 +131,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 srQty.setVisibility(View.GONE);
             else {
                 try {
-                    srQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+                    srQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(srQty.getTag()) != null)
                         srQty.setText(bmodel.labelsMasterHelper
                                 .applyLabels(srQty.getTag()));

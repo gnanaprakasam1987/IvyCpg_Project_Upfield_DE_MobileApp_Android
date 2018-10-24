@@ -5599,7 +5599,7 @@ public class ConfigurationMasterHelper {
 
     /**
      * @deprecated
-     * @See {@link FontUtils#getFontRoboto(FontUtils.FontType, Context)}
+     * @See {@link FontUtils#getFontRoboto(Context, FontUtils.FontType)}
      * @param mFontType
      * @return
      */

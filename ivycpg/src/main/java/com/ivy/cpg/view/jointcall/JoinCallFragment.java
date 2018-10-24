@@ -150,8 +150,8 @@ public class JoinCallFragment extends IvyBaseFragment {
         public void onBindViewHolder(final JointCallRecyclerAdapter.MyViewHolder holder, int position) {
 
             //Custom font set for Textviews.
-            holder.userType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-            holder.nameTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            holder.userType.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+            holder.nameTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
             //Set values from UsermasterBo list
             holder.userBO = mjoinCallUserList.get(position);

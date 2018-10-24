@@ -460,7 +460,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                 holder.tvName = convertView.findViewById(R.id.tv_rsd);
                 holder.ivEntityType = convertView.findViewById(R.id.ivEntityType);
 
-                holder.tvName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OfflinePlanningActivity.this));
+                holder.tvName.setTypeface(FontUtils.getFontRoboto(OfflinePlanningActivity.this, FontUtils.FontType.MEDIUM));
                 holder.ivEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_store_ofplan));
 
                 convertView.setTag(holder);
@@ -548,7 +548,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                 holder.tvName = convertView.findViewById(R.id.tv_rsd);
                 holder.ivEntityType = convertView.findViewById(R.id.ivEntityType);
 
-                holder.tvName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OfflinePlanningActivity.this));
+                holder.tvName.setTypeface(FontUtils.getFontRoboto(OfflinePlanningActivity.this, FontUtils.FontType.MEDIUM));
                 holder.ivEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_non_field));
                 convertView.setTag(holder);
             } else {

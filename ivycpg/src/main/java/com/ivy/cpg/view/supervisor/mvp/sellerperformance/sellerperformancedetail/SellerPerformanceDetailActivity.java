@@ -99,19 +99,19 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
     private void initViews(){
 
-        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        ((TextView)findViewById(R.id.target_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.actual_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.percent_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        ((TextView)findViewById(R.id.value_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.coverage_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.lines_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.calls_status_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        ((TextView)findViewById(R.id.planned_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.deviated_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.duration_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.productive_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.seller_performance_btn)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView)findViewById(R.id.target_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.actual_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.percent_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView)findViewById(R.id.value_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.coverage_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.lines_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.calls_status_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView)findViewById(R.id.planned_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.deviated_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.duration_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.productive_txt)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.seller_performance_btn)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         sellerNameTv = findViewById(R.id.seller_name);
         TextView sellerPositionTv = findViewById(R.id.seller_position);
@@ -134,22 +134,22 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
 
         progressBar = findViewById(R.id.progressBar);
 
-        sellerNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        sellerPositionTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        sellerPerformPercentTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        valueTargetTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        valueActualTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        valuePercentTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        coverageTargetTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        coverageActualtv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        coveragePercenttv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        linesTargetTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        linesActualTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        linesPercentTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        plannedValueTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        deviatedTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        durationTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
-        productiveTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+        sellerNameTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        sellerPositionTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        sellerPerformPercentTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        valueTargetTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        valueActualTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        valuePercentTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        coverageTargetTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        coverageActualtv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        coveragePercenttv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        linesTargetTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        linesActualTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        linesPercentTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        plannedValueTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        deviatedTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        durationTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        productiveTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
         mChart = findViewById(R.id.combined_chart);
         mChart.setNoDataText("Loading...");
@@ -223,7 +223,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
             for (int i = 0; i < tabChildCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                 }
             }
         }
@@ -333,7 +333,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         l.setTextSize(14f);
-        l.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        l.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         l.setDrawInside(false);
 
         YAxis rightAxis = mChart.getAxisRight();
@@ -343,7 +343,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         rightAxis.setEnabled(true);
         rightAxis.setDrawGridLines(true);
         rightAxis.setGridColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
-        rightAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        rightAxis.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
@@ -353,7 +353,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         leftAxis.setDrawGridLines(true);
         leftAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
         leftAxis.setGridColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
-        leftAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        leftAxis.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -361,7 +361,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         xAxis.setGranularity(1f);
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
-        xAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        xAxis.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         xAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
 
         xAxis.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
@@ -401,7 +401,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
         set.setValueTextSize(12f);
-        set.setValueTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        set.setValueTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         set.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -421,7 +421,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
         set1.setValueTextSize(12f);
-        set1.setValueTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        set1.setValueTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         set1.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {

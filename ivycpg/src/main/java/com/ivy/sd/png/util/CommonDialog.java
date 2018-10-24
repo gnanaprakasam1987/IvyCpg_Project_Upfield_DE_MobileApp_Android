@@ -188,7 +188,7 @@ public class CommonDialog extends Dialog {
             if (!title.isEmpty() && !title.equals("")) {
                 txtTitle.setVisibility(View.VISIBLE);
                 txtTitle.setText(title);
-                txtTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+                txtTitle.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
             }
         }
 
@@ -196,7 +196,7 @@ public class CommonDialog extends Dialog {
 
         TextView msg_text = (TextView) view.findViewById(R.id.msg_text);
         msg_text.setText(msg);
-        msg_text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+        msg_text.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
 
         if (imgDisplay) {
             dialog_img.setVisibility(View.VISIBLE);
@@ -223,7 +223,7 @@ public class CommonDialog extends Dialog {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(dialog_img);
             if (txtTitle.getVisibility() == View.GONE)
-                msg_text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+                msg_text.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
         }
 
 

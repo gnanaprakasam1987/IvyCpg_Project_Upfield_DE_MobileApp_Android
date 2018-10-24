@@ -69,7 +69,7 @@ public class OrderTransactionListDialog extends Dialog {
                 dismiss();
             }
         });
-        new_order_tv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+        new_order_tv.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
         Button close = findViewById(R.id.cancel_btn);
         close.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
         close.setOnClickListener(new View.OnClickListener() {

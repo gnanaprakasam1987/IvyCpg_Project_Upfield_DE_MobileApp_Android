@@ -151,8 +151,8 @@ public class AssetTrackingHelper {
             surveyHelperNew.loadSurveyAnswers(0);
             // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
             mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
-            mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
-                    mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
+            mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(
+                    mBusinessModel.productHelper.getRetailerModuleSequenceValues(),false));
 
         }
 
@@ -168,8 +168,8 @@ public class AssetTrackingHelper {
         //download filter levels
         // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
         mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
-        mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
-                mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
+        mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(
+                mBusinessModel.productHelper.getRetailerModuleSequenceValues(),false));
 
         // Load master records
         downloadAssetMaster(mContext, mMenuCode);

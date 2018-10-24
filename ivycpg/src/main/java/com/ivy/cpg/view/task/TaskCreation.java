@@ -105,24 +105,24 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
 
         TextView task_title = findViewById(R.id.task_title_tv);
         TextView applicable_tv = findViewById(R.id.applicable_tv);
-        task_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        applicable_tv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        taskTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        taskView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        save.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        task_title.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        applicable_tv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        taskTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        taskView.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        save.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
 
         RadioGroup rb = findViewById(R.id.rg);
         final RadioButton seller_rb = findViewById(R.id.seller);
         final RadioButton channelwise_rb = findViewById(R.id.Channelwise);
         final RadioButton retailerwise_rb = findViewById(R.id.Retailerwise);
-        seller_rb.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        seller_rb.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
         final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorSecondary, 0);
         seller_rb.setTextColor(color);
-        channelwise_rb.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        retailerwise_rb.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        channelwise_rb.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        retailerwise_rb.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         rb.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.seller) {
