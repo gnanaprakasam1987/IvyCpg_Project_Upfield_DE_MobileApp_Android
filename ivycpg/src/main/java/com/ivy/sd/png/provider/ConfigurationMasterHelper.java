@@ -1516,6 +1516,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_GLOBAL_SHOW_NO_ORDER_REASON = "FUN74";
     public boolean SHOW_GLOBAL_NO_ORDER_REASON;
+    private static final String CODE_MENU_FIREBASE_CHAT = "CHAT02";
+    public boolean IS_FIREBASE_CHAT_ENABLED;
+
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2660,6 +2663,8 @@ public class ConfigurationMasterHelper {
         // Unload non salable product returns.
         this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
         this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
+
+        this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
     }
 
     private boolean isInOutModule() {

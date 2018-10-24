@@ -192,6 +192,17 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import co.chatsdk.core.session.ChatSDK;
+import co.chatsdk.core.session.Configuration;
+import co.chatsdk.firebase.FirebaseNetworkAdapter;
+import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
+import co.chatsdk.firebase.push.FirebasePushModule;
+import co.chatsdk.ui.manager.BaseInterfaceAdapter;
+
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_FIREBASE_STORAGE_URL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_SERVER_KEY;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
+
 import javax.inject.Inject;
 
 public class BusinessModel extends Application {
@@ -680,6 +691,7 @@ public class BusinessModel extends Application {
 
             codeCleanUpUtil = CodeCleanUpUtil.getInstance(this, appDataProvider);
 
+            initializeChatSdk();
 
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -691,6 +703,8 @@ public class BusinessModel extends Application {
 
     public CodeCleanUpUtil codeCleanUpUtil;
 
+
+
     public IvyAppComponent getComponent() {
         return mApplicationComponent;
     }
@@ -698,6 +712,46 @@ public class BusinessModel extends Application {
 
     /*******************************************************************************************************************************************************************************/
 
+    public void initializeChatSdk(){
+        try {
+            Context context = getApplicationContext();
+
+            String rootPath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
+
+            if (!rootPath.equals("")) {
+
+                Commons.print("Check CHAT SDK INITIALIZATION");
+
+// Create a new configuration
+                Configuration.Builder builder = new Configuration.Builder(context);
+
+                builder.firebaseRootPath(rootPath);
+                builder.firebaseStorageURL(BuildConfig.FB_STORAGE_URL); // /files/new_folder_cpg/chat_img
+                //builder.firebaseCloudMessagingServerKey(BuildConfig.FB_SERVER_KEY);
+                builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
+                builder.locationMessagesEnabled(true);
+                //builder.imageMessagesEnabled(false);
+                builder.setInboundPushHandlingEnabled(true);
+                builder.setShowLocalNotifications(true);
+
+                builder.groupsEnabled(false);
+                builder.threadDetailsEnabled(false);
+                builder.publicRoomCreationEnabled(false);
+                builder.setClientPushEnabled(true);
+                builder.pushNotificationColor(R.attr.primarycolor);
+                builder.pushNotificationImageDefaultResourceId(R.drawable.launchericon);
+
+
+                ChatSDK.initialize(builder.build(), new BaseInterfaceAdapter(context), new FirebaseNetworkAdapter());
+
+                FirebaseFileStorageModule.activate();
+                FirebasePushModule.activateForFirebase();
+            }
+
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+    }
 
     @Override
     public void onTerminate() {

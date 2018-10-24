@@ -15,16 +15,19 @@ import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_PASSWORD;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 
 public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
@@ -43,7 +46,11 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
     public void validateLoginAndUpdate(final Context context, final String pathNode, final LocationDetailBO locationDetailBO, final String from){
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 
-            String email = FIREBASE_EMAIL;
+            String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL, "");
+
+            if (email.equals(""))
+                return;
+
             String password = FIREBASE_PASSWORD;
 
             if(email.trim().length() > 0 && password.trim().length() > 0) {
@@ -61,6 +68,10 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                             }else if (from.equalsIgnoreCase("Location")){
                                 updateFirebaseData(context, locationDetailBO);
                             }
+
+                            BusinessModel businessModel = (BusinessModel)context.getApplicationContext();
+                            if (businessModel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
+                                businessModel.initializeChatSdk();
 
                         } else {
                             Commons.print("Service firebase onComplete: Failed=");
@@ -105,6 +116,12 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
      */
     @Override
     public void updateAttendanceIn(final Context context, String pathNode) {
+
+        String rootPath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
+
+        if (rootPath.equals(""))
+            return;
+
         int userId = 0;
         String userName = "";
         String parentPositionIds="";
@@ -122,6 +139,9 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         attendanceObj.put("userId",userId);
         attendanceObj.put("userName",userName);
 
+        String UId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        attendanceObj.put("uid",UId);
+
         String[] splitSupervisorIds = parentPositionIds.split("/");
 
         for(String ids :splitSupervisorIds) {
@@ -129,7 +149,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                 attendanceObj.put(ids, true);
         }
 
-        db.collection(FIRESTORE_BASE_PATH)
+        db.collection(rootPath)
                 .document(ATTENDANCE_PATH)
                 .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
                 .document(userId+"")
@@ -143,6 +163,11 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
     @Override
     public void updateAttendanceOut(Context context, String pathNode) {
 
+        String rootPath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
+
+        if (rootPath.equals(""))
+            return;
+
         String userId = "";
         UserMasterBO userMasterBO = getUserDetail(context);
         if (userMasterBO != null) {
@@ -153,7 +178,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         attendanceObj.put("outTime", System.currentTimeMillis());
         attendanceObj.put("status", "Day Closed");
 
-        db.collection(FIRESTORE_BASE_PATH)
+        db.collection(rootPath)
                 .document(ATTENDANCE_PATH)
                 .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
                 .document(userId)
@@ -164,6 +189,12 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
      * Insert or update Location data and attendance data in Firebase Node
      */
     private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO) {
+
+        String rootPath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
+
+        if (rootPath.equals(""))
+            return;
+
         int userId = 0 ;
         String userName = "";
         String parentPositionIds="";
@@ -192,7 +223,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             if (!ids.isEmpty())
                 locationObj.put(ids,true);
 
-        db.collection(FIRESTORE_BASE_PATH)
+        db.collection(rootPath)
                 .document(REALTIME_LOCATION_PATH)
                 .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
                 .document(userId+"")
@@ -217,9 +248,6 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                 userMasterBO.setUserid(cursor.getInt(0));
                 userMasterBO.setUserName(cursor.getString(1));
                 userMasterBO.setBackupSellerID(cursor.getString(2)); //Storing Parent Position Ids
-
-//                userMasterBO.setUserid(8);
-//                userMasterBO.setUserName("Mansoor");
 
                 cursor.close();
             }

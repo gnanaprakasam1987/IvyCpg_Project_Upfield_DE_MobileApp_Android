@@ -151,7 +151,17 @@ public class RealTimeLocationService extends Service {
 //                        if (supervisorLastUpdate != 0) {
 //                            if ((System.currentTimeMillis() - supervisorLastUpdate) < timeDiff){
 
-                                realTimeLocation.onRealTimeLocationReceived(locationDetailBO,getApplicationContext());
+                        realTimeLocation.onRealTimeLocationReceived(locationDetailBO,getApplicationContext());
+
+                        Intent sendGpsServiceIntent = new Intent(getApplicationContext(),RealtimeLocationUploadIntentService.class);
+
+                        Bundle b = new Bundle();
+                        b.putSerializable("LOCATION",locationDetailBO);
+                        b.putString("Activity",activityName);
+                        sendGpsServiceIntent.putExtras(b);
+
+                        // Start intent service to upload location details
+                        startService(sendGpsServiceIntent);
 
 //                            }
 //
