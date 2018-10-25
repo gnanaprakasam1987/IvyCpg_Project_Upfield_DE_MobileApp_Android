@@ -250,7 +250,11 @@ public class TaskFragment extends IvyBaseFragment {
             }
         });
 
-        updateTasks(0);
+        if (bmodel.configurationMasterHelper.IS_SHOW_ONLY_SERVER_TASK) {
+            updateTasks(1);
+        } else {
+            updateTasks(0);
+        }
 
         return view;
     }

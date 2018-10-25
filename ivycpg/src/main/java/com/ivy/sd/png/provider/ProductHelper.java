@@ -1890,6 +1890,7 @@ public class ProductHelper {
                     product.getLocations().get(z).setWHOuter(0);
                     product.getLocations().get(z).setWHCase(0);
                     product.getLocations().get(z).setWHPiece(0);
+                    product.getLocations().get(z).setFacingQty(0);
                 }
 
                 //clear delivered qty
