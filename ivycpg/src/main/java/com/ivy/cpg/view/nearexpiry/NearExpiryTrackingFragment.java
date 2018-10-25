@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -94,8 +95,15 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_nearexpiry_tracking,
                 container, false);
-        mDrawerLayout = (DrawerLayout) view.findViewById(
+
+        mDrawerLayout =  view.findViewById(
                 R.id.drawer_layout);
+        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        params.width = width;
+        drawer.setLayoutParams(params);
+
         return view;
     }
 
