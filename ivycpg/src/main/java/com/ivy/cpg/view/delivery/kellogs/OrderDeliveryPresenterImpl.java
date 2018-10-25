@@ -121,6 +121,11 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 //                        ,context.getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
 //                return;
 //            }
+            if(totalOrderValue<totalReturnValue){
+                Toast.makeText(context
+                        ,context.getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
+                return;
+            }
 
             final CommonDialog dialog = new CommonDialog(context.getApplicationContext(), context, "", context.getResources().getString(R.string.order_delivery_approve), false,
                     context.getResources().getString(R.string.ok), context.getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {

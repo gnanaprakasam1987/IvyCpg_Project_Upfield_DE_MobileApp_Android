@@ -2296,6 +2296,12 @@ public class NewOutletFragment extends IvyBaseFragment
             checkRegex(profileConfig.get(mNumber).getRegex());
         }
 
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS1") ||
+                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS2") ||
+                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS3")) {
+            addLengthFilter(profileConfig.get(mNumber).getRegex());
+        }
+
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PAN_NUMBER")) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             //checkPANRegex(mNumber);

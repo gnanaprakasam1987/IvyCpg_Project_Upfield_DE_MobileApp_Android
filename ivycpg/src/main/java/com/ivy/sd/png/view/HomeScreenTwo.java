@@ -1780,12 +1780,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 bmodel.productHelper.getmProductidOrderByEntryMap().clear();
                             }
 
-                            if (bmodel.isEdit()) {
-                                orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
-                                        .getRetailerID(), null);
-                                orderHelper.loadSerialNo(this);
-                                enableSchemeModule();
-                            }
                             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                                 bmodel.collectionHelper.downloadDiscountSlab();
                             }
@@ -1836,86 +1830,62 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                             if (bmodel.isEdit()) {
-                                OrderHelper.getInstance(this).isQuickCall = false;
-                                Intent intent = new Intent(HomeScreenTwo.this,
-                                        OrderSummary.class);
-                                intent.putExtra("ScreenCode", "MENU_ORDER");
-                                startActivity(intent);
-                                finish();
 
-                            } else {
                                 bmodel.productHelper.downloadIndicativeOrderList();
 
-                                for (Integer temp : bmodel.productHelper
-                                        .getIndicativeList())
-                                    indicativeOrderAdapter.add(temp);
+                                if (bmodel.productHelper.getIndicativeList() != null
+                                        && bmodel.productHelper.getIndicativeList().size() < 1
+                                        && bmodel.configurationMasterHelper.IS_MULTI_STOCKORDER) {
 
-                                if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
-                                        "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
-                                    if (bmodel.getRetailerMasterBO()
-                                            .getCredit_balance() == -1
-                                            || bmodel.getRetailerMasterBO()
-                                            .getCredit_balance() > 0) {
-
-                                        if (bmodel.productHelper.getIndicativeList() != null) {
-                                            if (bmodel.productHelper.getIndicativeList().size() > 1) {
-                                                showIndicativeOrderFilterAlert(menu.getConfigCode());
-                                                return;
-                                            }
-                                            if (bmodel.productHelper.getIndicativeList().size() > 0) {
-                                                if (!bmodel.productHelper.isAlreadyIndicativeOrderTaken(bmodel.productHelper.getIndicativeList().get(0))
-                                                        && !bmodel.isEdit()) {
-                                                    bmodel.productHelper.downloadIndicativeOrder(bmodel.productHelper.getIndicativeList().get(0));
-                                                    bmodel.productHelper.updateIndicateOrder();
-                                                }
-                                            }
+                                    orderHelper.selectedOrderId = "";//cleared to avoid reuse of id
+                                    final String menuConfigCode = menu.getConfigCode();
+                                    final String menuName = menu.getMenuName();
+                                    OrderTransactionListDialog obj = new OrderTransactionListDialog(getApplicationContext(), HomeScreenTwo.this, new OrderTransactionListDialog.newOrderOnClickListener() {
+                                        @Override
+                                        public void onNewOrderButtonClick() {
+                                            //the methods that were called during normal stock and order loading in non edit mode are called here
+                                            //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
+                                            bmodel.setOrderHeaderBO(null);
+                                            OrderHelper.getInstance(HomeScreenTwo.this).selectedOrderId = "";
+                                            loadRequiredMethodsforOrder(menuConfigCode);
                                         }
-                                        bmodel.outletTimeStampHelper
-                                                .saveTimeStampModuleWise(
-                                                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                                                        SDUtil.now(SDUtil.TIME),
-                                                        menu.getConfigCode());
-                                        OrderHelper.getInstance(this).isQuickCall = false;
-                                        Intent i = new Intent(HomeScreenTwo.this,
-                                                StockAndOrder.class);
-                                        i.putExtra("OrderFlag", "Nothing");
-                                        i.putExtra("ScreenCode",
-                                                ConfigurationMasterHelper.MENU_ORDER);
-                                        startActivity(i);
-                                        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-                                        finish();
-                                    } else {
-                                        showDialog(INVOICE_CREDIT_BALANCE);
-                                    }
+                                    }, new OrderTransactionListDialog.oldOrderOnClickListener() {
+                                        @Override
+                                        public void onOldOrderButtonClick(String id) {
+                                            OrderHelper.getInstance(HomeScreenTwo.this).selectedOrderId = id;
+                                            //the methods that were called during normal stock and order loading in edit mode are called here
+                                            //selectedOrderId is passed to loadOrderedProducts method  to load ordered products for that id
+                                            //loadSerialNo,enableSchemeModule included as these were called in edit mode
+                                            OrderHelper.getInstance(HomeScreenTwo.this).loadOrderedProducts(HomeScreenTwo.this, bmodel.getRetailerMasterBO()
+                                                    .getRetailerID(), id);
+                                            OrderHelper.getInstance(HomeScreenTwo.this).loadSerialNo(HomeScreenTwo.this);
+                                            enableSchemeModule();
+                                            loadOrderSummaryScreen(menuConfigCode);
+                                        }
+                                    }, false, new OrderTransactionListDialog.OnDismissListener() {
+                                        @Override
+                                        public void onDismiss() {
+                                            isCreated = false;
+                                            isClick = false;
+                                        }
+                                    });
+                                    obj.show();
+                                    obj.setCancelable(false);
                                 } else {
+                                    orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
+                                            .getRetailerID(), null);
+                                    orderHelper.loadSerialNo(this);
+                                    enableSchemeModule();
 
-                                    if (bmodel.productHelper.getIndicativeList() != null) {
-                                        if (bmodel.productHelper.getIndicativeList().size() > 1) {
-                                            showIndicativeOrderFilterAlert(menu.getConfigCode());
-                                            return;
-                                        }
-                                        if (bmodel.productHelper.getIndicativeList().size() > 0) {
-                                            if (!bmodel.productHelper.isAlreadyIndicativeOrderTaken(bmodel.productHelper.getIndicativeList().get(0))
-                                                    && !bmodel.isEdit()) {
-                                                bmodel.productHelper.downloadIndicativeOrder(bmodel.productHelper.getIndicativeList().get(0));
-                                                bmodel.productHelper.updateIndicateOrder();
-                                            }
-                                        }
-                                    }
-                                    bmodel.outletTimeStampHelper
-                                            .saveTimeStampModuleWise(
-                                                    SDUtil.now(SDUtil.DATE_GLOBAL),
-                                                    SDUtil.now(SDUtil.TIME),
-                                                    menu.getConfigCode());
-                                    OrderHelper.getInstance(this).isQuickCall = false;
-                                    Intent i = new Intent(HomeScreenTwo.this,
-                                            StockAndOrder.class);
-                                    i.putExtra("OrderFlag", "Nothing");
-                                    i.putExtra("ScreenCode",
-                                            ConfigurationMasterHelper.MENU_ORDER);
-                                    startActivity(i);
+                                    Intent intent = new Intent(HomeScreenTwo.this,
+                                            OrderSummary.class);
+                                    intent.putExtra("ScreenCode", "MENU_ORDER");
+                                    startActivity(intent);
                                     finish();
+
                                 }
+                            } else {
+                                loadRequiredMethodsforOrder(menu.getConfigCode());
                             }
 
                         } else {
@@ -3859,6 +3829,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 //                            bmodel.productHelper
 //                                    .downloadFiveFilterLevels("MENU_STK_ORD");
             intent.putExtra("ScreenCode", MENU_CATALOG_ORDER);
+        } else if(menuConfigCode.equals(MENU_ORDER)){
+            intent.putExtra("ScreenCode", MENU_ORDER);
         } else {
             intent.putExtra("ScreenCode", "MENU_STK_ORD");
         }
@@ -4985,5 +4957,77 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         }
     }
 
+    private void loadRequiredMethodsforOrder(String configCode){
+        bmodel.productHelper.downloadIndicativeOrderList();
+        for (Integer temp : bmodel.productHelper
+                .getIndicativeList())
+            indicativeOrderAdapter.add(temp);
 
+        if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
+                "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
+            if (bmodel.getRetailerMasterBO()
+                    .getCredit_balance() == -1
+                    || bmodel.getRetailerMasterBO()
+                    .getCredit_balance() > 0) {
+
+                if (bmodel.productHelper.getIndicativeList() != null) {
+                    if (bmodel.productHelper.getIndicativeList().size() > 1) {
+                        showIndicativeOrderFilterAlert(configCode);
+                        return;
+                    }
+                    if (bmodel.productHelper.getIndicativeList().size() > 0) {
+                        if (!bmodel.productHelper.isAlreadyIndicativeOrderTaken(bmodel.productHelper.getIndicativeList().get(0))
+                                && !bmodel.isEdit()) {
+                            bmodel.productHelper.downloadIndicativeOrder(bmodel.productHelper.getIndicativeList().get(0));
+                            bmodel.productHelper.updateIndicateOrder();
+                        }
+                    }
+                }
+                bmodel.outletTimeStampHelper
+                        .saveTimeStampModuleWise(
+                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                                SDUtil.now(SDUtil.TIME),
+                                configCode);
+                OrderHelper.getInstance(this).isQuickCall=false;
+                Intent i = new Intent(HomeScreenTwo.this,
+                        StockAndOrder.class);
+                i.putExtra("OrderFlag", "Nothing");
+                i.putExtra("ScreenCode",
+                        ConfigurationMasterHelper.MENU_ORDER);
+                startActivity(i);
+                overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                finish();
+            } else {
+                showDialog(INVOICE_CREDIT_BALANCE);
+            }
+        } else {
+
+            if (bmodel.productHelper.getIndicativeList() != null) {
+                if (bmodel.productHelper.getIndicativeList().size() > 1) {
+                    showIndicativeOrderFilterAlert(configCode);
+                    return;
+                }
+                if (bmodel.productHelper.getIndicativeList().size() > 0) {
+                    if (!bmodel.productHelper.isAlreadyIndicativeOrderTaken(bmodel.productHelper.getIndicativeList().get(0))
+                            && !bmodel.isEdit()) {
+                        bmodel.productHelper.downloadIndicativeOrder(bmodel.productHelper.getIndicativeList().get(0));
+                        bmodel.productHelper.updateIndicateOrder();
+                    }
+                }
+            }
+            bmodel.outletTimeStampHelper
+                    .saveTimeStampModuleWise(
+                            SDUtil.now(SDUtil.DATE_GLOBAL),
+                            SDUtil.now(SDUtil.TIME),
+                            configCode);
+            OrderHelper.getInstance(this).isQuickCall=false;
+            Intent i = new Intent(HomeScreenTwo.this,
+                    StockAndOrder.class);
+            i.putExtra("OrderFlag", "Nothing");
+            i.putExtra("ScreenCode",
+                    ConfigurationMasterHelper.MENU_ORDER);
+            startActivity(i);
+            finish();
+        }
+    }
 }

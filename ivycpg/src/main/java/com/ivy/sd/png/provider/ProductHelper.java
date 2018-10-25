@@ -1765,6 +1765,7 @@ public class ProductHelper {
                     product.getLocations().get(z).setWHOuter(0);
                     product.getLocations().get(z).setWHCase(0);
                     product.getLocations().get(z).setWHPiece(0);
+                    product.getLocations().get(z).setFacingQty(0);
                 }
 
                 //clear delivered qty
@@ -4405,7 +4406,7 @@ public class ProductHelper {
         }
         sb = new StringBuffer();
         sb.append("update orderheader set ");
-        sb.append("discount=discount+" + totDiscVaue);
+        sb.append("discount=discount+" + SDUtil.convertToDouble(SDUtil.format(totDiscVaue, bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0)));
         sb.append(" where orderid=" + orderID);
         db.updateSQL(sb.toString());
 
