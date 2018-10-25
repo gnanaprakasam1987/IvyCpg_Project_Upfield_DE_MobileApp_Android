@@ -39,6 +39,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 public class CompetitorTackingFragment extends IvyBaseFragment {
 
@@ -234,6 +236,25 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            try {
+                Iterator it = bmodel.getPhotosTakeninCurrentCompetitorTracking().entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
+                    String value = pair.getValue().toString();
+                    String fileName = value.substring(value.lastIndexOf('/') + 1, value.length());
+                    String path = value.substring(0, value.lastIndexOf('/'));
+                    bmodel.competitorTrackingHelper
+                            .deleteImageName(fileName);
+                    bmodel.competitorTrackingHelper.deleteFiles(
+                            path, fileName);
+
+                    //it.remove(); // avoids a ConcurrentModificationException
+                }
+                bmodel.getPhotosTakeninCurrentCompetitorTracking().clear();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
             if (calledBy.equals("3")) {
 //                startActivity(new Intent(getActivity(), CSHomeScreen.class));
                 getActivity().finish();

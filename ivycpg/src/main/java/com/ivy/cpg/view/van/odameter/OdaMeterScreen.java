@@ -141,6 +141,17 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         CustomDigitalClock clk1 = findViewById(R.id.digitalClock1);
         CustomDigitalClock clk2 = findViewById(R.id.digitalClock2);
 
+        try {
+            ((TextView) findViewById(R.id.vanno)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.vanno).getTag()) != null)
+                ((TextView) findViewById(R.id.vanno))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.vanno).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
         vanno.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
         vannovalue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
         ((TextView) this.findViewById(R.id.datetxtview)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));

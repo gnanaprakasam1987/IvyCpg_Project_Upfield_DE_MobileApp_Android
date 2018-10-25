@@ -3820,6 +3820,7 @@ SynchronizationHelper {
     public boolean validateUser(String username, String password) {
         LoginHelper.getInstance(context).loadPasswordConfiguration(context);
         boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
+        if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
         boolean isPwd;
         if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
             if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
@@ -3846,6 +3847,7 @@ SynchronizationHelper {
             }
 
             isUser = username.equalsIgnoreCase(jointCallUser.getLoginName());
+            if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
             if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
                 if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                     isPwd = encryptPassword(password).equalsIgnoreCase(jointCallUser.getPassword());
