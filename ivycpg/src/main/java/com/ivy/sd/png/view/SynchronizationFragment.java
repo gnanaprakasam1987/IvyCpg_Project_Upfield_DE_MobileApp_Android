@@ -342,7 +342,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                                     .getString(
                                                                             R.string.you_are_closing)
                                                                     + " "
-                                                                    + SDUtil.today()
+                                                                    + bmodel.getDay(SDUtil.now(SDUtil.DATE_GLOBAL))
                                                                     + " "
                                                                     + "("
                                                                     + DateUtil
@@ -357,7 +357,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                                 .getString(
                                                                         R.string.you_are_closing)
                                                                 + " "
-                                                                + SDUtil.today()
+                                                                + bmodel.getDay(SDUtil.now(SDUtil.DATE_GLOBAL))
                                                                 + " "
                                                                 + "("
                                                                 + DateUtil

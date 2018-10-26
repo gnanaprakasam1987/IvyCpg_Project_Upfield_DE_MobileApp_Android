@@ -3661,13 +3661,13 @@ public class OrderHelper {
                         totalReturnQty += totalQty;
                     }
                 }
-                totalReturnAmount += (totalReturnQty * product.getSrp());
+                totalReturnAmount += (totalReturnQty * (double)product.getSrp());
             }
 
 
             // Calculate replacement qty price.
             int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
-            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * product.getSrp();
+            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * (double)product.getSrp();
         }
 
         //Check for whether the replacement amount and return amount are same, works only for Cash customer
