@@ -1264,8 +1264,6 @@
     <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
 
-
-
     <string name="bill">Bill</string>
     <string name="line_value">Line value</string>
     <string name="tax_Value">Tax Value</string>
@@ -1277,6 +1275,9 @@
     <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
     <!--<string name="Signature">Signature</string>-->
     <string name="attachment">Attachment</string>
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">实用</string>
 
     <string name="stores">Stores</string>
     <string name="check_anyone_fromlist">Check anyone from the List</string>

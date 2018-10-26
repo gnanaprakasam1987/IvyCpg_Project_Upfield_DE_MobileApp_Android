@@ -1278,6 +1278,9 @@
     <string name="sch_disc">سياسة البيع</string>
     <!--<string name="signature">الامضاء</string>-->
     <string name="attachment">مرفق</string>
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">رائج</string>
 
     <string name="stores">Stores</string>
     <string name="check_anyone_fromlist">Check anyone from the List</string>
