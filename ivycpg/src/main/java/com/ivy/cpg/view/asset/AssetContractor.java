@@ -52,5 +52,8 @@ public interface AssetContractor {
          void isDataExistToSave(boolean isExist,boolean isPhotoExist,boolean isReasonExist,String errorMsg);
          void cancelProgressDialog();
 
+        void showError(String errorMsg);
+
+        void save();
     }
 }
