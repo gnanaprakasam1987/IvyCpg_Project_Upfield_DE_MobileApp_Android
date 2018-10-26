@@ -93,7 +93,7 @@
         <item name="android:selectAllOnFocus">true</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
-        <item name="android:textSize">@dimen/list_item_primary_text_size</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
     </style>
     <!-- New Design - Common Themes  -->
 

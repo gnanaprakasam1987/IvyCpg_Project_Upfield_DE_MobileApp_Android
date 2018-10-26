@@ -40,7 +40,7 @@
                 android:layout_marginBottom="@dimen/dimens_10dp"
                 android:text="@string/enter_remark_to_set"
                 android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/list_primary" />
+                android:textSize="@dimen/text_size_primary" />
 
             <EditText
                 android:id="@+id/remarks"
@@ -76,7 +76,7 @@
                 android:layout_marginBottom="@dimen/dimens_10dp"
                 android:text="@string/rfield1"
                 android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/list_primary" />
+                android:textSize="@dimen/text_size_primary" />
 
             <EditText
                 android:id="@+id/rField1"
@@ -113,7 +113,7 @@
                 android:layout_marginBottom="@dimen/dimens_10dp"
                 android:text="@string/rfield1"
                 android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/list_primary" />
+                android:textSize="@dimen/text_size_primary" />
 
             <Spinner
                 android:id="@+id/spnrField1"
@@ -145,7 +145,7 @@
                 android:layout_marginBottom="@dimen/dimens_10dp"
                 android:text="@string/rfield2"
                 android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/list_primary" />
+                android:textSize="@dimen/text_size_primary" />
 
             <EditText
                 android:id="@+id/rField2"
@@ -184,7 +184,7 @@
                 android:text="@string/remarks_type_label"
                 android:tag="remark_type"
                 android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/list_primary" />
+                android:textSize="@dimen/text_size_primary" />
 
             <Spinner
                 android:id="@+id/spinner_remark_type"

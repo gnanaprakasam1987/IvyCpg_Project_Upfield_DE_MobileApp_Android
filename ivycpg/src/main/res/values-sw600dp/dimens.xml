@@ -375,7 +375,7 @@
     <dimen name="footer_padding">10dp</dimen>
 
     <dimen name="footer_height">65dp</dimen>
-    <dimen name="list_padding_left_n_right">8dp</dimen>
+    <dimen name="list_padding_left_n_right">10dp</dimen>
     <dimen name="list_item_padding_top_nd_bottom">19dp</dimen>
 
     <dimen name="filter_drawer_footer_height">75dp</dimen>
@@ -675,9 +675,9 @@
 
     <!-- Generic text size-->
 
-    <dimen name="text_sz_extra_small">10sp</dimen>
-    <dimen name="text_sz_small">14sp</dimen>
-    <dimen name="text_sz_medium">16sp</dimen>
+
+
+
 
     <!-- user name in home menu, retailer name in profile and activity menu etc -->
     <dimen name="highlight_small">24sp</dimen>
@@ -686,15 +686,35 @@
     <!-- Beat name in trade coverage etc -->
     <dimen name="highlight_large">34sp</dimen>
 
-    <dimen name="list_primary">16sp</dimen>
-    <dimen name="list_secondary">14sp</dimen>
+
+
 
     <dimen name="actionbar_title_text_size">24sp</dimen>
+    <dimen name="text_size_primary">16sp</dimen>
+    <dimen name="text_size_secondary">14sp</dimen>
+    <dimen name="text_size_caption">14sp</dimen>
+
+    <!-- List header text size -->
+    <dimen name="list_header_text_size">16sp</dimen>
+    <dimen name="list_header_secondary_text_size">14sp</dimen>
+
+    <!-- Button text size -->
+    <dimen name="btn_small_round_corner_text_size">16sp</dimen>
+    <dimen name="btn_round_corner_text_size">18sp</dimen>
+
+
+
+
+
+
+    <!-- Footer text size -->
+    <dimen name="footer_label_size">14sp</dimen>
+    <dimen name="footer_label_value">18sp</dimen>
 
     <!-- ALL test size -->
 
-    <dimen name="font_nano_small">14sp</dimen>
-    <dimen name="font_micro_small">16sp</dimen>
+
+
     <dimen name="font_small">18sp</dimen>
     <dimen name="font_medium">20sp</dimen>
     <dimen name="font_large">22sp</dimen>
@@ -712,8 +732,7 @@
     <dimen name="percent_value_size">18sp</dimen>
 
 
-    <!-- List item text size -->
-    <dimen name="list_item_primary_text_size">16sp</dimen>
+
 
 
     <!-- Login - clear it later -->
@@ -721,17 +740,7 @@
     <dimen name="forgot_text_size">18sp</dimen>
     <dimen name="login_edittext_text_size">20sp</dimen>
 
-    <!-- List header text size -->
-    <dimen name="list_header_text_size">12sp</dimen>
-    <dimen name="list_header_secondary_text_size">11sp</dimen>
 
-    <!-- Button text size -->
-    <dimen name="btn_small_round_corner_text_size">14sp</dimen>
-    <dimen name="btn_round_corner_text_size">18sp</dimen>
-
-    <!-- Footer text size -->
-    <dimen name="greyed_text_size">12sp</dimen>
-    <dimen name="footer_lbl_text_size">16sp</dimen>
 
     <!-- Five level filter text size -->
     <dimen name="filter_level_text_size">18sp</dimen>

@@ -155,7 +155,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
 
 
         Button btnSave = (Button) view.findViewById(R.id.btn_save);
-        btnSave.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+      //  btnSave.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,7 +243,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                                 R.id.tv_isAvail).getTag()));
 
                     }
-                    ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                   // ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
 
             } catch (Exception e) {
@@ -260,7 +260,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                     .applyLabels(view.findViewById(
                                             R.id.tv_header_asset_name).getTag()));
                 }
-                ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+               // ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
 
         } catch (Exception e) {
@@ -282,7 +282,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                                 R.id.tv_is_executed).getTag()));
 
                     }
-                    ((TextView) view.findViewById(R.id.tv_is_executed)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                  //  ((TextView) view.findViewById(R.id.tv_is_executed)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
 
             } catch (Exception e) {

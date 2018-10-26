@@ -92,7 +92,7 @@
                     android:maxLines="1"
                     android:text="@string/questscore"
                     android:textColor="#83c341"
-                    android:textSize="@dimen/font_nano_small"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -148,7 +148,7 @@
                     android:maxLines="1"
                     android:text="@string/surevyscore"
                     android:textColor="#83c341"
-                    android:textSize="@dimen/font_nano_small"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
                 <LinearLayout

@@ -58,8 +58,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:text="@string/product_name"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/list_item_primary_text_size" />
+                            />
                     </RelativeLayout>
 
                     <TextView
@@ -70,8 +69,6 @@
                         android:layout_gravity="center"
                         android:tag="item_case"
                         android:text="@string/item_case"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/list_item_primary_text_size"
                         android:layout_weight="2"/>
 
                     <TextView
@@ -82,8 +79,6 @@
                         android:layout_gravity="center"
                         android:tag="item_piece"
                         android:text="@string/item_piece"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/list_item_primary_text_size"
                         android:layout_weight="1"/>
 
                     <TextView
@@ -94,8 +89,6 @@
                         android:layout_gravity="center"
                         android:tag="item_outer"
                         android:text="@string/item_outer"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/list_item_primary_text_size"
                         android:layout_weight="1"/>
 
                     <TextView
@@ -105,8 +98,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/value"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/list_item_primary_text_size"
                         android:layout_weight="2"/>
 
                     <!--<TextView-->
@@ -118,7 +109,7 @@
                     <!--android:tag="weighttitle"-->
                     <!--android:text="@string/weight"-->
                     <!--android:textColor="@color/white"-->
-                    <!--android:textSize="@dimen/list_item_primary_text_size" />-->
+                    <!--android:textSize="@dimen/text_size_secondary" />-->
                 </LinearLayout>
 
                 <ListView
@@ -167,7 +158,7 @@
             android:adjustViewBounds="true"
             android:text="@string/total_value"
             android:textColor="@color/GREEN"
-            android:textSize="@dimen/text_sz_small" />
+            android:textSize="@dimen/text_size_caption" />
 
         <TextView
             android:id="@+id/txttotal"
@@ -204,7 +195,7 @@
             android:adjustViewBounds="true"
             android:text="@string/tot_qty"
             android:textColor="@color/GREEN"
-            android:textSize="@dimen/text_sz_small" />
+            android:textSize="@dimen/text_size_caption" />
 
         <TextView
             android:id="@+id/txttotalqty"

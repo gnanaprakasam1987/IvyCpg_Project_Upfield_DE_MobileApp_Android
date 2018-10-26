@@ -22,7 +22,7 @@
             android:tag="order_fulfill_orderid"
             android:text="@string/order_id"
             android:textColor="@color/history_label_color"
-            android:textSize="@dimen/list_item_primary_text_size" />
+            android:textSize="@dimen/text_size_secondary" />
 
         <TextView
             android:id="@+id/txtOrderID"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@string/zero"
             android:textColor="?attr/primarycolor"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
     </LinearLayout>
 
 
@@ -48,7 +48,7 @@
             android:tag="order_fulfill_retailer"
             android:text="@string/retailer"
             android:textColor="@color/history_label_color"
-            android:textSize="@dimen/list_item_primary_text_size" />
+            android:textSize="@dimen/text_size_secondary" />
 
         <TextView
             android:id="@+id/txtRetailer"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:text="@string/zero"
             android:textColor="@color/history_date_color"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
     </LinearLayout>
 
 
@@ -74,7 +74,7 @@
             android:tag="order_fulfill_status"
             android:text="@string/status"
             android:textColor="@color/history_label_color"
-            android:textSize="@dimen/list_item_primary_text_size" />
+            android:textSize="@dimen/text_size_secondary" />
 
         <TextView
             android:id="@+id/txtStatus"
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:text="@string/zero"
             android:textColor="@color/history_date_color"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
     </LinearLayout>
 
     <LinearLayout
@@ -93,26 +93,26 @@
         android:layout_weight="0.5"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/dimen_5dp"
-        android:paddingEnd="@dimen/dimen_5dp"
         android:paddingLeft="@dimen/dimen_5dp"
+        android:paddingTop="@dimen/dimen_5dp"
+        android:paddingEnd="@dimen/dimen_5dp"
         android:paddingRight="@dimen/dimen_5dp"
-        android:paddingTop="@dimen/dimen_5dp">
+        android:paddingBottom="@dimen/dimen_5dp">
 
         <TextView
             android:id="@+id/inv_view_btn"
             android:layout_width="@dimen/profile_history_20dp"
             android:layout_height="@dimen/profile_history_25dp"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
             android:layout_marginEnd="@dimen/profile_header_txt_layout_marginbottom"
             android:layout_marginRight="@dimen/profile_header_txt_layout_marginbottom"
-            android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
             android:background="@drawable/ic_double_right_arrow"
             android:backgroundTint="@color/history_invbtn_color"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
             android:textColor="@color/toolbar_title"
-            android:textSize="@dimen/text_sz_extra_small" />
+            android:textSize="@dimen/text_size_caption" />
 
     </LinearLayout>
 </LinearLayout>

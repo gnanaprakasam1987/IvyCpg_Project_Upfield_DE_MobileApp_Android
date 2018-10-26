@@ -3,8 +3,11 @@
 
 <resources>
 
-    <dimen name="font_nano_small">16sp</dimen>
-    <dimen name="font_micro_small">18sp</dimen>
+    <dimen name="text_size_primary">18sp</dimen>
+    <dimen name="text_size_secondary">16sp</dimen>
+    <dimen name="text_size_caption">10sp</dimen>
+
+
     <dimen name="font_small">20sp</dimen>
     <dimen name="font_medium">22sp</dimen>
     <dimen name="font_large">24sp</dimen>

@@ -410,14 +410,14 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
         tv0.setTextColor(Color.WHITE);
         tv0.setGravity(Gravity.CENTER);
         tv0.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tv0.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_nano_small));
+        tv0.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_secondary));
         tbRowHeader.addView(tv0, params);
         for (int i = 0; i < dashBoardHelper.productsIds.size(); i++) {
             TextView tv1 = new TextView(getActivity());
             tv1.setId(i + 20);
             tv1.setText(dashBoardHelper.getProductName(dashBoardHelper.productsIds.get(i)));
             tv1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            tv1.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_nano_small));
+            tv1.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_secondary));
             tv1.setTextColor(Color.WHITE);
             tv0.setGravity(Gravity.CENTER);
             tbRowHeader.addView(tv1, params);
@@ -433,7 +433,7 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
             t1v.setTextColor(Color.BLACK);
             t1v.setGravity(Gravity.CENTER);
             t1v.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            t1v.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
+            t1v.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
             tbRowItems.addView(t1v, params);
             for (int j = 0; j < dashBoardHelper.productsIds.size(); j++) {
                 TextView t2v = new TextView(getActivity());
@@ -442,7 +442,7 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
                 t2v.setTextColor(Color.BLACK);
                 t2v.setGravity(Gravity.CENTER);
                 t2v.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                t2v.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_micro_small));
+                t2v.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
                 tbRowItems.addView(t2v, params);
             }
             table_main.addView(tbRowItems);

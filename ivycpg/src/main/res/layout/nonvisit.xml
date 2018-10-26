@@ -213,7 +213,7 @@
                         android:tag="all_day"
                         android:text="@string/day"
                         android:textColor="?attr/selectWeekBackground"
-                        android:textSize="@dimen/text_sz_medium" />
+                        android:textSize="@dimen/text_size_secondary" />
 
                     <Spinner
                         android:id="@+id/daySpinner"
@@ -247,7 +247,7 @@
                         android:tag="all_week"
                         android:text="@string/week"
                         android:textColor="?attr/selectWeekBackground"
-                        android:textSize="@dimen/text_sz_medium" />
+                        android:textSize="@dimen/text_size_secondary" />
 
                     <Spinner
                         android:id="@+id/spn_week"
@@ -284,7 +284,7 @@
                     android:layout_marginTop="@dimen/margin_week_layout"
                     android:text="@string/select_date"
                     android:textColor="?attr/selectWeekBackground"
-                    android:textSize="@dimen/text_sz_medium" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <Spinner
                     android:id="@+id/spin_date"
@@ -321,7 +321,7 @@
                     android:tag="all_beat"
                     android:text="@string/select_beat"
                     android:textColor="?attr/selectWeekBackground"
-                    android:textSize="@dimen/text_sz_medium" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <Spinner
                     android:id="@+id/spin_beat"

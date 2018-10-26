@@ -40,8 +40,7 @@
                 android:layout_weight="0.35"
                 android:gravity="start|center_vertical"
                 android:text="@string/invoice_no"
-                android:textColor="@color/white"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                />
 
             <TextView
                 android:id="@+id/invoice_date"
@@ -51,9 +50,7 @@
                 android:layout_centerVertical="true"
                 android:layout_weight="0.15"
                 android:gravity="start|center_vertical"
-                android:text="@string/inv_date"
-                android:textColor="@color/white"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:text="@string/inv_date" />
 
             <TextView
                 android:id="@+id/invoice_amount"
@@ -63,9 +60,7 @@
                 android:layout_centerVertical="true"
                 android:layout_weight="0.15"
                 android:gravity="end|center_vertical"
-                android:text="@string/inv_amt"
-                android:textColor="@color/white"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:text="@string/inv_amt" />
 
             <TextView
                 android:id="@+id/invoice_reason"
@@ -75,9 +70,7 @@
                 android:layout_centerVertical="true"
                 android:layout_weight="0.35"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="@string/reason"
-                android:textColor="@color/white"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:text="@string/reason" />
 
 
         </LinearLayout>
@@ -99,7 +92,7 @@
             android:layout_marginRight="@dimen/_10sdp"
             android:text="@string/done"
             android:textAllCaps="false"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
     </RelativeLayout>
 

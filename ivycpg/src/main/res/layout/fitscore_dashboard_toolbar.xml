@@ -80,7 +80,7 @@
                             android:layout_toRightOf="@+id/color_rep_black"
                             android:text="Target"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_nano_small" />
+                            android:textSize="@dimen/text_size_secondary" />
                     </LinearLayout>
 
                     <RelativeLayout
@@ -96,7 +96,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textStyle="normal"
                             tools:text="70" />
 
@@ -110,7 +110,7 @@
                             android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_nano_small"
+                            android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
 
@@ -151,7 +151,7 @@
                             android:layout_toRightOf="@+id/color_rep_orange"
                             android:text="Score"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_nano_small" />
+                            android:textSize="@dimen/text_size_secondary" />
                     </LinearLayout>
 
                     <RelativeLayout
@@ -167,7 +167,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textStyle="normal"
                             tools:text="70" />
 
@@ -181,7 +181,7 @@
                             android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_nano_small"
+                            android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
                     </RelativeLayout>
@@ -224,7 +224,7 @@
                             android:maxLines="1"
                             android:text="Previous Score"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_nano_small" />
+                            android:textSize="@dimen/text_size_secondary" />
                     </LinearLayout>
 
                     <RelativeLayout
@@ -240,7 +240,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textStyle="normal"
                             tools:text="70" />
 
@@ -254,7 +254,7 @@
                             android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/font_nano_small"
+                            android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
                     </RelativeLayout>
@@ -288,7 +288,7 @@
         android:paddingEnd="20dp"
         android:text=" pts"
         android:textColor="#80FFFFFF"
-        android:textSize="@dimen/font_nano_small"
+        android:textSize="@dimen/text_size_secondary"
         android:textStyle="normal"
         android:paddingRight="20dp" />
 </LinearLayout>

@@ -19,7 +19,7 @@
             android:layout_height="@dimen/list_title_height"
             android:gravity="left|center_vertical"
             android:padding="1dp"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             tools:text="t esr ewres" />
     </LinearLayout>
 
@@ -31,7 +31,7 @@
         android:gravity="center"
         android:singleLine="true"
         android:text=""
-        android:textSize="@dimen/font_micro_small"
+        android:textSize="@dimen/text_size_primary"
         tools:text="gfdf"
         android:layout_gravity="center_vertical" />
 
@@ -43,7 +43,7 @@
         android:gravity="center"
         android:singleLine="true"
         android:text=""
-        android:textSize="@dimen/font_micro_small"
+        android:textSize="@dimen/text_size_primary"
         tools:text="gfdf"
         android:layout_gravity="center_vertical" />-->
 
@@ -68,7 +68,7 @@
                 tools:text="hjjhjjhjj"
                 android:gravity="start|center_vertical"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:layout_marginTop="@dimen/divder_margin" />
         </RelativeLayout>
     </LinearLayout>
@@ -92,7 +92,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         tools:text="dfghfh fg"
-        android:textSize="@dimen/font_micro_small"
+        android:textSize="@dimen/text_size_primary"
         android:layout_weight="1.3"
         android:maxLines="1"
         android:layout_marginTop="@dimen/divder_margin" />

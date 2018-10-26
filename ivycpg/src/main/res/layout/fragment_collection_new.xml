@@ -42,7 +42,7 @@
                     android:gravity="center"
                     android:text="@string/tos_amount"
                     android:textColor="@color/collection_toptitle_color"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <TextView
                     android:id="@+id/tv_tos_amount"
@@ -78,7 +78,7 @@
                     android:gravity="center"
                     android:text="@string/PendingBills"
                     android:textColor="@color/collection_toptitle_color"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <TextView
                     android:id="@+id/tv_pending_bills"
@@ -114,7 +114,7 @@
                     android:gravity="center"
                     android:text="Due Bills"
                     android:textColor="@color/collection_toptitle_color"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <TextView
                     android:id="@+id/tv_due_bill"
@@ -169,7 +169,7 @@
                 android:layout_margin="@dimen/target_top_margin"
                 android:text="@string/pay"
                 android:textAllCaps="false"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
 
             <Button
                 android:id="@+id/btn_close"
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/os_amt"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
             </LinearLayout>
 
             <LinearLayout
@@ -239,7 +239,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Payable Amt"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
             </LinearLayout>
 
             <LinearLayout
@@ -261,7 +261,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Disc Amt"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
             </LinearLayout>
 
 

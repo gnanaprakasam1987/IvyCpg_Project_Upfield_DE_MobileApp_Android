@@ -28,7 +28,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/tot_qty"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/text_totalQuantity"
@@ -40,7 +40,7 @@
                 android:layout_marginEnd="@dimen/target_top_margin"
                 android:text="@string/zero"
                 android:textColor="@color/white"
-                android:textSize="@dimen/footer_lbl_text_size" />
+                android:textSize="@dimen/footer_label_value" />
 
             <View
                 android:id="@+id/view00"
@@ -63,7 +63,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/order_report_avg_line"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/footer_label_size"
                 android:visibility="visible"
                 android:layout_toRightOf="@+id/view00" />
 
@@ -79,7 +79,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/zero"
                 android:textColor="@color/white"
-                android:textSize="@dimen/footer_lbl_text_size"
+                android:textSize="@dimen/footer_label_value"
                 android:visibility="visible"
                 android:layout_toRightOf="@+id/lbl_total_qty" />
 
@@ -104,7 +104,7 @@
                 android:tag="total_value_or_volume"
                 android:text="@string/total_value"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/footer_label_size"
                 android:layout_marginLeft="@dimen/target_top_margin"
                 android:layout_toRightOf="@+id/view0" />
 
@@ -119,7 +119,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/zero"
                 android:textColor="@color/white"
-                android:textSize="@dimen/footer_lbl_text_size"
+                android:textSize="@dimen/footer_label_value"
                 android:layout_marginLeft="@dimen/target_top_margin"
                 android:layout_toRightOf="@+id/view0" />
 
@@ -147,7 +147,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/avg_lines"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/footer_label_size"
                 android:layout_marginLeft="@dimen/store_margin_top"
                 android:layout_marginRight="@dimen/target_top_margin"
                 android:layout_toRightOf="@+id/view1" />
@@ -163,7 +163,7 @@
                 android:layout_toEndOf="@+id/view1"
                 android:text="@string/zero"
                 android:textColor="@color/white"
-                android:textSize="@dimen/footer_lbl_text_size"
+                android:textSize="@dimen/footer_label_value"
                 android:layout_toRightOf="@+id/view1" />
 
     </RelativeLayout>

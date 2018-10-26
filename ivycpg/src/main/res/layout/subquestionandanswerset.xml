@@ -36,7 +36,7 @@
                     android:paddingStart="@dimen/dimen_2dp"
                     android:text="*"
                     android:textColor="@color/RED"
-                    android:textSize="@dimen/text_sz_medium"
+                    android:textSize="@dimen/text_size_secondary"
                     android:visibility="gone"
                     android:paddingLeft="@dimen/dimen_2dp" />
 
@@ -47,7 +47,7 @@
                     android:layout_marginStart="5dp"
                     android:gravity="center"
                     android:textColor="#ffffff"
-                    android:textSize="@dimen/text_sz_medium"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold"
                     android:visibility="gone"
                     android:layout_marginLeft="5dp" />
@@ -59,7 +59,7 @@
                     android:layout_marginStart="1dp"
                     android:layout_toEndOf="@+id/questionno"
                     android:textColor="@color/DependentBlack"
-                    android:textSize="@dimen/text_sz_medium"
+                    android:textSize="@dimen/text_size_secondary"
                     android:layout_marginLeft="1dp"
                     android:layout_toRightOf="@+id/questionno" />
 
@@ -138,7 +138,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="0 Photos Required"
-                    android:textSize="@dimen/font_nano_small" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -179,7 +179,7 @@
                                     android:background="@drawable/badge_circle"
                                     android:gravity="center_horizontal|center_vertical|center"
                                     android:textColor="?attr/colorPrimary"
-                                    android:textSize="@dimen/font_nano_small"
+                                    android:textSize="@dimen/text_size_secondary"
                                     android:textStyle="bold"
                                     android:visibility="gone"
                                     android:layout_alignRight="@id/imgBtn" />

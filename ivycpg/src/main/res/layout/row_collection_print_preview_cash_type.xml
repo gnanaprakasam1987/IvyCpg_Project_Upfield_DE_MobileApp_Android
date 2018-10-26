@@ -11,7 +11,7 @@
                    android:padding="5dp"
                    android:text=""
                    android:textColor="@android:color/black"
-                   android:textSize="@dimen/font_micro_small" />
+                   android:textSize="@dimen/text_size_primary" />
 
                <TextView
                    android:id="@+id/tv_date"
@@ -21,7 +21,7 @@
                    android:gravity="center"
                    android:padding="5dp"
                    android:textColor="@android:color/black"
-                   android:textSize="@dimen/font_micro_small" />
+                   android:textSize="@dimen/text_size_primary" />
 
 
                <TextView
@@ -33,7 +33,7 @@
                    android:padding="5dp"
                    android:text=""
                    android:textColor="@android:color/black"
-                   android:textSize="@dimen/font_micro_small" />
+                   android:textSize="@dimen/text_size_primary" />
 
                <TextView
                    android:id="@+id/tv_inv_num"
