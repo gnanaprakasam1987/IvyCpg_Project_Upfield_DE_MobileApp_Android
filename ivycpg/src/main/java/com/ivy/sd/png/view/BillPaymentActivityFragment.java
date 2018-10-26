@@ -194,6 +194,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         }
 
         mBalanceAmt = mTotalPayableAmt - paidAmt;
+        mBalanceAmt = Double.parseDouble(bmodel.formatBasedOnCurrency(mBalanceAmt));
         if (mBalanceAmt > 0) {
             mBalaceAmtTV.setText(bmodel.formatBasedOnCurrency(mBalanceAmt));
         } else {
@@ -398,6 +399,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 }
             }
         }
+        totalCollected = Double.parseDouble(bmodel.formatBasedOnCurrency(totalCollected));
         totalPayableAmt = Double.parseDouble(bmodel.formatBasedOnCurrency(totalPayableAmt));
         if (totalCollected == totalPayableAmt) {
             flag = true;

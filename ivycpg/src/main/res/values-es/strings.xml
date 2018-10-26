@@ -670,7 +670,7 @@
     <string name="replacement">Reemplazo</string>
     <string name="in_out">In &amp; Out</string>
     <string name="in_out_reason">Seleccione la Razón</string>
-    <string name="odometerjourneynotstarted">Se inició el recorrido del OdoMetro</string>
+    <string name="odometerjourneynotstarted">No ha ingresado el Kilometraje</string>
     <string name="contract_name">Nombre de Contrato</string>
     <string name="renew">Renovar</string>
     <string name="you_have_already_taken_maximun_images">Ya tomó el máximo de fotografías</string>
@@ -1325,4 +1325,10 @@
     <string name="tos_amount">Cantidad Total</string>
     <string name="other_reason_with_credit">Problema con su crédito Otros</string>
     <string name="store_activities">Actividades a realizar</string>
+
+    <string name="sales_type_presale">Preventa</string>
+    <string name="sales_type_vansale">Autoventa</string>
+    <string name="digital_content_header_this_month">Este mes</string>
+    <string name="digital_content_header_prev_month">Mes anterior</string>
+    <string name="digital_content_header_older">Antiguos</string>
 </resources>

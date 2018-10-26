@@ -454,7 +454,10 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA) {
+                if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+                        || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                        || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                        || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
                     orderHelper.setOrderId(inv.getOrderID());

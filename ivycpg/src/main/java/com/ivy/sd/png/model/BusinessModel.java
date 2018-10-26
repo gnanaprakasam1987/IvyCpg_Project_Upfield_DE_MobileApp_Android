@@ -5014,7 +5014,7 @@ public class BusinessModel extends Application {
             } else {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
                         + AppUtils.QT(getRetailerMasterBO().getRetailerID())
-                        + " and upload='N'");
+                        + " and upload='N' and is_vansales = 0");
             }
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {

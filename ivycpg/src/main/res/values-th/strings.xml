@@ -1329,4 +1329,10 @@
     <string name="tos_amount">TOS Amount</string>
     <string name="other_reason_with_credit">Others</string>
     <string name="store_activities">Store Activities</string>
+
+    <string name="sales_type_presale">PreSales</string>
+    <string name="sales_type_vansale">VanSales</string>
+    <string name="digital_content_header_this_month">This Month</string>
+    <string name="digital_content_header_prev_month">Previous Month</string>
+    <string name="digital_content_header_older">Older</string>
 </resources>
