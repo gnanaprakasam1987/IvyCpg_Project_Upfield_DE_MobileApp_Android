@@ -3980,7 +3980,7 @@ public class SchemeDetailsMasterHelper {
 
         ArrayList<String> mFreeGroupNameList = getFreeGroupNameListBySchemeID().get(mSchemeBO.getSchemeId());
 
-        if (mSchemeBO.isSihAvailableForFreeProducts()) {
+        if (mSchemeBO.isSihAvailableForFreeProducts()||!bModel.configurationMasterHelper.IS_INVOICE) {
 
             if (mSchemeBO.getFreeType().equals(AND_LOGIC) || mSchemeBO.getFreeType().equals(ONLY_LOGIC)) {
 
