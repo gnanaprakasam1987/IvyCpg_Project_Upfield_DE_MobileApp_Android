@@ -3651,6 +3651,10 @@ public class DashBoardHelper {
 
     }
 
+    @Deprecated
+    /**
+     * @See {@link SellerDashboardDataManagerImpl#fetchDailyReport()}
+     */
     public DailyReportBO downloadDailyReport() {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();

@@ -6,6 +6,7 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
@@ -791,6 +792,72 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                 shutDownDb();
                 return "";
+            }
+        });
+    }
+
+    @Override
+    public Single<DailyReportBO> fetchDailyReport() {
+        return Single.fromCallable(new Callable<DailyReportBO>() {
+            @Override
+            public DailyReportBO call() throws Exception {
+
+                DailyReportBO dailyRep = null;
+
+                StringBuffer sb = new StringBuffer();
+                Cursor c = null;
+                try {
+                    initDb();
+
+                    if (!configurationMasterHelper.IS_INVOICE) {
+                        sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
+                        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        c = mDbUtil
+                                .selectSQL(sb.toString());
+                        if (c != null) {
+                            if (c.moveToNext()) {
+
+                                dailyRep.setEffCoverage(c.getString(0));
+                                dailyRep.setTotLines(c.getInt(1) + "");
+                                dailyRep.setTotValues(c.getDouble(2) + "");
+                            }
+                            c.close();
+                        }
+                    } else {
+                        sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
+                        sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        c = mDbUtil
+                                .selectSQL(sb.toString());
+                        if (c != null) {
+                            if (c.moveToNext()) {
+                                dailyRep.setEffCoverage(c.getString(0));
+                                dailyRep.setTotLines(c.getInt(1) + "");
+                                dailyRep.setTotValues(c.getDouble(2) + "");
+                            }
+                            c.close();
+                        }
+                    }
+                    sb = new StringBuffer();
+                    sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
+                    sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    c = mDbUtil
+                            .selectSQL(sb.toString());
+                    if (c != null) {
+                        if (c.moveToNext()) {
+
+                            dailyRep.setMspValues(c.getString(0));
+                            dailyRep.setNoofOrder(c.getString(1));
+
+                        }
+                        c.close();
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+
+                shutDownDb();
+                return dailyRep;
             }
         });
     }

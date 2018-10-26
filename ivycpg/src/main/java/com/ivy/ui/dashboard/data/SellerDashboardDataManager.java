@@ -1,6 +1,7 @@
 package com.ivy.ui.dashboard.data;
 
 import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 
 import java.util.ArrayList;
@@ -33,5 +34,7 @@ public interface SellerDashboardDataManager {
     Observable<ArrayList<String>> getKpiWeekList();
 
     Single<String> getCurrentWeekInterval();
+
+    Single<DailyReportBO> fetchDailyReport();
 
 }
