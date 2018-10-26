@@ -916,7 +916,7 @@ public class CollectionHelper {
             paymentBO.setBranchId("");
             paymentBO.setBillNumber("");
             paymentBO.setChequeNumber("");
-            paymentBO.setCreditBalancePayment(false);
+            //paymentBO.setCreditBalancePayment(false);
             paymentBO.setDiscountedAmount(0);
             paymentBO.setBalance(0);
             paymentBO.setReceiptDate("");
