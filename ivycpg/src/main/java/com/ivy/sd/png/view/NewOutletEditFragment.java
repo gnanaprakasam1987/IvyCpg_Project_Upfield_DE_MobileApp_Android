@@ -440,15 +440,15 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
-                            bmodel.productHelper.getFilterProductLevels()));
-
-                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getFilterProductLevels(),true));
+
 
                     if (mParam.equals("1"))
                         bmodel.productHelper.updateOutletOrderedProducts(selectedRetId);
@@ -479,7 +479,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                     fromHomeScreen = true;
                 }
                 startActivity(i);
-               // getActivity().finish();
+                // getActivity().finish();
 
             } else {
                 bmodel = (BusinessModel) getActivity().getApplicationContext();

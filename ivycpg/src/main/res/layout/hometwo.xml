@@ -145,7 +145,7 @@
                     android:layout_marginStart="@dimen/activity_margin3"
                     android:layout_marginLeft="@dimen/activity_margin3"
                     android:tag="store_activities"
-                    android:text="Store activities"
+                    android:text="@string/store_activities"
                     android:textColor="#000000"
                     android:textSize="@dimen/font_medium" />
 

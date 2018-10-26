@@ -3,9 +3,7 @@ package com.ivy.cpg.view.van.vanstockapply;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatRadioButton;
@@ -64,8 +62,8 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         LinearLayout bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
 
         toolbarTxt.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
-        labelTxt1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        labelTxt2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        labelTxt1.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        labelTxt2.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         applybtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
         rejectbtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
@@ -154,7 +152,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     }
                 }).show();
             } else {
-                showMessage(getString(R.string.check_any_one_list));
+                showMessage(getString(R.string.check_anyone_fromlist));
             }
 
         } else if (BtnId == R.id.van_btn_reject) {
@@ -173,7 +171,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     }
                 }).show();
             } else {
-                showMessage(getString(R.string.check_any_one_list));
+                showMessage(getString(R.string.check_anyone_fromlist));
             }
         }
 
@@ -282,9 +280,9 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                 vanLoadDateTxt = (TextView) itemView.findViewById(R.id.vanLoad_date);
                 totalLineTxt = (TextView) itemView.findViewById(R.id.total_lines_txt);
 
-                vanLoadNoTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, VanLoadStockApplyActivity.this));
-                vanLoadDateTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, VanLoadStockApplyActivity.this));
-                totalLineTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, VanLoadStockApplyActivity.this));
+                vanLoadNoTxt.setTypeface(FontUtils.getFontRoboto(VanLoadStockApplyActivity.this, FontUtils.FontType.MEDIUM));
+                vanLoadDateTxt.setTypeface(FontUtils.getFontRoboto(VanLoadStockApplyActivity.this, FontUtils.FontType.LIGHT));
+                totalLineTxt.setTypeface(FontUtils.getFontRoboto(VanLoadStockApplyActivity.this, FontUtils.FontType.LIGHT));
 
             }
         }

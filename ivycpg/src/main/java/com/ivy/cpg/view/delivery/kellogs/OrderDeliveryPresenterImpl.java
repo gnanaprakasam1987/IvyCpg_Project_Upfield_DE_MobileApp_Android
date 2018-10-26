@@ -89,8 +89,8 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     }
 
     @Override
-    public void getAmountDetails(Context context, boolean isEdit) {
-        orderDeliveryHelper.getProductTotalValue(context, isEdit);
+    public void getAmountDetails(boolean isEdit) {
+        orderDeliveryHelper.getProductTotalValue(isEdit);
 
         double discountVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryDiscountAmount());
         double orderValue = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTotalValue());
@@ -113,9 +113,15 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     Toast.LENGTH_SHORT).show();
         else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
 
-            if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
-                    && bmodel.retailerMasterBO.getRpTypeCode() != null
-                    && "CASH".equals(bmodel.retailerMasterBO.getRpTypeCode()) && totalOrderValue<totalReturnValue){
+            //Removed as per JIRA Changes
+//            if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+//                    && bmodel.retailerMasterBO.getRpTypeCode() != null
+//                    && "CASH".equals(bmodel.retailerMasterBO.getRpTypeCode()) && totalOrderValue<totalReturnValue){
+//                Toast.makeText(context
+//                        ,context.getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
+//                return;
+//            }
+            if(totalOrderValue<totalReturnValue){
                 Toast.makeText(context
                         ,context.getResources().getString(R.string.sales_return_value_exceeds_order_value),Toast.LENGTH_LONG).show();
                 return;
@@ -183,22 +189,26 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                         context.getResources().getString(R.string.invoice_generated),
                         Toast.LENGTH_SHORT).show();
 
-                if (!isEdit)
-                    orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size() - 1).
-                            setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context, orderId));
+                if (bmodel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                        || bmodel.configurationMasterHelper.COMMON_PRINT_BIXOLON || bmodel.configurationMasterHelper.COMMON_PRINT_SCRYBE || bmodel.configurationMasterHelper.COMMON_PRINT_LOGON
+                        || bmodel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
 
-                bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null,null,null);
+                    if (!isEdit)
+                        orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size() - 1).
+                                setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context, orderId));
 
-                bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
-                        StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+                    bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null, null, null);
+
+                    bmodel.writeToFile(String.valueOf(bmodel.mCommonPrintHelper.getInvoiceData()),
+                            StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+                    orderDeliveryView.updateSaveStatus(isSuccess);
+                }
 
             } else
                 Toast.makeText(
                         context,
                         context.getResources().getString(R.string.not_able_to_generate_invoice),
                         Toast.LENGTH_SHORT).show();
-
-            orderDeliveryView.updateSaveStatus(isSuccess);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.ivy.cpg.view.reports.dayreport;
 
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +65,14 @@ public class DayReportAdapter extends BaseAdapter {
             holder.value1.setText("/" + b1);
 
         } else {
-            holder.value.setText(menuNumber);
+            if(items.get(position).getConfigCode().equals("DAYRT25")) {
+
+                SpannableString ss1=  new SpannableString(menuNumber);
+                ss1.setSpan(new RelativeSizeSpan(0.5f), menuNumber.indexOf(" "),menuNumber.length(), 0); // set size
+                holder.value.setText(ss1);
+            } else {
+                holder.value.setText(menuNumber);
+            }
 
         }
         holder.value.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

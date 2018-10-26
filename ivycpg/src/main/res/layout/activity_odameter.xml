@@ -58,6 +58,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:padding="2dp"
+                        android:tag="loadvan"
                         android:text="@string/vanno"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/font_small" />

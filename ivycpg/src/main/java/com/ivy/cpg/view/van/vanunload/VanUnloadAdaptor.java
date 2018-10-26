@@ -93,13 +93,13 @@ public class VanUnloadAdaptor extends BaseAdapter {
                     .findViewById(R.id.stock_and_order_listview_batchno);
             holder.nonSalableQty_pc = (TextView) row.findViewById(R.id.tv_nonsalable_pc);
 
-            holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-            holder.batchno.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-            holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-            holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-            holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-            holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-            holder.nonSalableQty_pc.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+            holder.psname.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+            holder.batchno.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+            holder.sih.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+            holder.caseQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+            holder.outerQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+            holder.pieceQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+            holder.nonSalableQty_pc.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
 
             // Nonsalable unload view
             if (!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_UNLOAD)

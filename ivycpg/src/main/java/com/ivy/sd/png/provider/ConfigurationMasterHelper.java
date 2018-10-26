@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -19,6 +20,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -158,7 +160,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_REVIEW_PO = "ORDB14";
     private static final String CODE_IS_WSIH = "ORDB16"; // ORDB16
     private static final String CODE_SHOW_HIGHLIGHT_FOR_OOS = "ORDB15"; // ORDB15
-    private static final String CODE_SHOW_DISCOUNT_DIALOG = "FUN02"; // FUN02
+    private static final String CODE_SHOW_PRODUCT_DISCOUNT_DIALOG = "FUN02"; // FUN02
     private static final String CODE_SHOW_DISCOUNT_ACTIVITY = "FUN03";
     // code added in v 33
     private static final String CODE_SHOW_CREDIT_BALANCE = "PROFILE20";//
@@ -529,7 +531,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_CONTACT_TAB;
 
 
-    private static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
+    public static final String CODE_ENABLE_USER_FILTER_DASHBOARD = "DASH_USER_FILTER";
     public boolean IS_ENABLE_USER_FILTER_DASHBOARD;
 
     private static final String CODE_LICENSE_VALIDATION = "ORDB73";
@@ -644,7 +646,6 @@ public class ConfigurationMasterHelper {
     // Order & stock flags
     public boolean SHOW_STOCK_SC;
     public boolean SHOW_STOCK_SP;
-    public boolean SHOW_CAT_STOCK_SP;
     public boolean SHOW_ORDER_PCS;
     public boolean SHOW_FOC;
     public boolean SHOW_ORDER_CASE;
@@ -659,8 +660,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_RSN;// available reason
     public boolean SHOW_STOCK_CB;// available checkbox
     public boolean CHANGE_AVAL_FLOW;// check box tristate flow
-    public boolean SHOW_STOCK_POURING;// Pouring
-    public boolean SHOW_STOCK_COCKTAIL;// Distributes=d checkbox
 
     public boolean SHOW_DISCOUNT_ACTIVITY;// FUN03
     public boolean SHOW_REPLACED_QTY_PC;
@@ -683,7 +682,7 @@ public class ConfigurationMasterHelper {
     // Added in 32 version
     public boolean IS_WSIH; // ORDB16
     public boolean SHOW_HIGHLIGHT_FOR_OOS; // ORDB15
-    public boolean IS_ENTRY_LEVEL_DISCOUNT; // FUN02
+    public boolean IS_PRODUCT_DISCOUNT_BY_USER_ENTRY; // FUN02
     // Added in 33 version
     public boolean SHOW_CREDIT_BALANCE;//
     public boolean SHOW_CREDIT_DAYS;//
@@ -1517,6 +1516,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_GLOBAL_SHOW_NO_ORDER_REASON = "FUN74";
     public boolean SHOW_GLOBAL_NO_ORDER_REASON;
+    private static final String CODE_MENU_FIREBASE_CHAT = "CHAT02";
+    public boolean IS_FIREBASE_CHAT_ENABLED;
+
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2041,7 +2043,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_INIT_FOOTER = hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INIT_FOOTER) : false;
         this.SHOW_REVIEW_AND_PO = hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_REVIEW_PO) : false;
         this.SHOW_HIGHLIGHT_FOR_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HIGHLIGHT_FOR_OOS) : false;
-        this.IS_ENTRY_LEVEL_DISCOUNT = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_DIALOG) : false;
+        this.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY = hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_DISCOUNT_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_DISCOUNT_DIALOG) : false;
         this.SHOW_DISCOUNT_ACTIVITY = hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISCOUNT_ACTIVITY) : false;
 
         //this.SHOW_INITIATIVE_MERCHANDISING = hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE_MERCHANDISING) : false;
@@ -2661,6 +2663,8 @@ public class ConfigurationMasterHelper {
         // Unload non salable product returns.
         this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
         this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
+
+        this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
     }
 
     private boolean isInOutModule() {
@@ -2746,6 +2750,11 @@ public class ConfigurationMasterHelper {
         }
     }
 
+
+    /**
+     * @See {@link UserDataManagerImpl#fetchUsers()}
+     * @deprecated
+     */
     public void loadDashboardUserFilter() {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3815,13 +3824,10 @@ public class ConfigurationMasterHelper {
     public void loadOrderAndStockConfiguration(int subChannelID) {
         try {
             SHOW_STOCK_SP = false;
-            SHOW_CAT_STOCK_SP = false;
             SHOW_STOCK_SC = false;
             SHOW_STOCK_CB = false;
             CHANGE_AVAL_FLOW = false;
             SHOW_STOCK_RSN = false;
-            SHOW_STOCK_POURING = false;
-            SHOW_STOCK_COCKTAIL = false;
             SHOW_STOCK_TOTAL = false;
             SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
@@ -3931,8 +3937,6 @@ public class ConfigurationMasterHelper {
                 for (String temp : codeSplit) {
                      if (temp.equals("SP"))
                         SHOW_STOCK_SP = true;
-                    else if (temp.equals("CASP"))
-                        SHOW_CAT_STOCK_SP = true;
                     else if (temp.equals("SC"))
                         SHOW_STOCK_SC = true;
                     else if (temp.equals("CB"))
@@ -3943,10 +3947,6 @@ public class ConfigurationMasterHelper {
                         SHOW_SHELF_OUTER = true;
                     else if (temp.equals("TOTAL"))
                         SHOW_STOCK_TOTAL = true;
-                    else if (temp.equals("PUR"))
-                        SHOW_STOCK_POURING = true;
-                    else if (temp.equals("CTS"))
-                        SHOW_STOCK_COCKTAIL = true;
                     else if (temp.equals("REPPC"))
                         SHOW_REPLACED_QTY_PC = true;
                     else if (temp.equals("REPCS"))
@@ -5576,8 +5576,12 @@ public class ConfigurationMasterHelper {
 
     private Typeface mFontBaloobhaiRegular;
 
-    @Deprecated
-    //this method moved into FontUitils class
+    /**
+     * @deprecated
+     * @See {@link com.ivy.utils.FontUtils#getFontBalooHai(Context, FontUtils.FontType)}
+     * @param mFontType
+     * @return
+     */
     public Typeface getFontBaloobhai(FontType mFontType) {
         if (mFontType == FontType.REGULAR) {
             if (mFontBaloobhaiRegular == null)
@@ -5593,8 +5597,12 @@ public class ConfigurationMasterHelper {
     private Typeface mFontRobotoMedium;
     private Typeface mFontRobotoThin;
 
-    @Deprecated
-    //this method moved into FontUtils class
+    /**
+     * @deprecated
+     * @See {@link FontUtils#getFontRoboto(Context, FontUtils.FontType)}
+     * @param mFontType
+     * @return
+     */
     public Typeface getFontRoboto(FontType mFontType) {
         if (mFontType == FontType.LIGHT) {
             if (mFontRobotoLight == null)

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.ivy.lib.Logs;
 import com.ivy.lib.base64.Base64;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.math.BigDecimal;
@@ -144,6 +145,12 @@ public class SDUtil {
         return st;
     }
 
+    /**
+     * Comments added
+     * @param value
+     * @param numberofDecimals
+     * @return
+     */
     public static BigDecimal truncateDecimal(double value, int numberofDecimals) {
 
         if (numberofDecimals == -1)
@@ -384,5 +391,18 @@ public class SDUtil {
         return value;
 
     }
+
+    public static String getWholeNumber(String data) {
+        String wholeNumber;
+        try {
+            wholeNumber = data.substring(0, data.lastIndexOf("."));
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            return data;
+        }
+        return wholeNumber;
+    }
+
 
 }

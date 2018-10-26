@@ -17,8 +17,6 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LeaveApprovalBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
@@ -180,12 +178,12 @@ public class RejectedLeavesFragment extends IvyBaseFragment {
                 holder.sel_img = convertView.findViewById(R.id.sel_img);
 
                 holder.tvUsername.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
-                holder.tvLeavePeriod.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.tvLeaveType.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.tv_leaveperiod_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.tv_leavetype_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.tv_status_title.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.tvLeavePeriod.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.tvLeaveType.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.tv_leaveperiod_title.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.tv_leavetype_title.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.tv_status_title.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override

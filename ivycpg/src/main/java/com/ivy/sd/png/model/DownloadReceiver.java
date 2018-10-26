@@ -45,11 +45,6 @@ public class DownloadReceiver extends BroadcastReceiver {
                 broadCIntent.putExtras(bundle);
                 context.sendBroadcast(broadCIntent);
                 break;
-            case LOAD_MANAGEMENT:
-                broadCIntent.setAction(LoadManagementFragment.Loadmanagemntreceiver.RESPONSE);
-                broadCIntent.putExtras(bundle);
-                context.sendBroadcast(broadCIntent);
-                break;
             case RETAILER_SELECTION:
                 broadCIntent.setAction(AdhocPlanningFragment.RetailerSelectionReceiver.RESPONSE);
                 broadCIntent.putExtras(bundle);

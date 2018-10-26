@@ -81,7 +81,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
-                        android:maxLength="9"
+                        android:maxLength="12"
                         />
                 </LinearLayout>
 

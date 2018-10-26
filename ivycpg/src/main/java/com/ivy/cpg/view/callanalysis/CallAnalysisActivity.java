@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,12 +33,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
@@ -171,8 +171,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             contentCloseCall = findViewById(R.id.content_closeCallCard);
             TVMenuName = findViewById(R.id.tvMenuName);
             TVMenuValue = findViewById(R.id.tv_menuValue);
-            TVMenuName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            TVMenuValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+            TVMenuName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            TVMenuValue.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
             contentCloseCall.setVisibility(View.GONE);
 
@@ -191,10 +191,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             if (bmodel.configurationMasterHelper.SHOW_GLOBAL_NO_ORDER_REASON && (hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
                     && bmodel.getRetailerMasterBO().getIsOrdered().equals("N"))) {
                 spinnerNoOrderReason.setVisibility(View.VISIBLE);
+                bmodel.reasonHelper.downloadNonProductiveReasonMaster(); // Do not remove this method as this will cause translation error in "Others" string
                 spinnerNoOrderReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if (parent.getSelectedItem().toString().equalsIgnoreCase(getResources().getString(R.string.other_reason))) {
+                        if (parent.getSelectedItem().toString().equalsIgnoreCase(getResources().getString(R.string.other_reason_with_credit))) {
                             edt_other_remarks.setVisibility(View.VISIBLE);
                         } else {
                             hideKeyboard();
@@ -255,9 +256,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             ArrayAdapter<ReasonMaster> spinnerAdapter = new ArrayAdapter<>(this,
                     R.layout.call_analysis_spinner_layout);
             spinnerAdapter.add(new ReasonMaster(-1 + "", getResources().getString(R.string.select_reason_for_no_order)));
-            for (ReasonMaster temp : bmodel.reasonHelper
-                    .getNonProductiveReasonMaster())
-                spinnerAdapter.add(temp);
+            if(bmodel.reasonHelper.getNonProductiveReasonMaster() != null) {
+                for (ReasonMaster temp : bmodel.reasonHelper
+                        .getNonProductiveReasonMaster())
+                    spinnerAdapter.add(temp);
+            }
             spinnerAdapter
                     .setDropDownViewResource(R.layout.call_analysis_spinner_list_item);
             spinnerNoOrderReason.setAdapter(spinnerAdapter);
@@ -317,10 +320,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
 
             TextView tv_duration = findViewById(R.id.tv_duration);
-            tv_duration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            tv_duration.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
             tv_edt_time_taken = findViewById(R.id.edt_time_taken);
-            tv_edt_time_taken.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, this));
+            tv_edt_time_taken.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
 
             Button btn_close = findViewById(R.id.button1);
             btn_close.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
@@ -362,24 +365,32 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             try {
                 if (configlist.get(position).getKpiTarget().equals("-1")) {
-                    holder.ll_seekbar.setVisibility(View.GONE);
-                    holder.tv_progress_text.setVisibility(View.GONE);
+                    //  holder.ll_seekbar.setVisibility(View.GONE);
+                    // holder.tv_progress_text.setVisibility(View.GONE);
 
                     holder.tv_achieved_value.setText(configlist.get(position).getMenuNumber());
-                    holder.tv_target_value.setVisibility(View.GONE);
+                    //holder.tv_target_value.setVisibility(View.GONE);
 
                 } else {
-                    holder.ll_seekbar.setVisibility(View.VISIBLE);
-                    holder.tv_progress_text.setVisibility(View.VISIBLE);
-                    holder.tv_target_value.setVisibility(View.VISIBLE);
+                    // holder.ll_seekbar.setVisibility(View.VISIBLE);
+                    StringBuilder sb = new StringBuilder();
+                    // holder.tv_progress_text.setVisibility(View.VISIBLE);
+                    // holder.tv_target_value.setVisibility(View.VISIBLE);
 
-                    holder.seekBar.setEnabled(false);
-                    holder.seekBar.setProgress((int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved()));
-                    holder.seekBar.setMax((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()));
+                    //holder.seekBar.setEnabled(false);
+                    //  holder.seekBar.setProgress((int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved()));
+                    //holder.seekBar.setMax((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()));
+
+                    sb.append(bmodel.formatValue
+                            (SDUtil.convertToDouble(configlist.get(position)
+                                    .getKpiAchieved())));
+
+                    sb.append("/" + bmodel.formatValue(SDUtil.convertToDouble
+                            (configlist.get(position).getKpiTarget())));
 
 
-                    holder.tv_achieved_value.setText(bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiAchieved())));
-                    holder.tv_target_value.setText("/" + bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiTarget())));
+                    // holder.tv_achieved_value.setText(bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiAchieved())));
+                    //  holder.tv_target_value.setText("/" + bmodel.formatValue(SDUtil.convertToDouble(configlist.get(position).getKpiTarget())));
 
                     if ((int) SDUtil.convertToDouble(configlist.get(position).getKpiTarget()) > 0) {
                         int ach = (int) SDUtil.convertToDouble(configlist.get(position).getKpiAchieved());
@@ -388,8 +399,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         if (percent > 100) {
                             percent = 100;
                         }
-                        holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
+                        sb.append(" (" + percent + "%" + ")");
+                        //holder.tv_progress_text.setText(percent + "% " + getResources().getString(R.string.percent_of_tot_target_achieved));
                     }
+                    holder.tv_achieved_value.setText(sb.toString());
                 }
             } catch (Exception ex) {
                 Commons.printException(ex);
@@ -412,24 +425,18 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         class MyViewHolder extends RecyclerView.ViewHolder {
 
             TextView Name;
-            TextView tv_target_value;
+            // TextView tv_target_value;
             TextView tv_achieved_value;
-            LinearLayout ll_seekbar;
-            SeekBar seekBar;
-            TextView tv_progress_text;
+            // LinearLayout ll_seekbar;
+            //  SeekBar seekBar;
+            //   TextView tv_progress_text;
 
             MyViewHolder(View row) {
                 super(row);
                 Name = row.findViewById(R.id.menunametxt);
-                Name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, CallAnalysisActivity.this));
+                Name.setTypeface(FontUtils.getFontRoboto(CallAnalysisActivity.this, FontUtils.FontType.MEDIUM));
                 tv_achieved_value = row.findViewById(R.id.tv_menuvalue_achieved);
-                tv_achieved_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, CallAnalysisActivity.this));
-                tv_target_value = row.findViewById(R.id.tv_menuvalue_target);
-                tv_target_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, CallAnalysisActivity.this));
-                ll_seekbar = row.findViewById(R.id.ll_seekbar);
-                seekBar = row.findViewById(R.id.seek);
-                tv_progress_text = row.findViewById(R.id.tv_progress_text);
-                tv_progress_text.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, CallAnalysisActivity.this));
+                tv_achieved_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
 
@@ -759,7 +766,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA29")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
-                    final float totalWeight = bmodel.productHelper.getTotalWeight(bmodel.getRetailerMasterBO().getRetailerID());
+                    final float totalWeight = DashBoardHelper.getInstance(this).getTotalWeight(bmodel.getRetailerMasterBO().getRetailerID());
                     con.setMenuNumber(totalWeight + "");
                 } else if (callanalysismenu.get(i).getConfigCode().equalsIgnoreCase("CallA30")) {
                     con.setMenuName(callanalysismenu.get(i).getMenuName());
@@ -1350,17 +1357,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.timer = null;
         }
 
-        if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_GLOBAL_NO_ORDER_REASON) {
-            bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
-            bmodel.outletTimeStampHelper.deleteTimeStamp();
-            bmodel.outletTimeStampHelper.deleteTimeStampImages();
-            bmodel.outletTimeStampHelper.deleteImagesFromFolder();
-
-        }
-        resetRemarksBO();
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
-
         if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_EDITTEXT) {
             if (edt_noOrderReason.getText().length() > 0) {
                 bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
@@ -1373,11 +1369,22 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     .now(SDUtil.TIME), mFeedbackReasonId);
         }
 
+        if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON) {
+            bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
+            bmodel.outletTimeStampHelper.deleteTimeStamp();
+            bmodel.outletTimeStampHelper.deleteTimeStampImages();
+            bmodel.outletTimeStampHelper.deleteImagesFromFolder();
+
+        } else {
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
+                    .now(SDUtil.TIME));
+            bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
+        }
+        resetRemarksBO();
         if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
             resetSellerConfiguration();
         }
 
-        bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
         bmodel.productHelper.clearProductHelper();
 
         if (isSubmitButtonClicked) {
@@ -1412,6 +1419,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     @Override
     protected void onDestroy() {
+        dismissProgressDialog();
         super.onDestroy();
         unbindDrawables(findViewById(R.id.root));
         // force the garbage collector to run
@@ -1676,6 +1684,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (CallAnalysisActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return false;
+                }
+            } else if (CallAnalysisActivity.this.isFinishing()) { // or call isFinishing() if min sdk version < 17
+                return false;
+            }
+
             switch (msg.what) {
 
                 case DataMembers.NOTIFY_UPDATE:
@@ -1685,28 +1701,28 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     return true;
 
                 case DataMembers.NOTIFY_NOT_USEREXIST:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.password_does_not_match), 0);
                     return true;
 
                 case DataMembers.NOTIFY_NO_INTERNET:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources()
                                     .getString(R.string.no_network_connection), 0);
                     return true;
 
                 case DataMembers.NOTIFY_CONNECTION_PROBLEM:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources()
                                     .getString(R.string.no_network_connection), 0);
                     return true;
 
                 case DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(getResources().getString(R.string.sessionout_loginagain), 0);
                     return true;
 
@@ -1724,50 +1740,37 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
 
                 case DataMembers.NOTIFY_SIH_UPLOADED:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     presenter.upload();
                     return true;
 
                 case DataMembers.NOTIFY_SIH_UPLOAD_ERROR:
                     Commons.print("SIH ," + "Error");
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     return true;
 
-                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOADED: // Delivered order realtime sync
-                    alertDialog.dismiss();
-                    presenter.upload();
-                    break;
-
-                case DataMembers.NOTIFY_ORDER_DELIVERY_STATUS_UPLOAD_ERROR:
-                    Commons.print("OrderDeliveryStatus ," + "Error");
-                    alertDialog.dismiss();
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.upload_failed_please_try_again), 0);
-                    break;
-
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOADED:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     presenter.upload();
                     return true;
                 case DataMembers.NOTIFY_STOCKAPLY_UPLOAD_ERROR:
                     Commons.print("Stock Apply Upload," + "Error");
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     return true;
 
                 case DataMembers.NOTIFY_LP_UPLOADED:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     presenter.upload();
                     return true;
 
                 case DataMembers.NOTIFY_LP_UPLOAD_ERROR:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
@@ -1785,7 +1788,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
 
                     } else {
-                        alertDialog.dismiss();
+                        dismissProgressDialog();
                         updateLastSync();
 
                         bmodel.showAlert(
@@ -1795,7 +1798,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     }
                     return true;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
@@ -1808,23 +1811,22 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                                     R.string.images_sucessfully_uploaded), 0);
                     return true;
                 case DataMembers.NOTIFY_UPLOAD_ERROR_IMAGE:
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.images_upload_failed_please_try_again),
                             0);
                     return true;
 
-
                 case DataMembers.NOTIFY_WEB_UPLOAD_ERROR:
 
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert((String) msg.obj, 0);
                     return true;
                 case DataMembers.NOTIFY_WEB_UPLOAD_SUCCESS:
 
                     bmodel.photocount = 0;
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
 
                     bmodel.showAlert(
                             getResources().getString(
@@ -1840,7 +1842,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 default:
                     return false;
             }
-            return false;
         }
     });
 
@@ -1920,9 +1921,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     @Override
     public void showProgressLoading() {
 
-        if (alertDialog != null) {
-            alertDialog.dismiss();
-        }
+        dismissProgressDialog();
         builder = new AlertDialog.Builder(this);
         customProgressDialog(builder, getResources().getString(R.string.loading));
         alertDialog = builder.create();
@@ -1931,9 +1930,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     @Override
     public void showProgressUploading() {
-        if (alertDialog != null) {
-            alertDialog.dismiss();
-        }
+        dismissProgressDialog();
         builder = new AlertDialog.Builder(this);
         customProgressDialog(builder, getResources().getString(R.string.uploading_data));
         alertDialog = builder.create();
@@ -1942,9 +1939,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     @Override
     public void cancelProgress() {
-        if (alertDialog != null) {
-            alertDialog.dismiss();
-        }
+        dismissProgressDialog();
     }
 
     @Override
@@ -2009,5 +2004,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         bmodel.applyAlertDialogTheme(builder);
     }
 
+    private void dismissProgressDialog() {
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+    }
 
 }

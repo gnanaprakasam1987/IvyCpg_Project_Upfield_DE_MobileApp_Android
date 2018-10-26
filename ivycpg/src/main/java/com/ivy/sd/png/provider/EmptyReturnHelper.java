@@ -4,6 +4,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -185,7 +186,7 @@ public class EmptyReturnHelper {
 			if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
 				saveTotalOrderReturnQty();
 			else
-				bmodel.mEmptyReconciliationhelper.saveSKUWiseTransaction();
+				EmptyReconciliationHelper.getInstance(context).saveSKUWiseTransaction();
 
 			db.closeDB();
 		} catch (Exception e) {

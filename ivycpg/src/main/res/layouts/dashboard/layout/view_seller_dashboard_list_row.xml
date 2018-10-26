@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="5dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="0dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_8dp"
+        android:layout_marginTop="@dimen/dimen_8dp">
+
+        <TextView
+            android:id="@+id/factorName_dashboard_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/whats_on_item_padding"
+            android:text="Value"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/factor_title_size"
+            android:textStyle="bold"
+            android:fontFamily="@font/baloobhai_regular"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/incentive_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center|end"
+            android:paddingRight="@dimen/recycler_margin"
+            android:tag="incentive_day"
+            android:text="Incentives"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+            android:visibility="visible"
+            android:fontFamily="@font/roboto_medium"
+            card_view:layout_constraintBottom_toBottomOf="@+id/initiative_dashboard_tv"
+            card_view:layout_constraintEnd_toStartOf="@id/initiative_dashboard_tv"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/initiative_dashboard_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:layout_marginRight="@dimen/_25sdp"
+            android:layout_weight="0.2"
+            android:gravity="center|end"
+            android:paddingLeft="@dimen/recycler_margin"
+            android:textColor="@color/RED"
+            android:textSize="@dimen/incentive_value_size"
+            android:textStyle="bold"
+            android:fontFamily="@font/roboto_medium"
+            android:visibility="visible"
+            card_view:layout_constraintEnd_toStartOf="@id/score_title"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.Group
+            android:id="@+id/incentiveGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            card_view:constraint_referenced_ids="incentive_title,initiative_dashboard_tv" />
+
+        <TextView
+            android:id="@+id/score_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center|start"
+            android:paddingEnd="@dimen/recycler_margin"
+            android:paddingRight="@dimen/recycler_margin"
+            android:tag="score"
+            android:text="Score"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+            android:visibility="visible"
+            card_view:layout_constraintBottom_toBottomOf="@+id/score_dashboard_tv"
+            card_view:layout_constraintEnd_toStartOf="@id/score_dashboard_tv"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/score_dashboard_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:layout_marginRight="@dimen/_25sdp"
+            android:layout_weight="0.2"
+            android:gravity="center|start"
+            android:paddingLeft="@dimen/recycler_margin"
+            android:paddingStart="@dimen/recycler_margin"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/RED"
+            android:textSize="@dimen/incentive_value_size"
+            android:textStyle="bold"
+            android:visibility="visible"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+
+        <View
+            android:id="@+id/rowSeperator"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="@dimen/margin_10px"
+            android:layout_marginRight="@dimen/margin_10px"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:background="@color/GRAY"
+            card_view:layout_constraintTop_toBottomOf="@+id/factorName_dashboard_tv" />
+
+        <android.support.constraint.Group
+            android:id="@+id/scoreGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            card_view:constraint_referenced_ids="score_title,score_dashboard_tv" />
+
+        <android.support.constraint.Group
+            android:id="@+id/initiativeGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            card_view:constraint_referenced_ids="incentive_title,initiative_dashboard_tv" />
+
+        <android.support.constraint.Barrier
+            android:id="@+id/barrier2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            card_view:barrierDirection="top"
+            card_view:constraint_referenced_ids="initiativeGroup,factorName_dashboard_tv,scoreGroup" />
+
+        <View
+            android:id="@+id/row_dot_blue"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/whats_on_item_padding"
+            android:layout_marginStart="@dimen/whats_on_item_padding"
+            android:background="@drawable/dot_circle_blue"
+            card_view:layout_constraintBottom_toBottomOf="@id/achived_title"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="@+id/achived_title" />
+
+        <TextView
+            android:id="@+id/achived_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:drawableEnd="@drawable/blue_dot_5dp"
+            android:drawableRight="@drawable/blue_dot_5dp"
+            android:gravity="center_vertical"
+            android:paddingBottom="2dp"
+            android:paddingLeft="@dimen/whats_on_item_padding"
+            android:paddingRight="5dp"
+            android:tag="achieved_day"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Achieved"
+            android:textColor="?primarycolor"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+            card_view:layout_constraintStart_toEndOf="@id/row_dot_blue"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+
+        <TextView
+            android:id="@+id/acheived_dashboard_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:textColor="@color/GRAY_TEXT"
+            android:textSize="@dimen/value_text_size"
+            android:textStyle="normal"
+            android:fontFamily="@font/roboto_light"
+            card_view:layout_constraintEnd_toEndOf="@id/achived_title"
+            card_view:layout_constraintStart_toStartOf="@id/achived_title"
+            card_view:layout_constraintTop_toBottomOf="@+id/achived_title" />
+
+        <android.support.constraint.Group
+            android:id="@+id/achievedGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            card_view:constraint_referenced_ids="acheived_dashboard_tv,achived_title,row_dot_blue" />
+
+
+        <View
+            android:id="@+id/verticalSeparatorBalance"
+            android:layout_width="0.3dp"
+            android:layout_height="@dimen/divder_margin"
+            android:layout_marginEnd="@dimen/target_top_margin"
+            android:layout_marginStart="@dimen/target_top_margin"
+            android:background="@color/GRAY"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toEndOf="@id/achived_title"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+        <View
+            android:id="@+id/row_dot_orange"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/whats_on_item_padding"
+            android:layout_marginStart="@dimen/whats_on_item_padding"
+            android:background="@drawable/dot_circle_orange"
+            card_view:layout_constraintBottom_toBottomOf="@+id/balance_title"
+            card_view:layout_constraintStart_toEndOf="@id/verticalSeparatorBalance"
+            card_view:layout_constraintTop_toTopOf="@+id/balance_title" />
+
+        <TextView
+            android:id="@+id/balance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:drawableEnd="@drawable/blue_dot_5dp"
+            android:drawableRight="@drawable/blue_dot_5dp"
+            android:gravity="center_vertical"
+            android:paddingBottom="2dp"
+            android:paddingEnd="5dp"
+            android:paddingLeft="@dimen/whats_on_item_padding"
+            android:paddingRight="5dp"
+            android:paddingStart="@dimen/whats_on_item_padding"
+            android:tag="balance_day"
+            android:fontFamily="@font/roboto_medium"
+            android:text="@string/balance"
+            android:textColor="@color/Orange"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+            card_view:layout_constraintStart_toEndOf="@id/row_dot_orange"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+        <TextView
+            android:id="@+id/balance_dashboard_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:textColor="@color/GRAY_TEXT"
+            android:textSize="@dimen/value_text_size"
+            android:textStyle="normal"
+            android:fontFamily="@font/roboto_light"
+            card_view:layout_constraintEnd_toEndOf="@id/balance_title"
+            card_view:layout_constraintStart_toStartOf="@id/balance_title"
+            card_view:layout_constraintTop_toBottomOf="@+id/balance_title" />
+
+        <android.support.constraint.Group
+            android:id="@+id/balanceGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            card_view:constraint_referenced_ids="verticalSeparatorBalance,row_dot_orange,balance_title,balance_dashboard_tv" />
+
+
+        <View
+            android:id="@+id/verticalSeparatorTarget"
+            android:layout_width="0.3dp"
+            android:layout_height="@dimen/divder_margin"
+            android:layout_marginEnd="@dimen/target_top_margin"
+            android:layout_marginStart="@dimen/target_top_margin"
+            android:background="@color/GRAY"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toEndOf="@id/balance_title"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+
+        <View
+            android:id="@+id/row_dot_orange1"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/whats_on_item_padding"
+            android:layout_marginStart="@dimen/whats_on_item_padding"
+            android:background="@drawable/dot_circle_orange"
+            card_view:layout_constraintBottom_toBottomOf="@+id/flex_title"
+            card_view:layout_constraintStart_toEndOf="@id/verticalSeparatorTarget"
+            card_view:layout_constraintTop_toTopOf="@+id/flex_title" />
+
+        <TextView
+            android:id="@+id/flex_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center_vertical"
+            android:paddingBottom="2dp"
+            android:paddingEnd="5dp"
+            android:paddingLeft="@dimen/whats_on_item_padding"
+            android:paddingRight="5dp"
+            android:paddingStart="@dimen/whats_on_item_padding"
+            android:tag="flex_day"
+            android:text="Flex"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/Orange"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+            card_view:layout_constraintStart_toEndOf="@id/row_dot_orange1"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+        <TextView
+            android:id="@+id/flex_dashboard_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:textColor="@color/GRAY_TEXT"
+            android:textSize="@dimen/value_text_size"
+            android:textStyle="normal"
+            android:fontFamily="@font/roboto_light"
+            card_view:layout_constraintEnd_toEndOf="@id/flex_title"
+            card_view:layout_constraintStart_toStartOf="@id/flex_title"
+            card_view:layout_constraintTop_toBottomOf="@+id/flex_title" />
+
+        <android.support.constraint.Group
+            android:id="@+id/flexGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            card_view:constraint_referenced_ids="verticalSeparatorTarget,row_dot_orange1,flex_title,flex_dashboard_tv" />
+
+        <View
+            android:id="@+id/verticalSeparatorFlex"
+            android:layout_width="0.3dp"
+            android:layout_height="@dimen/divder_margin"
+            android:layout_marginEnd="@dimen/target_top_margin"
+            android:layout_marginStart="@dimen/target_top_margin"
+            android:background="@color/GRAY"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toEndOf="@id/flex_title"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+        <View
+            android:id="@+id/row_dot_green"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/whats_on_item_padding"
+            android:layout_marginStart="@dimen/whats_on_item_padding"
+            android:background="?roundedCustomDashboardButton"
+            card_view:layout_constraintBottom_toBottomOf="@+id/target_title"
+            card_view:layout_constraintStart_toEndOf="@id/verticalSeparatorFlex"
+            card_view:layout_constraintTop_toTopOf="@+id/target_title" />
+
+        <TextView
+            android:id="@+id/target_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center_vertical"
+            android:paddingBottom="2dp"
+            android:paddingEnd="5dp"
+            android:paddingLeft="@dimen/whats_on_item_padding"
+            android:paddingRight="5dp"
+            android:paddingStart="@dimen/whats_on_item_padding"
+            android:tag="target_day"
+            android:text="@string/target"
+            android:textColor="?accentcolor"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+            card_view:layout_constraintStart_toEndOf="@id/row_dot_green"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+        <TextView
+            android:id="@+id/target_dashboard_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:textColor="@color/GRAY_TEXT"
+            android:textSize="@dimen/value_text_size"
+            android:textStyle="normal"
+            android:fontFamily="@font/roboto_light"
+            card_view:layout_constraintEnd_toEndOf="@id/target_title"
+            card_view:layout_constraintStart_toStartOf="@id/target_title"
+            card_view:layout_constraintTop_toBottomOf="@+id/target_title" />
+
+        <android.support.constraint.Group
+            android:id="@+id/targetGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            card_view:constraint_referenced_ids="verticalSeparatorFlex,row_dot_green,target_title,target_dashboard_tv" />
+
+        <TextView
+            android:id="@+id/tv_skuwise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/skuwise_right_margin"
+            android:gravity="center"
+            android:tag="details"
+            android:text="@string/details"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/greyed_text_size"
+            android:textStyle="normal"
+            android:fontFamily="@font/roboto_medium"
+            android:layout_marginRight="@dimen/skuwise_right_margin"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toStartOf="@+id/verticalSeparatorSkuWise"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator"/>
+
+        <View
+            android:id="@+id/verticalSeparatorSkuWise"
+            android:layout_width="0.3dp"
+            android:layout_height="@dimen/divder_margin"
+            android:background="@color/competitor_brand"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toStartOf="@+id/index_dashboard_tv"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator"/>
+
+        <TextView
+            android:id="@+id/index_dashboard_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:textColor="@color/Black"
+            android:textSize="@dimen/percent_value_size"
+            android:textStyle="bold"
+            android:fontFamily="@font/roboto_light"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toStartOf="@+id/pieChart"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+        <android.support.constraint.Group
+            android:id="@+id/skuGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            card_view:constraint_referenced_ids="verticalSeparatorSkuWise,tv_skuwise" />
+
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="@dimen/piechart_radius"
+            android:layout_height="@dimen/piechart_radius"
+            android:layout_marginEnd="@dimen/pie_chart_margin_right"
+            android:layout_marginRight="@dimen/pie_chart_margin_right"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible"
+            card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

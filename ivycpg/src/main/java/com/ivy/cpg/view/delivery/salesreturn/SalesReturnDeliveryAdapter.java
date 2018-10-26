@@ -10,14 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.utils.FontUtils;
 
 import java.util.List;
 import java.util.Vector;
-
-import jxl.format.Font;
 
 public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder> {
     private RecyclerViewItemClickListener recyclerViewItemClickListener;
@@ -66,8 +62,8 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
         holder.uId.setText(("UId : ") + salesReturnDeliveryDataModelsList.get(position).getUId());
         holder.dateReturn.setText("Date : " + salesReturnDeliveryDataModelsList.get(position).getDate());
 
-        holder.uId.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
-        holder.dateReturn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,mContext));
+        holder.uId.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.dateReturn.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
     }
 
     @Override

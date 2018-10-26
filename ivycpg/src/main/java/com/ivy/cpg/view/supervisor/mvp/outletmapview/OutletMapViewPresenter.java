@@ -29,6 +29,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.text.DateFormat;
 import java.text.Format;
@@ -44,7 +45,7 @@ import java.util.TimeZone;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIRESTORE_BASE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 
 public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMapPresenter {
@@ -63,11 +64,13 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
     private int tabPosition;
 
     private HashMap<Integer, Integer> mSelectedIdByChannelId = new HashMap<>();
+    private String basePath = "";
 
     @Override
     public void setView(OutletMapViewContractor.OutletMapView outletMapView, Context context) {
         this.outletMapView = outletMapView;
         this.context = context;
+        basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
     }
 
     @Override
@@ -77,8 +80,12 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
     @Override
     public void setOutletActivityDetail(int userId, String date) {
+
+        if (basePath.equals(""))
+            return;
+
         Query queryRef = db
-                .collection(FIRESTORE_BASE_PATH)
+                .collection(basePath)
                 .document(TIME_STAMP_PATH)
                 .collection(date)
                 .whereEqualTo(userId+"",true)

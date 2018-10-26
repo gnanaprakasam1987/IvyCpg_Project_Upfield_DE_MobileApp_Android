@@ -27,14 +27,29 @@ def keystorePropertiesFile = rootProject.file("../keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
+static def fetchRevisionNumber() {
+    def result = "git rev-list HEAD --count".execute().text.trim() //unix
+    if(result.empty) result = "PowerShell -Command git rev-list HEAD --count".execute().text.trim() //windows
+    if(result.empty) throw new RuntimeException("Could not generate versioncode on this platform? Cmd output: ${result.text}")
+    return result.toInteger()
+}
+
+def majorVersion = 2
+def minorVersion = 134
+def patchVersion = 0
+def verCode = 1340
+def revNumber = fetchRevisionNumber()
+
 android {
     compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
         minSdkVersion 16
         targetSdkVersion 26
+        versionCode "$minorVersion$patchVersion".toInteger()
+        versionName "${majorVersion}.${minorVersion}.${patchVersion}.${revNumber}"
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -78,16 +93,23 @@ android {
         debug {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
             buildConfigField("boolean", "ACTIVATION", "false");
+            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
+            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
 
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
             testCoverageEnabled = true
+            debuggable false
 
         }
         release {
             def googleapikey = System.getenv('googleapikey')
             resValue "string", "google_maps_api_key", "${googleapikey}"
-            buildConfigField("boolean", "ACTIVATION", "true");
+            buildConfigField("boolean", "ACTIVATION", "true")
+
+            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
+            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
+
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -95,7 +117,11 @@ android {
         }
         devrelease {
             resValue "string", "google_maps_api_key", keystoreProperties['mapKey']
-            buildConfigField("boolean", "ACTIVATION", "true");
+            buildConfigField("boolean", "ACTIVATION", "true")
+
+            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
+            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
+
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -147,6 +173,8 @@ android {
         main {
             // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
             res.srcDirs = [
+                    'src/main/res/layouts/dashboard',
+                    'src/main/res/layouts/photocapture',
                     'src/main/res/layouts/activation',
                     'src/main/res/layouts',
                     'src/main/res'
@@ -165,6 +193,12 @@ android {
             dimension "cpg"
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 
 static def getLayoutList(path) {
@@ -248,6 +282,14 @@ dependencies {
     // reactive
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
+
+    //Chat-Sdk
+    implementation 'co.chatsdk.chatsdk:chat-sdk-core:4.1.26'
+    implementation 'co.chatsdk.chatsdk:chat-sdk-ui:4.1.26'
+    implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-adapter:4.1.26'
+    implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-file-storage:4.1.26'
+    implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-push:4.1.36'
+
     // dependencies for local unit tests
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"

@@ -41,8 +41,8 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
             if (getArguments() != null
                     && getArguments().getString("MODULE") != null) {
                 moduleName = getArguments().getString("MODULE");
-                minDate = (getArguments().getInt("CHQMINDATE") != 0) ? getArguments().getInt("CHQMINDATE") : 0;
-                maxDate = (getArguments().getInt("CHQMAXDATE") != 0) ? getArguments().getInt("CHQMAXDATE") : 0;
+                minDate = getArguments().getInt("CHQMINDATE");
+                maxDate = getArguments().getInt("CHQMAXDATE");
 
                 mSelectedDate = (getArguments().getString("selectedDate") != null) ? getArguments().getString("selectedDate") : "";
                 mSelectedDateFormat = (getArguments().getString("selectedDateFormat") != null) ? getArguments().getString("selectedDateFormat") : "";
@@ -75,7 +75,7 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
             if (minDate != 0 || maxDate != 0) {
                 Calendar c = Calendar.getInstance();
                 c.add(Calendar.DATE, minDate); // subtract 2 years from now
-                dpd.getDatePicker().setMinDate(c.getTimeInMillis());
+                dpd.getDatePicker().setMinDate(c.getTimeInMillis()-1000);
                 c = Calendar.getInstance();
                 c.add(Calendar.DATE, maxDate); // add 4 years to min date to have 2 years after now
                 dpd.getDatePicker().setMaxDate(c.getTimeInMillis());

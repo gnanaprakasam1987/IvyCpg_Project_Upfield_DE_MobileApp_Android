@@ -99,29 +99,34 @@ public class ShelfShareDialogFragment extends DialogFragment {
         public void onClick(View v) {
 
             int i = v.getId();
-            if (i == R.id.calczero || i == R.id.calcone || i == R.id.calctwo || i == R.id.calcthree
-                    || i == R.id.calcfour || i == R.id.calcfive || i == R.id.calcsix
-                    || i == R.id.calcseven || i == R.id.calceight || i == R.id.calcnine) {
-                eff(((Button) v).getText().toString());
-            } else if (i == R.id.calcdel) {
-                String s = mSelectedET.getText().toString();
+            if (mSelectedET == null) {
+                mBModel.showAlert(
+                        getResources().getString(R.string.please_select_item), 0);
+            } else {
+                if (i == R.id.calczero || i == R.id.calcone || i == R.id.calctwo || i == R.id.calcthree
+                        || i == R.id.calcfour || i == R.id.calcfive || i == R.id.calcsix
+                        || i == R.id.calcseven || i == R.id.calceight || i == R.id.calcnine) {
+                    eff(((Button) v).getText().toString());
+                } else if (i == R.id.calcdel) {
+                    String s = mSelectedET.getText().toString();
 
-                if (!(s.length() == 0)) {
-                    s = s.substring(0, s.length() - 1);
-                    if (s.length() == 0)
-                        s = "0";
-                }
-                mSelectedET.setText(s);
-
-            } else if (i == R.id.calcdot) {
-                if (mSelectedET == mEdtTxtShelfLength) {
-                    String s1 = mSelectedET.getText().toString();
-                    if (!s1.contains(".")) {
-                        String strS1 = s1 + ".";
-                        mSelectedET.setText(strS1);
+                    if (!(s.length() == 0)) {
+                        s = s.substring(0, s.length() - 1);
+                        if (s.length() == 0)
+                            s = "0";
                     }
-                }
+                    mSelectedET.setText(s);
 
+                } else if (i == R.id.calcdot) {
+                    if (mSelectedET == mEdtTxtShelfLength) {
+                        String s1 = mSelectedET.getText().toString();
+                        if (!s1.contains(".")) {
+                            String strS1 = s1 + ".";
+                            mSelectedET.setText(strS1);
+                        }
+                    }
+
+                }
             }
 
         }
@@ -459,15 +464,14 @@ public class ShelfShareDialogFragment extends DialogFragment {
     }
 
     private void eff(String val) {
-        if (mSelectedET != null && mSelectedET.getText() != null) {
 
-            String s = mSelectedET.getText().toString();
+        String s = mSelectedET.getText().toString();
 
-            if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s))
-                mSelectedET.setText(val);
-            else
-                mSelectedET.setText(mSelectedET.getText().append(val));
-        }
+        if ("0".equals(s) || "0.0".equals(s) || "0.00".equals(s))
+            mSelectedET.setText(val);
+        else
+            mSelectedET.setText(mSelectedET.getText().append(val));
+
     }
 
     public void setOnShelfShareListener(

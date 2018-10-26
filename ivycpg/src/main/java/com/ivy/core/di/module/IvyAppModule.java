@@ -6,20 +6,38 @@ import dagger.Provides;
 import android.content.Context;
 
 import com.ivy.core.IvyConstants;
+import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.core.data.db.DBHelperImpl;
 import com.ivy.core.data.db.DbHelper;
+import com.ivy.core.data.distributor.DistributorDataManager;
+import com.ivy.core.data.distributor.DistributorDataManagerImpl;
+import com.ivy.core.data.label.LabelsDataManager;
+import com.ivy.core.data.label.LabelsDataManagerImpl;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelperImpl;
+import com.ivy.core.data.user.UserDataManager;
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.core.di.scope.DistributorInfo;
+import com.ivy.core.di.scope.LabelMasterInfo;
+import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
+import com.ivy.core.di.scope.RetailerInfo;
+import com.ivy.core.di.scope.UserInfo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.location.LocationUtil;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
@@ -81,9 +99,36 @@ public class IvyAppModule {
         return new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
     }
 
+
     @Provides
-    protected ConfigurationMasterHelper providesConfigurationHelper() {
+    @UserInfo
+    UserDataManager providesUserDataManager(UserDataManagerImpl userDataManager) {
+        return userDataManager;
+    }
+
+    @Provides
+    @OutletTimeStampInfo
+    OutletTimeStampDataManager providesOutletTimeStampManager(OutletTimeStampDataManagerImpl outletTimeStampDataManager) {
+        return outletTimeStampDataManager;
+    }
+
+
+    @Provides
+    ConfigurationMasterHelper providesConfigurationHelper() {
         return ((BusinessModel) mContext).configurationMasterHelper;
+    }
+
+    @Provides
+    @LabelMasterInfo
+    protected LabelsMasterHelper providesLabelMaster() {
+        return ((BusinessModel) mContext).labelsMasterHelper;
+    }
+
+
+    @Provides
+    @LabelMasterInfo
+    protected LabelsDataManager providesLabelDataManager(LabelsDataManagerImpl labelsDataManager) {
+        return labelsDataManager;
     }
 
     @Provides
@@ -132,6 +177,19 @@ public class IvyAppModule {
     @Singleton
     protected DataManager providesDataManager(DataManagerImpl dataManager) {
         return dataManager;
+    }
+
+
+    @Singleton
+    @Provides
+    protected AppDataProvider providesAppData(AppDataProviderImpl appDataProvider) {
+        return appDataProvider;
+    }
+
+    @Provides
+    @DistributorInfo
+    DistributorDataManager providesDistributorManager(DistributorDataManagerImpl distributorDataManager){
+        return distributorDataManager;
     }
 
 

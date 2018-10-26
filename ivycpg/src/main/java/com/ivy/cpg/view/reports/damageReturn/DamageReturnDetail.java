@@ -66,16 +66,16 @@ public class DamageReturnDetail extends IvyBaseFragment {
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(caseTitleTv.getTag()) != null) {
                     caseTitleTv.setText(bmodel.labelsMasterHelper.applyLabels(caseTitleTv.getTag()));
-                    caseTitleTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                    caseTitleTv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 }
 
                 if (bmodel.labelsMasterHelper.applyLabels(pieceTitleTv.getTag()) != null) {
                     pieceTitleTv.setText(bmodel.labelsMasterHelper.applyLabels(pieceTitleTv.getTag()));
-                    pieceTitleTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                    pieceTitleTv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 }
                 if (bmodel.labelsMasterHelper.applyLabels(outerTitleTv.getTag()) != null) {
                     outerTitleTv.setText(bmodel.labelsMasterHelper.applyLabels(outerTitleTv.getTag()));
-                    outerTitleTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                    outerTitleTv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 }
 
             } catch (Exception e) {
@@ -162,19 +162,19 @@ public class DamageReturnDetail extends IvyBaseFragment {
             }
             holder.deliveryStkBO = items.get(position);
 
-            holder.tvwpsname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            holder.tvwpsname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             if (AppUtils.isEmptyString(holder.deliveryStkBO.getProductShortName()))
                 holder.tvwpsname.setText(holder.deliveryStkBO.getProductName());
 
             holder.tvwpsname.setText(holder.deliveryStkBO.getProductShortName());
 
-            holder.tv_case_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            holder.tv_case_qty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             holder.tv_case_qty.setText(holder.deliveryStkBO.getOrderedCaseQty() + "");
 
-            holder.tv_outer_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            holder.tv_outer_qty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             holder.tv_outer_qty.setText(holder.deliveryStkBO.getOrderedOuterQty() + "");
 
-            holder.tv_piece_qty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+            holder.tv_piece_qty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             holder.tv_piece_qty.setText(holder.deliveryStkBO.getOrderedPcsQty() + "");
 
 

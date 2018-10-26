@@ -3,6 +3,8 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.app.AppDataProviderImpl;
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -34,6 +36,10 @@ public class UserMasterHelper {
         return instance;
     }
 
+    /**
+     * @See {@link UserDataManagerImpl#fetchUserDetails()}
+     * @deprecated
+     */
     public void downloadUserDetails() {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -97,6 +103,9 @@ public class UserMasterHelper {
                             .getColumnIndex("BackupUserId")));
                     userMasterBO.setBackup(false);
 
+
+                    bmodel.codeCleanUpUtil.setUserData(userMasterBO);
+
                 }
                 c.close();
             }
@@ -105,6 +114,13 @@ public class UserMasterHelper {
             Commons.printException("" + e);
         }
     }
+
+    /**
+     * @return <code>true</code> if data is synced <code>false</code> if not synced
+     * @see {@link UserDataManagerImpl#isSynced()}
+     * Checks if data is synced
+     * @deprecated
+     */
 
     public boolean getSyncStatus() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -130,8 +146,10 @@ public class UserMasterHelper {
                             .getColumnIndex("branchid")));
                     userMasterBO.setVanId(c.getInt(c
                             .getColumnIndex("vanid")));
+
                     userMasterBO.setUserid(c.getInt(c
                             .getColumnIndex("userid")));
+
                     userMasterBO.setUserName(c.getString(c
                             .getColumnIndex("username")));
                     userMasterBO.setUserType(c.getString(c
@@ -152,6 +170,9 @@ public class UserMasterHelper {
                             .getColumnIndex("SchemeFactor")));
                     userMasterBO.setUpliftFactor(c.getInt(c
                             .getColumnIndex("upliftFactor")));
+
+                    /** Code cleanup data**/
+                    bmodel.codeCleanUpUtil.setUserData(userMasterBO);
                 }
                 c.close();
             }
@@ -163,8 +184,14 @@ public class UserMasterHelper {
     }
 
     /**
+     *
+     */
+
+    /**
+     * @see {@link UserDataManagerImpl#fetchJoinCallDetails()}
      * Method to use download joinCall users list from usermaster where isDeviceuser = 0 and relationShip = PARENT
      * Set the joint call users list inside UserMasterBO
+     * @deprecated
      */
     public void downloadJoinCallusers() {
         ArrayList<UserMasterBO> mJoinCallUserlist = new ArrayList<>();
@@ -240,6 +267,8 @@ public class UserMasterHelper {
                     mJoinCallUserlist.add(userBO);
                 }
                 userMasterBO.setJoinCallUserList(mJoinCallUserlist);
+
+                bmodel.codeCleanUpUtil.setUserData(userMasterBO);
                 c.close();
             }
 
@@ -250,10 +279,30 @@ public class UserMasterHelper {
     }
 
 
+    /**
+     * @return User BO
+     * @See {@link AppDataProviderImpl#getUser()}
+     * @deprecated Only the necessary data is stored in the {@link com.ivy.core.data.app.AppDataProviderImpl} Singleton
+     */
     public UserMasterBO getUserMasterBO() {
         return userMasterBO;
     }
 
+    /**
+     * @return User BO
+     * @See {@link AppDataProviderImpl#setCurrentUser(UserMasterBO)}
+     * @deprecated Only the necessary data is stored in the {@link com.ivy.core.data.app.AppDataProviderImpl} Singleton
+     */
+    public void setUserMasterBO(UserMasterBO userMasterBO) {
+        bmodel.codeCleanUpUtil.setUserData(userMasterBO);
+        this.userMasterBO = userMasterBO;
+    }
+
+
+    /**
+     * @See {@link UserDataManagerImpl#fetchDistributionDetails()} ()}
+     * @deprecated
+     */
     public void downloadDistributionDetails() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -276,6 +325,8 @@ public class UserMasterHelper {
                     userMasterBO.setDistributorCode(c.getString(8));
                     userMasterBO.setGSTNumber(c.getString(9));
                 }
+
+                bmodel.codeCleanUpUtil.setUserData(userMasterBO);
                 c.close();
             }
         } catch (Exception e) {
@@ -291,6 +342,8 @@ public class UserMasterHelper {
      * @param UserID       -userID
      * @param pwd-password
      * @return - true or false
+     * @see {@link UserDataManagerImpl#changeUserPassword(int, String)}
+     * @deprecated
      */
     public boolean changePassword(int UserID, String pwd) {
         LoginHelper.getInstance(context).loadPasswordConfiguration(context);
@@ -321,6 +374,13 @@ public class UserMasterHelper {
         }
     }
 
+    /**
+     * @param distid
+     * @param parentId
+     * @param distname
+     * @See {@link UserDataManagerImpl#updateDistributorId(String, String, String)}
+     * @deprecated
+     */
     public void updateDistributorId(String distid, String parentId, String distname) {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -344,6 +404,11 @@ public class UserMasterHelper {
         }
     }
 
+
+    /**
+     * @See {@link UserDataManagerImpl#fetchUsers()}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -379,6 +444,11 @@ public class UserMasterHelper {
         return userList;
     }
 
+    /**
+     * @return
+     * @See {@link UserDataManagerImpl#fetchAdhocUsers()}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadAdHocUserList() {
         ArrayList<UserMasterBO> userList = null;
         String codeChild = "CHILD";
@@ -408,6 +478,12 @@ public class UserMasterHelper {
         return userList;
     }
 
+    /**
+     * @param distributorId
+     * @return
+     * @See {@link UserDataManagerImpl#fetchUsersForDistributor(int)}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadUserList(int distributorId) {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -436,6 +512,12 @@ public class UserMasterHelper {
         return userList;
     }
 
+    /**
+     * @param distributorId
+     * @return
+     * @See {@link UserDataManagerImpl#fetchUsersForDistributors(String)}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadUserList(String distributorId) {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -490,6 +572,11 @@ public class UserMasterHelper {
         }
     }
 
+    /**
+     * @param userMasterBO
+     * @See {@link UserDataManagerImpl#updateUserProfile(UserMasterBO)}
+     * @deprecated
+     */
     public void saveUserProfile(UserMasterBO userMasterBO) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -529,6 +616,11 @@ public class UserMasterHelper {
         }
     }
 
+    /**
+     * @return Current logged in user along with list of his child users
+     * @See {@link UserDataManagerImpl#fetchAllUsers()}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> downloadAllUser() {
         ArrayList<UserMasterBO> userList = null;
         String codeChild = "CHILD";
@@ -558,6 +650,10 @@ public class UserMasterHelper {
         return userList;
     }
 
+    /**
+     * @See {@link UserDataManagerImpl#fetchBackupSellers()}
+     * @deprecated
+     */
     public ArrayList<UserMasterBO> getBackupSellerList() {
         return backupSellerList;
     }
@@ -566,6 +662,10 @@ public class UserMasterHelper {
         this.backupSellerList = backupSellerList;
     }
 
+    /**
+     * @See {@link UserDataManagerImpl#fetchBackupSellers()}
+     * @deprecated
+     */
     public void downloadBackupSeller() {
         String codeChild = "CHILD";
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,

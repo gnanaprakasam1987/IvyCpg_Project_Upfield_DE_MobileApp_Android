@@ -25,7 +25,6 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderRemarkDialog;
@@ -274,9 +273,9 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                 //setting typefaces
                 holder.psname.setTypeface(FontUtils.getProductNameFont(DeliveryOrderSummary.this));
 
-                holder.tv_pcs.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderSummary.this));
-                holder.tv_case.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderSummary.this));
-                holder.tv_outer.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderSummary.this));
+                holder.tv_pcs.setTypeface(FontUtils.getFontRoboto(DeliveryOrderSummary.this, FontUtils.FontType.MEDIUM));
+                holder.tv_case.setTypeface(FontUtils.getFontRoboto(DeliveryOrderSummary.this, FontUtils.FontType.MEDIUM));
+                holder.tv_outer.setTypeface(FontUtils.getFontRoboto(DeliveryOrderSummary.this, FontUtils.FontType.MEDIUM));
 
 
                 // Order Field - Enable/Disable
@@ -284,7 +283,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     ( row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderSummary.this));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(DeliveryOrderSummary.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -299,7 +298,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     ( row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderSummary.this));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(DeliveryOrderSummary.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -314,7 +313,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                     ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderSummary.this));
+                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(DeliveryOrderSummary.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outercaseTitle))
@@ -443,25 +442,34 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                                     //
 
                                                                     batchProduct.setSchemeDiscAmount(batchProduct.getSchemeDiscAmount() + amount_free_batch);
+                                                                    if (batchProduct.getLineValueAfterSchemeApplied() > 0) {
+                                                                        batchProduct.setLineValueAfterSchemeApplied(batchProduct.getLineValueAfterSchemeApplied() - amount_free_batch);
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     } else {
                                                         productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
-                                                        if (productBO.getDiscount_order_value() > 0) {
-                                                            productBO.setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
+                                                        if (productBO.getNetValue() > 0) {
+                                                            productBO.setNetValue(productBO
+                                                                    .getNetValue()
                                                                     - amount_free);
 
+                                                        }
+                                                        if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                                                            productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - amount_free);
                                                         }
                                                     }
                                                 } else {
                                                     productBO.setSchemeDiscAmount(productBO.getSchemeDiscAmount() + amount_free);
-                                                    if (productBO.getDiscount_order_value() > 0) {
-                                                        productBO.setDiscount_order_value(productBO
-                                                                .getDiscount_order_value()
+                                                    if (productBO.getNetValue() > 0) {
+                                                        productBO.setNetValue(productBO
+                                                                .getNetValue()
                                                                 - amount_free);
 
+                                                    }
+                                                    if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                                                        productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - amount_free);
                                                     }
                                                 }
                                             } else if (schemeBO.isPriceTypeSeleted()) {
@@ -493,15 +501,15 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                                     "SCH_PR", false);
                                                 }
 
-                                                if (productBO.getDiscount_order_value() > 0) {
+                                                if (productBO.getNetValue() > 0) {
                                                     productBO
-                                                            .setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
+                                                            .setNetValue(productBO
+                                                                    .getNetValue()
                                                                     - totalpriceDiscount);
 
                                                 }
-                                                if (productBO.getSchemeAppliedValue() > 0) {
-                                                    productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalpriceDiscount);
+                                                if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                                                    productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - totalpriceDiscount);
                                                 }
 
                                                 schemeProductBo.setDiscountValue(totalpriceDiscount);
@@ -535,15 +543,15 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                                                                     "SCH_PER", false);
                                                 }
 
-                                                if (productBO.getDiscount_order_value() > 0) {
+                                                if (productBO.getNetValue() > 0) {
                                                     productBO
-                                                            .setDiscount_order_value(productBO
-                                                                    .getDiscount_order_value()
+                                                            .setNetValue(productBO
+                                                                    .getNetValue()
                                                                     - totalPercentageDiscount);
                                                 }
 
-                                                if (productBO.getSchemeAppliedValue() > 0) {
-                                                    productBO.setSchemeAppliedValue(productBO.getSchemeAppliedValue() - totalPercentageDiscount);
+                                                if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                                                    productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - totalPercentageDiscount);
                                                 }
                                                 schemeProductBo.setDiscountValue(totalPercentageDiscount);
 

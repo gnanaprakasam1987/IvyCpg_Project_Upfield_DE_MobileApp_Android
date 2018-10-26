@@ -98,7 +98,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
     protected void initViews(View rootView) {
         tvStoreCount = rootView.findViewById(R.id.tv_store_count);
 
-        tvStoreCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext().getApplicationContext()));
+        tvStoreCount.setTypeface(FontUtils.getFontRoboto(getContext().getApplicationContext(), FontUtils.FontType.REGULAR));
 
         visitedRetailerRecycleView = rootView.findViewById(R.id.viewpager);
 //        visitedRetailerRecycleView.setVisibility(View.GONE);
@@ -220,16 +220,16 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 noImage = view.findViewById(R.id.outlet_no_image);
 
 
-                ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                ((TextView)view.findViewById(R.id.tv_duration_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                ((TextView)view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                ((TextView)view.findViewById(R.id.tv_duration_txt)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                ((TextView)view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
 
-                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
-                tvStoreAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvVisitStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
-                tvOrderValueText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvStoreName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+                tvStoreAddress.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvVisitStatus.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvOrderValue.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+                tvOrderValueText.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
 
                 LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                         false);
@@ -319,10 +319,10 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 tvDuration = view.findViewById(R.id.tv_duration_val);
                 tvOrderValue = view.findViewById(R.id.tv_order_value);
 
-                tvInTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvOutTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
+                tvInTime.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvOutTime.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvDuration.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvOrderValue.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
 
             }
         }

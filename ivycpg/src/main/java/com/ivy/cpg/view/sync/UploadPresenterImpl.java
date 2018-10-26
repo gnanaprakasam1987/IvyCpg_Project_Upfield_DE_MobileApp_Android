@@ -15,6 +15,7 @@ import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -149,7 +150,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             deliveryManagementHelper.updateNotDeliveryDetails();
         }
 
-        mBModel.mEmptyReconciliationhelper.updateTable();
+        EmptyReconciliationHelper.getInstance(mContext).updateTable();
         if (mBModel.configurationMasterHelper.CALCULATE_UNLOAD) {
             mVanUnloadHelper.vanUnloadAutomatically(mContext.getApplicationContext());
             mVanUnloadHelper.vanUnloadNonSalableAutomatically(mContext.getApplicationContext());
@@ -280,8 +281,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     @Override
     public boolean isOdameterON() {
         return mBModel.configurationMasterHelper
-                .isOdaMeterOn()
-                ;
+                .isOdaMeterOn();
     }
 
     @Override

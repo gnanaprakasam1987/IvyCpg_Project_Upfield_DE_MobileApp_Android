@@ -19,7 +19,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.FontUtils;
 
@@ -147,15 +146,15 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 holder.totalLinesTV = convertView.findViewById(R.id.tv_total_lines);
                 holder.totalAmountTV = convertView.findViewById(R.id.tv_amount);
 
-                holder.invoicenoTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagement.this));
-                holder.invoiceDateTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagement.this));
-                holder.totalLinesTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagement.this));
-                holder.totalAmountTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagement.this));
+                holder.invoicenoTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.LIGHT));
+                holder.invoiceDateTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.LIGHT));
+                holder.totalLinesTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.LIGHT));
+                holder.totalAmountTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.LIGHT));
 
-                ((TextView) convertView.findViewById(R.id.tv_invoice_no)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagement.this));
-                ((TextView) convertView.findViewById(R.id.tv_amount)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagement.this));
-                ((TextView) convertView.findViewById(R.id.tv_invoice_date)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagement.this));
-                ((TextView) convertView.findViewById(R.id.tv_total_lines)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagement.this));
+                ((TextView) convertView.findViewById(R.id.tv_invoice_no)).setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.MEDIUM));
+                ((TextView) convertView.findViewById(R.id.tv_amount)).setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.MEDIUM));
+                ((TextView) convertView.findViewById(R.id.tv_invoice_date)).setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.MEDIUM));
+                ((TextView) convertView.findViewById(R.id.tv_total_lines)).setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.MEDIUM));
 
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(convertView.findViewById(

@@ -39,7 +39,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity;
 import com.ivy.lib.DialogFragment;
@@ -59,7 +61,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
     private GoogleMap mMap;
     private int userId;
-    private String userName,seletedDate;
+    private String userName,seletedDate,sellerUId="";
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName, tvInfoVisitTime, tvSellerName, tvSellerStartTime, tvSellerLastVisit, tvTarget, tvCovered;
@@ -102,6 +104,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 userId = extras.getInt("SellerId");
                 userName = extras.getString("screentitle");
                 seletedDate = extras.getString("Date");
+                sellerUId = extras.getString("UUID");
                 setScreenTitle(userName);
             }
         } catch (Exception e) {
@@ -132,20 +135,20 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         ImageView imgMessage = findViewById(R.id.message_img);
 
-        tvSellerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerStartTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerLastVisit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerPerformanceBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvTarget.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvCovered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvSellerName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvSellerStartTime.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvSellerLastVisit.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvSellerPerformanceBtn.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvTarget.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvCovered.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
-        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
-        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.store_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.time_in_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.time_out_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.store_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.time_in_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.time_out_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
@@ -161,7 +164,17 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         imgMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (SupervisorActivityHelper.getInstance().isChatConfigAvail(SellerDetailMapActivity.this)) {
+                    if (!sellerUId.equals("")) {
+                        Intent intent = new Intent(SellerDetailMapActivity.this, StartChatActivity.class);
+                        intent.putExtra("name",userName);
+                        intent.putExtra("UUID", sellerUId);
+                        startActivity(intent);
+                    } else
+                        Toast.makeText(SellerDetailMapActivity.this, "No Chat Found..", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(SellerDetailMapActivity.this, "No Chat Config Enabled..", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -175,6 +188,8 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 startActivity(intent);
             }
         });
+
+
 
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.user_info_layout));
 
@@ -293,11 +308,16 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         //Focus all the retailer location in map
         sellerMapViewPresenter.getMarkerForFocus();
 
-        //Sellers last visit info listener
+        //Current Seller last visit info listener
         sellerMapViewPresenter.setSellerActivityListener(userId,seletedDate);
+
+        //Current Seller Realtime Location listener
+        sellerMapViewPresenter.setSellerMovementListener(userId,seletedDate);
 
         //Draw route based on sellers activity
         sellerMapViewPresenter.setSellerActivityDetailListener(userId,seletedDate);
+
+        sellerMapViewPresenter.downloadSellerRoute(String.valueOf(userId),seletedDate);
 
     }
 
@@ -351,7 +371,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             @Override
             public void onMapLoaded() {
                 if(builder != null) {
-                    if (sellerMapViewPresenter.checkAreaBoundsTooSmall(builder.build(), 300)) {
+                    if (sellerMapViewPresenter.checkAreaBoundsTooSmall(builder.build())) {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
                     } else {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
@@ -390,6 +410,22 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             }
         }
 
+    }
+
+    public void updateSellerLocation(LatLng sellerLatLng ){
+        if(sellerLatLng != null) {
+            if (sellerMarker == null) {
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(sellerLatLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker))
+                        .title("SELLER");
+                sellerMarker = mMap.addMarker(markerOptions);
+            } else {
+                sellerMapViewPresenter.animateSellerMarker(sellerLatLng,sellerMarker);
+
+                sellerMapViewPresenter.addRoutePoint(sellerLatLng);
+            }
+        }
     }
 
     @Override
@@ -543,11 +579,11 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 tvTimeOut = view.findViewById(R.id.time_out_text);
                 tvSkipped = view.findViewById(R.id.skipped_text);
 
-                tvSerialNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvSkipped.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvSerialNumber.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvStoreName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvTimeIn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvTimeOut.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+                tvSkipped.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
 
             }
         }

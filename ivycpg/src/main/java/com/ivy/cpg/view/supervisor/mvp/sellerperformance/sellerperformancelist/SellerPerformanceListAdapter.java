@@ -46,9 +46,9 @@ public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPer
             progressBar = view.findViewById(R.id.progressBar);
             userImage = view.findViewById(R.id.user_image);
 
-            sellerNameTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            sellerPositionTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            sellerPerformancePercentTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
+            sellerNameTv.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            sellerPositionTv.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            sellerPerformancePercentTv.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
         }
     }
 

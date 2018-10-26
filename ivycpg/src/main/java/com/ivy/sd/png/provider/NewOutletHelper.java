@@ -2260,6 +2260,7 @@ public class NewOutletHelper {
             if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
                 if (retailerContactList != null && retailerContactList.size() > 0) {
                     for (RetailerContactBo retailerContactBo : retailerContactList) {
+
                         value = QT(getId())
                                 + "," + QT(retailerContactBo.getFistname())
                                 + "," + QT(retailerContactBo.getLastname())
@@ -2271,6 +2272,7 @@ public class NewOutletHelper {
                                 + "," + QT("N");
                         db.insertSQL("RetailerContact", column, value);
                     }
+                    retailerContactList.clear();
                 }
             }else{
                 if (outlet.getContactpersonname() != null && !outlet.getContactpersonname().trim().equals("")) {

@@ -4,9 +4,28 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
+import android.text.TextUtils;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
+import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
 import com.ivy.sd.png.bo.BomReturnBO;
@@ -15,11 +34,25 @@ import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.CookieHandler;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 
 public class LoadManagementHelper {
 
@@ -28,6 +61,10 @@ public class LoadManagementHelper {
     private BusinessModel bmodel;
     private ArrayList<SubDepotBo> subDepotList = null;
     private ArrayList<SubDepotBo> distributorList = null;
+    private static final String SECURITY_HEADER = "SECURITY_TOKEN_KEY";
+    private static final String TAG_JSON_OBJ = "json_obj_req";
+    private static final String TAG = "LoadManagementHelper";
+    private RequestQueue mRequestQueue;
 
     public LoadManagementHelper(Context context) {
         this.context = context;
@@ -190,8 +227,6 @@ public class LoadManagementHelper {
     }
 
 
-
-
     public boolean isSecondaryDistributorDone() {
         DBUtil db = null;
         Cursor cursor;
@@ -224,7 +259,6 @@ public class LoadManagementHelper {
         }
         return false;
     }
-
 
 
     public float checkIsAllowed(String menuString) {
@@ -265,4 +299,162 @@ public class LoadManagementHelper {
     }
 
 
+    Single<String> stockRefresh(final Context mcontext) {
+        return Single.create(new SingleOnSubscribe<String>() {
+            @Override
+            public void subscribe(final SingleEmitter<String> e) throws Exception {
+                bmodel.synchronizationHelper.updateAuthenticateToken(false);
+                if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    try {
+                        String downloadurl = getDownloadUrl(mcontext);
+                        if (downloadurl.length() > 0) {
+
+                            downloadurl = DataMembers.SERVER_URL + downloadurl;
+                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                                    (Request.Method.POST, downloadurl, getHeaderJson(),
+                                            new Response.Listener<JSONObject>() {
+                                                @Override
+                                                public void onResponse(JSONObject jsonObject) {
+                                                    Iterator itr = jsonObject.keys();
+                                                    while (itr.hasNext()) {
+                                                        String key = (String) itr.next();
+                                                        if (key.equals("Master")) {
+                                                            try {
+                                                                if (jsonObject.getString(SynchronizationHelper.ERROR_CODE)
+                                                                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                                                                    bmodel.synchronizationHelper.inserVanloadRecodrs(jsonObject);
+                                                                    e.onSuccess(jsonObject.getString(SynchronizationHelper.ERROR_CODE));
+                                                                }
+                                                            } catch (JSONException ex) {
+                                                                Commons.printException(ex);
+                                                                e.onSuccess("E32");
+                                                            }
+                                                        } else if (key.equals("ErrorCode")) {
+                                                            deleteAllRequestQueue();
+                                                            try {
+                                                                e.onSuccess(jsonObject.getString(key));
+                                                            } catch (JSONException ex) {
+                                                                Commons.printException(ex);
+                                                                e.onSuccess("E32");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            deleteAllRequestQueue();
+                                            if (error instanceof TimeoutError) {
+                                                e.onSuccess("E32");
+                                            } else if (error instanceof NoConnectionError) {
+                                                e.onSuccess("E06");
+                                            } else if (error instanceof ServerError) {
+                                                e.onSuccess("E01");
+                                            } else if (error instanceof NetworkError) {
+                                                e.onSuccess("E01");
+                                            } else if (error instanceof ParseError) {
+                                                e.onSuccess("E31");
+                                            } else {
+                                                e.onSuccess("E01");
+                                            }
+
+                                        }
+                                    }) {
+                                @Override
+                                public Map<String, String> getHeaders() {
+                                    Map<String, String> headers = new HashMap<>();
+                                    headers.put(SECURITY_HEADER, bmodel.synchronizationHelper.getSecurityKey());
+                                    headers.put("Content-Type", "application/json; charset=utf-8");
+
+                                    return headers;
+                                }
+                            };
+                            RetryPolicy policy = new DefaultRetryPolicy(
+                                    (int) TimeUnit.SECONDS.toMillis(30),
+                                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+                            jsonObjectRequest.setRetryPolicy(policy);
+                            jsonObjectRequest.setShouldCache(false);
+
+                            addToRequestQueue(jsonObjectRequest);
+                        } else
+                            e.onSuccess(context.getResources().getString(R.string.download_url_empty));
+
+                    } catch (Exception ex) {
+                        Commons.printException(ex);
+                        e.onSuccess("E32");
+                    }
+                } else
+                    e.onSuccess(bmodel.synchronizationHelper.getAuthErroCode());
+
+            }
+        });
+    }
+
+    private <T> void addToRequestQueue(Request<T> req) {
+        // set the default tag if tag is empty
+        req.setTag(TextUtils.isEmpty(TAG_JSON_OBJ) ? TAG : TAG_JSON_OBJ);
+        getRequestQueue().add(req);
+    }
+
+    private RequestQueue getRequestQueue() {
+
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(context);
+            mRequestQueue.getCache().clear();
+
+        }
+        return mRequestQueue;
+
+    }
+
+    private void deleteAllRequestQueue() {
+        mRequestQueue.cancelAll(TAG_JSON_OBJ);
+
+    }
+
+    private String getDownloadUrl(Context mContext) {
+        String url = "";
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select url from urldownloadmaster where mastername='VANLOAD'");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        url = c.getString(0);
+                    }
+                }
+            }
+            c.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
+        return url;
+    }
+
+    private JSONObject getHeaderJson() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+            json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+            json.put("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            json.put("MobileUTCDateTime",
+                    Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+            if (!DataMembers.backDate.isEmpty())
+                json.put("RequestDate",
+                        SDUtil.now(SDUtil.DATE_TIME_NEW));
+        } catch (Exception e) {
+            Commons.printException(e);
+
+        }
+
+        return json;
+    }
 }

@@ -20,7 +20,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
-import com.ivy.sd.png.bo.TaxBO;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -43,8 +43,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
@@ -209,7 +207,6 @@ public class CommonPrintHelper {
 
     private double total_line_value_incl_tax = 0;
     private double mBillLevelDiscountValue = 0;
-    private double mBillLevelTaxValue = 0;
     private double mEmptyTotalValue = 0;
     private double total_net_payable = 0;
     public int width_image = 100;
@@ -574,13 +571,22 @@ public class CommonPrintHelper {
                                 else
                                     calculateSchemeAmountDiscountValue();
 
-                                getBillLevelDiscount();
-                                getBillLevelTaxValue();
+                                //Bill discount
+                                double billDiscountValue = bmodel.getOrderHeaderBO()!=null?bmodel.getOrderHeaderBO().getBillLevelDiscountValue():0;
+                                if (bmodel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT && !DiscountHelper.getInstance(context).isWihtHoldApplied())
+                                    billDiscountValue -= orderHelper.withHoldDiscount;
+                                mBillLevelDiscountValue = billDiscountValue;
+                                //
+
+                                //Bill tax
+                                double billLevelTax=bmodel.getOrderHeaderBO()!=null?bmodel.getOrderHeaderBO().getBillLevelTaxValue():0;
+
                                 getEmptyReturnValue();
                                 if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
                                     getCollectionBeforeInvValue();
 
-                                total_net_payable = (total_line_value_incl_tax + mBillLevelTaxValue + mEmptyTotalValue) - mBillLevelDiscountValue;
+
+                                total_net_payable = (total_line_value_incl_tax + billLevelTax + mEmptyTotalValue) - mBillLevelDiscountValue;
                                 mTotCredit = total_net_payable - (mCash + mCheque + mCreditNoteValue);
                             } else if (group_name != null && group_name.equalsIgnoreCase("empty_return")) {
                                 sb.append(newline);
@@ -1129,9 +1135,7 @@ public class CommonPrintHelper {
         ProductMasterBO productBO;
         for (int i = 0; i < productsCount; i++) {
             productBO = productList.elementAt(i);
-            if (productBO.getOrderedCaseQty() > 0
-                    || productBO.getOrderedPcsQty() > 0
-                    || productBO.getOrderedOuterQty() > 0
+            if (productBO.getTotalOrderedQtyInPieces()>0
                     || ((bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY || bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                     && isReturnDoneForProduct(productBO))) {
                 mOrderedProductList.add(productBO);
@@ -1159,16 +1163,9 @@ public class CommonPrintHelper {
 
         for (ProductMasterBO prod : mOrderedProductList) {
             mLengthUptoPName = 0;
-            //int position=0;
-            ///position=mAttrList.size();
+
             //load the ordered product line item - start
             for (AttributeListBO attr : mAttrList) {
-
-                //Below line added for RTL support - Rajkumar
-               /* if (!attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
-                    position -= 1;
-                    attr = mAttrList.get(position);
-                }*/
 
                 mProductValue = "";
                 if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)) {
@@ -1195,22 +1192,17 @@ public class CommonPrintHelper {
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_UOM_WISE_QTY)) {
                     mProductValue = getUomWiseQty(prod);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
-                    mProductValue = (prod.getOrderedPcsQty()
-                            + (prod.getOrderedCaseQty() * prod.getCaseSize())
-                            + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
+                    mProductValue = prod.getTotalOrderedQtyInPieces() + "";
                     mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
-                    double lineValue = (prod.getOrderedOuterQty() * prod.getOsrp())
-                            + (prod.getOrderedCaseQty() * prod.getCsrp())
-                            + (prod.getOrderedPcsQty() * prod.getSrp());
-                    mProductValue = formatValueInPrint(lineValue, attr.getmAttributePrecision());
+                    mProductValue = formatValueInPrint(prod.getLineValue(), attr.getmAttributePrecision());
                     mProductLineValueTotal = mProductLineValueTotal + SDUtil.convertToDouble(mProductValue.replace(",", ""));
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
-                    mProductValue = formatValueInPrint(prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value(), attr.getmAttributePrecision());
-                    mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + (prod.getTaxValue() > 0 ? prod.getTaxValue() : prod.getDiscount_order_value());
+                    mProductValue = formatValueInPrint(prod.getTaxableAmount() > 0 ? prod.getTaxableAmount() : prod.getNetValue(), attr.getmAttributePrecision());
+                    mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + (prod.getTaxableAmount() > 0 ? prod.getTaxableAmount() : prod.getNetValue());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
-                    mProductValue = formatValueInPrint(prod.getDiscount_order_value(), attr.getmAttributePrecision());
-                    mProductLineValueIncludingTaxTotal = mProductLineValueIncludingTaxTotal + prod.getDiscount_order_value();
+                    mProductValue = formatValueInPrint(prod.getNetValue(), attr.getmAttributePrecision());
+                    mProductLineValueIncludingTaxTotal = mProductLineValueIncludingTaxTotal + prod.getNetValue();
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REPLACE_QTY_PIECE)) {
                     mProductValue = prod.getRepPieceQty() + (prod.getRepCaseQty() * prod.getCaseSize()) + (prod.getRepOuterQty() * prod.getOutersize()) + "";
                     mProductRepQtyTotal = mProductRepQtyTotal + Integer.parseInt(mProductValue.replace(",", ""));
@@ -1226,9 +1218,7 @@ public class CommonPrintHelper {
                     mProductValue = prod.getRepPieceQty()
                             + (prod.getRepCaseQty() * prod.getCaseSize())
                             + (prod.getRepOuterQty() * prod.getOutersize())
-                            + (prod.getOrderedPcsQty()
-                            + (prod.getOrderedCaseQty() * prod.getCaseSize())
-                            + (prod.getOrderedOuterQty() * prod.getOutersize())) + "";
+                            + (prod.getTotalOrderedQtyInPieces()) + "";
                     mProductRepOrdInPieceTotal = mProductRepOrdInPieceTotal + Integer.parseInt(mProductValue.replace(",", ""));
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_TAG_DESC)) {
                     mProductValue = prod.getDescription() + "";
@@ -1262,12 +1252,7 @@ public class CommonPrintHelper {
                     mProductValue = String.valueOf(prod.getFoc());
                     mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
-                    int totalQty = prod.getOrderedPcsQty()
-                            + prod.getOrderedCaseQty()
-                            * prod.getCaseSize()
-                            + prod.getOrderedOuterQty()
-                            * prod.getOutersize();
-                    mProductValue = String.valueOf(prod.getDiscount_order_value() / totalQty);
+                     mProductValue = String.valueOf(prod.getNetValue() / prod.getTotalOrderedQtyInPieces());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SCHEME_DISCOUNT)) {
                     mProductValue = formatValueInPrint(prod.getSchemeDiscAmount(), attr.getmAttributePrecision());
                 }
@@ -1312,11 +1297,9 @@ public class CommonPrintHelper {
 
             //load the ordered product line item - end
 
-            total_line_value_incl_tax = total_line_value_incl_tax + prod.getDiscount_order_value();
+            total_line_value_incl_tax = total_line_value_incl_tax + prod.getNetValue();
 
-            int totalProductQty = prod.getOrderedPcsQty() + prod.getOrderedCaseQty() * prod.getCaseSize()
-                    + prod.getOrderedOuterQty() * prod.getOutersize();
-            totalPriceOffValue = totalPriceOffValue + totalProductQty * prod.getPriceoffvalue();
+            totalPriceOffValue = totalPriceOffValue + prod.getTotalOrderedQtyInPieces() * prod.getPriceoffvalue();
 
             //load scheme free product
             if (isLoadSchemeFreeProduct.equalsIgnoreCase("YES")) {
@@ -1345,9 +1328,7 @@ public class CommonPrintHelper {
         ProductMasterBO productBO;
         for (int i = 0; i < productsCount; i++) {
             productBO = productList.elementAt(i);
-            if (productBO.getOrderedCaseQty() > 0
-                    || productBO.getOrderedPcsQty() > 0
-                    || productBO.getOrderedOuterQty() > 0
+            if (productBO.getTotalOrderedQtyInPieces() > 0
                     || (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
 
                 mOrderedProductList.add(productBO);
@@ -1382,9 +1363,7 @@ public class CommonPrintHelper {
 
                 for (ProductMasterBO batchProductBO : batchList) {
                     mLengthUptoPName = 0;
-                    int totalBatchQty = batchProductBO.getOrderedPcsQty() + batchProductBO.getOrderedCaseQty() * prod.getCaseSize()
-                            + batchProductBO.getOrderedOuterQty() * prod.getOutersize();
-                    if (totalBatchQty > 0) {
+                    if (batchProductBO.getTotalOrderedQtyInPieces() > 0) {
                         for (AttributeListBO attr : mAttrList) {
                             mProductValue = "";
                             if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)) {
@@ -1411,21 +1390,16 @@ public class CommonPrintHelper {
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_UOM_WISE_QTY)) {
                                 mProductValue = getUomWiseQty(batchProductBO);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_TOTAL_IN_PIECE)) {
-                                mProductValue = (batchProductBO.getOrderedPcsQty()
-                                        + (batchProductBO.getOrderedCaseQty() * prod.getCaseSize())
-                                        + (batchProductBO.getOrderedOuterQty() * prod.getOutersize())) + "";
-                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
+                                mProductValue = batchProductBO.getTotalOrderedQtyInPieces() + "";
+                                mProductQtyInPieceTotal = mProductQtyInPieceTotal + (batchProductBO.getTotalOrderedQtyInPieces());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE)) {
-                                double lineValue = (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp())
-                                        + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCsrp())
-                                        + (batchProductBO.getOrderedPcsQty() * batchProductBO.getSrp());
-                                mProductValue = formatValueInPrint(lineValue, attr.getmAttributePrecision());
+                                mProductValue = formatValueInPrint(batchProductBO.getLineValue(), attr.getmAttributePrecision());
                                 mProductLineValueTotal = mProductLineValueTotal + SDUtil.convertToDouble(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LINE_VALUE_EXCLUDING_TAX)) {
-                                mProductValue = formatValueInPrint(batchProductBO.getTaxValue() > 0 ? batchProductBO.getTaxValue() : batchProductBO.getDiscount_order_value(), attr.getmAttributePrecision());
+                                mProductValue = formatValueInPrint(batchProductBO.getTaxableAmount() > 0 ? batchProductBO.getTaxableAmount() : batchProductBO.getNetValue(), attr.getmAttributePrecision());
                                 mProductLineValueExcludingTaxTotal = mProductLineValueExcludingTaxTotal + SDUtil.convertToDouble(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_lINE_VALUE_INCLUDING_TAX)) {
-                                mProductValue = formatValueInPrint(batchProductBO.getDiscount_order_value(), attr.getmAttributePrecision());
+                                mProductValue = formatValueInPrint(batchProductBO.getNetValue(), attr.getmAttributePrecision());
                                 mProductLineValueIncludingTaxTotal = mProductLineValueIncludingTaxTotal + SDUtil.convertToDouble(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REPLACE_QTY_PIECE)) {
                                 mProductValue = batchProductBO.getRepPieceQty() + (batchProductBO.getRepCaseQty() * batchProductBO.getCaseSize()) + (batchProductBO.getRepOuterQty() * batchProductBO.getOutersize()) + "";
@@ -1451,12 +1425,7 @@ public class CommonPrintHelper {
                                 mProductValue = String.valueOf(prod.getFoc());
                                 mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
-                                int totalQty = prod.getOrderedPcsQty()
-                                        + prod.getOrderedCaseQty()
-                                        * prod.getCaseSize()
-                                        + prod.getOrderedOuterQty()
-                                        * prod.getOutersize();
-                                mProductValue = String.valueOf(prod.getDiscount_order_value() / totalQty);
+                                mProductValue = String.valueOf(prod.getNetValue() / prod.getTotalOrderedQtyInPieces());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SCHEME_DISCOUNT)) {
                                 mProductValue = formatValueInPrint(prod.getSchemeDiscAmount(), attr.getmAttributePrecision());
                             }
@@ -1510,9 +1479,9 @@ public class CommonPrintHelper {
                         }
 
                         total_line_value_incl_tax = total_line_value_incl_tax +
-                                SDUtil.convertToDouble(SDUtil.format(batchProductBO.getDiscount_order_value(), 2, 0));
+                                SDUtil.convertToDouble(SDUtil.format(batchProductBO.getNetValue(), 2, 0));
 
-                        totalPriceOffValue = totalPriceOffValue + (totalBatchQty * batchProductBO.getPriceoffvalue());
+                        totalPriceOffValue = totalPriceOffValue + (batchProductBO.getTotalOrderedQtyInPieces() * batchProductBO.getPriceoffvalue());
                     }
                 }//
 
@@ -1657,13 +1626,9 @@ public class CommonPrintHelper {
                         netSchemeAmount += schemeBO.getSelectedAmount();
                     } else if (schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
                         for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
-                            ProductMasterBO productBO = bmodel.productHelper
-                                    .getProductMasterBOById(buyProd
-                                            .getProductId());
+                            ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(buyProd.getProductId());
                             if (productBO != null) {
-                                if (productBO.getOrderedPcsQty() > 0
-                                        || productBO.getOrderedCaseQty() > 0
-                                        || productBO.getOrderedOuterQty() > 0) {
+                                if (productBO.getTotalOrderedQtyInPieces()>0) {
                                     mBuyProdDiscountedValue = mBuyProdDiscountedValue + buyProd.getDiscountValue();
                                 }
                             }
@@ -1694,24 +1659,22 @@ public class CommonPrintHelper {
                     mLengthUptoPName = 0;
 
                     if (schemeBO.isAmountTypeSelected()) {
+
                         schemeName = schemeBO.getProductName();
                         schemeValue = schemeBO.getSelectedAmount();
                         netSchemeAmount += schemeValue;
+
                     } else if (schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
+
                         schemeName = schemeBO.getProductName();
                         for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
-                            ProductMasterBO productBO = bmodel.productHelper
-                                    .getProductMasterBOById(buyProd
-                                            .getProductId());
+                            ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(buyProd.getProductId());
                             if (productBO != null) {
-                                if (productBO.getOrderedPcsQty() > 0
-                                        || productBO.getOrderedCaseQty() > 0
-                                        || productBO.getOrderedOuterQty() > 0) {
+                                if (productBO.getTotalOrderedQtyInPieces() > 0) {
                                     mBuyProdDiscountedValue = mBuyProdDiscountedValue + buyProd.getDiscountValue();
                                 }
                             }
                         }
-
 
                         schemeValue = mBuyProdDiscountedValue;
                         netSchemeAmount += schemeValue;
@@ -1719,8 +1682,10 @@ public class CommonPrintHelper {
 
 
                     if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected() || schemeBO.isPriceTypeSeleted()) {
+
                         for (AttributeListBO attr : mAttrList) {
                             mProductValue = "";
+
                             if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                                 mProductValue = schemeName;
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SCHEME_DISCOUNT)) {
@@ -1777,76 +1742,27 @@ public class CommonPrintHelper {
         ArrayList<Integer> mDiscountTypeIdList = bmodel.productHelper.getTypeIdList();
         SparseArray<ArrayList<Integer>> mDiscountIdListByTypeId = bmodel.productHelper.getDiscountIdListByTypeId();
         if (mDiscountTypeIdList != null && mDiscountIdListByTypeId != null) {
+
             for (Integer typeId : mDiscountTypeIdList) {
                 ArrayList<Integer> discountIdList = mDiscountIdListByTypeId.get(typeId);
+
                 if (discountIdList != null) {
                     String discountDescription = "";
                     double totalDiscountValue = 0;
-                    for (int discountid : discountIdList) {
-                        ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountid);
+
+                    for (int discountId : discountIdList) {
+                        ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountId);
                         if (discountList != null) {
+
                             for (StoreWiseDiscountBO storeWiseDiscountBO : discountList) {
                                 discountDescription = storeWiseDiscountBO.getDescription();
-                                ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
+
+                                ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(String.valueOf(storeWiseDiscountBO.getProductId()));
                                 if (productMasterBO != null) {
-                                    int totalProductQty = 0;
-                                    totalProductQty = productMasterBO.getOrderedPcsQty()
-                                            + productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize()
-                                            + productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize();
-                                    if (totalProductQty > 0) {
-                                        if (productMasterBO.getBatchwiseProductCount() > 0) {
 
-                                            ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(productMasterBO.getProductID());
-                                            if (batchList != null) {
-                                                for (ProductMasterBO batchProductBO : batchList) {
-                                                    double totalValue = 0;
-                                                    double batchDiscountValue = 0;
-                                                    int totalBatchQty = batchProductBO.getOrderedPcsQty() + batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize()
-                                                            + batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize();
+                                    if (productMasterBO.getTotalOrderedQtyInPieces() > 0) {
+                                        totalDiscountValue = totalDiscountValue + storeWiseDiscountBO.getDiscountValue();
 
-                                                    if (batchProductBO.getSchemeAppliedValue() > 0) {
-                                                        totalValue = batchProductBO.getSchemeAppliedValue();
-                                                    } else {
-                                                        totalValue = batchProductBO.getOrderedPcsQty()
-                                                                * batchProductBO.getSrp()
-                                                                + batchProductBO.getOrderedCaseQty()
-                                                                * batchProductBO.getCsrp()
-                                                                + batchProductBO.getOrderedOuterQty()
-                                                                * batchProductBO.getOsrp();
-                                                    }
-
-                                                    if (storeWiseDiscountBO.getIsPercentage() == 1) {
-                                                        batchDiscountValue = totalValue * storeWiseDiscountBO.getDiscount() / 100;
-
-
-                                                    } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
-                                                        batchDiscountValue = totalBatchQty * storeWiseDiscountBO.getDiscount();
-                                                    }
-
-                                                    totalDiscountValue = totalDiscountValue + batchDiscountValue;
-                                                }
-                                            }
-                                        } else {
-                                            double totalValue = 0;
-                                            double productDiscount = 0;
-
-                                            if (productMasterBO.getSchemeAppliedValue() > 0) {
-                                                totalValue = productMasterBO.getSchemeAppliedValue();
-                                            } else {
-                                                totalValue = productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
-                                                        + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()
-                                                        + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp();
-                                            }
-
-                                            if (storeWiseDiscountBO.getIsPercentage() == 1) {
-                                                productDiscount = totalValue * storeWiseDiscountBO.getDiscount() / 100;
-                                            } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
-                                                productDiscount = totalProductQty * storeWiseDiscountBO.getDiscount();
-                                            }
-                                            productDiscount = SDUtil.convertToDouble(SDUtil.formatAsPerCalculationConfig(productDiscount) + "");
-
-                                            totalDiscountValue = totalDiscountValue + productDiscount;
-                                        }
                                     }
                                 }
                             }
@@ -1877,222 +1793,19 @@ public class CommonPrintHelper {
      * @return
      */
     private String getProductLevelTax(int precision) {
-        StringBuffer sb = new StringBuffer();
 
+        StringBuilder sb=new StringBuilder();
 
-        // load tax details
-        bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(orderHelper.getOrderId().replaceAll("\'", ""));
-        // load tax product details
-        bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(orderHelper.getOrderId().replaceAll("\'", ""));
-
-
-        ArrayList<TaxBO> groupIdList = bmodel.productHelper.taxHelper.getGroupIdList();
-
-        if (groupIdList != null) {
-
-            SparseArray<LinkedHashSet<TaxBO>> totalTaxListByGroupId = bmodel.productHelper.taxHelper.getTaxBoByGroupId();
-            HashMap<String, HashSet<String>> productListByGroupId = bmodel.productHelper.taxHelper.getProductIdByTaxGroupId();
-            HashMap<String, HashSet<String>> freeProductListByGroupId = bmodel.productHelper.taxHelper.loadTaxFreeProductDetails(bmodel.invoiceNumber);
-
-            String taxDesc = "";
-            String previousTaxDesc = "";
-            String s = ""; // load tax product details
-
-            for (TaxBO taxBO : groupIdList) {// here group id is tax type..
-
-
-                //Getting tax list by groupid, to show group(tax type) wise
-                LinkedHashSet<TaxBO> totalTaxList = totalTaxListByGroupId.get(taxBO.getGroupId());
-
-                if (totalTaxList != null) {
-                    for (TaxBO totalTaxBO : totalTaxList) {
-
-                        taxDesc = totalTaxBO.getTaxDesc2();
-                        double taxpercentege = totalTaxBO.getTaxRate();
-
-                        //Same tax type with different tax rate may mapped to a product, so getting product list with the use of groupid(taxtype) anf percentage.
-
-                        HashSet<String> taxProductList = productListByGroupId.get(taxBO.getGroupId() + "" + taxpercentege);
-                        HashSet<String> taxFreeProductList = freeProductListByGroupId.get(taxBO.getGroupId() + "" + taxpercentege);
-
-                        double totalTax = 0.0;
-                        double totalExcludeValue = 0.0;
-
-                        if (taxProductList != null) {
-
-                            for (String productid : taxProductList) {// normal products
-
-                                ProductMasterBO prodcutBO = bmodel.productHelper.getProductMasterBOById(productid);
-                                if (prodcutBO != null) {
-
-                                    if (taxBO.getParentType().equals("0")) {// Parent tax..
-
-                                        //batch wise product's calculation
-                                        if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-
-                                            ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper
-                                                    .getBatchlistByProductID().get(prodcutBO.getProductID());
-                                            if (batchList != null) {
-                                                for (ProductMasterBO batchProductBO : batchList) {
-
-                                                    totalExcludeValue = totalExcludeValue + batchProductBO.getTaxValue();
-                                                    totalTax = totalTax + (batchProductBO.getTaxValue() * taxpercentege) / 100;
-                                                }
-                                            }
-
-                                        } else {
-                                            totalExcludeValue = totalExcludeValue + prodcutBO.getTaxValue();
-
-                                            double  tax=(prodcutBO.getTaxValue() * taxpercentege) / 100;
-                                            tax = SDUtil.convertToDouble(SDUtil.formatAsPerCalculationConfig(tax) + "");
-
-                                            totalTax = totalTax +tax ;
-
-                                        }
-                                    } else {
-
-                                        //To print child tax..
-                                        if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
-
-                                            //batch wise product's calculation
-                                            if (prodcutBO.getBatchwiseProductCount() > 0 && bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                                                if (bmodel.productHelper.taxHelper.getmTaxBoBatchProduct().get(productid) != null) {
-
-                                                    for (TaxBO productTaxBo : bmodel.productHelper.taxHelper.getmTaxBoBatchProduct().get(productid)) {
-
-                                                        if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
-
-                                                            totalTax += productTaxBo.getTotalTaxAmount();
-                                                            totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
-                                                if (bmodel.productHelper.taxHelper.getmTaxBoBatchProduct().get(productid) != null) {
-
-                                                    for (TaxBO productTaxBo : bmodel.productHelper.taxHelper.getmTaxBoBatchProduct().get(productid)) {
-
-                                                        if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
-
-                                                            totalTax += productTaxBo.getTotalTaxAmount();
-                                                            totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                        }
-                                    }
-
-                                }
-                            }
-
-
-                            if (bmodel.configurationMasterHelper.IS_GST || bmodel.configurationMasterHelper.IS_GST_HSN) {
-                                //Tax can be applied to Free products, so below set of code is used..
-                                if (taxFreeProductList != null) {
-                                    for (String productid : taxFreeProductList) {// free products
-
-                                        //Tax may be in multiple forms for product(Ex:tax on tax..), so this below loop is used to calculate values for all tax mapped to product
-
-                                        if (bmodel.getmFreeProductTaxListByProductId().get(productid) != null) {
-                                            for (TaxBO productTaxBo : bmodel.getmFreeProductTaxListByProductId().get(productid)) {
-
-                                                if (productTaxBo.getTaxType().equals(taxBO.getGroupId() + "") && productTaxBo.getTaxRate() == taxpercentege) {
-
-                                                    totalTax += productTaxBo.getTotalTaxAmount();
-                                                    totalExcludeValue = totalExcludeValue + productTaxBo.getTaxableAmount();
-                                                }
-                                            }
-                                        }
-
-
-                                    }
-
-                                }
-                            }
-
-                            // preparing string builder to show product level tax in print
-                            if (taxProductList != null || taxFreeProductList != null) {
-                                if (totalTax > 0) {
-                                    if (!taxDesc.equals(previousTaxDesc)) {
-                                        if (taxDesc.length() > 10) {
-                                            s = taxDesc.substring(0, 10);
-                                        } else {
-                                            s = taxDesc;
-                                        }
-                                    } else {
-                                        s = doAlign("", ALIGNMENT_RIGHT, taxDesc.length());
-                                    }
-
-                                    s = s + " " + taxpercentege + "% " + context.getResources().getString(R.string.tax_on) + " " + formatValueInPrint(totalExcludeValue, precision);
-
-                                    s = alignWithLabelForSingleLine(s, formatValueInPrint(totalTax, precision));
-
-
-                                    sb.append(s);
-
-                                    sb.append("\n");
-                                }
-                            }
-                        }
-                        previousTaxDesc = taxDesc;
-                    }
-                }
-
-            }
+        HashMap<String,Double> taxList=bmodel.productHelper.taxHelper.prepareProductTaxForPrint(context,orderHelper.getOrderId().replaceAll("\'", ""));
+        for(String taxName:taxList.keySet()){
+            sb.append(alignWithLabelForSingleLine(taxName, formatValueInPrint(taxList.get(taxName), precision)));
+            sb.append("\n");
         }
+
         return sb.toString();
-    }
-
-    /**
-     * get bill level discount value
-     */
-    private void getBillLevelDiscount() {
-
-        double discount = SDUtil.convertToDouble(orderHelper.invoiceDiscount);
-        double discountValue = 0;
-
-        if (bmodel.configurationMasterHelper.discountType == 1) {
-            if (discount > 100)
-                discount = 100;
-            discountValue = ((total_line_value_incl_tax / 100) * discount);
-        } else if (bmodel.configurationMasterHelper.discountType == 2) {
-            discountValue = discount;
-        } else {
-            discountValue = discount;
-        }
-
-        if (bmodel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT && !DiscountHelper.getInstance(context).isWihtHoldApplied())
-            discountValue -= orderHelper.withHoldDiscount;
-        mBillLevelDiscountValue = SDUtil.convertToDouble(SDUtil.format(discountValue, 2, 0));
-    }
-
-    private void getBillLevelTaxValue() {
-        try {
-            mBillLevelTaxValue = 0;
-            final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
-
-            if (taxList != null && taxList.size() > 0) {
-                if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
-                    double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    double taxValue;
-                    double taxTotal = 0;
-                    for (TaxBO taxBO : taxList) {
-                        taxValue = mTotalIncludeTax * taxBO.getTaxRate() / 100;
-                        taxValue = SDUtil.convertToDouble(SDUtil.format(taxValue, 2, 0));
-                        taxTotal = taxTotal + taxValue;
-                    }
-                    mBillLevelTaxValue = taxTotal;
-                }
-            }
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
 
     }
+
 
     /**
      * get bill level tax
@@ -2107,44 +1820,32 @@ public class CommonPrintHelper {
             final ArrayList<TaxBO> taxList = bmodel.productHelper.taxHelper.getBillTaxList();
             if (taxList != null && taxList.size() > 0) {
                 if (bmodel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
-                    double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax = SDUtil.convertToDouble(bmodel.formatBasedOnCurrency(mTotalIncludeTax));
 
-                    double taxValue;
-                    double taxTotal = 0;
                     for (int index = 0; index < taxList.size(); index++) {
                         TaxBO taxBO = taxList.get(index);
-                        taxValue = mTotalIncludeTax * taxBO.getTaxRate() / 100;
-                        taxValue = SDUtil.convertToDouble(SDUtil.format(taxValue, 2, 0));
-                        taxTotal = taxTotal + taxValue;
-                        String labelName = taxBO.getTaxDesc() + "(" + taxBO.getTaxRate() + "%) :";
-                        sb.append(alignWithLabelForSingleLine(labelName, formatValueInPrint(taxValue, precision) + "", extraSpace));
+
+                        //Displaying list of taxes applied.
+                        sb.append(alignWithLabelForSingleLine(taxBO.getTaxDesc() + "(" + taxBO.getTaxRate() + "%) :", formatValueInPrint(taxBO.getTotalTaxAmount(), precision) + "", extraSpace));
                         if (index < taxList.size() - 1)
                             sb.append("\n");
                     }
 
                 } else {
 
-                    double taxTotal = 0;
-
+                    // Here bill amount excluding tax value calculated because this is only needed in print.
+                    double totalTaxRate = 0;
                     for (TaxBO taxBO : taxList) {
-                        taxTotal = taxTotal + taxBO.getTaxRate();
+                        totalTaxRate = totalTaxRate + taxBO.getTaxRate();
                     }
-
                     double mTotalIncludeTax = total_line_value_incl_tax - mBillLevelDiscountValue;
-                    mTotalIncludeTax = SDUtil.convertToDouble(SDUtil.format(mTotalIncludeTax, 2, 0));
-
-                    double mTotalExcludeTaxAmount = mTotalIncludeTax / (1 + taxTotal / 100);
+                    double mTotalExcludeTaxAmount = mTotalIncludeTax / (1 + totalTaxRate / 100);
 
                     sb.append(alignWithLabelForSingleLine("Excl Tax:", "" + formatValueInPrint(mTotalExcludeTaxAmount, precision)));
-
                     sb.append("\n");
 
-                    double taxValue;
+                    //Displaying list of taxes applied.
                     for (TaxBO taxBO : taxList) {
-                        taxValue = mTotalExcludeTaxAmount * taxBO.getTaxRate() / 100;
-                        taxValue = SDUtil.convertToDouble(SDUtil.format(taxValue, 2, 0));
-                        sb.append(alignWithLabelForSingleLine(taxBO.getTaxDesc() + "(" + taxBO.getTaxRate() + ")", taxValue + ""));
+                        sb.append(alignWithLabelForSingleLine(taxBO.getTaxDesc() + "(" + taxBO.getTaxRate() + ")", taxBO.getTotalTaxAmount() + ""));
                         sb.append("\n");
                     }
                 }
@@ -2654,13 +2355,9 @@ public class CommonPrintHelper {
 
     public String getPromoType(Context context, ProductMasterBO productMasterBO) {
 
-        double lineValue = (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp())
-                + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp())
-                + (productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp());
-
-        if (productMasterBO.getDiscount_order_value() == 0) {
+        if (productMasterBO.getNetValue() == 0) {
             return context.getResources().getString(R.string.free);
-        } else if (productMasterBO.getDiscount_order_value() < lineValue) {
+        } else if (productMasterBO.getNetValue() < productMasterBO.getLineValue()) {
             return context.getResources().getString(R.string.net_price);
         }
         return "";

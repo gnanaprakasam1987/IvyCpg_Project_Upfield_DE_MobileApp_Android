@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -32,15 +31,13 @@ import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.sd.png.provider.TaxGstHelper;
-import com.ivy.sd.png.provider.TaxHelper;
+import com.ivy.cpg.view.order.tax.TaxGstHelper;
+import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderTransactionListDialog;
 
 import java.util.Map;
@@ -191,14 +188,14 @@ public class QuickCallFragment extends IvyBaseFragment {
                     }
 
 
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
-                            bmodel.productHelper.getFilterProductLevels()));
                     GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getFilterProductLevels(),true));
 
 
                     bmodel.configurationMasterHelper
@@ -439,7 +436,7 @@ public class QuickCallFragment extends IvyBaseFragment {
             bmodel.productHelper.downloadInStoreLocations();
             SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getActivity());
             if (schemeHelper.IS_SCHEME_ON_MASTER) {
-                OrderHelper orderHelper=OrderHelper.getInstance(getActivity());
+                OrderHelper orderHelper = OrderHelper.getInstance(getActivity());
                 schemeHelper.downloadSchemeHistoryDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID(), bmodel.isEdit(), orderHelper.selectedOrderId);
             }
             schemeHelper.downloadOffInvoiceSchemeDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID());
@@ -533,11 +530,12 @@ public class QuickCallFragment extends IvyBaseFragment {
         retailer = new Vector<>();
         for (int i = 0; i < bmodel.retailerMaster.size(); i++) {
             if (searchText != null) {
-                if ((bmodel.getRetailerMaster().get(i).getRetailerName()
+                if ((bmodel.getRetailerMaster().get(i)
+                        .getRetailerCode() != null) && ((bmodel.getRetailerMaster().get(i).getRetailerName()
                         .toLowerCase()).contains(searchText.toLowerCase()) ||
                         (bmodel.getRetailerMaster().get(i)
                                 .getRetailerCode().toLowerCase())
-                                .contains(searchText.toLowerCase()))
+                                .contains(searchText.toLowerCase())))
 
                     retailer.add(bmodel.getRetailerMaster().get(i));
 

@@ -474,6 +474,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         Vector<PlanoGramBO> items = mPlanoGramHelper.getPlanogramMaster();
+        this.productId = mProductId;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         mPlanoGramList = new Vector<>();
         if (items == null) {
@@ -529,6 +530,13 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         mPlanoGramList.add(planoGramBO);
                     }
                 } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
+                    mPlanoGramList.add(planoGramBO);
+                }
+            }
+        } else if (mAttributeProducts == null && productId==0){
+            for (final PlanoGramBO planoGramBO : items) {
+                if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM
+                        && planoGramBO.getLocationID() == mSelectedLocationId) {
                     mPlanoGramList.add(planoGramBO);
                 }
             }

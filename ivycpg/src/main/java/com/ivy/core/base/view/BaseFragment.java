@@ -35,7 +35,6 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         mUnBinder = ButterKnife.bind(this, view);
         initVariables(view);
 
@@ -44,6 +43,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
         getMessageFromAliens();
 
         setUpViews();
+        super.onViewCreated(view, savedInstanceState);
 
     }
 
@@ -181,6 +181,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mBasePresenter.onDetach();
         try {
             mUnBinder.unbind();
             mUnBinder = null;
@@ -251,6 +252,11 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     }
 
     @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
+
+    }
+
+    @Override
     public void createNFCManager() {
 
     }
@@ -263,6 +269,14 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     @Override
     public void pauseNFCManager() {
 
+    }
+
+    public void startActivity(Class activity){
+        ((BaseActivity)getActivity()).startActivity(activity);
+    }
+
+    public void startActivityAndFinish(Class activity){
+        ((BaseActivity)getActivity()).startActivityAndFinish(activity);
     }
 
 }

@@ -182,7 +182,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
                             .getCalculatedPercentage());
                 }
             } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE4)) {
-                int productivecalls = businessModel.getProductiveCallsForTheDay();
+                int productivecalls = dashBoardHelper.getProductiveCallsForTheDay();
 
                 dashBoardBO.setKpiAcheived(Integer.toString(productivecalls));
                 int kpiTarget;

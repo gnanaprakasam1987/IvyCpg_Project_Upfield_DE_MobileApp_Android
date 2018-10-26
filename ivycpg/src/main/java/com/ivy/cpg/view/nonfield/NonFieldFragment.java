@@ -37,7 +37,6 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.FontUtils;
@@ -133,22 +132,22 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
 
         RadioGroup radioGroup = findViewById(R.id.radiogroup);
         rb_single = findViewById(R.id.rb_single);
-        rb_single.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        rb_single.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         rb_multiple = findViewById(R.id.rb_multiple);
-        rb_multiple.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        rb_multiple.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         txt_fromDate
                 = findViewById(R.id.txt_fromDate);
         txt_toDate
                 = findViewById(R.id.txt_to_Date);
-        txt_fromDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        txt_toDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        txt_fromDate.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        txt_toDate.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         btn_frmDate = findViewById(R.id.txt_fromDateVal);
         btn_frmDate.setOnClickListener(this);
-        btn_frmDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        btn_frmDate.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         btn_toDate = findViewById(R.id.txt_toDateVAl);
         btn_toDate.setOnClickListener(this);
-        btn_toDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        btn_toDate.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         btn_traveltime = findViewById(R.id.btn_traveltime);
         btn_traveltime.setOnClickListener(this);
         rdgrp = findViewById(R.id.rdGrp_session);
@@ -204,13 +203,13 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             Commons.printException(e);
         }
 
-        txt_reason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        txt_joint.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        txt_leaves_type.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        per_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        txt_session.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        txt_traveltime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        txt_Descr.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        txt_reason.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        txt_joint.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        txt_leaves_type.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        per_txt.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        txt_session.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        txt_traveltime.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        txt_Descr.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         select = getResources().getString(R.string.select);
         ll_dummy = findViewById(R.id.ll_dummy);
 
@@ -443,7 +442,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                     rdbtn.setId(i);
                     rdbtn.setTextColor(ContextCompat.getColor(this, R.color.Black));
                     rdbtn.setText(lstRadioBtns.get(i).getSession());
-                    rdbtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+                    rdbtn.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
                     if (i == 0) {
                         rdbtn.setChecked(true);
                         session = lstRadioBtns.get(i).getsessionID();
@@ -456,7 +455,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                         rdbtn.setId(i);
                         rdbtn.setTextColor(ContextCompat.getColor(this, R.color.Black));
                         rdbtn.setText(lstRadioBtns.get(i).getSession());
-                        rdbtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+                        rdbtn.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
                         rdbtn.setChecked(true);
                         session = lstRadioBtns.get(i).getsessionID();
                         rdgrp.addView(rdbtn);

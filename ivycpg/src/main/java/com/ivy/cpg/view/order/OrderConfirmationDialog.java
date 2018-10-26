@@ -143,8 +143,8 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     payment_adapter = new ArrayAdapter<>(context,
                             R.layout.spinner_bluetext_layout);
                     payment_adapter.add(new ReasonMaster(0 + "",
-                            context.getResources().getString(R.string.plain_select)+" "
-                                    +configureBO.getMenuName()));
+                            context.getResources().getString(R.string.plain_select) + " "
+                                    + configureBO.getMenuName()));
                     int count = 0, selectedPos = -1;
                     for (ReasonMaster temp : businessModel.reasonHelper
                             .getPayTermType()) {
@@ -153,6 +153,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                         payment_adapter.add(temp);
                         count++;
                     }
+                    selectedPos = (selectedPos == -1 ? 0 : selectedPos);
                     payment_adapter
                             .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
                     spinner_payment.setAdapter(payment_adapter);
@@ -406,7 +407,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
 
     private boolean isExceptionalOrder(LinkedList<ProductMasterBO> mOrderedProductList) {
         for (ProductMasterBO bo : mOrderedProductList) {
-            if ((bo.getD1() + bo.getD2() + bo.getD3()) > 0.0 || bo.getDiscount_order_value() <= 0) {
+            if ((bo.getD1() + bo.getD2() + bo.getD3()) > 0.0 || bo.getNetValue() <= 0) {
                 return true;
             }
         }
