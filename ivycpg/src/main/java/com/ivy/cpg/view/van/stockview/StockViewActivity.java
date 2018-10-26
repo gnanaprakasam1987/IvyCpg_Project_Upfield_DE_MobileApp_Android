@@ -125,8 +125,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         expandlvwplist.setCacheColorHint(0);
 
         productName = (TextView) findViewById(R.id.productName);
-        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        productName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         productName.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 int inType = productName.getInputType();
@@ -167,10 +167,10 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         vect.addAll(Arrays.asList(getResources().getStringArray(
                 R.array.productFilterArray)));
         mSelectedFilterMap.put("General", GENERAL);
-        ((TextView) findViewById(R.id.product_name)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.sihCaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.sihOuterTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-        ((TextView) findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        ((TextView) findViewById(R.id.product_name)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.sihCaseTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.sihOuterTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
         if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
                 bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||

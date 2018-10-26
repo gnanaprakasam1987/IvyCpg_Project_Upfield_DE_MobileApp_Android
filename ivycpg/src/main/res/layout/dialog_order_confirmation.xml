@@ -64,7 +64,7 @@
                         android:gravity="start"
                         android:text="@string/supplier_label"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/list_primary" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/supplier_mandatory"
@@ -118,7 +118,7 @@
                         android:gravity="center"
                         android:text="@string/shipment_type_label"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/list_primary" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/shipment_mandatory"
@@ -161,7 +161,7 @@
                         android:gravity="center"
                         android:text="@string/payment_type_label"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/list_primary" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/payment_mandatory"
@@ -204,7 +204,7 @@
                         android:gravity="center"
                         android:text="@string/distribution"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/list_primary" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/channel_mandatory"
@@ -240,7 +240,7 @@
                     android:layout_weight="4"
                     android:gravity="left"
                     android:text="@string/order_value"
-                    android:textSize="@dimen/list_primary" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <TextView
                     android:id="@+id/text_order_value"
@@ -248,7 +248,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:gravity="center"
-                    android:textSize="@dimen/list_primary" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -268,7 +268,7 @@
                     android:layout_weight="4"
                     android:gravity="start"
                     android:text="@string/delivery_date_label"
-                    android:textSize="@dimen/list_primary" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <TextView
                     android:id="@+id/text_delivery_date"
@@ -276,7 +276,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:gravity="center"
-                    android:textSize="@dimen/list_primary" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
 
@@ -297,7 +297,7 @@
                     android:gravity="start"
                     android:text="@string/note_label"
                     android:textColor="?attr/primarycolor"
-                    android:textSize="@dimen/list_primary" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <TextView
                     android:id="@+id/text_note"
@@ -306,7 +306,7 @@
                     android:layout_marginLeft="@dimen/dimen_2dp"
                     android:gravity="center"
                     android:textColor="?attr/primarycolor"
-                    android:textSize="@dimen/list_primary" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -326,7 +326,7 @@
                     android:layout_weight="4"
                     android:gravity="start"
                     android:text="@string/note_label"
-                    android:textSize="@dimen/list_primary" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <TextView
                     android:id="@+id/text_drug_note"
@@ -335,7 +335,7 @@
                     android:layout_weight="6"
                     android:gravity="center"
                     android:tag="drug_alert"
-                    android:textSize="@dimen/list_primary" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -359,7 +359,7 @@
                         android:gravity="start"
                         android:text="@string/Address"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/list_primary" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/address_type_mandatory"

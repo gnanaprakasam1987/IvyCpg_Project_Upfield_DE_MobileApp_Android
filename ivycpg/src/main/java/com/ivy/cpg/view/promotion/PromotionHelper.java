@@ -57,8 +57,8 @@ public class PromotionHelper {
 
         /*businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);*/
         businessModel.productHelper.setFilterProductLevelsRex(businessModel.productHelper.downloadFilterLevel(mMenuCode));
-        businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
-                businessModel.productHelper.getRetailerModuleSequenceValues()));
+        businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(
+                businessModel.productHelper.getRetailerModuleSequenceValues(),false));
 
         downloadPromotionMaster(mContext);
         loadPromoEntered(mContext);

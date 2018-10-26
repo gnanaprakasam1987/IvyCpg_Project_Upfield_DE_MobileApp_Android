@@ -96,6 +96,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -124,6 +125,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
     private boolean isLatLong;
     private String imageName;
+    private int imageId = 0;
     private ArrayList<LocationBO> mLocationMasterList1;
     private ArrayList<LocationBO> mLocationMasterList2;
     private ArrayList<LocationBO> mLocationMasterList3;
@@ -279,7 +281,6 @@ public class NewOutletFragment extends IvyBaseFragment
         }
 
 
-
         if (Build.VERSION.SDK_INT >= 14) {
             Point size = new Point();
             getActivity().getWindowManager().getDefaultDisplay().getSize(size);
@@ -396,7 +397,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 mcontactTitleList.add(bmodel.newOutletHelper.getContactTitleList().size() + 1, new NewOutletBO(0, "OTHERS"));
                 Commons.print("Size Contact List title : " + bmodel.newOutletHelper.getContactTitleList().size());
                 contactTitleAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontactTitleList);
-                contactTitleAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                contactTitleAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
             }
         }
 
@@ -424,7 +425,7 @@ public class NewOutletFragment extends IvyBaseFragment
         ArrayAdapter<SpinnerBO> subchannelAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item);
         subchannelAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
         subchannelAdapter.add(new SpinnerBO(0, getActivity().getResources()
                 .getString(R.string.select_str) + " " + sub_chanel_mname));
 
@@ -1304,6 +1305,46 @@ public class NewOutletFragment extends IvyBaseFragment
 
     }
 
+    private void scrollToSpecificTextView(final TextView secificEditText) {
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // Determine where to set the scroll-to to by measuring the distance from the top of the scroll view
+                    // to the control to focus on by summing the "top" position of each view in the hierarchy.
+                    int yDistanceToControlsView = 0;
+                    View parentView = secificEditText;
+                    if (parentView != null) {
+                        while (true) {
+                            if (parentView.equals(scrollview2)) {
+                                break;
+                            }
+                            yDistanceToControlsView += parentView.getTop();
+                            parentView = (View) parentView.getParent();
+                        }
+
+                        // Compute the final position value for the top and bottom of the control in the scroll view.
+                        final int topInScrollView = yDistanceToControlsView + secificEditText.getTop();
+                        final int bottomInScrollView = yDistanceToControlsView + secificEditText.getBottom();
+
+                        // Post the scroll action to happen on the scrollView with the UI thread.
+                        scrollview2.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int height = secificEditText.getHeight();
+                                scrollview2.smoothScrollTo(0, ((topInScrollView + bottomInScrollView) / 2) - height);
+
+                            }
+                        });
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+
+        }
+
+    }
+
     private void scrollToSpecificSpinner(final MaterialSpinner specificSpinner) {
         try {
 
@@ -1552,18 +1593,13 @@ public class NewOutletFragment extends IvyBaseFragment
 //                            ? editText[i].getText().toString().trim().length() == 0
 //                            || editText[i].getText().toString().length() != profileConfig.get(i).getMaxLengthNo()
 //                            : editText[i].getText().toString().trim().length() == 0) {
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0)
-                            ? editText[i].getText().toString().trim().length() == 0
-                            || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && (mandatory == 1))
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
 
                         editText[i].addTextChangedListener(watcher);
                         break;
@@ -1571,10 +1607,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 } else if ((profileConfig.get(i).getConfigCode().equalsIgnoreCase("PHNO2")
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0 ||
-                                    editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo() :
-                            editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1582,8 +1615,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
 
                         editText[i].addTextChangedListener(watcher);
                         break;
@@ -1707,8 +1738,9 @@ public class NewOutletFragment extends IvyBaseFragment
 
                     if (latlongtextview.getText().toString().startsWith("0.0")) {
                         validate = false;
+                        latlongtextview.setFocusableInTouchMode(true);
                         latlongtextview.requestFocus();
-                        scrollview2.smoothScrollTo(0, latlongtextview.getTop());
+                        scrollToSpecificTextView(latlongtextview);
                         Toast.makeText(getActivity(),
                                 getResources().getString(R.string.choose_location),
                                 Toast.LENGTH_SHORT).show();
@@ -1737,10 +1769,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         .equalsIgnoreCase("FAX")
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0)
-                            ? editText[i].getText().toString().trim().length() == 0
-                            || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1748,8 +1777,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1812,10 +1840,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         && (editText[i].getText().length() > 0 || mandatory == 1))) {
                     Commons.print("pin code");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1823,8 +1848,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1834,10 +1857,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     Commons.print("rf");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1845,8 +1865,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -1953,10 +1971,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         .equalsIgnoreCase("CREDITLIMIT"))
                         && (editText[i].getText().length() > 0 || mandatory == 1)) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if ((profileConfig.get(i).getMaxLengthNo() > 0) ?
-                            editText[i].getText().toString().trim().length() == 0
-                                    || editText[i].getText().toString().length() < profileConfig.get(i).getMaxLengthNo()
-                            : editText[i].getText().toString().trim().length() == 0) {
+                    if (editText[i].getText().toString().trim().length() == 0) {
                         validate = false;
                         scrollToSpecificEditText(edittextinputLayout);
                         editText[i].requestFocus();
@@ -1964,8 +1979,6 @@ public class NewOutletFragment extends IvyBaseFragment
                         edittextinputLayout.setErrorEnabled(true);
                         if (editText[i].getText().toString().trim().length() == 0 && mandatory == 1)
                             edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        else
-                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
@@ -2245,6 +2258,12 @@ public class NewOutletFragment extends IvyBaseFragment
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
+                } else if(bmodel.configurationMasterHelper.IS_CONTACT_TAB){
+                    ArrayList<RetailerContactBo> contactList = bmodel.newOutletHelper.getRetailerContactList();
+                    if (contactList.size() == 0) {
+                        validate = false;
+                        Toast.makeText(getContext(), getResources().getString(R.string.contact_list_mandatory), Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }
@@ -2275,6 +2294,12 @@ public class NewOutletFragment extends IvyBaseFragment
             //regex
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
+        }
+
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS1") ||
+                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS2") ||
+                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS3")) {
+            addLengthFilter(profileConfig.get(mNumber).getRegex());
         }
 
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PAN_NUMBER")) {
@@ -2759,7 +2784,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                     mn_textview.setTextColor(Color.RED);
                     if (Build.VERSION.SDK_INT >= 21) {
-                        linearlayout.addView(mn_textview, paramsaflollipop);
+                        linearlayout.addView(mn_textview, params6aflollipop);
                     } else {
                         linearlayout.addView(mn_textview, params6);
                     }
@@ -2833,7 +2858,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     mn_textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                     mn_textview.setTextColor(Color.RED);
                     if (Build.VERSION.SDK_INT >= 21) {
-                        linearlayout.addView(mn_textview, paramsaflollipop);
+                        linearlayout.addView(mn_textview, params6aflollipop);
                     } else {
                         linearlayout.addView(mn_textview, params6);
                     }
@@ -3848,7 +3873,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 layout.addView(firstlayout, params10);
             }
             ArrayAdapter<ChannelBO> channelAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
-            channelAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            channelAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
             if (bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER && bmodel.newOutletHelper.getmSelectedChannelid() > 0)
                 channelAdapter.add(new ChannelBO(bmodel.newOutletHelper.getmSelectedChannelid(), bmodel.newOutletHelper.getmSelectedChannelname()));
 
@@ -3916,7 +3941,7 @@ public class NewOutletFragment extends IvyBaseFragment
             mcontractStatusList.addAll(bmodel.newOutletHelper.getContractStatusList());
             ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontractStatusList);
             contractStatusAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                    .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
             contractSpinner.setAdapter(contractStatusAdapter);
             contractSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -3972,7 +3997,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 routeAdapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 routeAdapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 routeAdapter.add(new BeatMasterBO(0, getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName, 0));
                 routeMname = MName;
@@ -4036,7 +4061,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 locationAdapter1 = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, mLocationMasterList1);
-                locationAdapter1.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                locationAdapter1.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 location1.setAdapter(locationAdapter1);
                 location1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
@@ -4084,7 +4109,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 locationAdapter2 = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, mLocationMasterList2);
-                locationAdapter2.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                locationAdapter2.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
 
                 location2.setAdapter(locationAdapter2);
                 location2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -4127,7 +4152,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 locationAdapter3 = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, mLocationMasterList3);
-                locationAdapter3.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                locationAdapter3.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 location3.setAdapter(locationAdapter3);
                 location3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
@@ -4173,7 +4198,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 mretailertypeMasterList.addAll(bmodel.newOutletHelper.getRetailerTypeList());
                 Commons.print("Size Payment type : " + bmodel.newOutletHelper.getRetailerTypeList().size());
                 ArrayAdapter<NewOutletBO> retailertypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mretailertypeMasterList);
-                retailertypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                retailertypeAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 paymentType.setAdapter(retailertypeAdapter);
                 paymentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -4218,7 +4243,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 Commons.print("Size Distributor  : " + bmodel.distributorMasterHelper.getDistributors().size());
                 distributortypeAdapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, mdistributortypeMasterList);
-                distributortypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                distributortypeAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 distributorSpinner.setAdapter(distributortypeAdapter);
                 distributorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -4289,7 +4314,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 standardListBO.setListName("Select " + MName);
                 mTaxTypeList.add(0, standardListBO);
                 ArrayAdapter<StandardListBO> taxTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mTaxTypeList);
-                taxTypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                taxTypeAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 taxTypeSpinner.setAdapter(taxTypeAdapter);
                 taxTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -4341,7 +4366,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     priorityProductSpinner.setFloatingLabelText(MName);
                     ArrayAdapter<StandardListBO> priorityProductAdapter = new ArrayAdapter<>(getActivity(),
                             android.R.layout.simple_spinner_item, mPriorityProductList);
-                    priorityProductAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                    priorityProductAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                     priorityProductSpinner.setAdapter(priorityProductAdapter);
                     priorityProductSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -4393,7 +4418,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 standardListBO.setListName("Select " + MName);
                 mClassTypeList.add(0, standardListBO);
                 ArrayAdapter<StandardListBO> classTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mClassTypeList);
-                classTypeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                classTypeAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 classSpinner.setAdapter(classTypeAdapter);
                 classSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -4487,7 +4512,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 rField5Adapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 rField5Adapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 rField5Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName));
 
@@ -4534,7 +4559,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 rField6Adapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 rField6Adapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 rField6Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName));
 
@@ -4581,7 +4606,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 rField7Adapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 rField7Adapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 rField7Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName));
 
@@ -4628,7 +4653,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 rField4Adapter = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item);
                 rField4Adapter
-                        .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                 rField4Adapter.add(new RetailerFlexBO("0", getActivity().getResources()
                         .getString(R.string.select_str) + " " + MName));
 
@@ -4816,7 +4841,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
                                 android.R.layout.simple_spinner_item, attrbList);
                         spinner.setAdapter(arrayAdapter);
-                        arrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        arrayAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                         spinner.setLayoutParams(innerParams);
                         innerHL.addView(spinner);
                         spinnerAdapterMap.put(attribName + index, arrayAdapter);
@@ -4852,7 +4877,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         final ArrayAdapter<NewOutletAttributeBO> arrayAdapter = new ArrayAdapter<>(getActivity(),
                                 android.R.layout.simple_spinner_item, attrbList);
                         spinner.setAdapter(arrayAdapter);
-                        arrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        arrayAdapter.setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
                         spinner.setLayoutParams(innerParams);
                         innerHL.addView(spinner);
                         spinnerAdapterMap.put(attribName + index, arrayAdapter);
@@ -5057,22 +5082,22 @@ public class NewOutletFragment extends IvyBaseFragment
                                                     + "/";
                                             Commons.print(TAG + ":Photo path :" + PHOTO_PATH);
 
-                                            int ImageId = bmodel.newOutletHelper
+                                            imageId = bmodel.newOutletHelper
                                                     .getImageTypeList()
                                                     .get(item).getListId();
                                             imageName = moduleName + uID + "_"
-                                                    + ImageId + "_img.jpg";
+                                                    + imageId + "_img.jpg";
                                             String fnameStarts = "";
                                             if (screenMode == EDIT) {
                                                 for (String img : outlet.getImageName()) {
-                                                    if ((img).contains(ImageId + "")) {
+                                                    if ((img).contains(imageId + "")) {
                                                         fnameStarts = img;
                                                         break;
                                                     }
                                                 }
                                             } else {
                                                 fnameStarts = moduleName + uID
-                                                        + "_" + ImageId;
+                                                        + "_" + imageId;
                                             }
 
                                             Commons.print(TAG + ",FName Starts :"
@@ -5086,8 +5111,6 @@ public class NewOutletFragment extends IvyBaseFragment
                                             } else {
 
                                                 captureCustom();
-                                                outlet.ImageId.add(ImageId);
-                                                outlet.ImageName.add(imageName);
                                                 dialog.dismiss();
                                                 return;
 
@@ -5120,15 +5143,14 @@ public class NewOutletFragment extends IvyBaseFragment
                         bmodel.getRetailerMasterBO().setDistributorId(Integer.parseInt(distBo.getDId()));
 
                     bmodel.updatePriceGroupId(false);
-
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
-                            bmodel.productHelper.getFilterProductLevels()));
                     GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getFilterProductLevels(),true));
                 }
             }
 
@@ -5864,6 +5886,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                 imageNameStarts);
                         dialog.dismiss();
                         outlet.getImageName().remove(imageNameStarts);
+                        outlet.getImageId().remove(Integer.valueOf(imageId));
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
@@ -6207,8 +6230,6 @@ public class NewOutletFragment extends IvyBaseFragment
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         if (resultCode == RESULT_OK) {
-            if (imageName != null)
-                outlet.getImageName().add(imageName);
             if (data.hasExtra("lat") && data.hasExtra("isChanged")) {
 
                 lattitude = data.getExtras().getDouble("lat");
@@ -6221,6 +6242,11 @@ public class NewOutletFragment extends IvyBaseFragment
                 }
             }
 
+        } else if (requestCode == CAMERA_REQUEST_CODE && resultCode == 1) {
+            if (imageName != null)
+                outlet.getImageName().add(imageName);
+            if (imageId != 0)
+                outlet.getImageId().add(imageId);
         }
 
     }

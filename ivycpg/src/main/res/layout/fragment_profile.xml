@@ -48,7 +48,7 @@
                 android:lineSpacingExtra="0sp"
                 android:padding="2dp"
                 android:text=""
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:visibility="invisible" />
 
             <TextView
@@ -59,7 +59,7 @@
                 android:layout_marginTop="@dimen/profile_minus5dp"
                 android:padding="2dp"
                 android:text=""
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:visibility="gone" />
 
             <TextView
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:text=""
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:visibility="gone" />
 
             <LinearLayout

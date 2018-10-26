@@ -78,7 +78,7 @@
                     android:tag="item_piece"
                     android:text="@string/item_piece"
                     android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:paddingRight="5dp" />
 
                 <TextView
@@ -87,7 +87,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:text=":"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:layout_marginRight="@dimen/card_margin" />
 
                 <TextView
@@ -132,7 +132,7 @@
                     android:tag="item_case"
                     android:text="@string/item_case"
                     android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:paddingRight="5dp" />
 
                 <TextView
@@ -141,7 +141,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:text=":"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:layout_marginRight="@dimen/card_margin" />
 
                 <TextView
@@ -187,7 +187,7 @@
                     android:tag="outer_case"
                     android:text="@string/item_outer"
                     android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:paddingRight="5dp" />
 
                 <TextView
@@ -196,7 +196,7 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:text=":"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:layout_marginRight="@dimen/card_margin" />
 
                 <TextView
@@ -239,7 +239,7 @@
                     android:tag="srp"
                     android:text="@string/unit_price"
                     android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:paddingRight="5dp" />
 
                 <TextView
@@ -248,7 +248,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/card_margin"
                     android:text=":"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:layout_marginRight="@dimen/card_margin" />
 
                 <TextView

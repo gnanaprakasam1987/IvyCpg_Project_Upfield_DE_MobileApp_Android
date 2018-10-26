@@ -62,7 +62,7 @@
                 android:singleLine="true"
                 android:text="@string/text_leave_period"
                 android:textColor="#616161"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
             <!--android:layout_height="@dimen/dimens_16dp"-->
             <!--android:layout_height="match_parent"-->
             <!--android:textColor="@color/Black"-->
@@ -84,7 +84,7 @@
                 android:layout_weight="0.50"
                 android:text=""
                 android:textColor="#212121"
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:layout_marginLeft="@dimen/dimen_6dp" />
             <!--android:layout_height="@dimen/dimens_22dp"-->
             <!--android:layout_height="match_parent"-->
@@ -109,7 +109,7 @@
                 android:singleLine="true"
                 android:text="@string/text_leave_type"
                 android:textColor="#616161"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                 android:layout_weight="0.50"
                 android:text=""
                 android:textColor="#212121"
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:layout_marginLeft="@dimen/dimen_6dp" />
 
         </LinearLayout>
@@ -150,7 +150,7 @@
                 android:singleLine="true"
                 android:text="@string/status"
                 android:textColor="#616161"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -168,7 +168,7 @@
                 android:layout_weight="0.50"
                 android:text=""
                 android:textColor="#212121"
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:layout_marginLeft="@dimen/dimen_6dp" />
 
         </LinearLayout>

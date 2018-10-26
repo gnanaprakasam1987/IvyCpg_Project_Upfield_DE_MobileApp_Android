@@ -75,7 +75,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/zero"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <EditText
             android:id="@+id/edit_availability_qty"
@@ -152,7 +152,7 @@
                 android:gravity="center"
                 android:text="0"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_nano_small"
+                android:textSize="@dimen/text_size_secondary"
                 android:textStyle="bold"
                 android:visibility="visible" />
         </RelativeLayout>
@@ -178,7 +178,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/installed_on"
-                android:textSize="@dimen/text_sz_extra_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <Button
                 android:id="@+id/Btn_install_Date"
@@ -205,7 +205,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/serviced_on"
-                android:textSize="@dimen/text_sz_extra_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <Button
                 android:id="@+id/Btn_service_Date"

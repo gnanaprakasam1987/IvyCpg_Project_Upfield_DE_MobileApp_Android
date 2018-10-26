@@ -439,8 +439,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/activity_margin1"
             android:layout_marginTop="@dimen/activity_margin1"
-            android:paddingEnd="@dimen/savebtn_paddingleftright"
             android:paddingStart="@dimen/savebtn_paddingleftright"
+            android:paddingEnd="@dimen/savebtn_paddingleftright"
             android:text="@string/save" />
     </LinearLayout>
 </RelativeLayout>

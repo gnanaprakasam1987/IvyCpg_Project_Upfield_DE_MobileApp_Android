@@ -57,7 +57,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/total_sih"
                             android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/greyed_text_size" />
+                            android:textSize="@dimen/footer_label_size" />
 
                         <TextView
                             android:id="@+id/tv_unload_sih"
@@ -67,7 +67,7 @@
                             android:maxLines="1"
                             android:text="@string/zero"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/footer_lbl_text_size" />
+                            android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
 
@@ -87,7 +87,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/total_cases"
                             android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/greyed_text_size" />
+                            android:textSize="@dimen/footer_label_size" />
 
                         <TextView
                             android:id="@+id/tv_unload_total_case"
@@ -97,7 +97,7 @@
                             android:maxLines="1"
                             android:text="@string/zero"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/footer_lbl_text_size" />
+                            android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
 
@@ -117,7 +117,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/total_outer"
                             android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/greyed_text_size" />
+                            android:textSize="@dimen/footer_label_size" />
 
                         <TextView
                             android:id="@+id/tv_unload_total_outer"
@@ -127,7 +127,7 @@
                             android:maxLines="1"
                             android:text="@string/zero"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/footer_lbl_text_size" />
+                            android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
 
@@ -147,7 +147,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/total_piece"
                             android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/greyed_text_size" />
+                            android:textSize="@dimen/footer_label_size" />
 
                         <TextView
                             android:id="@+id/tv_unload_total_piece"
@@ -157,7 +157,7 @@
                             android:maxLines="1"
                             android:text="@string/zero"
                             android:textColor="@color/WHITE"
-                            android:textSize="@dimen/footer_lbl_text_size" />
+                            android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
 

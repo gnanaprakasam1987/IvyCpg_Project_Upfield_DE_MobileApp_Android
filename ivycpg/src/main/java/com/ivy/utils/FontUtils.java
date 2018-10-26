@@ -22,7 +22,7 @@ public class FontUtils {
         return Typeface.createFromAsset(mContext.getAssets(), "font/baloobhai_regular.ttf");
     }
 
-    public static Typeface getFontRoboto(FontType mFontType, Context context) {
+    public static Typeface getFontRoboto(Context context, FontType mFontType) {
 
         Typeface mFontRobotoThin;
         if (mFontType == FontType.LIGHT) {

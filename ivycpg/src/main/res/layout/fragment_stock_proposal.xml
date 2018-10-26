@@ -44,7 +44,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/order_volume"
                         android:textColor="?attr/accentcolor"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/footer_label_size" />
 
                     <TextView
                         android:id="@+id/totalValue"
@@ -54,7 +54,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
 
@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/lines"
                         android:textColor="?attr/accentcolor"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/footer_label_size" />
 
                     <TextView
                         android:id="@+id/lcp"
@@ -83,7 +83,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
 
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/total_sih"
                         android:textColor="@color/font_green"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/footer_label_size" />
 
                     <TextView
                         android:id="@+id/tv_unload_sih"
@@ -113,7 +113,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
 
@@ -133,7 +133,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/total_cases"
                         android:textColor="@color/font_green"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/footer_label_size" />
 
                     <TextView
                         android:id="@+id/tv_unload_total_case"
@@ -143,7 +143,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
 
@@ -163,7 +163,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/total_outer"
                         android:textColor="@color/font_green"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/footer_label_size" />
 
                     <TextView
                         android:id="@+id/tv_unload_total_outer"
@@ -173,7 +173,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
 
@@ -193,7 +193,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/total_piece"
                         android:textColor="@color/font_green"
-                        android:textSize="@dimen/greyed_text_size" />
+                        android:textSize="@dimen/footer_label_size" />
 
                     <TextView
                         android:id="@+id/tv_unload_total_piece"
@@ -203,7 +203,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/WHITE"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
 

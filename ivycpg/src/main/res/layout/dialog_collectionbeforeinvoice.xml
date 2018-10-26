@@ -272,7 +272,7 @@
                 android:text="@string/date"
                 android:textColor="?attr/primarycolor"
                 android:paddingTop="@dimen/dimens_30dp"
-                android:textSize="@dimen/footer_lbl_text_size" />
+                android:textSize="@dimen/footer_label_value" />
 
         </LinearLayout>
 
@@ -298,7 +298,7 @@
                     android:layout_marginLeft="5dp"
                     android:text="@string/bank_name"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/text_sz_small"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold" />
 
                 <Spinner
@@ -325,7 +325,7 @@
                     android:layout_marginLeft="5dp"
                     android:text="@string/branch_area"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/text_sz_small"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold" />
 
                 <Spinner
@@ -427,7 +427,7 @@
                         android:maxLines="1"
                         android:text="@string/total"
                         android:textColor="?attr/colorAccent"
-                        android:textSize="@dimen/font_nano_small" />
+                        android:textSize="@dimen/footer_label_size" />
 
                     <TextView
                         android:id="@+id/payTotal"
@@ -438,7 +438,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
                 </LinearLayout>
 
 
@@ -459,7 +459,7 @@
                     android:gravity="center"
                     android:text="@string/done"
                     android:textAllCaps="false"
-                    android:textSize="@dimen/font_micro_small">
+                    android:textSize="@dimen/text_size_primary">
 
                 </Button>
 

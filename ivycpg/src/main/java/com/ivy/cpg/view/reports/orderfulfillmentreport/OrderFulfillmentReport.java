@@ -160,7 +160,7 @@ public class OrderFulfillmentReport extends IvyBaseFragment implements View.OnCl
 
                 try {
                     ((TextView) convertView.findViewById(R.id.txtLabelOrderID)).setTypeface(
-                            FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+                            FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
                     if (bmodel.labelsMasterHelper.applyLabels(convertView.findViewById(R.id.txtLabelOrderID).getTag()) != null)
                         ((TextView) convertView.findViewById(R.id.txtLabelOrderID)).setText(bmodel.labelsMasterHelper
                                 .applyLabels(convertView.findViewById(R.id.txtLabelOrderID).getTag()));
@@ -169,7 +169,7 @@ public class OrderFulfillmentReport extends IvyBaseFragment implements View.OnCl
                 }
                 try {
                     ((TextView) convertView.findViewById(R.id.txtLabelRetailer)).setTypeface(
-                            FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+                            FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
                     if (bmodel.labelsMasterHelper.applyLabels(convertView.findViewById(R.id.txtLabelRetailer).getTag()) != null)
                         ((TextView) convertView.findViewById(R.id.txtLabelRetailer)).setText(bmodel.labelsMasterHelper
                                 .applyLabels(convertView.findViewById(R.id.txtLabelRetailer).getTag()));
@@ -178,7 +178,7 @@ public class OrderFulfillmentReport extends IvyBaseFragment implements View.OnCl
                 }
                 try {
                     ((TextView) convertView.findViewById(R.id.txtLabelStatus)).setTypeface(
-                            FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+                            FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
                     if (bmodel.labelsMasterHelper.applyLabels(convertView.findViewById(R.id.txtLabelStatus).getTag()) != null)
                         ((TextView) convertView.findViewById(R.id.txtLabelStatus)).setText(bmodel.labelsMasterHelper
                                 .applyLabels(convertView.findViewById(R.id.txtLabelStatus).getTag()));

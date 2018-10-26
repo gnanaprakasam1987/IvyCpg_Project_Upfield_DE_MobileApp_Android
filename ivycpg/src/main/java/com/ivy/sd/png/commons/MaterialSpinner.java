@@ -257,8 +257,8 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
     }
 
     private void initDimensions() {
-        underlineTopSpacing = getResources().getDimensionPixelSize(R.dimen.dimen_4dp);
-        underlineBottomSpacing = getResources().getDimensionPixelSize(R.dimen.dimen_1dp);
+        underlineTopSpacing = getResources().getDimensionPixelSize(R.dimen.dimen_1dp);
+        underlineBottomSpacing = getResources().getDimensionPixelSize(R.dimen.dimen_2dp);
         //floatingLabelTopSpacing = getResources().getDimensionPixelSize(R.dimen.dimen_4dp);
         floatingLabelTopSpacing = 0;
         floatingLabelBottomSpacing = getResources().getDimensionPixelSize(R.dimen.dimen_6dp);
@@ -703,8 +703,7 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
 
         @Override
         public int getCount() {
-            int count = mSpinnerAdapter.getCount();
-            return count;
+            return mSpinnerAdapter.getCount();
         }
 
         @Override
@@ -732,7 +731,7 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
 
 
             final LayoutInflater inflater = LayoutInflater.from(mContext);
-            final int resid = isDropDownView ? R.layout.spinner_bluetext_list_item : R.layout.spinner_bluetext_list_item;
+            final int resid = isDropDownView ? R.layout.spinner_new_retailer_text_list_item : R.layout.spinner_new_retailer_text_list_item;
             final TextView textView = (TextView) inflater.inflate(resid, parent, false);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             textView.setTypeface(typeface);

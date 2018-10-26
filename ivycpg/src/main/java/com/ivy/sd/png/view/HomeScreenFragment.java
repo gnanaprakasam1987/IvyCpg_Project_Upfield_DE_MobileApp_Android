@@ -62,20 +62,29 @@ import com.ivy.cpg.view.delivery.invoice.DeliveryManagementRetailersFragment;
 import com.ivy.cpg.view.denomination.DenominationFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationFragment;
 import com.ivy.cpg.view.expense.ExpenseFragment;
 import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.mvp.MVPFragment;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
+import com.ivy.cpg.view.offlineplanning.OfflinePlanningActivity;
 import com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection;
 import com.ivy.cpg.view.quickcall.QuickCallFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
+import com.ivy.cpg.view.roadactivity.RoadActivityHelper;
+import com.ivy.cpg.view.roadactivity.RoadFragment;
 import com.ivy.cpg.view.subd.SubDFragment;
+import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.cpg.view.task.Task;
+import com.ivy.cpg.view.task.TaskFragment;
+import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
@@ -94,8 +103,10 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -219,7 +230,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private String imageFileName;
     private ListView listView;
     private ChannelSelectionDialog dialogFragment;
-    private ImageButton chatBtn, divStatusBtn, feedBackBtn;
+    private ImageButton chatBtn, divStatusBtn, feedBackBtn,firebaseChat;
 
 
     @Nullable
@@ -391,6 +402,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
         chatBtn = (ImageButton) view.findViewById(R.id.img_chat);
+        firebaseChat = (ImageButton) view.findViewById(R.id.img_chat_firebase);
         divStatusBtn = (ImageButton) view.findViewById(R.id.img_div_status);
         feedBackBtn = (ImageButton) view.findViewById(R.id.img_user_feedback);
 
@@ -402,6 +414,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (bmodel.configurationMasterHelper.SHOW_FEEDBACK)
             feedBackBtn.setVisibility(View.VISIBLE);
+
+        if (bmodel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
+            firebaseChat.setVisibility(View.VISIBLE);
 
 
         chatBtn.setOnClickListener(new OnClickListener() {
@@ -418,6 +433,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(), R.string.not_registered, Toast.LENGTH_LONG).show();
                 }
 
+            }
+        });
+
+        firebaseChat.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), StartChatActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -536,8 +559,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             gotoNextActivity(configureBO);
                             break;
                         }
+                        if (configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)) {
+                            gotoNextActivity(configureBO);
+                            break;
+                        }
                     } else if (configureBO.getConfigCode().equalsIgnoreCase(MENU_VISIT)
-                            || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
+                            //|| configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_DAY)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_INC)
@@ -594,7 +621,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             getActivity().finish();
         }
 
-        intcounter = bmodel.taskHelper.getTaskCount();
+        intcounter = TaskHelper.getInstance(getActivity()).getTaskCount();
 
         getActivity().supportInvalidateOptionsMenu();
     }
@@ -963,16 +990,18 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
 
-            } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.mark_attendance),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.leaveToday),
-                            Toast.LENGTH_SHORT).show();
-            } else {
+            }
+//            else if (isLeave_today) {
+//                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+//                    Toast.makeText(getActivity(),
+//                            getResources().getString(R.string.mark_attendance),
+//                            Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getActivity(),
+//                            getResources().getString(R.string.leaveToday),
+//                            Toast.LENGTH_SHORT).show();
+//            }
+            else {
                 DashBoardHelper.getInstance(getActivity()).checkDayAndP3MSpinner(false);
                 bmodel.distributorMasterHelper.downloadDistributorsList();
 
@@ -1162,8 +1191,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                 .downloadFiveLevelFilterNonProducts(MENU_SURVEY_SW);*/
 
                         bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_SW));
-                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_SW,
-                                bmodel.productHelper.getRetailerModuleSequenceValues()));
+                        bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                                bmodel.productHelper.getRetailerModuleSequenceValues(),false));
 
                     }
 
@@ -1183,7 +1212,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 } else {
                     Toast.makeText(getActivity(),
-                            "Please login joint call user", Toast.LENGTH_SHORT)
+                            getString(R.string.login_joint_Call_user), Toast.LENGTH_SHORT)
                             .show();
                 }
             }
@@ -1220,8 +1249,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                    /* bmodel.productHelper
                             .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");*/
                     bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY01_SW"));
-                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY01_SW",
-                            bmodel.productHelper.getRetailerModuleSequenceValues()));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getRetailerModuleSequenceValues(),false));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1276,8 +1305,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     /*bmodel.productHelper
                             .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);*/
                     bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_BA_CS));
-                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(MENU_SURVEY_BA_CS,
-                            bmodel.productHelper.getRetailerModuleSequenceValues()));
+                    bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getRetailerModuleSequenceValues(),false));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1313,12 +1342,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                bmodel.mEmptyReconciliationhelper.downloadProducts();
-                bmodel.mEmptyReconciliationhelper.downloadNonGenericProductID();
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper emptyReconciliationHelper = EmptyReconciliationHelper.getInstance(getActivity());
+                emptyReconciliationHelper.downloadProducts();
+                emptyReconciliationHelper.downloadNonGenericProductID();
+                emptyReconciliationHelper
                         .downloadReturnProductsTypeNew();
-                if (bmodel.mEmptyReconciliationhelper.getSkuTypeBO() != null
-                        && bmodel.mEmptyReconciliationhelper.getSkuTypeBO()
+                if (emptyReconciliationHelper.getSkuTypeBO() != null
+                        && emptyReconciliationHelper.getSkuTypeBO()
                         .size() > 0) {
                     switchFragment(MENU_EMPTY_RECONCILIATION, menuItem.getMenuName());
                 } else {
@@ -1556,15 +1586,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
-            } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.mark_attendance),
-                            Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(),
-                            getResources().getString(R.string.leaveToday),
-                            Toast.LENGTH_SHORT).show();
             } else if (!bmodel.synchronizationHelper.isDataAvailable()) {
                 Toast.makeText(getActivity(), bmodel.synchronizationHelper.dataMissedTable + " " + getResources().getString(R.string.data_not_mapped) + " " +
                                 getResources().getString(R.string.please_redownload),
@@ -1588,6 +1609,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_DENOMINATION)) {
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
         }
+
 
     }
 
@@ -1900,19 +1922,20 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
 
                 if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER || bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
-                            bmodel.productHelper.getFilterProductLevels()));
+
                     GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(bmodel.productHelper.getFilterProductLevels(),true));
                 }
                 //clear distributor id and group id
                 bmodel.getRetailerMasterBO().setDistributorId(0);
                 bmodel.getRetailerMasterBO().setGroupId(0);
-
+                bmodel.newOutletHelper.setRetailerContactList(new ArrayList<RetailerContactBo>());
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 fragment = new NewoutletContainerFragment();
@@ -2217,7 +2240,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             case MENU_SUPERVISOR_CALLANALYSIS:
 
-                SupervisorActivityHelper.getInstance().loginToFirebase();
+                SupervisorActivityHelper.getInstance().loginToFirebase(getContext());
                 SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(), SDUtil.now(SDUtil.DATE_GLOBAL));
 
                 bndl = new Bundle();
@@ -2253,7 +2276,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_DENOMINATION);
                 break;
         }
-        ft.commit();
+        ft.commitAllowingStateLoss();
 
     }
 
@@ -2358,6 +2381,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menu.findItem(R.id.menu_chat).setVisible(
                 bmodel.configurationMasterHelper.IS_CHAT_ENABLED);
 
+        menu.findItem(R.id.menu_firebase_chat).setVisible(
+                bmodel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED);
+
         if (intcounter == 0) {
             tv_counter.setVisibility(View.GONE);
         } else if (intcounter < 100) {
@@ -2409,6 +2435,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 Toast.makeText(getActivity(), R.string.not_registered, Toast.LENGTH_LONG).show();
             }
             return true;
+        }else if (i1 == R.id.menu_firebase_chat){
+
+            Intent intent = new Intent(getContext(), StartChatActivity.class);
+            startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -2498,14 +2529,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         @Override
         protected Boolean doInBackground(Integer... params) {
-
-            bmodel.mroadActivityHelper.loadTypeSpinnerData();
-            bmodel.mroadActivityHelper.loadProductSpinnerData();
+            RoadActivityHelper roadActivityHelper = RoadActivityHelper.getInstance(getActivity());
+            roadActivityHelper.loadTypeSpinnerData();
+            roadActivityHelper.loadProductSpinnerData();
 
             // Location spinners
-            bmodel.mroadActivityHelper.loadLocationNames();
-            bmodel.mroadActivityHelper.loadLocation1SpinnerData();
-            bmodel.mroadActivityHelper.loadLocation2SpinnerData();
+            roadActivityHelper.loadLocationNames();
+            roadActivityHelper.loadLocation1SpinnerData();
+            roadActivityHelper.loadLocation2SpinnerData();
 
             return true;
         }
@@ -2647,6 +2678,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         protected void onPostExecute(Integer result) {
             try {
+                if (getFragmentManager() != null)
                 getFragmentManager().executePendingTransactions();
                 Activity activity = getActivity();
                 if (activity != null && isAdded()) {

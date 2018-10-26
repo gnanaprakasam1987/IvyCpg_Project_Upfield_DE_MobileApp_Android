@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/delivery_date_label"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <Button
                     android:id="@+id/deliveryDate"
@@ -93,7 +93,7 @@
                     android:gravity="center"
                     android:maxLines="1"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/footer_lbl_text_size" />
+                    android:textSize="@dimen/footer_label_value" />
 
             </LinearLayout>
 
@@ -117,7 +117,7 @@
                     android:maxLines="1"
                     android:text="@string/lines"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -135,7 +135,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
 
@@ -163,7 +163,7 @@
                     android:tag="stk_ord_value"
                     android:text="@string/order_volume"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <LinearLayout
                     android:id="@+id/icAmountSpilitup_lty"
@@ -182,7 +182,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                     <ImageView
                         android:id="@+id/icAmountSpilitup"
@@ -216,7 +216,7 @@
                     android:tag="bill1_value"
                     android:text="@string/bill1_value"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -234,7 +234,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -260,7 +260,7 @@
                     android:tag="bill1_value"
                     android:text="@string/bill1_line"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -278,7 +278,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -304,7 +304,7 @@
                     android:tag="bill2_value"
                     android:text="@string/bill2_value"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -322,7 +322,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -348,7 +348,7 @@
                     android:tag="bill1_value"
                     android:text="@string/bill2_line"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -366,7 +366,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -392,7 +392,7 @@
                     android:tag="stk_ord_qty"
                     android:text="@string/total_qty"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -410,7 +410,7 @@
                         android:maxLines="1"
                         android:text="@string/zero"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/footer_lbl_text_size" />
+                        android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
 

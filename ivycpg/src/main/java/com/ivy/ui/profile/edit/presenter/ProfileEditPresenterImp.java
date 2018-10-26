@@ -430,6 +430,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     @Override
+    public void updateLatLong(String lat, String longitude) {
+        this.lat= lat;
+        this.longitude=longitude;
+    }
+
+    @Override
     public void getImageLongClickListener(boolean isForLatLong) {
         if (!isLatLong && configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE
                 && (LocationUtil.latitude == 0 || LocationUtil.longitude == 0) || (configurationMasterHelper.retailerLocAccuracyLvl != 0
@@ -1984,12 +1990,24 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     }
 
     private boolean doValidateProdileEdit() {
-
+        validate = true;
         for (int i = 0; i < profileConfig.size(); i++) {
 
             String configCode = profileConfig.get(i).getConfigCode();
 
-            if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CHANNEL)
+            if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.STORENAME)
+                    && profileConfig.get(i).getModule_Order() == 1) {
+                try {
+                    if (getIvyView().getDynamicEditTextValues(i).length() == 0) {
+                        getIvyView().setDynamicEditTextFocus(i);
+                        getIvyView().showMessage(profileConfig.get(i).getMenuName() + " should not Be Empty");
+                        validate = false;
+                        break;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            } else if (profileConfig.get(i).getConfigCode().equalsIgnoreCase(ProfileConstant.CHANNEL)
                     && profileConfig.get(i).getModule_Order() == 1) {
                 try {
                     if (getIvyView().getChennalSelectedItem().contains("select")) {

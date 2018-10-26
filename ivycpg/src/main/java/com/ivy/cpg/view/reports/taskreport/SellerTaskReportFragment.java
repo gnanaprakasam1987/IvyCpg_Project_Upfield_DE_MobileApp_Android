@@ -12,14 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.TaskDataBO;
+import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
 

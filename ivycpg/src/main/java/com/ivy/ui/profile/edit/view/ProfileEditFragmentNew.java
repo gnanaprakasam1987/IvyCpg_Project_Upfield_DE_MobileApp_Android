@@ -94,7 +94,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -392,6 +391,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 longitude = data.getExtras().getDouble("lon") + "";
                 if (data.getExtras().getBoolean("isChanged")) {
                     latlongtextview.setText(lat + ", " + longitude);
+                    profileEditPresenter.updateLatLong(lat,longitude);
                     if (isLatLongCameravailable) {
                         latlongCameraBtn.setVisibility(View.VISIBLE);
                     }
@@ -906,7 +906,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
             Button verifyBtn = new Button(getActivity());
             verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-            verifyBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getActivity()));
+            verifyBtn.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.REGULAR));
             verifyBtn.setText(getResources().getString(R.string.verify));
             verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
             verifyBtn.setOnClickListener(new View.OnClickListener() {
@@ -950,7 +950,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
         Button verifyBtn = new Button(getActivity());
         verifyBtn.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-        verifyBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getActivity()));
+        verifyBtn.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.REGULAR));
         verifyBtn.setText(getResources().getString(R.string.verify));
         verifyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black_bg1));
         verifyBtn.setOnClickListener(new View.OnClickListener() {
@@ -1065,13 +1065,13 @@ public class ProfileEditFragmentNew extends BaseFragment
         tv_label.setText(mName);
         tv_label.setTextColor(Color.BLACK);
         tv_label.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-        tv_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        tv_label.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         firstlayout.addView(tv_label, params8);
         flExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
         flExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         flExpDateTextView.setTextColor(Color.BLACK);
         flExpDateTextView.setGravity(Gravity.CENTER);
-        flExpDateTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        flExpDateTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         flExpDateTextView.setId(mNumber);
         flExpDateTextView.setTypeface(flExpDateTextView.getTypeface(), Typeface.NORMAL);
         flExpDateTextView.setText(data);
@@ -1116,13 +1116,13 @@ public class ProfileEditFragmentNew extends BaseFragment
         tv_label.setText(mName);
         tv_label.setTextColor(Color.BLACK);
         tv_label.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-        tv_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        tv_label.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         firstlayout.addView(tv_label, params8);
         dlExpDateTextView = new TextView(new ContextThemeWrapper(getActivity(), R.style.datePickerButton), null, 0);
         dlExpDateTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         dlExpDateTextView.setTextColor(Color.BLACK);
         dlExpDateTextView.setGravity(Gravity.CENTER);
-        dlExpDateTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        dlExpDateTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         dlExpDateTextView.setId(mNumber);
         dlExpDateTextView.setTypeface(dlExpDateTextView.getTypeface(), Typeface.NORMAL);
 
@@ -1180,7 +1180,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                                                     String menuName, String values, boolean IS_UPPERCASE_LETTER) {
         AppCompatEditText appCompatEditText = new AppCompatEditText(getActivity());
         appCompatEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
-        appCompatEditText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        appCompatEditText.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         appCompatEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
         appCompatEditText.setText(values);
         appCompatEditText.setHint(menuName);
@@ -1232,7 +1232,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         if (menuCode.equals(ProfileConstant.CHANNEL)) {
             channel = new MaterialSpinner(getActivity());
             channel.setId(mNumber);
-            channel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            channel.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             channel.setFloatingLabelText(MName);
             //channel.setGravity(Gravity.CENTER);
 
@@ -1272,7 +1272,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             try {
                 contractSpinner = new MaterialSpinner(getActivity());
                 contractSpinner.setId(mNumber);
-                contractSpinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                contractSpinner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 contractSpinner.setFloatingLabelText(MName);
 
                 String listName = getResources().getString(R.string.select_str) + " " + MName;
@@ -1306,7 +1306,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         if (menuCode.equals(ProfileConstant.SUBCHANNEL)) {
             subchannel = new MaterialSpinner(getActivity());
             subchannel.setId(mNumber);
-            subchannel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            subchannel.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             subchannel.setFloatingLabelText(MName);
             layout.addView(subchannel, spinweight);
 
@@ -1314,7 +1314,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             try {
                 location1 = new MaterialSpinner(getActivity());
                 location1.setId(mNumber);
-                location1.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                location1.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 location1.setFloatingLabelText(MName);
 
                 String locationName = getActivity().getResources().getString(R.string.select_str) + " " + MName;
@@ -1356,7 +1356,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             try {
                 location2 = new MaterialSpinner(getActivity());
                 location2.setId(mNumber);
-                location2.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                location2.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 location2.setFloatingLabelText(MName);
 
                 String locationName = getActivity().getResources().getString(R.string.select_str) + " " + MName;
@@ -1399,7 +1399,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             try {
                 location3 = new MaterialSpinner(getActivity());
                 location3.setId(mNumber);
-                location3.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                location3.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 location3.setFloatingLabelText(MName);
 
                 String locationName = getActivity().getResources().getString(R.string.select_str) + " " + MName;
@@ -1439,7 +1439,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             }
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD5)) {
             rField5Spinner = new MaterialSpinner(getActivity());
-            rField5Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            rField5Spinner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             rField5Spinner.setId(mNumber);
             rField5Spinner.setFloatingLabelText(MName);
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_5, menuCode, MName);
@@ -1447,7 +1447,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD6)) {
             rField6Spinner = new MaterialSpinner(getActivity());
-            rField6Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            rField6Spinner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             rField6Spinner.setId(mNumber);
             rField6Spinner.setFloatingLabelText(MName);
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_6, menuCode, MName);
@@ -1455,7 +1455,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RFIELD7)) {
             rField7Spinner = new MaterialSpinner(getActivity());
-            rField7Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            rField7Spinner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             rField7Spinner.setId(mNumber);
             rField7Spinner.setFloatingLabelText(MName);
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_7, menuCode, MName);
@@ -1463,7 +1463,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
         } else if (menuCode.equalsIgnoreCase(ProfileConstant.RField4)) {
             rField4Spinner = new MaterialSpinner(getActivity());
-            rField4Spinner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            rField4Spinner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             rField4Spinner.setId(mNumber);
             rField4Spinner.setFloatingLabelText(MName);
             profileEditPresenter.downloadRetailerFlexValues(ProfileConstant.RFIELD_4, menuCode, MName);
@@ -1477,7 +1477,7 @@ public class ProfileEditFragmentNew extends BaseFragment
     private TextView getSingleTextView(int positionNumber, String menuName) {
         textview[positionNumber] = new TextView(getActivity());
         textview[positionNumber].setText(menuName);
-        textview[positionNumber].setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        textview[positionNumber].setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         textview[positionNumber].setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
         textview[positionNumber].setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
         return textview[positionNumber];
@@ -1498,7 +1498,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
         latlongtextview = new TextView(getActivity());
         latlongtextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        latlongtextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        latlongtextview.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         latlongtextview.setText(textvalue);
         latlongtextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
 
@@ -1556,7 +1556,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         nearbyTextView = new TextView(getActivity());
         nearbyTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
         nearbyTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        nearbyTextView.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        nearbyTextView.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         nearbyTextView.setGravity(Gravity.CENTER);
 
         ScrollView scrl = new ScrollView(getActivity());
@@ -1594,7 +1594,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         secondlayout.setPadding(0, 0, 0, 12);
         priorityproducttextview = new TextView(getActivity());
         priorityproducttextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
-        priorityproducttextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        priorityproducttextview.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         priorityproducttextview.setText(textvalue);
         secondlayout.setOnClickListener(new View.OnClickListener() {
             @Override

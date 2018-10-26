@@ -20,7 +20,7 @@
             android:paddingStart="@dimen/dimen_10dp"
             android:text="Select to start store activities"
             android:textColor="@color/FullBlack"
-            android:textSize="@dimen/list_item_primary_text_size"
+            android:textSize="@dimen/text_size_secondary"
             android:paddingLeft="@dimen/dimen_10dp" />
 
 

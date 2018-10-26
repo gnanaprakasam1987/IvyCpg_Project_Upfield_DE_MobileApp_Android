@@ -70,7 +70,7 @@
                 android:gravity="end"
                 android:text="Total Collected"
                 android:textStyle="bold"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/text_size_secondary"
                 android:textColor="?attr/colorAccent" />
 
             <TextView
@@ -101,7 +101,7 @@
                 android:gravity="end"
                 android:text="Total Cash"
                 android:textStyle="bold"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/text_size_secondary"
                 android:textColor="?attr/colorAccent" />
 
             <TextView
@@ -132,7 +132,7 @@
                 android:gravity="end"
                 android:text="Total Cheque"
                 android:textStyle="bold"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/text_size_secondary"
                 android:textColor="?attr/colorAccent" />
 
             <TextView
@@ -164,7 +164,7 @@
                 android:tag="dd"
                 android:text="Total DD"
                 android:textStyle="bold"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/text_size_secondary"
                 android:textColor="?attr/colorAccent" />
 
             <TextView
@@ -195,7 +195,7 @@
                 android:gravity="end"
                 android:text="Total Advance Payment"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/text_size_secondary"
                 android:textStyle="bold" />
 
             <TextView
@@ -226,7 +226,7 @@
                 android:gravity="end"
                 android:text="Total Credit Note"
                 android:textStyle="bold"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/text_size_secondary"
                 android:textColor="?attr/colorAccent" />
 
             <TextView
@@ -258,7 +258,7 @@
                 android:tag="dd"
                 android:text="Total RTGS"
                 android:textStyle="bold"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/text_size_secondary"
                 android:textColor="?attr/colorAccent" />
 
             <TextView
@@ -290,7 +290,7 @@
                 android:tag="dd"
                 android:text="Total Mobile Payment"
                 android:textStyle="bold"
-                android:textSize="@dimen/list_item_primary_text_size"
+                android:textSize="@dimen/text_size_secondary"
                 android:textColor="?attr/colorAccent" />
 
             <TextView

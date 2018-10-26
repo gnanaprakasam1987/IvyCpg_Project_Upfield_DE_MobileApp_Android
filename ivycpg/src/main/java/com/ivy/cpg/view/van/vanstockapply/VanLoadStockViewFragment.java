@@ -110,13 +110,13 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
         lvwplist.setCacheColorHint(0);
 
         productname = (TextView) view.findViewById(R.id.productName);
-        productname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.prod_label)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.batchidTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.totaltitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        productname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.prod_label)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.batchidTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.totaltitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
         productname.setOnTouchListener(new OnTouchListener() {
@@ -721,13 +721,13 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                 holder.outerqty = (TextView) row.findViewById(R.id.outerqty);
                 holder.batchid = (TextView) row.findViewById(R.id.batchid);
 
-                holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.productCode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.caseqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.pcsqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.unitprice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.outerqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.batchid.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.psname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.productCode.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.caseqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.pcsqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.unitprice.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.outerqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.batchid.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
 
                 row.setOnClickListener(new OnClickListener() {

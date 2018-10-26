@@ -25,6 +25,9 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class CPGFirebaseMessagingService extends FirebaseMessagingService{
@@ -143,14 +146,15 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
                     PendingIntent.FLAG_ONE_SHOT);
 
             String channelId = "channelId";
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Uri soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notify);
+
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, channelId)
                             .setSmallIcon(R.drawable.launchericon)
                             .setContentTitle(notification.getTitle())
                             .setContentText(notification.getBody())
                             .setAutoCancel(true)
-                            .setSound(defaultSoundUri)
+                            .setSound(soundUri)
                             .setContentIntent(pendingIntent);
 
             NotificationManager notificationManager =
@@ -161,16 +165,23 @@ public class CPGFirebaseMessagingService extends FirebaseMessagingService{
                 // Since android Oreo notification channel is needed.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationChannel channel = new NotificationChannel(channelId,
-                            "Channel human readable title",
+                            "IvyCpg Notify Channel",
                             NotificationManager.IMPORTANCE_DEFAULT);
                     notificationManager.createNotificationChannel(channel);
                 }
 
-                notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+                int id = createID();
+
+                notificationManager.notify(id /* ID of notification */, notificationBuilder.build());
             }
         }catch (Exception e){
             Commons.printException(e);
         }
+    }
+
+    private int createID(){
+        Date now = new Date();
+        return Integer.parseInt(new SimpleDateFormat("ddHHmmss",  Locale.US).format(now));
     }
 
 

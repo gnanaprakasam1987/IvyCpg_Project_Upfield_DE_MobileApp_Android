@@ -172,7 +172,7 @@
                     android:layout_gravity="top|start"
                     android:text="@string/from"
                     android:textColor="@color/from_to_color"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <TextView
                     android:id="@+id/from_txt_value"
@@ -182,7 +182,7 @@
                     android:layout_marginTop="@dimen/retailer_5dp"
                     android:text=""
                     android:textColor="@color/white"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
             </LinearLayout>
 
@@ -203,7 +203,7 @@
                     android:layout_gravity="top|start"
                     android:text="@string/to"
                     android:textColor="@color/from_to_color"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <TextView
                     android:id="@+id/to_txt_value"
@@ -213,7 +213,7 @@
                     android:layout_marginTop="@dimen/retailer_5dp"
                     android:text=""
                     android:textColor="@color/white"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
             </LinearLayout>
 
@@ -237,7 +237,7 @@
                     android:gravity="end|bottom"
                     android:text="1hr 39min (2.3 m)"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>

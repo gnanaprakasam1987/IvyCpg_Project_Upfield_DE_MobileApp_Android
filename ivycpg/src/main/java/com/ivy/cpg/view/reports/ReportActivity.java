@@ -67,8 +67,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.TaxGstHelper;
-import com.ivy.sd.png.provider.TaxHelper;
+import com.ivy.cpg.view.order.tax.TaxGstHelper;
+import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenActivity;
 

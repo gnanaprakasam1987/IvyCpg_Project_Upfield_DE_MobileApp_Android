@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_visual_sos"
                     android:textColor="?primarycolor"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/text_no_rows"
                             android:textColor="@color/list_item_secondary_text_color"
-                            android:textSize="@dimen/text_sz_small" />
+                            android:textSize="@dimen/text_size_caption" />
 
                         <EditText
                             android:id="@+id/edtTxtShelf"
@@ -98,7 +98,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/text_no_columns"
                             android:textColor="@color/list_item_secondary_text_color"
-                            android:textSize="@dimen/text_sz_small" />
+                            android:textSize="@dimen/text_size_caption" />
 
                         <EditText
                             android:id="@+id/edtTxtBlock"
@@ -127,7 +127,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/text_no_length"
                             android:textColor="@color/list_item_secondary_text_color"
-                            android:textSize="@dimen/text_sz_small" />
+                            android:textSize="@dimen/text_size_caption" />
 
                         <EditText
                             android:id="@+id/edtTxtShelfLength"
@@ -184,7 +184,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/select_brand"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     android:textStyle="bold" />
 
                 <android.support.v7.widget.RecyclerView
@@ -205,7 +205,7 @@
                     android:gravity="center"
                     android:text="@string/blocks_color"
                     android:textColor="@color/list_item_secondary_text_color"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <ScrollView
                     android:layout_width="match_parent"

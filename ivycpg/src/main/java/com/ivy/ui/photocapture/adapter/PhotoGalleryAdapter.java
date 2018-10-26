@@ -13,8 +13,6 @@ import com.ivy.sd.png.commons.MyGridView;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoGalleryAdapter.PhotoGalleryViewHolder> {
@@ -52,7 +50,7 @@ public class PhotoGalleryAdapter extends RecyclerView.Adapter<PhotoGalleryAdapte
     public void onBindViewHolder(PhotoGalleryAdapter.PhotoGalleryViewHolder holder, int position) {
         holder.ProdName.setText(keyList.get(position));
         holder.PhoneCaptureGrid.setAdapter(new PhotoGridAdapter(mContext, photoGalleryData.get(keyList.get(position)),mPhotoClickListener));
-        holder.ProdName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.ProdName.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
     }
 
     @Override

@@ -82,7 +82,7 @@ public class AssetAdapter extends BaseAdapter {
 
         ReasonMaster reason1 = new ReasonMaster();
         reason1.setReasonID(Integer.toString(0));
-        reason1.setReasonDesc(context.getResources().getString(R.string.select_reason));
+        reason1.setReasonDesc(context.getString(R.string.plain_select));
         mAssetReasonList = mAssetPresenter.getAssetReasonList();
 
         if (mAssetReasonList.size() > 0) {
@@ -95,7 +95,7 @@ public class AssetAdapter extends BaseAdapter {
         mAssetReasonSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-        String select_condition = "Select Condition";
+        String select_condition = mContext.getString(R.string.plain_select);
         try {
             if (LabelsMasterHelper.getInstance(context).applyLabels("select_condition") != null)
                 select_condition = LabelsMasterHelper.getInstance(context).applyLabels("select_condition");
@@ -147,40 +147,40 @@ public class AssetAdapter extends BaseAdapter {
                     R.layout.row_asset_tracking, parent, false);
             row.setTag(holder);
 
-            holder.audit = (ImageButton) row
+            holder.audit =  row
                     .findViewById(R.id.btn_audit);
-            holder.assetNameTV = (TextView) row
+            holder.assetNameTV =  row
                     .findViewById(R.id.tv_asset_name);
-            holder.assetNameTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.reason1Spin = (Spinner) row
+            //holder.assetNameTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.reason1Spin =  row
                     .findViewById(R.id.spin_reason1);
 
-            holder.mConditionSpin = (Spinner) row
+            holder.mConditionSpin =  row
                     .findViewById(R.id.spin_condition);
 
-            holder.mInstallDate = (Button) row
+            holder.mInstallDate =  row
                     .findViewById(R.id.Btn_install_Date);
-            holder.llInstallDate = (LinearLayout) row
+            holder.llInstallDate =  row
                     .findViewById(R.id.ll_install_date);
-            holder.mInstallDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.mServiceDate = (Button) row
+            //holder.mInstallDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.mServiceDate =  row
                     .findViewById(R.id.Btn_service_Date);
-            holder.ll_service_date = (LinearLayout) row
+            holder.ll_service_date =  row
                     .findViewById(R.id.ll_service_date);
-            holder.mServiceDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.photoBTN = (ImageView) row
+            //holder.mServiceDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.photoBTN =  row
                     .findViewById(R.id.btn_photo);
-            holder.availQtyRB = (CheckBox) row
+            holder.availQtyRB =  row
                     .findViewById(R.id.radio_avail_qty);
-            holder.availQtyLL = (LinearLayout) row
+            holder.availQtyLL =  row
                     .findViewById(R.id.ll_avail_qty);
-            holder.serialNoTV = (TextView) row
+            holder.serialNoTV =  row
                     .findViewById(R.id.tv_serialNo);
-            holder.serialNoTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.grpTV = (TextView) row.findViewById(R.id.tv_grp);
-            holder.grpTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.execQtyLL = (LinearLayout) row.findViewById(R.id.ll_exec_qty);
-            holder.execQtyRB = (CheckBox) row.findViewById(R.id.radio_exec_qty);
+            //holder.serialNoTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.grpTV =  row.findViewById(R.id.tv_grp);
+            //holder.grpTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.execQtyLL =  row.findViewById(R.id.ll_exec_qty);
+            holder.execQtyRB =  row.findViewById(R.id.radio_exec_qty);
 
             holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
             holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
@@ -362,8 +362,8 @@ public class AssetAdapter extends BaseAdapter {
                         holder.assetBO.setAvailQty(1);
                         holder.reason1Spin.setEnabled(false);
 
-                        if ((holder.assetBO.getImageName() != null)
-                                && (!holder.assetBO.getImageName().isEmpty())
+                        if ((holder.assetBO.getImgName() != null)
+                                && (!holder.assetBO.getImgName().isEmpty())
                                 ) {
                             holder.photoBTN.setEnabled(true);
                             setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
@@ -452,9 +452,8 @@ public class AssetAdapter extends BaseAdapter {
         if (holder.assetBO.getAvailQty() > 0) {
 
             holder.reason1Spin.setEnabled(false);
-            if ((holder.assetBO.getImageName() != null)
-                    && (!holder.assetBO.getImageName().isEmpty())
-                    ) {
+            if ((holder.assetBO.getImgName() != null)
+                    && (!holder.assetBO.getImgName().isEmpty())) {
                 holder.photoBTN.setEnabled(true);
                 setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
             } else {
@@ -525,8 +524,8 @@ public class AssetAdapter extends BaseAdapter {
             holder.execQtyLL.setVisibility(View.GONE);
         }
 
-        if ((holder.assetBO.getImageName() != null)
-                && (!holder.assetBO.getImageName().isEmpty())
+        if ((holder.assetBO.getImgName() != null)
+                && (!holder.assetBO.getImgName().isEmpty())
                 ) {
             setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
 

@@ -60,7 +60,7 @@
                             android:paddingStart="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/Black"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             android:textStyle="normal|bold"
                             tools:text="seg rstfsdrfdgf bfdg fdg d rsdg dfg dg \n fghfdkl ghdfkgdklfgdkflgdfkgkdflg kdfgk " />
 
@@ -75,7 +75,7 @@
                             android:paddingStart="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             tools:text="@string/prod_code" />
 
                         <TextView
@@ -89,7 +89,7 @@
                             android:paddingStart="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             tools:text="PPQ : 50" />
 
                         <TextView
@@ -103,7 +103,7 @@
                             android:paddingRight="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             tools:text="@string/moq" />
 
                         <TextView
@@ -117,7 +117,7 @@
                             android:paddingStart="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             android:visibility="visible"
                             tools:text="SIH : 0" />
 
@@ -132,7 +132,7 @@
                             android:paddingStart="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             android:visibility="visible"
                             tools:text="SIH : 0" />
 
@@ -147,7 +147,7 @@
                             android:paddingStart="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             android:visibility="visible"
                             tools:text="Allocation Qty : 0" />
 
@@ -176,7 +176,7 @@
                             android:paddingStart="1dp"
                             android:paddingTop="1dp"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             tools:text="MRP :" />
 
                         <TextView
@@ -205,7 +205,7 @@
                         android:layout_height="@dimen/order_lay_height"
                         android:layout_weight="1"
                         android:text="STOCK"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:visibility="visible" />
 
                     <View
@@ -220,7 +220,7 @@
                         android:layout_height="@dimen/order_lay_height"
                         android:layout_weight="1"
                         android:text="@string/order"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:visibility="visible" />
 
                     <View
@@ -235,7 +235,7 @@
                         android:layout_height="@dimen/order_lay_height"
                         android:layout_weight="1"
                         android:text="@string/sr"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:visibility="visible" />
                 </LinearLayout>
 

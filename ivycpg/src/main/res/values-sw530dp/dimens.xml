@@ -34,7 +34,6 @@
     <dimen name="list_item_height">48dp</dimen>
     <dimen name="list_product_name_width_tiny">240dp</dimen>
     <dimen name="list_product_name_width_init">252.8dp</dimen>
-    <dimen name="list_product_name_width">288dp</dimen>
     <dimen name="list_product_name_width_medium">316dp</dimen>
     <dimen name="list_product_name_width_small">272dp</dimen>
     <dimen name="list_item_width">64dp</dimen>
@@ -104,25 +103,12 @@
     <dimen name="sr_list_view_width_large">136dp</dimen>
 
     <!-- print preview -->
-    <dimen name="pp_case_unit">64dp</dimen>
-    <dimen name="pp_outer_price">96dp</dimen>
-    <dimen name="pp_case_price">96dp</dimen>
-    <dimen name="pp_unit_price">80dp</dimen>
-    <dimen name="pp_discount">88dp</dimen>
-    <dimen name="pp_row_case_unit">72dp</dimen>
-    <dimen name="pp_row_outer_price">104dp</dimen>
-    <dimen name="pp_row_discount">88dp</dimen>
-    <dimen name="pp_row_upc">184dp</dimen>
     <dimen name="pp_row_upc_padding">160dp</dimen>
 
     <!-- print preview diageo -->
     <dimen name="ppd_code">68dp</dimen>
-    <dimen name="ppd_brand">240dp</dimen>
-    <dimen name="ppd_case">40dp</dimen>
-    <dimen name="ppd_bot">40dp</dimen>
     <dimen name="ppd_unit_price">68dp</dimen>
     <dimen name="ppd_amount">68dp</dimen>
-    <dimen name="ppd_batch">208dp</dimen>
 
     <!-- Scheme Dialog Height -->
     <dimen name="scheme_dialog_height">640dp</dimen>
@@ -230,7 +216,6 @@
     <dimen name="padding_rb">4dp</dimen>
     <dimen name="padding_l">18.4dp</dimen>
 
-    <dimen name="sih_so_w">80dp</dimen>
     <dimen name="no_btn_h">48dp</dimen>
 
     <dimen name="can_ok_btn_h">40dp</dimen>
@@ -645,9 +630,9 @@
 
     <!-- Generic text size-->
 
-    <dimen name="text_sz_extra_small">8sp</dimen>
-    <dimen name="text_sz_small">11.2sp</dimen>
-    <dimen name="text_sz_medium">12.8sp</dimen>
+
+
+
 
     <!-- user name in home menu, retailer name in profile and activity menu etc -->
     <dimen name="highlight_small">19.2sp</dimen>
@@ -656,15 +641,31 @@
     <!-- Beat name in trade coverage etc -->
     <dimen name="highlight_large">27.2sp</dimen>
 
-    <dimen name="list_primary">12.8sp</dimen>
-    <dimen name="list_secondary">11.2sp</dimen>
+
 
     <dimen name="actionbar_title_text_size">19.2sp</dimen>
+    <dimen name="text_size_primary">12.8sp</dimen>
+    <dimen name="text_size_secondary">11.2sp</dimen>
+    <dimen name="text_size_caption">8.8sp</dimen>
+
+    <!-- List header text size -->
+    <dimen name="list_header_text_size">11.2sp</dimen>
+    <dimen name="list_header_secondary_text_size">8.8sp</dimen>
+
+
+    <!-- Button text size -->
+    <dimen name="btn_small_round_corner_text_size">11.2sp</dimen>
+    <dimen name="btn_round_corner_text_size">14.4sp</dimen>
+
+
+    <!-- Footer text size -->
+    <dimen name="footer_label_size">9.6sp</dimen>
+    <dimen name="footer_label_value">12.8sp</dimen>
 
     <!-- ALL test size -->
 
-    <dimen name="font_nano_small">11.2sp</dimen>
-    <dimen name="font_micro_small">12.8sp</dimen>
+
+
     <dimen name="font_small">14.4sp</dimen>
     <dimen name="font_medium">16sp</dimen>
     <dimen name="font_large">17.6sp</dimen>
@@ -681,10 +682,7 @@
     <dimen name="percent_value_size">14.4sp</dimen>
 
 
-    <dimen name="search_edt_text_size">11.2sp</dimen>
 
-    <!-- List item text size -->
-    <dimen name="list_item_primary_text_size">12.8sp</dimen>
 
 
     <!-- Login - clear it later -->
@@ -692,17 +690,7 @@
     <dimen name="forgot_text_size">14.4sp</dimen>
     <dimen name="login_edittext_text_size">16sp</dimen>
 
-    <!-- List header text size -->
-    <dimen name="list_header_text_size">9.6sp</dimen>
-    <dimen name="list_header_secondary_text_size">8.8sp</dimen>
 
-    <!-- Button text size -->
-    <dimen name="btn_small_round_corner_text_size">11.2sp</dimen>
-    <dimen name="btn_round_corner_text_size">14.4sp</dimen>
-
-    <!-- Footer text size -->
-    <dimen name="greyed_text_size">9.6sp</dimen>
-    <dimen name="footer_lbl_text_size">12.8sp</dimen>
 
     <!-- Five level filter text size -->
     <dimen name="filter_level_text_size">14.4sp</dimen>
@@ -715,6 +703,7 @@
     <dimen name="activation_edittext_text_size">14.4sp</dimen>
     <dimen name="survey_answer_left">28dp</dimen>
     <dimen name="gallery_card_margin">1.6dp</dimen>
+
 
     <!-- For Fitscore Dashboard -->
     <dimen name="header_card_margin_top">200dp</dimen>

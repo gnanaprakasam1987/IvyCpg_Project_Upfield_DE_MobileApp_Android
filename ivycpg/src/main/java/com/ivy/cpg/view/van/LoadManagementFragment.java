@@ -2,10 +2,8 @@ package com.ivy.cpg.view.van;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -50,8 +48,12 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
+import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.Vector;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by hanifa.m on 4/19/2017.
@@ -76,7 +78,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private AlertDialog alertDialog;
     private View view;
-    private Loadmanagemntreceiver mLoadmanagementReceiver;
     private boolean isClick = false;
 
     @Override
@@ -139,7 +140,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        registerReceiver();
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             showMessage(getString(R.string.sessionout_loginagain));
@@ -162,7 +162,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
     public void onPause() {
         super.onPause();
 
-        getActivity().unregisterReceiver(mLoadmanagementReceiver);
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
@@ -202,48 +201,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
         }
     }
 
-
-    private void registerReceiver() {
-        IntentFilter filter = new IntentFilter(
-                Loadmanagemntreceiver.RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        mLoadmanagementReceiver = new Loadmanagemntreceiver();
-        getActivity().registerReceiver(mLoadmanagementReceiver, filter);
-    }
-
-    private void updateReceiver(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        int method = bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0);
-        String errorCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
-
-        switch (method) {
-            case SynchronizationHelper.VANLOAD_DOWNLOAD:
-                if (errorCode != null && errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    //	pd.dismiss();
-                    dismissAlertDialog();
-                    if (getActivity() != null)
-                        bmodel.showAlert(
-                                getString(
-                                        R.string.stock_download_successfully), 0);
-
-                } else {
-                    String errorDownlodCode = bundle
-                            .getString(SynchronizationHelper.ERROR_CODE);
-                    String errorDownloadMessage = bmodel.synchronizationHelper
-                            .getErrormessageByErrorCode().get(errorDownlodCode);
-                    if (errorDownloadMessage != null) {
-                        showMessage(errorDownloadMessage);
-                    }
-                    dismissAlertDialog();
-                    break;
-                }
-                break;
-            default:
-                break;
-        }
-
-    }
 
     private void gotoNextActivity(ConfigureBO menuItem) {
 
@@ -416,7 +373,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             }
 
             holder.config = configTemp;
-            holder.menuBTN.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            holder.menuBTN.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             holder.menuBTN.setText(configTemp.getMenuName());
 
             return convertView;
@@ -451,7 +408,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
         int i = item.getItemId();
         if (i == R.id.menu_refresh) {
             if (NetworkUtils.isNetworkConnected(getActivity())) {
-                new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, "NewStock", "").execute();
+                downloadVanloadData();
             } else {
                 bmodel.showAlert(getString(R.string.no_network_connection), 0);
             }
@@ -468,7 +425,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     float distance = 0;
     DownloadAsyncTaskInterface downloadAsyncTaskInterface = new DownloadAsyncTaskInterface() {
         @Override
-        public void showProgress(AlertDialog.Builder builder, String message) {
+        public void showProgress(AlertDialog.Builder builder) {
 
             builder = new AlertDialog.Builder(getActivity());
 
@@ -507,7 +464,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     break;
 
                 case MENU_VANLOAD_STOCK_VIEW:
-                    if (bmodel.stockreportmasterhelper.getStockReportMaster().size() > 0) {
+                    if (bmodel.stockreportmasterhelper.getStockReportMaster()!=null &&
+                            bmodel.stockreportmasterhelper.getStockReportMaster().size() > 0) {
                         navigateToActivity(menuName, menuCode, VanLoadStockApplyActivity.class);
                     } else {
                         if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION
@@ -524,7 +482,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     break;
 
                 case MENU_VAN_UNLOAD:
-                    if (bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
+                    if (bmodel.productHelper.getLoadMgmtProducts() != null &&
+                            bmodel.productHelper.getLoadMgmtProducts().size() > 0) {
                         bmodel.getRetailerMasterBO().setDistributorId(0);
                         navigateToActivity(menuName, menuCode, VanUnloadActivity.class);
                     } else {
@@ -567,37 +526,20 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         showMessage(getString(R.string.data_not_mapped));
                     }
                     break;
-
-                case "NewStock":
-
-                    if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                        downloadVanloadData();
-                    } else {
-                        String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
-                        if (errorMsg != null) {
-                            showMessage(errorMsg);
-                        } else {
-                            showMessage(getString(R.string.data_not_downloaded));
-                        }
-                    }
-                    break;
-
                 default:
                     break;
             }
-
 
         }
 
         @Override
         public void loadMethods(String menuCode, String menuName) {
 
-            if (!menuCode.equals("NewStock")
-                    || !menuCode.equals(MENU_VANLOAD_STOCK_VIEW)
+            if (!menuCode.equals(MENU_VANLOAD_STOCK_VIEW)
                     || !menuCode.equals(MENU_DAMAGE_STOCK)) {
                 bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_LOAD_MANAGEMENT"));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts("MENU_LOAD_MANAGEMENT",
-                        bmodel.productHelper.getFilterProductLevels()));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                        bmodel.productHelper.getFilterProductLevels(),false));
             }
 
             if (menuCode.equals(MENU_VANLOAD_STOCK_VIEW)
@@ -670,15 +612,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 case MENU_DAMAGE_STOCK:
                     DamageStockHelper.getInstance(getActivity().getApplicationContext()).loadDamagedProductReport(getActivity());
                     updateModuleWiseTimeStampDetails(menuCode);
-                    break;
-                case "NewStock":
-                    try {
-
-                        bmodel.synchronizationHelper.updateAuthenticateToken(false);
-
-                    } catch (Exception e) {
-                        Commons.printException("" + e);
-                    }
                     break;
             }
 
@@ -757,8 +690,38 @@ public class LoadManagementFragment extends IvyBaseFragment {
      * Download VanLoad Stock from server
      */
     private void downloadVanloadData() {
-        bmodel.synchronizationHelper.downloadVanloadFromServer();
+        downloadAsyncTaskInterface.showProgress(new AlertDialog.Builder(getActivity()));
+        AppSchedulerProvider appSchedulerProvider = new AppSchedulerProvider();
+        new CompositeDisposable().add(bmodel.loadManagementHelper.stockRefresh(getActivity())
+                .subscribeOn(appSchedulerProvider.io())
+                .observeOn(appSchedulerProvider.ui())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String errcode) {
+                        updateStockRefresh(errcode);
+                    }
+                }));
     }
+
+    private void updateStockRefresh(String errorCode) {
+        dismissAlertDialog();
+        if (errorCode != null && errorCode
+                .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (getActivity() != null)
+                bmodel.showAlert(
+                        getString(
+                                R.string.stock_download_successfully), 0);
+        }else{
+            String errorDownloadMessage = bmodel.synchronizationHelper
+                    .getErrormessageByErrorCode().get(errorCode);
+            if(errorDownloadMessage!=null)
+                showMessage(errorDownloadMessage);
+            else if(errorCode !=null && errorCode.length()>0)
+                showMessage(errorCode);
+
+        }
+    }
+
 
     /**
      * Download Planogram Data's
@@ -784,8 +747,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private void loadStockProposalData(String menuCode) {
 
         bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuCode));
-        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuCode,
-                bmodel.productHelper.getFilterProductLevels()));
+        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                bmodel.productHelper.getFilterProductLevels(),false));
 
         bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
                 menuCode, menuCode);
@@ -794,16 +757,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
         bmodel.stockProposalModuleHelper.loadInitiative();
         bmodel.stockProposalModuleHelper.loadSBDData();
         bmodel.stockProposalModuleHelper.loadPurchased();
-    }
-
-    public class Loadmanagemntreceiver extends BroadcastReceiver {
-        public static final String RESPONSE = "com.ivy.intent.action.LoadManagement";
-
-        @Override
-        public void onReceive(Context arg0, Intent arg1) {
-            updateReceiver(arg1);
-        }
-
     }
 
 }

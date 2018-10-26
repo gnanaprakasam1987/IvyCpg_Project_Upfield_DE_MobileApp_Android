@@ -88,7 +88,7 @@ card_view:contentPadding="5dp">
                     android:gravity="center|end"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -116,7 +116,7 @@ card_view:contentPadding="5dp">
                     android:gravity="center|end"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -144,7 +144,7 @@ card_view:contentPadding="5dp">
                     android:gravity="center|end"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
         </LinearLayout>

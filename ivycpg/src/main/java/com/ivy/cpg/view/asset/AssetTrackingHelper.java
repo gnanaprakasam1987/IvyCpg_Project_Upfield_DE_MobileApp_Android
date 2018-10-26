@@ -20,6 +20,7 @@ import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 @SuppressLint("UseSparseArrays")
@@ -150,8 +151,8 @@ public class AssetTrackingHelper {
             surveyHelperNew.loadSurveyAnswers(0);
             // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
             mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
-            mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
-                    mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
+            mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(
+                    mBusinessModel.productHelper.getRetailerModuleSequenceValues(),false));
 
         }
 
@@ -167,8 +168,8 @@ public class AssetTrackingHelper {
         //download filter levels
         // mBusinessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);
         mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
-        mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
-                mBusinessModel.productHelper.getRetailerModuleSequenceValues()));
+        mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(
+                mBusinessModel.productHelper.getRetailerModuleSequenceValues(),false));
 
         // Load master records
         downloadAssetMaster(mContext, mMenuCode);
@@ -523,13 +524,42 @@ public class AssetTrackingHelper {
                 }
             }
 
+
+            String sb1 = "select  serialNum from AssetAddDelete";
+            Cursor cursorDelete = db.selectSQL(sb1);
+            AssetTrackingBO assetBoDelete = null;
+            List<AssetTrackingBO> deletedAssetList = new ArrayList<>();
+            if (cursorDelete.getCount() > 0) {
+                while (cursorDelete.moveToNext()) {
+                    assetBoDelete = new AssetTrackingBO();
+
+                    if (!"null".equals(cursorDelete.getString(0))) {
+                        assetBoDelete.setSerialNo(cursorDelete.getString(0));
+                    }
+                    deletedAssetList.add(assetBoDelete);
+                }
+            }
+
+
             if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
                 for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
-                    ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
-                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        clonedList.add(assetBO);
+                   // ArrayList<AssetTrackingBO> clonedList = new ArrayList<>(mAssetTrackingList.size());
+                    for (AssetTrackingBO assetDeleteBO : deletedAssetList) {
+                        for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                            if (assetDeleteBO.getSerialNo().equalsIgnoreCase(assetBO.getSerialNo())) {
+                                mAssetTrackingList.remove(assetBO);
+                                break;
+                            }
+
+                           // clonedList.add(assetBO);
+                        }
                     }
-                    standardListBO.setAssetTrackingList(clonedList);
+
+
+                  //  for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                      //  clonedList.add(assetBO);
+                   // }
+                    standardListBO.setAssetTrackingList(mAssetTrackingList);
                 }
 
             } else {
@@ -1826,7 +1856,7 @@ public class AssetTrackingHelper {
             for (int i = 0; i < size; i++) {
                 if (mAssetTrackingList.get(i).getProductId() == pid &&
                         mAssetTrackingList.get(i).getAssetID() == assetID &&
-                        mAssetTrackingList.get(i).getSerialNo() .equalsIgnoreCase(serialNo) ) {
+                        mAssetTrackingList.get(i).getSerialNo().equalsIgnoreCase(serialNo)) {
                     assetBO = mAssetTrackingList.get(i);
                     if (assetBO != null) {
 

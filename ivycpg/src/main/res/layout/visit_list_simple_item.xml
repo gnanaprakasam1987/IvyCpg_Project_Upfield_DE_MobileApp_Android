@@ -63,7 +63,7 @@
                     android:layout_marginStart="@dimen/outlet_left_margin"
                     android:text="Outlet Location"
                     android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout

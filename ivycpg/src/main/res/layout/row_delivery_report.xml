@@ -14,7 +14,7 @@
         android:paddingStart="@dimen/dimen_2dp"
         android:text="@string/product_name"
         android:textColor="@color/FullBlack"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/case_qty"
@@ -23,7 +23,7 @@
         android:gravity="center"
         android:text="@string/item_case"
         android:textColor="@color/FullBlack"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/piece_qty"
@@ -32,7 +32,7 @@
         android:gravity="center"
         android:text="@string/item_piece"
         android:textColor="@color/FullBlack"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/outer_qty"
@@ -41,6 +41,6 @@
         android:gravity="center"
         android:text="@string/item_outer"
         android:textColor="@color/FullBlack"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
 </LinearLayout>

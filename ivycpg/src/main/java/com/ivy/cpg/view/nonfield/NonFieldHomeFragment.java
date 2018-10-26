@@ -342,6 +342,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 holder.tvStatus.setTextColor(getResources().getColor(R.color.btn_round_green));
             } else if ("D".equalsIgnoreCase(holder.nonFieldBO.getStatus())) {
                 holder.tvStatus.setText(REJECTED);
+                holder.tvStatus.setTextColor(getResources().getColor(R.color.date_picker_text_color));
             }
 
             if (nonFieldHelper.getReasonBOByReasonID(holder.nonFieldBO.getReasonID()) != null)

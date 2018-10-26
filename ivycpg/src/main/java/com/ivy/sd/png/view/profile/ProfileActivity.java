@@ -101,7 +101,7 @@ import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
-import com.ivy.sd.png.view.TaskListFragment;
+import com.ivy.cpg.view.task.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
 
 import org.json.JSONObject;
@@ -545,7 +545,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(TASK));
                 } else {
-                    TASK = "Task";
+                    TASK = getString(R.string.task);
                     tabLayout.addTab(tabLayout.newTab().setText(TASK));
                 }
             } catch (Exception e) {
@@ -562,7 +562,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     tabLayout.addTab(tabLayout.newTab()
                             .setText(SALES_PER_LEVEL));
                 } else {
-                    SALES_PER_LEVEL = "Sales";
+                    SALES_PER_LEVEL = getString(R.string.sales);
                     tabLayout.addTab(tabLayout.newTab().setText(SALES_PER_LEVEL));
                 }
             } catch (Exception e) {
@@ -1675,10 +1675,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 mSupplierAdapter = new ArrayAdapter<>(this,
                         android.R.layout.select_dialog_singlechoice, mSupplierList);
 
+                String dialog_title;
+                if ((bmodel.labelsMasterHelper.applyLabels("select_dist") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("select_dist").length() > 0)) {
+                    dialog_title = bmodel.labelsMasterHelper.applyLabels("select_dist");
+                } else {
+                    dialog_title = getResources().getString(R.string.select_distributor);
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.select_distributor))
+                        .setTitle(dialog_title)
 
                         .setSingleChoiceItems(mSupplierAdapter,
                                 0,
@@ -2050,14 +2058,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
 
-                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
-                                bmodel.productHelper.getFilterProductLevels()));
+                        Commons.print("time start : "+SDUtil.now(5));
                         GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                         if (genericObjectPair != null) {
                             bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                         }
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                                bmodel.productHelper.getFilterProductLevels(),true));
+
+                        Commons.print("time stop : "+SDUtil.now(5));
+
 
                     } else {
                         //to reload product filter if diffrent retailer selected

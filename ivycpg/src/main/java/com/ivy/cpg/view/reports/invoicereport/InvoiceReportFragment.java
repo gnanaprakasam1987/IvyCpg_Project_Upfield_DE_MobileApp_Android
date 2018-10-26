@@ -461,7 +461,6 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
                     businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
-                    businessModel.productHelper.downloadProducts("MENU_STK_ORD");
                     GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
                     if (genericObjectPair != null) {
                         businessModel.productHelper.setProductMaster(genericObjectPair.object1);

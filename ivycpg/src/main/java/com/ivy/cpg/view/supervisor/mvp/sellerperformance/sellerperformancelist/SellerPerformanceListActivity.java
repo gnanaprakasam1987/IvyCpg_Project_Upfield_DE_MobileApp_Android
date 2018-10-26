@@ -299,7 +299,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
-        l.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        l.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         l.setDrawInside(false);
 
         YAxis rightAxis = mChart.getAxisRight();
@@ -309,7 +309,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         rightAxis.setEnabled(true);
         rightAxis.setDrawGridLines(true);
         rightAxis.setGridColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
-        rightAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        rightAxis.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
@@ -319,7 +319,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         leftAxis.setDrawGridLines(true);
         leftAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
         leftAxis.setGridColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
-        leftAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        leftAxis.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -328,7 +328,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
         xAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
-        xAxis.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        xAxis.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         xAxis.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
@@ -366,7 +366,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         set.setMode(LineDataSet.Mode.LINEAR);
         set.setDrawValues(true);
         set.setValueTextSize(12f);
-        set.setValueTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        set.setValueTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         set.setValueFormatter(new IValueFormatter() {
             @Override
             public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
@@ -386,7 +386,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         set1.setMode(LineDataSet.Mode.LINEAR);
         set1.setDrawValues(true);
         set1.setValueTextSize(12f);
-        set1.setValueTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        set1.setValueTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         set1.setValueFormatter(new IValueFormatter() {
 
             @Override

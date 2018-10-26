@@ -19,9 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.TaskDataBO;
+import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -54,7 +55,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         Toolbar toolbar = findViewById(R.id.toolbar);
         ll_content = findViewById(R.id.ll_content);
-        taskDataBO = bmodel.taskHelper.getPendingTaskData();
+        taskDataBO = TaskHelper.getInstance(this).getPendingTaskData();
 
         /* Handling session out */
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -94,10 +95,10 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
             }
 
             tv_duration = findViewById(R.id.tv_duration);
-            tv_duration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+            tv_duration.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
             tv_edt_time_taken = findViewById(R.id.edt_time_taken);
-            tv_edt_time_taken.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, this));
+            tv_edt_time_taken.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
 
             btn_close = findViewById(R.id.button1);
             btn_close.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
@@ -120,10 +121,10 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                 for (TaskDataBO taskBo : taskDataBO) {
                     cardView = inflater.inflate(R.layout.task_child_view, null);
                     TextView tv_taskDesc = cardView.findViewById(R.id.tv_task_desc);
-                    tv_taskDesc.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                    tv_taskDesc.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                     tv_taskDesc.setText(taskBo.getTaskDesc());
                     TextView tv_taskOwner = cardView.findViewById(R.id.tv_task_owner);
-                    tv_taskOwner.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+                    tv_taskOwner.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
                     tv_taskOwner.setText(taskBo.getTaskOwner());
                     ll_content.addView(cardView);
                 }

@@ -33,7 +33,7 @@
                     android:singleLine="false"
                     android:text="@string/plannedoutlet_month"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -47,7 +47,7 @@
                     android:layout_gravity="center_vertical"
                     android:text="@string/plannedoutlet_mtd"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -61,7 +61,7 @@
                     android:layout_gravity="center_vertical"
                     android:text="@string/visited_outlets"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -75,7 +75,7 @@
                     android:layout_gravity="center_vertical"
                     android:text="@string/available_outletcount"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -89,7 +89,7 @@
                     android:layout_gravity="center_vertical"
                     android:text="@string/availability"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
         </LinearLayout>
 

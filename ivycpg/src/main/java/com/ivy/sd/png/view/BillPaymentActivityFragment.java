@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -290,7 +291,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
             if (mPaymentList.get(position).getAmount() > 0) {
 
-                String paidLabelVal = " " + bmodel.formatValue(mPaymentList.get(position).getAmount()) + " paid";
+                String paidLabelVal = " " + bmodel.formatValue(mPaymentList.get(position).getAmount()) + " " + getString(R.string.paid);
 
                 holder.paidAmtLabel.setText(paidLabelVal);
             } else {
@@ -546,10 +547,11 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+            /*AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
             customProgressDialog(build, getResources().getString(R.string.saving));
             alertDialog = build.create();
-            alertDialog.show();
+            alertDialog.show();*/
+            showProgressDialog();
         }
 
         @Override
@@ -575,7 +577,14 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            alertDialog.dismiss();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (getActivity().isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+            } else if (getActivity().isFinishing()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
+            dismissProgressDialog();
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_PRINT) {
                 /*FragmentManager fm = getFragmentManager();
                 PrintCountDialogFragment dialogFragment = new PrintCountDialogFragment();
@@ -1261,5 +1270,24 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         return sb.toString();
     }
 
+    @Override
+    public void onDestroy() {
+        dismissProgressDialog();
+        super.onDestroy();
+    }
 
+    private void showProgressDialog() {
+        if (alertDialog == null) {
+            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+            customProgressDialog(build, getResources().getString(R.string.saving));
+            alertDialog = build.create();
+        }
+        alertDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+    }
 }

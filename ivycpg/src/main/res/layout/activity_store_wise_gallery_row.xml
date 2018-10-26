@@ -53,7 +53,7 @@
                 android:singleLine="false"
                 android:text="1000"
                 android:textColor="#fff"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
 
         </LinearLayout>
 

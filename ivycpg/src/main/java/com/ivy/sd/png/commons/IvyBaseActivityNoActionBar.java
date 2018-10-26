@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -54,8 +55,10 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         bmodel.setContext(this);
         try {
             if (bmodel.configurationMasterHelper.MVPTheme == 0) {
+                BaseActivity.mCurrentTheme=bmodel.configurationMasterHelper.getMVPTheme();
                 super.setTheme(bmodel.configurationMasterHelper.getMVPTheme());
             } else {
+                BaseActivity.mCurrentTheme=bmodel.configurationMasterHelper.MVPTheme;
                 super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
             }
             if (bmodel.configurationMasterHelper.fontSize.equals("")) {
@@ -137,7 +140,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
 
     public void setScreenTitle(String title) {
         mScreenTitleTV = (TextView) findViewById(R.id.tv_toolbar_title);
-        mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+       // mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mScreenTitleTV.setText(title);
     }
 

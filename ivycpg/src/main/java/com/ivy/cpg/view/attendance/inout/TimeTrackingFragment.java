@@ -79,7 +79,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         no_data_txt = view.findViewById(R.id.no_data_txt);
 
         //typeface
-        no_data_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        no_data_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
@@ -221,14 +221,14 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         .findViewById(R.id.txt_status);
 
                 //typefaces
-                holder.tvOutTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.tvInTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.tvReason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_To)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_from)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_Status)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                ((TextView) convertView.findViewById(R.id.txt_Tit_Reason)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.tvOutTime.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.tvInTime.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.tvReason.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.tvStatus.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_To)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_from)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_Status)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                ((TextView) convertView.findViewById(R.id.txt_Tit_Reason)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.btOutTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
                 holder.btInTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
@@ -480,8 +480,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         boolean success = false;
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
-            realTimeLocation.updateAttendanceIn(getContext(), "movement_tracking");
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendanceIn");
             int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
             if (statusCode == LocationConstants.STATUS_SUCCESS)
                 success = true;
@@ -503,9 +503,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
             RealTimeLocationTracking.stopLocationTracking(getContext());
-            realTimeLocation.updateAttendanceOut(getContext(), REALTIME_LOCATION_PATH);
+            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendanceOut");
         }
 
         uploadAttendance("OUT", reasonId);
@@ -517,12 +517,11 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     private void uploadAttendance(String IN_OUT, String reasonId) {
         if (bmodel.configurationMasterHelper.IS_UPLOAD_ATTENDANCE
                 && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload(getContext());
-
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
             if (IN_OUT.equalsIgnoreCase("IN")) {
-                realTimeLocation.updateAttendanceIn(getContext(), ATTENDANCE_PATH);
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendanceIn");
             } else {
-                realTimeLocation.updateAttendanceOut(getContext(), ATTENDANCE_PATH);
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendanceOut");
             }
         }
     }

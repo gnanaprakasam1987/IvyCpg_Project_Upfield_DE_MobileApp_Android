@@ -16,7 +16,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.TaxBO;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -489,6 +489,7 @@ public class OrderDeliveryHelper {
 
         for (int i = 0; i < getOrderedProductMasterBOS().size(); i++) {
             ProductMasterBO prodBo = getOrderedProductMasterBOS().elementAt(i);
+            prodBo.setNetValue(0);
             if (prodBo.getOrderedPcsQty() != 0 || prodBo.getOrderedCaseQty() != 0
                     || prodBo.getOrderedOuterQty() != 0) {
                 double temp = (prodBo.getOrderedPcsQty() * prodBo.getSrp())
@@ -638,7 +639,7 @@ public class OrderDeliveryHelper {
 //                                + (productBo.getOrderedPcsQty() * productBo.getSrp())
 //                                + (productBo.getOrderedOuterQty() * productBo.getOsrp());
 
-                        double line_total_price = productBo.getDiscount_order_value();
+                        double line_total_price = productBo.getNetValue();
 
                         String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty," +
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +
@@ -713,6 +714,11 @@ public class OrderDeliveryHelper {
                         " ,NetAmount from OrderDetail where OrderId = " + AppUtils.QT(orderId);
                 db.executeQ(invoiceDetailQry);
 
+                for (ProductMasterBO productBo : getOrderedProductMasterBOS()) {
+                    db.updateSQL("Update InvoiceDetails set DiscountAmount = '" + productBo.getProductLevelDiscountValue() + "' where ProductID = '" +
+                            productBo.getProductID() + "' and invoiceID = '" + invoiceId + "'");
+                }
+
                 String invoiceDiscountQry = "Insert into InvoiceDiscountDetail (OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
                         " RetailerId,DiscountId,isCompanyGiven,invoiceID) select OrderId,Pid,TypeId,Value,Percentage,ApplyLevelId," +
                         " RetailerId,DiscountId,isCompanyGiven," + invoiceId + " from OrderDiscountDetail where OrderId = " + AppUtils.QT(orderId);
@@ -748,7 +754,7 @@ public class OrderDeliveryHelper {
             if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
                 salesReturnHelper.setSalesReturnID(AppUtils.QT(uid));
-                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, AppUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(), false);
+                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, AppUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),true);
             }
 
             updateOrderDeliverySIH(db, isEdit,false);
@@ -1099,7 +1105,7 @@ public class OrderDeliveryHelper {
             /*Updating master tax value for print purpose*/
             for (ProductMasterBO productMasterBO : mInvoiceDetailsList) {
                 if (businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()) != null)
-                    businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()).setTaxValue(productMasterBO.getTaxValue());
+                    businessModel.productHelper.getProductMasterBOById(productMasterBO.getProductID()).setTaxableAmount(productMasterBO.getTaxableAmount());
             }
 
             mInvoiceDetailsList.get(mInvoiceDetailsList.size() - 1).setSchemeProducts(downloadSchemeFreePrint(context, orderId));

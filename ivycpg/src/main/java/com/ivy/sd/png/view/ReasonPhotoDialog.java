@@ -53,9 +53,9 @@ public class ReasonPhotoDialog extends DialogFragment {
 
         if (getDialog() != null) {
             getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getDialog().setCancelable(false);
         }
 
-        getDialog().setCancelable(false);
         this.setCancelable(false);
 
         v = inflater.inflate(R.layout.fragment_reason_with_image, container, false);
@@ -104,7 +104,7 @@ public class ReasonPhotoDialog extends DialogFragment {
         reasonAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
         reasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         reasonAdapter.add(new ReasonMaster("0", getActivity().getResources()
-                .getString(R.string.select_str) + " Reason"));
+                .getString(R.string.select_reason)));
         for (ReasonMaster temp : bmodel.reasonHelper.getNonVisitReasonMaster()) {
             reasonAdapter.add(temp);
         }

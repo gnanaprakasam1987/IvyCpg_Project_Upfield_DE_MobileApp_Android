@@ -13,8 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:weightSum="10">
+        android:gravity="center_vertical">
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -72,7 +71,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center"
             android:visibility="gone">
 
@@ -125,7 +124,7 @@
             android:id="@+id/rl_PriceCompliance"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center"
             android:visibility="gone">
 

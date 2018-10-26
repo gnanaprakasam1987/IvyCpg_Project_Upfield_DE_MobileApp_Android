@@ -70,20 +70,18 @@
                             android:id="@+id/ll_header"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/crown_list_title_height"
-                            android:background="?attr/textColorSecondary"
+                            android:background="@color/list_title_bg_color"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/tv_rname"
-                                style="@style/TextViewListTitle"
+                                style="?attr/customListTitle"
                                 android:layout_width="@dimen/task_retname"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="@dimen/target_top_margin"
                                 android:ellipsize="end"
                                 android:gravity="start|center"
                                 android:maxLines="2"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/list_item_primary_text_size"
                                 android:text="@string/store_name"
                                 android:layout_marginLeft="@dimen/target_top_margin" />
 

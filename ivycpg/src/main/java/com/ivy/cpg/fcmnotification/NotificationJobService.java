@@ -97,14 +97,24 @@ public class NotificationJobService extends JobService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         String channelId = "channelId";
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri soundUri ;
+
+        try {
+            soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notify);
+        }catch (Exception e){
+            Commons.printException(e);
+            soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        }
+
+        if (soundUri == null)
+            soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.launchericon)
                         .setContentTitle(getResources().getString(R.string.app_name))
                         .setContentText(message)
                         .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
+                        .setSound(soundUri)
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
@@ -115,7 +125,7 @@ public class NotificationJobService extends JobService {
             // Since android Oreo notification channel is needed.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel(channelId,
-                        "Channel human readable title",
+                        "IvyCpg Data Channel",
                         NotificationManager.IMPORTANCE_DEFAULT);
                 notificationManager.createNotificationChannel(channel);
             }

@@ -26,6 +26,6 @@
         android:text="@string/choose_brand"
         android:layout_gravity="center_vertical"
         android:textColor="@color/list_item_secondary_text_color"
-        android:textSize="@dimen/text_sz_small" />
+        android:textSize="@dimen/text_size_caption" />
 
 </LinearLayout>

@@ -10,7 +10,7 @@
             layout="@layout/material_tool_bar" />
     <fragment
         android:id="@+id/survey_fragment"
-        android:name="com.ivy.sd.png.view.TaskFragment"
+        android:name="com.ivy.cpg.view.task.TaskFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />

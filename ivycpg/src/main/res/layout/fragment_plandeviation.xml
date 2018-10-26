@@ -22,7 +22,7 @@
             android:padding="@dimen/profile_header_txt_layout_marginleft"
             android:text="@string/planned_activities"
             android:textColor="?attr/colorAccent"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView
@@ -57,7 +57,7 @@
             android:padding="@dimen/profile_header_txt_layout_marginleft"
             android:text="@string/select_reason"
             android:textColor="?attr/colorAccent"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:textStyle="bold" />
 
 

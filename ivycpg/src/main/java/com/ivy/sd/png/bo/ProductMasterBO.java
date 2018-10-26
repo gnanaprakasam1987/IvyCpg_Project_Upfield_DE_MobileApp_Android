@@ -1,5 +1,6 @@
 package com.ivy.sd.png.bo;
 
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 
 import java.util.ArrayList;
@@ -169,15 +170,8 @@ public class ProductMasterBO {
         this.repCaseQty = repCaseQty;
     }
 
-    public double getTaxApplyvalue() {
-        return taxApplyvalue;
-    }
 
-    public void setTaxApplyvalue(double taxApplyvalue) {
-        this.taxApplyvalue = taxApplyvalue;
-    }
 
-    private double taxApplyvalue;
 
     private String prevPrice_ca = "0";
     private String prevPrice_pc = "0";
@@ -208,7 +202,21 @@ public class ProductMasterBO {
 
     private String RField1;
 
-    private double discount_order_value;
+
+
+
+
+    public int getTotalOrderedQtyInPieces() {
+        return totalOrderedQtyInPieces;
+    }
+
+    public void setTotalOrderedQtyInPieces(int totalOrderedQtyInPieces) {
+        this.totalOrderedQtyInPieces = totalOrderedQtyInPieces;
+    }
+
+    private int totalOrderedQtyInPieces;
+
+
 
     private boolean ispromo;
     private int isMustSell;
@@ -233,17 +241,69 @@ public class ProductMasterBO {
         this.schemeDiscAmount = schemeDiscAmount;
     }
 
+
+    public double getProductLevelDiscountValue() {
+        return productLevelDiscountValue;
+    }
+
+    public void setProductLevelDiscountValue(double productDiscAmount) {
+        this.productLevelDiscountValue = productDiscAmount;
+    }
+
+    public double getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(double taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+    public double getTaxableAmount() {
+        return taxableAmount;
+    }
+
+    public void setTaxableAmount(double taxableAmount) {
+        this.taxableAmount = taxableAmount;
+    }
+    public double getNetValue() {
+        return netValue;
+    }
+
+    public void setNetValue(double netValue) {
+        this.netValue = netValue;
+    }
+    public double getLineValue() {
+        return lineValue;
+    }
+    /**
+     * Product Original Line Value
+     * @param lineValue
+     */
+    public void setLineValue(double lineValue) {
+        this.lineValue = lineValue;
+    }
+    public double getLineValueAfterSchemeApplied() {
+        return lineValueAfterSchemeApplied;
+    }
+
+    public void setLineValueAfterSchemeApplied(double schemeAppliedValue) {
+        this.lineValueAfterSchemeApplied = schemeAppliedValue;
+    }
+
+    private double taxAmount;
+    private double productLevelDiscountValue = 0;
     private double schemeDiscAmount = 0;
 
-    public double getProductDiscAmount() {
-        return productDiscAmount;
-    }
+    private double taxableAmount;
+    private double lineValue;
+    private double lineValueAfterSchemeApplied;
+    private double netValue;
 
-    public void setProductDiscAmount(double productDiscAmount) {
-        this.productDiscAmount = productDiscAmount;
-    }
 
-    private double productDiscAmount = 0;
+
+
+
+
 
     private int isDiscountable;
     private String mfgDate;
@@ -300,8 +360,6 @@ public class ProductMasterBO {
     private int typeID;
     private String typeName;
     private String brandname;
-    private double taxValue;
-    private double schemeAppliedValue;
     private double priceoffvalue;
     private int PriceOffId;
 
@@ -512,7 +570,7 @@ public class ProductMasterBO {
         this.schemeBO = productBO.schemeBO;
         this.orderPricePiece = productBO.orderPricePiece;
         this.RField1 = productBO.RField1;
-        this.discount_order_value = productBO.discount_order_value;
+        this.netValue = productBO.netValue;
         this.ispromo = productBO.ispromo;
         this.isMustSell = productBO.isMustSell;
         this.isFocusBrand = productBO.isFocusBrand;
@@ -544,8 +602,8 @@ public class ProductMasterBO {
         this.ReasonID = productBO.ReasonID;
         this.priceChangeReasonID = productBO.priceChangeReasonID;
         this.oos = productBO.oos;
-        this.taxValue = productBO.taxValue;
-        this.schemeAppliedValue = productBO.schemeAppliedValue;
+        this.taxableAmount = productBO.taxableAmount;
+        this.lineValueAfterSchemeApplied = productBO.lineValueAfterSchemeApplied;
         this.own = productBO.own;
 
         this.csPiece = productBO.getCsPiece();
@@ -682,13 +740,7 @@ public class ProductMasterBO {
      *
      * @return
      */
-    public double getDiscount_order_value() {
-        return discount_order_value;
-    }
 
-    public void setDiscount_order_value(double discount_order_value) {
-        this.discount_order_value = discount_order_value;
-    }
 
     private double d1;
     private double d2;
@@ -1383,21 +1435,9 @@ public class ProductMasterBO {
     }
 
 
-    public double getTaxValue() {
-        return taxValue;
-    }
 
-    public void setTaxValue(double taxValue) {
-        this.taxValue = taxValue;
-    }
 
-    public double getSchemeAppliedValue() {
-        return schemeAppliedValue;
-    }
 
-    public void setSchemeAppliedValue(double schemeAppliedValue) {
-        this.schemeAppliedValue = schemeAppliedValue;
-    }
 
     public double getPriceoffvalue() {
         return priceoffvalue;

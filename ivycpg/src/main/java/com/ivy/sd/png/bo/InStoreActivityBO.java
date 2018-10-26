@@ -1,5 +1,7 @@
 package com.ivy.sd.png.bo;
 
+import com.ivy.cpg.view.task.TaskDataBO;
+
 import java.util.ArrayList;
 import java.util.Vector;
 

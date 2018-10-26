@@ -358,13 +358,14 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                //Download Filter Levels and Products
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuName));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuName,
-                        bmodel.productHelper.getFilterProductLevels()));
+
                 // Download Products
                 bmodel.productHelper
                         .downloadDistributorProducts(menuName);
+                //Download Filter Levels and Products
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuName));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                        bmodel.productHelper.getFilterProductLevels(),true));
 
                 bmodel.configurationMasterHelper.loadPrimarySaleStockCheckAndOrderConfiguration();
                 /** Load the stock check if opened in edit mode. **/
@@ -429,15 +430,13 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-
-
-                //Download Filter Levels and Products
-                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuName));
-                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(menuName,
-                        bmodel.productHelper.getFilterProductLevels()));
                 // Download Products
                 bmodel.productHelper
                         .downloadDistributorProducts(menuName);
+                //Download Filter Levels and Products
+                bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(menuName));
+                bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                        bmodel.productHelper.getFilterProductLevels(),true));
 
                 bmodel.configurationMasterHelper.loadPrimarySaleStockCheckAndOrderConfiguration();
 

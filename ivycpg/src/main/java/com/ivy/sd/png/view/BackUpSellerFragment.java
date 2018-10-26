@@ -365,7 +365,7 @@ public class BackUpSellerFragment extends IvyBaseFragment {
 
                         startActivity(new Intent(getActivity(),
                                 HomeScreenActivity.class));
-                        getActivity().finish();
+                        //getActivity().finish();
                     }
 
                 });
