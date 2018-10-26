@@ -696,7 +696,7 @@
 
     <!-- List header text size -->
     <dimen name="list_header_text_size">16sp</dimen>
-    <dimen name="list_header_secondary_text_size">11sp</dimen>
+    <dimen name="list_header_secondary_text_size">14sp</dimen>
 
     <!-- Button text size -->
     <dimen name="btn_small_round_corner_text_size">16sp</dimen>

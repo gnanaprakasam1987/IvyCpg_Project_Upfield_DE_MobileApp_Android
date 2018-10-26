@@ -147,40 +147,40 @@ public class AssetAdapter extends BaseAdapter {
                     R.layout.row_asset_tracking, parent, false);
             row.setTag(holder);
 
-            holder.audit = (ImageButton) row
+            holder.audit =  row
                     .findViewById(R.id.btn_audit);
-            holder.assetNameTV = (TextView) row
+            holder.assetNameTV =  row
                     .findViewById(R.id.tv_asset_name);
             //holder.assetNameTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.reason1Spin = (Spinner) row
+            holder.reason1Spin =  row
                     .findViewById(R.id.spin_reason1);
 
-            holder.mConditionSpin = (Spinner) row
+            holder.mConditionSpin =  row
                     .findViewById(R.id.spin_condition);
 
-            holder.mInstallDate = (Button) row
+            holder.mInstallDate =  row
                     .findViewById(R.id.Btn_install_Date);
-            holder.llInstallDate = (LinearLayout) row
+            holder.llInstallDate =  row
                     .findViewById(R.id.ll_install_date);
             //holder.mInstallDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.mServiceDate = (Button) row
+            holder.mServiceDate =  row
                     .findViewById(R.id.Btn_service_Date);
-            holder.ll_service_date = (LinearLayout) row
+            holder.ll_service_date =  row
                     .findViewById(R.id.ll_service_date);
             //holder.mServiceDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.photoBTN = (ImageView) row
+            holder.photoBTN =  row
                     .findViewById(R.id.btn_photo);
-            holder.availQtyRB = (CheckBox) row
+            holder.availQtyRB =  row
                     .findViewById(R.id.radio_avail_qty);
-            holder.availQtyLL = (LinearLayout) row
+            holder.availQtyLL =  row
                     .findViewById(R.id.ll_avail_qty);
-            holder.serialNoTV = (TextView) row
+            holder.serialNoTV =  row
                     .findViewById(R.id.tv_serialNo);
             //holder.serialNoTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.grpTV = (TextView) row.findViewById(R.id.tv_grp);
+            holder.grpTV =  row.findViewById(R.id.tv_grp);
             //holder.grpTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.execQtyLL = (LinearLayout) row.findViewById(R.id.ll_exec_qty);
-            holder.execQtyRB = (CheckBox) row.findViewById(R.id.radio_exec_qty);
+            holder.execQtyLL =  row.findViewById(R.id.ll_exec_qty);
+            holder.execQtyRB =  row.findViewById(R.id.radio_exec_qty);
 
             holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
             holder.mConditionSpin.setAdapter(mAssetConditionAdapter);

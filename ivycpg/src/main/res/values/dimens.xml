@@ -733,13 +733,13 @@
 
 
     <dimen name="actionbar_title_text_size">20sp</dimen>
-    <dimen name="text_size_primary">14sp</dimen>
-    <dimen name="text_size_secondary">12sp</dimen>
-    <dimen name="text_size_caption">10sp</dimen>
+    <dimen name="text_size_primary">15sp</dimen>
+    <dimen name="text_size_secondary">13sp</dimen>
+    <dimen name="text_size_caption">13sp</dimen>
 
     <!-- List header text size -->
     <dimen name="list_header_text_size">14sp</dimen>
-    <dimen name="list_header_secondary_text_size">10sp</dimen>
+    <dimen name="list_header_secondary_text_size">12sp</dimen>
 
     <!-- Button text size -->
     <dimen name="btn_small_round_corner_text_size">10sp</dimen>
