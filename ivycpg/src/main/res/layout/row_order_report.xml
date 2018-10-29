@@ -49,7 +49,7 @@
                         android:maxLines="1"
                         android:text="@string/product_name"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/tv_seller_type"
@@ -79,7 +79,7 @@
                         android:tag="focus_brand"
                         android:text=""
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:visibility="gone" />
 
                     <TextView
@@ -94,7 +94,7 @@
                         android:tag="must_sell"
                         android:text="@string/ou"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:visibility="gone" />
 
                     <TextView
@@ -107,7 +107,7 @@
                         android:tag="must_sell"
                         android:text="@string/order_number"
                         android:textColor="@color/BLUE"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:visibility="gone" />
 
                     <TextView
@@ -119,7 +119,7 @@
                         android:gravity="center"
                         android:text="@string/dist"
                         android:textColor="@color/BLUE"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/text_delivery_date"
@@ -131,7 +131,7 @@
                         android:tag="delivery_date"
                         android:text="@string/delivery_date_label"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <ImageView
                         android:layout_width="@dimen/header_image_height"
@@ -187,7 +187,7 @@
                         android:tag="value_or_volume"
                         android:text="@string/focus_brand"
                         android:textColor="@color/kpi_value_text_color"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <TextView
@@ -199,7 +199,7 @@
                         android:tag="value_or_volume"
                         android:text="@string/must_sell"
                         android:textColor="@color/kpi_value_text_color"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <TextView
@@ -211,7 +211,7 @@
                         android:tag="value_or_volume"
                         android:text="@string/pre_post"
                         android:textColor="@color/kpi_value_text_color"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <TextView
@@ -223,7 +223,7 @@
                         android:tag="lines"
                         android:text="@string/lines"
                         android:textColor="@color/kpi_value_text_color"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <TextView
@@ -235,7 +235,7 @@
                         android:tag="weighttitle"
                         android:text="@string/weight"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <TextView
@@ -247,7 +247,7 @@
                         android:tag="volumeTitle"
                         android:text="@string/volume"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <TextView
@@ -259,7 +259,7 @@
                         android:tag="taxtitle"
                         android:text="@string/tax_value"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <TextView
@@ -271,7 +271,7 @@
                         android:tag="disctitle"
                         android:text="@string/discount"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_sz_small"
+                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                 </LinearLayout>

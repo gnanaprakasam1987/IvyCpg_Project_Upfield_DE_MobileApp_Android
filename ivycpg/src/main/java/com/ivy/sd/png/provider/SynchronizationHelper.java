@@ -4153,7 +4153,7 @@ SynchronizationHelper {
         if(isSFDC){
             return new AccountData(context).isUserAvailable();
         }else {
-            //if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
+            if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
             LoginHelper.getInstance(context).loadPasswordConfiguration(context);
             boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
             boolean isPwd;
@@ -4184,6 +4184,7 @@ SynchronizationHelper {
             }
 
             isUser = username.equalsIgnoreCase(jointCallUser.getLoginName());
+            if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
             if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
                 if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                     isPwd = encryptPassword(password).equalsIgnoreCase(jointCallUser.getPassword());

@@ -24,7 +24,7 @@
 
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
 
             <TextView
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
         <TextView
             android:id="@+id/qty"
@@ -42,7 +42,7 @@
             android:layout_weight=".9"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/ucp"
@@ -51,7 +51,7 @@
             android:layout_weight="1.1"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/payable"
@@ -60,7 +60,7 @@
             android:layout_weight=".9"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
 
     </LinearLayout>

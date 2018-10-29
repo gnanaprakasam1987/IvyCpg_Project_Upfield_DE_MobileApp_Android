@@ -51,7 +51,7 @@
             android:id="@+id/titleDate"
             android:layout_weight="0.50"
             android:text="@string/text_mdate"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             style="?attr/customListTitle"
@@ -60,7 +60,7 @@
             android:id="@+id/titleReason"
             android:layout_weight="0.50"
             android:text="@string/reason"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
     </LinearLayout>
 
     <ListView

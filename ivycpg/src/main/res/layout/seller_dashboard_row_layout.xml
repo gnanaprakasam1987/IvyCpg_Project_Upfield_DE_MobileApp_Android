@@ -47,7 +47,7 @@
                 android:tag="incentive_day"
                 android:text="Incentives"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/greyed_text_size"
+                android:textSize="@dimen/footer_label_size"
                 android:textStyle="normal"
                 android:paddingRight="@dimen/recycler_margin" />
 
@@ -74,7 +74,7 @@
                 android:tag="score"
                 android:text="Score"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/greyed_text_size"
+                android:textSize="@dimen/footer_label_size"
                 android:textStyle="normal"
                 android:paddingRight="@dimen/recycler_margin" />
 
@@ -147,7 +147,7 @@
                             android:tag="achieved_day"
                             android:text="@string/achieved"
                             android:textColor="?primarycolor"
-                            android:textSize="@dimen/greyed_text_size"
+                            android:textSize="@dimen/footer_label_size"
                             android:textStyle="normal" />
                     </LinearLayout>
 
@@ -213,7 +213,7 @@
                             android:tag="balance_day"
                             android:text="@string/balance"
                             android:textColor="@color/Orange"
-                            android:textSize="@dimen/greyed_text_size"
+                            android:textSize="@dimen/footer_label_size"
                             android:textStyle="normal" />
                     </LinearLayout>
 
@@ -279,7 +279,7 @@
                             android:tag="flex_day"
                             android:text="Flex"
                             android:textColor="@color/Orange"
-                            android:textSize="@dimen/greyed_text_size"
+                            android:textSize="@dimen/footer_label_size"
                             android:textStyle="normal" />
                     </LinearLayout>
 
@@ -345,7 +345,7 @@
                             android:tag="target_day"
                             android:text="@string/target"
                             android:textColor="?accentcolor"
-                            android:textSize="@dimen/greyed_text_size"
+                            android:textSize="@dimen/footer_label_size"
                             android:textStyle="normal" />
                     </LinearLayout>
 
@@ -390,7 +390,7 @@
                     android:tag="details"
                     android:text="@string/details"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/greyed_text_size"
+                    android:textSize="@dimen/footer_label_size"
                     android:textStyle="normal"
                     android:layout_marginRight="@dimen/skuwise_right_margin" />
 

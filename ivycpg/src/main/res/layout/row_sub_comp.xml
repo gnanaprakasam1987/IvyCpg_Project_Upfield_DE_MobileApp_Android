@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_margin"
                 android:text="@string/qty"
-                android:textSize="@dimen/font_nano_small" />
+                android:textSize="@dimen/text_size_secondary" />
 
             <EditText
                 android:id="@+id/et_qty"

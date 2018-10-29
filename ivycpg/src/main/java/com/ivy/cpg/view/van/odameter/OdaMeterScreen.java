@@ -141,15 +141,26 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         CustomDigitalClock clk1 = findViewById(R.id.digitalClock1);
         CustomDigitalClock clk2 = findViewById(R.id.digitalClock2);
 
-        vanno.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        vannovalue.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.datetxtview)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.timetxtview)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.starttriptxtview)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.endtriptxtview)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.distencetxtview)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        datevalue.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
-        timevalue.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
+        try {
+            ((TextView) findViewById(R.id.vanno)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+            if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.vanno).getTag()) != null)
+                ((TextView) findViewById(R.id.vanno))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.vanno).getTag()));
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        vanno.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        vannovalue.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) this.findViewById(R.id.datetxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) this.findViewById(R.id.timetxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) this.findViewById(R.id.starttriptxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) this.findViewById(R.id.endtriptxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) this.findViewById(R.id.distencetxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        datevalue.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        timevalue.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
 
         timevaluestart.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
         endtimevalue.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));

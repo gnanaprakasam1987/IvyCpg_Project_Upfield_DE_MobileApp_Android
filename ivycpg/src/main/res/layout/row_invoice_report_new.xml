@@ -43,7 +43,7 @@
                     android:padding="2dp"
                     android:text="@string/product_name"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/font_micro_small">
+                    android:textSize="@dimen/text_size_primary">
 
                 </TextView>
 
@@ -57,7 +57,7 @@
                     android:maxEms="10"
                     android:text="@string/dist"
                     android:textColor="@color/BLUE"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     android:layout_marginLeft="@dimen/store_margin_top" />
 
                 <TextView
@@ -102,7 +102,7 @@
                     android:padding="2dp"
                     android:text="@string/lines"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/text_sz_small"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold" />
 
                 <TextView
@@ -115,7 +115,7 @@
                     android:padding="2dp"
                     android:text="@string/pre_post"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/text_sz_small"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"
                     android:layout_toRightOf="@+id/lpc" />
 
@@ -129,7 +129,7 @@
                     android:padding="2dp"
                     android:text="@string/weight"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/text_sz_small"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold" />
 
                 <TextView
@@ -141,7 +141,7 @@
                     android:padding="2dp"
                     android:text="@string/tax_value"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/text_sz_small"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold" />
 
                 <TextView
@@ -153,7 +153,7 @@
                     android:padding="2dp"
                     android:text="@string/discount"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/text_sz_small"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold" />
 
 

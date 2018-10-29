@@ -114,7 +114,7 @@
                                 android:gravity="start"
                                 android:maxLines="1"
                                 android:textColor="?attr/primarycolor"
-                                android:textSize="@dimen/font_nano_small"
+                                android:textSize="@dimen/text_size_secondary"
                                 android:layout_marginLeft="@dimen/list_margin" />
 
                             <Button
@@ -156,7 +156,7 @@
                                     android:maxLines="1"
                                     android:text=""
                                     android:textColor="@color/GRAY_TEXT"
-                                    android:textSize="@dimen/font_nano_small" />
+                                    android:textSize="@dimen/text_size_secondary" />
 
                                 <Button
                                     android:id="@+id/btn_clear"

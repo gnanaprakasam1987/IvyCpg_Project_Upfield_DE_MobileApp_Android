@@ -339,18 +339,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public void onClick(View v) {
 
         if (v.getId() == R.id.saveButton) {
-            int statusVal = checkDataForSave();
-            if (statusVal == 2)
+            if (checkDataForSave())
                 nextButtonClick();
             else {
-                if(statusVal == 0)
-                    mBModel.showAlert(
+                mBModel.showAlert(
                         getResources().getString(
                                 R.string.please_fill_adherence), 0);
-                else if(statusVal == 1)
-                    mBModel.showAlert(
-                            getResources().getString(
-                                    R.string.planogram_image_count_not_reached), 0);
             }
         }
     }
@@ -474,6 +468,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         Vector<PlanoGramBO> items = mPlanoGramHelper.getPlanogramMaster();
+        this.productId = mProductId;
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         mPlanoGramList = new Vector<>();
         if (items == null) {
@@ -529,6 +524,13 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         mPlanoGramList.add(planoGramBO);
                     }
                 } else if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == -1) {
+                    mPlanoGramList.add(planoGramBO);
+                }
+            }
+        } else if (mAttributeProducts == null && productId==0){
+            for (final PlanoGramBO planoGramBO : items) {
+                if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM
+                        && planoGramBO.getLocationID() == mSelectedLocationId) {
                     mPlanoGramList.add(planoGramBO);
                 }
             }
@@ -769,14 +771,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
      * 1 - no image found
      * 2 - Success
      */
-    private int checkDataForSave() {
+    private boolean checkDataForSave() {
         for (final PlanoGramBO planoGramBO : mPlanoGramList) {
-            if (planoGramBO.getAdherence() == null)
-                return 0;
-            else if(planoGramBO.getPlanoGramCameraImgList()!=null && planoGramBO.getPlanoGramCameraImgList().size() == 0)
-                return 1;
+            if (planoGramBO.getAdherence() != null)
+                return true;
         }
-        return 2;
+        return false;
     }
 
     /**

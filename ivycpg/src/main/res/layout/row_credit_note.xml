@@ -38,7 +38,7 @@
                 android:layout_gravity="center"
                 android:maxLines="1"
                 android:textColor="@color/store_title"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                 android:maxLines="1"
                 android:text="Ref No"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/font_nano_small"
+                android:textSize="@dimen/text_size_secondary"
                 android:layout_marginLeft="0dp" />
 
         </LinearLayout>
@@ -70,7 +70,7 @@
                 android:maxLines="1"
                 android:paddingEnd="@dimen/dimens_10dp"
                 android:textColor="@color/store_title"
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:paddingRight="@dimen/dimens_10dp" />
 
             <TextView
@@ -80,7 +80,7 @@
                 android:maxLines="1"
                 android:text="TotalValue"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/font_nano_small" />
+                android:textSize="@dimen/text_size_secondary" />
         </LinearLayout>
 
         <LinearLayout
@@ -101,7 +101,7 @@
                 android:maxLines="1"
                 android:paddingEnd="@dimen/dimens_10dp"
                 android:textColor="@color/store_title"
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:paddingRight="@dimen/dimens_10dp" />
 
             <TextView
@@ -112,7 +112,7 @@
                 android:maxLines="1"
                 android:text="Balance "
                 android:textColor="@color/Black"
-                android:textSize="@dimen/font_nano_small" />
+                android:textSize="@dimen/text_size_secondary" />
         </LinearLayout>
 
     </LinearLayout>

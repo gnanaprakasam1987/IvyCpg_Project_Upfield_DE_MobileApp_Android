@@ -91,7 +91,7 @@
                             android:tag="achieved_day"
                             android:text="Achieved"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="@dimen/greyed_text_size"
+                            android:textSize="@dimen/footer_label_size"
                             android:textStyle="normal" />
                     </LinearLayout>
 
@@ -157,7 +157,7 @@
                             android:tag="target_day"
                             android:text="Target"
                             android:textColor="@color/colorAccent"
-                            android:textSize="@dimen/greyed_text_size"
+                            android:textSize="@dimen/footer_label_size"
                             android:textStyle="normal" />
                     </LinearLayout>
 

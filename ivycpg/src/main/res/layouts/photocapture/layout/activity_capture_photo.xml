@@ -154,7 +154,7 @@
                     android:textColor="@color/Black"
                     android:textColorHighlight="@color/GRAY_TEXT"
                     android:textColorHint="@color/list_item_secondary_text_color"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/spin_parentlevel" />
@@ -231,7 +231,7 @@
                     android:textColor="@color/Black"
                     android:textColorHighlight="@color/GRAY_TEXT"
                     android:textColorHint="@color/list_item_secondary_text_color"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -247,7 +247,7 @@
                     android:textColor="@color/Black"
                     android:textColorHighlight="@color/GRAY_TEXT"
                     android:textColorHint="@color/list_item_secondary_text_color"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     app:layout_constraintEnd_toStartOf="@+id/etLotCode"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/etSkuName" />
@@ -263,7 +263,7 @@
                     android:textColor="@color/Black"
                     android:textColorHighlight="@color/GRAY_TEXT"
                     android:textColorHint="@color/list_item_secondary_text_color"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     app:layout_constraintEnd_toEndOf="@id/etSeqNum"
                     app:layout_constraintStart_toEndOf="@id/etABV"
                     app:layout_constraintTop_toBottomOf="@+id/etSkuName" />
@@ -279,7 +279,7 @@
                     android:textColor="@color/Black"
                     android:textColorHighlight="@color/GRAY_TEXT"
                     android:textColorHint="@color/list_item_secondary_text_color"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/etLotCode"
                     app:layout_constraintTop_toBottomOf="@+id/etSkuName" />

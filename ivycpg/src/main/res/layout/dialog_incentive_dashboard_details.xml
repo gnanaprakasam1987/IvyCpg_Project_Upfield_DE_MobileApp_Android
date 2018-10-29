@@ -53,7 +53,7 @@
                 android:maxLines="2"
                 android:text="@string/sales_parameter"
                 android:textColor="?accentcolor"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
 
             <TextView
@@ -67,7 +67,7 @@
                 android:maxLines="2"
                 android:text="@string/factor_InscDash"
                 android:textColor="?accentcolor"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
 
 
@@ -84,7 +84,7 @@
                 android:maxLines="2"
                 android:text="@string/ach"
                 android:textColor="?accentcolor"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
 
             <TextView
@@ -98,7 +98,7 @@
                 android:maxLines="2"
                 android:text="@string/max_opportunity"
                 android:textColor="?accentcolor"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
 
     </LinearLayout>

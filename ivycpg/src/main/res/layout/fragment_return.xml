@@ -82,7 +82,7 @@
                     android:layout_toRightOf="@+id/icon_ll"
                     android:text="@string/add_another_reason"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <Button
                     android:id="@+id/btn_save"

@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:gravity="center"
-        android:textSize="@dimen/font_small"></TextView>
+        ></TextView>
 
 
     <TextView
@@ -24,6 +24,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:textColor="@color/kpi_value_text_color"
-        android:textSize="@dimen/highlight_small"></TextView>
+        android:textSize="@dimen/text_size_secondary"></TextView>
 
 </LinearLayout>

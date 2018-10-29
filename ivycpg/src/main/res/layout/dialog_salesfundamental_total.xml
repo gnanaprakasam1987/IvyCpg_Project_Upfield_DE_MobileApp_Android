@@ -66,7 +66,7 @@
                     android:gravity="center|start"
                     android:text="@string/total"
                     android:textColor="@color/GRAY_TEXT"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <EditText
                     android:id="@+id/et_total"

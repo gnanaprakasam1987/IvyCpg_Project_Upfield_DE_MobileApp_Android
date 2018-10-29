@@ -77,7 +77,7 @@
                     android:padding="2dp"
                     android:text="Current Score"
                     android:textColor="#83c341"
-                    android:textSize="@dimen/font_nano_small"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
                 <TextView
@@ -90,7 +90,7 @@
                     android:maxLines="1"
                     android:padding="2dp"
                     android:textColor="@color/WHITE"
-                    android:textSize="@dimen/font_nano_small"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="normal"
                     android:visibility="gone"
                     tools:text="@string/Thursday" />
@@ -118,7 +118,7 @@
                         android:layout_height="wrap_content"
                         android:text="0"
                         android:textColor="#99FFFFFF"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:textStyle="normal" />
 
                     <TextView
@@ -131,7 +131,7 @@
                         android:paddingEnd="20dp"
                         android:text=" pts"
                         android:textColor="#70FFFFFF"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:textStyle="normal"
                         android:paddingRight="20dp" />
                 </RelativeLayout>
@@ -168,7 +168,7 @@
                         android:layout_height="wrap_content"
                         android:text="0"
                         android:textColor="#99FFFFFF"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:textStyle="normal" />
 
                     <TextView
@@ -181,7 +181,7 @@
                         android:paddingEnd="2dp"
                         android:text=" Modules"
                         android:textColor="#70FFFFFF"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:textStyle="normal"
                         android:paddingRight="2dp" />
                 </RelativeLayout>
@@ -275,7 +275,7 @@
                             android:paddingEnd="20dp"
                             android:text="weight"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/font_nano_small"
+                            android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
                     </RelativeLayout>
@@ -330,7 +330,7 @@
                             android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/font_nano_small"
+                            android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
                     </RelativeLayout>
@@ -385,7 +385,7 @@
                             android:paddingEnd="20dp"
                             android:text=" pts"
                             android:textColor="@color/GRAY_TEXT"
-                            android:textSize="@dimen/font_nano_small"
+                            android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
                     </RelativeLayout>
@@ -430,7 +430,7 @@
                     android:text="@string/details"
                     android:textStyle="bold"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <TextView
                     android:id="@+id/notv"
@@ -442,7 +442,7 @@
                     android:singleLine="true"
                     android:text="Target"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/font_nano_small"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold"
                     android:visibility="gone" />
 
@@ -455,7 +455,7 @@
                     android:padding="5dp"
                     android:text="Achieved"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/font_nano_small"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
                 <TextView
@@ -469,7 +469,7 @@
                     android:textStyle="bold"
                     android:visibility="gone"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <TextView
                     android:id="@+id/weightage_dashboard_tv"
@@ -483,7 +483,7 @@
                     android:textStyle="bold"
                     android:visibility="gone"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     android:paddingRight="5dp" />
             </LinearLayout>
 
@@ -618,7 +618,7 @@
                     android:layout_alignParentTop="true"
                     android:text="Total Weightage"
                     android:textColor="@color/GREEN"
-                    android:textSize="@dimen/font_nano_small"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
                 <RelativeLayout
@@ -648,7 +648,7 @@
                         android:paddingEnd="20dp"
                         android:text=" pts"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:textStyle="normal"
                         android:paddingRight="20dp" />
                 </RelativeLayout>
@@ -686,7 +686,7 @@
                     android:layout_weight="1"
                     android:text="Total Score"
                     android:textColor="@color/GREEN"
-                    android:textSize="@dimen/font_nano_small"
+                    android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
                 <RelativeLayout
@@ -714,7 +714,7 @@
                         android:paddingEnd="20dp"
                         android:text=" pts"
                         android:textColor="@color/GRAY_TEXT"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:textStyle="normal"
                         android:paddingRight="20dp" />
                 </RelativeLayout>

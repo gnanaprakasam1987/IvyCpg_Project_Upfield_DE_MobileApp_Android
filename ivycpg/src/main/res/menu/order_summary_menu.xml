@@ -10,7 +10,7 @@
         android:visible="false"
         ivydist:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_discount"
+        android:id="@+id/menu_product_discount_by_user_entry"
         android:icon="@drawable/icon_order"
         android:orderInCategory="104"
         android:title="@string/discount"

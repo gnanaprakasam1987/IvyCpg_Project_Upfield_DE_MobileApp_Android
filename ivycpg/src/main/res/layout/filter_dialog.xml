@@ -60,7 +60,7 @@
             android:tag="level2"
             android:text="@string/choose_special_filter"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/list_primary" />
+            android:textSize="@dimen/text_size_primary" />
 
 
         <android.support.v7.widget.CardView

@@ -230,7 +230,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/tot_qty"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/tv_total_qty"
@@ -239,7 +239,7 @@
                 android:maxLines="1"
                 android:text="@string/zero"
                 android:textColor="@color/WHITE"
-                android:textSize="@dimen/footer_lbl_text_size" />
+                android:textSize="@dimen/footer_label_value" />
 
         </LinearLayout>
 
@@ -258,7 +258,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/total_mrp"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/tv_totalmrp"
@@ -267,7 +267,7 @@
                 android:maxLines="1"
                 android:text="@string/zero"
                 android:textColor="@color/WHITE"
-                android:textSize="@dimen/footer_lbl_text_size" />
+                android:textSize="@dimen/footer_label_value" />
 
         </LinearLayout>
 
@@ -286,7 +286,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/scheme_ucp"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/greyed_text_size" />
+                android:textSize="@dimen/footer_label_size" />
 
             <TextView
                 android:id="@+id/tv_totalschemeucp"
@@ -295,7 +295,7 @@
                 android:maxLines="1"
                 android:text="@string/zero"
                 android:textColor="@color/WHITE"
-                android:textSize="@dimen/footer_lbl_text_size" />
+                android:textSize="@dimen/footer_label_value" />
 
         </LinearLayout>
     </RelativeLayout>

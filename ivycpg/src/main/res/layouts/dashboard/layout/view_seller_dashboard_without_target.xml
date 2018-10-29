@@ -64,7 +64,7 @@
             android:tag="achieved_day"
             android:text="Achieved"
             android:textColor="?primarycolor"
-            android:textSize="@dimen/greyed_text_size"
+            android:textSize="@dimen/footer_label_size"
             android:textStyle="normal"
             card_view:layout_constraintStart_toEndOf="@id/row_dot_blue"
             card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
@@ -99,7 +99,7 @@
             android:tag="details"
             android:text="@string/details"
             android:textColor="@color/Black"
-            android:textSize="@dimen/greyed_text_size"
+            android:textSize="@dimen/footer_label_size"
             android:textStyle="normal"
             android:layout_marginRight="@dimen/skuwise_right_margin"
             card_view:layout_constraintBottom_toBottomOf="parent"

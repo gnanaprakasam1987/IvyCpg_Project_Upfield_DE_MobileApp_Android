@@ -23,7 +23,7 @@
             android:paddingStart="3dp"
             android:text="mode"
             android:textColor="?attr/colorAccent"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/paymentOrChqDateTv"
@@ -35,7 +35,7 @@
             android:paddingRight="3dp"
             android:text="03-05-2017"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
     </LinearLayout>
 
     <LinearLayout
@@ -59,7 +59,7 @@
                 android:paddingStart="3dp"
                 android:text="Ref No"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/chqRefTv"
@@ -101,7 +101,7 @@
                 android:paddingStart="3dp"
                 android:text="@string/amount_paid"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/paidAmtTv"
@@ -147,7 +147,7 @@
                 android:paddingStart="3dp"
                 android:text="@string/discounted_amt"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/disAmtTv"

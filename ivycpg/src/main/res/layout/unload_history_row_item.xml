@@ -28,7 +28,7 @@
                 android:text="@string/id"
                 android:tag="unload_history_id"
                 android:textColor="@color/history_label_color"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:textSize="@dimen/text_size_secondary" />
 
             <TextView
                 android:id="@+id/txt_history_inv_no"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/zero"
                 android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
 
 
@@ -54,7 +54,7 @@
                 android:text="@string/total_qty"
                 android:tag="unload_history_sa_qty"
                 android:textColor="@color/history_label_color"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:textSize="@dimen/text_size_secondary" />
 
             <TextView
                 android:id="@+id/txt_history_salable_qty"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/zero"
                 android:textColor="@color/history_date_color"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
 
 
@@ -80,7 +80,7 @@
                 android:text="@string/ns"
                 android:tag="unload_history_ns_qty"
                 android:textColor="@color/history_label_color"
-                android:textSize="@dimen/list_item_primary_text_size" />
+                android:textSize="@dimen/text_size_secondary" />
 
             <TextView
                 android:id="@+id/txt_history_ns_qty"
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/zero"
                 android:textColor="@color/history_date_color"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
 
         <LinearLayout
@@ -118,7 +118,7 @@
                 android:gravity="center"
                 android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
                 android:textColor="@color/toolbar_title"
-                android:textSize="@dimen/text_sz_extra_small" />
+                android:textSize="@dimen/text_size_caption" />
 
         </LinearLayout>
     </LinearLayout>

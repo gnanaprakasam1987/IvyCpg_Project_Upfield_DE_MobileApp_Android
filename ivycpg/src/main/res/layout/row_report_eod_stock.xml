@@ -32,7 +32,7 @@
             android:padding="3dp"
             android:text="@string/prod_code"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_nano_small"
+            android:textSize="@dimen/text_size_secondary"
             android:textStyle="normal" />
 
         <TextView
@@ -47,7 +47,7 @@
             android:padding="3dp"
             android:text="@string/batch_no"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_nano_small"
+            android:textSize="@dimen/text_size_secondary"
             android:textStyle="normal" />
     </RelativeLayout>
 

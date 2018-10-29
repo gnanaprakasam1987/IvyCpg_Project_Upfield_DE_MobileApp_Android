@@ -58,7 +58,7 @@
                 android:gravity="center"
                 android:text="@string/call_duration"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/text_sz_extra_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/edt_time_taken"

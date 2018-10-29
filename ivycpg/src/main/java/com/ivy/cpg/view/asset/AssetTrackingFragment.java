@@ -155,7 +155,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
 
 
         Button btnSave = (Button) view.findViewById(R.id.btn_save);
-        btnSave.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+      //  btnSave.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,7 +243,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                                 R.id.tv_isAvail).getTag()));
 
                     }
-                    ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                   // ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
 
             } catch (Exception e) {
@@ -260,7 +260,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                     .applyLabels(view.findViewById(
                                             R.id.tv_header_asset_name).getTag()));
                 }
-                ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+               // ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
 
         } catch (Exception e) {
@@ -282,7 +282,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                                 R.id.tv_is_executed).getTag()));
 
                     }
-                    ((TextView) view.findViewById(R.id.tv_is_executed)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                  //  ((TextView) view.findViewById(R.id.tv_is_executed)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
 
             } catch (Exception e) {
@@ -471,8 +471,35 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             startActivity(intent);
 
             return true;
+        }else if(i== R.id.menu_assetScan){
+
+            scanBarCode();
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void scanBarCode(){
+        {
+            ((AssetTrackingActivity) getActivity()).checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.CAMERA);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        AssetTrackingFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
+            } else {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.permission_enable_msg)
+                                + " " + getResources().getString(R.string.permission_camera)
+                        , Toast.LENGTH_LONG).show();
+            }
+        }
+
     }
 
 

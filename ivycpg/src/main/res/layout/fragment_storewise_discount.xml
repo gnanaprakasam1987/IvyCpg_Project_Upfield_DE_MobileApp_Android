@@ -18,7 +18,7 @@
             android:layout_centerInParent="true"
             android:text="@string/discount"
             android:textColor="?attr/textColorPrimary"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
     </RelativeLayout>
 
     <TextView

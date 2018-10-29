@@ -119,9 +119,9 @@ public class DBUtil extends SQLiteOpenHelper {
     }
 
     public void closeDB() {
-        if (!isEncrypted)
-            this.db.close();
-        else if (db_encrypted != null)
+        if(!isEncrypted && db != null)
+        this.db.close();
+        else if (db_encrypted!=null)
             db_encrypted.close();
     }
 

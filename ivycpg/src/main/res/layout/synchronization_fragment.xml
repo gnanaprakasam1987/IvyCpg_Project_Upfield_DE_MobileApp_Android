@@ -127,7 +127,7 @@
                                 android:tag="sync_digital_content"
                                 android:text="@string/with_images"
                                 android:textColor="?attr/primarycolor"
-                                android:textSize="@dimen/font_micro_small" />
+                                android:textSize="@dimen/text_size_primary" />
 
                             <CheckBox
                                 android:id="@+id/download_retailer"
@@ -137,7 +137,7 @@
                                 android:layout_marginTop="@dimen/card_margin_top"
                                 android:text="Retailer download"
                                 android:textColor="?attr/primarycolor"
-                                android:textSize="@dimen/font_micro_small"
+                                android:textSize="@dimen/text_size_primary"
                                 android:visibility="gone" />
                         </LinearLayout>
                     </LinearLayout>
@@ -159,7 +159,7 @@
                             android:paddingStart="@dimen/card_margin_top"
                             android:paddingTop="@dimen/card_margin_top"
                             android:text="@string/close_the_day"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:paddingLeft="@dimen/card_margin_top" />
 
                         <TextView
@@ -171,7 +171,7 @@
                             android:paddingBottom="@dimen/card_margin_top"
                             android:paddingStart="@dimen/card_margin_top"
                             android:paddingTop="2dp"
-                            android:textSize="@dimen/text_sz_small"
+                            android:textSize="@dimen/text_size_caption"
                             tools:text="19/01/2017"
                             android:paddingLeft="@dimen/card_margin_top" />
 
@@ -211,7 +211,7 @@
                                 android:gravity="start"
                                 android:padding="2dp"
                                 android:text=""
-                                android:textSize="@dimen/text_sz_small"/>
+                                android:textSize="@dimen/text_size_caption"/>
                         </LinearLayout>
                     </ScrollView>
                 </LinearLayout>
@@ -267,7 +267,7 @@
             android:gravity="end"
             android:padding="@dimen/dimen_2dp"
             android:textColor="#000000"
-            android:textSize="@dimen/text_sz_small" />
+            android:textSize="@dimen/text_size_caption" />
 
         <View
             android:layout_width="match_parent"

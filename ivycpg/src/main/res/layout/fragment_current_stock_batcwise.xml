@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/total"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <TextView
                     android:id="@+id/tv_sih"
@@ -223,7 +223,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/zero"
                     android:textColor="@color/WHITE"
-                    android:textSize="@dimen/footer_lbl_text_size" />
+                    android:textSize="@dimen/footer_label_value" />
 
             </LinearLayout>
 

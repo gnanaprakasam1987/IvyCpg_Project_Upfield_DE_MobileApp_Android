@@ -201,7 +201,11 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
 			}*/
             double totalLines = 0;
             int totalAllQty = 0;
-            if (businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+            if (businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
                 // All products not need to load.only invoice products loaded from
                 // sqLite and stored in object.Because invoice print file saved in sdcard
                 // we can show other details using the text file
@@ -222,7 +226,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                                     totalAllQty = totalAllQty + totalQty;
                                     if (totalQty > 0) {
                                         batchProductBO.setProductShortName(productBO.getProductShortName());
-                                        batchProductBO.setTotalamount(batchProductBO.getDiscount_order_value());
+                                        batchProductBO.setTotalamount(batchProductBO.getNetValue());
                                         mProductsForAdapter.add(batchProductBO);
                                     }
                                 }
@@ -241,7 +245,11 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             }
 
             ArrayList<SchemeProductBO> schemeProductList;
-            if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+            if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
                 schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId, true);
             } else {
                 //load accumulation scheme free products
@@ -331,7 +339,9 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             if (businessModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL || businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                 showDialog(2);
             } else if (businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
-                    || businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
                     || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
                 // Print file already saved.so not need to reload the object.we can get the object from print text file
                 businessModel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE + businessModel.invoiceNumber + ".txt");
@@ -720,7 +730,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     ////
                 } else if (businessModel.configurationMasterHelper.SHOW_ZEBRA_TITAN) {
                     double entryLevelDiscountValue = 0;
-                    if (businessModel.configurationMasterHelper.IS_ENTRY_LEVEL_DISCOUNT) {
+                    if (businessModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY) {
                         entryLevelDiscountValue = businessModel.printHelper.getEntryLevelDiscountValue(mProductsForAdapter);
                     }
 
@@ -834,7 +844,11 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     holder.tvBatchNo.setText(productBO.getBatchId());
             }
 
-            if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON) {
+            if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
+                    || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
                 if (productBO.getUomDescription().equals("CASE")) {
                     holder.text_caseQuantity.setText(String.valueOf(productBO.getQuantitySelected()));
                     holder.text_PcsQuantity.setText("0");

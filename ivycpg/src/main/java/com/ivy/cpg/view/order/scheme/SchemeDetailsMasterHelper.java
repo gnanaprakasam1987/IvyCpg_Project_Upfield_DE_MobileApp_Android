@@ -3819,8 +3819,8 @@ public class SchemeDetailsMasterHelper {
                         || batchProductBo.getOrderedCaseQty() > 0
                         || batchProductBo.getOrderedOuterQty() > 0) {
                     double totalValue;
-                    if (batchProductBo.getDiscount_order_value() > 0) {
-                        totalValue = batchProductBo.getDiscount_order_value();
+                    if (batchProductBo.getNetValue() > 0) {
+                        totalValue = batchProductBo.getNetValue();
                     } else {
                         totalValue = batchProductBo.getOrderedPcsQty()
                                 * batchProductBo.getSrp()
@@ -3839,24 +3839,24 @@ public class SchemeDetailsMasterHelper {
                         totalPercentageValue=SDUtil.formatAsPerCalculationConfig(totalPercentageValue);
                         totalDisPriceValue = totalDisPriceValue  + totalPercentageValue;
 
-                        if (batchProductBo.getDiscount_order_value() > 0) {
+                        if (batchProductBo.getNetValue() > 0) {
                             batchProductBo
-                                    .setDiscount_order_value(batchProductBo
-                                            .getDiscount_order_value()
+                                    .setNetValue(batchProductBo
+                                            .getNetValue()
                                             - totalPercentageValue);
 
                         } else {
-                            batchProductBo.setDiscount_order_value(totalValue
+                            batchProductBo.setNetValue(totalValue
                                     - totalPercentageValue);
                         }
-                        if (batchProductBo.getSchemeAppliedValue() > 0) {
+                        if (batchProductBo.getLineValueAfterSchemeApplied() > 0) {
                             batchProductBo
-                                    .setSchemeAppliedValue(batchProductBo
-                                            .getSchemeAppliedValue()
+                                    .setLineValueAfterSchemeApplied(batchProductBo
+                                            .getLineValueAfterSchemeApplied()
                                             - totalPercentageValue);
 
                         } else {
-                            batchProductBo.setSchemeAppliedValue(totalValue
+                            batchProductBo.setLineValueAfterSchemeApplied(totalValue
                                     - totalPercentageValue);
                         }
 
@@ -3873,23 +3873,23 @@ public class SchemeDetailsMasterHelper {
                         totalPriceValue=SDUtil.formatAsPerCalculationConfig(totalPriceValue);
                         totalDisPriceValue = totalDisPriceValue+ totalPriceValue;
 
-                        if (batchProductBo.getDiscount_order_value() > 0) {
+                        if (batchProductBo.getNetValue() > 0) {
                             batchProductBo
-                                    .setDiscount_order_value(batchProductBo
-                                            .getDiscount_order_value()
+                                    .setNetValue(batchProductBo
+                                            .getNetValue()
                                             - totalPriceValue);
                         } else {
-                            batchProductBo.setDiscount_order_value(totalValue
+                            batchProductBo.setNetValue(totalValue
                                     - totalPriceValue);
                         }
-                        if (batchProductBo.getSchemeAppliedValue() > 0) {
+                        if (batchProductBo.getLineValueAfterSchemeApplied() > 0) {
                             batchProductBo
-                                    .setSchemeAppliedValue(batchProductBo
-                                            .getSchemeAppliedValue()
+                                    .setLineValueAfterSchemeApplied(batchProductBo
+                                            .getLineValueAfterSchemeApplied()
                                             - totalPriceValue);
 
                         } else {
-                            batchProductBo.setSchemeAppliedValue(totalValue
+                            batchProductBo.setLineValueAfterSchemeApplied(totalValue
                                     - totalPriceValue);
                         }
 
@@ -3905,13 +3905,13 @@ public class SchemeDetailsMasterHelper {
                         totalAmountValue=SDUtil.formatAsPerCalculationConfig(totalAmountValue);
                         totalDisPriceValue = totalDisPriceValue + totalAmountValue;
 
-                        if (batchProductBo.getDiscount_order_value() > 0) {
+                        if (batchProductBo.getNetValue() > 0) {
                             batchProductBo
-                                    .setDiscount_order_value(batchProductBo
-                                            .getDiscount_order_value()
+                                    .setNetValue(batchProductBo
+                                            .getNetValue()
                                             - totalAmountValue);
                         } else {
-                            batchProductBo.setDiscount_order_value(totalValue
+                            batchProductBo.setNetValue(totalValue
                                     - totalAmountValue);
                         }
 
@@ -3980,7 +3980,7 @@ public class SchemeDetailsMasterHelper {
 
         ArrayList<String> mFreeGroupNameList = getFreeGroupNameListBySchemeID().get(mSchemeBO.getSchemeId());
 
-        if (mSchemeBO.isSihAvailableForFreeProducts()) {
+        if (mSchemeBO.isSihAvailableForFreeProducts()||!bModel.configurationMasterHelper.IS_INVOICE) {
 
             if (mSchemeBO.getFreeType().equals(AND_LOGIC) || mSchemeBO.getFreeType().equals(ONLY_LOGIC)) {
 

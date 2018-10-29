@@ -124,7 +124,7 @@ public class KlgsHalfPieChartFragement extends Fragment implements OnChartValueS
         PieDataSet dataSet = new PieDataSet(entries, skuList.get(dashBoardHelper.mSelectedSkuIndex).getProductName());
         dataSet.setSliceSpace(0f);
         dataSet.setSelectionShift(5f);
-        dataSet.setValueTextSize(getResources().getDimension(R.dimen.font_micro_small));
+        dataSet.setValueTextSize(getResources().getDimension(R.dimen.text_size_primary));
 
         dataSet.setColors(MATERIAL_COLORS);
         dataSet.setDrawValues(false);

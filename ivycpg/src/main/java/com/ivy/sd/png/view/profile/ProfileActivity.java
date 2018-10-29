@@ -692,7 +692,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 Window window = comReasonDialog.getWindow();
                 lp.copyFrom(window != null ? window.getAttributes() : null);
                 lp.width = displaymetrics.widthPixels - 100;
-                lp.height = (int) (displaymetrics.heightPixels / 2.5);//WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.height = (int) (displaymetrics.heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
                 if (window != null) {
                     window.setAttributes(lp);
                 }
@@ -1675,10 +1675,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 mSupplierAdapter = new ArrayAdapter<>(this,
                         android.R.layout.select_dialog_singlechoice, mSupplierList);
 
+                String dialog_title;
+                if ((bmodel.labelsMasterHelper.applyLabels("select_dist") != null) &&
+                        (bmodel.labelsMasterHelper.applyLabels("select_dist").length() > 0)) {
+                    dialog_title = bmodel.labelsMasterHelper.applyLabels("select_dist");
+                } else {
+                    dialog_title = getResources().getString(R.string.select_distributor);
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this)
                         .setIcon(null)
                         .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.select_distributor))
+                        .setTitle(dialog_title)
 
                         .setSingleChoiceItems(mSupplierAdapter,
                                 0,

@@ -38,7 +38,7 @@
         android:padding="@dimen/profile_header_txt_layout_marginleft"
         android:text="@string/reason_for_visit"
         android:textColor="?attr/colorAccent"
-        android:textSize="@dimen/font_micro_small"
+        android:textSize="@dimen/text_size_primary"
         android:textStyle="bold"
         android:layout_marginLeft="@dimen/profile_history_20dp" />
 
@@ -48,7 +48,7 @@
         android:layout_marginBottom="@dimen/profile_history_20dp"
         android:layout_marginStart="@dimen/profile_history_25dp"
         android:layout_marginEnd="@dimen/profile_history_25dp"
-        android:layout_marginTop="@dimen/profile_history_10dp">
+        android:layout_marginTop="0dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/reason_recycler"

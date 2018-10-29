@@ -29,7 +29,7 @@
                 android:gravity="center"
                 android:text="@string/sync_environment"
                 android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/list_primary"
+                android:textSize="@dimen/text_size_primary"
                 android:textStyle="bold"/>
         </LinearLayout>
 
