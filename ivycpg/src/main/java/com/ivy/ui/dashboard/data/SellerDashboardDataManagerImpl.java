@@ -797,7 +797,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Single<DailyReportBO> fetchDailyReport() {
+    public Single<DailyReportBO> fetchOutletDailyReport() {
         return Single.fromCallable(new Callable<DailyReportBO>() {
             @Override
             public DailyReportBO call() throws Exception {
@@ -858,6 +858,101 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                 shutDownDb();
                 return dailyRep;
+            }
+        });
+    }
+
+    @Override
+    public Single<Integer> fetchTotalCallsForTheDayExcludingDeviatedVisits() {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int total_calls = 0;
+                try {
+                    initDb();
+
+                    Cursor c = mDbUtil
+                            .selectSQL("SELECT COUNT(DISTINCT RM.RETAILERID) FROM RETAILERMASTER RM inner join RetailerMasterInfo RMI " +
+                                    "on RM.RetailerID = RMI.RetailerId where RMI.istoday = 1");
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext())
+                                total_calls = c.getInt(0);
+                        }
+                        c.close();
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+
+                shutDownDb();
+                return total_calls;
+            }
+        });
+    }
+
+    @Override
+    public Single<DailyReportBO> fetchNoOfInvoiceAndValue() {
+        return Single.fromCallable(new Callable<DailyReportBO>() {
+            @Override
+            public DailyReportBO call() throws Exception {
+                DailyReportBO dailyRp = new DailyReportBO();
+                try {
+                    initDb();
+
+                    Cursor c = mDbUtil
+                            .selectSQL("select count(distinct Inv.InvoiceNo),sum(Inv.totalamount) from Invoicemaster Inv" +
+                                    " INNER JOIN OrderHeader OH ON OH.orderId=Inv.OrderId where Inv.invoicedate = "
+                                    + QT(appDataProvider.getUser().getDownloadDate()));
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                dailyRp.setTotLines(c.getInt(0) + "");
+                                dailyRp.setTotValues(c.getDouble(1) + "");
+                            }
+                        }
+                        c.close();
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+
+                shutDownDb();
+                return dailyRp;
+            }
+        });
+    }
+
+    @Override
+    public Single<DailyReportBO> fetchNoOfOrderAndValue() {
+        return Single.fromCallable(new Callable<DailyReportBO>() {
+            @Override
+            public DailyReportBO call() throws Exception {
+                DailyReportBO dailyRp = new DailyReportBO();
+                try {
+                    initDb();
+
+                    Cursor c = mDbUtil
+                            .selectSQL("select count(distinct orderid),sum(totalamount) from OrderHeader where invoicestatus =0 ");
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                dailyRp.setTotLines(c.getInt(0) + "");
+                                dailyRp.setTotValues(c.getDouble(1) + "");
+                            }
+                        }
+                        c.close();
+                    }
+
+
+                } catch (Exception ignored) {
+
+                }
+
+                shutDownDb();
+                return dailyRp;
             }
         });
     }

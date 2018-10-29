@@ -35,6 +35,12 @@ public interface SellerDashboardDataManager {
 
     Single<String> getCurrentWeekInterval();
 
-    Single<DailyReportBO> fetchDailyReport();
+    Single<DailyReportBO> fetchOutletDailyReport();
+
+    Single<Integer> fetchTotalCallsForTheDayExcludingDeviatedVisits();
+
+    Single<DailyReportBO> fetchNoOfInvoiceAndValue();
+
+    Single<DailyReportBO> fetchNoOfOrderAndValue();
 
 }

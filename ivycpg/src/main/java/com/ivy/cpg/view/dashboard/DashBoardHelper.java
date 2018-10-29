@@ -3631,7 +3631,7 @@ public class DashBoardHelper {
 
     @Deprecated
     /**
-     * @See {@link SellerDashboardDataManagerImpl#fetchDailyReport()}
+     * @See {@link SellerDashboardDataManagerImpl#fetchOutletDailyReport()}
      */
     public DailyReportBO downloadDailyReport() {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -3688,6 +3688,12 @@ public class DashBoardHelper {
         return dailyRep;
     }
 
+
+    /**
+     * @return
+     * @See {@link SellerDashboardDataManagerImpl#fetchNoOfInvoiceAndValue()}
+     * @deprecated
+     */
     public DailyReportBO getNoOfInvoiceAndValue() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
@@ -3715,6 +3721,11 @@ public class DashBoardHelper {
         return dailyRp;
     }
 
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#fetchNoOfOrderAndValue()}
+     * @return
+     */
     public DailyReportBO getNoOfOrderAndValue() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
@@ -3838,6 +3849,12 @@ public class DashBoardHelper {
         return dailyRp;
     }
 
+    /**
+     * @return
+     * @See {@link SellerDashboardDataManagerImpl#fetchTotalCallsForTheDayExcludingDeviatedVisits()}
+     * @deprecated
+     */
+    @Deprecated
     public int getTotalCallsForTheDayExcludingDeviatedVisits() {
         int total_calls = 0;
         try {

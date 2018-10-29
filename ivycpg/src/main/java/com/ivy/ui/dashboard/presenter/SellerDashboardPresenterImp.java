@@ -19,9 +19,11 @@ import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManager;
@@ -29,16 +31,13 @@ import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import io.reactivex.ObservableSource;
-import io.reactivex.SingleSource;
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
+import io.reactivex.functions.Function4;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
@@ -393,7 +392,6 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                             getIvyView().setDashboardListAdapter(dashBoardList);
 
 
-
                     }
 
                     @Override
@@ -408,14 +406,14 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 }));
     }
 
-    private void fetchCurrentWeek(final ArrayList<String> weekList){
+    private void fetchCurrentWeek(final ArrayList<String> weekList) {
         getCompositeDisposable().add(sellerDashboardDataManager.getCurrentWeekInterval()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
 
-                        getIvyView().setWeekSpinner(weekList,weekList.indexOf(s));
+                        getIvyView().setWeekSpinner(weekList, weekList.indexOf(s));
                     }
                 }));
     }
@@ -507,5 +505,60 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
                     }
                 }));
+    }
+
+    @Override
+    public void computeDayAchievements() {
+        if (dashBoardList.size() > 0)
+            getCompositeDisposable().add(Single.zip(sellerDashboardDataManager.fetchOutletDailyReport(),
+                    sellerDashboardDataManager.fetchTotalCallsForTheDayExcludingDeviatedVisits(),
+                    sellerDashboardDataManager.fetchNoOfInvoiceAndValue(),
+                    sellerDashboardDataManager.fetchNoOfOrderAndValue(),
+                    new Function4<DailyReportBO, Integer, DailyReportBO, DailyReportBO, Object>() {
+                        @Override
+                        public Object apply(DailyReportBO dailyReportBOForOutlet, Integer integer, DailyReportBO dailyReportBoWithInvoice, DailyReportBO dailyReportBoWithOrderValue) throws Exception {
+                            return null;
+                        }
+                    }).subscribeOn(getSchedulerProvider().io())
+                    .observeOn(getSchedulerProvider().ui())
+                    .subscribe(new Consumer<Object>() {
+                        @Override
+                        public void accept(Object o) {
+
+                            for(DashBoardBO dashBoardBO: dashBoardList){
+
+                            }
+                        }
+                    }));
+    }
+
+
+    private void computeDailyAchievementForValue(DashBoardBO dashBoardBO,DailyReportBO dailyReportBOForOutlet){
+        dashBoardBO.setKpiAcheived(dailyReportBOForOutlet.getTotValues());
+
+        int kpiAcheived = (int) SDUtil.convertToDouble(dailyReportBOForOutlet.getTotValues());
+        int kpiTarget;
+
+        try {
+            kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
     }
 }

@@ -79,5 +79,7 @@ public interface SellerDashboardContract {
 
         UserMasterBO getCurrentUser();
 
+        void computeDayAchievements();
+
     }
 }
