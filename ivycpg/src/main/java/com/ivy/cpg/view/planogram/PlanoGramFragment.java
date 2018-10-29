@@ -1174,10 +1174,18 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     } else {
                         rdYes.setEnabled(false);
                         rdNo.setEnabled(false);
+                        rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
+                        rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
+                        rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                        rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     }
                 } else {
                     rdYes.setEnabled(false);
                     rdNo.setEnabled(false);
+                    rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
+                    rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
+                    rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                    rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                 }
                 if (planoObj.getAdherence() != null
                         && "1".equals(planoObj.getAdherence())) {
