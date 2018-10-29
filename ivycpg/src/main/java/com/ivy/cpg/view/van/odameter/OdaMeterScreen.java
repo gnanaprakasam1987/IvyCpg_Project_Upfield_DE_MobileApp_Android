@@ -394,7 +394,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                     else
                         value = s.toString();
 
-                    if (value.length() > 0)
+                    if (value.length() > 0 && !"0".equals(value))
                         tripStarting.setSelection(value.length());
 
                     startingvalue = SDUtil.convertToDouble(value);
@@ -435,7 +435,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                         value = "0";
                     else
                         value = s.toString();
-                    if (value.length() > 0)
+                    if (value.length() > 0 && !"0".equals(value))
                         tripEnding.setSelection(value.length());
                     endingvalue = SDUtil.convertToDouble(value);
                     tripEndInsideTry(value);
