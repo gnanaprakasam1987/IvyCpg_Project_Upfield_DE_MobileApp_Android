@@ -155,7 +155,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                                 break;
                             } else if (pos == mPaymentList.size() - 1) {
                                 Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
-                                bmodel.mSelectedActivityName = "Bill Payment";
+                                bmodel.mSelectedActivityName = getString(R.string.bill_payment);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
@@ -166,7 +166,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                         }
                     }else{
                         Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
-                        bmodel.mSelectedActivityName = "Bill Payment";
+                        bmodel.mSelectedActivityName = getString(R.string.bill_payment);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);

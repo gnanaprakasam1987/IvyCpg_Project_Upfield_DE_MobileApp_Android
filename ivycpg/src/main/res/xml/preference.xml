@@ -22,7 +22,7 @@
         <com.ivy.sd.png.view.CustomPreference
             android:key="pmac"
             android:layout="@layout/settings_card_layout"
-            android:summary="Enter MAC address"
+            android:summary="@string/enter_mac_address"
             android:title="MAC"></com.ivy.sd.png.view.CustomPreference>
         <com.ivy.sd.png.view.ThemedListPreference
             android:entries="@array/printerList"
@@ -37,7 +37,7 @@
     <com.ivy.sd.png.view.CustomPreferenceCategory
         android:key="export"
         android:layout="@layout/settings_header_layout"
-        android:title="Export">
+        android:title="@string/export">
         <com.ivy.sd.png.view.CustomPreference
             android:key="export_file"
             android:layout="@layout/settings_card_layout"

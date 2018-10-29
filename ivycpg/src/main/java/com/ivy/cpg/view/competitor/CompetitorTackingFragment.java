@@ -248,7 +248,6 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
                     bmodel.competitorTrackingHelper.deleteFiles(
                             path, fileName);
 
-                    System.out.println("Delete Image Asir " + pair.getKey() + " = " + pair.getValue());
                     //it.remove(); // avoids a ConcurrentModificationException
                 }
                 bmodel.getPhotosTakeninCurrentCompetitorTracking().clear();

@@ -336,18 +336,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public void onClick(View v) {
 
         if (v.getId() == R.id.saveButton) {
-            int statusVal = checkDataForSave();
-            if (statusVal == 2)
+            if (checkDataForSave())
                 nextButtonClick();
             else {
-                if(statusVal == 0)
-                    mBModel.showAlert(
+                mBModel.showAlert(
                         getResources().getString(
                                 R.string.please_fill_adherence), 0);
-                else if(statusVal == 1)
-                    mBModel.showAlert(
-                            getResources().getString(
-                                    R.string.planogram_image_count_not_reached), 0);
             }
         }
     }
@@ -774,14 +768,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
      * 1 - no image found
      * 2 - Success
      */
-    private int checkDataForSave() {
+    private boolean checkDataForSave() {
         for (final PlanoGramBO planoGramBO : mPlanoGramList) {
-            if (planoGramBO.getAdherence() == null)
-                return 0;
-            else if(planoGramBO.getPlanoGramCameraImgList()!=null && planoGramBO.getPlanoGramCameraImgList().size() == 0)
-                return 1;
+            if (planoGramBO.getAdherence() != null)
+                return true;
         }
-        return 2;
+        return false;
     }
 
     /**
@@ -1182,10 +1174,18 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     } else {
                         rdYes.setEnabled(false);
                         rdNo.setEnabled(false);
+                        rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
+                        rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
+                        rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                        rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     }
                 } else {
                     rdYes.setEnabled(false);
                     rdNo.setEnabled(false);
+                    rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
+                    rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
+                    rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                    rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                 }
                 if (planoObj.getAdherence() != null
                         && "1".equals(planoObj.getAdherence())) {

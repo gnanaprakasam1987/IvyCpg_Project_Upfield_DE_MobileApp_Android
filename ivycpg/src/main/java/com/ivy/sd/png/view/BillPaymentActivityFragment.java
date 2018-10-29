@@ -291,7 +291,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
             if (mPaymentList.get(position).getAmount() > 0) {
 
-                String paidLabelVal = " " + bmodel.formatValue(mPaymentList.get(position).getAmount()) + " paid";
+                String paidLabelVal = " " + bmodel.formatValue(mPaymentList.get(position).getAmount()) + " " + getString(R.string.paid);
 
                 holder.paidAmtLabel.setText(paidLabelVal);
             } else {

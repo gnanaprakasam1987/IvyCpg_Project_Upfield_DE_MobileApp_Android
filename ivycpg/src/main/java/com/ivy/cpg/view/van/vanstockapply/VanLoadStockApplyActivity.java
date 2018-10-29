@@ -154,7 +154,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     }
                 }).show();
             } else {
-                showMessage(getString(R.string.check_any_one_list));
+                showMessage(getString(R.string.check_anyone_fromlist));
             }
 
         } else if (BtnId == R.id.van_btn_reject) {
@@ -173,7 +173,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                     }
                 }).show();
             } else {
-                showMessage(getString(R.string.check_any_one_list));
+                showMessage(getString(R.string.check_anyone_fromlist));
             }
         }
 

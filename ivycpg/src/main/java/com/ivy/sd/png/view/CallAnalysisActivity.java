@@ -186,6 +186,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             if ((hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
                     && bmodel.getRetailerMasterBO().getIsOrdered().equals("N"))) {
                 spinnerNoOrderReason.setVisibility(View.VISIBLE);
+                bmodel.reasonHelper.downloadNonProductiveReasonMaster();
                 spinnerNoOrderReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -250,9 +251,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             ArrayAdapter<ReasonMaster> spinnerAdapter = new ArrayAdapter<ReasonMaster>(this,
                     R.layout.call_analysis_spinner_layout);
             spinnerAdapter.add(new ReasonMaster(-1 + "", getResources().getString(R.string.select_reason_for_no_order)));
-            for (ReasonMaster temp : bmodel.reasonHelper
-                    .getNonProductiveReasonMaster())
-                spinnerAdapter.add(temp);
+            if(bmodel.reasonHelper.getNonProductiveReasonMaster() != null) {
+                for (ReasonMaster temp : bmodel.reasonHelper
+                        .getNonProductiveReasonMaster())
+                    spinnerAdapter.add(temp);
+            }
             spinnerAdapter
                     .setDropDownViewResource(R.layout.call_analysis_spinner_list_item);
             spinnerNoOrderReason.setAdapter(spinnerAdapter);
