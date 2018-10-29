@@ -1,10 +1,12 @@
 package com.ivy.sd.png.provider;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -12,11 +14,13 @@ import android.widget.Toast;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.asset.AssetHistoryBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -1143,6 +1147,80 @@ public class ProfileHelper {
                 } catch (Exception exception) {
                     Commons.printException(exception);
                     subscriber.onError(exception);
+                    subscriber.onComplete();
+                }
+            }
+        });
+    }
+
+
+    public Observable<ArrayList<ConfigureBO>> downloadContactModuleConfig(boolean isProfileEdit) {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<ConfigureBO>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<ConfigureBO>> subscriber) throws Exception {
+                ArrayList<ConfigureBO> contactConfig = new ArrayList<>();
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                try {
+
+                    SharedPreferences sharedPrefs = PreferenceManager
+                            .getDefaultSharedPreferences(mContext);
+                    String locale = sharedPrefs.getString("languagePref",
+                            ApplicationConfigs.LANGUAGE);
+                    db.openDataBase();
+
+                    String query = "select HHTCode,MName,RField,hasLink,flag,RField6,MNumber,ifnull(Regex,''),RField1 from "
+                            + DataMembers.tbl_HhtMenuMaster
+                            + " where flag=1";
+
+                    if (isProfileEdit)
+                        query = query + " and MenuType= 'RETAILER_CONTACT' and RField =1";
+                    else
+                        query = query + " and MenuType= 'NEWRETAILER_CONTACT' ";
+
+
+                    query = query + " and lang=" + bmodel.QT(locale) + " order by MNumber";
+
+                    Cursor c = db.selectSQL(query);
+                    ConfigureBO con;
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            con = new ConfigureBO();
+                            con.setConfigCode(c.getString(0));
+                            con.setMenuName(c.getString(1));
+                            con.setModule_Order(c.getInt(2));
+                            con.setHasLink(c.getInt(3));
+                            con.setFlag(c.getInt(4));
+                            con.setMenuNumber(c.getString(6));
+                            String str = c.getString(7);
+                            if (str != null && !str.isEmpty()) {
+                                if (str.contains("<") && str.contains(">")) {
+
+                                    String minlen = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+                                    if (!minlen.isEmpty()) {
+                                        try {
+                                            con.setMaxLengthNo(SDUtil.convertToInt(minlen));
+                                        } catch (Exception ex) {
+                                            Commons.printException("min len in new outlet helper", ex);
+                                        }
+                                    }
+                                }
+                            }
+                            con.setRegex(c.getString(7));
+                            con.setMandatory(c.getInt(8));// or Edit Contact in profile
+                            contactConfig.add(con);
+
+                        }
+                        c.close();
+                    }
+                    db.closeDB();
+                    subscriber.onNext(contactConfig);
+                    subscriber.onComplete();
+
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    db.closeDB();
+                    subscriber.onError(e);
                     subscriber.onComplete();
                 }
             }

@@ -37,6 +37,9 @@ import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +55,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ArrayList<ConfigureBO> contactConfig;
 
-    private static String CODE_CONTACTNAME = "CONTACTNAME";
+    private static String CODE_CONTACTNAME = "COlNTACTNAME";
     private static String CODE_CONTACTNUMBER = "CONTACTNUMBER";
     private static String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
     private static String CODE_CONTACTMAIL = "CONTACTMAIL";
@@ -66,7 +69,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private ArrayList<StandardListBO> mcontactTitleList;
     private ArrayAdapter<StandardListBO> contactTitleAdapter;
     private ArrayList<RetailerContactBo> contactList;
-    private ArrayList<RetailerContactBo> retailerContactList;
+    private HashMap<String, ConfigureBO> menuMap = new HashMap<>();
 
     //views
     @BindView(R.id.tvTitlePrimary)
@@ -141,7 +144,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
         }
 
         appSchedulerProvider = new AppSchedulerProvider();
-        new CompositeDisposable().add((Disposable) bmodel.configurationMasterHelper.downloadContactModuleConfig()
+        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadContactModuleConfig(isProfileEdit)
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribeWith(getContactConfig()));
@@ -200,7 +203,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
             if (validateData()) {
                 if (isProfileEdit) {
                     if (isEdit) {
-                        if(!"I".equalsIgnoreCase(retailerContactBo.getStatus())){
+                        if (!"I".equalsIgnoreCase(retailerContactBo.getStatus())) {
                             retailerContactBo.setStatus("U");
                         }
                         for (int i = 0; i < contactList.size(); i++) {
@@ -257,12 +260,19 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         etFirstName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-
+                int length = s.toString().length();
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setFistname("");
                 else {
-                    etFirstName.setSelection(s.toString().length());
-                    retailerContactBo.setFistname(s.toString().trim());
+                    if (validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
+                        etFirstName.setSelection(s.toString().length());
+                        retailerContactBo.setFistname(s.toString().trim());
+                    } else {
+                        s.delete(length - 1, length);
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 }
 
 
@@ -279,12 +289,19 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         etLastName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-
+                int length = s.toString().length();
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setLastname("");
                 else {
-                    etLastName.setSelection(s.toString().length());
-                    retailerContactBo.setLastname(s.toString().trim());
+                    if (validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
+                        etLastName.setSelection(s.toString().length());
+                        retailerContactBo.setLastname(s.toString().trim());
+                    } else {
+                        s.delete(length - 1, length);
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 }
 
             }
@@ -300,12 +317,19 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         etPhno.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-
+                int length = s.toString().length();
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactNumber("");
                 else {
-                    etPhno.setSelection(s.toString().length());
-                    retailerContactBo.setContactNumber(s.toString().trim());
+                    if (validRegex(menuMap.get(CODE_CONTACTNUMBER).getRegex(), s.toString().trim())) {
+                        etPhno.setSelection(s.toString().length());
+                        retailerContactBo.setContactNumber(s.toString().trim());
+                    } else {
+                        s.delete(length - 1, length);
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 }
             }
 
@@ -320,12 +344,19 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
         etEmail.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-
+                int length = s.toString().length();
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactMail("");
                 else {
-                    etEmail.setSelection(s.toString().length());
-                    retailerContactBo.setContactMail(s.toString().trim());
+                    if (validRegex(menuMap.get(CODE_CONTACTMAIL).getRegex(), s.toString().trim())) {
+                        etEmail.setSelection(s.toString().length());
+                        retailerContactBo.setContactMail(s.toString().trim());
+                    } else {
+                        s.delete(length - 1, length);
+                        Toast.makeText(getActivity(),
+                                getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName(), Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 }
 
 
@@ -372,8 +403,8 @@ public class ContactCreationFragment extends IvyBaseFragment {
                         if (!isEdit) {
                             cbIsPrimary.setChecked(false);
                             Toast.makeText(getActivity(), getActivity().getString(R.string.primary_contact_available), Toast.LENGTH_SHORT).show();
-                        }else{
-                            if(retailerContactBo.getIsPrimary()==0){
+                        } else {
+                            if (retailerContactBo.getIsPrimary() == 0) {
                                 cbIsPrimary.setChecked(false);
                             }
                         }
@@ -429,14 +460,17 @@ public class ContactCreationFragment extends IvyBaseFragment {
             }
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNAME)) {
                 ISCONTACTNAME = true;
+                menuMap.put(CODE_CONTACTNAME, configureBO);
             }
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNUMBER)) {
                 ISCONTACTNO = true;
                 tvTitlePhno.setText(configureBO.getMenuName());
+                menuMap.put(CODE_CONTACTNUMBER, configureBO);
             }
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTMAIL)) {
                 ISCONTACTEMAIL = true;
                 tvTitleEmail.setText(configureBO.getMenuName());
+                menuMap.put(CODE_CONTACTMAIL, configureBO);
             }
         }
         if (!ISCONTACTPRIMARY) {
@@ -513,7 +547,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private boolean hasdata() {
         boolean isData = false;
         if (retailerContactBo.getFistname().length() > 0 || retailerContactBo.getLastname().length() > 0 ||
-                (!retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") && retailerContactBo.getContactTitleLovId().length() > 0 ) ||
+                (!retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") && retailerContactBo.getContactTitleLovId().length() > 0) ||
                 retailerContactBo.getTitle().length() > 0 || retailerContactBo.getContactMail().length() > 0
                 || retailerContactBo.getContactNumber().length() > 0) {
             isData = true;
@@ -526,44 +560,94 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private boolean validateData() {
         for (ConfigureBO configureBO : contactConfig) {
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNAME)) {
-                if (configureBO.getMandatory() == 1) {
-                    if (retailerContactBo.getFistname().length() == 0) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.enter_first_name), Toast.LENGTH_SHORT).show();
+                //first Name
+                if (retailerContactBo.getFistname().length() == 0 && configureBO.getMandatory() == 1) {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.enter_first_name), Toast.LENGTH_SHORT).show();
+                    etFirstName.requestFocus();
+                    return false;
+                } else if (retailerContactBo.getFistname().length() > 0) {
+                    if (configureBO.getMaxLengthNo() > 0
+                            && retailerContactBo.getFistname().length() > configureBO.getMaxLengthNo()) {
+                        Toast.makeText(getActivity(),
+                                configureBO.getMenuName() + " Length Must Be " + configureBO.getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                .show();
                         etFirstName.requestFocus();
                         return false;
                     }
-                    if (retailerContactBo.getLastname().length() == 0) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.enter_last_name), Toast.LENGTH_SHORT).show();
+                }
+                //last name
+                if (retailerContactBo.getLastname().length() == 0 && configureBO.getMandatory() == 1) {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.enter_last_name), Toast.LENGTH_SHORT).show();
+                    etLastName.requestFocus();
+                    return false;
+                } else if (retailerContactBo.getLastname().length() > 0) {
+                    if (configureBO.getMaxLengthNo() > 0
+                            && retailerContactBo.getLastname().length() > configureBO.getMaxLengthNo()) {
+                        Toast.makeText(getActivity(),
+                                configureBO.getMenuName() + " Length Must Be " + configureBO.getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                .show();
                         etLastName.requestFocus();
                         return false;
                     }
-                    if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1")) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.select_contact_title), Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-                    if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") &&
-                            retailerContactBo.getTitle().length() == 0) {
-                        Toast.makeText(getActivity(), getActivity().getString(R.string.enter_other_name), Toast.LENGTH_SHORT).show();
+                }
+                //title spinner
+                if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1")) {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.select_contact_title), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                //others edit text
+                if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") &&
+                        retailerContactBo.getTitle().length() == 0 && configureBO.getMandatory() == 1) {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.enter_other_name), Toast.LENGTH_SHORT).show();
+                    etOthers.requestFocus();
+                    return false;
+                } else if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") &&
+                        retailerContactBo.getTitle().length() > 0) {
+                    if (configureBO.getMaxLengthNo() > 0
+                            && retailerContactBo.getTitle().length() > configureBO.getMaxLengthNo()) {
+                        Toast.makeText(getActivity(),
+                                configureBO.getMenuName() + " Length Must Be " + configureBO.getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                .show();
+                        etOthers.requestFocus();
                         return false;
                     }
                 }
             }
-            if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNUMBER) && configureBO.getMandatory() == 1) {
-                if (retailerContactBo.getContactNumber().length() == 0) {
+            //phone number
+            if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNUMBER)) {
+                if (retailerContactBo.getContactNumber().length() == 0 && configureBO.getMandatory() == 1) {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.enter) + " " + configureBO.getMenuName(), Toast.LENGTH_SHORT).show();
                     etPhno.requestFocus();
                     return false;
+                } else if (retailerContactBo.getContactNumber().length() > 0) {
+                    if (configureBO.getMaxLengthNo() > 0 && retailerContactBo.getContactNumber().length() > configureBO.getMaxLengthNo()) {
+                        Toast.makeText(getActivity(),
+                                configureBO.getMenuName() + " Length Must Be " + configureBO.getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                .show();
+                        etPhno.requestFocus();
+                        return false;
+                    }
                 }
             }
+            //email Id
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTMAIL)) {
                 if (retailerContactBo.getContactMail().length() == 0 && configureBO.getMandatory() == 1) {
                     Toast.makeText(getActivity(), getActivity().getString(R.string.enter) + " " + configureBO.getMenuName(), Toast.LENGTH_SHORT).show();
                     etEmail.requestFocus();
                     return false;
-                } else if (retailerContactBo.getContactMail().length() > 0 && !isValidEmail(retailerContactBo.getContactMail())) {
-                    Toast.makeText(getActivity(), getActivity().getString(R.string.invalid_email_address), Toast.LENGTH_SHORT).show();
-                    etEmail.requestFocus();
-                    return false;
+                } else if (retailerContactBo.getContactMail().length() > 0) {
+                    if (configureBO.getMaxLengthNo() > 0 && retailerContactBo.getContactMail().length() > configureBO.getMaxLengthNo()) {
+                        Toast.makeText(getActivity(),
+                                configureBO.getMenuName() + " Length Must Be " + configureBO.getMaxLengthNo(), Toast.LENGTH_SHORT)
+                                .show();
+                        etEmail.requestFocus();
+                        return false;
+                    }
+                    if (!isValidEmail(retailerContactBo.getContactMail())) {
+                        Toast.makeText(getActivity(), getActivity().getString(R.string.invalid_email_address), Toast.LENGTH_SHORT).show();
+                        etEmail.requestFocus();
+                        return false;
+                    }
                 }
             }
         }
@@ -697,10 +781,6 @@ public class ContactCreationFragment extends IvyBaseFragment {
         }
     }
 
-    //Email Id Validation
-    public static boolean isValidEmail(CharSequence target) {
-        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
-    }
 
     private void deleteContact(RetailerContactBo retailerContact) {
 
@@ -766,6 +846,31 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 }
             }
         return default_value;
+    }
+
+    //Email Id Validation
+    public static boolean isValidEmail(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
+
+    public boolean validRegex(String pattern, String str) {
+
+        if (pattern.equals("")) {
+            return true;
+        }
+
+        Pattern mPattern = Pattern.compile(pattern);
+        Matcher matcher = mPattern.matcher(str);
+
+        // Entered text does not match the pattern
+        if (!matcher.matches()) {
+            if (!matcher.lookingAt())
+                return false;
+            // It does not match partially too
+            if (!matcher.hitEnd())
+                return false;
+        }
+        return true;
     }
 }
 
