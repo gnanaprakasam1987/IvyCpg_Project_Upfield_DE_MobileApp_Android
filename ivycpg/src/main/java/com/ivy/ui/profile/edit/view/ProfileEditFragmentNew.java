@@ -1162,7 +1162,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
             flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
         } else {
-            showMessage("Select future date");
+            showMessage(getActivity().getString(R.string.select_future_date));
         }
 
     }
@@ -1174,7 +1174,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
             dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
         } else {
-            showMessage("Select future date");
+            showMessage(getActivity().getString(R.string.select_future_date));
         }
 
     }
