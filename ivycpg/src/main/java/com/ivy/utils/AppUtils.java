@@ -18,6 +18,7 @@ import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -33,6 +34,7 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import java.io.File;
@@ -82,9 +84,9 @@ public class AppUtils {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
-    public static  String latlongImageFileName;
+    public static String latlongImageFileName;
 
-    public static InputFilter getInputFilter(String regex ){
+    public static InputFilter getInputFilter(String regex) {
         InputFilter fil = new InputFilter.LengthFilter(25);
         if (regex != null && !regex.isEmpty()) {
             if (regex.contains("<") && regex.contains(">")) {
@@ -106,7 +108,6 @@ public class AppUtils {
     }
 
 
-
     public static boolean isEmptyString(String text) {
         return (text == null || text.trim().equals("null") || text.trim()
                 .length() <= 0);
@@ -118,12 +119,11 @@ public class AppUtils {
     }
 
 
-
     /**
      * DecodeFile is convert the large size image to fixed size which mentioned
      * above
      */
-    public static  Bitmap decodeFile(File f) {
+    public static Bitmap decodeFile(File f) {
         int IMAGE_MAX_SIZE = 500;
         Bitmap b = null;
         try {
@@ -403,6 +403,24 @@ public class AppUtils {
         // how you store the regID in your app is up to you.
         return context.getSharedPreferences(HomeScreenActivity.class.getSimpleName(),
                 MODE_PRIVATE);
+    }
+
+    public static boolean validRegex(String pattern, String str) {
+
+        if (pattern.equals("")) {
+            return true;
+        }
+
+        Pattern mPattern = Pattern.compile(pattern);
+        Matcher matcher = mPattern.matcher(str);
+
+        // Entered text does not match the pattern
+        if (!matcher.matches()) {
+            // It does not match partially too
+            if (!matcher.hitEnd())
+                return false;
+        }
+        return true;
     }
 
 }

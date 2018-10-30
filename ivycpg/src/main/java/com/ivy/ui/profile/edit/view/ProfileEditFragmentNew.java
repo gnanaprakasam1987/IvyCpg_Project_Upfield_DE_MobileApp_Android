@@ -39,14 +39,12 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
@@ -73,16 +71,14 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
-import com.ivy.ui.profile.data.DatePreviewListener;
-
 import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.data.DatePickerFragment;
+import com.ivy.ui.profile.data.DatePreviewListener;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
 import com.ivy.ui.profile.edit.di.ProfileEditModule;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
-import com.ivy.ui.profile.data.DatePickerFragment;
-
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -391,7 +387,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 longitude = data.getExtras().getDouble("lon") + "";
                 if (data.getExtras().getBoolean("isChanged")) {
                     latlongtextview.setText(lat + ", " + longitude);
-                    profileEditPresenter.updateLatLong(lat,longitude);
+                    profileEditPresenter.updateLatLong(lat, longitude);
                     if (isLatLongCameravailable) {
                         latlongCameraBtn.setVisibility(View.VISIBLE);
                     }
@@ -435,6 +431,14 @@ public class ProfileEditFragmentNew extends BaseFragment
                         editTextHashMap.get(mNumber).setText(s);
                         editTextHashMap.get(mNumber).setSelection(editTextHashMap.get(mNumber).length());
                     }
+
+                    if (s.length() > 0) {
+                        if (!profileEditPresenter.checkRegex(mNumber, s)) {
+                            et.delete(s.length() - 1, s.length());
+                            showMessage(getResources().getString(R.string.enter_valid) + " " + menuName);
+                        }
+                    }
+
                 }
             });
         }
@@ -669,8 +673,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void profileEditShowMessage(int resouceId, String msg) {
-        Toast.makeText(getActivity(),
-                getActivity().getResources().getString(resouceId) + " " + msg, Toast.LENGTH_LONG).show();
+        showMessage(getActivity().getResources().getString(resouceId) + " " + msg);
     }
 
 
@@ -1159,7 +1162,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
             flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
         } else {
-            Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
+            showMessage(getActivity().getString(R.string.select_future_date));
         }
 
     }
@@ -1171,7 +1174,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
             dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
         } else {
-            Toast.makeText(getActivity(), "Select future date", Toast.LENGTH_SHORT).show();
+            showMessage(getActivity().getString(R.string.select_future_date));
         }
 
     }
