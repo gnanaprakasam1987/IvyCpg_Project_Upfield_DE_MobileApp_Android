@@ -292,6 +292,10 @@ public class PriceTrackingHelper {
                         ) {
                     boolean isInserted = false;
 
+                    sku.setPrice_ca(bmodel.checkDecimalValue(sku.getPrice_ca(), 8, 2));
+                    sku.setPrice_oo(bmodel.checkDecimalValue(sku.getPrice_oo(), 8, 2));
+                    sku.setPrice_pc(bmodel.checkDecimalValue(sku.getPrice_pc(), 8, 2));
+
                     if ((!sku.getPrice_ca().equals("0") && !sku.getPrice_ca().equals("0.0")) || (!sku.getMrp_ca().equals("0") && !sku.getMrp_ca().equals("0.0"))) {
                         values = QT(tid) + "," + sku.getProductID() + ","
                                 + sku.getPriceChanged() + ","
