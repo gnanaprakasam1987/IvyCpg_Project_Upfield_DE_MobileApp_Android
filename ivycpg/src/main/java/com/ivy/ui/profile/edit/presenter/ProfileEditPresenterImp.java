@@ -3394,23 +3394,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     @Override
     public boolean checkRegex(int menuNumber, String typedText) {
-
-        String pattern = profileConfig.get(menuNumber).getRegex();
-
-        if (pattern.equals("")) {
-            return true;
-        }
-
-        Pattern mPattern = Pattern.compile(pattern);
-        Matcher matcher = mPattern.matcher(typedText);
-
-        // Entered text does not match the pattern
-        if (!matcher.matches()) {
-            // It does not match partially too
-            if (!matcher.hitEnd())
-                return false;
-        }
-        return true;
+        return  AppUtils.validRegex(profileConfig.get(menuNumber).getRegex(),typedText);
     }
 }
 
