@@ -46,6 +46,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -2638,7 +2640,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 !comparConfigerCode(mConfigCode, ProfileConstant.GSTN)) {   /*EMAIL, PenNumber,GST*/
             //regex
             getIvyView().addLengthFilter(profileConfig.get(mNumber).getRegex());
-            getIvyView().checkRegex(profileConfig.get(mNumber).getRegex());
+            //getIvyView().checkRegex(profileConfig.get(mNumber).getRegex());
         }
 
         if (comparConfigerCode(mConfigCode, ProfileConstant.PAN_NUMBER)) {  /*PanNumber*/
@@ -3388,6 +3390,27 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         mProfileDataManager.closeDB();
         super.onDetach();
 
+    }
+
+    @Override
+    public boolean checkRegex(int menuNumber, String typedText) {
+
+        String pattern = profileConfig.get(menuNumber).getRegex();
+
+        if (pattern.equals("")) {
+            return true;
+        }
+
+        Pattern mPattern = Pattern.compile(pattern);
+        Matcher matcher = mPattern.matcher(typedText);
+
+        // Entered text does not match the pattern
+        if (!matcher.matches()) {
+            // It does not match partially too
+            if (!matcher.hitEnd())
+                return false;
+        }
+        return true;
     }
 }
 

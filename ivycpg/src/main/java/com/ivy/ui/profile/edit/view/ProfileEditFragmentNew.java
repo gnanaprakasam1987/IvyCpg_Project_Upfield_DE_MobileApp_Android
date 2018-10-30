@@ -391,7 +391,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 longitude = data.getExtras().getDouble("lon") + "";
                 if (data.getExtras().getBoolean("isChanged")) {
                     latlongtextview.setText(lat + ", " + longitude);
-                    profileEditPresenter.updateLatLong(lat,longitude);
+                    profileEditPresenter.updateLatLong(lat, longitude);
                     if (isLatLongCameravailable) {
                         latlongCameraBtn.setVisibility(View.VISIBLE);
                     }
@@ -435,6 +435,16 @@ public class ProfileEditFragmentNew extends BaseFragment
                         editTextHashMap.get(mNumber).setText(s);
                         editTextHashMap.get(mNumber).setSelection(editTextHashMap.get(mNumber).length());
                     }
+
+                    if (s.length() > 0) {
+                        if (!profileEditPresenter.checkRegex(mNumber, s)) {
+                            et.delete(s.length() - 1, s.length());
+                            Toast.makeText(getActivity(),
+                                    getResources().getString(R.string.enter_valid) + " " + menuName, Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    }
+
                 }
             });
         }
