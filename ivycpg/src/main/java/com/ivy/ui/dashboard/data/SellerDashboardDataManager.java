@@ -43,4 +43,6 @@ public interface SellerDashboardDataManager {
 
     Single<DailyReportBO> fetchNoOfOrderAndValue();
 
+    Single<Integer> getProductiveCallsForDay();
+
 }

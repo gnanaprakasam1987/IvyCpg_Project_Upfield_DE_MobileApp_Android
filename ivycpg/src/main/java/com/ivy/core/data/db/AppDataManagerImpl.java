@@ -5,27 +5,41 @@ import android.database.Cursor;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.IndicativeBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
 
+import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_SHOW_ALL_ROUTE_FILTER;
 import static com.ivy.utils.AppUtils.QT;
 
-public class DBHelperImpl implements DbHelper {
+public class AppDataManagerImpl implements AppDataManager {
 
     private DBUtil mDbUtil;
 
     private AppDataProvider appDataProvider;
 
+    private ConfigurationMasterHelper configurationMasterHelper;
+
     @Inject
-    public DBHelperImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
+    public AppDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
         mDbUtil = dbUtil;
         this.appDataProvider = appDataProvider;
+        this.configurationMasterHelper = configurationMasterHelper;
 
     }
 
@@ -197,6 +211,7 @@ public class DBHelperImpl implements DbHelper {
             }
         });
     }
+
 
 
     @Override

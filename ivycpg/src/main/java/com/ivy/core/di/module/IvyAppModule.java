@@ -10,8 +10,8 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.datamanager.DataManagerImpl;
-import com.ivy.core.data.db.DBHelperImpl;
-import com.ivy.core.data.db.DbHelper;
+import com.ivy.core.data.db.AppDataManagerImpl;
+import com.ivy.core.data.db.AppDataManager;
 import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.core.data.distributor.DistributorDataManagerImpl;
 import com.ivy.core.data.label.LabelsDataManager;
@@ -28,11 +28,8 @@ import com.ivy.core.di.scope.DistributorInfo;
 import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
-import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.location.LocationUtil;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
@@ -83,7 +80,7 @@ public class IvyAppModule {
 
     @Provides
     @Singleton
-    protected DbHelper providesDbHelper(DBHelperImpl dbHelper) {
+    protected AppDataManager providesDbHelper(AppDataManagerImpl dbHelper) {
         return dbHelper;
     }
 

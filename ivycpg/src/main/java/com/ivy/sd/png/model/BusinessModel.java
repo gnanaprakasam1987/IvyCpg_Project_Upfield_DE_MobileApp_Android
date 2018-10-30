@@ -57,13 +57,10 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import com.ivy.core.CodeCleanUpUtil;
-import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
-import com.ivy.core.data.db.DBHelperImpl;
-import com.ivy.core.data.app.AppDataProvider;
-import com.ivy.core.data.app.AppDataProviderImpl;
-import com.ivy.core.data.db.DBHelperImpl;
+import com.ivy.core.data.db.AppDataManagerImpl;
+import com.ivy.core.data.retailer.RetailerDataManagerImpl;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.module.IvyAppModule;
@@ -97,6 +94,7 @@ import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
+import com.ivy.sd.png.bo.IndicativeBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -167,7 +165,6 @@ import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.utils.AppUtils;
-import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -207,11 +204,7 @@ import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
 import co.chatsdk.firebase.push.FirebasePushModule;
 import co.chatsdk.ui.manager.BaseInterfaceAdapter;
 
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_FIREBASE_STORAGE_URL;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_SERVER_KEY;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
-
-import javax.inject.Inject;
 
 public class BusinessModel extends Application {
 
@@ -718,7 +711,7 @@ public class BusinessModel extends Application {
 
     /*******************************************************************************************************************************************************************************/
 
-    public void initializeChatSdk(){
+    public void initializeChatSdk() {
         try {
             Context context = getApplicationContext();
 
@@ -754,7 +747,7 @@ public class BusinessModel extends Application {
                 FirebasePushModule.activateForFirebase();
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }
@@ -1199,7 +1192,7 @@ public class BusinessModel extends Application {
 
     /**
      * @return Order Value
-     * @See {@link DBHelperImpl#getOrderValue()}
+     * @See {@link AppDataManagerImpl#getOrderValue()}
      * @deprecated This has been Migrated to MVP pattern
      */
     public double getOrderValue() {
@@ -1633,7 +1626,6 @@ public class BusinessModel extends Application {
                     retailer.setHangingOrder(false);
                     retailer.setIndicateFlag(0);
                     retailer.setIsCollectionView("N");
-
                     if (configurationMasterHelper.IS_HANGINGORDER) {
                         OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer);
                     }
@@ -1653,6 +1645,8 @@ public class BusinessModel extends Application {
 
             if (getRetailerMaster() != null && getRetailerMaster().size() > 0)
                 getMSLValues();
+
+            /********************************************/
 
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
                 mRetailerHelper.updatePlannedDatesInRetailerObj();
@@ -1694,6 +1688,11 @@ public class BusinessModel extends Application {
         }
     }
 
+    @Deprecated
+    /**
+     * @See
+     * {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#setIsBOMAchieved(RetailerMasterBO)}
+     */
     private void setIsBOMAchieved(RetailerMasterBO Retailer) {
         DBUtil db = null;
         try {
@@ -1920,6 +1919,11 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * @deprecated
+     * @See {@link RetailerDataManagerImpl#getMSLValues(ArrayList)}
+     */
+    @Deprecated
     private void getMSLValues() {
         DBUtil db = null;
         try {
@@ -2013,6 +2017,9 @@ public class BusinessModel extends Application {
     /**
      * Method to use download retailer ,which mapped indicative order and not
      * order taken
+     *
+     * @See {@link RetailerDataManagerImpl#fetchIndicativeRetailers()}
+     * @deprecated
      */
     public void downloadIndicativeOrderedRetailer() {
         DBUtil db = null;
@@ -2148,11 +2155,12 @@ public class BusinessModel extends Application {
     }
 
     /**
-     * update indicative orderflag is 1 in retailer master objet
-     *
      * @param --retailerList
      * @param --retailerid   - mapped indicative ordered retailer
      * @param --flag
+     * @See {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#updateIndicativeOrderedRetailer(RetailerMasterBO, ArrayList)}
+     * update indicative orderflag is 1 in retailer master objet
+     * @deprecated
      */
     public void updateIndicativeOrderedRetailer(RetailerMasterBO retObj) {
         retObj.setIndicateFlag(0);
@@ -4877,7 +4885,7 @@ public class BusinessModel extends Application {
     @Deprecated
     /**
      * This has been moved to  Dbhelper
-     * @See {@link DBHelperImpl#saveModuleCompletion(String)}
+     * @See {@link AppDataManagerImpl#saveModuleCompletion(String)}
      */
     public boolean saveModuleCompletion(String menuName) {
         try {
@@ -5667,28 +5675,6 @@ public class BusinessModel extends Application {
 
     public void setInvoiceDate(String invoiceDate) {
         this.invoiceDate = invoiceDate;
-    }
-
-    class IndicativeBO {
-        private short isIndicative;
-        private String retailerID;
-
-        public short getIsIndicative() {
-            return isIndicative;
-        }
-
-        public void setIsIndicative(short isIndicative) {
-            this.isIndicative = isIndicative;
-        }
-
-        public String getRetailerID() {
-            return retailerID;
-        }
-
-        public void setRetailerID(String retailerID) {
-            this.retailerID = retailerID;
-        }
-
     }
 
 

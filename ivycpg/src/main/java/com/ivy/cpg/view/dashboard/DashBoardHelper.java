@@ -3722,9 +3722,9 @@ public class DashBoardHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link SellerDashboardDataManagerImpl#fetchNoOfOrderAndValue()}
      * @return
+     * @See {@link SellerDashboardDataManagerImpl#fetchNoOfOrderAndValue()}
+     * @deprecated
      */
     public DailyReportBO getNoOfOrderAndValue() {
         DailyReportBO dailyRp = new DailyReportBO();
@@ -4026,13 +4026,14 @@ public class DashBoardHelper {
 
 
     /**
+     * @return ProductiveCallsForTheDay
+     * @See {@link SellerDashboardDataManagerImpl#getProductiveCallsForDay()}
      * This method will return the productive retailers count for the Day. For
      * Van Seller, this method will get distinct retailer count from
      * InvoiceTable and For Pre-seller from OrderHeader if PRD_FOR_ORDER is TRUE and from ClosingStockHeader if PRD_FOR_STK is true.
      * This config is computed through loadProductiveCallsConfig()
      * Deviated retailer productivity wont be considered for deviated retailers.
-     *
-     * @return ProductiveCallsForTheDay
+     * @deprecated
      */
     public int getProductiveCallsForTheDay() {
         int productive_calls = 0;

@@ -3,12 +3,14 @@ package com.ivy.ui.dashboard.data;
 import android.database.Cursor;
 
 import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.beat.BeatDataManager;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +30,9 @@ import io.reactivex.functions.Function;
 
 import static com.ivy.cpg.view.dashboard.DashBoardHelper.MONTH_NAME;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.PRD_ORD;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.PRD_STK;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.PRODUCTVIE_CALLS;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
 import static com.ivy.utils.AppUtils.QT;
 
@@ -38,6 +43,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     private AppDataProvider appDataProvider;
 
     private ConfigurationMasterHelper configurationMasterHelper;
+
 
     private int currentmonthindex = 0;
 
@@ -953,6 +959,95 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                 shutDownDb();
                 return dailyRp;
+            }
+        });
+    }
+
+
+    /**
+     * This method will return the productive retailers count for the Day. For
+     * Van Seller, this method will get distinct retailer count from
+     * InvoiceTable and For Pre-seller from OrderHeader if PRD_FOR_ORDER is TRUE and from ClosingStockHeader if PRD_FOR_STK is true.
+     * This config is computed through loadProductiveCallsConfig()
+     * Deviated retailer productivity wont be considered for deviated retailers.
+     *
+     * @return ProductiveCallsForTheDay
+     */
+    @Override
+    public Single<Integer> getProductiveCallsForDay() {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int productive_calls = 0;
+                try {
+                    initDb();
+
+                    Cursor c = null;
+                    if (configurationMasterHelper.IS_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                        // c =
+                        // db.selectSQL("SELECT distinct(Retailerid) FROM InvoiceMaster");
+
+                        if (appDataProvider.getBeatMasterBo() == null
+                                || appDataProvider.getBeatMasterBo().getBeatId() == 0) {
+                            c = mDbUtil.selectSQL("select  distinct(Retailerid) from InvoiceMaster where upload='N'");
+                        } else {
+                            c = mDbUtil.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
+                                    + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
+                                    + "LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = r.RetailerID"
+                                    + " where RBM.isdeviated='Y' or RMI.isToday=1 and i.IsPreviousInvoice = 0 ");
+                        }
+                    } else {
+
+                        String sql = "SELECT RField FROM "
+                                + DataMembers.tbl_HhtModuleMaster
+                                + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1' and ForSwitchSeller = 0";
+
+                        Cursor prodCallsConfigCursor = mDbUtil.selectSQL(sql);
+
+                        boolean isProdForOrder = false;
+                        if (prodCallsConfigCursor != null && prodCallsConfigCursor.getCount() != 0) {
+                            while (prodCallsConfigCursor.moveToNext()) {
+                                if (prodCallsConfigCursor.getString(0).equalsIgnoreCase(PRD_ORD))
+                                    isProdForOrder = true;
+                                else if (prodCallsConfigCursor.getString(0).equalsIgnoreCase(PRD_STK))
+                                    isProdForOrder = false;
+
+                            }
+                            prodCallsConfigCursor.close();
+                        }
+
+                        if (isProdForOrder) {
+                            if (appDataProvider.getBeatMasterBo() == null
+                                    || appDataProvider.getBeatMasterBo().getBeatId() == 0) {
+                                c = mDbUtil.selectSQL("select  distinct(Retailerid) from OrderHeader where upload!='X'");
+                            } else {
+                                c = mDbUtil.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
+                                        + "o.retailerid=r.retailerid where o.upload!='X' ");// where
+                            }
+                        } else {
+                            if (appDataProvider.getBeatMasterBo() == null
+                                    || appDataProvider.getBeatMasterBo().getBeatId() == 0) {
+                                c = mDbUtil.selectSQL("select  distinct(RetailerID) from ClosingStockHeader");
+                            } else {
+                                c = mDbUtil.selectSQL("select  distinct(CSH.RetailerID) from ClosingStockHeader CSH INNER JOIN RetailerMaster RM on "
+                                        + "CSH.RetailerID=RM.RetailerID ");
+                            }
+                        }
+                    }
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            productive_calls = c.getCount();
+                        }
+                        c.close();
+                    }
+
+
+                } catch (Exception ignored) {
+
+                }
+
+                shutDownDb();
+                return productive_calls;
             }
         });
     }
