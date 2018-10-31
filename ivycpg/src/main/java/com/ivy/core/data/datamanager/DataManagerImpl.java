@@ -208,6 +208,21 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters) {
+        appDataProvider.setRetailerMasters(retailerMasters);
+    }
+
+    @Override
+    public void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters, boolean isFromBModel) {
+        appDataProvider.setRetailerMasters(retailerMasters,isFromBModel);
+    }
+
+    @Override
+    public ArrayList<RetailerMasterBO> getRetailerMasters() {
+        return appDataProvider.getRetailerMasters();
+    }
+
+    @Override
     public int getSavedImageCount() {
 
         int imageSize = 0;
@@ -240,21 +255,6 @@ public class DataManagerImpl implements DataManager {
         }
         return imageSize;
 
-    }
-
-    @Override
-    public Observable<ArrayList<RetailerMasterBO>> fetchRetailers() {
-        return appDataManager.fetchRetailers();
-    }
-
-    @Override
-    public Observable<Boolean> updateRouteConfig() {
-        return appDataManager.updateRouteConfig();
-    }
-
-    @Override
-    public Observable<ArrayList<IndicativeBO>> fetchIndicativeRetailers() {
-        return appDataManager.fetchIndicativeRetailers();
     }
 
     @Override

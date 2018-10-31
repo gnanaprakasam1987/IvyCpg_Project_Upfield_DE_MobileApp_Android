@@ -8,6 +8,9 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 
+import java.util.ArrayList;
+import java.util.Vector;
+
 public class CodeCleanUpUtil {
 
     private static CodeCleanUpUtil instance = null;
@@ -70,7 +73,7 @@ public class CodeCleanUpUtil {
 
     public void setUserId(int userId){
         appDataProvider.getUser().setUserid(userId);
-        bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
+        bmodel.userMasterHelper.getUserMasterBO().setUserid(userId);
     }
 
     public void setGlobalLocationId(int locationId){
@@ -80,6 +83,18 @@ public class CodeCleanUpUtil {
     public void setTodayBeatMaster(BeatMasterBO beatMaster){
         appDataProvider.setTodayBeatMaster(beatMaster,true);
     }
+
+    public void setRetailerMaster(ArrayList<RetailerMasterBO> retailerMasterBOS){
+        appDataProvider.setRetailerMasters(retailerMasterBOS,true);
+    }
+
+
+    public void setBmodelRetailerMaster(ArrayList<RetailerMasterBO> retailerMasterBOS){
+        Vector<RetailerMasterBO> retailerVector =new Vector<RetailerMasterBO>();
+        retailerVector.addAll(retailerMasterBOS);
+        bmodel.setRetailerMaster(retailerVector);
+    }
+
 
     public void setBmodelGlobalLocationId(){
 

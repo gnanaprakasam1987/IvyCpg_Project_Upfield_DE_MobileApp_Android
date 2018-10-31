@@ -11,6 +11,7 @@ import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
+import com.ivy.core.data.retailer.RetailerDataManager;
 import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.di.module.ActivityModule;
 import com.ivy.core.di.module.IvyAppModule;
@@ -18,6 +19,7 @@ import com.ivy.core.di.scope.ActivityContext;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.DistributorInfo;
+import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.core.di.scope.DataBaseInfo;
@@ -85,6 +87,8 @@ public interface IvyAppComponent {
     @DataBaseInfo
     DBUtil dbUtil();
 
+    @RetailerInfo
+    RetailerDataManager retailerDataManager();
 
     @LabelMasterInfo
     LabelsDataManager labelsDataManager();

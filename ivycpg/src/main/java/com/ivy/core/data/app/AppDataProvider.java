@@ -4,6 +4,8 @@ import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 
+import java.util.ArrayList;
+
 public interface AppDataProvider {
 
     void setInTime(String inTime);
@@ -51,6 +53,13 @@ public interface AppDataProvider {
     void setTodayBeatMaster(BeatMasterBO beatMaster,  boolean isFromBModel);
 
     BeatMasterBO getBeatMasterBo();
+
+
+    void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters);
+
+    void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters,  boolean isFromBModel);
+
+    ArrayList<RetailerMasterBO> getRetailerMasters();
 
 
 }
