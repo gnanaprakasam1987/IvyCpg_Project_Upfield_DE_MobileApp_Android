@@ -861,6 +861,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
 
     @Override
     public void showProgressDialog(String msg) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
+        } else if (isFinishing()) {
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginScreen.this);
         customProgressDialog(builder, msg);
         alertDialog = builder.create();
@@ -869,6 +876,13 @@ public class LoginScreen extends IvyBaseActivityNoActionBar
 
     @Override
     public void dismissAlertDialog() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
+        } else if (isFinishing()) {
+            return;
+        }
         if (alertDialog != null && alertDialog.isShowing()) {
             alertDialog.dismiss();
             alertDialog = null;

@@ -4562,8 +4562,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     class SaveStock extends AsyncTask<String, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
 
         @Override
         protected Boolean doInBackground(String... arg0) {
@@ -4595,16 +4593,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(StockAndOrder.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.saving));
-            alertDialog = builder.create();
-            alertDialog.show();
+            showProgressDialog(getResources().getString(R.string.saving));
         }
 
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
-            alertDialog.dismiss();
+            dismissProgressDialog();
             if (result == Boolean.TRUE) {
                 Toast.makeText(
                         StockAndOrder.this,
@@ -5697,6 +5691,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     @Override
     protected void onDestroy() {
+        dismissProgressDialog();
         super.onDestroy();
         unbindDrawables(findViewById(R.id.root));
 
@@ -5829,8 +5824,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
      */
     class calculateReturnProductValusAndQty extends
             AsyncTask<String, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
 
         @Override
         protected Boolean doInBackground(String... arg0) {
@@ -5850,16 +5843,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(StockAndOrder.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
+            showProgressDialog(getResources().getString(R.string.loading));
         }
 
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
-            alertDialog.dismiss();
+            dismissProgressDialog();
             nextButtonClick();
         }
     }
@@ -6735,8 +6724,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     //if barcode value present asyntask will be called
     class CheckAndEnter extends
             AsyncTask<String, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
 
         @Override
         protected Boolean doInBackground(String... arg0) {
@@ -6763,16 +6750,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(StockAndOrder.this);
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
+            showProgressDialog(getResources().getString(R.string.loading));
         }
 
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
             barcode = "";
-            alertDialog.dismiss();
+            dismissProgressDialog();
             if (!result) {
                 Toast.makeText(getApplicationContext(), "Product not available", Toast.LENGTH_LONG)
                         .show();
@@ -6852,7 +6836,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         switch (method) {
             case SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD:
                 if (errorCode != null && errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     bmodel.showAlert(getResources().getString(R.string.stock_download_successfully), 0);
                     orderHelper.updateWareHouseStock(getApplicationContext());
                     lvwplist.invalidateViews();
@@ -6863,7 +6847,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (errorDownloadMessage != null) {
                         Toast.makeText(this, errorDownloadMessage, Toast.LENGTH_SHORT).show();
                     }
-                    alertDialog.dismiss();
+                    dismissProgressDialog();
                     break;
                 }
                 break;
@@ -6876,15 +6860,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     class DownloadNewStock extends AsyncTask<Integer, Integer, Integer> {
 
         private int downloadStatus = 0;
-        private AlertDialog.Builder builder;
-
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(StockAndOrder.this);
-
-            customProgressDialog(builder, getResources().getString(R.string.loading));
-            alertDialog = builder.create();
-            alertDialog.show();
+            showProgressDialog(getResources().getString(R.string.loading));
         }
 
         @Override
@@ -6912,8 +6890,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     bmodel.synchronizationHelper.downloadWareHouseStock(warehouseWebApi);
                 } else {
                     Toast.makeText(StockAndOrder.this, getResources().getString(R.string.url_not_mapped), Toast.LENGTH_SHORT).show();
-                    if (alertDialog.isShowing())
-                        alertDialog.dismiss();
+                    dismissProgressDialog();
                 }
             } else {
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
@@ -6922,8 +6899,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 } else {
                     Toast.makeText(StockAndOrder.this, getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                 }
-                if (alertDialog.isShowing())
-                    alertDialog.dismiss();
+                dismissProgressDialog();
             }
         }
     }
@@ -6983,5 +6959,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         return uomName;
     }
 
+    private void showProgressDialog(String msg) {
+        if (alertDialog == null) {
+            AlertDialog.Builder build = new AlertDialog.Builder(StockAndOrder.this);
+            customProgressDialog(build, msg);
+            alertDialog = build.create();
+        }
+        alertDialog.show();
+    }
 
+    private void dismissProgressDialog() {
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+    }
 }
