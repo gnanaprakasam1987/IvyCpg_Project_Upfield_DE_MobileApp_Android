@@ -97,7 +97,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
     private Button dateBtn;
     private EditText qtyEditText;
     Button btnSave;
-    FloatingActionButton btnBarcode;
 
     private static final String TAG = "POSM Screen";
     private static final String TAG_DATE_PICKER_INSTALLED = "date_picker_installed";
@@ -1523,8 +1522,6 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             }
         }
 
-        if (!assetTrackingHelper.SHOW_POSM_BARCODE)
-            btnBarcode.setVisibility(View.GONE);
 
     }
 
