@@ -522,7 +522,7 @@ public class ReasonHelper {
                 ReasonMaster reasonBO;
                 reasonBO = new ReasonMaster();
                 reasonBO.setReasonID("0");
-                reasonBO.setReasonDesc(context.getResources().getString(R.string.select_reason));
+                reasonBO.setReasonDesc(context.getResources().getString(R.string.plain_select));
                 reasonBO.setReasonCategory("NONE");
                 getReasonList().add(reasonBO);
                 while (c.moveToNext()) {
