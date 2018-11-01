@@ -2,6 +2,7 @@ package com.ivy.core.data.retailer;
 
 import com.ivy.sd.png.bo.IndicativeBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.RetailerMissedVisitBO;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,9 @@ public interface RetailerDataManager {
     Observable<Boolean> updateRouteConfig();
 
     Observable<ArrayList<IndicativeBO>> fetchIndicativeRetailers();
+
+    Observable<ArrayList<RetailerMissedVisitBO>> fetchMissedRetailers();
+
 
 
 }

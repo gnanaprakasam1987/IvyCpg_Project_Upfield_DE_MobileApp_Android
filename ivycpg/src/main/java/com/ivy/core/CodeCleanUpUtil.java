@@ -80,12 +80,24 @@ public class CodeCleanUpUtil {
         appDataProvider.setGlobalLocationIndex(locationId,true);
     }
 
+    public void setBmodelGlobalLocationId(int locationId){
+        bmodel.productHelper.setmSelectedGlobalProductId(locationId);
+    }
+
     public void setTodayBeatMaster(BeatMasterBO beatMaster){
         appDataProvider.setTodayBeatMaster(beatMaster,true);
     }
 
-    public void setRetailerMaster(ArrayList<RetailerMasterBO> retailerMasterBOS){
-        appDataProvider.setRetailerMasters(retailerMasterBOS,true);
+    public void setBModelTodayBeatMaster(BeatMasterBO beatMaster){
+        bmodel.beatMasterHealper.setTodayBeatMasterBO(beatMaster);
+    }
+
+    public void setRetailerMaster(Vector<RetailerMasterBO> retailerMasterBOS){
+
+        ArrayList<RetailerMasterBO> retailerMasterBOArrayList = new ArrayList<>();
+        retailerMasterBOArrayList.addAll(retailerMasterBOS);
+
+        appDataProvider.setRetailerMasters(retailerMasterBOArrayList,true);
     }
 
 
@@ -95,8 +107,4 @@ public class CodeCleanUpUtil {
         bmodel.setRetailerMaster(retailerVector);
     }
 
-
-    public void setBmodelGlobalLocationId(){
-
-    }
 }

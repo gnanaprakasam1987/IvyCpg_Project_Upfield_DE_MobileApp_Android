@@ -517,6 +517,11 @@ public class BusinessModel extends Application {
         this.ctx = ctx;
     }
 
+    /**
+     * @return
+     * @See {@link RetailerDataManagerImpl#getWeekText()}
+     * @deprecated
+     */
     public String getWeekText() {
         String weekText = "wk1";
         try {
@@ -1384,6 +1389,10 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * @deprecated
+     * @See {@link RetailerDataManagerImpl#fetchRetailers()}
+     */
     public void downloadRetailerMaster() {
         try {
             mRetailerBOByRetailerid = new HashMap<>();
@@ -1646,7 +1655,6 @@ public class BusinessModel extends Application {
             if (getRetailerMaster() != null && getRetailerMaster().size() > 0)
                 getMSLValues();
 
-            /********************************************/
 
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
                 mRetailerHelper.updatePlannedDatesInRetailerObj();
@@ -1664,6 +1672,8 @@ public class BusinessModel extends Application {
             setWeeknoFoNewRetailer();
 
             collectionHelper.updateHasPaymentIssue();
+
+            /********************************************/
 
             if (configurationMasterHelper.IS_DAY_WISE_RETAILER_WALKINGSEQ)
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
@@ -1683,6 +1693,8 @@ public class BusinessModel extends Application {
             mRetailerHelper.downloadRetailerTarget("SV");
 
             db.closeDB();
+
+            codeCleanUpUtil.setRetailerMaster(getRetailerMaster());
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -1920,8 +1932,8 @@ public class BusinessModel extends Application {
 
 
     /**
-     * @deprecated
      * @See {@link RetailerDataManagerImpl#getMSLValues(ArrayList)}
+     * @deprecated
      */
     @Deprecated
     private void getMSLValues() {
@@ -2224,6 +2236,9 @@ public class BusinessModel extends Application {
     /**
      * Check the retailer is planned for today by route plan(WeekNo) Update the
      * isToday flag as 1 if planned, Bydefault this flag is 0
+     *
+     * @See {@link RetailerDataManagerImpl#getPlannedRetailers(ArrayList)}
+     * @deprecated
      */
     private void getPlannedRetailer() {
 
@@ -3718,6 +3733,7 @@ public class BusinessModel extends Application {
     }
 
     public void setRetailerMaster(Vector<RetailerMasterBO> retailerMaster) {
+        codeCleanUpUtil.setRetailerMaster(retailerMaster);
         this.retailerMaster = retailerMaster;
     }
 
@@ -5637,6 +5653,11 @@ public class BusinessModel extends Application {
         ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button3)).setBackgroundResource(R.drawable.tab_selection);*/
     }
 
+    /**
+     * @deprecated
+     * Handled inside the fetchRetailers() method itself
+     * @See {@link RetailerDataManagerImpl#fetchRetailers()}
+     */
     public void setWeeknoFoNewRetailer() {
         for (RetailerMasterBO retailer : getRetailerMaster()) {
             if (retailer.getIsNew().equalsIgnoreCase("Y")) {

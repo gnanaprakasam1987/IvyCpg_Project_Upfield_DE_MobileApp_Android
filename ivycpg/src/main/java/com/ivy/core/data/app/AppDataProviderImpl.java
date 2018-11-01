@@ -136,7 +136,7 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public void setGlobalLocationIndex(int locationIndex) {
         //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setGlobalLocationId(locationIndex);
+        mContext.codeCleanUpUtil.setBmodelGlobalLocationId(locationIndex);
 
         this.globalLocationIndex = locationIndex;
     }
@@ -154,7 +154,7 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public void setTodayBeatMaster(BeatMasterBO beatMaster) {
 
-        mContext.codeCleanUpUtil.setTodayBeatMaster(beatMaster);
+        mContext.codeCleanUpUtil.setBModelTodayBeatMaster(beatMaster);
 
         this.todayBeatMaster = beatMaster;
     }
