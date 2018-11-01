@@ -26,7 +26,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_promotiontracking);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar =  findViewById(R.id.toolbar);
 		if (toolbar != null) {
 			setSupportActionBar(toolbar);
 			if(getSupportActionBar() != null)

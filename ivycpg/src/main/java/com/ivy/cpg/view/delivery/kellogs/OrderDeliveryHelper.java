@@ -840,9 +840,16 @@ public class OrderDeliveryHelper {
         StringBuffer values;
         values = new StringBuffer();
 
-        values.append(AppUtils.QT(orderId)).append(",").append(productBO.getProductID()).append(",").append(taxBO.getTaxRate()).append(",");
-        values.append(taxBO.getTaxType()).append(",").append(taxBO.getTotalTaxAmount()).append(",").append(businessModel.getRetailerMasterBO().getRetailerID());
-        values.append(",").append(taxBO.getGroupId()).append(",0").append(",").append(AppUtils.QT(invoiceId));
+        values.append(AppUtils.QT(orderId)).append(",")
+                .append(productBO.getProductID()).append(",")
+                .append(taxBO.getTaxRate()).append(",");
+        values.append(taxBO.getTaxType()).append(",")
+                .append(businessModel.formatBasedOnCurrency(taxBO.getTotalTaxAmount())).append(",")
+                .append(businessModel.getRetailerMasterBO().getRetailerID());
+        values.append(",")
+                .append(taxBO.getGroupId())
+                .append(",0").append(",")
+                .append(AppUtils.QT(invoiceId));
         db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 

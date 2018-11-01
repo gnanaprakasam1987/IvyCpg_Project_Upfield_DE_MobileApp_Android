@@ -5046,7 +5046,7 @@ public class BusinessModel extends Application {
             } else {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
                         + AppUtils.QT(getRetailerMasterBO().getRetailerID())
-                        + " and upload='N'");
+                        + " and upload='N' and is_vansales = 0");
             }
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -5263,6 +5263,27 @@ public class BusinessModel extends Application {
             return true;
         else
             return false;
+    }
+
+    public String checkDecimalValue(String value, int wholeValueCount,
+                                    int decimalValueCount){
+        if(!value.contains("."))
+            return value;
+        else {
+            String fString = "", lString = "";
+            value = value.startsWith(".")? "0" + value:value;
+            value = value.endsWith(".")? value + "0":value;
+            String[] valArr = value.split("\\.");
+            if(valArr[0].length()>wholeValueCount)
+                fString = valArr[0].substring(0,valArr[0].length()-1);
+            if(valArr[1].length()>decimalValueCount)
+                lString = valArr[1].substring(0,valArr[0].length()-1);
+            if(valArr[0].length() <= wholeValueCount && valArr[1].length() <= decimalValueCount) {
+                fString = valArr[0];
+                lString = valArr[1];
+            }
+            return fString + "." + lString;
+        }
     }
 
     /**

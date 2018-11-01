@@ -192,8 +192,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
     // Used to map icons
     private static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
-    private static final String PRE_SALES = "PreSales";
-    private static final String VAN_SALES = "VanSales";
+    private String PRE_SALES = "PreSales";
+    private String VAN_SALES = "VanSales";
 
     private ArrayAdapter<Integer> indicativeOrderAdapter;
 
@@ -258,6 +258,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             finish();
         }
 
+        PRE_SALES = getResources().getString(R.string.sales_type_presale);
+        VAN_SALES = getResources().getString(R.string.sales_type_vansale);
+        mSalesTypeArray[0] = PRE_SALES;
+        mSalesTypeArray[1] = VAN_SALES;
 
         typearr = getTheme().obtainStyledAttributes(R.styleable.MyTextView);
 
@@ -2850,7 +2854,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if (assetTrackingHelper.getAssetTrackingList().size() > 0) {
 
-                    bmodel.mSelectedActivityName = menu.getMenuName();
+                    assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),

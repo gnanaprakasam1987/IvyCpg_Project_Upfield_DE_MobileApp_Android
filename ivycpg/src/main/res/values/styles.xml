@@ -914,7 +914,7 @@ negative button and neutral button -->
         <item name="android:paddingLeft">@dimen/btn_small_round_corner_padding</item>
         <item name="android:paddingRight">@dimen/btn_small_round_corner_padding</item>
         <item name="android:minWidth">@dimen/btn_small_round_corner_width</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/baloobhai_regular</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -926,7 +926,7 @@ negative button and neutral button -->
         <item name="android:paddingLeft">@dimen/btn_round_corner_padding</item>
         <item name="android:paddingRight">@dimen/btn_round_corner_padding</item>
         <item name="android:minWidth">@dimen/btn_round_corner_width</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/baloobhai_regular</item>
         <item name="android:textStyle">bold</item>
     </style>
 

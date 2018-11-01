@@ -163,7 +163,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                                 if (temp.size() == 0) {
                                     DigitalContentBO digital = new DigitalContentBO();
                                     digital.setHeader(true);
-                                    digital.setHeaderTitle(THIS_MONTH);
+                                    digital.setHeaderTitle(getResources().getString(R.string.digital_content_header_this_month));
                                     temp.add(digital);
                                     tempGp.add(digital);
                                 }
@@ -175,7 +175,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                                 if (temp.size() == 0) {
                                     DigitalContentBO digital = new DigitalContentBO();
                                     digital.setHeader(true);
-                                    digital.setHeaderTitle(PREVIOUS_MONTH);
+                                    digital.setHeaderTitle(getResources().getString(R.string.digital_content_header_prev_month));
                                     temp.add(digital);
                                     tempGp.add(digital);
                                 }
@@ -187,7 +187,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                                 if (temp.size() == 0) {
                                     DigitalContentBO digital = new DigitalContentBO();
                                     digital.setHeader(true);
-                                    digital.setHeaderTitle(OLDER);
+                                    digital.setHeaderTitle(getResources().getString(R.string.digital_content_header_older));
                                     temp.add(digital);
                                     tempGp.add(digital);
                                 }

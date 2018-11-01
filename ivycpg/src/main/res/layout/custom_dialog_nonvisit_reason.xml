@@ -48,7 +48,7 @@
         android:layout_marginBottom="@dimen/profile_history_20dp"
         android:layout_marginStart="@dimen/profile_history_25dp"
         android:layout_marginEnd="@dimen/profile_history_25dp"
-        android:layout_marginTop="@dimen/profile_history_10dp">
+        android:layout_marginTop="0dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/reason_recycler"

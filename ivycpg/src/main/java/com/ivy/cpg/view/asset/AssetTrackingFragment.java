@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
@@ -103,7 +104,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_asset_tracking, container,
@@ -117,9 +118,9 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
 
     private void initializeViews(View view) {
 
-        mDrawerLayout = (DrawerLayout) view.findViewById(
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
-        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        FrameLayout drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -154,8 +155,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
 
-        Button btnSave = (Button) view.findViewById(R.id.btn_save);
-      //  btnSave.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button btnSave = view.findViewById(R.id.btn_save);
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -163,7 +163,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             }
         });
 
-        FloatingActionButton btnBarcode = (FloatingActionButton) view.findViewById(R.id.fab_barcode);
+        FloatingActionButton btnBarcode = view.findViewById(R.id.fab_barcode);
         if (!assetTrackingHelper.SHOW_ASSET_BARCODE)
             btnBarcode.setVisibility(View.GONE);
 
@@ -191,11 +191,11 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         });
 
 
-        listview = (ListView) view.findViewById(R.id.list);
+        listview = view.findViewById(R.id.list);
         listview.setCacheColorHint(0);
 
         if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
-            TextView tvAudit = (TextView) view.findViewById(R.id.audit);
+            TextView tvAudit = view.findViewById(R.id.audit);
             tvAudit.setVisibility(View.VISIBLE);
 
         }
@@ -243,7 +243,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                                 R.id.tv_isAvail).getTag()));
 
                     }
-                   // ((TextView) view.findViewById(R.id.tv_isAvail)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
 
             } catch (Exception e) {
@@ -260,7 +259,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                     .applyLabels(view.findViewById(
                                             R.id.tv_header_asset_name).getTag()));
                 }
-               // ((TextView) view.findViewById(R.id.tv_header_asset_name)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
 
         } catch (Exception e) {
@@ -282,7 +280,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                                                 R.id.tv_is_executed).getTag()));
 
                     }
-                  //  ((TextView) view.findViewById(R.id.tv_is_executed)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 }
 
             } catch (Exception e) {

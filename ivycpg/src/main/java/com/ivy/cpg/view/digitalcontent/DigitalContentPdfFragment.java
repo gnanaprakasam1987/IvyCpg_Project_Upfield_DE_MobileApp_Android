@@ -126,7 +126,7 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
                         if (temp.size() < 1) {
                             DigitalContentBO digital = new DigitalContentBO();
                             digital.setHeader(true);
-                            digital.setHeaderTitle("THIS MONTH");
+                            digital.setHeaderTitle(getResources().getString(R.string.digital_content_header_this_month));
                             temp.add(digital);
                         }
 
@@ -137,7 +137,7 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
                         if (temp.size() < 1) {
                             DigitalContentBO digital = new DigitalContentBO();
                             digital.setHeader(true);
-                            digital.setHeaderTitle("PREVIOUS MONTH");
+                            digital.setHeaderTitle(getResources().getString(R.string.digital_content_header_prev_month));
                             temp.add(digital);
                         }
                         temp.add(pdfList.get(i));
@@ -147,7 +147,7 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
                         if (temp.size() < 1) {
                             DigitalContentBO digital = new DigitalContentBO();
                             digital.setHeader(true);
-                            digital.setHeaderTitle("OLDER");
+                            digital.setHeaderTitle(getResources().getString(R.string.digital_content_header_older));
                             temp.add(digital);
                         }
                         temp.add(pdfList.get(i));

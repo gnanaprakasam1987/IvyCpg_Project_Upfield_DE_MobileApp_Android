@@ -1075,17 +1075,19 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 BusinessModel.loadActivity(this,
                         DataMembers.actHomeScreenTwo);*/
 
-                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+//                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+//
+//                Bundle extras = getActivity().getIntent().getExtras();
+//                if (extras != null) {
+//                    intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+//                    intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+//
+//                }
+//
+//                startActivity(intent);
 
-                Bundle extras = getActivity().getIntent().getExtras();
-                if (extras != null) {
-                    intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                    intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
-
-                }
-
-                startActivity(intent);
-                getActivity().finish();
+                if (getActivity() != null)
+                    getActivity().finish();
             }
         } else if (requestCode == SALES_ENTRY) {
             if (resultCode == RESULT_OK) {
