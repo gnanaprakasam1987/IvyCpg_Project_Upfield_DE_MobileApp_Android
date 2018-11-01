@@ -93,7 +93,6 @@ public class CodeCleanUpUtil {
     }
 
     public void setRetailerMaster(Vector<RetailerMasterBO> retailerMasterBOS){
-
         ArrayList<RetailerMasterBO> retailerMasterBOArrayList = new ArrayList<>();
         retailerMasterBOArrayList.addAll(retailerMasterBOS);
 
@@ -106,5 +105,21 @@ public class CodeCleanUpUtil {
         retailerVector.addAll(retailerMasterBOS);
         bmodel.setRetailerMaster(retailerVector);
     }
+
+
+    public void setSubDMaster(Vector<RetailerMasterBO> subDMaster){
+        ArrayList<RetailerMasterBO> subDMasterList = new ArrayList<>();
+        subDMasterList.addAll(subDMaster);
+
+        appDataProvider.setSubDMasterList(subDMasterList,true);
+    }
+
+
+    public void setBmodelSubDMaster(ArrayList<RetailerMasterBO> subDMaster){
+        Vector<RetailerMasterBO> subDMasterVector =new Vector<RetailerMasterBO>();
+        subDMasterVector.addAll(subDMaster);
+        bmodel.setSubDMaster(subDMasterVector);
+    }
+
 
 }

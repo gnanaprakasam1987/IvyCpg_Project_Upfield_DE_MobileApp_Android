@@ -45,6 +45,8 @@ public class AppDataProviderImpl implements AppDataProvider {
 
     private ArrayList<RetailerMasterBO> retailerMasterList;
 
+    private ArrayList<RetailerMasterBO> subDMasterList;
+
     @Override
     public void setInTime(String inTime) {
         //TODO to be removed post refactoring
@@ -186,5 +188,21 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public ArrayList<RetailerMasterBO> getRetailerMasters() {
         return retailerMasterList;
+    }
+
+    @Override
+    public void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList) {
+        mContext.codeCleanUpUtil.setBmodelSubDMaster(subDMasterList);
+        this.subDMasterList=subDMasterList;
+    }
+
+    @Override
+    public void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList, boolean isFromBModel) {
+        this.subDMasterList =subDMasterList;
+    }
+
+    @Override
+    public ArrayList<RetailerMasterBO> getSubDMasterList() {
+        return subDMasterList;
     }
 }

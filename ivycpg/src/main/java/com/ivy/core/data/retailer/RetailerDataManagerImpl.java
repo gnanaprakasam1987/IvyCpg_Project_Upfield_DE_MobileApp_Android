@@ -69,7 +69,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         return getWeekText().flatMapObservable(new Function<String, Observable<? extends ArrayList<RetailerMasterBO>>>() {
             @Override
             public Observable<? extends ArrayList<RetailerMasterBO>> apply(String s) throws Exception {
-                weekText[0] =s;
+                weekText[0] = s;
                 return Observable.zip(fetchIndicativeRetailers(), updateRouteConfig(), new BiFunction<ArrayList<IndicativeBO>, Boolean, ArrayList<IndicativeBO>>() {
                     @Override
                     public ArrayList<IndicativeBO> apply(ArrayList<IndicativeBO> indicativeBOS, Boolean aBoolean) throws Exception {
@@ -328,10 +328,18 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                 setIsBOMAchieved(retailer);
                                             }
 
-                                            if(configurationMasterHelper.IS_DAY_WISE_RETAILER_WALKINGSEQ){
-                                                updateWalkingSequenceDayWise(retailer,weekText[0]);
+                                            if (configurationMasterHelper.IS_DAY_WISE_RETAILER_WALKINGSEQ) {
+                                                updateWalkingSequenceDayWise(retailer, weekText[0]);
 
                                             }
+
+                                            if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD)
+                                                if (retailer.getSubdId() != 0) {
+                                                    if (appDataProvider.getSubDMasterList() == null)
+                                                        appDataProvider.setSubDMasterList(new ArrayList<RetailerMasterBO>());
+
+                                                    appDataProvider.getSubDMasterList().add(retailer);
+                                                }
 
                                             retailerMasterBOS.add(retailer);
 
@@ -360,9 +368,9 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                     return getPlannedRetailers(retailerMasterBOS);
                                 }
                             }
-                        }).flatMap(new Function<ArrayList<RetailerMasterBO>, Observable<ArrayList<RetailerMasterBO> >>() {
+                        }).flatMap(new Function<ArrayList<RetailerMasterBO>, Observable<ArrayList<RetailerMasterBO>>>() {
                             @Override
-                            public Observable<ArrayList<RetailerMasterBO> > apply(final ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
+                            public Observable<ArrayList<RetailerMasterBO>> apply(final ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
                                 return updatePaymentIssue(retailerMasterBOS);
                             }
                         }).flatMap(new Function<ArrayList<RetailerMasterBO>, ObservableSource<ArrayList<RetailerMasterBO>>>() {
@@ -786,7 +794,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 .substring(0, 3).toUpperCase(Locale.ENGLISH);
 
         String sb = "select retailerid,sequenceno from RetailerVisitSequence where " +
-                " weekno=" + QT(currentWeek) + " and day=" + QT(currentDay) +" and retailerid=" +retailer.getRetailerID();
+                " weekno=" + QT(currentWeek) + " and day=" + QT(currentDay) + " and retailerid=" + retailer.getRetailerID();
         Cursor c = mDbUtil.selectSQL(sb);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -800,13 +808,13 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         }
     }
 
-    private Observable<ArrayList<RetailerMasterBO>> fetchFitScore(final ArrayList<RetailerMasterBO> retailerMasterBOS){
+    private Observable<ArrayList<RetailerMasterBO>> fetchFitScore(final ArrayList<RetailerMasterBO> retailerMasterBOS) {
 
         return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
             @Override
             public ArrayList<RetailerMasterBO> call() throws Exception {
 
-                try{
+                try {
 
                     Cursor c = mDbUtil
                             .selectSQL("select  AH.retailerid,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
@@ -826,7 +834,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                     c.close();
 
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
@@ -837,14 +845,14 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
     }
 
-    private Observable<ArrayList<RetailerMasterBO>> fetchRetailerTarget(final ArrayList<RetailerMasterBO> retailerMasterBOS){
+    private Observable<ArrayList<RetailerMasterBO>> fetchRetailerTarget(final ArrayList<RetailerMasterBO> retailerMasterBOS) {
         return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
             @Override
             public ArrayList<RetailerMasterBO> call() throws Exception {
                 ArrayList<RetailerMasterBO> targetList = new ArrayList<>();
-                try{
+                try {
 
-                    String code ="SV";
+                    String code = "SV";
 
                     String sb = "select rk.retailerid,rk.interval,rkd.target,rk.kpiid,rkd.kpiparamlovid,rkd.achievement from RetailerKPI rk" +
                             " inner join RetailerKPIDetail rkd on rk.kpiid = rkd.kpiid INNER JOIN StandardListMaster SM" +
@@ -874,8 +882,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                     ArrayList<RetailerMasterBO> tempList = new ArrayList<>();
                     if (c != null) {
                         while (c.moveToNext()) {
-                            for(RetailerMasterBO retailerMasterBO:targetList){
-                                if(retailerMasterBO.getRetailerID().equalsIgnoreCase(c.getString(0))){
+                            for (RetailerMasterBO retailerMasterBO : targetList) {
+                                if (retailerMasterBO.getRetailerID().equalsIgnoreCase(c.getString(0))) {
                                     retailerMasterBO.setInterval(c.getString(1));
                                     retailerMasterBO.setDaily_target(c.getDouble(2));
                                     retailerMasterBO.setKpiid_day(c.getInt(3));
@@ -888,11 +896,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                     c.close();
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
-                setRetailerTarget(retailerMasterBOS,targetList);
+                setRetailerTarget(retailerMasterBOS, targetList);
 
                 shutDownDb();
                 return retailerMasterBOS;
@@ -906,7 +914,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         double monthlyTgt;
         double monthlyAch;
 
-        for (RetailerMasterBO masterBO :retailerMasterBOS) {
+        for (RetailerMasterBO masterBO : retailerMasterBOS) {
             dailyTgt = 0;
             monthlyTgt = 0;
             monthlyAch = 0;
@@ -937,14 +945,14 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
     /**
      * Method to update in haspayment issue value in Retailermaster object
      */
-    private Observable<ArrayList<RetailerMasterBO>> updatePaymentIssue(final ArrayList<RetailerMasterBO> retailerMasterBOS){
+    private Observable<ArrayList<RetailerMasterBO>> updatePaymentIssue(final ArrayList<RetailerMasterBO> retailerMasterBOS) {
         return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
             @Override
             public ArrayList<RetailerMasterBO> call() throws Exception {
 
-                try{
+                try {
 
-                    if(mDbUtil.isDbNullOrClosed())
+                    if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
                     String query = "select distinct retailerid from invoicemaster where hasPaymentIssue=1";
@@ -963,7 +971,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         c.close();
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
@@ -1073,11 +1081,10 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
 
     /**
-     *
      * @return
      */
     @Override
-    public Observable<ArrayList<RetailerMissedVisitBO>> fetchMissedRetailers(){
+    public Observable<ArrayList<RetailerMissedVisitBO>> fetchMissedRetailers() {
         return Observable.fromCallable(new Callable<ArrayList<RetailerMissedVisitBO>>() {
             @Override
             public ArrayList<RetailerMissedVisitBO> call() throws Exception {
@@ -1086,8 +1093,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 RetailerMissedVisitBO missedRetailerBO;
 
                 if (configurationMasterHelper.SHOW_MISSED_RETAILER) {
-                    try{
-                        if(mDbUtil.isDbNullOrClosed())
+                    try {
+                        if (mDbUtil.isDbNullOrClosed())
                             initDb();
 
                         String sb = "select distinct RMV.Retailerid,RM.RetailerName,RV.PlannedVisitCount,RM.beatid from RetailerMissedVisit RMV" +
@@ -1114,7 +1121,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         }
                         c.close();
 
-                    }catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                 }

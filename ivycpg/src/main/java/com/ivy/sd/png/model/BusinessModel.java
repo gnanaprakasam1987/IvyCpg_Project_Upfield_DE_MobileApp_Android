@@ -1688,6 +1688,8 @@ public class BusinessModel extends Application {
                     }
 
                 }
+
+                codeCleanUpUtil.setSubDMaster(getSubDMaster());
             }
 
             mRetailerHelper.downloadRetailerTarget("SV");

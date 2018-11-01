@@ -62,4 +62,11 @@ public interface AppDataProvider {
     ArrayList<RetailerMasterBO> getRetailerMasters();
 
 
+    void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList);
+
+    void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList,  boolean isFromBModel);
+
+    ArrayList<RetailerMasterBO> getSubDMasterList();
+
+
 }
