@@ -1133,7 +1133,7 @@ public class DiscountHelper {
                                         } else {
                                             if (schemeBO.isQuantityTypeSelected()) {
                                                 // if  Accumulation scheme's buy product not available, free product set in First order product object
-                                                if (!isFreeProductGiven && !isBuyProductAvailable) {
+                                                if (!isFreeProductGiven && !isBuyProductAvailable && mOrderedList.size() > 0) {
                                                     ProductMasterBO firstProductBO = mOrderedList.get(0);
                                                     orderHelper.updateSchemeFreeProduct(schemeBO, firstProductBO);
                                                     isFreeProductGiven=true;

@@ -1814,6 +1814,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             isClicked = true;
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
+            if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
             downloadProductsAndPrice.execute();
             // new DownloadProductsAndPrice().execute();
         }

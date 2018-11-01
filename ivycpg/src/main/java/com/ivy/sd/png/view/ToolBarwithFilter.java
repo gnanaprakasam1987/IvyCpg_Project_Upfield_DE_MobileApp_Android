@@ -444,8 +444,10 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                             bmodel.setProductFilter(arrayAdapter.getItem(which));
                         }
                     });
-            int selectedFiltPos = mSearchTypeArray.indexOf(bmodel
-                    .getProductFilter());
+            int selectedFiltPos = 0;
+            if (mSearchTypeArray != null)
+                selectedFiltPos = mSearchTypeArray.indexOf(bmodel
+                        .getProductFilter());
             builderSingle.setSingleChoiceItems(arrayAdapter, selectedFiltPos,
                     new DialogInterface.OnClickListener() {
 
