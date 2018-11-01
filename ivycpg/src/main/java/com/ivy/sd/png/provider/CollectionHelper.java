@@ -21,6 +21,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.AppUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -221,9 +222,9 @@ public class CollectionHelper {
                     StandardListMasterConstants.CREDIT_NOTE_TYPE);
             StringBuffer sb = new StringBuffer();
             sb.append("SELECT id, refno, Actualamount, retailerid, isused,creditnotetype,AppliedAmount,refid FROM CreditNote ");
-            sb.append(" where creditnotetype=" + bmodel.QT(modeID));
-            sb.append(" and createddate!=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            sb.append(" and retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            sb.append(" where creditnotetype=" + AppUtils.QT(modeID));
+            sb.append(" and createddate!=" + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append(" and retailerid=" + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             Cursor c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -307,7 +308,7 @@ public class CollectionHelper {
             db.createDataBase();
             db.openDataBase();
             String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno";
-            String groupID = bmodel.QT(SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + bmodel.userMasterHelper.getUserMasterBO().getUserid());
+            String groupID = AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + bmodel.userMasterHelper.getUserMasterBO().getUserid());
             String groupDate = SDUtil.now(SDUtil.DATE_TIME);
             double calculateCredit = 0;
             for (PaymentBO paymentBO : bmodel.collectionHelper.getPaymentList()) {
@@ -323,7 +324,7 @@ public class CollectionHelper {
                         bmodel.retailerMasterBO
                                 .setRField1("" + (float) calculateCredit);
                     }
-                    String payID = bmodel.QT("P"
+                    String payID = AppUtils.QT("P"
                             + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                             + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
                     String modeID = bmodel.getStandardListIdAndType(
@@ -342,22 +343,22 @@ public class CollectionHelper {
                     if (!StandardListMasterConstants.CREDIT_NOTE.equals(paymentBO.getCashMode())) {
 
                         Commons.print("Business Model," + "Type id :" + payTypeID);
-                        String values = payID + "," + bmodel.QT(bmodel.invoiceNumber) + ","
-                                + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        String values = payID + "," + AppUtils.QT(bmodel.invoiceNumber) + ","
+                                + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                                 + (paymentBO.getInvoiceAmount()) + ","
-                                + (paymentBO.getBalance()) + "," + bmodel.QT(modeID)
-                                + "," + bmodel.QT(paymentBO.getChequeNumber()) + ","
+                                + (paymentBO.getBalance()) + "," + AppUtils.QT(modeID)
+                                + "," + AppUtils.QT(paymentBO.getChequeNumber()) + ","
                                 + (paymentBO.getAmount()) + ","
-                                + bmodel.QT(bmodel.retailerMasterBO.getRetailerID())
-                                + "," + bmodel.QT(paymentBO.getBeatID()) + ","
-                                + bmodel.QT(paymentBO.getUserId()) + ","
-                                + bmodel.QT(paymentBO.getBankID()) + ","
-                                + bmodel.QT(paymentBO.getBranchId()) + ","
-                                + bmodel.QT(paymentBO.getChequeDate()) + ","
-                                + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                                + bmodel.QT(payTypeID) + "," + bmodel.QT(paymentBO.getImageName()) + "," + (groupID) + "," + listid + ",0"
+                                + AppUtils.QT(bmodel.retailerMasterBO.getRetailerID())
+                                + "," + AppUtils.QT(paymentBO.getBeatID()) + ","
+                                + AppUtils.QT(paymentBO.getUserId()) + ","
+                                + AppUtils.QT(paymentBO.getBankID()) + ","
+                                + AppUtils.QT(paymentBO.getBranchId()) + ","
+                                + AppUtils.QT(paymentBO.getChequeDate()) + ","
+                                + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                                + AppUtils.QT(payTypeID) + "," + AppUtils.QT(paymentBO.getImageName()) + "," + (groupID) + "," + listid + ",0"
                                 + "," + bmodel.getRetailerMasterBO().getDistributorId() + "," + bmodel.getRetailerMasterBO().getDistParentId() + ",''"
-                                + "," + bmodel.QT(groupDate) + ",0,0";
+                                + "," + AppUtils.QT(groupDate) + ",0,0";
 
                         db.insertSQL(DataMembers.tbl_Payment, columns, values);
                     } else {
@@ -422,7 +423,7 @@ public class CollectionHelper {
             StringBuilder sb = new StringBuilder();
             sb.append("select listcode from StandardListMaster where listid=");
             sb.append("(select parentid from StandardListmaster where ListCode=");
-            sb.append(bmodel.QT(mode));
+            sb.append(AppUtils.QT(mode));
             sb.append(")");
             sb.append(" and ListType='PAYMENT_GROUP_TYPE'");
             Cursor c = db.selectSQL(sb.toString());
@@ -452,7 +453,7 @@ public class CollectionHelper {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select listid from StandardListMaster where listcode=");
-            sb.append(bmodel.QT(listcode));
+            sb.append(AppUtils.QT(listcode));
             sb.append("  and listtype='COLLECTION_PROCESS_STATUS_TYPE'");
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
@@ -582,7 +583,7 @@ public class CollectionHelper {
         //applying currency rule config
         discountValue = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(discountValue));
 
-        String values = uid + "," + bmodel.QT(BigDecimal.valueOf(discountValue)
+        String values = uid + "," + AppUtils.QT(BigDecimal.valueOf(discountValue)
                 .toPlainString()) + "," + discountPer;
         db.insertSQL(DataMembers.tbl_PaymentDiscount_Detail, columns, values);
         return discountValue;
@@ -608,7 +609,7 @@ public class CollectionHelper {
                 sb.append("-ifnull(sum(PD.discountvalue),0)-IM.paidamount),2),ifnull(sum(PD.discountvalue),0) from invoicemaster IM ");
                 sb.append(" Left join Payment P on IM.Invoiceno=P.Billnumber left join paymentdiscountdetail PD on PD.uid=P.uid  ");
                 sb.append(" where IM.invoiceno=");
-                sb.append(bmodel.QT(invoiceHeaderBO.getInvoiceNo()));
+                sb.append(AppUtils.QT(invoiceHeaderBO.getInvoiceNo()));
                 Cursor c = db.selectSQL(sb.toString());
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
@@ -637,7 +638,7 @@ public class CollectionHelper {
                             + ",invoiceAmount="
                             + invoiceAmount
                             + " where invoiceNo="
-                            + bmodel.QT(invoiceHeaderBO.getInvoiceNo());
+                            + AppUtils.QT(invoiceHeaderBO.getInvoiceNo());
 
                     db.executeQ(updateQuery);
                     invoiceHeaderBO.setBalance(discountedAmount);
@@ -648,7 +649,7 @@ public class CollectionHelper {
                             + "),invoiceAmount="
                             + bmodel.formatValue(invoiceAmount)
                             + " where invoiceNo="
-                            + bmodel.QT(invoiceHeaderBO.getInvoiceNo());
+                            + AppUtils.QT(invoiceHeaderBO.getInvoiceNo());
 
                     db.executeQ(updateQuery);
                     invoiceHeaderBO.setBalance(SDUtil.convertToDouble(SDUtil.roundIt(totalBalanceWithDisc, 2)));
@@ -961,13 +962,13 @@ public class CollectionHelper {
             double calculateCredit = bmodel.getRetailerMasterBO().getCredit_balance();
             String groupID;
 
-            groupID = bmodel.QT(SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + bmodel.userMasterHelper.getUserMasterBO().getUserid());
+            groupID = AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO) {
                 String seqNo;
                 bmodel.insertSeqNumber("COL");
                 seqNo = bmodel.downloadSequenceNo("COL");
-                groupID = bmodel.QT(seqNo);
+                groupID = AppUtils.QT(seqNo);
             }
             bmodel.collectionHelper.collectionGroupId = groupID;
 
@@ -1074,7 +1075,7 @@ public class CollectionHelper {
                 } else {
                     listid = getCollectionProcessListId("OPEN");
                 }
-                String payID = bmodel.QT("P"
+                String payID = AppUtils.QT("P"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
 
@@ -1099,31 +1100,31 @@ public class CollectionHelper {
                 if (!paymentBO.getCashMode().equals(StandardListMasterConstants.CASH))
                     chequeNumber = paymentBO.getChequeNumber();
 
-                String values = payID + "," + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
-                        + "," + bmodel.QT(invoiceHeaderBO.getInvoiceDate()) + ","
-                        + bmodel.QT(invoiceHeaderBO.getInvoiceAmount() + "") + "," + invoiceHeaderBO.getBalance()
-                        + "," + bmodel.QT(modeID) + ","
-                        + bmodel.QT(chequeNumber) + ","
-                        + bmodel.QT(bmodel.formatValueBasedOnConfig(collectedAmount)) + ","
-                        + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
-                        + bmodel.QT(bmodel.getRetailerMasterBO().getBeatID() + "") + ","
-                        + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + "") + ","
-                        + bmodel.QT(paymentBO.getBankID()) + ","
-                        + bmodel.QT(paymentBO.getBranchId()) + ","
-                        + bmodel.QT(paymentBO.getChequeDate()) + ","
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                        + bmodel.QT(payTypeID) + ","
-                        + bmodel.QT(paymentBO.getImageName())
-                        + "," + (groupID) + "," + listid + "," + bmodel.QT(BigDecimal.valueOf(totalDiscount)
+                String values = payID + "," + AppUtils.QT(invoiceHeaderBO.getInvoiceNo())
+                        + "," + AppUtils.QT(invoiceHeaderBO.getInvoiceDate()) + ","
+                        + AppUtils.QT(invoiceHeaderBO.getInvoiceAmount() + "") + "," + invoiceHeaderBO.getBalance()
+                        + "," + AppUtils.QT(modeID) + ","
+                        + AppUtils.QT(chequeNumber) + ","
+                        + AppUtils.QT(bmodel.formatValueBasedOnConfig(collectedAmount)) + ","
+                        + AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+                        + AppUtils.QT(bmodel.getRetailerMasterBO().getBeatID() + "") + ","
+                        + AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + "") + ","
+                        + AppUtils.QT(paymentBO.getBankID()) + ","
+                        + AppUtils.QT(paymentBO.getBranchId()) + ","
+                        + AppUtils.QT(paymentBO.getChequeDate()) + ","
+                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        + AppUtils.QT(payTypeID) + ","
+                        + AppUtils.QT(paymentBO.getImageName())
+                        + "," + (groupID) + "," + listid + "," + AppUtils.QT(BigDecimal.valueOf(totalDiscount)
                         .toPlainString())
                         + "," + bmodel.getRetailerMasterBO().getDistributorId()
                         + "," + bmodel.getRetailerMasterBO().getDistParentId()
-                        + "," + bmodel.QT(receiptno)
-                        + "," + bmodel.QT(groupDate) + ",0,0"
-                        + "," + bmodel.QT(printFilePath)
-                        + "," + bmodel.QT(paymentBO.getBankName()!=null?paymentBO.getBankName():"")
-                        + "," + bmodel.QT(paymentBO.getBranchName()!=null?paymentBO.getBranchName():"");
-                //+ "," + bmodel.QT(paymentBO.getAccountNumber());
+                        + "," + AppUtils.QT(receiptno)
+                        + "," + AppUtils.QT(groupDate) + ",0,0"
+                        + "," + AppUtils.QT(printFilePath)
+                        + "," + AppUtils.QT(paymentBO.getBankName() != null ? paymentBO.getBankName() : "")
+                        + "," + AppUtils.QT(paymentBO.getBranchName() != null ? paymentBO.getBranchName() : "");
+                //+ "," + AppUtils.QT(paymentBO.getAccountNumber());
 
                 db.insertSQL(DataMembers.tbl_Payment, columns, values);
             } else if (StandardListMasterConstants.CREDIT_NOTE.equals(paymentBO.getCashMode())) {
@@ -1199,7 +1200,7 @@ public class CollectionHelper {
         } else {
             listid = getCollectionProcessListId("OPEN");
         }
-        String payID = bmodel.QT("P"
+        String payID = AppUtils.QT("P"
                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                 + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
 
@@ -1223,39 +1224,39 @@ public class CollectionHelper {
             }
         }
 
-        String values = payID + "," + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
-                + "," + bmodel.QT(invoiceHeaderBO.getInvoiceDate()) + ","
-                + bmodel.QT(invoiceHeaderBO.getInvoiceAmount() + "") + "," + invoiceHeaderBO.getBalance()
-                + "," + bmodel.QT(modeID) + ","
-                + bmodel.QT("") + ","
-                + bmodel.QT(collectedAmount + "") + ","
-                + bmodel.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
-                + bmodel.QT(bmodel.getRetailerMasterBO().getBeatID() + "") + ","
+        String values = payID + "," + AppUtils.QT(invoiceHeaderBO.getInvoiceNo())
+                + "," + AppUtils.QT(invoiceHeaderBO.getInvoiceDate()) + ","
+                + AppUtils.QT(invoiceHeaderBO.getInvoiceAmount() + "") + "," + invoiceHeaderBO.getBalance()
+                + "," + AppUtils.QT(modeID) + ","
+                + AppUtils.QT("") + ","
+                + AppUtils.QT(collectedAmount + "") + ","
+                + AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+                + AppUtils.QT(bmodel.getRetailerMasterBO().getBeatID() + "") + ","
                 + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ","
-                + bmodel.QT(paymentBO.getBankID()) + ","
-                + bmodel.QT(paymentBO.getBranchId()) + ","
-                + bmodel.QT(paymentBO.getChequeDate()) + ","
-                + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                + bmodel.QT(payTypeID) + ","
-                + bmodel.QT(paymentBO.getImageName())
-                + "," + (groupID) + "," + listid + "," + bmodel.QT(BigDecimal.valueOf(totalDiscount)
+                + AppUtils.QT(paymentBO.getBankID()) + ","
+                + AppUtils.QT(paymentBO.getBranchId()) + ","
+                + AppUtils.QT(paymentBO.getChequeDate()) + ","
+                + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                + AppUtils.QT(payTypeID) + ","
+                + AppUtils.QT(paymentBO.getImageName())
+                + "," + (groupID) + "," + listid + "," + AppUtils.QT(BigDecimal.valueOf(totalDiscount)
                 .toPlainString())
                 + "," + bmodel.getRetailerMasterBO().getDistributorId()
                 + "," + bmodel.getRetailerMasterBO().getDistParentId()
-                + "," + bmodel.QT(receiptno)
-                + "," + bmodel.QT(groupDate) + "," + creditNoteListBO.getRefid() + "," + bmodel.QT(creditNoteListBO.getId())
-                + "," + bmodel.QT(printFilePath);
+                + "," + AppUtils.QT(receiptno)
+                + "," + AppUtils.QT(groupDate) + "," + creditNoteListBO.getRefid() + "," + AppUtils.QT(creditNoteListBO.getId())
+                + "," + AppUtils.QT(printFilePath);
 
         db.insertSQL(DataMembers.tbl_Payment, columns, values);
-        String created_date = bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+        String created_date = AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
         StringBuffer sb = new StringBuffer();
         sb.append("update creditnote set Actualamount=Actualamount-" + collectedAmount + ",Appliedamount=Appliedamount+" + collectedAmount);
-        sb.append(",upload='N',date=" + created_date + "where id=" + bmodel.QT(creditNoteListBO.getId()));
+        sb.append(",upload='N',date=" + created_date + "where id=" + AppUtils.QT(creditNoteListBO.getId()));
         db.executeQ(sb.toString());
 
         sb = new StringBuffer();
         sb.append("update creditnote set isused=1");
-        sb.append(" where amount=Appliedamount and id=" + bmodel.QT(creditNoteListBO.getId()));
+        sb.append(" where amount=Appliedamount and id=" + AppUtils.QT(creditNoteListBO.getId()));
         db.executeQ(sb.toString());
 
     }
@@ -1268,14 +1269,14 @@ public class CollectionHelper {
                     && !creditNoteListBO.isUsed() && creditNoteListBO.isChecked()) {
                 StringBuffer sb = new StringBuffer();
                 sb.append("update CreditNote set isUsed=1");
-                sb.append(" where id=" + bmodel.QT(creditNoteListBO.getId()));
+                sb.append(" where id=" + AppUtils.QT(creditNoteListBO.getId()));
                 sb.append(" and retailerid=");
                 sb.append(bmodel.getRetailerMasterBO().getRetailerID());
                 sb.append(" and Actualamount=0");
                 db.executeQ(sb.toString());
                 sb = new StringBuffer();
                 sb.append("update CreditNote set upload='N'");
-                sb.append(" where id=" + bmodel.QT(creditNoteListBO.getId()));
+                sb.append(" where id=" + AppUtils.QT(creditNoteListBO.getId()));
                 sb.append(" and retailerid=");
                 sb.append(bmodel.getRetailerMasterBO().getRetailerID());
                 db.executeQ(sb.toString());
@@ -1452,7 +1453,7 @@ public class CollectionHelper {
             StringBuilder sb = new StringBuilder();
             sb.append("select InvoiceNo,InvoiceDate,invNetamount,paidAmount from invoicemaster ");
             sb.append("where retailerid = ");
-            sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            sb.append(AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             sb.append(" and discountedAmount==0 and upload='Y'");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1551,7 +1552,7 @@ public class CollectionHelper {
                             + ",invoiceAmount="
                             + invoiceAmount
                             + " where invoiceNo="
-                            + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
+                            + AppUtils.QT(invoiceHeaderBO.getInvoiceNo())
                             + " and upload='Y'";
                     db.executeQ(updateQuery);
                 } else {
@@ -1564,7 +1565,7 @@ public class CollectionHelper {
                     updateQuery = "update invoicemaster set discountedAmount="
                             + bmodel.formatValueBasedOnConfig(discountedAmount) + ",invoiceAmount="
                             + invoiceAmount + " where invoiceNo="
-                            + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
+                            + AppUtils.QT(invoiceHeaderBO.getInvoiceNo())
                             + " and upload='Y'";
 
                     db.executeQ(updateQuery);
@@ -1577,7 +1578,7 @@ public class CollectionHelper {
                 updateQuery = "update invoicemaster set discountedAmount="
                         + bmodel.formatValueBasedOnConfig(discountedAmount) + ",invoiceAmount=" + invoiceAmount
                         + " where invoiceNo="
-                        + bmodel.QT(invoiceHeaderBO.getInvoiceNo())
+                        + AppUtils.QT(invoiceHeaderBO.getInvoiceNo())
                         + " and upload='Y'";
                 db.executeQ(updateQuery);
             }
@@ -1648,7 +1649,7 @@ public class CollectionHelper {
                 listid = getCollectionProcessListId("OPEN");
             }
 
-            String creditNoteId = bmodel.QT("AP"
+            String creditNoteId = AppUtils.QT("AP"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
 
@@ -1658,7 +1659,7 @@ public class CollectionHelper {
             String payTypeID = bmodel.getStandardListIdAndType(
                     StandardListMasterConstants.COLLECTION_ADVANCED_PAYMENT,
                     StandardListMasterConstants.COLLECTION_TRANSACTION_PAYMENT_TYPE);
-            String payID = bmodel.QT("P"
+            String payID = AppUtils.QT("P"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
             collectionGroupId = payID;
@@ -1668,14 +1669,16 @@ public class CollectionHelper {
             String chequeNo = "";
             if (paymentBO.getCashMode().equals(StandardListMasterConstants.CHEQUE))
                 chequeNo = paymentBO.getChequeNumber();
-            sb.append(payID + "," + modeID + "," + bmodel.QT(chequeNo) + "," + paymentBO.getAmount());
-            sb.append("," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "," + bmodel.getRetailerMasterBO().getBeatID());
-            sb.append("," + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "," + bmodel.QT(paymentBO.getBankID()) + "," + bmodel.QT(paymentBO.getBranchId()));
-            sb.append("," + bmodel.QT(paymentBO.getChequeDate()) + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + bmodel.QT(payTypeID));
-            sb.append("," + bmodel.QT(paymentBO.getImageName()) + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)) + ",0,0");
+            else
+                paymentBO.setChequeDate("");
+            sb.append(payID + "," + modeID + "," + AppUtils.QT(chequeNo) + "," + paymentBO.getAmount());
+            sb.append("," + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "," + bmodel.getRetailerMasterBO().getBeatID());
+            sb.append("," + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "," + AppUtils.QT(paymentBO.getBankID()) + "," + AppUtils.QT(paymentBO.getBranchId()));
+            sb.append("," + AppUtils.QT(paymentBO.getChequeDate()) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT(payTypeID));
+            sb.append("," + AppUtils.QT(paymentBO.getImageName()) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME)) + ",0,0");
             sb.append("," + listid + "," + payID);
-            sb.append("," + bmodel.QT(paymentBO.getBankName()));
-            sb.append("," + bmodel.QT(paymentBO.getBranchName()));
+            sb.append("," + AppUtils.QT(paymentBO.getBankName()));
+            sb.append("," + AppUtils.QT(paymentBO.getBranchName()));
 
             modeID = bmodel.getStandardListIdAndType(
                     "CNAP",
@@ -1684,8 +1687,8 @@ public class CollectionHelper {
 
             String creditNoteColumns = "id,refno,amount,retailerid,date,creditnotetype,upload,Actualamount";
             sb = new StringBuffer();
-            sb.append(creditNoteId + "," + payID + "," + paymentBO.getAmount() + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
-            sb.append("," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + modeID + ",'N'" + "," + paymentBO.getAmount() + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append(creditNoteId + "," + payID + "," + paymentBO.getAmount() + "," + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            sb.append("," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + modeID + ",'N'" + "," + paymentBO.getAmount() + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             db.insertSQL(DataMembers.tbl_credit_note, creditNoteColumns + ",CreatedDate", sb.toString());
             db.closeDB();
 
@@ -1763,7 +1766,7 @@ public class CollectionHelper {
             StringBuilder sb = new StringBuilder();
             sb.append("select BillNumber,ContactName,ContactNumber,DocRefNo,ReasonID,Remarks,SignaturePath,IsDoc,Signatureimage from CollectionDocument ");
             sb.append("where RetailerID = ");
-            sb.append(bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
+            sb.append(AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()));
             sb.append(" and upload='N'");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1813,11 +1816,11 @@ public class CollectionHelper {
             db.openDataBase();
             String columns = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath,IsDoc,Signatureimage";
 
-            String payID = bmodel.QT("CRF"
+            String payID = AppUtils.QT("CRF"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
 
-            db.deleteSQL("CollectionDocument", "RetailerID=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "and upload = 'N'", false);
+            db.deleteSQL("CollectionDocument", "RetailerID=" + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) + "and upload = 'N'", false);
 
             for (int i = 0; i < collectionRefList.size(); i++) {
 
@@ -1830,25 +1833,25 @@ public class CollectionHelper {
 
                     String values = payID
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getInvoiceNo())
+                            + AppUtils.QT(collectionRefList.get(i).getInvoiceNo())
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getContactName())
+                            + AppUtils.QT(collectionRefList.get(i).getContactName())
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getContactNo())
+                            + AppUtils.QT(collectionRefList.get(i).getContactNo())
                             + ","
-                            + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                            + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID())
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getDocRefNo())
+                            + AppUtils.QT(collectionRefList.get(i).getDocRefNo())
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getDocReasonId())
+                            + AppUtils.QT(collectionRefList.get(i).getDocReasonId())
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getDocRemark())
+                            + AppUtils.QT(collectionRefList.get(i).getDocRemark())
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getDocSignPath())
+                            + AppUtils.QT(collectionRefList.get(i).getDocSignPath())
                             + ","
                             + collectionRefList.get(i).getDocExchange()
                             + ","
-                            + bmodel.QT(collectionRefList.get(i).getDocSignImage());
+                            + AppUtils.QT(collectionRefList.get(i).getDocSignImage());
 
 
                     db.insertSQL("CollectionDocument", columns, values);
