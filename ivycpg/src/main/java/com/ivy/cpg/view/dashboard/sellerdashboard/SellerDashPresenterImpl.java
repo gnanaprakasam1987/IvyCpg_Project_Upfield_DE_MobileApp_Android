@@ -12,6 +12,7 @@ import com.ivy.sd.png.commons.KeyPairBoolData;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.dashboard.presenter.SellerDashboardPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -698,6 +699,13 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
         }
     }
 
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardPresenterImp#getVisitedRetailerCount()
+     * @link  SellerDashboardPresenterImp#getTodayRetailerCount()} ()}
+     * @param flag
+     * @return
+     */
     private int getRetailerDetail(String flag) {
         int size = businessModel.getRetailerMaster().size();
         int count = 0;

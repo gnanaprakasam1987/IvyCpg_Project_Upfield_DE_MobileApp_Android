@@ -20,6 +20,7 @@ import com.ivy.core.di.scope.UserInfo;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.bo.DailyReportBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -41,6 +42,7 @@ import io.reactivex.functions.Function4;
 import io.reactivex.functions.Function5;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_COV;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_MSP;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_PDC;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_TLS;
@@ -549,10 +551,13 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                                     computeDailyAchievementsForPDC(dashBoardBO,o.productiveCalls);
                                 else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_MSP))
                                     computeDailyAchievementsForMSP(dashBoardBO, o.outletReport);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_COV))
+                                    computeDailyAchievementForCOV(dashBoardBO);
                             }
                         }
                     }));
     }
+
 
     private class DayAchievementData {
         private DailyReportBO outletReport;
@@ -748,7 +753,58 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         }
     }
 
+    private void computeDailyAchievementForCOV(DashBoardBO dashBoardBO){
+        int plannedRetailerCount = getTodayRetailerCount();
+        int plannedRetailerVisitCount = getVisitedRetailerCount();
 
+        dashBoardBO.setKpiAcheived(plannedRetailerVisitCount + "");
+        int kpiAcheived = plannedRetailerVisitCount;
+        int kpiTarget;
+
+        try {
+            kpiTarget = (plannedRetailerCount);
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
+
+    private int getTodayRetailerCount(){
+
+        int count =0;
+        for(RetailerMasterBO retailerMasterBO:appDataProvider.getRetailerMasters())
+            if(retailerMasterBO.getIsToday()== 1)
+                count++;
+
+        return count;
+    }
+
+    private int getVisitedRetailerCount(){
+
+        int count =0;
+        for(RetailerMasterBO retailerMasterBO:appDataProvider.getRetailerMasters())
+            if(retailerMasterBO.getIsVisited().equals("Y"))
+                count++;
+
+        return count;
+    }
 
 
 }
