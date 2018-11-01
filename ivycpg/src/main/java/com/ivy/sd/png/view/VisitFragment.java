@@ -691,7 +691,16 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
                 displayTodayRoute(null);
             } else {
-                loadData(0, null);
+
+                if (mBrandAutoCompleteTV.getAdapter().getCount() > 0) {
+
+                    bmodel.beatMasterHealper.setTodayBeatMasterBO(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)));
+                    mBrandAutoCompleteTV.setText(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)).getBeatDescription());
+                    mBrandAutoCompleteTV.dismissDropDown();
+                    loadData(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)).getBeatId(), null);
+                    //
+                } else
+                    loadData(0, null);
             }
 
         } catch (Exception e) {
