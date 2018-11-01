@@ -43,6 +43,8 @@ import io.reactivex.functions.Function5;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_COV;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_COVD;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_MSL;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_MSP;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_PDC;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_TLS;
@@ -553,6 +555,10 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                                     computeDailyAchievementsForMSP(dashBoardBO, o.outletReport);
                                 else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_COV))
                                     computeDailyAchievementForCOV(dashBoardBO);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_MSL)){
+
+                                }else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_COVD))
+                                    computeDailyAchievementsForCOVD(dashBoardBO);
                             }
                         }
                     }));
@@ -785,6 +791,39 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         }
     }
 
+    private void computeDailyAchievementsForCOVD(DashBoardBO dashBoardBO){
+        int plannedRetailerCount = getTodayRetailerCount();
+        int plannedRetailerVisitCount = getVisitedRetailerCountWithDeviation();
+
+        dashBoardBO.setKpiAcheived(plannedRetailerVisitCount + "");
+        dashBoardBO.setKpiTarget(plannedRetailerCount + "");
+        int kpiAcheived = plannedRetailerVisitCount;
+        int kpiTarget;
+
+        try {
+            kpiTarget = (plannedRetailerCount);
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
 
     private int getTodayRetailerCount(){
 
@@ -801,6 +840,16 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         int count =0;
         for(RetailerMasterBO retailerMasterBO:appDataProvider.getRetailerMasters())
             if(retailerMasterBO.getIsVisited().equals("Y"))
+                count++;
+
+        return count;
+    }
+
+    private int getVisitedRetailerCountWithDeviation(){
+
+        int count =0;
+        for(RetailerMasterBO retailerMasterBO:appDataProvider.getRetailerMasters())
+            if(retailerMasterBO.getIsVisited().equals("Y") || retailerMasterBO.getIsDeviated().equalsIgnoreCase("Y"))
                 count++;
 
         return count;
