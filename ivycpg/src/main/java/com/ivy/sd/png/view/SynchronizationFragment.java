@@ -1771,12 +1771,15 @@ public class SynchronizationFragment extends IvyBaseFragment
             if (isDownloaded) {
                 ArrayList<String> urlList = bmodel.synchronizationHelper.getUrlList();
                 if (urlList != null && urlList.size() > 0) {
-                    SharedPreferences.Editor editor = PreferenceManager
-                            .getDefaultSharedPreferences(getActivity())
-                            .edit();
-                    editor.putInt("trade_coverage_validation",
-                            0);
-                    editor.commit();
+                    Activity activity = getActivity();
+                    if(activity != null && isAdded()) {
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(getActivity())
+                                .edit();
+                        editor.putInt("trade_coverage_validation",
+                                0);
+                        editor.apply();
+                    }
                     bmodel.synchronizationHelper.downloadMasterAtVolley(SynchronizationHelper.FROM_SCREEN.SYNC, SynchronizationHelper.DownloadType.NORMAL_DOWNLOAD);
                 } else {
                     alertDialog.dismiss();
@@ -2186,6 +2189,13 @@ public class SynchronizationFragment extends IvyBaseFragment
         @Override
         protected void onPostExecute(SynchronizationHelper.NEXT_METHOD response) {
             super.onPostExecute(response);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (getActivity().isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+            } else if (getActivity().isFinishing()) {
+                return;
+            }
             if (alertDialog != null && alertDialog.isShowing())
                 alertDialog.dismiss();
             bmodel.synchronizationHelper.isLastVisitTranDownloadDone = true;

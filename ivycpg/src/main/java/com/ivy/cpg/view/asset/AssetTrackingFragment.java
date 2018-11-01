@@ -605,6 +605,44 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         }
     }
 
+
+
+
+    @Override
+    public void showError(String errorMsg) {
+        String titleText;
+        if (errorMsg.isEmpty())
+            titleText = getString(R.string.no_assets_exists);
+        else
+            titleText = errorMsg;
+
+        AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
+                getActivity());
+        alertDialogBuilder1
+                .setIcon(null)
+                .setCancelable(false)
+                .setTitle(titleText)
+                .setPositiveButton(getResources().getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                                dialog.cancel();
+                            }
+                        });
+
+        mBModel.applyAlertDialogTheme(alertDialogBuilder1);
+    }
+
+    @Override
+    public void save() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        customProgressDialog(builder, getResources().getString(R.string.saving));
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        assetPresenter.save(MENU_ASSET);
+    }
+
     @Override
     public void cancelProgressDialog() {
         assetPresenter.updateTimeStamp();
@@ -636,6 +674,8 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             }
         }).show();
     }
+
+
 
     /**
      * Show location dialog

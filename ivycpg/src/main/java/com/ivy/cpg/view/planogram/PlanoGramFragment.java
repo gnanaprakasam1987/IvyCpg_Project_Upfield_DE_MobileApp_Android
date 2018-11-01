@@ -477,9 +477,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             return;
         }
 
-        if (mAttributeProducts != null && productId!=0) {//Both Product and attribute filter selected
+        if (mAttributeProducts != null && mProductId!=0) {//Both Product and attribute filter selected
                 for (PlanoGramBO planoGramBO : items) {
-                    if (planoGramBO.getParentHierarchy().contains("/"+productId+"/")) {
+                    if (planoGramBO.getParentHierarchy() != null && planoGramBO.getParentHierarchy().contains("/"+mProductId+"/")) {
                         if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
                             if ((planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0)
                                     && mAttributeProducts.contains(planoGramBO.getPid())) {
@@ -491,9 +491,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         }
                     }
             }
-        } else if (mAttributeProducts == null && productId!=0) {// product filter alone selected
+        } else if (mAttributeProducts == null && mProductId!=0) {// product filter alone selected
                 for (PlanoGramBO planoGramBO : items) {
-                    if (planoGramBO.getParentHierarchy().contains("/"+productId+"/")) {
+                    if (planoGramBO.getParentHierarchy() != null && planoGramBO.getParentHierarchy().contains("/"+mProductId+"/")) {
                         if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
                             if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {
                                 mPlanoGramList.add(planoGramBO);
@@ -503,7 +503,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         }
                     }
             }
-        } else if (mAttributeProducts != null && productId!=0) {// Attribute filter alone selected
+        } else if (mAttributeProducts != null && mProductId!=0) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {
                 for (PlanoGramBO planoGramBO : items) {
                     if (pid == planoGramBO.getPid()) {
@@ -517,7 +517,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mAttributeProducts == null && productId!=0) {
+        } else if (mAttributeProducts == null && mProductId!=0) {
             for (PlanoGramBO planoGramBO : items) {
                 if (mPlanoGramHelper.IS_LOCATION_WISE_PLANOGRAM && planoGramBO.getLocationID() == mSelectedLocationId) {
                     if (planoGramBO.getPid() == mSelectedBrandID || mSelectedBrandID == 0) {

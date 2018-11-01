@@ -140,13 +140,12 @@ public class OrderHelper {
      * @param mContext current context
      */
     public boolean saveOrder(Context mContext, boolean isInvoice) {
-        DBUtil db = null;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
         int isVanSales = 1;
         String uid = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
