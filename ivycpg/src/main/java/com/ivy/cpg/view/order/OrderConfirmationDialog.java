@@ -208,7 +208,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                 } else if (configureBO.getConfigCode().equals(DELIVERY_DATE)) {
                     layout_delivery_date.setVisibility(View.VISIBLE);
                     textView_delivery_label.setText(configureBO.getMenuName());
-                    textView_delivery.setText(businessModel.getDeliveryDate());
+                    textView_delivery.setText(businessModel.getOrderHeaderBO().getDeliveryDate());
                 } else if (configureBO.getConfigCode().equals(SUPPLIER_SELECTION)) {
                     if (configureBO.getMandatory() == 1) {
                         findViewById(R.id.supplier_mandatory).setVisibility(View.VISIBLE);
