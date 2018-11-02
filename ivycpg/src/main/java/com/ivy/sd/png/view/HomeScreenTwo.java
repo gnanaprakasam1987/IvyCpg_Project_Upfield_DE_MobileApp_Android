@@ -2022,6 +2022,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             //the methods that were called during normal stock and order loading in non edit mode are called here
                                             //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
                                             bmodel.setOrderHeaderBO(null);
+                                            resetRemarksBO();
                                             loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
                                             loadstockorderscreen(menuConfigCode);
                                         }
@@ -5035,5 +5036,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             startActivity(i);
             finish();
         }
+    }
+
+    private void resetRemarksBO() {
+        bmodel.setOrderHeaderNote("");
+        bmodel.setRField1("");
+        bmodel.setRField2("");
+        bmodel.setSaleReturnNote("");
+        bmodel.setStockCheckRemark("");
+        bmodel.setAssetRemark("");
     }
 }

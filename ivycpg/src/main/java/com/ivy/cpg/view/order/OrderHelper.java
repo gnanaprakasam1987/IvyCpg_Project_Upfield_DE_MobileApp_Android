@@ -180,7 +180,8 @@ public class OrderHelper {
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
             uid = businessModel.QT(id);
 
-            if (!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID()) &&
+            if ((!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())||
+                businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
                     businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
                 businessModel.insertSeqNumber("ORD");
                 uid = businessModel.QT(businessModel.downloadSequenceNo("ORD"));
@@ -1467,6 +1468,7 @@ public class OrderHelper {
                     businessModel.getOrderHeaderBO()
                             .setRField2(orderHeaderCursor.getString(15));
 
+                    businessModel.setDeliveryDate(orderHeaderCursor.getString(6));
                     businessModel.setRField1(orderHeaderCursor.getString(14));
                     businessModel.setRField2(orderHeaderCursor.getString(15));
                     businessModel.setRField3(orderHeaderCursor.getString(16));

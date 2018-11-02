@@ -306,6 +306,7 @@ public class BusinessModel extends Application {
     private String stockCheckRemark = "";
     private String orderHeaderNote = "";
     private String rField1 = "";
+    private String deliveryDate = "";
     private String rField2 = "";
     private String rField3 = "";
     private String saleReturnNote = "";
@@ -605,6 +606,14 @@ public class BusinessModel extends Application {
 
     public void setRField1(String rField1) {
         this.rField1 = rField1;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     public String getRField2() {
