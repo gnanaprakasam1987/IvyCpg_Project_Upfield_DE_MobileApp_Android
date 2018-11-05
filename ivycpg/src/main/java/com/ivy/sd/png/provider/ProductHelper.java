@@ -300,6 +300,8 @@ public class ProductHelper {
     }
 
     public HashMap<Integer, Vector<Integer>> getmProductIdByBrandId() {
+        if(mProductIdByBrandId==null)
+            return new HashMap<>();
         return mProductIdByBrandId;
     }
 

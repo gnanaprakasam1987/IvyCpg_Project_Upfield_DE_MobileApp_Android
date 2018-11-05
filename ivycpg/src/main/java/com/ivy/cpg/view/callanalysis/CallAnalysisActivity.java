@@ -1980,7 +1980,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                     public void onClick(DialogInterface dialog, int which) {
                         if (idd == 0) {
-                            presenter.dayCloseAndUpload();
+                            presenter.validateAndUpload(false);
                         } else if (idd == 3) {
                             // isClicked = false;
                             // withPhotosCheckBox.setChecked(true);

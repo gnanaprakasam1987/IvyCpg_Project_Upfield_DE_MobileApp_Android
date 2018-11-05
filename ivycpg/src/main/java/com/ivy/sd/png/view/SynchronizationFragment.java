@@ -989,7 +989,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 0);
 
                     } else {
-                        presenter.validateAndUpload(dayCloseCheckBox.isChecked());
+                        presenter.validateAndUpload(false);
 
                     }
             } else {
@@ -1164,7 +1164,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                     public void onClick(DialogInterface dialog, int which) {
                         if (idd == 0) {
-                            presenter.dayCloseAndUpload();
+                            presenter.validateAndUpload(true);
                         } else if (idd == 3) {
                             isClicked = false;
                             withPhotosCheckBox.setChecked(true);

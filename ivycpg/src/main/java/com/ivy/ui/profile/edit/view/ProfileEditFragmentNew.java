@@ -1279,7 +1279,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 contractSpinner.setFloatingLabelText(MName);
 
                 String listName = getResources().getString(R.string.select_str) + " " + MName;
-                ArrayList<NewOutletBO> mContactStatus = new ArrayList<NewOutletBO>();
+                ArrayList<NewOutletBO> mContactStatus = new ArrayList<>();
                 mContactStatus.addAll(profileEditPresenter.getContractStatusList(listName));
 
                 ArrayAdapter<NewOutletBO> contractStatusAdapter = new ArrayAdapter<>(getActivity()
@@ -1363,7 +1363,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 location2.setFloatingLabelText(MName);
 
                 String locationName = getActivity().getResources().getString(R.string.select_str) + " " + MName;
-                locationAdapter2 = new ArrayAdapter<LocationBO>(getActivity(),
+                locationAdapter2 = new ArrayAdapter<>(getActivity(),
                         android.R.layout.simple_spinner_item, profileEditPresenter.getLocationMasterList2(locationName));
 
                 String loc2id = "";
@@ -1679,7 +1679,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             } else if (isFromChannel) {
                 isNewChannel = true;
                 // getting existing attribute layout and clearig childs for loading attributes of current channel
-                parentLayout = (LinearLayout) getView().findViewWithTag("attributeLayout");
+                parentLayout =  getView().findViewWithTag("attributeLayout");
                 if (parentLayout != null) {
                     for (int i = 0; i < parentLayout.getChildCount(); i++) {
                         if (parentLayout.getChildAt(i).getTag() != null &&
