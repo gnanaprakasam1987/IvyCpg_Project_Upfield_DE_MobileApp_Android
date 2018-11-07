@@ -1025,6 +1025,7 @@ negative button and neutral button -->
         <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:textColorHighlight">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
 
