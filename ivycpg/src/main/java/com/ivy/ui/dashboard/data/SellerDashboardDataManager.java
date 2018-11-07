@@ -55,4 +55,6 @@ public interface SellerDashboardDataManager {
 
     Single<DailyReportBO> fetchFulfilmentValue();
 
+    Single<Integer> fetchPromotionCount();
+
 }

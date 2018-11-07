@@ -4,10 +4,13 @@ import android.database.Cursor;
 
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.beat.BeatDataManager;
+import com.ivy.core.data.channel.ChannelDataManager;
+import com.ivy.core.di.scope.ChannelInfo;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DailyReportBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
@@ -26,6 +29,7 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
 
 import static com.ivy.cpg.view.dashboard.DashBoardHelper.MONTH_NAME;
@@ -44,14 +48,16 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
     private ConfigurationMasterHelper configurationMasterHelper;
 
+    private ChannelDataManager channelDataManager;
 
     private int currentmonthindex = 0;
 
     @Inject
-    public SellerDashboardDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
+    public SellerDashboardDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper, @ChannelInfo ChannelDataManager channelDataManager) {
         mDbUtil = dbUtil;
         this.appDataProvider = appDataProvider;
         this.configurationMasterHelper = configurationMasterHelper;
+        this.channelDataManager = channelDataManager;
     }
 
     private void initDb() {
@@ -1241,5 +1247,51 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 return dailyRp;
             }
         });
+    }
+
+    @Override
+    public Single<Integer> fetchPromotionCount() {
+
+        return channelDataManager.fetchChannelIds().flatMap(new Function<String, SingleSource<Integer>>() {
+            @Override
+            public SingleSource<Integer> apply(final String channelIds) throws Exception {
+                return Single.fromCallable(new Callable<Integer>() {
+                    @Override
+                    public Integer call() throws Exception {
+
+                        String chIDs = "";
+                        int count = 0;
+                        try{
+
+                            for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters()){
+                                if(retailerMasterBO.getIsToday() == 1){
+                                    chIDs = chIDs + "," + channelIds;
+                                }
+                            }
+                            if (chIDs.endsWith(","))
+                                chIDs = chIDs.substring(0, chIDs.length() - 1);
+
+                            StringBuffer sb = new StringBuffer();
+                            sb.append("SELECT count(PromoID) FROM PromotionMapping where chid in (" + chIDs + ")");
+
+                            initDb();
+                            Cursor c = mDbUtil.selectSQL(sb.toString());
+                            if (c.getCount() > 0) {
+                                while (c.moveToNext()) {
+                                    count = c.getInt(0);
+                                }
+                            }
+                            c.close();
+
+                        }catch (Exception ignored){
+
+                        }
+                        shutDownDb();
+                        return count;
+                    }
+                });
+            }
+        });
+
     }
 }

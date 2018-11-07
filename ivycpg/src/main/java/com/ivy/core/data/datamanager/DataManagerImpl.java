@@ -223,6 +223,22 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList) {
+        appDataProvider.setSubDMasterList(subDMasterList);
+    }
+
+    @Override
+    public void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList, boolean isFromBModel) {
+        appDataProvider.setSubDMasterList(subDMasterList, isFromBModel);
+
+    }
+
+    @Override
+    public ArrayList<RetailerMasterBO> getSubDMasterList() {
+        return appDataProvider.getSubDMasterList();
+    }
+
+    @Override
     public int getSavedImageCount() {
 
         int imageSize = 0;

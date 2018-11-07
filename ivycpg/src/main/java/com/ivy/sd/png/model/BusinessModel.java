@@ -59,6 +59,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
+import com.ivy.core.data.channel.ChannelDataManagerImpl;
 import com.ivy.core.data.db.AppDataManagerImpl;
 import com.ivy.core.data.retailer.RetailerDataManagerImpl;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
@@ -7337,6 +7338,11 @@ public class BusinessModel extends Application {
         this.subDMaster = subDMaster;
     }
 
+    /**
+     * @deprecated
+     * @See {@link ChannelDataManagerImpl#fetchChannelIds()}
+     * @return
+     */
     public String getChannelids() {
         String sql;
         String sql1 = "";
