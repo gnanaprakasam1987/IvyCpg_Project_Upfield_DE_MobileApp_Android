@@ -2029,4 +2029,14 @@ public class ProductMasterBO {
     public void setIncreasedPcs(int increasedPcs) {
         this.increasedPcs = increasedPcs;
     }
+
+    private float tempSrp;
+
+    public float getTempSrp() {
+        return tempSrp;
+    }
+
+    public void setTempSrp(float tempSrp) {
+        this.tempSrp = tempSrp;
+    }
 }

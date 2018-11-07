@@ -996,6 +996,7 @@ public class OrderDeliveryHelper {
 
             for (int i = 0; i < businessModel.productHelper.getProductMaster().size(); i++) {
                 ProductMasterBO productMasterBO = businessModel.productHelper.getProductMaster().elementAt(i);
+                productMasterBO.setSrp(productMasterBO.getTempSrp());
                 if (excessQtyMap.get(productMasterBO.getProductID()) != null)
                     productMasterBO.setSIH(excessQtyMap.get(productMasterBO.getProductID()));
                 else
