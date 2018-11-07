@@ -360,6 +360,13 @@ public class OrderDeliveryHelper {
         for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
             if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 || product.getOrderedOuterQty() > 0
                     || isReturnOrReplacementAvailable(product)) {
+
+                double temp = (product.getOrderedPcsQty() * product.getSrp())
+                        + (product.getOrderedCaseQty() * product.getCsrp())
+                        + product.getOrderedOuterQty() * product.getOsrp();
+                temp = SDUtil.convertToDouble(SDUtil.format(temp, businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
+                product.setTaxableAmount(temp);
+
                 orderedProductMasterBOS.add(product);
 
                 int prodQty = product.getOrderedPcsQty()
@@ -1347,4 +1354,70 @@ public class OrderDeliveryHelper {
 
         }
     }
+
+    public void updateDiscountInLineValue(Context context,String orderId){
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+
+        try {StringBuilder sb=new StringBuilder();
+            sb.append("select pid,sum(Value) from OrderDiscountDetail" +
+                    " where orderid="+businessModel.QT(orderId)+"  group by pid");
+            Cursor c = db.selectSQL(sb.toString());
+            while (c.moveToNext()){
+
+                ProductMasterBO productMasterBO=businessModel.productHelper.getProductMasterBOById(c.getString(0));
+
+                if(productMasterBO!=null) {
+                    double productDiscount = c.getDouble(1);
+
+                    if (productMasterBO.getLineValue() > 0)
+                        productMasterBO.setLineValue(productMasterBO.getLineValue() - productDiscount);
+
+                    productMasterBO.setProductLevelDiscountValue(productDiscount);
+                }
+            }
+
+
+            db.closeDB();
+        }catch (Exception e){
+            Commons.printException(e);
+
+            db.closeDB();
+
+        }
+
+
+    }
+
+    public void updateTaxInLineValue(Context context,String orderId){
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+
+        try {StringBuilder sb=new StringBuilder();
+            sb.append("select pid,sum(taxValue) from InvoiceTaxDetails" +
+                    " where orderid="+businessModel.QT(orderId)+"  group by pid");
+            Cursor c = db.selectSQL(sb.toString());
+            while (c.moveToNext()){
+
+                double lineValue= businessModel.productHelper.getProductMasterBOById(c.getString(0)).getLineValue();
+                double productTax=c.getDouble(1);
+
+                if(lineValue>0)
+                    businessModel.productHelper.getProductMasterBOById(c.getString(0)).setLineValue(lineValue+productTax);
+            }
+
+
+            db.closeDB();
+        }catch (Exception e){
+            Commons.printException(e);
+
+            db.closeDB();
+
+        }
+
+
+    }
+
 }

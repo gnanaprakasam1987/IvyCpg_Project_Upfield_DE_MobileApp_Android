@@ -178,6 +178,9 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
         @Override
         protected Boolean doInBackground(Void... voids) {
+            if(!isEdit)
+                orderDeliveryHelper.updateDiscountInLineValue(context,orderId);
+
             return orderDeliveryHelper.updateTableValues(context, orderId, isEdit,menuCode,referenceId);
         }
 
@@ -196,6 +199,8 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     if (!isEdit)
                         orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size() - 1).
                                 setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(context, orderId));
+
+                    orderDeliveryHelper.updateTaxInLineValue(context,orderId);
 
                     bmodel.mCommonPrintHelper.xmlRead("invoice", false, orderDeliveryHelper.getOrderedProductMasterBOS(), null, null, null, null);
 
