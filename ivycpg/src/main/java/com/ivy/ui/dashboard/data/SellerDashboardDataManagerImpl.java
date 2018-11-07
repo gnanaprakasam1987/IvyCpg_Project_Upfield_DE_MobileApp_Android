@@ -1163,4 +1163,83 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
             }
         });
     }
+
+    @Override
+    public Single<Double> fetchSalesReturnValue() {
+        return Single.fromCallable(new Callable<Double>() {
+            @Override
+            public Double call() throws Exception {
+                double salesReturnValue =0.0;
+                initDb();
+                try{
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader where upload!='X'");
+                    Cursor c = mDbUtil
+                            .selectSQL(sb.toString());
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                salesReturnValue = c.getDouble(1);
+                            }
+                        }
+                        c.close();
+                    }
+                }catch (Exception ignored){
+
+                }
+
+                return salesReturnValue;
+            }
+        });
+    }
+
+    @Override
+    public Single<DailyReportBO> fetchFulfilmentValue() {
+        return Single.fromCallable(new Callable<DailyReportBO>() {
+            @Override
+            public DailyReportBO call() throws Exception {
+                DailyReportBO dailyRp = new DailyReportBO();
+
+                try{
+                    initDb();
+
+                    String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
+                            + "(select qty from StockInHandMaster where pid = VL.pid) as SIHQTY,"
+                            + "(select srp1 from PriceMaster where scid = 0 and pid = VL.pid) as price from VanLoad VL"
+                            + " inner join stockapply sa on sa.uid = vl.uid";
+                    Cursor c = mDbUtil
+                            .selectSQL(query);
+                    int loadQty;
+                    int deliverQty;
+                    double price;
+                    double deliveredValue = 0;
+                    double loadedValue = 0;
+
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                loadQty = c.getInt(0) + (c.getInt(1) * c.getInt(2))
+                                        + (c.getInt(3) * c.getInt(4));
+                                deliverQty = loadQty - c.getInt(5);
+                                deliverQty = deliverQty < 0 ? 0 : deliverQty;
+                                price = c.getDouble(6);
+                                deliveredValue += deliverQty * price;
+                                loadedValue += loadQty * price;
+                            }
+                            dailyRp.setDelivered(deliveredValue);
+                            dailyRp.setLoaded(loadedValue);
+                        }
+                        c.close();
+                    }
+
+                }catch (Exception ignored){
+
+                }
+
+                shutDownDb();
+
+                return dailyRp;
+            }
+        });
+    }
 }

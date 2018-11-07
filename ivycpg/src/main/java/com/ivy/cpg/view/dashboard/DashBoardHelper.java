@@ -3784,6 +3784,11 @@ public class DashBoardHelper {
         return dailyRp;
     }
 
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#fetchSalesReturnValue()}
+     * @return
+     */
     public double getSalesReturnValue() {
         double sale_return_value = 0;
         try {
@@ -3810,6 +3815,11 @@ public class DashBoardHelper {
         return sale_return_value;
     }
 
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#fetchFulfilmentValue()}
+     * @return
+     */
     public DailyReportBO getFullFillmentValue() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {

@@ -51,4 +51,8 @@ public interface SellerDashboardDataManager {
 
     Single<Double> fetchFocusBrandInvoiceAmt();
 
+    Single<Double> fetchSalesReturnValue();
+
+    Single<DailyReportBO> fetchFulfilmentValue();
+
 }
