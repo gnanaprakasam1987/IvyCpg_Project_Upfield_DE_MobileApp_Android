@@ -8,6 +8,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -40,6 +42,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -59,7 +62,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -103,14 +105,16 @@ public class SODFragment extends IvyBaseFragment implements
     private String sb = "";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sos, container, false);
 
+        return inflater.inflate(R.layout.fragment_sos, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initializeView(view);
-
-        return view;
     }
 
     /**
@@ -120,34 +124,25 @@ public class SODFragment extends IvyBaseFragment implements
      */
     private void initializeView(View view) {
 
-
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
 
         if (view != null) {
-            mListView = (ListView) view.findViewById(R.id.list);
+            mListView = view.findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
 
-        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        FrameLayout drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
-        //setting Header Title Fonts
-        ((TextView) view.findViewById(R.id.levelName)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.hTotal)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.hlength)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.hlengthacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) view.findViewById(R.id.hpercent)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.hpercentacttar)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) view.findViewById(R.id.hGap)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        tvSelectedName = (TextView) view.findViewById(R.id.levelName);
+        tvSelectedName = view.findViewById(R.id.levelName);
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
 
-        mDrawerLayout = (DrawerLayout) view.findViewById(
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
@@ -167,21 +162,20 @@ public class SODFragment extends IvyBaseFragment implements
                     setScreenTitle(
                             mSFHelper.mSelectedActivityName);
                 }
-                getActivity().supportInvalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 if (getActionBar() != null) {
                     setScreenTitle(getResources().getString(R.string.filter));
                 }
-                getActivity().supportInvalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
-        Button btn_save = (Button) view.findViewById(R.id.btn_save);
-        btn_save.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button btn_save = view.findViewById(R.id.btn_save);
 
         btn_save.setOnClickListener(new OnClickListener() {
             @Override
@@ -612,18 +606,12 @@ public class SODFragment extends IvyBaseFragment implements
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         }
 
-        mParentTotal = (EditText) dialog.findViewById(R.id.et_total);
+        mParentTotal = dialog.findViewById(R.id.et_total);
 
         // setting no of charcters from congifuration
         InputFilter[] FilterArray = new InputFilter[1];
         FilterArray[0] = new InputFilter.LengthFilter(mSFHelper.sodDigits);
         mParentTotal.setFilters(FilterArray);
-
-        mParentTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) dialog.findViewById(R.id.dialog_title)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) dialog.findViewById(R.id.tvTotal)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((Button) dialog.findViewById(R.id.btn_cancel)).setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ((Button) dialog.findViewById(R.id.btn_done)).setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         mCategoryForDialog.clear();
 
@@ -636,7 +624,7 @@ public class SODFragment extends IvyBaseFragment implements
             }
         }
 
-        ListView listView = (ListView) dialog.findViewById(R.id.lv);
+        ListView listView =  dialog.findViewById(R.id.lv);
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = displayMetrics.heightPixels / 3;
         listView.setLayoutParams(params);
@@ -745,8 +733,6 @@ public class SODFragment extends IvyBaseFragment implements
     class ViewHolder {
         SODBO mSOD;
         TextView tvBrandName;
-        TextView tvNorm;
-        TextView tvTarget;
         TextView tvActual;
         TextView tvPercentage;
         TextView tvGap;
@@ -754,6 +740,7 @@ public class SODFragment extends IvyBaseFragment implements
         Spinner spnReason;
         ImageView btnPhoto;
         ImageButton audit;
+        LinearLayout remark_layout;
     }
 
     /**
@@ -790,27 +777,22 @@ public class SODFragment extends IvyBaseFragment implements
                 LayoutInflater inflater = LayoutInflater.from(getActivity()
                         .getBaseContext());
                 row = inflater.inflate(R.layout.row_sos, parent, false);
-                holder.tvBrandName = (TextView) row
+                holder.tvBrandName = row
                         .findViewById(R.id.tvBrandName);
-                holder.tvNorm = (TextView) row
-                        .findViewById(R.id.tvNorm);
-
-                holder.tvTarget = (TextView) row
-                        .findViewById(R.id.tvTarget);
-                holder.tvActual = (TextView) row
+                holder.tvActual = row
                         .findViewById(R.id.tvActual);
-                holder.tvPercentage = (TextView) row
+                holder.tvPercentage = row
                         .findViewById(R.id.tvPercentage);
-                holder.tvGap = (TextView) row.findViewById(R.id.tvGap);
-                holder.btnPhoto = (ImageView) row
+                holder.tvGap = row.findViewById(R.id.tvGap);
+                holder.btnPhoto = row
                         .findViewById(R.id.btn_photo);
-                holder.spnReason = (Spinner) row
+                holder.spnReason = row
                         .findViewById(R.id.spnReason);
 
-                holder.etTotal = (EditText) row
+                holder.etTotal = row
                         .findViewById(R.id.etTotal);
                 holder.etTotal.setTag(holder);
-                holder.audit = (ImageButton) row
+                holder.audit = row
                         .findViewById(R.id.btn_audit);
 
                 holder.audit.setOnClickListener(new OnClickListener() {
@@ -999,15 +981,6 @@ public class SODFragment extends IvyBaseFragment implements
 
             holder.mSOD = items.get(position);
 
-            //typeface
-            holder.tvBrandName.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.etTotal.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvActual.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvTarget.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvPercentage.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvNorm.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.tvGap.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
             if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 2)
                 holder.audit.setImageResource(R.drawable.ic_audit_none);
             else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 1)
@@ -1017,17 +990,22 @@ public class SODFragment extends IvyBaseFragment implements
 
             holder.tvBrandName.setText(holder.mSOD.getProductName());
 
-            String strNorm = holder.mSOD.getNorm() + "";
-            holder.tvNorm.setText(strNorm);
-
             if ("0.0".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal())) {
                 holder.etTotal.setText("0");
             } else {
                 holder.etTotal.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal());
             }
-            holder.tvActual.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getActual());
-            holder.tvTarget.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getTarget());
-            holder.tvPercentage.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getPercentage());
+
+            String strActTarget = (holder.mSOD.getLocations().get(mSelectedLocationIndex).getActual() + "/"
+                    + holder.mSOD.getLocations().get(mSelectedLocationIndex).getTarget());
+
+            holder.tvActual.setText(strActTarget);
+
+            String strPerNorm = (holder.mSOD.getLocations().get(mSelectedLocationIndex).getPercentage() + "/"
+                    + String.valueOf(holder.mSOD.getNorm()));
+
+            holder.tvPercentage.setText(strPerNorm);
+
             holder.tvGap.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getGap());
 
             if (SDUtil.convertToFloat(holder.mSOD.getLocations().get(mSelectedLocationIndex).getGap()) < 0)
@@ -1055,14 +1033,6 @@ public class SODFragment extends IvyBaseFragment implements
             } else {
                 holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera));
             }
-
-            TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            if (position % 2 == 0) {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            } else {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-            }
-
             return row;
         }
 
@@ -1190,8 +1160,8 @@ public class SODFragment extends IvyBaseFragment implements
                 row = inflater.inflate(
                         R.layout.row_salesfundamental_total_list, parent, false);
 
-                holder.tv = (TextView) row.findViewById(R.id.tv);
-                holder.et = (EditText) row.findViewById(R.id.et);
+                holder.tv = row.findViewById(R.id.tv);
+                holder.et = row.findViewById(R.id.et);
 
                 // setting no of charcters from congifuration
                 InputFilter[] FilterArray = new InputFilter[1];
@@ -1230,7 +1200,7 @@ public class SODFragment extends IvyBaseFragment implements
                         else if (!holder.et.getText().toString().equals("0") || !holder.et.getText().toString().equals("0.0")
                                 || !holder.et.getText().toString().equals("0.00"))
                             sb = holder.et.getText().toString();
-                        if (!"".equals(s)) {
+                        if (!"".equals(s.toString())) {
                             if (holder.et.length() > 0)
                                 holder.et.setSelection(holder.et.length());
                             try {
@@ -1267,8 +1237,8 @@ public class SODFragment extends IvyBaseFragment implements
             SODBO brand = mCategoryForDialog.get(position);
 
             holder.sodBO = brand;
-            holder.tv.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.et.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+           /* holder.tv.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            holder.et.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));*/
 
             holder.tv.setText(brand.getProductName());
             holder.et.setText(brand.getLocations().get(mSelectedLocationIndex).getActual());

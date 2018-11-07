@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/ic_camera_right_margin"
     android:layout_marginStart="@dimen/ic_camera_right_margin"
+    android:layout_marginEnd="@dimen/ic_camera_right_margin"
     android:orientation="horizontal">
 
     <TextView
@@ -11,9 +11,10 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fontFamily="@font/roboto_regular"
         android:gravity="center|start"
-        android:text="@string/total"
         android:padding="@dimen/target_top_margin"
+        android:text="@string/total"
         android:textColor="@color/task_title"
         android:textSize="@dimen/font_small" />
 
@@ -22,16 +23,17 @@
         android:id="@+id/ll_total"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/right_margin"
         android:layout_marginTop="@dimen/target_top_margin"
+        android:layout_marginEnd="@dimen/right_margin"
+        android:layout_marginRight="@dimen/right_margin"
         android:layout_weight="0.5"
-        android:orientation="vertical"
-        android:layout_marginRight="@dimen/right_margin">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_total_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
             android:text="@string/total"
             android:textColor="@color/GRAY_TEXT"
             android:textSize="@dimen/footer_label_size" />
@@ -43,7 +45,7 @@
             android:layout_height="wrap_content"
             android:gravity="center|start"
             android:maxLength="4"
-            android:text="0"
+            android:text="@string/zero"
             android:textSize="@dimen/font_small" />
 
     </LinearLayout>
@@ -52,16 +54,17 @@
         android:id="@+id/ll_actual"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/right_margin"
         android:layout_marginTop="@dimen/target_top_margin"
+        android:layout_marginEnd="@dimen/right_margin"
+        android:layout_marginRight="@dimen/right_margin"
         android:layout_weight="0.5"
-        android:orientation="vertical"
-        android:layout_marginRight="@dimen/right_margin">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_actual_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
             android:text="@string/actual"
             android:textColor="@color/GRAY_TEXT"
             android:textSize="@dimen/footer_label_size" />
@@ -73,7 +76,7 @@
             android:layout_height="wrap_content"
             android:gravity="center|start"
             android:maxLength="4"
-            android:text="0"
+            android:text="@string/zero"
             android:textSize="@dimen/font_small" />
 
     </LinearLayout>
