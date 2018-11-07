@@ -68,5 +68,14 @@
         android:orderInCategory="98"
         android:title="Asset Scan"
         ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_reason"
+        android:icon="@drawable/icon_review_plan"
+        android:orderInCategory="101"
+        android:title="@string/Noorderreason"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
 </menu>
 

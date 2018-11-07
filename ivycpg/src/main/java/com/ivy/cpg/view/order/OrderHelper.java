@@ -136,13 +136,12 @@ public class OrderHelper {
      * @param mContext current context
      */
     public boolean saveOrder(Context mContext, boolean isInvoice) {
-        DBUtil db = null;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
         int isVanSales = 1;
         String uid = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
 
@@ -183,7 +182,8 @@ public class OrderHelper {
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
             uid = AppUtils.QT(id);
 
-            if (!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID()) &&
+            if ((!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())||
+                businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
                     businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
                 businessModel.insertSeqNumber("ORD");
                 uid = AppUtils.QT(businessModel.downloadSequenceNo("ORD"));
@@ -1475,6 +1475,7 @@ public class OrderHelper {
                     businessModel.getOrderHeaderBO()
                             .setRField2(orderHeaderCursor.getString(15));
 
+                    businessModel.setDeliveryDate(orderHeaderCursor.getString(6));
                     businessModel.setRField1(orderHeaderCursor.getString(14));
                     businessModel.setRField2(orderHeaderCursor.getString(15));
                     businessModel.setRField3(orderHeaderCursor.getString(16));

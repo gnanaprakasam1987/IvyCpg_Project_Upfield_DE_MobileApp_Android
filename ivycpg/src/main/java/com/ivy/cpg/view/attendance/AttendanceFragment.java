@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.attendance;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -316,6 +317,8 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
                                     tvToDate.getText().toString(), atd_code, getActivity());
 
                             if (!bmodel.configurationMasterHelper.IS_ATTENDANCE_SYNCUPLOAD) {
+                                Activity activity = getActivity();
+                                if(activity != null && isAdded())
                                 showUploadAlert(
                                         getResources().getString(R.string.attend),
                                         getResources().getString(

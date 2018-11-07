@@ -638,7 +638,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-
+                                        Activity activity = getActivity();
+                                        if(activity != null && isAdded())
                                         getActivity().finish();
                                         try {
                                             bmodel.synchronizationHelper.backUpDB();

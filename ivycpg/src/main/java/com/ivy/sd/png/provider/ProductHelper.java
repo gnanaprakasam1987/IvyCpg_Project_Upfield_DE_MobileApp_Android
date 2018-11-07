@@ -1028,12 +1028,12 @@ public class ProductHelper {
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));
 
                     product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    product.setTempSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
                     product.setPrevPrice_pc(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
                     product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
                     product.setPrevPrice_ca(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
                     product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
                     product.setPrevPrice_oo(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
-
                     product.setMSQty(c.getInt(c.getColumnIndex("msqqty")));
                     product.setCaseSize(c.getInt(c.getColumnIndex("caseQty")));
                     product.setCaseUomId(c.getInt(c.getColumnIndex("caseUomId")));

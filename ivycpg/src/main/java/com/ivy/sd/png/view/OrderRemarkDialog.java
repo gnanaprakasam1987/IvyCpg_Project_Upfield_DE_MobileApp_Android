@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -117,7 +118,7 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
             getNextDate();
             if (bmodel.isEdit()) {
                 mBtnDate.setText(Utils.formatDateAsUserRequired(bmodel
-                        .getDeliveryDate(bmodel.getRetailerMasterBO()
+                        .getDeliveryDate(OrderHelper.getInstance(con).selectedOrderId,bmodel.getRetailerMasterBO()
                                 .getRetailerID()), "yyyy/MM/dd", "MM/dd/yyyy"));
             } else {
                 mBtnDate.setText(mnextDate + "");

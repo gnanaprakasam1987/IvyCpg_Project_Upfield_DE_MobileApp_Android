@@ -1316,6 +1316,9 @@
         <item>Cum</item>
         <item>Cts</item>
     </string-array>
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">Satılabilir</string>
 
     <string name="stores">Stores</string>
     <string name="check_anyone_fromlist">Check anyone from the List</string>

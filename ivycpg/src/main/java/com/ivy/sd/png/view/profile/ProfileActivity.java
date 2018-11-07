@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -662,7 +664,21 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             case R.id.draw_routeimg_btn: {
                 isdrawRoute = true;
-                drawMapRoute();
+                String uri = "http://maps.google.com/maps?saddr=" + lat + "," + lng + "(" + "Current " + ")&daddr=" + retailerLat + "," + retailerLng + " (" + retailerObj.getAddress1() + ")";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                intent.setPackage("com.google.android.apps.maps");
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    try {
+                        Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                        startActivity(unrestrictedIntent);
+                    } catch (ActivityNotFoundException innerEx) {
+                        Toast.makeText(this, "Please install a maps application", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                // drawMapRoute();
                 break;
             }
             case R.id.start_visit: {
@@ -1203,6 +1219,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 linearLayout.setVisibility(View.GONE);
             } else if (visitClick) {
                 deviateBtn.setVisibility(View.GONE);
+
                 if (isNonVisitReason)
                     cancelVisitBtn.setVisibility(View.VISIBLE);
                 startVisitBtn.setVisibility(View.VISIBLE);
@@ -1802,6 +1819,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
             downloadProductsAndPrice = new DownloadProductsAndPrice();
+            if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
             downloadProductsAndPrice.execute();
             // new DownloadProductsAndPrice().execute();
         }

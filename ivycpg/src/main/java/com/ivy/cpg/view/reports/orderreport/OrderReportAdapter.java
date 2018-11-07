@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -325,7 +326,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         try {
             String delivery_date;
 
-            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
+            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(OrderHelper.getInstance(mContext).selectedOrderId,reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
 
             if (businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
                 String value = businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;

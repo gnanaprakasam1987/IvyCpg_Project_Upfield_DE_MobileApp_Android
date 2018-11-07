@@ -110,7 +110,7 @@ public class PrintHelper {
                 }
 
                 sb.append("T 5 0 300 " + (85 + totalLength));
-                sb.append(" Delivery on:" + bmodel.getDeliveryDate(bmodel.getRetailerMasterBO().getRetailerID()) + "\r\n");
+                sb.append(" Delivery on:" + bmodel.getDeliveryDate(OrderHelper.getInstance(mContext).selectedOrderId,bmodel.getRetailerMasterBO().getRetailerID()) + "\r\n");
                 String retailerName = "";
                 if (bmodel.getRetailerMasterBO().getRetailerName() != null && !"".equals(bmodel.getRetailerMasterBO().getRetailerName())
                         && !"null".equals(bmodel.getRetailerMasterBO().getRetailerName())) {

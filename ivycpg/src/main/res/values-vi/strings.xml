@@ -1316,6 +1316,9 @@
         <item>T6</item>
         <item>T7</item>
     </string-array>
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">có thể bán được</string>
 
     <string name="stores">Stores</string>
     <string name="check_anyone_fromlist">Check anyone from the List</string>

@@ -310,6 +310,7 @@ public class BusinessModel extends Application {
     private String stockCheckRemark = "";
     private String orderHeaderNote = "";
     private String rField1 = "";
+    private String deliveryDate = "";
     private String rField2 = "";
     private String rField3 = "";
     private String saleReturnNote = "";
@@ -447,6 +448,13 @@ public class BusinessModel extends Application {
     }
 
     private void loadActivity(Activity ctxx, String act) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (ctxx.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                return;
+            }
+        } else if (ctxx.isFinishing()) {
+            return;
+        }
         Intent myIntent;
         if (act.equals(DataMembers.actLoginScreen)) {
             myIntent = new Intent(ctxx, LoginScreen.class);
@@ -592,6 +600,14 @@ public class BusinessModel extends Application {
 
     public void setRField1(String rField1) {
         this.rField1 = rField1;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     public String getRField2() {
@@ -2883,7 +2899,7 @@ public class BusinessModel extends Application {
         }
     }
 
-    public String getDeliveryDate(String retailerId) {
+    public String getDeliveryDate(String orderID, String retailerID) {
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -2892,7 +2908,7 @@ public class BusinessModel extends Application {
         String sql = null;
 
         sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                + " where upload !='X' and RetailerID=" + QT(retailerId);
+                + " where upload !='X' and RetailerID=" + QT(retailerID) + " and OrderID = " + QT(orderID);
 
         Cursor orderHeaderCursor = db.selectSQL(sql);
         if (orderHeaderCursor != null) {
