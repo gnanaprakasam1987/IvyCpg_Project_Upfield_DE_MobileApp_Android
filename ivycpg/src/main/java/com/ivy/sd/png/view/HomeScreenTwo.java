@@ -1835,6 +1835,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             //the methods that were called during normal stock and order loading in non edit mode are called here
                                             //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
                                             bmodel.setOrderHeaderBO(null);
+                                            bmodel.setEdit(false);
                                             OrderHelper.getInstance(HomeScreenTwo.this).selectedOrderId = "";
                                             loadRequiredMethodsforOrder(menuConfigCode);
                                         }
@@ -2023,6 +2024,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
                                             bmodel.setOrderHeaderBO(null);
                                             resetRemarksBO();
+                                            bmodel.setEdit(false);
                                             loadRequiredMethodsForStockAndOrder(menuConfigCode, menuName);
                                             loadstockorderscreen(menuConfigCode);
                                         }

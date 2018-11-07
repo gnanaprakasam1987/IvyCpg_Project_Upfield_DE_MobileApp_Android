@@ -665,7 +665,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_TIME)) {
             value = label + SDUtil.now(SDUtil.TIME);
         } else if (tag.equalsIgnoreCase(TAG_DELIVERY_DATE)) {
-            String deliveryDate = bmodel.getDeliveryDate(bmodel.getRetailerMasterBO().getRetailerID());
+            String deliveryDate = bmodel.getDeliveryDate(OrderHelper.getInstance(context).selectedOrderId,bmodel.getRetailerMasterBO().getRetailerID());
             if (!deliveryDate.equals("")) {
                 String delDate = DateUtil.convertFromServerDateToRequestedFormat(deliveryDate, bmodel.configurationMasterHelper.outDateFormat);
                 value = label + delDate;
