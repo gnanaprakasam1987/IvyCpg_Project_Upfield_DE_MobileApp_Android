@@ -288,7 +288,7 @@ public class TaxGstHelper implements TaxInterface {
     }
 
     @Override
-    public HashMap<String, Double> prepareProductTaxForPrint(Context context, String orderId) {
+    public HashMap<String, Double> prepareProductTaxForPrint(Context context, String orderId, boolean isFromInvoice) {
         DBUtil db = null;
         HashMap<String,Double> mTaxesApplied=new HashMap<>();
         try {

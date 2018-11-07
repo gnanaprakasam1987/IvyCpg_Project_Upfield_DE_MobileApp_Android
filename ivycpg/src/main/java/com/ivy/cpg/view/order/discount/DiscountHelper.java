@@ -14,6 +14,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1244,4 +1245,26 @@ public class DiscountHelper {
         isWihtHoldApplied = wihtHoldApplied;
     }
 
+    public HashMap<String,Double> prepareProductDiscountForPrint(Context context,String orderId){
+        DBUtil db = null;
+        HashMap<String,Double> mDiscountsApplied=new HashMap<>();
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select typeid,discountType,sum(Value) from OrderDiscountDetail" +
+                    " where orderid="+ AppUtils.QT(orderId)+"  group by typeid");
+            Cursor c = db.selectSQL(sb.toString());
+            while (c.moveToNext()){
+                mDiscountsApplied.put(c.getString(1),c.getDouble(2));
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+        return mDiscountsApplied;
+
+    }
 }
