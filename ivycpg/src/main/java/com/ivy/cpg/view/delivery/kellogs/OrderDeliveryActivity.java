@@ -309,6 +309,9 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                 bmodel.collectionHelper.downloadDiscountSlab();
             }
+            if (from.equalsIgnoreCase(ACCEPT)) {
+                orderDeliveryHelper.updateDiscountInLineValue(OrderDeliveryActivity.this, orderId);
+            }
 
             return null;
         }
@@ -340,6 +343,8 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                                         OrderDeliveryActivity.this,
                                         getResources().getString(R.string.invoice_generated),
                                         Toast.LENGTH_SHORT).show();
+
+                                orderDeliveryHelper.updateTaxInLineValue(OrderDeliveryActivity.this, orderId);
 
                                 orderDeliveryHelper.getOrderedProductMasterBOS().get(orderDeliveryHelper.getOrderedProductMasterBOS().size() - 1).
                                         setSchemeProducts(orderDeliveryHelper.downloadSchemeFreePrint(OrderDeliveryActivity.this, orderId));
