@@ -53,8 +53,8 @@ public class DashBoardPresenterImpl implements DashboardContractor.DashboardPres
         for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
             if (dashBoardBO.getType().equalsIgnoreCase(DAY_TYPE)) {
                 if (dashBoardBO.getCode().equals(JOURNEY_PLAN_CALL)) {
-                    final int totalcalls = businessModel.getTotalCallsForTheDay();
-                    final int visitedcalls = businessModel.getVisitedCallsForTheDay();
+                    final int totalcalls = dashBoardHelper.getTotalCallsForTheDay();
+                    final int visitedcalls = dashBoardHelper.getVisitedCallsForTheDay();
                     dashBoardBO.setTarget(totalcalls);
                     dashBoardBO.setAcheived(visitedcalls);
 
@@ -76,9 +76,9 @@ public class DashBoardPresenterImpl implements DashboardContractor.DashboardPres
 
 
                 } else if (dashBoardBO.getCode().equals(PRODUCTIVE_CALL)) {
-                    final int totalcalls = businessModel.getTotalCallsForTheDay();
+                    final int totalcalls = dashBoardHelper.getTotalCallsForTheDay();
                     double targetProductiveCalls = totalcalls * 0.25;
-                    final int productivecalls = businessModel.getProductiveCallsForTheDay();
+                    final int productivecalls = dashBoardHelper.getProductiveCallsForTheDay();
                     dashBoardBO.setTarget(targetProductiveCalls);
                     dashBoardBO.setAcheived(productivecalls);
 

@@ -22,7 +22,7 @@
                 android:padding="5dp"
                 android:text="@string/no"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
 
             <TextView
                 android:id="@+id/batchno"
@@ -31,7 +31,7 @@
                 android:padding="5dp"
                 android:text="@string/no"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -43,7 +43,7 @@
             android:padding="5dp"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/returnQty"
@@ -53,7 +53,7 @@
             android:padding="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/soldstk"
@@ -63,7 +63,7 @@
             android:padding="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/free"
@@ -73,7 +73,7 @@
             android:padding="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/replacementQty"
@@ -83,7 +83,7 @@
             android:padding="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/sih"
@@ -95,7 +95,7 @@
             android:paddingRight="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/empty"
@@ -105,7 +105,7 @@
             android:padding="5dp"
             android:text="@string/hiffen"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
     </LinearLayout>
 
 </LinearLayout>

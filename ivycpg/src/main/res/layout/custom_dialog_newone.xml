@@ -56,7 +56,7 @@
             android:onClick="onClick"
             android:layout_margin="@dimen/dimen_5dp"
             android:text="@string/ok"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:textColor="?attr/colorAccent"
             android:layout_gravity="right|center"
             />
@@ -69,7 +69,7 @@
             android:onClick="onClick"
             android:textColor="?attr/colorAccent"
             android:text="@string/cancel"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:layout_margin="@dimen/dimen_5dp"
             android:layout_gravity="right|center"
             />

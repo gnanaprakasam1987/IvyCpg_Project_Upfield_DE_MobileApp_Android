@@ -5582,8 +5582,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             /*bmodel.productHelper
                     .downloadFiveLevelFilterNonProducts("MENU_SURVEY");*/
             bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY"));
-            bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY",
-                    bmodel.productHelper.getRetailerModuleSequenceValues()));
+            bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                    bmodel.productHelper.getRetailerModuleSequenceValues(),false));
             bmodel.mSelectedActivityName = "Survey";
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;

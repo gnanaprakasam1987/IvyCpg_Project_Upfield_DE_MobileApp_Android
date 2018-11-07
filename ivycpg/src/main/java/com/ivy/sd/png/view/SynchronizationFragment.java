@@ -342,7 +342,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                                     .getString(
                                                                             R.string.you_are_closing)
                                                                     + " "
-                                                                    + SDUtil.today()
+                                                                    + bmodel.getDay(SDUtil.now(SDUtil.DATE_GLOBAL))
                                                                     + " "
                                                                     + "("
                                                                     + DateUtil
@@ -357,7 +357,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                                 .getString(
                                                                         R.string.you_are_closing)
                                                                 + " "
-                                                                + SDUtil.today()
+                                                                + bmodel.getDay(SDUtil.now(SDUtil.DATE_GLOBAL))
                                                                 + " "
                                                                 + "("
                                                                 + DateUtil
@@ -989,7 +989,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 0);
 
                     } else {
-                        presenter.validateAndUpload(dayCloseCheckBox.isChecked());
+                        presenter.validateAndUpload(false);
 
                     }
             } else {
@@ -1164,7 +1164,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
                     public void onClick(DialogInterface dialog, int which) {
                         if (idd == 0) {
-                            presenter.dayCloseAndUpload();
+                            presenter.validateAndUpload(true);
                         } else if (idd == 3) {
                             isClicked = false;
                             withPhotosCheckBox.setChecked(true);
@@ -1294,6 +1294,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     // bmodel.activationHelper.clearAppUrl();
                     clearAppUrl();
                     bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
+                    bmodel.codeCleanUpUtil.setUserId(0);
                     try {
                         Uri path;
                         if (Build.VERSION.SDK_INT >= 24) {

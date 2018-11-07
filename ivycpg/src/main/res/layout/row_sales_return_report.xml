@@ -28,7 +28,7 @@
                 android:paddingStart="3dp"
                 android:text="@string/invoice_no"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:paddingLeft="3dp" />
 
             <TextView
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/lot_number"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/invLotNumberTv"
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/srp"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/invSRPTv"
@@ -130,7 +130,7 @@
                 android:paddingStart="3dp"
                 android:text="@string/quantity"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:paddingLeft="3dp" />
 
             <TextView
@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/total_amount"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/outAmtTv"
@@ -198,7 +198,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/reason"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/reportReasonTv"

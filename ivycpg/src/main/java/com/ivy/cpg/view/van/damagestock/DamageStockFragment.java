@@ -77,12 +77,12 @@ public class DamageStockFragment extends Fragment {
         lvwplist = tempView.findViewById(R.id.list);
         reasonSpinner = tempView.findViewById(R.id.reasonSpinner);
 
-        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) tempView.findViewById(R.id.product_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) tempView.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) tempView.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) tempView.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) tempView.findViewById(R.id.reasonTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        productName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) tempView.findViewById(R.id.product_txt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) tempView.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) tempView.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) tempView.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) tempView.findViewById(R.id.reasonTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(tempView.findViewById(
@@ -290,12 +290,12 @@ public class DamageStockFragment extends Fragment {
                 holder.reason = row.findViewById(R.id.reason);
                 holder.batchnum = row.findViewById(R.id.batchnum);
 
-                holder.productname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.caseqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.pcsqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.outerqty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.reason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.batchnum.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                holder.productname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.caseqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.pcsqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.outerqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.reason.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.batchnum.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
                 holder.productname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 

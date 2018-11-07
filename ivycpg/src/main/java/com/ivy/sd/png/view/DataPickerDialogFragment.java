@@ -41,8 +41,8 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
             if (getArguments() != null
                     && getArguments().getString("MODULE") != null) {
                 moduleName = getArguments().getString("MODULE");
-                minDate = (getArguments().getInt("CHQMINDATE") != 0) ? getArguments().getInt("CHQMINDATE") : 0;
-                maxDate = (getArguments().getInt("CHQMAXDATE") != 0) ? getArguments().getInt("CHQMAXDATE") : 0;
+                minDate = getArguments().getInt("CHQMINDATE");
+                maxDate = getArguments().getInt("CHQMAXDATE");
 
                 mSelectedDate = (getArguments().getString("selectedDate") != null) ? getArguments().getString("selectedDate") : "";
                 mSelectedDateFormat = (getArguments().getString("selectedDateFormat") != null) ? getArguments().getString("selectedDateFormat") : "";

@@ -31,7 +31,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -122,10 +121,10 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         tvFromDate.setOnClickListener(this);
         tvToDate.setOnClickListener(this);
         //typeface
-        ((TextView) view.findViewById(R.id.reasonTextViewId)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-        ((TextView) view.findViewById(R.id.leavereasonTextViewId)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-        tvFromDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-        tvToDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        ((TextView) view.findViewById(R.id.reasonTextViewId)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.leavereasonTextViewId)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        tvFromDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        tvToDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
         Button btn_proceed = view.findViewById(R.id.buttonproceed);
         btn_proceed.setOnClickListener(this);

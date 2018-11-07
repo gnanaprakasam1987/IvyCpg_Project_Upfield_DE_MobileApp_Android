@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_vertical"
-    android:minHeight="40dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_6dp"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingEnd="@dimen/list_padding_left_n_right">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/target_top_margin"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -27,8 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:visibility="gone"
-                android:contentDescription="@string/audit" />
+                android:contentDescription="@string/audit"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -38,10 +39,10 @@
             style="?attr/customListItemPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_gravity="center"
+            android:layout_weight="4"
             android:gravity="start"
             android:maxLines="1"
-            android:padding="@dimen/target_top_margin"
             android:text="@string/brand" />
 
 
@@ -50,135 +51,212 @@
             style="@style/EditText_ListItem"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.8"
+            android:layout_weight="1.5"
             android:gravity="center"
-            android:paddingStart="@dimen/dimen_1dp"
-            android:paddingEnd="@dimen/dimen_1dp"
             android:text="@string/zero" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2.2"
+            android:layout_weight="2.3"
             android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvActual"
-                style="?attr/customListItemValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/zero" />
-
-            <TextView
-                style="?attr/customListItemValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="/" />
-
-            <TextView
-                android:id="@+id/tvTarget"
-                style="?attr/customListItemValue"
+                style="?attr/customListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/zero"
-                android:visibility="visible" />
+                android:textStyle="normal" />
+
+            <TextView
+                style="?attr/customListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:visibility="gone"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tvTarget"
+                style="?attr/customListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                android:textStyle="normal"
+                android:visibility="gone" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2.2"
+            android:layout_weight="2.3"
             android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvPercentage"
-                style="?attr/customListItemValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/zero" />
-
-            <TextView
-                style="?attr/customListItemValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="/" />
-
-            <TextView
-                android:id="@+id/tvNorm"
-                style="?attr/customListItemValue"
+                style="?attr/customListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/zero"
-                android:visibility="visible" />
+                android:textStyle="normal" />
+
+            <TextView
+                style="?attr/customListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:visibility="gone"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tvNorm"
+                style="?attr/customListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                android:textStyle="normal"
+                android:visibility="gone" />
 
         </LinearLayout>
 
 
         <TextView
-            android:id="@+id/tvGap"
-            style="?attr/customListItemValue"
+            android:id="@+id/tvGap1"
+            style="?attr/customListItemPrimary"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:gravity="center"
+            android:text="@string/zero"
             android:textDirection="anyRtl"
-            android:text="@string/zero" />
+            android:textStyle="normal"
+            android:visibility="gone"
+            tools:ignore="UnusedAttribute" />
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/target_top_margin"
-        android:layout_marginLeft="@dimen/target_top_margin"
         android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/spnReason"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:background="@android:color/transparent"
-            android:overlapAnchor="false"
-            android:layout_centerVertical="true" />
 
-        <EditText
-            android:id="@+id/edt_other_remarks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:cursorVisible="false"
-            android:textColor="@color/Black"
-            android:textSize="@dimen/list_item_primary_text_size"
-            android:visibility="gone"
-            tools:text=""
-            android:hint="@string/remark_hint"
-            android:layout_alignTop="@+id/btn_photo"
-            android:layout_toRightOf="@+id/spnReason"
-            android:layout_toEndOf="@+id/spnReason"
-            android:layout_alignBottom="@+id/btn_photo"
-            android:layout_toLeftOf="@+id/btn_photo"
-            android:layout_toStartOf="@+id/btn_photo"
-            android:layout_centerVertical="true" />
+            <LinearLayout
+                android:id="@+id/spinner_layout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/btn_photo"
-            android:layout_width="@dimen/icon"
-            android:layout_height="@dimen/icon"
-            android:layout_gravity="end|center_vertical"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/ic_camera_right_margin"
-            android:layout_marginEnd="@dimen/ic_camera_right_margin"
-            android:padding="@dimen/ic_camera_right_padding"
-            android:gravity="center"
-            android:contentDescription="@string/photo"
-            android:src="@drawable/ic_photo_camera_blue_24dp" />
+                <TextView
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="@dimen/dimens_6dp"
+                    android:layout_marginLeft="@dimen/dimens_6dp"
+                    android:text="@string/reason" />
 
-    </RelativeLayout>
+                <Spinner
+                    android:id="@+id/spnReason"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:gravity="center|start"
+                    android:overlapAnchor="false"
+                    android:textAlignment="textStart"
+                    tools:ignore="UnusedAttribute" />
+            </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/remark_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3.5"
+            android:gravity="center_vertical"
+            android:visibility="invisible"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/remark_tv_label"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/dimens_6dp"
+                android:layout_marginLeft="@dimen/dimens_6dp"
+                android:text="@string/reason" />
+
+            <EditText
+                android:id="@+id/edt_other_remarks"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dimens_6dp"
+                android:layout_marginLeft="@dimen/dimens_6dp"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:background="@android:color/transparent"
+                android:gravity="center|start"
+                android:hint="@string/enter_remarks"
+                android:overlapAnchor="false"
+                android:textAlignment="textStart"
+                style="@style/SecondaryTextAppearance"
+                tools:ignore="UnusedAttribute" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_gap"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.3"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_to_date_title"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:tag="item_hgap"
+                android:text="@string/gap" />
+
+            <TextView
+                android:id="@+id/tvGap"
+                style="@style/SecondaryTextAppearance"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/zero"
+                android:textDirection="anyRtl"
+                android:textStyle="normal"
+                tools:ignore="UnusedAttribute" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.3"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/btn_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:contentDescription="@string/photo"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:src="@drawable/ic_photo_camera_blue_24dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -225,15 +225,15 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             lvwplist.setCacheColorHint(0);
 
 
-            tvSelectedFilter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            sihTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            qtyTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            itemCaseTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            outeritemTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            itempieceTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
-            saveBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
-            productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-            mEdtSearchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+            tvSelectedFilter.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            sihTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            qtyTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            itemCaseTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            outeritemTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            itempieceTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            saveBtn.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            productName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+            mEdtSearchproductName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
 
             if (bmodel.configurationMasterHelper.IS_BATCHWISE_VANLOAD) {
@@ -973,12 +973,12 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     holder.listLayout = (LinearLayout) row.findViewById(R.id.inv_view_layout);
                     holder.rowLayout = (LinearLayout) row.findViewById(R.id.list_header_lty);
                     holder.productBO = items.get(position);
-                    holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, ManualVanLoadActivity.this));
-                    holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
-                    holder.totQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
-                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
-                    holder.pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
-                    holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, ManualVanLoadActivity.this));
+                    holder.psname.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.MEDIUM));
+                    holder.sih.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
+                    holder.totQty.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
+                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
+                    holder.pieceQty.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
+                    holder.outerQty.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
 
 
                     if (bmodel.configurationMasterHelper.IS_BATCHWISE_VANLOAD) {

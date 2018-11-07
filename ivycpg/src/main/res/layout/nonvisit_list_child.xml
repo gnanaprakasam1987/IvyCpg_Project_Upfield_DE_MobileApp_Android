@@ -61,7 +61,7 @@
                     android:layout_marginTop="@dimen/dimen_2dp"
                     android:text="Outlet location "
                     android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     android:layout_marginLeft="@dimen/margin_left_retailer_name" />
 
 

@@ -62,7 +62,7 @@
                     android:layout_marginStart="@dimen/outlet_left_margin"
                     android:text="Outlet Location"
                     android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <LinearLayout
@@ -141,7 +141,7 @@
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_bg3"
-                    android:textSize="@dimen/text_sz_extra_small"
+                    android:textSize="@dimen/text_size_caption"
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
@@ -182,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/achv_tgt"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_extra_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -196,7 +196,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""
-                        android:textSize="@dimen/list_primary" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/tv_actualTgt1"
@@ -206,7 +206,7 @@
                         android:layout_marginLeft="@dimen/margin_5px"
                         android:layout_marginStart="@dimen/margin_5px"
                         android:text=""
-                        android:textSize="@dimen/text_sz_small" />
+                        android:textSize="@dimen/text_size_caption" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -239,7 +239,7 @@
                     android:layout_gravity="center_vertical"
                     android:text="@string/achv_tgt"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_extra_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -252,7 +252,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""
-                        android:textSize="@dimen/list_primary" />
+                        android:textSize="@dimen/text_size_primary" />
 
                     <TextView
                         android:id="@+id/tv_actualTgt2"
@@ -262,7 +262,7 @@
                         android:layout_marginLeft="@dimen/margin_5px"
                         android:layout_marginStart="@dimen/margin_5px"
                         android:text=""
-                        android:textSize="@dimen/text_sz_small" />
+                        android:textSize="@dimen/text_size_caption" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

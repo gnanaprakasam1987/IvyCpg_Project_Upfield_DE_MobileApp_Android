@@ -450,6 +450,7 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                     LoginHelper.getInstance(LoginBaseActivity.this).deleteAllValues(getApplicationContext());
                     businessModel.activationHelper.clearAppUrl();
                     businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
+                    businessModel.codeCleanUpUtil.setUserId(0);
                     try {
                         Uri path;
                         if (Build.VERSION.SDK_INT >= 24) {

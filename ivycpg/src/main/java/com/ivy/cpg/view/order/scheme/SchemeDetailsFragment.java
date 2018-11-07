@@ -446,7 +446,12 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                                                 freeTitleTV.setBackgroundColor(getResources().getColor(R.color.scheme_title_grey));
                                                 freeTitleTV.setTextColor(getResources().getColor(R.color.FullBlack));
                                                 freeTitleTV.setTextSize(mTextViewSize);
-                                                freeTitleTV.setText("GET FreeProduct");
+
+                                                if (bModel.labelsMasterHelper.applyLabels(FREE_PRODUCT_TITLE_LABEL) != null)
+                                                    freeTitleTV.setText(bModel.labelsMasterHelper.applyLabels(FREE_PRODUCT_TITLE_LABEL));
+                                                else
+                                                    freeTitleTV.setText("GET FreeProduct");
+
                                                 freeTitleTV.setGravity(Gravity.LEFT | Gravity.CENTER);
                                                 freeTitleTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                                                 freeTitleTV.setWidth(150);

@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.40"
             android:text="@string/retailer_name"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/missedTitle"
@@ -29,7 +29,7 @@
             android:layout_weight="0.30"
             android:text="@string/text_missed"
             android:tag="missed"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/plannedTitle"
@@ -39,7 +39,7 @@
             android:layout_weight="0.30"
             android:tag="planned"
             android:text="@string/text_planned"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
 
     </LinearLayout>

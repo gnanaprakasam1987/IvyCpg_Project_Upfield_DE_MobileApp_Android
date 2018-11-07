@@ -98,7 +98,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         else
             isEdit = false;
 
-        orderDeliveryPresenter.getAmountDetails(this, isEdit);
+        orderDeliveryPresenter.getAmountDetails(isEdit);
     }
 
     private void initializeViews(){
@@ -109,20 +109,20 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         llContent = findViewById(R.id.ll_content);
 
-        ((TextView)findViewById(R.id.discount_value_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryDetailActivity.this));
-        ((TextView)findViewById(R.id.tax_value_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryDetailActivity.this));
-        ((TextView)findViewById(R.id.order_value_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryDetailActivity.this));
-        ((TextView)findViewById(R.id.ord_value_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, OrderDeliveryDetailActivity.this));
+        ((TextView)findViewById(R.id.discount_value_title)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
+        ((TextView)findViewById(R.id.tax_value_title)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
+        ((TextView)findViewById(R.id.order_value_title)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
+        ((TextView)findViewById(R.id.ord_value_title)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
 
         discount_value = findViewById(R.id.discount_value);
         taxValue = findViewById(R.id.tax_value);
         orderValue = findViewById(R.id.order_value);
         orderBaseValue = findViewById(R.id.ord_value);
 
-        discount_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryDetailActivity.this));
-        taxValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryDetailActivity.this));
-        orderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryDetailActivity.this));
-        orderBaseValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, OrderDeliveryDetailActivity.this));
+        discount_value.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.MEDIUM));
+        taxValue.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.MEDIUM));
+        orderValue.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.MEDIUM));
+        orderBaseValue.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.MEDIUM));
 
         discount_value.setTextColor(Color.parseColor("#000000"));
         taxValue.setTextColor(Color.parseColor("#000000"));
@@ -209,12 +209,12 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private void setProductView(View view,boolean isHeader, FontUtils.FontType fontType,ProductMasterBO productMasterBO){
 
         if(isHeader) {
-            ((TextView)view.findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+            ((TextView)view.findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
             ((TextView) view.findViewById(R.id.prod_name)).setText(getResources().getString(R.string.product_name));
             ((TextView) view.findViewById(R.id.prod_name)).setTextColor(Color.parseColor("#FFFFFF"));
         }
         else {
-            ((TextView)view.findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+            ((TextView)view.findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
             ((TextView) view.findViewById(R.id.prod_name)).setText(productMasterBO.getProductName());
             ((TextView) view.findViewById(R.id.prod_name)).setTextColor(Color.parseColor("#000000"));
         }
@@ -226,7 +226,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             try {
                 ((TextView) view.findViewById(R.id.piece_qty)).setText(getResources().getString(R.string.piece));
                 ((TextView) view.findViewById(R.id.piece_qty)).setTextColor(Color.parseColor("#FFFFFF"));
-                ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.piece_qty).getTag()) != null)
                     ((TextView) view.findViewById(R.id.piece_qty))
@@ -239,7 +239,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         }
         else{
             ((TextView) view.findViewById(R.id.piece_qty)).setText(String.valueOf(productMasterBO.getOrderedPcsQty()));
-            ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.piece_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
@@ -248,7 +248,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         else if(isHeader){
             try {
                 ((TextView) view.findViewById(R.id.case_qty)).setText(getResources().getString(R.string.case_u));
-                ((TextView) view.findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 ((TextView) view.findViewById(R.id.case_qty)).setTextColor(Color.parseColor("#FFFFFF"));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.case_qty).getTag()) != null)
@@ -262,7 +262,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         }
         else {
             ((TextView) view.findViewById(R.id.case_qty)).setText(String.valueOf(productMasterBO.getOrderedCaseQty()));
-            ((TextView) view.findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.case_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
@@ -271,7 +271,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         else if (isHeader){
             try {
                 ((TextView) view.findViewById(R.id.outer_qty)).setText(getResources().getString(R.string.outer_label));
-                ((TextView) view.findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 ((TextView) view.findViewById(R.id.outer_qty)).setTextColor(Color.parseColor("#FFFFFF"));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.outer_qty).getTag()) != null)
@@ -285,7 +285,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         }
         else {
             ((TextView) view.findViewById(R.id.outer_qty)).setText(String.valueOf(productMasterBO.getOrderedOuterQty()));
-            ((TextView) view.findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.outer_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
@@ -294,7 +294,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         else if (isHeader){
             try {
                 ((TextView) view.findViewById(R.id.sih_qty)).setText(getResources().getString(R.string.sih));
-                ((TextView) view.findViewById(R.id.sih_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.sih_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 ((TextView) view.findViewById(R.id.sih_qty)).setTextColor(Color.parseColor("#FFFFFF"));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.sih_qty).getTag()) != null)
@@ -308,7 +308,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         }
         else {
             ((TextView) view.findViewById(R.id.sih_qty)).setText(String.valueOf(productMasterBO.getDSIH()));
-            ((TextView) view.findViewById(R.id.sih_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.sih_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.sih_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
@@ -317,7 +317,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         else if (isHeader){
             try {
                 ((TextView) view.findViewById(R.id.sales_return_qty)).setText(getResources().getString(R.string.sr));
-                ((TextView) view.findViewById(R.id.sales_return_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.sales_return_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 ((TextView) view.findViewById(R.id.sales_return_qty)).setTextColor(Color.parseColor("#FFFFFF"));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.sales_return_qty).getTag()) != null)
@@ -338,7 +338,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                 }
             }
             ((TextView) view.findViewById(R.id.sales_return_qty)).setText(String.valueOf(total));
-            ((TextView) view.findViewById(R.id.sales_return_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.sales_return_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.sales_return_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
@@ -347,7 +347,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         else if (isHeader){
             try {
                 ((TextView) view.findViewById(R.id.sales_replace_qty)).setText(getResources().getString(R.string.replacement));
-                ((TextView) view.findViewById(R.id.sales_replace_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.sales_replace_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 ((TextView) view.findViewById(R.id.sales_replace_qty)).setTextColor(Color.parseColor("#FFFFFF"));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.sales_replace_qty).getTag()) != null)
@@ -364,7 +364,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     +productMasterBO.getRepPieceQty()
                     +(productMasterBO.getRepOuterQty()*productMasterBO.getOutersize());
             ((TextView) view.findViewById(R.id.sales_replace_qty)).setText(String.valueOf(totalReplaceQty));
-            ((TextView) view.findViewById(R.id.sales_replace_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.sales_replace_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.sales_replace_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
@@ -417,14 +417,14 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private void setSchemeView(View view,boolean isHeader, FontUtils.FontType fontType,SchemeProductBO schemeProductBO){
 
         if(isHeader) {
-            ((TextView)view.findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+            ((TextView)view.findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
             ((TextView) view.findViewById(R.id.prod_name)).setText(getResources().getString(R.string.free_products));
             ((TextView) view.findViewById(R.id.prod_name)).setTextColor(Color.parseColor("#FFFFFF"));
             ((TextView) view.findViewById(R.id.text_sih)).setText("");
 
         }
         else {
-            ((TextView)view.findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+            ((TextView)view.findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
             ((TextView) view.findViewById(R.id.prod_name)).setText(schemeProductBO.getProductName());
 
             if(orderDeliveryPresenter.getRemainingStock(schemeProductBO.getProductId())>=schemeProductBO.getQuantitySelected())
@@ -437,7 +437,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             try {
                 ((TextView) view.findViewById(R.id.piece_qty)).setText("");
                 ((TextView) view.findViewById(R.id.piece_qty)).setTextColor(Color.parseColor("#FFFFFF"));
-                ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.piece_qty).getTag()) != null)
                     ((TextView) view.findViewById(R.id.piece_qty))
@@ -447,14 +447,14 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
         else{
-            ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.piece_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
         if(isHeader){
             try {
                 ((TextView) view.findViewById(R.id.case_qty)).setText("");
-                ((TextView) view.findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 ((TextView) view.findViewById(R.id.case_qty)).setTextColor(Color.parseColor("#FFFFFF"));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.case_qty).getTag()) != null)
@@ -465,14 +465,14 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
         else {
-            ((TextView) view.findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.case_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
         if (isHeader){
             try {
                 ((TextView) view.findViewById(R.id.outer_qty)).setText("");
-                ((TextView) view.findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(fontType,OrderDeliveryDetailActivity.this));
+                ((TextView) view.findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, fontType));
                 ((TextView) view.findViewById(R.id.outer_qty)).setTextColor(Color.parseColor("#FFFFFF"));
                 if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.outer_qty).getTag()) != null)
@@ -483,7 +483,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             }
         }
         else {
-            ((TextView) view.findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+            ((TextView) view.findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
             ((TextView) view.findViewById(R.id.outer_qty)).setTextColor(Color.parseColor("#000000"));
         }
 
@@ -515,7 +515,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         findViewById(R.id.card_view).setVisibility(View.VISIBLE);
         findViewById(R.id.keypad).setVisibility(View.VISIBLE);
         initializeEditViewHeader();
-        orderDeliveryPresenter.getAmountDetails(this, isEdit);
+        orderDeliveryPresenter.getAmountDetails(isEdit);
         MyAdapter myAdapter = new MyAdapter(productList);
         recyclerView.setAdapter(myAdapter);
         myAdapter.notifyDataSetChanged();
@@ -523,14 +523,14 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
     private void initializeEditViewHeader(){
 
-        ((TextView)findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+        ((TextView)findViewById(R.id.prod_name)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
 
 
         if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
             (findViewById(R.id.piece_qty)).setVisibility(View.GONE);
         else {
             try {
-                ((TextView) findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                ((TextView) findViewById(R.id.piece_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.piece_qty).getTag()) != null)
                     ((TextView) findViewById(R.id.piece_qty))
@@ -546,7 +546,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             ( findViewById(R.id.case_qty)).setVisibility(View.GONE);
         else {
             try {
-                ((TextView) findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                ((TextView) findViewById(R.id.case_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.case_qty).getTag()) != null)
                     ((TextView) findViewById(R.id.case_qty))
@@ -562,7 +562,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             (findViewById(R.id.outer_qty)).setVisibility(View.GONE);
         else {
             try {
-                ((TextView) findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                ((TextView) findViewById(R.id.outer_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.outer_qty).getTag()) != null)
                     ((TextView) findViewById(R.id.outer_qty))
@@ -578,7 +578,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             (findViewById(R.id.sih_qty)).setVisibility(View.GONE);
         else {
             try {
-                ((TextView) findViewById(R.id.sih_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                ((TextView) findViewById(R.id.sih_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.sih_qty).getTag()) != null)
                     ((TextView) findViewById(R.id.sih_qty))
@@ -594,7 +594,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             (findViewById(R.id.sales_return_qty)).setVisibility(View.GONE);
         else {
             try {
-                ((TextView) findViewById(R.id.sales_return_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                ((TextView) findViewById(R.id.sales_return_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.sales_return_qty).getTag()) != null)
                     ((TextView) findViewById(R.id.sales_return_qty))
@@ -610,7 +610,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
             (findViewById(R.id.sales_replace_qty)).setVisibility(View.GONE);
         else {
             try {
-                ((TextView) findViewById(R.id.sales_replace_qty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                ((TextView) findViewById(R.id.sales_replace_qty)).setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.sales_replace_qty).getTag()) != null)
                     ((TextView) findViewById(R.id.sales_replace_qty))
@@ -647,13 +647,13 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                 sihQty = view.findViewById(R.id.sih_qty);
                 srpQty = view.findViewById(R.id.sales_replace_qty);
 
-                productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,OrderDeliveryDetailActivity.this));
+                productName.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.MEDIUM));
 
                 if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
                     pieceQty.setVisibility(View.GONE);
                 else {
                     try {
-                        pieceQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                        pieceQty.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(pieceQty.getTag()) != null)
                             pieceQty.setText(bmodel.labelsMasterHelper
                                     .applyLabels(pieceQty.getTag()));
@@ -666,7 +666,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     caseQty.setVisibility(View.GONE);
                 else {
                     try {
-                        caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                        caseQty.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(caseQty.getTag()) != null)
                             caseQty.setText(bmodel.labelsMasterHelper
                                     .applyLabels(caseQty.getTag()));
@@ -679,7 +679,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     outerQty.setVisibility(View.GONE);
                 else {
                     try {
-                        outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                        outerQty.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(outerQty.getTag()) != null)
                             outerQty.setText(bmodel.labelsMasterHelper
                                     .applyLabels(outerQty.getTag()));
@@ -692,7 +692,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     sihQty.setVisibility(View.GONE);
                 else {
                     try {
-                        sihQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                        sihQty.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(sihQty.getTag()) != null)
                             sihQty.setText(bmodel.labelsMasterHelper
                                     .applyLabels(sihQty.getTag()));
@@ -705,7 +705,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     srpQty.setVisibility(View.GONE);
                 else {
                     try {
-                        srpQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                        srpQty.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(srpQty.getTag()) != null)
                             srpQty.setText(bmodel.labelsMasterHelper
                                     .applyLabels(srpQty.getTag()));
@@ -718,7 +718,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                     srQty.setVisibility(View.GONE);
                 else {
                     try {
-                        srQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,OrderDeliveryDetailActivity.this));
+                        srQty.setTypeface(FontUtils.getFontRoboto(OrderDeliveryDetailActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(srQty.getTag()) != null)
                             srQty.setText(bmodel.labelsMasterHelper
                                     .applyLabels(srQty.getTag()));
@@ -844,7 +844,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
 
                         productList.get(position).setTotalamount(tot);
-                        orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
@@ -875,7 +875,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                             productList.get(position).setOrderedPcsQty(SDUtil
                                     .convertToInt(qty));
-                            orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
 
                         }
                     }
@@ -952,7 +952,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
                         productList.get(position).setTotalamount(tot);
-                        orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
@@ -984,7 +984,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                             productList.get(position).setOrderedCaseQty(SDUtil
                                     .convertToInt(qty));
-                            orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
                         }
                     }
                 }
@@ -1059,7 +1059,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
                                 + (productList.get(position).getOrderedPcsQty() * productList.get(position).getSrp())
                                 + (productList.get(position).getOrderedOuterQty() * productList.get(position).getOsrp());
                         productList.get(position).setTotalamount(tot);
-                        orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                        orderDeliveryPresenter.getAmountDetails(isEdit);
                         holder.productName.setTextColor(Color.parseColor("#000000"));
                     } else {
                         if (!"0".equals(qty)) {
@@ -1090,7 +1090,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
                             productList.get(position).setOrderedOuterQty(SDUtil
                                     .convertToInt(qty));
-                            orderDeliveryPresenter.getAmountDetails(OrderDeliveryDetailActivity.this, isEdit);
+                            orderDeliveryPresenter.getAmountDetails(isEdit);
 
 
                         }

@@ -43,6 +43,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.jointcall.JoinCallActivity;
 import com.ivy.cpg.view.subd.SubDSelectionDialog;
@@ -61,8 +62,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.sd.png.provider.TaxGstHelper;
-import com.ivy.sd.png.provider.TaxHelper;
+import com.ivy.cpg.view.order.tax.TaxGstHelper;
+import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.profile.ProfileActivity;
@@ -155,7 +156,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
 
         setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle());
-        bmodel.loadProductiveCallsConfig();
+        DashBoardHelper.getInstance(getActivity()).loadProductiveCallsConfig();
 
         if (bmodel.beatMasterHealper.getBeatMaster() == null || bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),

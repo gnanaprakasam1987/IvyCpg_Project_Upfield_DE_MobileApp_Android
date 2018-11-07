@@ -94,11 +94,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             holder.prodcode = (TextView) row.findViewById(R.id.prdcode);
 
 
-            holder.psname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
-            holder.prodcode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
-            holder.sihCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
-            holder.sihOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
-            holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+            holder.psname.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+            holder.prodcode.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+            holder.sihCase.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+            holder.sihOuter.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+            holder.sih.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
 
             if (bModel.configurationMasterHelper.SHOW_SIH_SPLIT) {
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_CASE)
@@ -325,10 +325,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             holder.sihOuter = (TextView) row.findViewById(R.id.sih_outer);
             holder.sih = (TextView) row.findViewById(R.id.sih);
 
-            holder.batchNo.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
-            holder.sihCase.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
-            holder.sihOuter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
-            holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, context));
+            holder.batchNo.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+            holder.sihCase.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+            holder.sihOuter.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+            holder.sih.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
 
 
             if (bModel.configurationMasterHelper.SHOW_SIH_SPLIT) {

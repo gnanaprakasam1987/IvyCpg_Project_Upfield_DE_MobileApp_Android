@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -26,8 +27,8 @@ import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
-import com.ivy.sd.png.bo.LoyaltyBO;
-import com.ivy.sd.png.bo.LoyaltyBenifitsBO;
+import com.ivy.cpg.view.loyality.LoyaltyBO;
+import com.ivy.cpg.view.loyality.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -36,7 +37,7 @@ import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.TaxInterface;
+import com.ivy.cpg.view.order.tax.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -156,12 +157,23 @@ public class ProductHelper {
         this.mSelectedLocationIndex = mSelectedLocationIndex;
     }
 
+    /**
+     * @return
+     * @See {@link AppDataProvider#getGlobalLocationIndex()}
+     * @deprecated
+     */
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
     }
 
+    /**
+     * @param mSelectedGLobalLocationIndex
+     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
+     * @deprecated
+     */
     public void setmSelectedGLobalLocationIndex(int mSelectedGLobalLocationIndex) {
         this.mSelectedGLobalLocationIndex = mSelectedGLobalLocationIndex;
+        bmodel.codeCleanUpUtil.setGlobalLocationId(mSelectedGLobalLocationIndex);
     }
 
     public Vector<StandardListBO> getInStoreLocation() {
@@ -288,6 +300,8 @@ public class ProductHelper {
     }
 
     public HashMap<Integer, Vector<Integer>> getmProductIdByBrandId() {
+        if(mProductIdByBrandId==null)
+            return new HashMap<>();
         return mProductIdByBrandId;
     }
 
@@ -486,52 +500,17 @@ public class ProductHelper {
             if (c != null) {
                 while (c.moveToNext()) {
                     hasmap.put(c.getInt(0), c.getInt(1));
+                    int ico = c.getInt(1);
+                    ProductMasterBO pbo = productMasterById.get(c.getString(0));
+                    pbo.setICO(ico);
+                    pbo.setSoInventory(ico);
                 }
                 c.close();
             }
             db.closeDB();
-            if (hasmap.size() > 0) {
-                for (int i = 0; i < productMaster.size(); i++) {
-                    ProductMasterBO p = productMaster.get(i);
-                    int ico = 0;
-
-                    Integer value = hasmap
-                            .get(SDUtil.convertToInt(p.getProductID()));
-                    if (value != null)
-                        ico = value;
-
-                    p.setICO(ico);
-                    int size = p.getLocations().size();
-                    int shelfpcs = 0, whpcs = 0;
-                    for (int j = 0; j < size; j++) {
-                        if (p.getLocations().get(j).getShelfPiece() > 0)
-                            shelfpcs += (p.getLocations().get(j).getShelfOuter() *
-                                    p.getOutersize());
-
-                        whpcs += p.getLocations().get(j).getWHPiece();
-
-                        whpcs += (p.getLocations().get(j).getWHCase() * p
-                                .getCaseSize());
-
-                        whpcs += (p.getLocations().get(j).getWHOuter() * p
-                                .getOutersize());
-
-                        if (p.getLocations().get(j).getAvailability() > -1)
-                            shelfpcs += p.getLocations().get(j).getAvailability();
-                    }
-                    p.setSoInventory(calculateSO(ico, shelfpcs + whpcs, p.isRPS(),
-                            p.getIsInitiativeProduct(), p.getDropQty(),
-                            p.getInitDropSize()));
-
-
-                    productMaster.setElementAt(p, i);
-                    ico = 0;
-                }
-            }
         } catch (Exception e) {
             Commons.printException(e);
         }
-
     }
 
     /**
@@ -839,24 +818,12 @@ public class ProductHelper {
         return filterLevel;
     }
 
-    public HashMap<Integer, Vector<LevelBO>> downloadFilterLevelProducts(String moduleName, Vector<LevelBO> filterProductLevels) {
+    public HashMap<Integer, Vector<LevelBO>> downloadFilterLevelProducts(Vector<LevelBO> filterProductLevels, boolean isDsdModule) {
         HashMap<Integer, Vector<LevelBO>> filterLevelPrdByLevelId = new HashMap<>();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
-
-            int contentLevelId = 0;
-
-            Cursor seqCur = db
-                    .selectSQL("SELECT IFNULL(PL.LevelId,0) "
-                            + "FROM ConfigActivityFilter CF "
-                            // Left join is to ensure configured level id is valid.
-                            + "LEFT JOIN ProductLevel PL ON PL.LevelId = CF.ProductContent "
-                            + "WHERE  CF.ActivityCode= '" + moduleName + "'");
-            if (seqCur.moveToNext()) {
-                contentLevelId = seqCur.getInt(0);
-            }
 
             if (filterProductLevels != null) {
 
@@ -871,8 +838,6 @@ public class ProductHelper {
                 }
 
                 String query = "SELECT DISTINCT PM.PID, PM.PName,PM.ParentHierarchy,PM.PLid,PM.ParentId FROM ProductMaster PM "
-                        // Inner join is ensure filtered category or brand has at least one child sku
-                        //+ " INNER JOIN ProductMaster prdm on prdm.ParentHierarchy LIKE '%/' || PM.PID || '/%' and prdm.PLid =" + contentLevelId
                         + " WHERE PM.PLid in (" + pLIds + ") ";
 
                 if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
@@ -880,7 +845,7 @@ public class ProductHelper {
 
                 query = query + " Order By PM.RowId";
 
-                seqCur = db.selectSQL(query);
+                Cursor seqCur = db.selectSQL(query);
                 if (seqCur != null) {
 
 
@@ -890,17 +855,26 @@ public class ProductHelper {
                         mLevelBO.setLevelName(seqCur.getString(1));
                         mLevelBO.setParentHierarchy(seqCur.getString(2));
                         mLevelBO.setParentID(seqCur.getInt(4));
-
-                        if (filterLevelPrdByLevelId.get(seqCur.getInt(3)) != null) {
-                            filterLevelPrdByLevelId.get(seqCur.getInt(3)).add(mLevelBO);
+                        if (isDsdModule) {
+                            if (isPrdAvailable(mLevelBO.getProductID())) {
+                                if (filterLevelPrdByLevelId.get(seqCur.getInt(3)) != null) {
+                                    filterLevelPrdByLevelId.get(seqCur.getInt(3)).add(mLevelBO);
+                                } else {
+                                    Vector<LevelBO> filterProducts = new Vector<>();
+                                    filterProducts.add(mLevelBO);
+                                    filterLevelPrdByLevelId.put(seqCur.getInt(3), filterProducts);
+                                }
+                            }
                         } else {
-                            Vector<LevelBO> filterProducts = new Vector<>();
-                            filterProducts.add(mLevelBO);
-                            filterLevelPrdByLevelId.put(seqCur.getInt(3), filterProducts);
+                            if (filterLevelPrdByLevelId.get(seqCur.getInt(3)) != null) {
+                                filterLevelPrdByLevelId.get(seqCur.getInt(3)).add(mLevelBO);
+                            } else {
+                                Vector<LevelBO> filterProducts = new Vector<>();
+                                filterProducts.add(mLevelBO);
+                                filterLevelPrdByLevelId.put(seqCur.getInt(3), filterProducts);
+                            }
                         }
-
                     }
-
                     seqCur.close();
                 }
             }
@@ -911,6 +885,23 @@ public class ProductHelper {
         }
 
         return filterLevelPrdByLevelId;
+    }
+
+
+    private boolean isPrdAvailable(int pid) {
+        boolean isAvailable = false;
+        if (productMaster != null) {
+            for (ProductMasterBO productMasterBO : productMaster) {
+                if (productMasterBO.getParentHierarchy().contains("/" + pid + "/")) {
+                    isAvailable = true;
+                    break;
+                }
+            }
+        } else
+            isAvailable = true;
+
+        return isAvailable;
+
     }
 
     public GenericObjectPair downloadProducts(String moduleCode) {
@@ -987,7 +978,7 @@ public class ProductHelper {
                     + "dOuomQty as outersize ,dOuomid as dOuomid,caseBarcode as caseBarcode,outerBarcode as outerBarcode,"
                     + " piece_uomid as piece_uomid ,A.mrp as mrp,"
                     + " A.isSalable as isSalable,A.isReturnable as isReturnable,A.TypeID as TypeID,A.baseprice as baseprice,"
-                    + " A.weight as weight,(CASE WHEN ifnull(DPM.productid,0) >0 THEN 1 ELSE 0 END) as IsDiscount,"
+                    + " A.weight as weight,"
                     + " A.Hasserial as Hasserial,(CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId()
                     + " THEN F.scid ELSE 0 END) as groupid,"
                     + " A.tagDescription as tagDescription,"
@@ -999,22 +990,11 @@ public class ProductHelper {
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
                     + " from ProductMaster A";
 
-            /*if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
-                //downloading product distribution and preparing query to get products mapped..
-                String pdQuery = downloadProductDistribution(mContentLevelId, mContentLevel);
-                if (pdQuery.length() > 0) {
-                    sql = sql + " INNER JOIN (" + pdQuery + ") AS PD ON A.pid = PD.productid";
-                }
-            }*/
-
-            sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = "
-                    + bmodel.getRetailerMasterBO().getGroupId()
+            sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = " + bmodel.getRetailerMasterBO().getGroupId()
                     + " left join PriceMaster G on A.Pid = G.pid  and G.scid = 0 "
                     + " LEFT JOIN (SELECT ListId, ListCode, ListName FROM StandardListMaster WHERE ListType = 'PRODUCT_UOM') U ON A.dUOMId = U.ListId"
-                    + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid="
-                    + bmodel.getRetailerMasterBO().getChannelID()
+                    + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid=" + bmodel.getRetailerMasterBO().getChannelID()
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
-                    + " LEFT JOIN DiscountProductMapping DPM ON A.ParentHierarchy LIKE '%/' || DPM.productid || '/%'"
                     + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
                     + " WHERE A.PLid IN(" + mContentLevelId + ") ";
 
@@ -1047,13 +1027,13 @@ public class ProductHelper {
                     product.setBarCode(c.getString(c.getColumnIndex("barcode")));
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));
 
-                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
                     product.setTempSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    product.setPrevPrice_pc(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
-                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    product.setPrevPrice_ca(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
-                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    product.setPrevPrice_oo(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0));
+                    product.setPrevPrice_pc(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
+                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    product.setPrevPrice_ca(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
+                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    product.setPrevPrice_oo(SDUtil.format(c.getFloat(c.getColumnIndex("osrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
                     product.setMSQty(c.getInt(c.getColumnIndex("msqqty")));
                     product.setCaseSize(c.getInt(c.getColumnIndex("caseQty")));
                     product.setCaseUomId(c.getInt(c.getColumnIndex("caseUomId")));
@@ -1093,7 +1073,6 @@ public class ProductHelper {
                     }
                     product.setIsNMustSell(c.getInt(c.getColumnIndex("IsNMustSell")));
                     product.setWeight(c.getFloat(c.getColumnIndex("weight")));
-                    product.setIsDiscountable(c.getInt(c.getColumnIndex("IsDiscount")));
                     product.setScannedProduct(c.getInt(c.getColumnIndex("Hasserial")));
 
                     product.setIsFocusBrand3(c.getInt(c.getColumnIndex("IsFocusBrand3")));
@@ -1630,68 +1609,6 @@ public class ProductHelper {
         }
     }
 
-
-    public int calculateSO(int ap3m, int closingStock, boolean isSBD,
-                           int isInitiative, int sbdDropSize, int initiativeDropSize) {
-        double so = 0;
-
-        // Not a SBD or Initative SKU
-        if ((!isSBD) && isInitiative != 1) {
-
-            if (ap3m == 0 && (closingStock == 0 || closingStock <= -1)) {// Never distributed
-                so = 0;
-            } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
-                so = ((float) ap3m * (1.0 + getBuffer()));
-            } else { // Normal condition
-                if (closingStock <= -1)
-                    so = ap3m;
-                else
-                    so = ap3m - closingStock;
-
-            }
-
-        } else if ((isSBD) && isInitiative != 1) { // SBD but not initiative
-            if (ap3m == 0 && closingStock == 0) {// Never distributed
-                so = sbdDropSize;
-            } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
-                so = ((float) ap3m * (1.0 + getBuffer()));
-            } else { // Normal condition
-                if (closingStock <= -1)
-                    so = ap3m;
-                else
-                    so = ap3m - closingStock;
-            }
-        } else if ((!isSBD) && isInitiative == 1) { // initiative but not SBD
-            if (ap3m == 0 && closingStock == 0) {// Never distributed
-                so = 0;
-            } else if (ap3m > 0 && closingStock == 0) {// OutofStock condition
-                so = ((float) ap3m * (1.0 + getBuffer()));
-            } else { // Normal condition
-                if (closingStock <= -1)
-                    so = ap3m;
-                else
-                    so = ap3m - closingStock;
-            }
-            so = so > initiativeDropSize ? so : initiativeDropSize;
-        } else if ((isSBD) && isInitiative == 1) {
-            if (ap3m == 0 && closingStock == 0) {// Never distributed
-                so = sbdDropSize;
-            } else if (ap3m > 0 && closingStock == 0) {// Outof Stock condition
-                so = ((float) ap3m * (1.0 + getBuffer()));
-            } else { // Normal condition
-                if (closingStock <= -1)
-                    so = ap3m;
-                else
-                    so = ap3m - closingStock;
-            }
-            so = so > initiativeDropSize ? so : initiativeDropSize;
-        }
-
-        int newso = (int) Math.ceil(so);
-
-        return newso > 0 ? newso : 0;
-    }
-
     /**
      * This method will check whether the product is an initiative product or
      * not and update in ProductBO. Also load the Drop size if the product is
@@ -1839,8 +1756,6 @@ public class ProductHelper {
                 product.setProductLevelDiscountValue(0);
                 product.setDistributorTypeDiscount(0);
                 product.setCompanyTypeDiscount(0);
-                product.setApplyValue(0);
-
                 int size = product.getLocations().size();
                 for (int z = 0; z < size; z++) {
                     product.getLocations().get(z).setShelfOuter(-1);
@@ -3279,7 +3194,7 @@ public class ProductHelper {
     public Vector<LoadManagementBO> downloadLoadMgmtProductsWithFiveLevel(
             String moduleCode, String batchmenucode) {
         mLoadManagementBOByProductId = new SparseArray<>();
-        String sql = "", sql1 = "", sql2 = "", sql3 = "",sql4="";
+        String sql = "", sql1 = "", sql2 = "", sql3 = "", sql4 = "";
         productlist = new Vector<>();
         LoadManagementBO bo;
         Vector<LoadManagementBO> list;
@@ -3532,11 +3447,11 @@ public class ProductHelper {
 
     public void downloadProductDiscountDetails() {
 
-        mProductIdListByDiscoutId = new HashMap<Integer, ArrayList<StoreWiseDiscountBO>>();
+        mProductIdListByDiscoutId = new HashMap<>();
 
-        mDiscountIdList = new ArrayList<Integer>();
-        DBUtil db = null;
-        StringBuilder sb = null;
+        mDiscountIdList = new ArrayList<>();
+        DBUtil db;
+        StringBuilder sb;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
@@ -3598,11 +3513,16 @@ public class ProductHelper {
                         } else {
                             productdiscountList.add(storeWiseDiscountBO);
                         }
+                        ProductMasterBO productMasterBO = getProductMasterBOById(storeWiseDiscountBO.getProductId() + "");
+                        if (productMasterBO != null) {
+                            productMasterBO.setIsDiscountable(1);
+                        }
 
                     }
                     if (productdiscountList.size() > 0) {
                         mProductIdListByDiscoutId.put(discountid,
                                 productdiscountList);
+                        updateProductColor();
                     }
 
                 }
@@ -3999,60 +3919,6 @@ public class ProductHelper {
         }
         return priceOffText;
 
-    }
-
-    public float getTotalWeight(String retailerid) {
-        DBUtil db = null;
-        float totalWeight = 0;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select sum(totalweight) from orderheader where OrderDate=");
-            sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
-            if (!retailerid.equals("")) {
-                sb.append("and upload!='X' and retailerid=" + bmodel.QT(retailerid));
-            }
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                if (c.moveToFirst()) {
-                    totalWeight = c.getFloat(0);
-
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-        return totalWeight;
-    }
-
-    public int getTotalOrderQty() {
-        DBUtil db = null;
-        int totQty = 0;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-
-            db.openDataBase();
-            StringBuffer sb = new StringBuffer();
-            sb.append("select sum(qty) from invoicedetails ");
-            Cursor c = db.selectSQL(sb.toString());
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    totQty = c.getInt(0);
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.print(e.getMessage());
-        }
-
-        return totQty;
     }
 
 

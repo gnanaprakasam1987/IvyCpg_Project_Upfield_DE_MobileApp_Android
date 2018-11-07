@@ -25,7 +25,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +38,6 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CustomKeyBoard;
@@ -48,8 +46,6 @@ import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
-
-import jxl.format.Font;
 
 /**
  * Created by rajkumar.s on 9/18/2017.
@@ -107,7 +103,7 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
 
         productName = view.findViewById(R.id.productName);
         productName.setTypeface(FontUtils.getProductNameFont(getActivity()));
-        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
         return view;
     }
@@ -355,18 +351,18 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                 //setting typefaces
                 holder.psname.setTypeface(FontUtils.getProductNameFont(getActivity()));
 
-                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.pcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.pcsQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
-                holder.tv_pcs_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.tv_case_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                holder.tv_outer_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.tv_pcs_ordered.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.tv_case_ordered.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                holder.tv_outer_ordered.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
-                ((TextView) row.findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                ((TextView) row.findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
                 // Order Field - Enable/Disable
@@ -375,8 +371,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                     (row.findViewById(R.id.ll_ordered_case)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                        ((TextView) row.findViewById(R.id.tv_ordered_case_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_ordered_case_Title)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -400,8 +396,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                     (row.findViewById(R.id.ll_ordered_pcs)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                        ((TextView) row.findViewById(R.id.tv_ordered_pcs_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_ordered_pcs_Title)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -424,8 +420,8 @@ public class DeliveryOrderFragment extends IvyBaseFragment implements View.OnCli
                     (row.findViewById(R.id.ll_ordered_outer)).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) row.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                        ((TextView) row.findViewById(R.id.tv_ordered_outer_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                        ((TextView) row.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.tv_ordered_outer_Title)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outerTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outerTitle))

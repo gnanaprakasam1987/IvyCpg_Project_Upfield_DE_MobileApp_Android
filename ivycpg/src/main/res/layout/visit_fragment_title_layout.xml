@@ -43,7 +43,7 @@
                     android:tag="label_beat"
                     android:text="@string/beat_loc"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_medium" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <TextView
                     android:id="@+id/daytv"
@@ -80,7 +80,7 @@
                     android:tag="label_storevst"
                     android:text="@string/stores_visit"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_medium" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <TextView
                     android:id="@+id/tv_store_visit"
@@ -116,7 +116,7 @@
                     android:tag="label_todaytgt"
                     android:text="@string/today_achvd"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_medium" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <TextView
                     android:id="@+id/tv_tgt"
@@ -169,7 +169,7 @@
                     android:gravity="center"
                     android:text="@string/route"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <Spinner
                     android:id="@+id/routeSpinner"
@@ -219,7 +219,7 @@
                     android:gravity="center"
                     android:text="@string/today_achvd"
                     android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_sz_small" />
+                    android:textSize="@dimen/text_size_caption" />
 
                 <TextView
                     android:id="@+id/tv_tgt1"

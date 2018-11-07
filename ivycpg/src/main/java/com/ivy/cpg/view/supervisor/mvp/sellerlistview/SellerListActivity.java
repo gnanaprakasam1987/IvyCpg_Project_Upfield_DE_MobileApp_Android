@@ -349,7 +349,7 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
             for (int i = 0; i < tabChildCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                 }
             }
         }

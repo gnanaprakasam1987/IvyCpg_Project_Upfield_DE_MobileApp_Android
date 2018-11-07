@@ -25,7 +25,7 @@
             android:text="Ret1"
             android:textColor="@color/kpi_value_text_color"
             android:textIsSelectable="false"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:layout_marginLeft="@dimen/dimens_16dp" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:tag="paid_label"
             android:textColor="@color/colorPrimary"
             android:textIsSelectable="false"
-            android:textSize="@dimen/text_sz_small"
+            android:textSize="@dimen/text_size_caption"
             android:layout_marginLeft="@dimen/dimens_16dp" />
 
 

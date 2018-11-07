@@ -115,20 +115,20 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
                 holder.statusTitle.setVisibility(View.VISIBLE);
                 holder.status.setVisibility(View.VISIBLE);
 
-                holder.invoiceNoTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.invoiceNo.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.invoiceNoTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.invoiceNo.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
-                holder.invoiceDateTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.invoiceDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.invoiceDateTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.invoiceDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
-                holder.invNetamounTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.invNetamount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.invNetamounTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.invNetamount.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
-                holder.storeNameTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.txtStorename.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.storeNameTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.txtStorename.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
-                holder.statusTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                holder.status.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                holder.statusTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.status.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
                 convertView.setTag(holder);
             } else {

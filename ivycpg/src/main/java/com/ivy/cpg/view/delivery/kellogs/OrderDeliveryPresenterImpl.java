@@ -89,8 +89,8 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
     }
 
     @Override
-    public void getAmountDetails(Context context, boolean isEdit) {
-        orderDeliveryHelper.getProductTotalValue(context, isEdit);
+    public void getAmountDetails(boolean isEdit) {
+        orderDeliveryHelper.getProductTotalValue(isEdit);
 
         double discountVal = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryDiscountAmount());
         double orderValue = SDUtil.convertToDouble(orderDeliveryHelper.getOrderDeliveryTotalValue());

@@ -25,7 +25,7 @@
             android:padding="10dp"
             android:tag="order_fulfill_detail_productname"
             android:text="@string/product_name"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/txtHeaderOrderedCases"
@@ -38,7 +38,7 @@
             android:padding="10dp"
             android:tag="order_fulfill_detail_orderedcases"
             android:text="@string/ordered_cases"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/txtHeaderOrderedPieces"
@@ -51,7 +51,7 @@
             android:padding="10dp"
             android:tag="order_fulfill_detail_orderedpieces"
             android:text="@string/ordered_pieces"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/txtHeaderFulfilledCases"
@@ -64,7 +64,7 @@
             android:padding="10dp"
             android:tag="order_fulfill_detail_fulfilledcases"
             android:text="@string/fulfilled_cases"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/txtHeaderFulfilledPieces"
@@ -77,7 +77,7 @@
             android:padding="10dp"
             android:tag="order_fulfill_detail_fulfilledpieces"
             android:text="@string/fulfilled_pieces"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
 
     </LinearLayout>
@@ -115,7 +115,7 @@
             android:layout_marginTop="@dimen/dimen_5dp"
             android:text="@string/date_label"
             android:textColor="?attr/colorAccent"
-            android:textSize="@dimen/greyed_text_size" />
+            android:textSize="@dimen/footer_label_size" />
 
         <Button
             android:id="@+id/orderfulfillmentDate"
@@ -128,7 +128,7 @@
             android:maxLines="1"
             android:text="@string/dummy_txt"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/footer_lbl_text_size" />
+            android:textSize="@dimen/footer_label_value" />
 
     </LinearLayout>
 

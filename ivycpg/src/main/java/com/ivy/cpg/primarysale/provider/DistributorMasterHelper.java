@@ -3,6 +3,7 @@ package com.ivy.cpg.primarysale.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
@@ -46,6 +47,11 @@ public class DistributorMasterHelper {
         return instance;
     }
 
+    /**
+     * @deprecated
+     * @see {@link com.ivy.core.data.distributor.DistributorDataManagerImpl#fetchDistributorList()}
+     */
+    @Deprecated
     public void downloadDistributorsList() {
         distributors = new ArrayList<>();
 

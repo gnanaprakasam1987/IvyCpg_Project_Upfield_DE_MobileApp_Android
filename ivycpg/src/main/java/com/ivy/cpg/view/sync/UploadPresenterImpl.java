@@ -15,6 +15,7 @@ import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -120,7 +121,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         if (mBModel.synchronizationHelper.checkDataForSync() || mBModel.synchronizationHelper.checkSIHTable()
                 || mBModel.synchronizationHelper.checkStockTable()) {
 
-            if (mBModel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT) {
+            if (mBModel.configurationMasterHelper.SHOW_SYNC_RETAILER_SELECT && !isDayCloseChecked) {
                 new LoadRetailerIsVisited().execute();
             } else {
                 int dbImageCount = mBModel.synchronizationHelper.countImageFiles();
@@ -128,11 +129,15 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
                     view.showAlertImageUploadRecommended();
 
                 } else {
+                    if (isDayCloseChecked)
+                        doDayCloseUpdates();
                     upload();
                 }
             }
 
         } else if ((isWithImage || !mBModel.configurationMasterHelper.IS_SYNC_WITH_IMAGES) && mBModel.synchronizationHelper.countImageFiles() > 0) {
+            if (isDayCloseChecked)
+                doDayCloseUpdates();
             // If user selected with images or if user section disabled
             // And image count is > 0 then
             uploadImages();
@@ -141,30 +146,17 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         }
     }
 
-    @Override
-    public void dayCloseAndUpload() {
+    private void doDayCloseUpdates() {
         mBModel.synchronizationHelper.closeDay(1);
         DeliveryManagementHelper deliveryManagementHelper = DeliveryManagementHelper.getInstance(mContext);
         if (deliveryManagementHelper.isDeliveryModuleAvailable()) {
             deliveryManagementHelper.updateNotDeliveryDetails();
         }
 
-        mBModel.mEmptyReconciliationhelper.updateTable();
+        EmptyReconciliationHelper.getInstance(mContext).updateTable();
         if (mBModel.configurationMasterHelper.CALCULATE_UNLOAD) {
             mVanUnloadHelper.vanUnloadAutomatically(mContext.getApplicationContext());
             mVanUnloadHelper.vanUnloadNonSalableAutomatically(mContext.getApplicationContext());
-        }
-
-        if (mBModel.synchronizationHelper.checkDataForSync()
-                || (isWithImage && mBModel.synchronizationHelper
-                .countImageFiles() > 0)) {
-
-            upload();
-
-
-        } else {
-            view.showAlertNoUnSubmittedOrder();
-
         }
     }
 
@@ -280,8 +272,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     @Override
     public boolean isOdameterON() {
         return mBModel.configurationMasterHelper
-                .isOdaMeterOn()
-                ;
+                .isOdaMeterOn();
     }
 
     @Override

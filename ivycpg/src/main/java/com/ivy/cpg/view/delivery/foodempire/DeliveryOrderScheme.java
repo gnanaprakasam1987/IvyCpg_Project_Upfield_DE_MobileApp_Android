@@ -11,23 +11,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Created by rajkumar.s on 9/20/2017.
@@ -176,9 +172,9 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                 //setting typefaces
                 holder.psname.setTypeface(FontUtils.getProductNameFont(DeliveryOrderScheme.this));
 
-                holder.tv_pcs_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderScheme.this));
-                holder.tv_case_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderScheme.this));
-                holder.tv_outer_ordered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryOrderScheme.this));
+                holder.tv_pcs_ordered.setTypeface(FontUtils.getFontRoboto(DeliveryOrderScheme.this, FontUtils.FontType.MEDIUM));
+                holder.tv_case_ordered.setTypeface(FontUtils.getFontRoboto(DeliveryOrderScheme.this, FontUtils.FontType.MEDIUM));
+                holder.tv_outer_ordered.setTypeface(FontUtils.getFontRoboto(DeliveryOrderScheme.this, FontUtils.FontType.MEDIUM));
 
 
                 // Order Field - Enable/Disable
@@ -186,7 +182,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                     ( row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_case_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderScheme.this));
+                        ((TextView) row.findViewById(R.id.tv_case_Title)).setTypeface(FontUtils.getFontRoboto(DeliveryOrderScheme.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_case_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_case_Title))
@@ -201,7 +197,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                     ( row.findViewById(R.id.ll_pcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_pcs_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderScheme.this));
+                        ((TextView) row.findViewById(R.id.tv_pcs_Title)).setTypeface(FontUtils.getFontRoboto(DeliveryOrderScheme.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_pcs_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_pcs_Title))
@@ -216,7 +212,7 @@ public class DeliveryOrderScheme extends IvyBaseActivityNoActionBar implements V
                     ( row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.tv_outer_Title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryOrderScheme.this));
+                        ((TextView) row.findViewById(R.id.tv_outer_Title)).setTypeface(FontUtils.getFontRoboto(DeliveryOrderScheme.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.tv_outer_Title).getTag()) != null)
                             ((TextView) row.findViewById(R.id.tv_outer_Title))

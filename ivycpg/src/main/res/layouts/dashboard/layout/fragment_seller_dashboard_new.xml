@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:theme="@style/MyToolbarBlue">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/collasping_height"
+            app:layout_scrollFlags="scroll|snap">
+
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_pager_height"
+                app:layout_collapseMode="parallax" />
+
+            <me.relex.circleindicator.CircleIndicator
+                android:id="@+id/indicator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/viewpager_indicator_height"
+                android:layout_gravity="bottom"
+                android:gravity="center" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_layout_bg_height"
+                android:background="?primarycolor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/dashSpinnerLayout"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_layout_height"
+                android:layout_marginEnd="@dimen/dash_margin"
+                android:layout_marginStart="@dimen/dash_margin"
+                android:background="?mtdDashboardBackground"
+                android:paddingEnd="4dp"
+                android:paddingRight="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginEnd="0dp"
+                app:layout_goneMarginStart="0dp">
+
+                <TextView
+                    android:id="@+id/resultsHeaderTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginLeft="@dimen/dash_margin"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginStart="@dimen/dash_margin"
+                    android:gravity="center"
+                    android:text="@string/all_results"
+                    android:textColor="?accentcolor"
+                    android:textSize="@dimen/footer_label_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/distributorSpinner"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ViewStub
+                    android:id="@+id/distributorSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:inflatedId="@+id/distributorSpinner"
+                    android:layout="@layout/view_dashboard_spinner"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/userSpinner"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/resultsHeaderTxt"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ViewStub
+                    android:id="@+id/userSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:inflatedId="@+id/userSpinner"
+                    android:layout="@layout/view_dashboard_spinner"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/dashSpinner"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/distributorSpinner"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ViewStub
+                    android:id="@+id/dashSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:inflatedId="@+id/dashSpinner"
+                    android:layout="@layout/view_dashboard_spinner"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/monthSpinner"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/userSpinner"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ViewStub
+                    android:id="@+id/monthSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:inflatedId="@+id/monthSpinner"
+                    android:layout="@layout/view_dashboard_spinner"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/weekSpinner"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/dashSpinner"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ViewStub
+                    android:id="@+id/weekSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout="@layout/view_dashboard_spinner"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/routeSpinner"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/monthSpinner"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ViewStub
+                    android:id="@+id/routeSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:inflatedId="@+id/routeSpinner"
+                    android:layout="@layout/view_dashboard_spinner"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/weekSpinner"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <android.support.constraint.Group
+                    android:id="@+id/dashSpinnerGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="dashSpinner,weekSpinner,routeSpinner,userSpinner,resultsHeaderTxt,monthSpinner,distributorSpinner" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <ViewStub
+                android:id="@+id/multiSelectStub"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dash_margin"
+                android:layout_marginStart="@dimen/dash_margin"
+                android:background="?mtdDashboardBackground"
+                android:visibility="gone"
+                android:layout="@layout/view_multi_spinner"
+                app:layout_constraintBottom_toTopOf="@+id/dashboardLv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dashSpinnerLayout"
+                app:layout_goneMarginEnd="0dp"
+                app:layout_goneMarginStart="0dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dashboardLv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/dash_margin"
+                android:layout_marginStart="@dimen/dash_margin"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/multiSelectStub" />
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

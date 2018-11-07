@@ -25,7 +25,7 @@
             android:paddingRight="10dp"
             android:text="@string/zero"
             android:textColor="?attr/primarycolor"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/txtOrderedCases"
@@ -39,7 +39,7 @@
             android:paddingRight="10dp"
             android:text="0"
             android:textColor="?attr/textColorSecondary"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/txtOrderedPieces"
@@ -53,7 +53,7 @@
             android:paddingRight="10dp"
             android:text="0"
             android:textColor="?attr/textColorSecondary"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/txtFulfilledCases"
@@ -66,7 +66,7 @@
             android:paddingRight="10dp"
             android:text="0"
             android:textColor="?attr/textColorSecondary"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/txtFulfilledPieces"
@@ -80,7 +80,7 @@
             android:paddingRight="10dp"
             android:text="0"
             android:textColor="?attr/textColorSecondary"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
     </LinearLayout>
 

@@ -53,7 +53,7 @@
                             android:layout_weight="0.45"
                             android:gravity="center"
                             android:text="@string/total_payout_earned"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textStyle="normal"
                             android:textColor="@color/store_label" />
 
@@ -83,7 +83,7 @@
                             android:layout_height="@dimen/dimen_0dp"
                             android:layout_weight="0.45"
                             android:gravity="center"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:text="@string/max_possible_payout"
                             android:textStyle="normal"
                             android:textColor="@color/store_label" />
@@ -131,7 +131,7 @@
                         android:paddingLeft="@dimen/dimen_10dp"
                         android:gravity="center_vertical"
                         android:textStyle="normal"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:text="" />
 
                     <ImageView
@@ -140,7 +140,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.25"
                         android:clickable="true"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:src="@drawable/info" />
 
                     <TextView
@@ -152,7 +152,7 @@
                         android:paddingLeft="@dimen/dimen_10dp"
                         android:gravity="center_vertical"
                         android:textStyle="normal"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:text="DETAILS" />
                 </LinearLayout>
 
@@ -204,7 +204,7 @@
                             android:gravity="center"
                             android:text="@string/total_payout_earned"
                             android:textStyle="normal"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textColor="@color/store_label" />
 
                         <TextView
@@ -232,7 +232,7 @@
                             android:layout_height="@dimen/dimen_0dp"
                             android:layout_weight="0.45"
                             android:gravity="center"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textStyle="normal"
                             android:text="@string/max_possible_payout"
                             android:textColor="@color/store_label" />
@@ -280,7 +280,7 @@
                         android:gravity="center_vertical"
                         android:textStyle="normal"
                         android:paddingLeft="@dimen/dimen_10dp"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:text="" />
 
                     <ImageView
@@ -300,7 +300,7 @@
                         android:textStyle="normal"
                         android:clickable="true"
                         android:paddingLeft="@dimen/dimen_10dp"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:text="DETAILS" />
                 </LinearLayout>
 
@@ -325,7 +325,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1.25"
             android:gravity="center"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:text="@string/total_payout"
             android:textStyle="normal"
             android:textColor="@color/store_label" />
@@ -337,7 +337,7 @@
             android:gravity="center"
             android:textStyle="normal"
             android:text="@string/total_payout_earned"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:textColor="@color/store_label" />
 
         <TextView
@@ -359,7 +359,7 @@
             android:gravity="center"
             android:text="@string/max_possible_payout"
             android:textStyle="normal"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:textColor="@color/store_label" />
 
         <TextView

@@ -34,7 +34,7 @@
             android:layout_marginBottom="15dp"
             android:paddingStart="5dp"
             android:textColor="@color/list_item_secondary_text_color"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             tools:text=""
             android:paddingLeft="5dp" />
 

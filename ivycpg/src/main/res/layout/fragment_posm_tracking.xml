@@ -7,17 +7,10 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/root"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/footer"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/list_margin">
 
 
             <RelativeLayout
@@ -33,7 +26,9 @@
                     android:layout_height="@dimen/list_header_height"
                     android:layout_alignParentTop="true"
                     android:background="@color/list_title_bg_color"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/list_padding_left_n_right"
+                    android:paddingEnd="@dimen/list_padding_left_n_right">
 
 
                     <TextView
@@ -50,7 +45,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2.5"
+                        android:layout_weight="4.5"
                         android:gravity="start"
                         android:tag="posm_name"
                         android:text="@string/posm_name" />
@@ -60,7 +55,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:gravity="center"
                         android:tag="posm_target"
                         android:text="@string/target" />
@@ -70,7 +65,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:gravity="center"
                         android:tag="posm_actual"
                         android:text="@string/actual" />
@@ -80,7 +75,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:gravity="center"
                         android:tag="exeqty"
                         android:text="@string/executed_qty" />
@@ -90,7 +85,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:gravity="center"
                         android:tag="posm_compqty"
                         android:text="@string/competitor_qty" />
@@ -100,7 +95,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.5"
+                        android:layout_weight="2"
                         android:gravity="center"
                         android:tag="posm_in_store_loc"
                         android:text="@string/location" />
@@ -110,7 +105,7 @@
                         style="?attr/customListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="1.2"
                         android:gravity="center"
                         android:tag="posm_in_photo"
                         android:text="@string/photo" />
@@ -120,7 +115,7 @@
 
                 <ListView
                     android:id="@+id/list"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/ll_keypad"
                     android:layout_below="@+id/ll_header"
@@ -129,39 +124,25 @@
                     android:dividerHeight="0.5dp"
                     android:fitsSystemWindows="true" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fab_barcode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/ll_keypad"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_margin="@dimen/dimen_10dp"
-                    android:elevation="@dimen/floating_btn_elevation"
-                    android:src="@drawable/barcode_scan"
-                    android:visibility="visible"
-                    app:backgroundTint="@color/floating_bg"
-                    app:borderWidth="0dp" />
-
                 <LinearLayout
                     android:id="@+id/ll_keypad"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:orientation="vertical">
 
                     <include
                         layout="@layout/keypad"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
             </RelativeLayout>
 
-        </android.support.v7.widget.CardView>
+
 
         <RelativeLayout
             android:id="@+id/footer"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/footer_height"
             android:layout_alignParentBottom="true"
             android:background="@color/screen_bg_color"
@@ -182,7 +163,7 @@
 
     <FrameLayout
         android:id="@+id/right_drawer"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@drawable/background_noise" />

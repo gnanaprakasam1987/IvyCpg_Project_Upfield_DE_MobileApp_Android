@@ -2,7 +2,7 @@ IvyCPG is a native android offline supported application. VanSales, Presales, Pr
 
 Pre-Requsite to compile
 
-1. Android studio 2.3 or above
+1. Android studio 3.0 or above
 2. Gradle version 3.0 or above
 3. SDK Version - 21 and above
 
@@ -13,15 +13,20 @@ Device Pre-Requsite
 
 To test/develop
 
-1. Change the Sync URL in DataMembers.java. 
-2. Set activation to false in AppConfiguration.java
+1. Change the Sync URL in gradle.properties 
+
 
 To Release
 
-1. Set activation to true in AppConfiguration.java
-2. Sign using ivy.keystore
+1. Sign using ivy.keystore
 
 Environment Pre-Requsite
 
 1. Create a filled call keystore.properties under source code folder.
+
+Coading Style
+
+1. Strings should be created only in donottranslate.xml. If other lanaguage translation is required then same string should be moved to all language folders.
+2. MVP Pattern should be followed for new modules.
+3. Font size and style should be reused for any new screens.
 

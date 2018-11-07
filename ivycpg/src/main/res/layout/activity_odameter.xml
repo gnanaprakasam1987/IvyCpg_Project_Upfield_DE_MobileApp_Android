@@ -112,7 +112,7 @@
                                 android:padding="2dp"
                                 android:text="@string/date"
                                 android:textColor="?attr/accentcolor"
-                                android:textSize="@dimen/greyed_text_size" />
+                                android:textSize="@dimen/footer_label_size" />
 
                             <TextView
                                 android:id="@+id/datevalue"
@@ -158,7 +158,7 @@
                                 android:padding="2dp"
                                 android:text="@string/time"
                                 android:textColor="?attr/accentcolor"
-                                android:textSize="@dimen/greyed_text_size" />
+                                android:textSize="@dimen/footer_label_size" />
 
                             <TextView
                                 android:id="@+id/timevalue"
@@ -288,7 +288,7 @@
                                 android:padding="2dp"
                                 android:text="@string/dateend"
                                 android:textColor="@color/colorAccent"
-                                android:textSize="@dimen/greyed_text_size" />
+                                android:textSize="@dimen/footer_label_size" />
 
                             <TextView
                                 android:id="@+id/enddatevalue"
@@ -334,7 +334,7 @@
                                 android:padding="2dp"
                                 android:text="@string/timeend"
                                 android:textColor="@color/colorAccent"
-                                android:textSize="@dimen/greyed_text_size" />
+                                android:textSize="@dimen/footer_label_size" />
 
                             <TextView
                                 android:id="@+id/endtimevalue"

@@ -95,8 +95,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/product_name"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/list_item_primary_text_size"
                                 android:gravity="start|center_vertical"
                                 android:layout_centerVertical="true"
 
@@ -111,9 +109,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1.3"
                             android:tag="item_case"
-                            android:text="@string/item_case"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/list_item_primary_text_size" />
+                            android:text="@string/item_case" />
 
                         <TextView
                             android:id="@+id/outercqty"
@@ -123,9 +119,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1.3"
                             android:tag="item_outer"
-                            android:text="@string/item_outer"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/list_item_primary_text_size" />
+                            android:text="@string/item_outer" />
 
                         <TextView
                             android:id="@+id/outid"
@@ -135,9 +129,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1.3"
                             android:tag="item_piece"
-                            android:text="@string/item_piece"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/list_item_primary_text_size" />
+                            android:text="@string/item_piece" />
 
                         <TextView
                             android:id="@+id/lpc"
@@ -146,9 +138,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="2"
-                            android:text="@string/value"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/list_item_primary_text_size" />
+                            android:text="@string/value" />
 
                         <TextView
                             android:id="@+id/title_weight"
@@ -157,8 +147,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="@string/weight"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/list_item_primary_text_size"
                             android:visibility="gone" />
                     </LinearLayout>
 
@@ -219,7 +207,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/tot_line"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:textStyle="bold" />
 
             <TextView
@@ -252,7 +240,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/total_value"
                 android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:layout_toEndOf="@+id/view1"
                 android:layout_marginStart="@dimen/store_margin_top"
                 android:textStyle="bold"

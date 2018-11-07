@@ -20,7 +20,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
-import com.ivy.sd.png.bo.TaxBO;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;

@@ -14,6 +14,7 @@ import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -276,7 +277,7 @@ public class MyThread extends Thread {
 
                 }
 
-                if (orderHelper.saveOrder(ctx, bill2Products, false)) {
+                if (orderHelper.saveOrder(ctx, bill1Products, false) && orderHelper.saveOrder(ctx, bill2Products, false)) {
 
 
                     // Update review plan in DB
@@ -426,7 +427,7 @@ public class MyThread extends Thread {
                 // Insert Product Details to Empty Reconciliation tables if Type
                 // wise Group products Edited or updated
                 if (!bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-                    bmodel.mEmptyReconciliationhelper.saveSKUWiseTransaction();
+                    EmptyReconciliationHelper.getInstance(ctx).saveSKUWiseTransaction();
             }
             OrderSummary frm = (OrderSummary) ctx;
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
@@ -488,7 +489,7 @@ public class MyThread extends Thread {
             // value while deleting the Order
             if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
                 bmodel.productHelper.clearBomReturnProductsTable();
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper.getInstance(ctx)
                         .deleteEmptyReconciliationOrder();
             }
 
@@ -553,7 +554,7 @@ public class MyThread extends Thread {
             // value while deleting the Order
             if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
                 bmodel.productHelper.clearBomReturnProductsTable();
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper.getInstance(ctx)
                         .deleteEmptyReconciliationOrder();
             }
 

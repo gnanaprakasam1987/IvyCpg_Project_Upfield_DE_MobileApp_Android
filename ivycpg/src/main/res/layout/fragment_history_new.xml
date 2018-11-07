@@ -58,7 +58,7 @@
                         android:gravity="center|start"
                         android:text="@string/average_lines"
                         android:textColor="?attr/colorAccent"
-                        android:textSize="@dimen/text_sz_small" />
+                        android:textSize="@dimen/text_size_caption" />
 
                     <TextView
                         android:id="@+id/avg_lines_val"
@@ -102,7 +102,7 @@
                         android:tag="average_value_or_volume"
                         android:text="Average Value"
                         android:textColor="?attr/colorAccent"
-                        android:textSize="@dimen/text_sz_small" />
+                        android:textSize="@dimen/text_size_caption" />
 
                     <TextView
                         android:id="@+id/history_avg_val"

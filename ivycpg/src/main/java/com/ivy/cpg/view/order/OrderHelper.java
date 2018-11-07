@@ -19,11 +19,11 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
-import com.ivy.sd.png.bo.TaxBO;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.FitScoreHelper;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -32,10 +32,8 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.AppUtils;
 
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -45,10 +43,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.Vector;
 
 /**
@@ -2057,7 +2053,7 @@ public class OrderHelper {
             // Insert Product Details to Empty Reconciliation tables if Type  wise Group products disabled
 
             if (!businessModel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-                businessModel.mEmptyReconciliationhelper.saveSKUWiseTransaction();
+                EmptyReconciliationHelper.getInstance(mContext).saveSKUWiseTransaction();
 
             // Update the OrderHeader that , Invoice is created for this Order
             // and the Order is
@@ -3666,13 +3662,13 @@ public class OrderHelper {
                         totalReturnQty += totalQty;
                     }
                 }
-                totalReturnAmount += (totalReturnQty * product.getSrp());
+                totalReturnAmount += (totalReturnQty * (double)product.getSrp());
             }
 
 
             // Calculate replacement qty price.
             int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
-            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * product.getSrp();
+            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * (double)product.getSrp();
         }
 
         //Check for whether the replacement amount and return amount are same, works only for Cash customer

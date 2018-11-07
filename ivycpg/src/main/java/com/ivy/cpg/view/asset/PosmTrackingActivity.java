@@ -31,18 +31,18 @@ public class PosmTrackingActivity extends IvyBaseActivityNoActionBar implements
 
         setContentView(R.layout.activity_posm_tracking);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
 
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        if (toolbar != null) {
             setSupportActionBar(toolbar);
-            if(getSupportActionBar()!=null) {
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
             }
-        }
+
 
         if (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET) {
             NFCManager nfcManager = new NFCManager(PosmTrackingActivity.this);

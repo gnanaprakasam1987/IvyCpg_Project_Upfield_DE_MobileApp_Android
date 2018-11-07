@@ -34,7 +34,6 @@
     <dimen name="list_item_height">60dp</dimen>
     <dimen name="list_product_name_width_tiny">300dp</dimen>
     <dimen name="list_product_name_width_init">316dp</dimen>
-    <dimen name="list_product_name_width">360dp</dimen>
     <dimen name="list_product_name_width_medium">395dp</dimen>
     <dimen name="list_product_name_width_small">340dp</dimen>
     <dimen name="list_item_width">80dp</dimen>
@@ -105,25 +104,12 @@
     <dimen name="sr_list_view_width_large">170dp</dimen>
 
     <!-- print preview -->
-    <dimen name="pp_case_unit">80dp</dimen>
-    <dimen name="pp_outer_price">120dp</dimen>
-    <dimen name="pp_case_price">120dp</dimen>
-    <dimen name="pp_unit_price">100dp</dimen>
-    <dimen name="pp_discount">110dp</dimen>
-    <dimen name="pp_row_case_unit">90dp</dimen>
-    <dimen name="pp_row_outer_price">130dp</dimen>
-    <dimen name="pp_row_discount">110dp</dimen>
-    <dimen name="pp_row_upc">230dp</dimen>
     <dimen name="pp_row_upc_padding">200dp</dimen>
 
     <!-- print preview diageo -->
     <dimen name="ppd_code">85dp</dimen>
-    <dimen name="ppd_brand">300dp</dimen>
-    <dimen name="ppd_case">50dp</dimen>
-    <dimen name="ppd_bot">50dp</dimen>
     <dimen name="ppd_unit_price">85dp</dimen>
     <dimen name="ppd_amount">85dp</dimen>
-    <dimen name="ppd_batch">260dp</dimen>
 
     <!-- Scheme Dialog Height -->
     <dimen name="scheme_dialog_height">800dp</dimen>
@@ -247,7 +233,6 @@
     <dimen name="padding_rb">5dp</dimen>
     <dimen name="padding_l">23dp</dimen>
 
-    <dimen name="sih_so_w">100dp</dimen>
     <dimen name="no_btn_h">60dp</dimen>
 
     <dimen name="can_ok_btn_h">50dp</dimen>
@@ -390,7 +375,7 @@
     <dimen name="footer_padding">10dp</dimen>
 
     <dimen name="footer_height">65dp</dimen>
-    <dimen name="list_padding_left_n_right">8dp</dimen>
+    <dimen name="list_padding_left_n_right">10dp</dimen>
     <dimen name="list_item_padding_top_nd_bottom">19dp</dimen>
 
     <dimen name="filter_drawer_footer_height">75dp</dimen>
@@ -690,9 +675,9 @@
 
     <!-- Generic text size-->
 
-    <dimen name="text_sz_extra_small">10sp</dimen>
-    <dimen name="text_sz_small">14sp</dimen>
-    <dimen name="text_sz_medium">16sp</dimen>
+
+
+
 
     <!-- user name in home menu, retailer name in profile and activity menu etc -->
     <dimen name="highlight_small">24sp</dimen>
@@ -701,15 +686,35 @@
     <!-- Beat name in trade coverage etc -->
     <dimen name="highlight_large">34sp</dimen>
 
-    <dimen name="list_primary">16sp</dimen>
-    <dimen name="list_secondary">14sp</dimen>
+
+
 
     <dimen name="actionbar_title_text_size">24sp</dimen>
+    <dimen name="text_size_primary">16sp</dimen>
+    <dimen name="text_size_secondary">14sp</dimen>
+    <dimen name="text_size_caption">14sp</dimen>
+
+    <!-- List header text size -->
+    <dimen name="list_header_text_size">16sp</dimen>
+    <dimen name="list_header_secondary_text_size">14sp</dimen>
+
+    <!-- Button text size -->
+    <dimen name="btn_small_round_corner_text_size">16sp</dimen>
+    <dimen name="btn_round_corner_text_size">18sp</dimen>
+
+
+
+
+
+
+    <!-- Footer text size -->
+    <dimen name="footer_label_size">14sp</dimen>
+    <dimen name="footer_label_value">18sp</dimen>
 
     <!-- ALL test size -->
 
-    <dimen name="font_nano_small">14sp</dimen>
-    <dimen name="font_micro_small">16sp</dimen>
+
+
     <dimen name="font_small">18sp</dimen>
     <dimen name="font_medium">20sp</dimen>
     <dimen name="font_large">22sp</dimen>
@@ -727,10 +732,7 @@
     <dimen name="percent_value_size">18sp</dimen>
 
 
-    <dimen name="search_edt_text_size">14sp</dimen>
 
-    <!-- List item text size -->
-    <dimen name="list_item_primary_text_size">16sp</dimen>
 
 
     <!-- Login - clear it later -->
@@ -738,17 +740,7 @@
     <dimen name="forgot_text_size">18sp</dimen>
     <dimen name="login_edittext_text_size">20sp</dimen>
 
-    <!-- List header text size -->
-    <dimen name="list_header_text_size">12sp</dimen>
-    <dimen name="list_header_secondary_text_size">11sp</dimen>
 
-    <!-- Button text size -->
-    <dimen name="btn_small_round_corner_text_size">14sp</dimen>
-    <dimen name="btn_round_corner_text_size">18sp</dimen>
-
-    <!-- Footer text size -->
-    <dimen name="greyed_text_size">12sp</dimen>
-    <dimen name="footer_lbl_text_size">16sp</dimen>
 
     <!-- Five level filter text size -->
     <dimen name="filter_level_text_size">18sp</dimen>

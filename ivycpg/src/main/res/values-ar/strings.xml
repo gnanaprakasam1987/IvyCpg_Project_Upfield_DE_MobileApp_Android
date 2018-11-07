@@ -90,7 +90,6 @@
     <string name="enter_activation_key">ادخل مفتاح التنشيط.</string>
     <string name="product_name">اسم المنتج</string>
     <string name="msq">MSQ</string>
-    <string name="wp">WP</string>
     <string name="sp">SP</string>
     <string name="item_piece">OP</string>
     <string name="collection">التجميع </string>
@@ -127,14 +126,8 @@
     <string name="tin">رقم TIN</string>
     <string name="outlet_name">اسم المنفذ </string>
     <string name="item">البند </string>
-    <string name="vat">ضريبة القيمة المضافة VAT:</string>
-    <string name="vatt">(+) ضريبة القيمة المضافة VAT.</string>
     <string name="discount">الخصم </string>
-    <string name="bill_value">قيمة الفاتورة </string>
-    <string name="signature">توقيع SO</string>
-    <string name="calculator">الحاسب </string>
     <string name="print">طباعة </string>
-    <string name="inv_print_prieview">مراجعة طباعة الفاتورة.</string>
     <string name="plan_task">ادخل عنوان المهمة المطلوبة. </string>
     <string name="applyto">مطبق بخصوص.</string>
     <string name="day">اليوم </string>
@@ -159,7 +152,6 @@
     <string name="start_sync">أبدأ التزامن </string>
     <string name="with_images">مع الصور </string>
     <string name="close_the_day">إقفال اليوم </string>
-    <string name="reconnect">إعادة توصيل </string>
     <string name="delete">حذف </string>
     <string name="balance">الرصيد </string>
     <string name="sales">المبيعات </string>
@@ -172,7 +164,6 @@
     <string name="no_channels_download">لم يتم تنزيل قنوات.</string>
     <string name="no_sub_channels_download">لم يتم تنزيل قنوات فعلية. </string>
     <string name="no_beats_download">لم يتم التنزيل.</string>
-    <string name="new_store_has_been_saved">حفظ معلومات متجر جديد.</string>
     <string name="no_initiative_available">لا توجد مبادرة متوافرة.</string>
     <string name="order_saved_locally_order_id_is">تم حفظ الأمر ورقم الأمر هو : </string>
     <string name="new_store_infn_not_saved">معلومات المتجر الجديد لم يتم حفظها.</string>
@@ -190,7 +181,6 @@
     <string name="enable_gps">تشغيل GPS.</string>
     <string name="no_data_exists">لا توجد بيانات موجودة.</string>
     <string name="data_upload_completed_sucessfully">تحميل البيانات تم إكماله بنجاح.</string>
-    <string name="connected">تم التوصيل.</string>
     <string name="saving_sales_return">حفظ </string>
     <string name="uploading_data">تحميل البيانات.</string>
     <string name="image_uploading">تحميل الصورة </string>
@@ -231,7 +221,6 @@
     <string name="order_po">أمر الشراء </string>
     <string name="order_remarks">ملاحظات </string>
     <string name="order_dialog_barcode">الباركود </string>
-    <string name="wc">WC</string>
     <string name="sc">SC</string>
     <string name="item_case">OC</string>
     <string name="volume">الكمية </string>
@@ -265,10 +254,7 @@
     <string name="select">اختيار </string>
     <string name="select_prod">اختيار المنتج </string>
     <string name="retailer_name">اسم تاجر التجزئة </string>
-    <string name="gross_sales">المبيعات الإجمالية : </string>
     <string name="customer">العميل : </string>
-    <string name="invoice_slip">نسخة العميل : </string>
-    <string name="net_sales">صافي المبيعات </string>
     <string name="printer_not_connected">الطابعة غير متصلة </string>
     <string name="print_preview">المراجعة المبدئية للطباعة </string>
     <string name="invoice_report_details">تفاصيل تقرير الفاتورة </string>
@@ -277,37 +263,27 @@
     <string name="about">بخصوص </string>
     <string name="capture">التقاط</string>
     <string name="avail">المتوافر </string>
-    <string name="connecting">توصيل </string>
     <string name="out_of_memory">الذاكرة ممتلئة </string>
-    <string name="no_error">لا يوجد خطأ </string>
     <string name="low_voltage">فولت منخفض </string>
     <string name="normal_voltage">فولت عادي </string>
-    <string name="ph_no">رقم PH :</string>
     <string name="only_order">فقط الطلب </string>
     <string name="total_amount_due">القيمة الإجمالية المستحقة : </string>
     <string name="select_no_order_reason">اختيار لا يوجد سبب للطلب.</string>
     <string name="select_reason">اختيار السبب </string>
-    <string name="order_created_successfully">تم إنشاء أمر الشراء بنجاح </string>
     <string name="done">تم </string>
     <string name="lbl_continue">استمر</string>
     <string name="brand">الماركة والعلامة التجارية.</string>
     <string name="please_finish_mandatory_modules">نرجو إكمال الوحدات الإلزامية.</string>
     <string name="summary">الملخص </string>
     <string name="apply_so">تطبيق الكمية المقترحة </string>
-    <string name="cust">العميل </string>
     <string name="tel">تليفون </string>
-    <string name="salesman">مسئول المبيعات </string>
     <string name="route">المسار </string>
-    <string name="itemno">رقم البند </string>
     <string name="description">الوصف</string>
-    <string name="case_unit">الوحدة </string>
-    <string name="case_price">السعر </string>
     <string name="amount">القيمة </string>
     <string name="your_name">اسمك </string>
     <string name="all_channel">جميع القنوات </string>
     <string name="id">الهوية ID</string>
     <string name="so_case">SOC</string>
-    <string name="imagename">اسم الصورة </string>
     <string name="spl_filter">الفلتر الخاص </string>
     <string name="prd_filter">فلتر المنتج </string>
     <string name="barcode">الباركود </string>
@@ -321,7 +297,6 @@
     <string name="outer_label">الملصق الخارجي</string>
     <string name="delivery_date_label">تاريخ التسليم </string>
     <string name="remarks_label">ملاحظات </string>
-    <string name="p_qty">الكمية </string>
     <string name="lock">إغلاق </string>
     <string name="total_lines">الخطوط الإجمالية </string>
     <string name="are_you_sure_you_want_to_download">هل أنت متأكد أنك ترغب في التنزيل؟ </string>
@@ -333,7 +308,6 @@
     <string name="unloadimage">الصورة غير متوافرة.</string>
     <string name="deviate_retailers">اختلاف وحدات تجارة التجزئة.</string>
     <string name="admin_contact_no">رقم اتصال المدير.</string>
-    <string name="ord_id">رقم الطلب.</string>
     <string name="invno">رقم الفاتورة.</string>
     <string name="apply_sih">طلب SIH</string>
     <string name="please_answer_all_mandatory_questions">نرجو الرد على جميع الأسئلة الإلزامية.</string>
@@ -348,21 +322,12 @@
     <string name="no_paired_device">لا يوجد جهاز مزدوج </string>
     <string name="paired_bluetooth_printers">طابعات بلوتوس مزدوجة </string>
     <string name="printed_successfully">تم الطباعة بنجاح </string>
-    <string name="printer_connected">تم توصيل الطابعة </string>
-    <string name="complete_to_print">إكمال الطباعة </string>
     <string name="cover_is_open">الغطاء مفتوح </string>
     <string name="paper_not_present">حساس أطراف الورق : الورق غير موجود </string>
-    <string name="bluetooth_connection_not_available">توصيل بلوتوس غير متوافر </string>
-    <string name="total_print">الإجمالي </string>
     <string name="you_are_closing">يتم الإقفال </string>
     <string name="delete_stock_and_order">حذف المخزون وأمر الشراء </string>
-    <string name="received_by">تم الاستلام بواسطة : </string>
     <string name="post_dated_cheque_notallow">الشيك بتاريخ لاحق غير مسموح به.</string>
     <string name="order_report_details">تفاصيل تقرير الأمر. </string>
-    <string name="order_print_preview">المشاهدة المبدئية لطباعة الأمر. </string>
-    <string name="invoice_print_preview">المشاهدة المبدئية لطباعة الفاتورة.</string>
-    <string name="order_slip">صورة من الأمر </string>
-    <string name="invoice_saved_and_print_preview_created_successfully">تم حفظ الفاتورة والمشاهدة المبدئية للطباعة بنجاح.</string>
     <string name="no_invoice_exist">لا توجد فاتورة متوافرة.</string>
     <string name="scheme_name">اسم النظام المستخدم.</string>
     <string name="max_disc">الحد الأقصى للخصم. </string>
@@ -425,18 +390,8 @@
     <string name="you_are">انتم </string>
     <string name="disc_amt">قيمة الخصم </string>
     <string name="enter_cheque_no">أدخل رقم الشيك.</string>
-    <string name="cash_tc_invoice">كاش / رقم الفاتورة TC.</string>
     <string name="sales_date">تاريخ المبيعات </string>
     <string name="time">وقت البدء </string>
-    <string name="upc">UPC</string>
-    <string name="good_returns">مرتجعات البضائع </string>
-    <string name="expiry_return">مرتجعات انتهاء الصلاحية. </string>
-    <string name="free_goods">السلع المجانية.</string>
-    <string name="net_due_invoice">صافي المستحق.</string>
-    <string name="cash_paid">النقدية المدفوعة.</string>
-    <string name="salesman_signature">توقيع المبيعات.</string>
-    <string name="customer_signature">توقيع العميل.</string>
-    <string name="orginal">الأصل </string>
     <string name="from">من </string>
     <string name="to">إلى </string>
     <string name="scheme">النظام </string>
@@ -446,7 +401,6 @@
     <string name="select_collection_reason">اختيار سبب التجميع.</string>
     <string name="reason_saved">تم حفظ السبب.</string>
     <string name="acc_no">رقم الحساب.</string>
-    <string name="emp_id">رقم الهوية EMPID.</string>
     <string name="device_status">حالة الجهاز.</string>
     <string name="current_date">التاريخ الحالي.</string>
     <string name="network_status">حالة الشبكة.</string>
@@ -490,7 +444,6 @@
     <string name="invaliddate">التاريخ غير ساري المفعول.</string>
     <string name="saverequired">حفظ البيانات مطلوب.</string>
     <string name="cant_skip_go_by_sequence">لا يمكن تخطي الخطوة اتبع التسلسل.</string>
-    <string name="duplicate">نسخة مكررة.</string>
     <string name="no_damaged_stock_to_unload">لا يوجد مخزون تالف لتفريغه.</string>
     <string name="do_you_want_to_save_stock">هل ترغب في حفظ المخزون.</string>
     <string name="stock_saved">حفظ المخزون </string>
@@ -509,7 +462,6 @@
     <string name="feedback">الفحص والتقييم.</string>
     <string name="tracking_list">قائمة التتبع.</string>
     <string name="vanno">فان التحميل.</string>
-    <string name="BATCH_NO">التشغيلة </string>
     <string name="select_reason_skip_seq">اختيار سبب لتخطي التسلسل.</string>
     <string name="loading_stock">مخزون الشحن.</string>
     <string name="sold_stock">مخزون المبيعات.</string>
@@ -528,10 +480,8 @@
     <string name="batch_no_already_exist">رقم الكمية موجود بالفعل.</string>
     <string name="select_sub_depot">اختيار المخزن الفرعي للحفظ.</string>
     <string name="enter">دخول </string>
-    <string name="code">الكود </string>
     <string name="case_u">الحالة </string>
     <string name="totfullstockcs">المخزون الكامل الإجمالي CS.</string>
-    <string name="totduecoll">القيمة الإجمالية المستحقة.</string>
     <string name="already_another_user_login">دخول مستخدم جديد بالفعل.</string>
     <string name="please_pay_old_invoice">نرجو دفع الفواتير القديمة.</string>
     <string name="detail">التفاصيل.</string>
@@ -545,9 +495,6 @@
     <string name="file_not_found">ملف غير موجود.</string>
     <string name="order_number">رقم الطلب.</string>
     <string name="invoice_number">رقم الفاتورة.</string>
-    <string name="bt_not_enabled_turn_on_bluetooth">تم إيقاف تنشيط البلوتوس. نرجو تشغيل البلوتوس.</string>
-    <string name="button_disconnect_text">فصل</string>
-    <string name="button_connect_text">توصيل </string>
     <string name="exceed_free_product">لقد تجاوزت الحد الأقصى المعروض.</string>
     <string name="exceed_allocation">لقد تجاوزت التخصيص.</string>
     <string name="vat_no">رقم ضريبة القيمة المضافة.</string>
@@ -555,12 +502,8 @@
     <string name="previous_activation_not_done_for_this_device">التنشيط السابق لم يتم لهذا الجهاز.</string>
     <string name="minimum_amount">القيمة كحد أدنى.</string>
     <string name="enter_minimum_amount">دفع قيمة الحد الأدنى للمضي في الفاتورة.</string>
-    <string name="total_stock_sold">إجمالي المنتجات المباعة (شاملاً الضريبة).</string>
     <string name="total_exec_tax">إجمالي الضريبة التنفيذية.</string>
-    <string name="total_paid">الإجمالي المدفوع.</string>
-    <string name="credit">الائتمان </string>
     <string name="customer_sign">توقيع العميل.</string>
-    <string name="rep_sign">توقيع المشرف.</string>
     <string name="invoice_created_dou_wnt_print">تم إنشاء الفاتورة بنجاح ، هل ترغب في الطباعة؟</string>
     <string name="choose">اختيار </string>
     <string name="please_select_atleast_one_sku">نرجو اختيار وحدة واحدة SKU على الأقل. </string>
@@ -571,7 +514,6 @@
     <string name="shelf_max_shelf_count">العدد الأقصى لعدد الأرفف هو _______.</string>
     <string name="label_check_box_do_not_show_again">لا تظهر مرة أخرى.</string>
     <string name="selectany">يتم الاختيار : </string>
-    <string name="tin_no">رقم العلبة :</string>
     <string name="currprice">سعر العملة. </string>
     <string name="no_location_download">لم يتم تنزيل أماكن.</string>
     <string name="app_url_is_empty">موقع التطبيق فارغ.</string>
@@ -581,7 +523,6 @@
     <string name="choose_location">اختيار المكان.</string>
     <string name="questscore">درجة السؤال </string>
     <string name="surevyscore">درجة المسح </string>
-    <string name="outer_price">السعر الخارجي </string>
     <string name="photo_capture_not_saved_go_back">التقاط الصور لم يتم حفظه هل ترغب في الرجوع.</string>
     <string name="addpromo">إضافة عرض جديد.</string>
     <string name="startdate">تاريخ البداية.</string>
@@ -778,7 +719,6 @@
     <string name="selected_date_already_applied">يوجد طلب بالفعل للتاريخ المختار.</string>
     <string name="download_date_mismatch">عدم توافق تاريخ التنزيل.</string>
     <string name="user_account_locked">الحساب مغلق نرجو الاتصال بمدير النظام.</string>
-    <string name="scheme_discount">خصم النظام.</string>
     <string name="tab_text_images">الصور </string>
     <string name="tab_text_audio">أوديو </string>
     <string name="tab_text_video">فيديو </string>
@@ -1056,9 +996,7 @@
     <string name="shipment_type_label">نوع الشحنة </string>
     <string name="payment_type_label">نوع المدفوعات </string>
     <string name="select_shipment_type">اختيار نوع الشحنة. </string>
-    <string name="select_pay_term_type">اختيار نوع شروط الدفع.</string>
     <string name="shipment_mandatory">نرجو اختيار نوع الشحنة.</string>
-    <string name="pay_term_mandatory">نرجو اختيار نوع شروط الدفع.</string>
     <string name="dist_channel_mandatory">نرجو اختيار قناة التوزيع.</string>
     <string name="select_channel">اختيار قناة التوزيع.</string>
     <string name="supplier_label">المورد </string>
@@ -1120,7 +1058,6 @@
     <string name="alert_amount">Please enter amount!!</string>
     <string name="alert_exp_type">Please Select Expense Type !!</string>
     <string name="amt_paid">Amt Paid - 0</string>
-    <string name="arabian_trading_supplies">Arabian Trading Supplies</string>
     <string name="bottle">Bottles</string>
     <string name="cheque_bounced">Cheque Bounced</string>
     <string name="contract_deleted_sucessfully">Contract deleted successfully.</string>
@@ -1174,8 +1111,6 @@
     <string name="present_days">Present Days -</string>
     <string name="prev_dated_cheque_notallow">Previous Dated Cheque Not Allowed</string>
     <string name="primary_supplier">Primary Supplier</string>
-    <string name="print_footer3">Total TVA a 20.00%</string>
-    <string name="print_footer4">Total TTC a payer</string>
     <string name="rank">All Retailer</string>
     <string name="reason_req_for_indicative_order">Reason for un satisfied order</string>
     <string name="rejected">Rejected</string>
@@ -1204,7 +1139,6 @@
     <string name="tab_text_approve">Approved</string>
     <string name="tab_text_pending">Pending</string>
     <string name="tc">TC</string>
-    <string name="tc_charged">Tc Charged</string>
     <string name="telephony_not_avail">Telephony Manager not available</string>
     <string name="text_capture_proof">Capture proof</string>
     <string name="text_current_month">Current</string>
@@ -1231,25 +1165,8 @@
     <string name="user_already_assigned">User Already Assigned</string>
     <string name="van_load_bottles">vanload_piece</string>
     <string name="vpd">VPD</string>
-    <string name="wouter">WO</string>
     <string name="zero_bpo">Zero BPO (No. of O/L)</string>
     <string name="invoice_duplicated">Invoice should not be duplicated.</string>
-
-    <string-array name="task_tab_header">
-        <item>All</item>
-        <item>Assigned</item>
-        <item>My Task</item>
-    </string-array>
-    <string-array name="days_in_week">
-        <item>Sun</item>
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-        <item>Sat</item>
-    </string-array>
-
     <string name="share_percent">شارك ٪</string>
     <string name="total_value_less_than_actual_value">القيمة الإجمالية أقل من القيمة الفعلي.</string>
     <string name="answer_to_take_photo">أجب على السؤال لالتقاط صورة.</string>
@@ -1270,7 +1187,6 @@
     <string name="bill">فاتورة</string>
     <string name="line_value">قيمة الصنف</string>
     <string name="tax_Value">القيمة الضريبية</string>
-    //  <!--<string name="disc">المسافة</string>-->
     <string name="cash_disc">نقداً المسافة</string>
     <string name="tls">إجمالي البيع</string>
     <string name="payment_term">شروط الدفع</string>
@@ -1290,4 +1206,139 @@
     <string name="tos_amount">TOS Amount</string>
     <string name="other_reason_with_credit">Others</string>
     <string name="store_activities">Store Activities</string>
+    <string name="retailer_kpi_not_available">Retailer KPI not available.</string>
+    <string name="bill1_value">Bill1 Value</string>
+    <string name="bill1_line">Bill1 Line</string>
+    <string name="bill2_value">Bill2 Value</string>
+    <string name="bill2_line">Bill2 Line</string>
+    <string name="notification_text">Realtime location tracking enabled. </string>
+    <string name="status_time_mismatch">Start Time is Greater than end time</string>
+    <string name="status_location_accuracy">Change high location Accuracy</string>
+    <string name="status_mock_location">Mock Location is Enabled</string>
+    <string name="status_alarm_time_zero">Alarm time should not be zero</string>
+    <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
+    <string name="enter_account">Enter account no</string>
+    <string name="otp_download_url_empty">OTP Generate Url is Empty </string>
+    <string name="profile_edit_verify_email_id">Please verify Email Id</string>
+    <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
+    <string name="planogram_image_count_reached">Reached Maximum planogram image count</string>
+    <string name="planogram_image_count_not_reached">Planogram image not added</string>
+    <string name="enter_valid">Enter valid </string>
+    <string name="stock">Stock</string>
+    <string name="Order_Summary_dialog_header">Order_Summary_dialog_header</string>
+    <string name="collection_mandatory">Please do collection for Pending Invoice !</string>
+    <string name="todate_validation">To Date should be greater than From Date</string>
+    <string name="backup_seller">Backup Seller</string>
+    <string name="error_connecting_printer">Error connecting Printer</string>
+    <string name="allocation">Allocation</string>
+    <string name="you_have_unchecked_applicable_scheme">You have unchecked few applicable scheme ?</string>
+    <string name="regular_incentive_detail">Regular Incentive Detail</string>
+    <string name="top_up_incentive_detail">Top Up Incentive Detail</string>
+    <string name="rcpt_date">Rcpt Date</string>
+    <string name="rcpt_no">Rcpt NO</string>
+    <string name="seller_code">Seller Code</string>
+    <string name="pls_enter_rtgsno">Please Enter RTGS No </string>
+    <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
+    <string name="drug_license_expired">Drug License Expired</string>
+    <string name="uom_not_available">Uom Not Available</string>
+    <string name="pwd_policy_not_match">Password Policy Not Matched</string>
+    <string name="last_vist">Last Vist : </string>
+    <string name="visit_time">Visit Time : </string>
+    <string name="yet_to_visit">Yet to visit </string>
+    <string name="targeted">Targeted </string>
+    <string name="covered">Covered </string>
+    <string name="please_complete">Please Complete</string>
+    <string name="complete">Complete</string>
+    <string name="enter_receipt_no">Enter Receipt Number</string>
+    <string name="please_enter">Please Enter</string>
+    <string name="lpc">LPC</string>
+    <string name="return_value">Return Value</string>
+    <string name="salesreport_details">SalesReturn Report Details</string>
+    <string name="last_download_on">Last Download: </string>
+    <string name="last_upload_on">Last Upload: </string>
+    <string name="select_category">Select Category</string>
+    <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
+    <string name="retailer_contact_list">Contact data not Available!</string>
+    <string name="not_able_to_register_visit">Not able to register the visit</string>
+    <string name="outlet">Outlet</string>
+    <string name="contact">Contact</string>
+    <string name="isprimary">Is Primary</string>
+    <string name="contact_title">Contact Title</string>
+    <string name="enter_first_name">Enter Contact FirstName</string>
+    <string name="enter_last_name">Enter Contact LastName</string>
+    <string name="enter_other_name">Enter Contact Other Title</string>
+    <string name="select_contact_title">Select Contact Title</string>
+    <string name="primary_contact_available">Primary Contact already available!</string>
+    <string name="max_contacts_added">Maximum Contacts already added!</string>
+    <string name="discount_amt_cannot_be_higher_than_percentage">Discount Amount cannot be Higher than “%1$s” of product price.</string>
+    <string name="select_reason_for_price_change">Select Reason for Price Change.</string>
+    <string name="filter_by">Filter By</string>
+    <string name="show_results">Show Results</string>
+    <string name="please_choose_address">Please choose any one address</string>
+    <string name="mark_attendance_working">Please Mark Attendance As "Working" To Proceed.</string>
+    <string name="planned_activities">Planned Activities</string>
+    <string name="do_u_want_to_cancel">Do you want to cancel?</string>
+    <string name="asset_service">Asset Service</string>
+    <string name="select_asset_service">Nothing selected to Service.</string>
+    <string name="visit_plan_updated">Visit Plan Updated</string>
+    <string name="stock_allocated">Stock Allocated</string>
+    <string name="vanload_stock_applied">VanLoad Stock Applied </string>
+    <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
+    <string name="check_any_one_list">Check any one list</string>
+    <string name="new_order">New Order</string>
+    <string name="new_outlet_order">You have changed the Distributor, Order will be lost. Do you want to Continue?</string>
+    <string name="outlet_code">Outlet Code</string>
+    <string name="sub_channel">Sub Channel</string>
+    <string name="contract_id">Contract ID</string>
+    <string name="type_of_trade_offer">Type of Trade Offer</string>
+    <string name="days_to_expire">Days to Expire</string>
+    <string name="selected">selected</string>
+    <string name="select_order_type">Select order type</string>
+    <string name="withold_title">With Hold Tax</string>
+    <string name="no_collection_reason">No collection \nReason</string>
+    <string name="invoice_with_no_collection">Invoice With No Collection Reason Found</string>
+    <string name="skip">Skip</string>
+    <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
+    <string name="Orde_Saved">Order Saved.</string>
+    <string name="Order_id">Order ID is: </string>
+    <string name="denomination_error">Total amount not match with you denomination count amount </string>
+    <string name="pay">Pay</string>
+    <string name="order_id">Order ID</string>
+    <string name="ordered_cases">Ordered Cases</string>
+    <string name="ordered_pieces">Ordered Pieces</string>
+    <string name="fulfilled_cases">Fulfilled Cases</string>
+    <string name="fulfilled_pieces">Fulfilled Pieces</string>
+    <string name="order_fulfillment_detail">Order Fulfillment Detail</string>
+    <string name="logout_joint_user">Please logout JointCall User before downloading</string>
+    <string name="licensing">About Open Source Library</string>
+    <string name="software_licensing">Open Source Library</string>
+    <string name="click_to_show_licensing">Open Source Library - Licence</string>
+    <string name="margin_price">Mgn Prc</string>
+    <string name="margin_per">Mgn Per</string>
+    <string name="invoice_already_generated">* Invoice Generated</string>
+    <string name="order_rejected">* Order Rejected</string>
+    <string name="do_you_want_to_reject">Do you want to reject?</string>
+    <string name="already_invoice_has_been_generated">Already invoice has been generated.</string>
+    <string name="rejected_order">Rejected Order</string>
+
+    <string name="sales_type_presale">PreSales</string>
+    <string name="sales_type_vansale">VanSales</string>
+    <string name="digital_content_header_this_month">This Month</string>
+    <string name="digital_content_header_prev_month">Previous Month</string>
+    <string name="digital_content_header_older">Older</string>
+
+    <string-array name="task_tab_header">
+        <item>All</item>
+        <item>Assigned</item>
+        <item>My Task</item>
+    </string-array>
+    <string-array name="days_in_week">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
 </resources>

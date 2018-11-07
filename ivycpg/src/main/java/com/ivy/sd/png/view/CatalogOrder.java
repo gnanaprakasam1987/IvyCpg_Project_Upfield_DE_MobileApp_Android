@@ -269,7 +269,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         mBtn_clear.setOnEditorActionListener(this);
         saveBtn.setOnClickListener(this);
 
-        search_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+        search_txt.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
         screenCode = HomeScreenTwo.MENU_CATALOG_ORDER;
         OrderedFlag = HomeScreenTwo.MENU_CATALOG_ORDER;

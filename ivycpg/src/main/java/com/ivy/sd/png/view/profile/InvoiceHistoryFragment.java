@@ -1,7 +1,6 @@
 package com.ivy.sd.png.view.profile;
 
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -258,34 +257,34 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 }
 
                 //typeface for label text
-                invoice_Id_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                order_Id_label.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                dateTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                totLinesTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                totValTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                totalVolumeTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                del_date_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                invoice_date_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                invoice_qty_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                del_rep_code_txt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                marginPriceTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-                marginPerTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                invoice_Id_label.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                order_Id_label.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                dateTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                totLinesTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                totValTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                totalVolumeTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                del_date_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                invoice_date_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                invoice_qty_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                del_rep_code_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                marginPriceTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                marginPerTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
 
                 //typeface for value text font
-                invoice_Id.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                order_Id.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                invDate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                totLines.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                totVal.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                invViewBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                totalVolume.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                del_date_val.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                invoice_date_val.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                invoice_qty_val.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                del_rep_code_val.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                marginPrice.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-                marginPer.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                invoice_Id.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                order_Id.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                invDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                totLines.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                totVal.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                invViewBtn.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                totalVolume.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                del_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                invoice_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                invoice_qty_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                del_rep_code_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                marginPrice.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                marginPer.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
                 if (!bmodel.configurationMasterHelper.SHOW_INV_HST_ORDERID) {
                     itemView.findViewById(R.id.order_id_layout).setVisibility(View.GONE);

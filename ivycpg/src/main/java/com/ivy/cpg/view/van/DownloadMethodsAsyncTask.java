@@ -26,7 +26,7 @@ class DownloadMethodsAsyncTask extends AsyncTask<Integer, Integer, Boolean>  {
 
     protected void onPreExecute() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        downloadAsyncTaskInterface.showProgress(builder, mContext.getResources().getString(R.string.loading));
+        downloadAsyncTaskInterface.showProgress(builder);
     }
 
     @Override

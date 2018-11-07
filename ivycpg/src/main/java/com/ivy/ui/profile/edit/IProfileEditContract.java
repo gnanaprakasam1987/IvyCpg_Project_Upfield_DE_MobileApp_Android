@@ -204,5 +204,7 @@ public interface IProfileEditContract {
 
         void updateLatLong(String lat, String longitude);
 
+        boolean checkRegex(int menuNumber, String typedText);
+
     }
 }

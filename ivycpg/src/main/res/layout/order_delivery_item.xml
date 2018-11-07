@@ -51,7 +51,7 @@
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="Order Id " />
+                    android:text="@string/order_number" />
 
             </LinearLayout>
 
@@ -82,7 +82,7 @@
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="Value" />
+                    android:text="@string/value" />
 
             </LinearLayout>
 
@@ -112,7 +112,7 @@
                     android:layout_marginEnd="@dimen/dimen_2dp"
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:maxLines="1"
-                    android:text="Date" />
+                    android:text="@string/order_date" />
 
             </LinearLayout>
 
@@ -144,7 +144,7 @@
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="Lines " />
+                    android:text="@string/lines" />
 
             </LinearLayout>
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ivy.sd.png.view.LoyaltyPointsFragmentActivity">
+    tools:context="com.ivy.cpg.view.loyality.LoyaltyPointsFragmentActivity">
 
     <include
         android:id="@+id/toolbar"
@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/fragment"
-        android:name="com.ivy.sd.png.view.LoyaltyPointsFragment"
+        android:name="com.ivy.cpg.view.loyality.LoyaltyPointsFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

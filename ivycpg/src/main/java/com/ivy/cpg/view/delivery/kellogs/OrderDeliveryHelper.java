@@ -10,14 +10,13 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.cpg.view.order.OrderHelper;
-import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.TaxBO;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -491,7 +490,7 @@ public class OrderDeliveryHelper {
     }
 
     /* Total product count, value of total product,total tax are calculated here */
-    public double getProductTotalValue(Context context, boolean isEdit) {
+    public double getProductTotalValue(boolean isEdit) {
         double totalvalue = 0;
         int totalProdQty = 0;
 
@@ -516,14 +515,11 @@ public class OrderDeliveryHelper {
             }
         }
 
+        //Product wise Tax amount will be calculated according to the tax rate
+        double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
+
         if (isEdit) {
-            //Product wise Tax amount will be calculated according to the tax rate
-            double taxValue = businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
             setOrderDeliveryTaxAmount(String.valueOf(taxValue));
-        } else {
-            DiscountHelper discountHelper= DiscountHelper.getInstance(context);
-            discountHelper.calculateItemLevelDiscount(getOrderedProductMasterBOS()); //As instructed by Rajkumar
-            businessModel.productHelper.taxHelper.updateProductWiseIncludeTax(getOrderedProductMasterBOS());
         }
 
         setOrderDeliveryTotalValue(String.valueOf(totalvalue));
@@ -772,10 +768,10 @@ public class OrderDeliveryHelper {
 
             //For Print saved in Discount and invoice number
             businessModel.invoiceNumber = invoiceId;
-            if (isEdit) {
-                if(businessModel.productHelper.getProductDiscountListByDiscountID()!=null)
-                    businessModel.productHelper.getProductDiscountListByDiscountID().clear();
-            }
+            if (isEdit)
+                OrderHelper.getInstance(context).invoiceDiscount = "0";
+            else
+                OrderHelper.getInstance(context).invoiceDiscount = getOrderDeliveryDiscountAmount();
 
             /* Invoice status 1 --> invoice generated for the order */
             for (int i = 0; i < getOrderHeaders().size(); i++) {
@@ -851,9 +847,16 @@ public class OrderDeliveryHelper {
         StringBuffer values;
         values = new StringBuffer();
 
-        values.append(AppUtils.QT(orderId)).append(",").append(productBO.getProductID()).append(",").append(taxBO.getTaxRate()).append(",");
-        values.append(taxBO.getTaxType()).append(",").append(taxBO.getTotalTaxAmount()).append(",").append(businessModel.getRetailerMasterBO().getRetailerID());
-        values.append(",").append(taxBO.getGroupId()).append(",0").append(",").append(AppUtils.QT(invoiceId));
+        values.append(AppUtils.QT(orderId)).append(",")
+                .append(productBO.getProductID()).append(",")
+                .append(taxBO.getTaxRate()).append(",");
+        values.append(taxBO.getTaxType()).append(",")
+                .append(businessModel.formatBasedOnCurrency(taxBO.getTotalTaxAmount())).append(",")
+                .append(businessModel.getRetailerMasterBO().getRetailerID());
+        values.append(",")
+                .append(taxBO.getGroupId())
+                .append(",0").append(",")
+                .append(AppUtils.QT(invoiceId));
         db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 

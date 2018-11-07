@@ -8,7 +8,7 @@
         android:id="@+id/text_product_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/font_micro_small"
+        android:textSize="@dimen/text_size_primary"
         android:layout_gravity="center_vertical" />
 
 </LinearLayout>
