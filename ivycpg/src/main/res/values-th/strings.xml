@@ -1268,9 +1268,7 @@
     <string name="return_products_price_less_than_replacing_product_price">Return value should be higher than replacement value</string>
     <string name="return_products_not_matching_replacing_product_price">Return and Replacement value should be matched</string>
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
-    <string name="ns">NS</string>
-    <string name="ul">UL</string>
-    <string name="salable">เหมาะที่จะขาย</string>
+
 
     <string name="bill">Bill</string>
     <string name="line_value">Line value</string>
