@@ -35,11 +35,13 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
@@ -49,6 +51,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 
 import java.util.ArrayList;
@@ -393,6 +396,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             menu.findItem(R.id.menu_assetservice).setVisible(false);
         }
 
+        menu.findItem(R.id.menu_reason).setVisible(mBModel.configurationMasterHelper.floating_np_reason_photo);
 
         if (drawerOpen) {
             menu.clear();
@@ -473,6 +477,35 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             scanBarCode();
 
         }
+        else if (i == R.id.menu_reason) {
+            try {
+                mBModel.reasonHelper.downloadNpReason(mBModel.retailerMasterBO.getRetailerID(), MENU_ASSET);
+                ReasonPhotoDialog dialog = new ReasonPhotoDialog();
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_ASSET)) {
+                            mBModel.saveModuleCompletion(MENU_ASSET);
+                            mBModel.outletTimeStampHelper
+                                    .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                            startActivity(new Intent(getActivity(),
+                                    HomeScreenTwo.class));
+                            getActivity().finish();
+                        }
+                    }
+                });
+                Bundle args = new Bundle();
+                args.putString("modulename", MENU_ASSET);
+                dialog.setCancelable(false);
+                dialog.setArguments(args);
+                dialog.show(getActivity().getSupportFragmentManager(), "ReasonDialogFragment");
+            }
+            catch (Exception ex){
+                Commons.printException(ex);
+            }
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -602,6 +635,44 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         }
     }
 
+
+
+
+    @Override
+    public void showError(String errorMsg) {
+        String titleText;
+        if (errorMsg.isEmpty())
+            titleText = getString(R.string.no_assets_exists);
+        else
+            titleText = errorMsg;
+
+        AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
+                getActivity());
+        alertDialogBuilder1
+                .setIcon(null)
+                .setCancelable(false)
+                .setTitle(titleText)
+                .setPositiveButton(getResources().getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                                dialog.cancel();
+                            }
+                        });
+
+        mBModel.applyAlertDialogTheme(alertDialogBuilder1);
+    }
+
+    @Override
+    public void save() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        customProgressDialog(builder, getResources().getString(R.string.saving));
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        assetPresenter.save(MENU_ASSET);
+    }
+
     @Override
     public void cancelProgressDialog() {
         assetPresenter.updateTimeStamp();
@@ -633,6 +704,8 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             }
         }).show();
     }
+
+
 
     /**
      * Show location dialog

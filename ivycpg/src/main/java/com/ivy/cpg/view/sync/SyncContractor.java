@@ -38,8 +38,6 @@ public interface SyncContractor {
 
         void upload();
 
-        void dayCloseAndUpload();
-
         void uploadImages();
 
         void prepareSelectedRetailerIds();

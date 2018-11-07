@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.preference.ListPreference;
@@ -354,6 +355,13 @@ public class UserSettingsActivity extends PreferenceActivity {
 
     private static final android.os.Handler handler = new android.os.Handler() {
         public void handleMessage(Message msg) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (((UserSettingsActivity)context).isDestroyed()) { // or call isFinishing() if min sdk version < 17
+                    return;
+                }
+            } else if (((UserSettingsActivity)context).isFinishing()) {
+                return;
+            }
             switch (msg.what) {
 
                 case DataMembers.NOTIFY_FILE_UPLOADED__COMPLETED_IN_AMAZON:

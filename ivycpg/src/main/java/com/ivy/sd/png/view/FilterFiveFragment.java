@@ -205,7 +205,7 @@ public class FilterFiveFragment<E> extends Fragment {
                         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
                             bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel("MENU_STK_ORD"));
                             bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                                    bmodel.productHelper.getFilterProductLevels(),true));
+                                    bmodel.productHelper.getFilterProductLevels(), true));
                         }
                         filterProductsByLevelId.putAll(bmodel.productHelper.getFilterProductsByLevelId());
                         filterProductLevels.addAll(bmodel.productHelper.getFilterProductLevels());
@@ -442,8 +442,8 @@ public class FilterFiveFragment<E> extends Fragment {
                                 }
 
                             }
-                                productsAdapter = new FilterProductsAdapter(filterList);
-                                productSelectionListview.setAdapter(productsAdapter);
+                            productsAdapter = new FilterProductsAdapter(filterList);
+                            productSelectionListview.setAdapter(productsAdapter);
 
                         } else {
                             Vector<LevelBO> filterList = updateFilterSelection(position);
@@ -474,13 +474,14 @@ public class FilterFiveFragment<E> extends Fragment {
                 int selectedPid = 0;
                 for (int i = size - 1; i >= 0; i--) {
                     if (mSelectedIdByLevelId.get(filterProductLevels.get(i).getProductID()) != null && mSelectedIdByLevelId.get(filterProductLevels.get(i).getProductID()) > 0) {
-                        for (LevelBO bo : filterProductsByLevelId.get(filterProductLevels.get(i).getProductID())) {
-                            if (bo.getProductID() == mSelectedIdByLevelId.get(filterProductLevels.get(i).getProductID())) {
-                                selectedPid = bo.getProductID();
-                                i = -1;
-                                break;
+                        if (filterProductLevels.get(pos).getProductID() > filterProductLevels.get(i).getProductID())
+                            for (LevelBO bo : filterProductsByLevelId.get(filterProductLevels.get(i).getProductID())) {
+                                if (bo.getProductID() == mSelectedIdByLevelId.get(filterProductLevels.get(i).getProductID())) {
+                                    selectedPid = bo.getProductID();
+                                    i = -1;
+                                    break;
+                                }
                             }
-                        }
                     }
                 }
                 LevelBO levelBO = filterProductLevels.get(pos);

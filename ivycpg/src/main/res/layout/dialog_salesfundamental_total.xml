@@ -35,9 +35,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/ic_camera_right_margin"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="@string/title_dialog"
                     android:textColor="?primarycolor"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/text_size_primary"
+                    android:textStyle="bold" />
 
                 <ListView
                     android:id="@+id/lv"
@@ -63,6 +65,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center|start"
                     android:text="@string/total"
                     android:textColor="@color/GRAY_TEXT"
@@ -80,9 +83,8 @@
                     android:gravity="center|start"
                     android:inputType="numberDecimal"
                     android:maxLength="6"
-                    android:text="0"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/font_large" />
+                    android:text="@string/zero"
+                    android:textColor="@color/colorAccent" />
 
             </LinearLayout>
 
@@ -122,10 +124,10 @@
             style="?attr/roundedCustomButtonNormalTransparent"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
             android:text="@string/cancel"
             android:textAllCaps="false"
-            android:textColor="@android:color/black"
-            android:layout_marginRight="5dp" />
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/btn_done"

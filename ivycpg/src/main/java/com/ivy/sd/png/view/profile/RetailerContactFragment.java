@@ -92,13 +92,13 @@ public class RetailerContactFragment extends IvyBaseFragment {
     }
 
     private void getDataToPopulate() {
-        new CompositeDisposable().add((Disposable)bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(),false)
+        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(), false)
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribeWith(arrayListObserver()));
     }
 
-    private Observer<ArrayList<RetailerContactBo>> arrayListObserver(){
+    private Observer<ArrayList<RetailerContactBo>> arrayListObserver() {
         return new DisposableObserver<ArrayList<RetailerContactBo>>() {
             @Override
             public void onNext(ArrayList<RetailerContactBo> contactList) {
@@ -120,7 +120,6 @@ public class RetailerContactFragment extends IvyBaseFragment {
             }
         };
     }
-
 
 
     @Override
@@ -215,7 +214,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
 
             private TextView title, firstName;
             private TextView textCno, textCEmail;
-            private ImageView ivIsPrimary;
+            private ImageView ivIsPrimary, ivIsdelete;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -225,7 +224,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
                 ivIsPrimary = itemView.findViewById(R.id.ivIsPrimary);
                 textCno = itemView.findViewById(R.id.tvContactNo);
                 textCEmail = itemView.findViewById(R.id.tvEmail);
-
+                ivIsdelete = itemView.findViewById(R.id.ivIsdelete);
                 title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 firstName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
                 textCno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
@@ -244,6 +243,8 @@ public class RetailerContactFragment extends IvyBaseFragment {
 
                 if (contactMenuMap.get(CODE_CONTACTMAIL) == null)
                     textCEmail.setVisibility(View.GONE);
+
+                ivIsdelete.setVisibility(View.GONE);
 
             }
         }

@@ -835,6 +835,8 @@ public class SchemeDetailsMasterHelper {
     }
 
     public HashMap<String, ArrayList<Integer>> getParentIdListByProductId() {
+        if (mParentIdListByProductId == null)
+            mParentIdListByProductId = new HashMap<>();
         return mParentIdListByProductId;
     }
 

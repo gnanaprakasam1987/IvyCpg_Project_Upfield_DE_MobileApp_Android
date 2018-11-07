@@ -277,7 +277,7 @@ public class MyThread extends Thread {
 
                 }
 
-                if (orderHelper.saveOrder(ctx, bill2Products, false)) {
+                if (orderHelper.saveOrder(ctx, bill1Products, false) && orderHelper.saveOrder(ctx, bill2Products, false)) {
 
 
                     // Update review plan in DB

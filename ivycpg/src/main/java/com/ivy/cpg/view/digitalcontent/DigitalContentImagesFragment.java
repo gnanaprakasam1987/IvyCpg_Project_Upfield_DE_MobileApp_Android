@@ -112,7 +112,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
         HashMap<String, ArrayList<DigitalContentBO>> group_wise_group = new HashMap<>();
         mDigitalContentList = mDigitalContentHelper.getFilteredDigitalMaster();
 
-        if (mDigitalContentList.size() > 0) {
+        if (mDigitalContentList != null && !mDigitalContentList.isEmpty()) {
 
             // load only images to the list
             for (DigitalContentBO bo : mDigitalContentList) {

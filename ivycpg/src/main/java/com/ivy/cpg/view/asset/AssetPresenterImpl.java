@@ -343,7 +343,14 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     @Override
     public void checkDataExistToSave() {
-        mAssetView.isDataExistToSave(hasAssetTaken(), hasAssetPhotoTaken(), hasAssetReasonTaken(), errorMsg);
+        //mAssetView.isDataExistToSave(hasAssetTaken(), hasAssetPhotoTaken(), hasAssetReasonTaken(), errorMsg);
+
+        if (!hasAssetPhotoTaken() || !hasAssetReasonTaken()) {
+            mAssetView.showError(errorMsg);
+        } else if (hasAssetTaken() ||hasAssetPhotoTaken() || hasAssetReasonTaken() ) {
+           mAssetView.save();
+        }
+
     }
 
     /**
@@ -362,7 +369,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                     && mAssetTrackingList.size() > 0) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
                     if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2
-                            || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
+                            || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0 || (!assetBO.getReason1ID().equalsIgnoreCase("0"))) {
                         return true;
                     }
                 }
