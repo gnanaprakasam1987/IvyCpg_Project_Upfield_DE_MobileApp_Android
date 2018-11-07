@@ -1181,9 +1181,10 @@
     <string name="Partial_payment_not_allowed">Partial payment not allowed.</string>
     <string name="language">Language</string>
     <string name="printer_settings">Printer Settings</string>
-    <string name="ns">NS</string>
-    <string name="ul">UL</string>
-    <string name="salable">Salable</string>
+
+
+
+    <string name="bill">Bill</string>
     <string name="line_value">Line value</string>
     <string name="tax_Value">Tax Value</string>
     <string name="cash_disc">Cash Disc</string>
