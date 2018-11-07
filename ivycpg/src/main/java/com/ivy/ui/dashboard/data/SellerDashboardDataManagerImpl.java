@@ -1051,4 +1051,116 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
             }
         });
     }
+
+    @Override
+    public Single<Integer> getVisitedCallsForTheDayExcludingDeviatedVisits() {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int visited_calls = 0;
+                try {
+                    initDb();
+
+                    Cursor c = mDbUtil.selectSQL("select count(distinct RM.retailerid) from retailermaster RM inner join " +
+                            "RetailerBeatMapping RBM on RM.RetailerId = RBM.Retailerid where RBM.isdeviated='N' and RBM.isVisited = 'Y'");
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            if (c.moveToNext()) {
+                                visited_calls = c.getInt(0);
+                            }
+                        }
+                        c.close();
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+
+                shutDownDb();
+                return visited_calls;
+            }
+        });
+    }
+
+    @Override
+    public Single<Integer> getProductiveCallsForTheDayExcludingDeviatedVisits() {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                int productive_calls = 0;
+                try {
+                    initDb();
+
+                    Cursor c = null;
+                    if (configurationMasterHelper.IS_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+
+                        if (appDataProvider.getBeatMasterBo() == null
+                                || appDataProvider.getBeatMasterBo().getBeatId() == 0) {
+                            c = mDbUtil.selectSQL("select distinct(i.Retailerid) from InvoiceMaster i" +
+                                    " inner join retailermaster r on i.retailerid=r.retailerid inner join " +
+                                    "RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid where RBM.isdeviated='N' and RBM.isVisited = 'Y'");
+                        } else {
+                            c = mDbUtil.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
+                                    + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
+                                    + "inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid"
+                                    + " where RBM.isdeviated='N' or RMI.isToday=1 and i.IsPreviousInvoice = 0 and RBM.isVisited = 'Y'");
+                        }
+                    } else {
+                        c = mDbUtil.selectSQL("select  distinct(r.Retailerid) from OrderHeader o inner join retailermaster r " +
+                                "on o.retailerid=r.retailerid inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid " +
+                                "where o.upload!='X' and RBM.isdeviated='N' and RBM.isVisited = 'Y'");
+                    }
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext())
+                                productive_calls = c.getCount();
+                        }
+                        c.close();
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+
+                shutDownDb();
+                return productive_calls;
+            }
+        });
+    }
+
+    @Override
+    public Single<Double> fetchFocusBrandInvoiceAmt() {
+        return Single.fromCallable(new Callable<Double>() {
+            @Override
+            public Double call() throws Exception {
+
+                Double totalValue = 0.0;
+                try {
+
+                    initDb();
+
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("select count(distinct OrderID),sum(FocusPackValues) from OrderHeader");
+                    sb.append(" where invoicestatus=1");
+                    Cursor c = mDbUtil
+                            .selectSQL(sb.toString());
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                totalValue = c.getDouble(1);
+                            }
+                        }
+                        c.close();
+                    }
+
+
+                } catch (Exception ignored) {
+
+                }
+                shutDownDb();
+
+                return totalValue;
+            }
+        });
+    }
 }

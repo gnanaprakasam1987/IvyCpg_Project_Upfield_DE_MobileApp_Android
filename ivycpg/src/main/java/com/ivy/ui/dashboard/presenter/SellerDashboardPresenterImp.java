@@ -35,18 +35,24 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function4;
-import io.reactivex.functions.Function5;
+import io.reactivex.functions.Function8;
+import io.reactivex.functions.Function9;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_COL;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_COV;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_COVD;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_DROP_SIZE_ORD;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_EFF_SALE;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_EFF_VISIT;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_INIT_VS_WEEKLY_OBJ;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_MSL;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_MSP;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_PDC;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_SALES_VS_WEEKLY_OBJ;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_TLS;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_VAL;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_VIP;
@@ -520,61 +526,126 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     @Override
     public void computeDayAchievements() {
         if (dashBoardList.size() > 0)
-            getCompositeDisposable().add(Single.zip(sellerDashboardDataManager.fetchOutletDailyReport(),
-                    sellerDashboardDataManager.fetchTotalCallsForTheDayExcludingDeviatedVisits(),
-                    sellerDashboardDataManager.fetchNoOfInvoiceAndValue(),
-                    sellerDashboardDataManager.fetchNoOfOrderAndValue(),
-                    sellerDashboardDataManager.getProductiveCallsForDay(),
-                    new Function5<DailyReportBO, Integer, DailyReportBO, DailyReportBO,Integer, DayAchievementData>() {
+
+            getCompositeDisposable().add(Observable.zip(sellerDashboardDataManager.fetchOutletDailyReport().toObservable(),
+                    sellerDashboardDataManager.fetchTotalCallsForTheDayExcludingDeviatedVisits().toObservable(),
+                    sellerDashboardDataManager.fetchNoOfInvoiceAndValue().toObservable(),
+                    sellerDashboardDataManager.fetchNoOfOrderAndValue().toObservable(),
+                    sellerDashboardDataManager.getProductiveCallsForDay().toObservable(),
+                    sellerDashboardDataManager.getCollectedValue(),
+                    sellerDashboardDataManager.getVisitedCallsForTheDayExcludingDeviatedVisits().toObservable(),
+                    sellerDashboardDataManager.getProductiveCallsForTheDayExcludingDeviatedVisits().toObservable(),
+                    sellerDashboardDataManager.fetchFocusBrandInvoiceAmt().toObservable(),
+                    new Function9<DailyReportBO, Integer, DailyReportBO, DailyReportBO,Integer, ArrayList<Double>, Integer, Integer,Double, DayAchievementData>() {
                         @Override
-                        public DayAchievementData apply(DailyReportBO dailyReportBOForOutlet, Integer totalCallsForDay, DailyReportBO dailyReportBoWithInvoice, DailyReportBO dailyReportBoWithOrderValue,Integer noOfProductiveCalls) throws Exception {
+                        public DayAchievementData apply(DailyReportBO dailyReportBOForOutlet, Integer totalCallsForDay, DailyReportBO dailyReportBoWithInvoice, DailyReportBO dailyReportBoWithOrderValue,Integer noOfProductiveCalls,ArrayList<Double> collectionValue,Integer visitedCallsForDay, Integer productiveCallsWithoutDeviation, Double focusBrandValue) throws Exception {
                             DayAchievementData dayAchievementData = new DayAchievementData();
                             dayAchievementData.setInvoiceReport(dailyReportBoWithInvoice);
                             dayAchievementData.setOrderValueReport(dailyReportBoWithOrderValue);
                             dayAchievementData.setOutletReport(dailyReportBOForOutlet);
                             dayAchievementData.setTotalCallsForDay(totalCallsForDay);
                             dayAchievementData.setProductiveCalls(noOfProductiveCalls);
+                            dayAchievementData.setCollectionData(collectionValue);
+                            dayAchievementData.setVisitedCalls(visitedCallsForDay);
+                            dayAchievementData.setProductiveCallsExcludingDeviation(productiveCallsWithoutDeviation);
+                            dayAchievementData.setFocusBrandValue(focusBrandValue);
                             return dayAchievementData;
                         }
                     }).subscribeOn(getSchedulerProvider().io())
                     .observeOn(getSchedulerProvider().ui())
                     .subscribe(new Consumer<DayAchievementData>() {
                         @Override
-                        public void accept(DayAchievementData o) {
+                        public void accept(DayAchievementData dayAchievementData) {
 
                             for (DashBoardBO dashBoardBO : dashBoardList) {
                                 if (dashBoardBO.getCode().equalsIgnoreCase(CODE_VAL))
-                                    computeDailyAchievementForValue(dashBoardBO, o.outletReport);
+                                    computeDailyAchievementForValue(dashBoardBO, dayAchievementData.outletReport);
                                 else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_VIP))
-                                    computeDailyAchievementsForVip(dashBoardBO, o.outletReport);
+                                    computeDailyAchievementsForVip(dashBoardBO, dayAchievementData.outletReport);
                                 else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_TLS))
-                                    computeDailyAchievementsForTLS(dashBoardBO, o.outletReport);
+                                    computeDailyAchievementsForTLS(dashBoardBO, dayAchievementData.outletReport);
                                 else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_PDC))
-                                    computeDailyAchievementsForPDC(dashBoardBO,o.productiveCalls);
+                                    computeDailyAchievementsForPDC(dashBoardBO,dayAchievementData.productiveCalls);
                                 else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_MSP))
-                                    computeDailyAchievementsForMSP(dashBoardBO, o.outletReport);
+                                    computeDailyAchievementsForMSP(dashBoardBO, dayAchievementData.outletReport);
                                 else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_COV))
                                     computeDailyAchievementForCOV(dashBoardBO);
                                 else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_MSL)){
 
                                 }else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_COVD))
                                     computeDailyAchievementsForCOVD(dashBoardBO);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_COL))
+                                    computeDailyAchievementsForCol(dashBoardBO,dayAchievementData.collectionData);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_VISIT))
+                                    computeDailyAchievementsForEffVisit(dashBoardBO,dayAchievementData.totalCallsForDay, dayAchievementData.visitedCalls);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_VISIT))
+                                    computeDailyAchievementsForEffVisit(dashBoardBO,dayAchievementData.totalCallsForDay, dayAchievementData.visitedCalls);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_EFF_SALE))
+                                    computeDailyAchievementsForEffSale(dashBoardBO,dayAchievementData.totalCallsForDay, dayAchievementData.productiveCallsExcludingDeviation);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_DROP_SIZE_ORD))
+                                    computeDailyAchievementsForDropSizeOrd(dashBoardBO,dayAchievementData.orderValueReport);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_SALES_VS_WEEKLY_OBJ))
+                                    computeDailyAchievementsForWeeklySalesObj(dashBoardBO,dayAchievementData.invoiceReport);
+                                else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_INIT_VS_WEEKLY_OBJ))
+                                    computeDailyAchievementsForInitVsWeeklyObj(dashBoardBO,dayAchievementData.focusBrandValue);
                             }
                         }
                     }));
     }
 
 
+
     private class DayAchievementData {
-        private DailyReportBO outletReport;
+        private DailyReportBO outletReport; //outlet
 
-        private DailyReportBO invoiceReport;
+        private DailyReportBO invoiceReport; //dailrp
 
-        private DailyReportBO orderValueReport;
+        // daily_rep
+        private DailyReportBO orderValueReport; //dailyrp_order
 
-        private int totalCallsForDay;
+        private int totalCallsForDay; //totalcalls
 
         private int productiveCalls;
+
+        private int visitedCalls;
+
+        private double focusBrandValue;
+
+        private ArrayList<Double> collectionData;
+
+        private int productiveCallsExcludingDeviation;
+
+        public double getFocusBrandValue() {
+            return focusBrandValue;
+        }
+
+        public void setFocusBrandValue(double focusBrandValue) {
+            this.focusBrandValue = focusBrandValue;
+        }
+
+        public int getProductiveCallsExcludingDeviation() {
+            return productiveCallsExcludingDeviation;
+        }
+
+        public void setProductiveCallsExcludingDeviation(int productiveCallsExcludingDeviation) {
+            this.productiveCallsExcludingDeviation = productiveCallsExcludingDeviation;
+        }
+
+        public int getVisitedCalls() {
+            return visitedCalls;
+        }
+
+        public void setVisitedCalls(int visitedCalls) {
+            this.visitedCalls = visitedCalls;
+        }
+
+        public ArrayList<Double> getCollectionData() {
+            return collectionData;
+        }
+
+        public void setCollectionData(ArrayList<Double> collectionData) {
+            this.collectionData = collectionData;
+        }
 
         public DailyReportBO getOutletReport() {
             return outletReport;
@@ -854,6 +925,203 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
         return count;
     }
+
+    private void computeDailyAchievementsForCol(DashBoardBO dashBoardBO, ArrayList<Double> collectionData) {
+        double kpiAcheived = 0, kpiTarget = 0;
+        try {
+            double osAmt = collectionData.get(0);
+            double paidAmt = collectionData.get(1);
+
+            dashBoardBO.setKpiAcheived(paidAmt + "");
+            dashBoardBO.setKpiTarget(osAmt + "");
+            kpiAcheived = paidAmt;
+            kpiTarget = osAmt;
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            float value = SDUtil.convertToFloat("" + (kpiAcheived * 100) / kpiTarget);
+            dashBoardBO.setCalculatedPercentage(value);
+        }
+
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+
+    }
+
+
+    private void computeDailyAchievementsForEffVisit(DashBoardBO dashBoardBO,int totalCalls, int visitedCalls) {
+        if (totalCalls == 0) {
+            dashBoardBO.setKpiAcheived("0");
+        } else {
+            dashBoardBO.setKpiAcheived((((float) visitedCalls / (float) totalCalls) * 100) + "");
+        }
+
+        int kpiAcheived = 0;
+        int kpiTarget;
+
+        try {
+            kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+            kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
+
+    private void computeDailyAchievementsForEffSale(DashBoardBO dashBoardBO, int totalCallsForDay, int productiveCallsExcludingDeviation) {
+        if (totalCallsForDay == 0) {
+            dashBoardBO.setKpiAcheived("0");
+        } else {
+            dashBoardBO.setKpiAcheived((((float) productiveCallsExcludingDeviation / (float) totalCallsForDay) * 100) + "");
+        }
+
+        int kpiAcheived = 0;
+        int kpiTarget;
+
+        try {
+            kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+            kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
+    private void computeDailyAchievementsForDropSizeOrd(DashBoardBO dashBoardBO, DailyReportBO orderValueReport) {
+        if (SDUtil.convertToDouble(orderValueReport.getTotLines()) == 0) {
+            dashBoardBO.setKpiAcheived("0");
+        } else {
+            dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(orderValueReport.getTotValues()) / SDUtil.convertToDouble(orderValueReport.getTotLines())) + "");
+        }
+        int kpiAcheived = 0;
+        int kpiTarget;
+
+        try {
+            kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+            kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
+    private void computeDailyAchievementsForWeeklySalesObj(DashBoardBO dashBoardBO, DailyReportBO invoiceReport) {
+        dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(invoiceReport.getTotValues())) + "");
+        int kpiAcheived = 0;
+        int kpiTarget;
+
+        try {
+            kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+            kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
+    private void computeDailyAchievementsForInitVsWeeklyObj(DashBoardBO dashBoardBO, double focusBrandValue) {
+        dashBoardBO.setKpiAcheived((SDUtil.convertToDouble(focusBrandValue+"")) + "");
+
+        int kpiAcheived = 0;
+        int kpiTarget;
+
+        try {
+            kpiAcheived = (int) SDUtil.convertToDouble(dashBoardBO.getKpiAcheived());
+            kpiTarget = (int) SDUtil.convertToDouble(dashBoardBO.getKpiTarget());
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
 
 
 }

@@ -45,4 +45,10 @@ public interface SellerDashboardDataManager {
 
     Single<Integer> getProductiveCallsForDay();
 
+    Single<Integer> getVisitedCallsForTheDayExcludingDeviatedVisits();
+
+    Single<Integer> getProductiveCallsForTheDayExcludingDeviatedVisits();
+
+    Single<Double> fetchFocusBrandInvoiceAmt();
+
 }

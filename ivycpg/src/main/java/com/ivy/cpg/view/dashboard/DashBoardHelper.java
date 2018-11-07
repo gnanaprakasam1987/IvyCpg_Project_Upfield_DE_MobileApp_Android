@@ -3752,6 +3752,10 @@ public class DashBoardHelper {
         return dailyRp;
     }
 
+    @Deprecated
+    /**
+     * @See {@link SellerDashboardDataManagerImpl#fetchFocusBrandInvoiceAmt()}
+     */
     public DailyReportBO getFocusBrandInvoiceAmt() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
@@ -3879,6 +3883,11 @@ public class DashBoardHelper {
         return total_calls;
     }
 
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getVisitedCallsForTheDayExcludingDeviatedVisits()}
+     * @return
+     */
     public int getVisitedCallsForTheDayExcludingDeviatedVisits() {
         int visited_calls = 0;
         try {
