@@ -2861,7 +2861,7 @@ public class BusinessModel extends Application {
         }
     }
 
-    public String getDeliveryDate(String retailerId) {
+    public String getDeliveryDate(String orderID, String retailerID) {
         DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
@@ -2870,7 +2870,7 @@ public class BusinessModel extends Application {
         String sql = null;
 
         sql = "select deliveryDate from " + DataMembers.tbl_orderHeader
-                + " where upload !='X' and RetailerID=" + QT(retailerId);
+                + " where upload !='X' and RetailerID=" + QT(retailerID) + " and OrderID = " + QT(orderID);
 
         Cursor orderHeaderCursor = db.selectSQL(sql);
         if (orderHeaderCursor != null) {

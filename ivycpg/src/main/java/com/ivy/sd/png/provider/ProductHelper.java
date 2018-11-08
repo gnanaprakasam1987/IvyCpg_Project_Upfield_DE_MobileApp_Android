@@ -1050,6 +1050,7 @@ public class ProductHelper {
                     product.setBarCode(c.getString(c.getColumnIndex("barcode")));
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));
                     product.setSrp(c.getFloat(c.getColumnIndex("srp")));
+                    product.setTempSrp(c.getFloat(c.getColumnIndex("srp")));
                     product.setPrevPrice_pc(c.getFloat(c.getColumnIndex("srp")) + "");
                     product.setCsrp(c.getFloat(c.getColumnIndex("csrp")));
                     product.setPrevPrice_ca(c.getFloat(c.getColumnIndex("csrp")) + "");

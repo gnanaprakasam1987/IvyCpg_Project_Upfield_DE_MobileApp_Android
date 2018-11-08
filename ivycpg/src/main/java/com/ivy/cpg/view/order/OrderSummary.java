@@ -511,7 +511,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         try {
             if (bModel.isEdit()) {
 
-                String delDate = DateUtil.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(bModel.getRetailerMasterBO()
+                String delDate = DateUtil.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(OrderHelper.getInstance(this).selectedOrderId,bModel.getRetailerMasterBO()
                                 .getRetailerID()),
                         ConfigurationMasterHelper.outDateFormat);
                 button_deliveryDate.setText(delDate);
