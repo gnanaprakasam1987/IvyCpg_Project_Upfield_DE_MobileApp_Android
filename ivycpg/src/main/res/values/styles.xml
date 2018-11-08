@@ -1017,13 +1017,11 @@ negative button and neutral button -->
         <item name="android:background">@drawable/edittext_selector_bg</item>
         <item name="android:gravity">center</item>
         <item name="android:keepScreenOn">true</item>
-        <item name="android:layout_marginRight">@dimen/list_margin</item>
         <item name="android:maxLength">4</item>
         <item name="android:selectAllOnFocus">false</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
         <item name="android:textSize">@dimen/text_size_primary</item>
-        <item name="android:paddingBottom">5dp</item>
         <item name="android:textColorHighlight">@color/colorAccent</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
