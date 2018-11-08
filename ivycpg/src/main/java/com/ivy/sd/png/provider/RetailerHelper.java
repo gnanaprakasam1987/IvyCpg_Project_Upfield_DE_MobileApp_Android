@@ -385,8 +385,9 @@ public class RetailerHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            String sb = "select distinct RMV.Retailerid,RM.RetailerName,RV.PlannedVisitCount,RM.beatid from RetailerMissedVisit RMV" +
+            String sb = "select distinct RMV.Retailerid,RM.RetailerName,RV.PlannedVisitCount,RBM.beatid from RetailerMissedVisit RMV" +
                     " inner join RetailerMaster RM on RM.RetailerId=RMV.RetailerId " +
+                    " inner join RetailerBeatMapping RBM on RBM.RetailerID = RM.RetailerID" +
                     " LEFT JOIN RetailerVisit RV ON RV.RetailerID = RMV.RetailerID" +
                     " Group by RMV.MissedDate";
             ;
