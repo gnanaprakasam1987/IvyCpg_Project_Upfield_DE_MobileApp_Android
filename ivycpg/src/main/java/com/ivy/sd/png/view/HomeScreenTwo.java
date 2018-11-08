@@ -2821,6 +2821,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
                                 SDUtil.now(SDUtil.TIME), menu.getConfigCode());
 
+                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_ASSET);
+
                         Intent in = new Intent(HomeScreenTwo.this,
                                 AssetTrackingActivity.class);
                         in.putExtra("CurrentActivityCode", menu.getConfigCode());
