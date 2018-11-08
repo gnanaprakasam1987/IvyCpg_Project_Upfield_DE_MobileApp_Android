@@ -3470,6 +3470,13 @@ public class DashBoardHelper {
     }
 
 
+    /**
+     * @param flag
+     * @return
+     * @See {@link SellerDashboardDataManagerImpl#fetchPromotionCount()
+     * @link SellerDashboardDataManagerImpl#fetchPromotionExecutedCount()}
+     * @deprecated
+     */
     public int getPromotionDetail(String flag) {
         DBUtil db = null;
         int size = bmodel.getRetailerMaster().size();
@@ -3543,6 +3550,12 @@ public class DashBoardHelper {
     }
 
 
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#fetchMslCount()}
+     * @param flag
+     * @return
+     */
     public int getMSLDetail(String flag) {
         DBUtil db;
         int size = bmodel.getRetailerMaster().size();
@@ -3785,9 +3798,9 @@ public class DashBoardHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link SellerDashboardDataManagerImpl#fetchSalesReturnValue()}
      * @return
+     * @See {@link SellerDashboardDataManagerImpl#fetchSalesReturnValue()}
+     * @deprecated
      */
     public double getSalesReturnValue() {
         double sale_return_value = 0;
@@ -3816,9 +3829,9 @@ public class DashBoardHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link SellerDashboardDataManagerImpl#fetchFulfilmentValue()}
      * @return
+     * @See {@link SellerDashboardDataManagerImpl#fetchFulfilmentValue()}
+     * @deprecated
      */
     public DailyReportBO getFullFillmentValue() {
         DailyReportBO dailyRp = new DailyReportBO();
@@ -3894,9 +3907,9 @@ public class DashBoardHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link SellerDashboardDataManagerImpl#getVisitedCallsForTheDayExcludingDeviatedVisits()}
      * @return
+     * @See {@link SellerDashboardDataManagerImpl#getVisitedCallsForTheDayExcludingDeviatedVisits()}
+     * @deprecated
      */
     public int getVisitedCallsForTheDayExcludingDeviatedVisits() {
         int visited_calls = 0;

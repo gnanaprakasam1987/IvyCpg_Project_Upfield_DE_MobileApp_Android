@@ -46,6 +46,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import me.relex.circleindicator.CircleIndicator;
 
+import static com.ivy.ui.dashboard.SellerDashboardConstants.DAY;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.ROUTE;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
@@ -165,8 +166,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         }
 
 
-
-
     }
 
     private void handleRetailerDashboard() {
@@ -203,7 +202,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
                 userSpinner.setOnItemSelectedListener(userSpinnerListener);
             }
-        }else if(presenter.isUserBasedDash()) {
+        } else if (presenter.isUserBasedDash()) {
             dashSpinnerLayout.setVisibility(View.VISIBLE);
             multiSelectStub.setVisibility(View.GONE);
 
@@ -429,12 +428,17 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             monthSpinnerStub.setVisibility(View.GONE);
 
-            if (selectedInterval.equals(P3M))
+            if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser == presenter.getCurrentUser().getUserid()) {
+                presenter.computeDayAchievements();
+                dashboardListAdapter.notifyDataSetChanged();
+            } else if (selectedInterval.equals(P3M))
                 presenter.fetchKpiMonths(isFromRetailer);
-            else if(selectedInterval.equals(WEEK))
+            else if (selectedInterval.equals(WEEK))
                 presenter.fetchWeeks();
-            else
+            else {
                 weekSpinnerStub.setVisibility(View.GONE);
+                dashboardListAdapter.notifyDataSetChanged();
+            }
         }
 
         @Override
@@ -457,15 +461,15 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     @Override
     public void setWeekSpinner(ArrayList<String> weekList, int currentWeek) {
-            weekSpinnerStub.setVisibility(View.VISIBLE);
-            Spinner weekSpinner = (Spinner) weekSpinnerStub.inflate();
-            ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
-            monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-            weekSpinner.setAdapter(monthdapter);
-            weekSpinner.setOnItemSelectedListener(weekSelectedListener);
-            weekSpinner.setSelection(currentWeek);
+        weekSpinnerStub.setVisibility(View.VISIBLE);
+        Spinner weekSpinner = (Spinner) weekSpinnerStub.inflate();
+        ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
+        monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+        weekSpinner.setAdapter(monthdapter);
+        weekSpinner.setOnItemSelectedListener(weekSelectedListener);
+        weekSpinner.setSelection(currentWeek);
 
-            //TODO handle P3M Chart
+        //TODO handle P3M Chart
 
     }
 

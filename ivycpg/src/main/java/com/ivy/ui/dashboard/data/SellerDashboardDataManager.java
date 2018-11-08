@@ -6,6 +6,7 @@ import com.ivy.ui.dashboard.SellerDashboardConstants;
 
 import java.util.ArrayList;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -56,5 +57,9 @@ public interface SellerDashboardDataManager {
     Single<DailyReportBO> fetchFulfilmentValue();
 
     Single<Integer> fetchPromotionCount();
+
+    Single<Integer> fetchPromotionExecutedCount();
+
+    Single<String> fetchMslCount();
 
 }

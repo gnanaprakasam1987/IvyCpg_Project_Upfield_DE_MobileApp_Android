@@ -37,6 +37,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.disposables.CompositeDisposable;
@@ -58,6 +59,7 @@ import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_INIT_VS_WEEKLY_
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_MSL;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_MSP;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_PDC;
+import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_PRM;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_RETURN_RATE_INV;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_RETURN_RATE_ORD;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_SALES_VS_WEEKLY_OBJ;
@@ -544,7 +546,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             }
 
         final DayAchievementData dayAchievementData = new DayAchievementData();
-        sellerDashboardDataManager.fetchOutletDailyReport().flatMap(new Function<DailyReportBO, SingleSource<Integer>>() {
+        getCompositeDisposable().add(sellerDashboardDataManager.fetchOutletDailyReport().flatMap(new Function<DailyReportBO, SingleSource<Integer>>() {
             @Override
             public SingleSource<Integer> apply(DailyReportBO dailyReportBOForOutlet) throws Exception {
                 dayAchievementData.setOutletReport(dailyReportBOForOutlet);
@@ -644,48 +646,66 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 else
                     return null;
             }
-        }).flatMap(new Function<DailyReportBO, SingleSource<?>>() {
+        }).flatMap(new Function<DailyReportBO, SingleSource<Integer>>() {
             @Override
-            public SingleSource<?> apply(DailyReportBO fulfilmentReport) throws Exception {
-                if(fulfilmentReport!=null)
+            public SingleSource<Integer> apply(DailyReportBO fulfilmentReport) throws Exception {
+                if (fulfilmentReport != null)
                     dayAchievementData.setFulFilmentReport(fulfilmentReport);
 
-                return null;
+                if (dashCodes.contains(CODE_PRM))
+                    return sellerDashboardDataManager.fetchPromotionCount();
+                else
+                    return null;
             }
-        });
+        }).flatMap(new Function<Integer, SingleSource<Integer>>() {
+            @Override
+            public SingleSource<Integer> apply(Integer promotionCount) throws Exception {
+                if (promotionCount != null)
+                    dayAchievementData.setPromotionCount(promotionCount);
 
-        getCompositeDisposable().add(Observable.zip(Single.zip(sellerDashboardDataManager.fetchOutletDailyReport(),
-                sellerDashboardDataManager.fetchTotalCallsForTheDayExcludingDeviatedVisits(),
-                sellerDashboardDataManager.fetchNoOfInvoiceAndValue(),
-                sellerDashboardDataManager.fetchNoOfOrderAndValue(),
-                sellerDashboardDataManager.getProductiveCallsForDay(),
-                sellerDashboardDataManager.getVisitedCallsForTheDayExcludingDeviatedVisits(),
-                sellerDashboardDataManager.getProductiveCallsForTheDayExcludingDeviatedVisits(),
-                sellerDashboardDataManager.fetchFocusBrandInvoiceAmt(),
-                sellerDashboardDataManager.fetchSalesReturnValue(),
-                new Function9<DailyReportBO, Integer, DailyReportBO, DailyReportBO, Integer, Integer, Integer, Double, Double, DayAchievementData>() {
+                if (dashCodes.contains(CODE_PRM))
+                    return sellerDashboardDataManager.fetchPromotionExecutedCount();
+                else
+                    return null;
+            }
+        }).flatMap(new Function<Integer, SingleSource<String>>() {
+            @Override
+            public SingleSource<String> apply(Integer promotionExecutedCount) throws Exception {
+                if (promotionExecutedCount != null)
+                    dayAchievementData.setPromotionExecutionCount(promotionExecutedCount);
+
+
+                if (dashCodes.contains(CODE_MSL))
+                    return sellerDashboardDataManager.fetchMslCount();
+                else
+                    return null;
+            }
+        }).flatMapObservable(new Function<String, ObservableSource<ArrayList<Double>>>() {
+            @Override
+            public ObservableSource<ArrayList<Double>> apply(String mslCount) throws Exception {
+                if (mslCount != null) {
+                    dayAchievementData.setMslCount(SDUtil.convertToInt(mslCount.split(",")[0]));
+                    dayAchievementData.setMslExecutedCount(SDUtil.convertToInt(mslCount.split(",")[1]));
+                }
+
+                if (dashCodes.contains(CODE_COL))
+                    return sellerDashboardDataManager.getCollectedValue();
+                else
+                    return null;
+            }
+        }).flatMapSingle(new Function<ArrayList<Double>, SingleSource<DayAchievementData>>() {
+            @Override
+            public SingleSource<DayAchievementData> apply(ArrayList<Double> collectionData) throws Exception {
+
+                if(collectionData!=null)
+                    dayAchievementData.setCollectionData(collectionData);
+
+                return Single.fromCallable(new Callable<DayAchievementData>() {
                     @Override
-                    public DayAchievementData apply(DailyReportBO dailyReportBOForOutlet, Integer totalCallsForDay, DailyReportBO dailyReportBoWithInvoice, DailyReportBO dailyReportBoWithOrderValue,
-                                                    Integer noOfProductiveCalls, Integer visitedCallsForDay, Integer productiveCallsWithoutDeviation,
-                                                    Double focusBrandValue, Double salesReturnValue) throws Exception {
-                        DayAchievementData dayAchievementData = new DayAchievementData();
-                        dayAchievementData.setInvoiceReport(dailyReportBoWithInvoice);
-                        dayAchievementData.setOrderValueReport(dailyReportBoWithOrderValue);
-                        dayAchievementData.setOutletReport(dailyReportBOForOutlet);
-                        dayAchievementData.setTotalCallsForDay(totalCallsForDay);
-                        dayAchievementData.setProductiveCalls(noOfProductiveCalls);
-                        dayAchievementData.setVisitedCalls(visitedCallsForDay);
-                        dayAchievementData.setProductiveCallsExcludingDeviation(productiveCallsWithoutDeviation);
-                        dayAchievementData.setFocusBrandValue(focusBrandValue);
-                        dayAchievementData.setSalesReturnValue(salesReturnValue);
+                    public DayAchievementData call() throws Exception {
                         return dayAchievementData;
                     }
-                }
-        ).toObservable(), sellerDashboardDataManager.getCollectedValue(), new BiFunction<DayAchievementData, ArrayList<Double>, DayAchievementData>() {
-            @Override
-            public DayAchievementData apply(DayAchievementData dayAchievementData, ArrayList<Double> collectionValue) throws Exception {
-                dayAchievementData.setCollectionData(collectionValue);
-                return dayAchievementData;
+                });
             }
         }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -706,9 +726,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                                 computeDailyAchievementsForMSP(dashBoardBO, dayAchievementData.outletReport);
                             else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_COV))
                                 computeDailyAchievementForCOV(dashBoardBO);
-                            else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_MSL)) {
-
-                            } else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_COVD))
+                            else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_PRM))
+                                computeDailyAchievementsForPRM(dashBoardBO,dayAchievementData.promotionCount,dayAchievementData.promotionExecutionCount);
+                            else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_MSL))
+                                computeDailyAchievementsForMSL(dashBoardBO,dayAchievementData.mslCount,dayAchievementData.mslExecutedCount);
+                             else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_COVD))
                                 computeDailyAchievementsForCOVD(dashBoardBO);
                             else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_COL))
                                 computeDailyAchievementsForCol(dashBoardBO, dayAchievementData.collectionData);
@@ -728,8 +750,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                                 computeDailyAchievementsForReturnRateInv(dashBoardBO, dayAchievementData.salesReturnValue, dayAchievementData.invoiceReport);
                             else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_RETURN_RATE_ORD))
                                 computeDailyAchievementsForReturnRateOrder(dashBoardBO, dayAchievementData.salesReturnValue, dayAchievementData.orderValueReport);
-                            else if(dashBoardBO.getCode().contains(CODE_FULLFILLMENT))
-                                computeDailyAchievementsForFulfilment(dashBoardBO,dayAchievementData.fulFilmentReport);
+                            else if (dashBoardBO.getCode().contains(CODE_FULLFILLMENT))
+                                computeDailyAchievementsForFulfilment(dashBoardBO, dayAchievementData.fulFilmentReport);
 
                         }
 
@@ -762,6 +784,46 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         private int productiveCallsExcludingDeviation;
 
         private double salesReturnValue;
+
+        private int promotionCount;
+
+        private int promotionExecutionCount;
+
+        private int mslCount;
+
+        private int mslExecutedCount;
+
+        public int getMslCount() {
+            return mslCount;
+        }
+
+        public void setMslCount(int mslCount) {
+            this.mslCount = mslCount;
+        }
+
+        public int getMslExecutedCount() {
+            return mslExecutedCount;
+        }
+
+        public void setMslExecutedCount(int mslExecutedCount) {
+            this.mslExecutedCount = mslExecutedCount;
+        }
+
+        public int getPromotionCount() {
+            return promotionCount;
+        }
+
+        public void setPromotionCount(int promotionCount) {
+            this.promotionCount = promotionCount;
+        }
+
+        public int getPromotionExecutionCount() {
+            return promotionExecutionCount;
+        }
+
+        public void setPromotionExecutionCount(int promotionExecutionCount) {
+            this.promotionExecutionCount = promotionExecutionCount;
+        }
 
         public DailyReportBO getFulFilmentReport() {
             return fulFilmentReport;
@@ -1410,6 +1472,65 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         } else {
             dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
         }
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
+    private void computeDailyAchievementsForMSL(DashBoardBO dashBoardBO, int mslCount, int mslAchievedCount) {
+        dashBoardBO.setKpiAcheived(mslAchievedCount + "");
+        int kpiAcheived = mslAchievedCount;
+        int kpiTarget;
+
+        try {
+            kpiTarget = (mslCount);
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+
+        if (dashBoardBO.getCalculatedPercentage() >= 100) {
+            dashBoardBO.setConvTargetPercentage(0);
+            dashBoardBO.setConvAcheivedPercentage(100);
+        } else {
+            dashBoardBO.setConvTargetPercentage(100 - dashBoardBO
+                    .getCalculatedPercentage());
+            dashBoardBO.setConvAcheivedPercentage(dashBoardBO
+                    .getCalculatedPercentage());
+        }
+    }
+
+    private void computeDailyAchievementsForPRM(DashBoardBO dashBoardBO, int promotionCount, int promotionAchievedCount) {
+
+        dashBoardBO.setKpiAcheived(promotionAchievedCount + "");
+        int kpiAcheived = promotionAchievedCount;
+        int kpiTarget;
+
+        try {
+            kpiTarget = (promotionCount);
+        } catch (Exception e) {
+            kpiTarget = 0;
+            Commons.printException(e + "");
+        }
+
+        if (kpiTarget == 0) {
+            dashBoardBO.setCalculatedPercentage(0);
+        } else {
+            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+        }
+
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);

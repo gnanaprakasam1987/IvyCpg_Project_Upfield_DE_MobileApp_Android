@@ -73,6 +73,7 @@ public interface SellerDashboardContract {
 
         void fetchKPIDashboardData(String userid, String interval);
 
+
         HashMap<String, String> getLabelsMap();
 
         ArrayList<DashBoardBO> getDashboardListData();

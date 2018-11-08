@@ -16,6 +16,8 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 
+import org.reactivestreams.Publisher;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,11 +28,14 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
+import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 import static com.ivy.cpg.view.dashboard.DashBoardHelper.MONTH_NAME;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
@@ -1293,5 +1298,161 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
             }
         });
 
+    }
+
+    private int promotionExecutedCount=0;
+
+    @Override
+    public Single<Integer> fetchPromotionExecutedCount() {
+        promotionExecutedCount=0;
+
+        return Flowable.just(appDataProvider.getRetailerMasters()).flatMap(new Function<ArrayList<RetailerMasterBO>, Publisher<RetailerMasterBO>>() {
+            @Override
+            public Publisher<RetailerMasterBO> apply(ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
+
+                return Flowable.fromIterable(retailerMasterBOS);
+            }
+        }).map(new Function<RetailerMasterBO, RetailerMasterBO>() {
+            @Override
+            public RetailerMasterBO apply(RetailerMasterBO retailerMasterBO) throws Exception {
+                return retailerMasterBO;
+            }
+        }).takeWhile(new Predicate<RetailerMasterBO>() {
+            @Override
+            public boolean test(RetailerMasterBO retailerMasterBO) throws Exception {
+                return retailerMasterBO.getIsToday()== 1;
+            }
+        }).flatMapSingle(new Function<RetailerMasterBO, SingleSource<Integer>>() {
+            @Override
+            public SingleSource<Integer> apply(RetailerMasterBO retailerMasterBO) throws Exception {
+                return fetchPromotionExecCount(retailerMasterBO.getRetailerID());
+            }
+        }).repeat().lastElement().toSingle();
+    }
+
+
+
+    private Single<Integer> fetchPromotionExecCount(final String retailerID){
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+
+
+                try{
+                    initDb();
+
+                    StringBuffer sb = new StringBuffer();
+                    sb.append("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + QT(retailerID));
+
+                    Cursor c = mDbUtil.selectSQL(sb.toString());
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            promotionExecutedCount += c.getInt(0);
+                        }
+                    }
+                    c.close();
+
+                }catch (Exception ignored){
+
+                }
+                shutDownDb();
+
+                return promotionExecutedCount;
+            }
+        });
+    }
+
+    @Override
+    public Single<String> fetchMslCount() {
+        final int[] mslCount = {0};
+        return channelDataManager.fetchChannelIds().flatMap(new Function<String, SingleSource<String>>() {
+            @Override
+            public SingleSource<String> apply(final String channelIds) throws Exception {
+
+               return Single.fromCallable(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+
+                        String chIDs = "";
+                        String mslProdIDs="";
+                        try{
+
+                            for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters()){
+                                if(retailerMasterBO.getIsToday() == 1){
+                                    chIDs = chIDs + "," + channelIds;
+                                }
+                            }
+                            if (chIDs.endsWith(","))
+                                chIDs = chIDs.substring(0, chIDs.length() - 1);
+
+                            StringBuffer sb = new StringBuffer();
+                            sb.append("SELECT PTGM.pid FROM ProductTaggingMaster PTM ");
+                            sb.append("inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid ");
+                            sb.append("inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid ");
+                            sb.append("AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') ");
+                            sb.append("where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")");
+
+                            Cursor c = mDbUtil.selectSQL(sb.toString());
+                            if (c.getCount() > 0) {
+                                while (c.moveToNext()) {
+                                    mslCount[0]++;
+                                    mslProdIDs=mslProdIDs+","+c.getInt(1);
+                                }
+                            }
+                            c.close();
+                        }catch (Exception ignored){
+
+                        }
+                        shutDownDb();
+                        return mslProdIDs;
+                    }
+                }).flatMap(new Function<String, SingleSource<String>>() {
+                   @Override
+                   public SingleSource<String> apply(final String mslProdIDs) throws Exception {
+                       return Single.fromCallable(new Callable<String>() {
+                           @Override
+                           public String call() throws Exception {
+
+                               String rids = "";
+                               int mslExecutedCount=0;
+
+                               for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters())
+                                   if (retailerMasterBO.getIsToday() == 1) {
+                                       rids = rids + "," + retailerMasterBO.getRetailerID();
+                                   }
+
+                               if (rids.startsWith(","))
+                                   rids = rids.substring(1, rids.length());
+                               if (rids.endsWith(","))
+                                   rids = rids.substring(0, rids.length() - 1);
+
+                               try{
+                                   initDb();
+
+                                   StringBuffer sb = new StringBuffer();
+                                   sb.append("select count(*) from OrderDetail where retailerid in (" + rids + ")");
+                                   if (mslProdIDs != null && !mslProdIDs.isEmpty())
+                                       sb.append("and ProductID in (" + mslProdIDs + ")");
+                                   Cursor c = mDbUtil.selectSQL(sb.toString());
+                                   if (c.getCount() > 0) {
+                                       while (c.moveToNext()) {
+                                           mslExecutedCount = c.getInt(0);
+                                       }
+                                   }
+                                   c.close();
+
+                               }catch (Exception ignored){
+
+                               }
+
+
+                               return mslCount[0]+","+mslExecutedCount;
+                           }
+                       });
+                   }
+               });
+
+            }
+        });
     }
 }
