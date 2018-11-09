@@ -9,5 +9,6 @@
     android:padding="3dp"
     android:singleLine="true"
     android:textColor="@color/WHITE"
+    android:fontFamily="@font/roboto_regular"
     android:textSize="@dimen/font_small"
     android:textAllCaps="true" />
