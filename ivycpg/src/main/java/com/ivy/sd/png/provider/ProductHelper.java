@@ -1908,7 +1908,7 @@ public class ProductHelper {
                 product.setRepOuterQty(0);
                 product.setSelectedSalesReturnPosition(0);
                 product.setTaxValue(0);
-
+                product.setSeparateBill(false);
                 if (product.getSalesReturnReasonList() != null && product.getSalesReturnReasonList().size() != 0) {
                     for (SalesReturnReasonBO bo : product
                             .getSalesReturnReasonList()) {
