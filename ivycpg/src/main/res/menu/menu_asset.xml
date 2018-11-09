@@ -73,7 +73,7 @@
         android:id="@+id/menu_reason"
         android:icon="@drawable/icon_review_plan"
         android:orderInCategory="101"
-        android:title="@string/Noorderreason"
+        android:title="@string/reason"
         android:visible="false"
         ivydist:showAsAction="ifRoom" />
 
