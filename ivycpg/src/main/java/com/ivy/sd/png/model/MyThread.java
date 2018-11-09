@@ -277,7 +277,7 @@ public class MyThread extends Thread {
                     }
 
                 }
-
+                orderHelper.setOrderId(null);
                 if ( orderHelper.saveOrder(ctx, bill2Products,false)) {
 
                     bmodel.setOrderHeaderBO(null);
