@@ -1,27 +1,11 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.collection;
 
 public class CollectionBO {
 
 	private double cashamt, chequeamt, discountamt, creditamt,
 			mobilePaymentamt;
-	private int rangeFrom, rangeTo, percent;
+	private int percent;
 	private String bankId,branchId;
-  
-	public int getRangeFrom() {
-		return rangeFrom;
-	}
-
-	public void setRangeFrom(int rangeFrom) {
-		this.rangeFrom = rangeFrom;
-	}
-
-	public int getRangeTo() {
-		return rangeTo;
-	}
-
-	public void setRangeTo(int rangeTo) {
-		this.rangeTo = rangeTo;
-	}
 
 	public int getPercent() {
 		return percent;
@@ -96,46 +80,6 @@ public class CollectionBO {
 	public void setBranchId(String branchId) {
 		this.branchId = branchId;
 	}
-	
-	private double rtgsamt ;
-
-	public void setRtgsamt(double convertToDouble) {
-		rtgsamt = convertToDouble;
-	}
-
-	public double getRtgsamt() {
-		return rtgsamt;
-	}
-
-	private double demandDraft ;
-
-	public double getDemandDraftAmt() {
-		return demandDraft;
-	}
-
-	public void setDemandDraftAmt(double demandDraft) {
-		this.demandDraft = demandDraft;
-	}
-
-	public double getCouponamount() {
-		return couponamount;
-	}
-
-	public void setCouponamount(double couponamount) {
-		this.couponamount = couponamount;
-	}
-
-	public double couponamount;
-
-	public String getReference_no() {
-		return reference_no;
-	}
-
-	public void setReference_no(String reference_no) {
-		this.reference_no = reference_no;
-	}
-
-	public String reference_no;
 
 	public String getNo_of_coupon() {
 		return no_of_coupon;

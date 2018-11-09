@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ivy.sd.png.view.BillPaymentActivityFragment">
+    tools:context="com.ivy.cpg.view.collection.BillPaymentActivityFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

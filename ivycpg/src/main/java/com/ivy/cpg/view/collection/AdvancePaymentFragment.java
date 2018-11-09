@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,14 +25,15 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.CustomKeyBoard;
 
 import java.util.ArrayList;
 
-public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePaymentsInterface{
+public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePaymentsInterface {
 
     private static ArrayList<PaymentBO> mPaymentList;
 
-    private  PaymentBO mPaymentBO;
+    private PaymentBO mPaymentBO;
     private BusinessModel bmodel;
     private UpdatePaymentByDateInterface mUpdatePaymentInterface;
     private ArrayList<CreditNoteListBO> mCreditNoteList;
@@ -40,10 +41,7 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
     private EditText mEnterCreditNoteAmtET;
 
     private View rootView;
-    private double mTotalCreditNoteValue=0;
-    private CustomKeyBoard dialogCustomKeyBoard;
-    private double tempCreditNoteValue=0;
-    private boolean isFragmentAlreadyCreated=false;
+    private CollectionHelper collectionHelper;
 
     @Nullable
     @Override
@@ -51,7 +49,6 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
         rootView = inflater.inflate(R.layout.fragment_creditnote, container, false);
         setHasOptionsMenu(true);
         if (getActivity().getActionBar() != null) {
-            // getActionBar().setIcon(R.drawable.icon_stock);
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
         if (mPaymentBO != null) {
@@ -65,27 +62,28 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
         super.onCreate(savedInstanceState);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-
+        collectionHelper = CollectionHelper.getInstance(getActivity());
         mUpdatePaymentInterface = (UpdatePaymentByDateInterface) getActivity();
 
-        mPaymentList=bmodel.collectionHelper.getCollectionPaymentList();
+        mPaymentList = collectionHelper.getCollectionPaymentList();
 
-        final int creditNotePos=getArguments().getInt("position",0);
-        mPaymentBO=mPaymentList.get(creditNotePos);
+        final int creditNotePos = getArguments().getInt("position", 0);
+        mPaymentBO = mPaymentList.get(creditNotePos);
+
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        isFragmentAlreadyCreated=false;
-        ListView creditNoteLV = (ListView) rootView.findViewById(R.id.lv_creditnote);
-        mTotalTV=(TextView)rootView.findViewById(R.id.tv_total_amount);
+        ListView creditNoteLV =  rootView.findViewById(R.id.lv_creditnote);
+        mTotalTV =  rootView.findViewById(R.id.tv_total_amount);
 
-        LinearLayout llEnterCreditNote=(LinearLayout)rootView.findViewById(R.id.ll_enter_creditnote);
-        CardView mCardview = (CardView) rootView.findViewById(R.id.ll_cardview);
-        LinearLayout hideKeyBtn = (LinearLayout) rootView.findViewById(R.id.bottom_layout);
+        LinearLayout llEnterCreditNote =  rootView.findViewById(R.id.ll_enter_creditnote);
+        CardView mCardview =  rootView.findViewById(R.id.ll_cardview);
+        LinearLayout hideKeyBtn =  rootView.findViewById(R.id.bottom_layout);
         hideKeyBtn.setVisibility(View.GONE);
-        mEnterCreditNoteAmtET=(EditText)rootView.findViewById(R.id.edit_creditnoteamt);
+        mEnterCreditNoteAmtET =  rootView.findViewById(R.id.edit_creditnoteamt);
 
         mEnterCreditNoteAmtET.setVisibility(View.GONE);
         mCardview.setVisibility(View.GONE);
@@ -99,21 +97,21 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
         String modeID = bmodel.getStandardListIdAndType(
                 "CNAP",
                 StandardListMasterConstants.COLLECTION_PAY_TYPE);
-        mCreditNoteList = bmodel.collectionHelper.getAdvancePaymentList();
+        mCreditNoteList = collectionHelper.getAdvancePaymentList();
         if (mCreditNoteList != null) {
 
-            for (CreditNoteListBO bo : bmodel.collectionHelper
+            for (CreditNoteListBO bo : collectionHelper
                     .getCreditNoteList()) {
                 if (bo.getRetailerId().equals(
                         bmodel.getRetailerMasterBO().getRetailerID())
-                        && !bo.isUsed()&&(modeID.equals(bo.getTypeId())))
+                        && !bo.isUsed() && (modeID.equals(bo.getTypeId())))
                     mCreditNoteList.add(bo);
             }
             if (mCreditNoteList != null && mCreditNoteList.size() > 0) {
-                CreditNoteAdapter creditNoteAdapter=new CreditNoteAdapter();
+                CreditNoteAdapter creditNoteAdapter = new CreditNoteAdapter();
                 creditNoteLV.setAdapter(creditNoteAdapter);
             }
-        }else{
+        } else {
             mEnterCreditNoteAmtET.setVisibility(View.GONE);
         }
         mEnterCreditNoteAmtET.setEnabled(false);
@@ -148,12 +146,12 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 row = inflater.inflate(R.layout.row_credit_note, parent, false);
                 holder = new ViewHolder();
-                holder.refNoTxt = (TextView) row.findViewById(R.id.refNoTxt);
-                holder.crdNoteAmtTxt = (TextView) row
+                holder.refNoTxt =  row.findViewById(R.id.refNoTxt);
+                holder.crdNoteAmtTxt =  row
                         .findViewById(R.id.crdNoteAmtTxt);
-                holder.creditNoteCheckBox = (CheckBox) row
+                holder.creditNoteCheckBox =  row
                         .findViewById(R.id.creditNoteCheckBox);
-                holder.totCrdNoteAmtTxt=(TextView)row.findViewById(R.id.totcrdNoteAmtTxt);
+                holder.totCrdNoteAmtTxt =  row.findViewById(R.id.totcrdNoteAmtTxt);
                 holder.creditNoteCheckBox.setVisibility(View.GONE);
 
 
@@ -168,7 +166,7 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
                     .getAmount()) + "";
             holder.crdNoteAmtTxt.setText(strCreditAmt);
             holder.creditNoteCheckBox.setChecked(holder.creditNoteListBO.isChecked());
-            String totCrdeitAmt=bmodel.formatValue(holder.creditNoteListBO.getAmount()+holder.creditNoteListBO.getAppliedAmount());
+            String totCrdeitAmt = bmodel.formatValue(holder.creditNoteListBO.getAmount() + holder.creditNoteListBO.getAppliedAmount());
             holder.totCrdNoteAmtTxt.setText(totCrdeitAmt);
 
 
@@ -185,11 +183,11 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
         private CreditNoteListBO creditNoteListBO;
     }
 
-    private void updateCreditNotePayment(){
-        mTotalCreditNoteValue=0;
-        if(mCreditNoteList!=null&&mCreditNoteList.size()>0) {
+    private void updateCreditNotePayment() {
+        double mTotalCreditNoteValue = 0;
+        if (mCreditNoteList != null && mCreditNoteList.size() > 0) {
             for (CreditNoteListBO creditNoteListBO : mCreditNoteList) {
-                if (creditNoteListBO.isChecked()&&creditNoteListBO.getTypeId()!=0) {
+                if (creditNoteListBO.isChecked() && creditNoteListBO.getTypeId() != 0) {
                     mTotalCreditNoteValue = mTotalCreditNoteValue + creditNoteListBO.getAmount();
                 }
             }
@@ -197,46 +195,47 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
 
         mPaymentBO.setAmount(mTotalCreditNoteValue);
 
-        if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.ADVANCE_PAYMENT)) {
+        if (!collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.ADVANCE_PAYMENT)) {
             mPaymentBO.setAmount(mTotalCreditNoteValue);
         } else {
-            mTotalCreditNoteValue = bmodel.collectionHelper.getBalanceAmountWithOutCreditNote(mPaymentList,false);
+            mTotalCreditNoteValue = collectionHelper.getBalanceAmountWithOutCreditNote(mPaymentList, false);
             mPaymentBO.setAmount(mTotalCreditNoteValue);
         }
 
-        String strCreditValue = mTotalCreditNoteValue+"";
+        String strCreditValue = mTotalCreditNoteValue + "";
         mEnterCreditNoteAmtET.setText(strCreditValue);
     }
 
-    private void updateTotal(){
-        double totalCollectepayment=0;
-        if(mPaymentList!=null&&mPaymentList.size()>0){
-            for(PaymentBO paymentBO:mPaymentList){
-                totalCollectepayment=totalCollectepayment+paymentBO.getAmount();
+    private void updateTotal() {
+        double totalCollectepayment = 0;
+        if (mPaymentList != null && mPaymentList.size() > 0) {
+            for (PaymentBO paymentBO : mPaymentList) {
+                totalCollectepayment = totalCollectepayment + paymentBO.getAmount();
             }
         }
 
         mTotalTV.setText(bmodel.formatValue(totalCollectepayment));
     }
-    private void applyAdvancePayment(){
+
+    private void applyAdvancePayment() {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
         final ArrayList<InvoiceHeaderBO> invoiceList = new ArrayList<>(bmodel.getInvoiceHeaderBO());
-        double totalInvoiceAmout=0;
+        double totalInvoiceAmout = 0;
 
-        for(InvoiceHeaderBO invoiceHeaderBO:invoiceList){
-            if(invoiceHeaderBO.isChkBoxChecked()){
-                totalInvoiceAmout=totalInvoiceAmout+invoiceHeaderBO.getBalance();
+        for (InvoiceHeaderBO invoiceHeaderBO : invoiceList) {
+            if (invoiceHeaderBO.isChkBoxChecked()) {
+                totalInvoiceAmout = totalInvoiceAmout + invoiceHeaderBO.getBalance();
             }
         }
 
-        for(CreditNoteListBO creditNoteListBO:mCreditNoteList){
-            if(totalInvoiceAmout>0){
+        for (CreditNoteListBO creditNoteListBO : mCreditNoteList) {
+            if (totalInvoiceAmout > 0) {
                 creditNoteListBO.setChecked(true);
-                totalInvoiceAmout=totalInvoiceAmout-creditNoteListBO.getAmount();
+                totalInvoiceAmout = totalInvoiceAmout - creditNoteListBO.getAmount();
 
-            }else{
+            } else {
                 creditNoteListBO.setChecked(false);
             }
         }

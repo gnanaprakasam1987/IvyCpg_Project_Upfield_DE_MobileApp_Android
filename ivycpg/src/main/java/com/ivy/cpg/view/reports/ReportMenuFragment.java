@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
 import com.ivy.cpg.view.reports.soho.SalesReturnReportHelperSOHO;
 import com.ivy.cpg.view.van.stockview.StockViewActivity;
@@ -191,7 +192,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 }
                 break;
             case StandardListMasterConstants.MENU_PND_INVOICE_REPORT:
-                bmodel.collectionHelper.updateInvoiceDiscountAmount();
+                 CollectionHelper.getInstance(getActivity()).updateInvoiceDiscountAmount();
                 gotoReportActivity(config);
                 break;
             case StandardListMasterConstants.MENU_ORDER_REPORT:

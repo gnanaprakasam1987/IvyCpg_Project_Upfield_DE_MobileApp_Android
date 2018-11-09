@@ -3,6 +3,7 @@ package com.ivy.cpg.view.reports.pndInvoiceReport;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -81,7 +82,7 @@ public class PendingInvoiceHelper {
 
                             int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
                                     SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
-                            final double discountpercentage = businessModel.collectionHelper.getDiscountSlabPercent(count + 1);
+                            final double discountpercentage = CollectionHelper.getInstance(context).getDiscountSlabPercent(count + 1);
 
                             double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
                             if (businessModel.configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {

@@ -9,6 +9,7 @@ package com.ivy.cpg.view.delivery.kellogs;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -597,7 +598,7 @@ public class OrderDeliveryHelper {
                 else
                     salesReturned = 0;
 
-                double discountPercentage = businessModel.collectionHelper.getSlabwiseDiscountpercentage();
+                double discountPercentage = CollectionHelper.getInstance(context).getSlabwiseDiscountpercentage();
 
                 if (businessModel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                     if (discountPercentage > 0) {
@@ -761,7 +762,7 @@ public class OrderDeliveryHelper {
             if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
                 salesReturnHelper.setSalesReturnID(AppUtils.QT(uid));
-                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, AppUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),true);
+                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(context,db, AppUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),true);
             }
 
             updateOrderDeliverySIH(db, isEdit,false);

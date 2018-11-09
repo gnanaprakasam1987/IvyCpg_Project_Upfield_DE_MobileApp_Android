@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +14,7 @@ import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,13 +28,9 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
     private ArrayList<InvoiceHeaderBO> mInvioceList;
     private ArrayList<PaymentBO> mPaymentList;
     ArrayList<Fragment> mFragmentList;
-    private Toolbar toolbar;
-    private Bundle bundle;
     private int selectedPosition;
     private String mSelectedCashMode = "";
     private boolean isAdvancePaymentAvailable;
-    private int count;
-    private BusinessModel bmodel;
     private boolean isFromColletion = false;
 
     @Override
@@ -41,7 +38,7 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_mode);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -49,10 +46,10 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        bmodel = (BusinessModel) getApplicationContext();
+        BusinessModel bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        bundle = getIntent().getExtras();
+        Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             selectedPosition = bundle.getInt("position");
             isAdvancePaymentAvailable = bundle.getBoolean("IsAdvancePaymentAvailable");
@@ -61,7 +58,7 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
         }
 
         mInvioceList = bmodel.getInvoiceHeaderBO();
-        mPaymentList = bmodel.collectionHelper.getCollectionPaymentList();
+        mPaymentList = CollectionHelper.getInstance(this).getCollectionPaymentList();
     }
 
 
@@ -99,7 +96,7 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
 
     @Override
     protected void onResume() {
-        count = -1;
+        int count = -1;
         Bundle bundle;
         mFragmentList = new ArrayList<>();
         for (PaymentBO paymentBO : mPaymentList) {
@@ -171,8 +168,7 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
     public void updatePaymentDetails(String date) {
         updateSelectedList();
         PaymentBO paymentBO = mPaymentList.get(selectedPosition);
-        bmodel.collectionHelper.updateCollectionList(mSelecteInvoiceList, paymentBO.getCashMode());
-        //updateBottomValuesForSelectedInvoice();
+        CollectionHelper.getInstance(this).updateCollectionList(mSelecteInvoiceList, paymentBO.getCashMode());
     }
 
     ArrayList<InvoiceHeaderBO> mSelecteInvoiceList;

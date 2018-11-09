@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Environment;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
@@ -25,7 +26,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.CollectionFragmentNew;
+import com.ivy.cpg.view.collection.CollectionFragmentNew;
 import com.zebra.sdk.printer.PrinterLanguage;
 
 import java.io.File;
@@ -60,10 +61,13 @@ public class PrintHelper {
     private final ArrayList<BomReturnBO> mEmptyRetProductsForAdapter = new ArrayList<>();
     private ArrayList<ProductMasterBO> mProductsForAdapter = new ArrayList<>();
 
+    private CollectionHelper collectionHelper;
+
     private PrintHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
         orderHelper = OrderHelper.getInstance(context);
+        collectionHelper = CollectionHelper.getInstance(context);
     }
 
     public static PrintHelper getInstance(Context context) {
@@ -209,7 +213,7 @@ public class PrintHelper {
     public byte[] printCollection(boolean isOriginal) {
         byte[] PrintDataBytes = null;
         try {
-            ArrayList<PaymentBO> paymentList = bmodel.collectionHelper.getPaymentData(bmodel.collectionHelper.collectionGroupId);
+            ArrayList<PaymentBO> paymentList = collectionHelper.getPaymentData(collectionHelper.collectionGroupId);
             PrinterLanguage printerLanguage = PrinterLanguage.CPCL;
             // 00:22:58:3D:7E:83 - RW420
             // AC:3F:A4:16:B9:AE - IMZ320
@@ -298,7 +302,7 @@ public class PrintHelper {
                     Printitem += "T 5 0 10 " + x + " "
                             + "Rcpt NO"
                             + ":"
-                            + bmodel.collectionHelper.collectionGroupId.replaceAll("\'", "")
+                            + collectionHelper.collectionGroupId.replaceAll("\'", "")
                             + "\r\n";
 
                     x += 40;
@@ -483,7 +487,7 @@ public class PrintHelper {
     public byte[] printAdvancePayment(boolean isOriginal) {
         byte[] PrintDataBytes = null;
         try {
-            ArrayList<PaymentBO> paymentList = bmodel.collectionHelper.getPaymentData(bmodel.collectionHelper.collectionGroupId);
+            ArrayList<PaymentBO> paymentList = collectionHelper.getPaymentData(collectionHelper.collectionGroupId);
             PrinterLanguage printerLanguage = PrinterLanguage.CPCL;
             // 00:22:58:3D:7E:83 - RW420
             // AC:3F:A4:16:B9:AE - IMZ320
@@ -569,7 +573,7 @@ public class PrintHelper {
                     Printitem += "T 5 0 10 " + x + " "
                             + "Rcpt NO"
                             + ":"
-                            + bmodel.collectionHelper.collectionGroupId
+                            + collectionHelper.collectionGroupId
                             + "\r\n";
 
                     x += 40;
@@ -2252,8 +2256,8 @@ public class PrintHelper {
 
         StringBuffer sb = new StringBuffer();
 
-        ArrayList<PaymentBO> paymentList = bmodel.collectionHelper.getPaymentData(groupid);
-        ArrayList<String> invoiceNoList = bmodel.collectionHelper.getBillNumber(groupid);
+        ArrayList<PaymentBO> paymentList = collectionHelper.getPaymentData(groupid);
+        ArrayList<String> invoiceNoList = collectionHelper.getBillNumber(groupid);
         if (paymentList != null && paymentList.size() > 0 && invoiceNoList != null && invoiceNoList.size() > 0) {
             try {
 
@@ -2310,7 +2314,7 @@ public class PrintHelper {
                 sb.append(doPrintFormatingLeft("Rept Date:" + payHeaderBO.getCollectionDateTime(), 30));
                 sb.append(LineFeed(1));
 
-                sb.append(doPrintFormatingLeft("Rept NO:" + bmodel.collectionHelper.collectionGroupId, 30));
+                sb.append(doPrintFormatingLeft("Rept NO:" + collectionHelper.collectionGroupId, 30));
                 sb.append(LineFeed(1));
                 sb.append(doPrintFormatingLeft("AgentCode:" + bmodel.userMasterHelper.getUserMasterBO().getUserCode(), 25));
                 sb.append(doPrintFormatingRight("AgentName:" + bmodel.userMasterHelper.getUserMasterBO().getUserName(), 26));

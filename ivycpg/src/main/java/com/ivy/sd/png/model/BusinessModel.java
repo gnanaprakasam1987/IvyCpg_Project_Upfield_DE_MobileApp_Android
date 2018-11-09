@@ -66,6 +66,8 @@ import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
 import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
+import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -113,7 +115,6 @@ import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.CloseCallHelper;
-import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -147,7 +148,6 @@ import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CircleTransform;
-import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -192,6 +192,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import javax.inject.Inject;
+
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.session.Configuration;
 import co.chatsdk.firebase.FirebaseNetworkAdapter;
@@ -199,11 +201,7 @@ import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
 import co.chatsdk.firebase.push.FirebasePushModule;
 import co.chatsdk.ui.manager.BaseInterfaceAdapter;
 
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_FIREBASE_STORAGE_URL;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_SERVER_KEY;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
-
-import javax.inject.Inject;
 
 public class BusinessModel extends Application {
 
@@ -261,7 +259,6 @@ public class BusinessModel extends Application {
     public RemarksHelper remarksHelper;
     public ReasonHelper reasonHelper;
     public BatchAllocationHelper batchAllocationHelper;
-    public CollectionHelper collectionHelper;
     public NewOutletHelper newOutletHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
@@ -407,7 +404,6 @@ public class BusinessModel extends Application {
         reasonHelper = ReasonHelper.getInstance(this);
 
         batchAllocationHelper = BatchAllocationHelper.getInstance(this);
-        collectionHelper = CollectionHelper.getInstance(this);
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
@@ -720,7 +716,6 @@ public class BusinessModel extends Application {
     public CodeCleanUpUtil codeCleanUpUtil;
 
 
-
     public IvyAppComponent getComponent() {
         return mApplicationComponent;
     }
@@ -728,7 +723,7 @@ public class BusinessModel extends Application {
 
     /*******************************************************************************************************************************************************************************/
 
-    public void initializeChatSdk(){
+    public void initializeChatSdk() {
         try {
             Context context = getApplicationContext();
 
@@ -764,7 +759,7 @@ public class BusinessModel extends Application {
                 FirebasePushModule.activateForFirebase();
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }
@@ -971,7 +966,7 @@ public class BusinessModel extends Application {
 
                     int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
                             SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
-                    final double discountpercentage = collectionHelper.getDiscountSlabPercent(count + 1);
+                    final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
                     if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
@@ -1680,7 +1675,7 @@ public class BusinessModel extends Application {
 
             setWeeknoFoNewRetailer();
 
-            collectionHelper.updateHasPaymentIssue();
+            CollectionHelper.getInstance(ctx).updateHasPaymentIssue();
 
             if (configurationMasterHelper.IS_DAY_WISE_RETAILER_WALKINGSEQ)
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
@@ -5251,19 +5246,19 @@ public class BusinessModel extends Application {
     }
 
     public String checkDecimalValue(String value, int wholeValueCount,
-                                    int decimalValueCount){
-        if(!value.contains("."))
+                                    int decimalValueCount) {
+        if (!value.contains("."))
             return value;
         else {
             String fString = "", lString = "";
-            value = value.startsWith(".")? "0" + value:value;
-            value = value.endsWith(".")? value + "0":value;
+            value = value.startsWith(".") ? "0" + value : value;
+            value = value.endsWith(".") ? value + "0" : value;
             String[] valArr = value.split("\\.");
-            if(valArr[0].length()>wholeValueCount)
-                fString = valArr[0].substring(0,valArr[0].length()-1);
-            if(valArr[1].length()>decimalValueCount)
-                lString = valArr[1].substring(0,valArr[0].length()-1);
-            if(valArr[0].length() <= wholeValueCount && valArr[1].length() <= decimalValueCount) {
+            if (valArr[0].length() > wholeValueCount)
+                fString = valArr[0].substring(0, valArr[0].length() - 1);
+            if (valArr[1].length() > decimalValueCount)
+                lString = valArr[1].substring(0, valArr[0].length() - 1);
+            if (valArr[0].length() <= wholeValueCount && valArr[1].length() <= decimalValueCount) {
                 fString = valArr[0];
                 lString = valArr[1];
             }
@@ -7073,7 +7068,7 @@ public class BusinessModel extends Application {
 
                     int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
                             SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
-                    final double discountpercentage = collectionHelper.getDiscountSlabPercent(count + 1);
+                    final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
                     if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
