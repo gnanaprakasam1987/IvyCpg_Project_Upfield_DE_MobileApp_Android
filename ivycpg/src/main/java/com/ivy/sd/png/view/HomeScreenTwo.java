@@ -265,7 +265,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
         typearr = getTheme().obtainStyledAttributes(R.styleable.MyTextView);
 
-        activityView = (RecyclerView) findViewById(R.id.activity_list);
+        activityView = findViewById(R.id.activity_list);
         activityView.setHasFixedSize(true);
         activityView.setNestedScrollingEnabled(false);
         isLocDialogShow = getIntent().getBooleanExtra("isLocDialog", false);
@@ -283,14 +283,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } catch (Exception e) {
             Commons.printException(e);
         }
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        MyAppbar = (AppBarLayout) findViewById(R.id.MyAppbar);
-        retailerNameTxt = (TextView) findViewById(R.id.retailer_name);
-        retailerCodeTxt = (TextView) findViewById(R.id.retailer_code);
-        iconLinearLayout = (LinearLayout) findViewById(R.id.img_layout);
-        callAnalysisBtn = (Button) findViewById(R.id.btn_call_analysis);
-        retProfileImage = (ImageView) findViewById(R.id.retProfileImage);
-        retailer_name_header = (LinearLayout) findViewById(R.id.retailer_name_header);
+        toolbar = findViewById(R.id.toolbar);
+        MyAppbar = findViewById(R.id.MyAppbar);
+        retailerNameTxt = findViewById(R.id.retailer_name);
+        retailerCodeTxt = findViewById(R.id.retailer_code);
+        iconLinearLayout = findViewById(R.id.img_layout);
+        callAnalysisBtn = findViewById(R.id.btn_call_analysis);
+        retProfileImage = findViewById(R.id.retProfileImage);
+        retailer_name_header = findViewById(R.id.retailer_name_header);
         setSupportActionBar(toolbar);
         retailer_name_header.setOnClickListener(new OnClickListener() {
             @Override
@@ -300,8 +300,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 startActivity(prof);
             }
         });
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setRetailerProfileImage();
         retProfileImage.setOnClickListener(new OnClickListener() {
@@ -345,9 +343,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
             }
         });
-        retailerNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        retailerCodeTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        callAnalysisBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(callAnalysisBtn.getTag()) != null)
@@ -367,8 +362,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else {
             retailerCodeTxt.setVisibility(View.GONE);
         }
-        collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
+        collapsingToolbar = findViewById(R.id.collapse_toolbar);
 
 
         toolbar.setTitle("");
@@ -377,10 +371,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
         collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
         collapsingToolbar.setCollapsedTitleTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-//
-//        collapsingToolbar.setExpandedTitleColor(Color.WHITE);
-//        collapsingToolbar.setExpandedTitleTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-
 
         MyAppbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
 
@@ -427,10 +417,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         mInStoreMenu = bmodel.configurationMasterHelper
                 .downloadStoreCheckMenu(ConfigurationMasterHelper.MENU_STORECHECK);
 
-        //  bmodel.configurationMasterHelper.downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
-
-        ((TextView) findViewById(R.id.label_activity_count)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
         try {
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                     R.id.label_activity_count).getTag()) != null)
@@ -443,11 +429,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             Commons.printException(e);
         }
 
-        mActivityDoneCount = (TextView) findViewById(R.id.activity_done_count);
-        mActivityTotalCount = (TextView) findViewById(R.id.activity_total_count);
-
-        mActivityDoneCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        mActivityTotalCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        mActivityDoneCount = findViewById(R.id.activity_done_count);
+        mActivityTotalCount = findViewById(R.id.activity_total_count);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -1553,7 +1536,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     }
                     bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                            bmodel.productHelper.getFilterProductLevels(),true));
+                            bmodel.productHelper.getFilterProductLevels(), true));
                 }
 
             }
@@ -3223,7 +3206,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 //mSFHelper.downloadSFFiveLevelFilter(MENU_SOS);
                 mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFilterLevel(MENU_SOS));
                 mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                        mSFHelper.getSequenceValues(),false));
+                        mSFHelper.getSequenceValues(), false));
 
                 //load content data
                 mSFHelper.loadData(MENU_SOS);
@@ -3308,7 +3291,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 //mSFHelper.downloadSFFiveLevelFilter(MENU_SOD);
                 mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFilterLevel(MENU_SOD));
                 mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                        mSFHelper.getSequenceValues(),false));
+                        mSFHelper.getSequenceValues(), false));
 
 
                 mSFHelper.loadData(MENU_SOD);
@@ -3361,7 +3344,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 //mSODAssetHelper.downloadSFFiveLevelFilter(MENU_SOD_ASSET);
                 mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFilterLevel(MENU_SOD_ASSET));
                 mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                        mSFHelper.getSequenceValues(),false));
+                        mSFHelper.getSequenceValues(), false));
 
                 mSODAssetHelper.loadSODAssetData(MENU_SOD_ASSET);
 
@@ -3411,7 +3394,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 //mSFHelper.downloadSFFiveLevelFilter(MENU_SOSKU);
                 mSFHelper.setmSFModuleSequence(bmodel.productHelper.downloadFilterLevel(MENU_SOSKU));
                 mSFHelper.setmFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                        mSFHelper.getSequenceValues(),false));
+                        mSFHelper.getSequenceValues(), false));
 
                 mSFHelper.loadData(MENU_SOSKU);
 
@@ -3836,7 +3819,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 //                            bmodel.productHelper
 //                                    .downloadFiveFilterLevels("MENU_STK_ORD");
             intent.putExtra("ScreenCode", MENU_CATALOG_ORDER);
-        } else if(menuConfigCode.equals(MENU_ORDER)){
+        } else if (menuConfigCode.equals(MENU_ORDER)) {
             intent.putExtra("ScreenCode", MENU_ORDER);
         } else {
             intent.putExtra("ScreenCode", "MENU_STK_ORD");
@@ -4471,7 +4454,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(getApplicationContext(),position+"",Toast.LENGTH_SHORT).show();
                     if (!isCreated) {
                         isCreated = true;
                         if (holder.config.getConfigCode().equals(MENU_STORECHECK)) {
@@ -4484,9 +4466,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 holder.childListView.setLayoutParams(getListLayoutParam(holder.childListView));
                                 holder.childListView.setAdapter(mSchedule);
                                 holder.childListView.setVisibility(View.VISIBLE);
-
-                                //Animation anim = AnimationUtils.loadAnimation(HomeScreenTwo.this, R.anim.view_show);
-                                //holder.childListView.startAnimation(anim);
                             } else {
                                 holder.img_arrow.setImageResource(R.drawable.activity_icon_next);
                                 isInstoreMenuVisible = false;
@@ -4534,12 +4513,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
             public MyViewHolder(View view) {
                 super(view);
-                iconIV = (ImageView) view.findViewById(R.id.list_item_icon_iv);
-                icon_ll = (LinearLayout) view.findViewById(R.id.icon_ll);
-                img_arrow = (ImageView) view.findViewById(R.id.img_arrow);
-                activityname = (TextView) view.findViewById(R.id.activityName);
-                childListView = (ListView) view.findViewById(R.id.childList);
-                activityname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                iconIV = view.findViewById(R.id.list_item_icon_iv);
+                icon_ll = view.findViewById(R.id.icon_ll);
+                img_arrow = view.findViewById(R.id.img_arrow);
+                activityname = view.findViewById(R.id.activityName);
+                childListView = view.findViewById(R.id.childList);
             }
         }
     }
@@ -4575,19 +4553,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         parent, false);
                 holder = new ViewHolder();
 
-                holder.activity_icon_circle = (ImageView) convertView
+                holder.activity_icon_circle = convertView
                         .findViewById(R.id.circle);
 
-                holder.activity_icon_top_line = (ImageView) convertView
-                        .findViewById(R.id.top_line);
-
-                holder.activity_icon_bottom_line = (ImageView) convertView
-                        .findViewById(R.id.bottom_line);
-
-                holder.activityname = (TextView) convertView
+                holder.activityname = convertView
                         .findViewById(R.id.activityName);
-
-                holder.activityname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 convertView.setOnClickListener(new OnClickListener() {
 
@@ -4633,15 +4603,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 holder.activity_icon_circle.setColorFilter(ContextCompat.getColor(getBaseContext(), R.color.black_bg1));
             }
 
-            if (position == 0) {
-                holder.activity_icon_top_line.setVisibility(View.INVISIBLE);
-            } else if (position == getCount() - 1) {
-                holder.activity_icon_bottom_line.setVisibility(View.INVISIBLE);
-            } else {
-                holder.activity_icon_top_line.setVisibility(View.VISIBLE);
-                holder.activity_icon_bottom_line.setVisibility(View.VISIBLE);
-            }
-
             return convertView;
         }
 
@@ -4651,7 +4612,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             int position;
             TextView activityname;
             int hasLink;
-            ImageView activity_icon_circle, activity_icon_top_line, activity_icon_bottom_line;
+            ImageView activity_icon_circle;
         }
 
     }
@@ -4874,7 +4835,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 .downloadFiveLevelFilterNonProducts(menuCode);*/
         bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(menuCode));
         bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
-                bmodel.productHelper.getRetailerModuleSequenceValues(),false));
+                bmodel.productHelper.getRetailerModuleSequenceValues(), false));
     }
 
 
@@ -4964,7 +4925,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         }
     }
 
-    private void loadRequiredMethodsforOrder(String configCode){
+    private void loadRequiredMethodsforOrder(String configCode) {
         bmodel.productHelper.downloadIndicativeOrderList();
         for (Integer temp : bmodel.productHelper
                 .getIndicativeList())
@@ -4995,7 +4956,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
                                 SDUtil.now(SDUtil.TIME),
                                 configCode);
-                OrderHelper.getInstance(this).isQuickCall=false;
+                OrderHelper.getInstance(this).isQuickCall = false;
                 Intent i = new Intent(HomeScreenTwo.this,
                         StockAndOrder.class);
                 i.putExtra("OrderFlag", "Nothing");
@@ -5027,7 +4988,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME),
                             configCode);
-            OrderHelper.getInstance(this).isQuickCall=false;
+            OrderHelper.getInstance(this).isQuickCall = false;
             Intent i = new Intent(HomeScreenTwo.this,
                     StockAndOrder.class);
             i.putExtra("OrderFlag", "Nothing");
