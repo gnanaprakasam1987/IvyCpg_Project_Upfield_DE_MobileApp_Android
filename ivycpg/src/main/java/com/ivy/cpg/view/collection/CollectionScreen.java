@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -17,6 +17,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,12 +29,8 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
         PrintCountDialogFragment.PrintInterface {
 
     private Bundle instate;
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
     private ArrayList<Fragment> mFragmentList;
-    private Fragment mSelectFragment, mSelectedFragment;
-    private TabLayout.Tab billPaymentTab;
-    private TabLayout.Tab advancePaymentTab;
+    private Fragment mSelectedFragment;
     private ViewPager viewPager;
     private BusinessModel bmodel;
 
@@ -49,7 +46,7 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -60,10 +57,10 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout =  findViewById(R.id.tabs);
         addFragments();
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager =  findViewById(R.id.pager);
         TabsPagerAdapter mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -91,7 +88,7 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
         if (tabLayout != null)
             tabLayout.removeAllTabs();
 
-        billPaymentTab = tabLayout.newTab();
+        TabLayout.Tab billPaymentTab = tabLayout.newTab();
         if (bmodel.labelsMasterHelper.applyLabels("collection_title") != null)
             billPaymentTab.setText(bmodel.labelsMasterHelper.applyLabels("collection_title"));
         else
@@ -99,12 +96,12 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
         tabLayout.addTab(billPaymentTab);
 
         if (bmodel.configurationMasterHelper.SHOW_ADVANCE_PAYMENT) {
-            advancePaymentTab = tabLayout.newTab();
+            TabLayout.Tab advancePaymentTab = tabLayout.newTab();
             advancePaymentTab.setText(getResources().getString(R.string.advance_payment));
             tabLayout.addTab(advancePaymentTab);
         }
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
@@ -180,8 +177,7 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
 
     @Override
     public void updateReceiptNo(String receiptno) {
-        //CollectionFragmentNew collectionFragmentNew = (CollectionFragmentNew) getSupportFragmentManager().findFragmentById(R.id.taskfrag);
-        //collectionFragmentNew.updateReceiptNo(receiptno);
+
     }
 
     @Override
@@ -203,7 +199,7 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
     //Method used to add fragments for Tablayout
     private void addFragments() {
         mFragmentList = new ArrayList<>();
-        mSelectFragment = new CollectionFragmentNew();
+        Fragment mSelectFragment = new CollectionFragmentNew();
 
         Bundle bundle = new Bundle();
         bundle.putBoolean("IS_NO_COLL_REASON",getIntent().getBooleanExtra("IS_NO_COLL_REASON",false));
@@ -225,7 +221,7 @@ public class CollectionScreen extends IvyBaseActivityNoActionBar
 
         FragmentManager fragmentManager;
 
-        public TabsPagerAdapter(FragmentManager fm) {
+        private TabsPagerAdapter(FragmentManager fm) {
             super(fm);
             this.fragmentManager = fm;
         }

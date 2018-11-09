@@ -8,7 +8,6 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
@@ -28,7 +27,6 @@ import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.CollectionReportDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -41,11 +41,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
-import com.ivy.sd.png.bo.CollectionBO;
+import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.PaymentBO;
@@ -126,6 +127,8 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
     private ListView mCreditNoteLV;
     private ArrayList<CreditNoteListBO> mCreditNoteList;
 
+    private CollectionHelper collectionHelper;
+
 
     public CollectionBeforeInvoiceDialog(Context context,
                                          OrderSummary orderSummary, CollectionBO collection,
@@ -158,6 +161,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         initializeView();
         inputManager = (InputMethodManager) orderSummaryActivity
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
+        collectionHelper = CollectionHelper.getInstance(context);
 
 
     }
@@ -219,8 +223,8 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     private void payementTypeListener() {
         try {
-            if (bmodel.collectionHelper.getPaymentModes() == null
-                    || bmodel.collectionHelper.getPaymentModes().size() == 0) {
+            if (collectionHelper.getPaymentModes() == null
+                    || collectionHelper.getPaymentModes().size() == 0) {
                 modeInvisible();
             }
             rbPaymentType
@@ -250,7 +254,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                     collectionamount.setText("0");
 
                                 QUANTITY = collectionamount;
-                                bmodel.collectionHelper.setMradioGroupIndex(rbPaymentType
+                                collectionHelper.setMradioGroupIndex(rbPaymentType
                                         .indexOfChild(findViewById(checkedId)));
 
                             } else if (checkedId == R.id.cashRadioButton) {
@@ -275,7 +279,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                 else
                                     collectionamount.setText("0");
                                 QUANTITY = collectionamount;
-                                bmodel.collectionHelper.setMradioGroupIndex(rbPaymentType
+                                collectionHelper.setMradioGroupIndex(rbPaymentType
                                         .indexOfChild(findViewById(checkedId)));
 
                             } else if (checkedId == R.id.creditNoteRadioButton) {
@@ -309,7 +313,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                 else
                                     collectionamount.setText("0");
                                 QUANTITY = collectionamount;
-                                bmodel.collectionHelper.setMradioGroupIndex(rbPaymentType
+                                collectionHelper.setMradioGroupIndex(rbPaymentType
                                         .indexOfChild(findViewById(checkedId)));
                                 CreditNoteAdapter creditNoteAdapter = new CreditNoteAdapter();
                                 mCreditNoteLV.setAdapter(creditNoteAdapter);
@@ -495,8 +499,8 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         }
 
         // constructTable();
-        bankDetails = bmodel.collectionHelper.getBankMasterBO();
-        branchDetails = bmodel.collectionHelper.getBranchMasterBO();
+        bankDetails = collectionHelper.getBankMasterBO();
+        branchDetails = collectionHelper.getBranchMasterBO();
 
         bankSpinnerAdapter = new ArrayAdapter<BankMasterBO>(
                 orderSummaryActivity, android.R.layout.simple_spinner_item);
@@ -562,9 +566,9 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         String modeID = bmodel.getStandardListIdAndType(
                 "CNAP",
                 StandardListMasterConstants.CREDIT_NOTE_TYPE);
-        if (bmodel.collectionHelper.getCreditNoteList() != null) {
+        if (collectionHelper.getCreditNoteList() != null) {
             mCreditNoteList = new ArrayList<CreditNoteListBO>();
-            for (CreditNoteListBO bo : bmodel.collectionHelper
+            for (CreditNoteListBO bo : collectionHelper
                     .getCreditNoteList()) {
                 if (bo.getRetailerId().equals(
                         bmodel.getRetailerMasterBO().getRetailerID())
@@ -580,10 +584,10 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
 
         }
-        List<PaymentBO> payment = bmodel.collectionHelper.getPaymentList();
+        List<PaymentBO> payment = collectionHelper.getPaymentList();
         if (payment != null && payment.size() > 0) {
             ((RadioButton) rbPaymentType
-                    .getChildAt(bmodel.collectionHelper.getMradioGroupIndex()))
+                    .getChildAt(collectionHelper.getMradioGroupIndex()))
                     .setChecked(true);
             if (collectionbo.getChequeamt() > 0) {
                 collectionamount.setText(payment.get(0).getAmount() + "");
@@ -693,7 +697,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
      */
     private void fillRadioButton(RadioGroup rb) {
         for (int i = 0; i < rb.getChildCount(); i++) {
-            for (StandardListBO sbo : bmodel.collectionHelper
+            for (StandardListBO sbo : collectionHelper
                     .getPaymentModes()) {
                 RadioButton radioBut = (RadioButton) rb.getChildAt(i);
                 if (radioBut.getTag().equals(sbo.getListCode())) {
@@ -774,7 +778,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
      * After Collection Save hit, call for payment object list
      */
     private void doPaymentObjectList() {
-        bmodel.collectionHelper.getPaymentList().clear();
+        collectionHelper.getPaymentList().clear();
         mTransactionPaymentMode = StandardListMasterConstants.COLLECTION_NORMAL_PAYMENT;
         if (collectionbo.getCashamt() > 0) {
 
@@ -809,7 +813,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                   String bankId, String branchId, String chequeDate, String chequeNo,
                                   String mode, String paymentMode, String mImageName) {
         try {
-            boolean isCreditBalanceCheck = bmodel.collectionHelper.isCreditBalancebalance(mode);
+            boolean isCreditBalanceCheck = collectionHelper.isCreditBalancebalance(mode);
             pay = new PaymentBO();
             pay.setInvoiceAmount(invoiceAmt);
             pay.setBankID(bankId);
@@ -826,7 +830,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             pay.setCreditBalancePayment(isCreditBalanceCheck);
             pay.setImageName(mImageName);
             pay.setUpdatePayableamt(paidAmt);
-            bmodel.collectionHelper.getPaymentList().add(pay);
+            collectionHelper.getPaymentList().add(pay);
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -1257,7 +1261,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
      */
     private boolean checkHasPaymentIssue(String mode) {
         if (bmodel.getRetailerMasterBO().getHasPaymentIssue() == 1) {
-            boolean isCBType = bmodel.collectionHelper.isCreditBalancebalance(mode);
+            boolean isCBType = collectionHelper.isCreditBalancebalance(mode);
             if (!isCBType) {
 
                 return false;

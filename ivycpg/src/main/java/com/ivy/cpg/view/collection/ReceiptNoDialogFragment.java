@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -46,8 +46,8 @@ public class ReceiptNoDialogFragment extends DialogFragment {
     public void onStart() {
         super.onStart();
         getDialog().setTitle("Receipt No ");
-        mReceiptNoET = (EditText) rootView.findViewById(R.id.et_receipno);
-        Button mOkBtn = (Button) rootView.findViewById(R.id.btn_ok);
+        mReceiptNoET = rootView.findViewById(R.id.et_receipno);
+        Button mOkBtn = rootView.findViewById(R.id.btn_ok);
 
         mOkBtn.setOnClickListener(new View.OnClickListener() {
             @Override

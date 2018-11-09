@@ -45,6 +45,9 @@ import com.ivy.cpg.view.asset.PosmTrackingActivity;
 import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.cpg.view.callanalysis.CallAnalysisActivityKlgs;
 import com.ivy.cpg.view.callanalysis.CloseCallActivity;
+import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.collection.CollectionReference;
+import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.cpg.view.competitor.CompetitorTrackingActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.FitScoreDashboardActivity;
@@ -241,6 +244,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private HashMap<String, String> menuCodeList = new HashMap<>();
     String menuCode = "";
     private SchemeDetailsMasterHelper schemeHelper;
+    private CollectionHelper collectionHelper;
 
     @SuppressLint("NewApi")
     public void onCreate(Bundle savedInstanceState) {
@@ -669,6 +673,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         //Clearing appllied scheme list to prevent it from listing on other common print type(Credit note,..).
         schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         schemeHelper.getAppliedSchemeList().clear();
+
+        collectionHelper = CollectionHelper.getInstance(this);
 
         if (bmodel.configurationMasterHelper.SHOW_ORDER_TYPE_DIALOG) {
             mOrderTypeList = bmodel.productHelper.getTypeList(ORDER_TYPE);
@@ -1785,19 +1791,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             }
 
                             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                                bmodel.collectionHelper.downloadDiscountSlab();
+                                collectionHelper.downloadDiscountSlab();
                             }
                             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
-                                bmodel.collectionHelper.loadCreditNote();
+                                collectionHelper.loadCreditNote();
                             //   bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
                             bmodel.productHelper.loadRetailerWiseProductWisePurchased();
                             bmodel.productHelper
                                     .loadRetailerWiseProductWiseP4StockAndOrderQty();
                             bmodel.configurationMasterHelper
                                     .downloadProductDetailsList();
-                            bmodel.collectionHelper.downloadBankDetails();
-                            bmodel.collectionHelper.downloadBranchDetails();
-                            bmodel.collectionHelper.downloadRetailerAccountDetails();
+                            collectionHelper.downloadBankDetails();
+                            collectionHelper.downloadBranchDetails();
+                            collectionHelper.downloadRetailerAccountDetails();
                             if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
                                 bmodel.productHelper
                                         .loadRetailerWiseInventoryOrderQty();
@@ -2567,17 +2573,17 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (bmodel.configurationMasterHelper.IS_JUMP
                         || isPreviousDone(menu)) {
                     if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                        bmodel.collectionHelper.downloadDiscountSlab();
+                        collectionHelper.downloadDiscountSlab();
                     }
 
-                    bmodel.collectionHelper.downloadBankDetails();
-                    bmodel.collectionHelper.downloadBranchDetails();
-                    bmodel.collectionHelper.downloadRetailerAccountDetails();
-                    bmodel.collectionHelper.updateInvoiceDiscountedAmount();
+                    collectionHelper.downloadBankDetails();
+                    collectionHelper.downloadBranchDetails();
+                    collectionHelper.downloadRetailerAccountDetails();
+                    collectionHelper.updateInvoiceDiscountedAmount();
 
 
                     bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
-                    bmodel.collectionHelper.loadPaymentMode();
+                    collectionHelper.loadPaymentMode();
 
                     if (bmodel.getInvoiceHeaderBO() != null
                             && bmodel.getInvoiceHeaderBO().size() > 0) {
@@ -2593,7 +2599,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         if (menu.getConfigCode().equals(
                                 StandardListMasterConstants.MENU_COLLECTION_VIEW)) {
-                            bmodel.collectionHelper.setCollectionView(true);
+                            collectionHelper.setCollectionView(true);
                             bmodel.getRetailerMasterBO().setIsCollectionView("Y");
                             bmodel.isModuleCompleted("MENU_COLLECTION_VIEW");
                         }
@@ -2637,9 +2643,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (bmodel.configurationMasterHelper.IS_JUMP
                         || isPreviousDone(menu)) {
 
-                    bmodel.collectionHelper.updateInvoiceDiscountedAmount();
+                    collectionHelper.updateInvoiceDiscountedAmount();
                     bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "DOC");
-                    bmodel.collectionHelper.loadCollectionReference();
+                    collectionHelper.loadCollectionReference();
 
                     if (bmodel.getInvoiceHeaderBO() != null
                             && bmodel.getInvoiceHeaderBO().size() > 0) {
@@ -2762,7 +2768,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
         } else if (menu.getConfigCode().equals(MENU_CALL_ANLYS)) {
             if (bmodel.configurationMasterHelper.SHOW_NO_COLLECTION_REASON &&
-                    !bmodel.collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(), this)) {
+                    !collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(), this)) {
 
                 isCreated = false;
                 isClick = false;
@@ -3854,7 +3860,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
 
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                bmodel.collectionHelper.downloadDiscountSlab();
+                collectionHelper.downloadDiscountSlab();
             }
 
             //  bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
@@ -3906,10 +3912,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
-                bmodel.collectionHelper.downloadBankDetails();
-                bmodel.collectionHelper.downloadBranchDetails();
-                bmodel.collectionHelper.downloadRetailerAccountDetails();
-                bmodel.collectionHelper.loadCreditNote();
+                collectionHelper.downloadBankDetails();
+                collectionHelper.downloadBranchDetails();
+                collectionHelper.downloadRetailerAccountDetails();
+                collectionHelper.loadCreditNote();
             }
 
             bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);

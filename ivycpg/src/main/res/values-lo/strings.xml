@@ -916,10 +916,10 @@
     <string name="discounted_amt">Discounted Amount</string>
     <string name="reason_non_visit">Reason for Non visit</string>
     <string name="text_batch_allocated_mismatch">Allocated Qty mismatch with Order</string>
-    <string name ="newretailer_empty">Please enter value for RetailerName and PinCode</string>
-    <string name ="alert_text_accept_Stock">Are you sure to accept stock?</string>
-    <string name ="alert_text_reject_Stock">Are you sure to reject stock?</string>
-    <string name ="move_next_activity">Move to next activity</string>
+    <string name="newretailer_empty">Please enter value for RetailerName and PinCode</string>
+    <string name="alert_text_accept_Stock">Are you sure to accept stock?</string>
+    <string name="alert_text_reject_Stock">Are you sure to reject stock?</string>
+    <string name="move_next_activity">Move to next activity</string>
     <string name="credit_note_not_available">Credit Note not available!!</string>
     <string name="all_products_should_be_ordered">All products should be ordered.</string>
     <string name="atleast_one_product_should_be_ordered">Atleast one product should be ordered.</string>
@@ -929,35 +929,35 @@
     <string name="remark">remark</string>
     <string name="rfield1">Enter Field1</string>
     <string name="rfield2">Enter Field2</string>
-    <string name="comments" >Comments</string>
-    <string name="title_activity_payment_mode" >PaymentModeActivity</string>
-    <string name="action_settings" >Settings</string>
-    <string name="pay_now" >Pay Now</string>
-    <string name="rtgs_date" >RTGS Date</string>
-    <string name="cheque_date" >Cheque Date</string>
-    <string name="dd_no_date" >Demand Draft Date</string>
-    <string name="total_sih" >Total SIH</string>
-    <string name="total_cases" >Total Case</string>
-    <string name="total_outer" >Total Outer</string>
-    <string name="total_piece" >Total Piece</string>
-    <string name="title_activity_product_scheme_details" >ProductSchemeDetailsActivity</string>
-    <string name="is_Listed" >Is Listed</string>
-    <string name="is_distributed" >Is Distributed</string>
-    <string name="pls_select_chequeno" >Please Enter ChequeNo </string>
-    <string name="average_lines" >Average Lines</string>
-    <string name="add_plane" >Add To Plan</string>
-    <string name="non_visit" >Non Visit</string>
-    <string name="are_you_sure_you_want_to_logout" > Are you sure want to logout?</string>
-    <string name="vaload_heder_text" >Select quality for each batch</string>
-    <string name="total_items" >Total returned items is “%1$d”.</string>
-    <string name="srp_text" >SRP: </string>
-    <string name="loading_no" >Loading No.</string>
-    <string name="dateend" >End Date</string>
-    <string name="deleted_sucessfully" >deleted successfully</string>
-    <string name="timeend" >End Time</string>
+    <string name="comments">Comments</string>
+    <string name="title_activity_payment_mode">PaymentModeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="pay_now">Pay Now</string>
+    <string name="rtgs_date">RTGS Date</string>
+    <string name="cheque_date">Cheque Date</string>
+    <string name="dd_no_date">Demand Draft Date</string>
+    <string name="total_sih">Total SIH</string>
+    <string name="total_cases">Total Case</string>
+    <string name="total_outer">Total Outer</string>
+    <string name="total_piece">Total Piece</string>
+    <string name="title_activity_product_scheme_details">ProductSchemeDetailsActivity</string>
+    <string name="is_Listed">Is Listed</string>
+    <string name="is_distributed">Is Distributed</string>
+    <string name="pls_select_chequeno">Please Enter ChequeNo </string>
+    <string name="average_lines">Average Lines</string>
+    <string name="add_plane">Add To Plan</string>
+    <string name="non_visit">Non Visit</string>
+    <string name="are_you_sure_you_want_to_logout"> Are you sure want to logout?</string>
+    <string name="vaload_heder_text">Select quality for each batch</string>
+    <string name="total_items">Total returned items is “%1$d”.</string>
+    <string name="srp_text">SRP: </string>
+    <string name="loading_no">Loading No.</string>
+    <string name="dateend">End Date</string>
+    <string name="deleted_sucessfully">deleted successfully</string>
+    <string name="timeend">End Time</string>
     <string name="email">Email</string>
     <string name="manual_stock_apply_header_validation">Invoice Number, Date and Stock Type should not be empty</string>
-    <string name = "percentage">Percentage</string>
+    <string name="percentage">Percentage</string>
     <string name="invoice_qty">Invoice Qty</string>
     <string name="delivery_rep_code">Rep Code</string>
     <string name="delivery_date_is">Delivery Date is: </string>
@@ -1183,7 +1183,6 @@
     <string name="printer_settings">Printer Settings</string>
 
 
-
     <string name="bill">Bill</string>
     <string name="line_value">Line value</string>
     <string name="tax_Value">Tax Value</string>
@@ -1317,9 +1316,6 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-    <string name="ns">NS</string>
-    <string name="ul">UL</string>
-    <string name="salable">Salable</string>
 
     <string name="stores">Stores</string>
     <string name="check_anyone_fromlist">Check anyone from the List</string>
@@ -1335,4 +1331,14 @@
     <string name="digital_content_header_this_month">This Month</string>
     <string name="digital_content_header_prev_month">Previous Month</string>
     <string name="digital_content_header_older">Older</string>
+
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">Salable</string>
+    <string name="tls">TLS</string>
+    <string name="payment_term">Payment term</string>
+    <string name="oth_disc">Oth. Disc (Other Discount)</string>
+    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
+    <string name="attachment">Attachment</string>
+
 </resources>

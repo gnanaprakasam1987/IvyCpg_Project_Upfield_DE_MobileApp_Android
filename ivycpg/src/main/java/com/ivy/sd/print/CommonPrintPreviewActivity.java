@@ -48,6 +48,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -59,7 +60,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.CollectionScreen;
+import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.sd.png.view.EmailDialog;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -262,7 +263,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     }
                     startActivity(i);
                 } else if (isFromCollection) {
-                    bmodel.collectionHelper.downloadCollectionMethods();
+                    CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
@@ -1253,7 +1254,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             }
             startActivity(i);
         } else if (isFromCollection) {
-            bmodel.collectionHelper.downloadCollectionMethods();
+            CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                     SDUtil.now(SDUtil.DATE_GLOBAL),
                     SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");

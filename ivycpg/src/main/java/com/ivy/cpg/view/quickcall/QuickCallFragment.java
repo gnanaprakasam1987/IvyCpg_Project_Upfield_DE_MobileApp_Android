@@ -19,12 +19,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.order.tax.TaxGstHelper;
+import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.GenericObjectPair;
@@ -34,8 +37,6 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.cpg.view.order.tax.TaxGstHelper;
-import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.OrderTransactionListDialog;
@@ -384,13 +385,14 @@ public class QuickCallFragment extends IvyBaseFragment {
 
     private void loadRequiredMethodsForStockAndOrder() {
         try {
+            CollectionHelper collectionHelper = CollectionHelper.getInstance(getActivity());
 
             if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
                 bmodel.downloadGuidedSelling();
             }
 
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                bmodel.collectionHelper.downloadDiscountSlab();
+                collectionHelper.downloadDiscountSlab();
             }
 
             //  bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
@@ -443,10 +445,10 @@ public class QuickCallFragment extends IvyBaseFragment {
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
-                bmodel.collectionHelper.downloadBankDetails();
-                bmodel.collectionHelper.downloadBranchDetails();
-                bmodel.collectionHelper.downloadRetailerAccountDetails();
-                bmodel.collectionHelper.loadCreditNote();
+                collectionHelper.downloadBankDetails();
+                collectionHelper.downloadBranchDetails();
+                collectionHelper.downloadRetailerAccountDetails();
+                collectionHelper.loadCreditNote();
             }
 
             bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);

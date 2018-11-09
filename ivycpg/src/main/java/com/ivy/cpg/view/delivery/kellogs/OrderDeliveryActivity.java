@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -307,7 +308,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 orderDeliveryHelper.getProductTotalValue(false);
             }
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                bmodel.collectionHelper.downloadDiscountSlab();
+                CollectionHelper.getInstance(OrderDeliveryActivity.this).downloadDiscountSlab();
             }
             if (from.equalsIgnoreCase(ACCEPT)) {
                 orderDeliveryHelper.updateDiscountInLineValue(OrderDeliveryActivity.this, orderId);

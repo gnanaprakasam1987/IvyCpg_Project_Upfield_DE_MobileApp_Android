@@ -8,7 +8,6 @@ public class NoCollectionReasonBo {
     private double invoiceAmount;
     private String retailerId;
 
-    private String refNo = "";
     private String noCollectionReasonId="";
     private String noCollectionReason="";
 
@@ -52,13 +51,6 @@ public class NoCollectionReasonBo {
         this.retailerId = retailerId;
     }
 
-    public String getRefNo() {
-        return refNo;
-    }
-
-    public void setRefNo(String refNo) {
-        this.refNo = refNo;
-    }
 
     public String getNoCollectionReasonId() {
         return noCollectionReasonId;

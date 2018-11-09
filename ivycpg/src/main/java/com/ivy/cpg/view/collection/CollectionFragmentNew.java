@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
@@ -31,8 +31,8 @@ import android.widget.Toast;
 
 import com.aem.api.AEMPrinter;
 import com.aem.api.AEMScrybeDevice;
+import com.baidu.platform.comapi.map.C;
 import com.bixolon.printer.BixolonPrinter;
-import com.ivy.cpg.view.collection.NoCollectionReasonActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
@@ -46,6 +46,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.ScribePrinter;
 import com.ivy.sd.print.SettingsHelper;
@@ -59,7 +61,6 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Set;
 
 public class CollectionFragmentNew extends IvyBaseFragment
@@ -73,7 +74,6 @@ public class CollectionFragmentNew extends IvyBaseFragment
     private ArrayList<PaymentBO> mPaymentList;
 
     private ArrayList<Fragment> mFragmentList;
-    private ArrayList<CharSequence> mFragmentTitle;
     private ArrayList<InvoiceHeaderBO> mInvioceList;
     private TextView mOSAmtTV;
     private TextView mPayableAmtTV;
@@ -84,9 +84,6 @@ public class CollectionFragmentNew extends IvyBaseFragment
     private ArrayList<InvoiceHeaderBO> mSelecteInvoiceList;
 
     private int mSelectedPagePos = 0;
-    private String mErrorMsg = "";
-    private HashMap<String, PaymentBO> mPaymentBOByMode;
-    private AlertDialog.Builder build;
     private AlertDialog alertDialog;
 
     // printer
@@ -94,13 +91,10 @@ public class CollectionFragmentNew extends IvyBaseFragment
     private int mSelectedPrintCount = 0;
     private LinearLayout mRootLL;
 
-    private boolean isPageSeleced = false;
     private View rootView;
-    private boolean isAdvancePaymentAvailable;
 
     private double mTotalInvoiceAmt = 0;
-    private Button paybtn;
-
+    private CollectionHelper collectionHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,6 +102,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
         setRetainInstance(true);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        collectionHelper = CollectionHelper.getInstance(getActivity());
     }
 
     @Nullable
@@ -115,14 +110,14 @@ public class CollectionFragmentNew extends IvyBaseFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_collection_new, container,
                 false);
-        mRootLL = (LinearLayout) rootView.findViewById(R.id.ll_parent);
+        mRootLL = rootView.findViewById(R.id.ll_parent);
         setHasOptionsMenu(true);
         if (getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
         setScreenTitle("" + bmodel.mSelectedActivityName);
 
-        paybtn = (Button) rootView.findViewById(R.id.paybtn);
+        Button paybtn = rootView.findViewById(R.id.paybtn);
         paybtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         paybtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,7 +158,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
                             pos = pos + 1;
                         }
-                    }else{
+                    } else {
                         Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
                         bmodel.mSelectedActivityName = getString(R.string.bill_payment);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -176,20 +171,20 @@ public class CollectionFragmentNew extends IvyBaseFragment
             }
         });
 
-        TextView tosAmtTitle = (TextView) rootView.findViewById(R.id.tv_title_tos_amount);
+        TextView tosAmtTitle = rootView.findViewById(R.id.tv_title_tos_amount);
         tosAmtTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView pendingBillTitle = (TextView) rootView.findViewById(R.id.tv_title_pending_bills);
+        TextView pendingBillTitle = rootView.findViewById(R.id.tv_title_pending_bills);
         pendingBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView dueBillTitle = (TextView) rootView.findViewById(R.id.tv_title_due_bill);
+        TextView dueBillTitle = rootView.findViewById(R.id.tv_title_due_bill);
         dueBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
         //As of now we hiding this because functionality not yet completed
         rootView.findViewById(R.id.ll_due_bills).setVisibility(View.GONE);
 
         if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
-            Button btnClose = (Button) rootView.findViewById(R.id.btn_close);
+            Button btnClose = rootView.findViewById(R.id.btn_close);
             btnClose.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             btnClose.setVisibility(View.VISIBLE);
             btnClose.setOnClickListener(new View.OnClickListener() {
@@ -223,8 +218,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
             });
         }
 
-        if (getArguments().getBoolean("IS_NO_COLL_REASON",false) &&
-                !bmodel.collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(),getContext()))
+        if (getArguments().getBoolean("IS_NO_COLL_REASON", false) &&
+                !collectionHelper.checkInvoiceWithReason(bmodel.getRetailerMasterBO().getRetailerID(), getContext()))
             showDialog();
 
         return rootView;
@@ -238,21 +233,20 @@ public class CollectionFragmentNew extends IvyBaseFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPaymentList = bmodel.collectionHelper.getCollectionPaymentList();
-        mPaymentBOByMode = bmodel.collectionHelper.getPaymentBoByMode();
+        mPaymentList = collectionHelper.getCollectionPaymentList();
         updateIsAdvancePaymentAvailabe();
 
         /**
          * Header Value
          */
-        mTosTV = (TextView) rootView.findViewById(R.id.tv_tos_amount);
-        mPendingBillsTV = (TextView) rootView.findViewById(R.id.tv_pending_bills);
+        mTosTV = rootView.findViewById(R.id.tv_tos_amount);
+        mPendingBillsTV = rootView.findViewById(R.id.tv_pending_bills);
 
         /**
          * Pending Invoice list
          */
-        mCollectionLV = (ListView) rootView.findViewById(R.id.lv_collection);
-        if (bmodel.collectionHelper.isCollectionView()) {
+        mCollectionLV = rootView.findViewById(R.id.lv_collection);
+        if (collectionHelper.isCollectionView()) {
             mCollectionLV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         }
         View padding = new View(getActivity());
@@ -262,19 +256,19 @@ public class CollectionFragmentNew extends IvyBaseFragment
         /**
          * Bottom Value for selected invoice
          */
-        mOSAmtTV = (TextView) rootView.findViewById(R.id.tv_osamount);
-        mPayableAmtTV = (TextView) rootView.findViewById(R.id.tv_paidamt);
-        mDiscTV = (TextView) rootView.findViewById(R.id.tv_disc_amt);
+        mOSAmtTV = rootView.findViewById(R.id.tv_osamount);
+        mPayableAmtTV = rootView.findViewById(R.id.tv_paidamt);
+        mDiscTV = rootView.findViewById(R.id.tv_disc_amt);
 
         if (!bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-            LinearLayout discLL = (LinearLayout) rootView.findViewById(R.id.ll_disc);
+            LinearLayout discLL = rootView.findViewById(R.id.ll_disc);
             discLL.setVisibility(View.GONE);
         } else {
-            LinearLayout discLL = (LinearLayout) rootView.findViewById(R.id.ll_disc);
+            LinearLayout discLL = rootView.findViewById(R.id.ll_disc);
             discLL.setVisibility(View.VISIBLE);
         }
 
-        if (bmodel.collectionHelper.isCollectionView()) {
+        if (collectionHelper.isCollectionView()) {
             rootView.findViewById(R.id.bottom_value_layout).setVisibility(View.GONE);
         }
 
@@ -299,7 +293,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
             view.setMinimumWidth(1400);
             view.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.darker_gray));
-            TextView snackbarTV = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            TextView snackbarTV = view.findViewById(android.support.design.R.id.snackbar_text);
             snackbarTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.dark_red));
             snackbar.show();
         }
@@ -309,7 +303,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
     public void onPrepareOptionsMenu(Menu menu) {
 
 
-        if (bmodel.collectionHelper.isCollectionView()) {
+        if (collectionHelper.isCollectionView()) {
             menu.findItem(R.id.menu_next).setVisible(false);
             menu.findItem(R.id.menu_advance_payment).setVisible(false);
         }
@@ -325,12 +319,10 @@ public class CollectionFragmentNew extends IvyBaseFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            bmodel.collectionHelper.setCollectionView(false);
+            collectionHelper.setCollectionView(false);
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
             getActivity().finish();
-           /* BusinessModel.loadActivity(getActivity(),
-                    DataMembers.actHomeScreenTwo);*/
 
             Intent myIntent = new Intent(getActivity(), HomeScreenTwo.class);
             startActivityForResult(myIntent, 0);
@@ -338,14 +330,10 @@ public class CollectionFragmentNew extends IvyBaseFragment
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i == R.id.menu_advance_payment) {
-            if (mTotalInvoiceAmt == 0) {
-                /*AdvancePaymentDialogFragment dialogFragment = new AdvancePaymentDialogFragment();
-                dialogFragment.setCancelable(false);
-               dialogFragment.show(getFragmentManager(), getResources().getString(R.string.advance_payment));*/
-            } else {
+            if (mTotalInvoiceAmt > 0)
                 Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.advance_payment_cannot_be_reveived), Toast.LENGTH_SHORT).show();
-            }
-        }else if(i == R.id.menu_collection_reason){
+
+        } else if (i == R.id.menu_collection_reason) {
             Intent intent = new Intent(getActivity(), NoCollectionReasonActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -374,14 +362,14 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
     @Override
     public void updateReceiptNo(String receiptno) {
-        bmodel.collectionHelper.receiptno = receiptno;
+        collectionHelper.receiptno = receiptno;
         // new SaveCollection().execute();
     }
 
     @Override
     public void print(int printCount) {
         mSelectedPrintCount = printCount;
-        build = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
         customProgressDialog(build, "Printing....");
         alertDialog = build.create();
 
@@ -439,20 +427,20 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 row = inflater.inflate(R.layout.list_collection,
                         parent, false);
                 holder = new ViewHolder();
-                holder.tvInvoiceNo = (TextView) row.findViewById(R.id.tv_invoice_no);
-                holder.tvInvAmt = (TextView) row.findViewById(R.id.tv_invamt);
-                holder.tvOSAmt = (TextView) row.findViewById(R.id.tv_osamt);
-                holder.tvReceivedAmt = (TextView) row.findViewById(R.id.tv_received);
-                holder.tvPayableAmtTitle = (TextView) row.findViewById(R.id.tv_payableamt_title);
-                holder.tvPayableAmt = (TextView) row.findViewById(R.id.tv_payableamt);
-                holder.tvDiscAmtTitle = (TextView) row.findViewById(R.id.tv_disc_title);
-                holder.tvDiscAmt = (TextView) row.findViewById(R.id.tv_disc);
-                holder.tvInvDate = (TextView) row.findViewById(R.id.tv_invoice_date);
-                holder.tvAge = (TextView) row.findViewById(R.id.tv_age);
-                holder.tvDueDate = (TextView) row.findViewById(R.id.tv_duedate);
-                holder.tvDueDateTitle = (TextView) row.findViewById(R.id.tv_duedate_title);
-                holder.tvDocRef = (TextView) row.findViewById(R.id.tv_docRef);
-                holder.tvDocRefTitle = (TextView) row.findViewById(R.id.tv_docRef_title);
+                holder.tvInvoiceNo = row.findViewById(R.id.tv_invoice_no);
+                holder.tvInvAmt = row.findViewById(R.id.tv_invamt);
+                holder.tvOSAmt = row.findViewById(R.id.tv_osamt);
+                holder.tvReceivedAmt = row.findViewById(R.id.tv_received);
+                holder.tvPayableAmtTitle = row.findViewById(R.id.tv_payableamt_title);
+                holder.tvPayableAmt = row.findViewById(R.id.tv_payableamt);
+                holder.tvDiscAmtTitle = row.findViewById(R.id.tv_disc_title);
+                holder.tvDiscAmt = row.findViewById(R.id.tv_disc);
+                holder.tvInvDate = row.findViewById(R.id.tv_invoice_date);
+                holder.tvAge = row.findViewById(R.id.tv_age);
+                holder.tvDueDate = row.findViewById(R.id.tv_duedate);
+                holder.tvDueDateTitle = row.findViewById(R.id.tv_duedate_title);
+                holder.tvDocRef = row.findViewById(R.id.tv_docRef);
+                holder.tvDocRefTitle = row.findViewById(R.id.tv_docRef_title);
 
                 if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                     holder.tvPayableAmtTitle.setVisibility(View.VISIBLE);
@@ -482,12 +470,12 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     holder.tvDocRef.setVisibility(View.GONE);
                 }
 
-                holder.imgInvSelected = (ImageView) row.findViewById(R.id.img_check);
+                holder.imgInvSelected = row.findViewById(R.id.img_check);
 
                 row.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!bmodel.collectionHelper.isCollectionView()) {
+                        if (!collectionHelper.isCollectionView()) {
 
                             if (bmodel.configurationMasterHelper.IS_COLLECTION_ORDER
                                     && checkPreviousInvoice(holder.invoiceHeaderBO)) {
@@ -516,7 +504,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                                             if (advancePaymentFragment != null) {
                                                 updateSelectedList();
                                                 advancePaymentFragment.updatePaymentDetails();
-                                                bmodel.collectionHelper.updateCollectionList(mSelecteInvoiceList, paymentBO.getCashMode());
+                                                collectionHelper.updateCollectionList(mSelecteInvoiceList, paymentBO.getCashMode());
                                             }
                                         }
                                     }
@@ -546,7 +534,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     ConfigurationMasterHelper.outDateFormat));
 //            final int count = DateUtil.getDateCount(holder.invoiceHeaderBO.getInvoiceDate(),
 //                    SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
-            if(bmodel.configurationMasterHelper.COMPUTE_DUE_DAYS) {
+            if (bmodel.configurationMasterHelper.COMPUTE_DUE_DAYS) {
                 int count = 0;
                 if (bmodel.retailerMasterBO.getCreditDays() != 0) {
                     if (holder.invoiceHeaderBO.getDueDate() != null)
@@ -561,7 +549,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     count = 0;
                 String strCount = "(" + (count + 1) + ")";
                 holder.tvAge.setText(strCount);
-            }else{
+            } else {
                 String strDays = (holder.invoiceHeaderBO.getDueDays() != null && !"0".equals(holder.invoiceHeaderBO.getDueDays())
                         && !holder.invoiceHeaderBO.getDueDays().isEmpty()) ? "(" + holder.invoiceHeaderBO.getDueDays() + ")" : "";
                 holder.tvAge.setText(strDays);
@@ -718,11 +706,6 @@ public class CollectionFragmentNew extends IvyBaseFragment
         mPendingBillsTV.setText(strCount);
     }
 
-    /*public void viewRestore(Bundle bundle) {
-        mSelectedPagePos = bundle.getInt("viewPagerPos", 0);
-        mViewPager.setCurrentItem(mSelectedPagePos);
-    }*/
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -730,26 +713,11 @@ public class CollectionFragmentNew extends IvyBaseFragment
         ((CollectionScreen) getActivity()).passData(outState);
     }
 
-    /**
-     * Method to check haspayment status
-     * and allow collection by using CB only or not
-     */
-   /* private boolean checkHasPaymentIssue(String mode) {
-        if (bmodel.getRetailerMasterBO().getHasPaymentIssue() == 1) {
-            boolean isCBType = bmodel.collectionHelper.isCreditBalancebalance(mode);
-            if (!isCBType) {
-                return true;
-            }
-        }
-        return false;
-    }*/
-
     /// print
     private void doConnection() {
         try {
             ZebraPrinter printer = connect();
             if (printer != null) {
-                // sendTestLabel();
                 printInvoice();
             } else {
                 disconnect();
@@ -766,7 +734,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
     private void printInvoice() {
         try {
-            int printDoneCount = bmodel.reportHelper.getPaymentPrintCount(bmodel.collectionHelper.collectionGroupId.replace("'", ""));
+            int printDoneCount = bmodel.reportHelper.getPaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""));
             for (int i = 0; i <= mSelectedPrintCount; i++) {
                 if (i == 0 && printDoneCount == 0)
                     zebraPrinterConnection.write(bmodel.printHelper.printCollection(true));
@@ -774,7 +742,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     zebraPrinterConnection.write(bmodel.printHelper.printCollection(false));
             }
 
-            bmodel.reportHelper.updatePaymentPrintCount(bmodel.collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
+            bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
 
             DemoSleeper.sleep(1500);
             if (zebraPrinterConnection instanceof BluetoothConnection) {
@@ -864,7 +832,6 @@ public class CollectionFragmentNew extends IvyBaseFragment
         if (mPaymentList != null) {
             for (PaymentBO paymentBO : mPaymentList) {
                 if (paymentBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT)) {
-                    isAdvancePaymentAvailable = true;
                     break;
                 }
             }
@@ -952,9 +919,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     return true;
 
                 case BixolonPrinter.MESSAGE_PRINT_COMPLETE:
-                    /*Toast.makeText(getApplicationContext(),
-                            getResources().getString(R.string.complete_to_print),
-                            Toast.LENGTH_SHORT).show();*/
+
                     return true;
 
                 case BixolonPrinter.MESSAGE_ERROR_OUT_OF_MEMORY:
@@ -977,9 +942,9 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 if (i == 0)
                     isOriginal = true;
                 else isOriginal = false;
-                printTextLeft(bmodel.printHelper.printDataforBixolon3inchCollectionprinter(true, bmodel.collectionHelper.collectionGroupId, isOriginal, true), DataMembers.PRINT_TEXT_SIZE);
+                printTextLeft(bmodel.printHelper.printDataforBixolon3inchCollectionprinter(true, collectionHelper.collectionGroupId, isOriginal, true), DataMembers.PRINT_TEXT_SIZE);
             }
-            bmodel.reportHelper.updatePaymentPrintCount(bmodel.collectionHelper.collectionGroupId.replace("'", ""), mSelectedPrintCount + 1);
+            bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), mSelectedPrintCount + 1);
 
             DemoSleeper.sleep(1500);
 
@@ -1040,11 +1005,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
     private void dispatchMessage(Message msg) {
         switch (msg.arg1) {
             case BixolonPrinter.PROCESS_GET_STATUS:
-                if (msg.arg2 == BixolonPrinter.STATUS_NORMAL) {
-                    /*Toast.makeText(getApplicationContext(),
-                            getResources().getString(R.string.no_error),
-                            Toast.LENGTH_SHORT).show();*/
-                } else {
+                if (msg.arg2 != BixolonPrinter.STATUS_NORMAL) {
+
                     StringBuffer buffer = new StringBuffer();
                     if ((msg.arg2 & BixolonPrinter.STATUS_COVER_OPEN) == BixolonPrinter.STATUS_COVER_OPEN) {
                         buffer.append(getResources().getString(
@@ -1138,12 +1100,12 @@ public class CollectionFragmentNew extends IvyBaseFragment
                         else isOriginal = false;
                         aemPrinter.setFontType(AEMPrinter.FONT_NORMAL);
                         aemPrinter.setFontSize(fontSize);
-                        aemPrinter.print((bmodel.printHelper.printDataforBixolon3inchCollectionprinter(false, bmodel.collectionHelper.collectionGroupId, isOriginal, true)));
+                        aemPrinter.print((bmodel.printHelper.printDataforBixolon3inchCollectionprinter(false, collectionHelper.collectionGroupId, isOriginal, true)));
                         aemPrinter.setCarriageReturn();
 
 
                     }
-                    bmodel.reportHelper.updatePaymentPrintCount(bmodel.collectionHelper.collectionGroupId.replace("'", ""), (mSelectedPrintCount + 1));
+                    bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), (mSelectedPrintCount + 1));
 
                     DemoSleeper.sleep(1600 * (mSelectedPrintCount + 1));
                     bmodel.showAlert(
@@ -1216,9 +1178,9 @@ public class CollectionFragmentNew extends IvyBaseFragment
         String modeID = bmodel.getStandardListIdAndType(
                 "CNAP",
                 StandardListMasterConstants.CREDIT_NOTE_TYPE);
-        if (bmodel.collectionHelper.getCreditNoteList() != null) {
+        if (collectionHelper.getCreditNoteList() != null) {
             ArrayList<CreditNoteListBO> mCreditNoteList = new ArrayList<>();
-            for (CreditNoteListBO bo : bmodel.collectionHelper
+            for (CreditNoteListBO bo : collectionHelper
                     .getCreditNoteList()) {
                 if (bo.getRetailerId().equals(
                         bmodel.getRetailerMasterBO().getRetailerID())
