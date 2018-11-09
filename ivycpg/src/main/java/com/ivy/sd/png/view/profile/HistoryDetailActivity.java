@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,6 +18,8 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -137,6 +140,31 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
                         .findViewById(R.id.outervalue);
                 holder.outervalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+                holder.freeQty = row.findViewById(R.id.freeQty_val);
+                holder.freeQty.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
+
+                holder.value = row.findViewById(R.id.value_val);
+                holder.value.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
+
+                holder.ll_piece = row.findViewById(R.id.piece_layout);
+                holder.ll_case = row.findViewById(R.id.cases_layout);
+                holder.ll_outer = row.findViewById(R.id.outer_layout);
+
+                holder.piece_label = row.findViewById(R.id.pieces_txt);
+                holder.piece_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
+
+                holder.case_label = row.findViewById(R.id.cases_txt);
+                holder.case_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
+
+                holder.outer_label = row.findViewById(R.id.outer_txt);
+                holder.outer_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
+
+                holder.freeQty_label = row.findViewById(R.id.freeQty_txt);
+                holder.freeQty_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
+
+                holder.value_label = row.findViewById(R.id.value_txt);
+                holder.value_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
+
                 row.setTag(holder);
 
             } else {
@@ -157,13 +185,13 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
 
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
                 tvcase.setVisibility(View.GONE);
-                holder.casevalue.setVisibility(View.GONE);
+                holder.ll_case.setVisibility(View.GONE);
 
 
             } else {
                 try {
                     tvcase.setVisibility(View.VISIBLE);
-                    holder.casevalue.setVisibility(View.VISIBLE);
+                    holder.ll_case.setVisibility(View.VISIBLE);
                     if (bmodel.labelsMasterHelper.applyLabels(tvcase.getTag()) != null)
                         tvcase
                                 .setText(bmodel.labelsMasterHelper
@@ -174,13 +202,13 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
             }
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
                 tvpiece.setVisibility(View.GONE);
-                holder.piecevalue.setVisibility(View.GONE);
+                holder.ll_piece.setVisibility(View.GONE);
 
 
             } else {
                 try {
                     tvpiece.setVisibility(View.VISIBLE);
-                    holder.piecevalue.setVisibility(View.VISIBLE);
+                    holder.ll_piece.setVisibility(View.VISIBLE);
                     if (bmodel.labelsMasterHelper.applyLabels(tvpiece.getTag()) != null)
                         tvpiece
                                 .setText(bmodel.labelsMasterHelper
@@ -191,11 +219,11 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
             }
             if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
                 tvouter.setVisibility(View.GONE);
-                holder.outervalue.setVisibility(View.GONE);
+                holder.ll_outer.setVisibility(View.GONE);
             } else {
                 try {
                     tvouter.setVisibility(View.VISIBLE);
-                    holder.outervalue.setVisibility(View.VISIBLE);
+                    holder.ll_outer.setVisibility(View.VISIBLE);
                     if (bmodel.labelsMasterHelper.applyLabels(tvouter.getTag()) != null)
                         tvouter
                                 .setText(bmodel.labelsMasterHelper
@@ -209,7 +237,9 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
         }
 
         class ViewHolder {
-            TextView brandname, piecevalue, casevalue, outervalue;
+            TextView brandname, piecevalue, casevalue, outervalue,freeQty,value;
+            private TextView piece_label,case_label,outer_label,freeQty_label,value_label;
+            private LinearLayout ll_piece,ll_case,ll_outer;
             public Vector<OrderHistoryBO> childHistoryList;
         }
 

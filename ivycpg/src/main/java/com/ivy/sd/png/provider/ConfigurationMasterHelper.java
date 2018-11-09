@@ -1483,11 +1483,14 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
     //132 --- task 45
-    // private static final String CODE_SHOW_ORDER_ATTACH_FILE = "ORDB76";
     public boolean IS_SHOW_ORDER_ATTACH_FILE;
 
     private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
     public boolean IS_SHOW_ALL_SKU_ON_EDIT;
+
+    //Provision to highlight 0 qty of warehouse stock in ordered products
+    private static final String CODE_SHOW_OOS = "ORDB76";
+    public boolean IS_SHOW_OOS;
 
     private static final String CODE_KPI_CALENDAR = "KPI_CALENDER";
     public boolean IS_KPI_CALENDAR;
@@ -2662,6 +2665,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
+        this.IS_SHOW_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_OOS) : false;
     }
 
     private boolean isInOutModule() {
