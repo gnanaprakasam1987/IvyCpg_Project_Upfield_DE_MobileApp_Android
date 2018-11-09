@@ -594,7 +594,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void updateOrderValue(int totalOrderValue) {
+    public void updateOrderValue(double totalOrderValue) {
         tvOrderValue.setText(String.valueOf(totalOrderValue));
     }
 
