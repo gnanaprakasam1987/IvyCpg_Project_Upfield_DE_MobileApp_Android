@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,19 +40,19 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CaptureSignatureActivity;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
 public class CollectionReference extends IvyBaseActivityNoActionBar {
     private static final String TAG = "CollectionReference";
     private static BusinessModel bmodel;
-    private Toolbar toolbar;
     private ArrayList<InvoiceHeaderBO> mInvioceList;
-    private ListView mCollectionLV;
-    private Button btnSave;
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
     private String mErrorMsg = "";
     private String mSelectedBill = "";
@@ -76,7 +75,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         String title = bmodel.configurationMasterHelper
                 .getHomescreentwomenutitle("MENU_COLLECTION_REF");
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -115,9 +114,9 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         spinnerAdapter.add(reasonBO);
 
 
-        mCollectionLV = (ListView) findViewById(R.id.list);
-        btnSave = (Button) findViewById(R.id.btn_save);
-        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ListView mCollectionLV = findViewById(R.id.list);
+        Button btnSave = findViewById(R.id.btn_save);
+        btnSave.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
 
         mInvioceList = new ArrayList<>();
 
@@ -160,24 +159,16 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 mErrorMsg = getResources().getString(R.string.enter_remarks);
                 return false;
             }
-//            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getContactName().toString().length() == 0) {
-//                mErrorMsg = getResources().getString(R.string.enter_contact_name);
-//                return false;
-//            }
-//            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getContactNo().toString().length() == 0) {
-//                mErrorMsg = getResources().getString(R.string.enter_contact_number);
-//                return false;
-//            }
-            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocRefNo().toString().length() == 0) {
+            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocRefNo().length() == 0) {
                 mErrorMsg = getResources().getString(R.string.enter_docref_number);
                 return false;
             }
-            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocSignPath().toString().length() == 0) {
+            if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocSignPath().length() == 0) {
                 mErrorMsg = getResources().getString(R.string.get_signature);
                 return false;
             }
             if (bmodel.configurationMasterHelper.IS_DOC_SIGN) {
-                if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocSignPath().toString().length() == 0) {
+                if (invoiceHeaderBO.getDocExchange() == 1 && invoiceHeaderBO.getDocSignPath().length() == 0) {
                     mErrorMsg = getResources().getString(R.string.get_signature);
                     return false;
                 }
@@ -223,37 +214,37 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 row = inflater.inflate(R.layout.list_item_collec_ref,
                         parent, false);
                 holder = new ViewHolder();
-                holder.tvInvoiceNo = (TextView) row.findViewById(R.id.tv_invoice_no);
-                holder.invAmt = (TextView) row.findViewById(R.id.tvinvamtValue);
-                holder.balanceAmt = (TextView) row.findViewById(R.id.tvbalamtValue);
-                holder.paidAmt = (TextView) row.findViewById(R.id.tvpaidamtValue);
-                holder.etDocRef = (EditText) row.findViewById(R.id.etdocRef);
-                holder.etContactName = (EditText) row.findViewById(R.id.etcontactName);
-                holder.etContactNo = (EditText) row.findViewById(R.id.etcontactNo);
-                holder.cbDocExchange = (CheckBox) row.findViewById(R.id.cbDocExchange);
-                holder.spReason = (Spinner) row.findViewById(R.id.spreason);
-                holder.etRemark = (EditText) row.findViewById(R.id.etremark);
-                holder.llDocReason = (LinearLayout) row.findViewById(R.id.lldocReason);
-                holder.llDocRemark = (LinearLayout) row.findViewById(R.id.lldocRemark);
-                holder.ivSignature = (ImageView) row.findViewById(R.id.ivSign);
+                holder.tvInvoiceNo = row.findViewById(R.id.tv_invoice_no);
+                holder.invAmt = row.findViewById(R.id.tvinvamtValue);
+                holder.balanceAmt = row.findViewById(R.id.tvbalamtValue);
+                holder.paidAmt = row.findViewById(R.id.tvpaidamtValue);
+                holder.etDocRef = row.findViewById(R.id.etdocRef);
+                holder.etContactName = row.findViewById(R.id.etcontactName);
+                holder.etContactNo = row.findViewById(R.id.etcontactNo);
+                holder.cbDocExchange = row.findViewById(R.id.cbDocExchange);
+                holder.spReason = row.findViewById(R.id.spreason);
+                holder.etRemark = row.findViewById(R.id.etremark);
+                holder.llDocReason = row.findViewById(R.id.lldocReason);
+                holder.llDocRemark = row.findViewById(R.id.lldocRemark);
+                holder.ivSignature = row.findViewById(R.id.ivSign);
 
-                ((TextView) row.findViewById(R.id.tvinvamt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.tvpaidamt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.tvbalamt)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.docRefTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.contactNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.contactNoTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.DocExcTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.DocReasonTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.remarkTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.tvInvoiceNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.invAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.balanceAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.paidAmt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.etDocRef.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.etContactName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.etContactNo.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.etRemark.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) row.findViewById(R.id.tvinvamt)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.tvpaidamt)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.tvbalamt)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.docRefTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.contactNameTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.contactNoTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.DocExcTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.DocReasonTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                ((TextView) row.findViewById(R.id.remarkTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
+                holder.tvInvoiceNo.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
+                holder.invAmt.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
+                holder.balanceAmt.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
+                holder.paidAmt.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
+                holder.etDocRef.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
+                holder.etContactName.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
+                holder.etContactNo.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
+                holder.etRemark.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
 
 
                 holder.etDocRef.addTextChangedListener(new TextWatcher() {
@@ -496,7 +487,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.collectionHelper.saveCollectionReference(mInvioceList);
+                CollectionHelper.getInstance(CollectionReference.this).saveCollectionReference(mInvioceList);
                 bmodel.saveModuleCompletion("MENU_COLLECTION_REF");
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -536,8 +527,6 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME));
         finish();
-      /*  BusinessModel.loadActivity(this,
-                DataMembers.actHomeScreenTwo);*/
 
         Intent myIntent = new Intent(this, HomeScreenTwo.class);
         startActivityForResult(myIntent, 0);
@@ -576,7 +565,6 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                     }
                 }
                 break;
-
         }
     }
 

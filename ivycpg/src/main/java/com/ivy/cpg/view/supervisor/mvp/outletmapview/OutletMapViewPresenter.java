@@ -75,7 +75,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
     @Override
     public void downloadOutletListAws() {
-        retailerMasterHashmap = SupervisorActivityHelper.getInstance().getRetailerMasterHashmap();
+        retailerMasterHashmap.putAll(SupervisorActivityHelper.getInstance().getRetailerMasterHashmap());
     }
 
     @Override
@@ -356,7 +356,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
                 retailerMasterBo.setSkipped(false);
                 retailerMasterBo.setVisited(true);
 
-                long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
+                double totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
                 retailerMasterBo.setTotalOrderValue(totalOrderValue);
 
                 retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());

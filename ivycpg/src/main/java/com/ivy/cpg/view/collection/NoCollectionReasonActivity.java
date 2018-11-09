@@ -70,7 +70,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
         MyAdapter myAdapter = new MyAdapter();
         recyclerView.setAdapter(myAdapter);
 
-        mInvioceList = bmodel.collectionHelper.loadInvoiceList(bmodel.getRetailerMasterBO().getRetailerID(),this);
+        mInvioceList = CollectionHelper.getInstance(this).loadInvoiceList(bmodel.getRetailerMasterBO().getRetailerID(),this);
         loadCollectionReason();
 
         myAdapter.notifyDataSetChanged();

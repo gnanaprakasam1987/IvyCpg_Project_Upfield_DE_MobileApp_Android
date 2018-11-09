@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.reports.collectionreport;
 
 import android.content.Intent;
 import android.os.Bundle;

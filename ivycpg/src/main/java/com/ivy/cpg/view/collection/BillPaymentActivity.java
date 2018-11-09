@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -15,23 +15,19 @@ import com.ivy.sd.png.model.BusinessModel;
  */
 public class BillPaymentActivity extends IvyBaseActivityNoActionBar implements ReceiptNoDialogFragment.UpdateReceiptNoInterface {
 
-    private Toolbar toolbar;
-    private BusinessModel bmodel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill_payment);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
     }
 
 
@@ -55,13 +51,6 @@ public class BillPaymentActivity extends IvyBaseActivityNoActionBar implements R
     protected void onResume() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        /*BillPaymentActivityFragment bPAFragment = new BillPaymentActivityFragment();
-
-        boolean isFromCollection = getIntent().getExtras() != null && getIntent().getExtras().getBoolean("FromCollection", false);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("FromCollection",isFromCollection);
-        bPAFragment.setArguments(bundle);*/
-
         ft.replace(R.id.fragment, new BillPaymentActivityFragment());
         ft.commit();
 
@@ -70,6 +59,6 @@ public class BillPaymentActivity extends IvyBaseActivityNoActionBar implements R
 
     @Override
     public void updateReceiptNo(String receiptno) {
-        bmodel.collectionHelper.receiptno = receiptno;
+        CollectionHelper.getInstance(BillPaymentActivity.this).receiptno = receiptno;
     }
 }

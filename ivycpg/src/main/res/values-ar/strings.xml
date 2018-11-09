@@ -1192,8 +1192,8 @@
     <string name="payment_term">شروط الدفع</string>
     <string name="oth_disc">خصومات أخرى</string>
     <string name="sch_disc">سياسة البيع</string>
-    <!--<string name="signature">الامضاء</string>-->
     <string name="attachment">مرفق</string>
+
     <string name="ns">NS</string>
     <string name="ul">UL</string>
     <string name="salable">رائج</string>

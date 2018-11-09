@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -30,6 +30,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionScreen;
+import com.ivy.cpg.view.collection.PrintCountDialogFragment;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
@@ -41,9 +43,12 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.CustomKeyBoard;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.SettingsHelper;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -78,17 +83,16 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     private PaymentBO mSelectedPaymentBO;
     private CustomKeyBoard dialogCustomKeyBoard;
     private String mImageName;
-    private String mImagePath;
     private final int mImageCount = 1;
     private int mSelectedPrintCount = 0;
-    private AlertDialog.Builder build;
     private AlertDialog alertDialog;
     private Connection zebraPrinterConnection;
-    private ArrayList<InvoiceHeaderBO> mInvioceList;
     private double mTotalInvoiceAmt = 0;
     private int rcheckedId = 0;
     private EditText mBankET;
     private EditText mBranchET;
+
+    private CollectionHelper collectionHelper;
 
     @Override
     public void onAttach(Context context) {
@@ -102,6 +106,8 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        collectionHelper = CollectionHelper.getInstance(getActivity());
 
     }
 
@@ -188,7 +194,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
     // check pending invoice is available or not available
     private void loadInvoiceList() {
-        mInvioceList = bmodel.getInvoiceHeaderBO();
+        ArrayList<InvoiceHeaderBO> mInvioceList = bmodel.getInvoiceHeaderBO();
 
         for (InvoiceHeaderBO invoiceHeaderBO : mInvioceList) {
             if (invoiceHeaderBO.getBalance() > 0) {
@@ -223,25 +229,25 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     }
 
     private void initializeobj() {
-        mPaymentTypeRB = (RadioGroup) getView().findViewById(R.id.chequeorcash);
-        mCollectAmtET = (EditText) getView().findViewById(R.id.collectionAmount);
-        mChequeNoET = (EditText) getView().findViewById(R.id.collectionchequeNo);
-        mChequeDateBTN = (Button) getView().findViewById(R.id.collectionDate);
-        mCameraImg = (ImageView) getView().findViewById(R.id.capturecheque);
-        mBankModeLL = (LinearLayout) getView().findViewById(R.id.mode);
-        mChequeDateLL = (LinearLayout) getView().findViewById(R.id.ccdate);
-        mPayTotalTV = (TextView) getView().findViewById(R.id.payTotal);
-        mSubmitBTN = (Button) getView().findViewById(R.id.btnsubmit);
-        mCloseBTN = (Button) getView().findViewById(R.id.btnclose);
+        mPaymentTypeRB =  getView().findViewById(R.id.chequeorcash);
+        mCollectAmtET =  getView().findViewById(R.id.collectionAmount);
+        mChequeNoET =  getView().findViewById(R.id.collectionchequeNo);
+        mChequeDateBTN =  getView().findViewById(R.id.collectionDate);
+        mCameraImg =  getView().findViewById(R.id.capturecheque);
+        mBankModeLL =  getView().findViewById(R.id.mode);
+        mChequeDateLL =  getView().findViewById(R.id.ccdate);
+        mPayTotalTV =  getView().findViewById(R.id.payTotal);
+        mSubmitBTN =  getView().findViewById(R.id.btnsubmit);
+        mCloseBTN =  getView().findViewById(R.id.btnclose);
     }
 
     private void loadBankDetails() {
-        mBankSpin = (Spinner) getView().findViewById(R.id.bankName);
-        mBranchSpin = (Spinner) getView().findViewById(R.id.bankArea);
-        mBankET = (EditText) getView().findViewById(R.id.edit_bankname);
-        mBranchET = (EditText) getView().findViewById(R.id.edit_branchname);
-        mBankDetailsList = bmodel.collectionHelper.getBankMasterBO();
-        mBranchDetailsList = bmodel.collectionHelper.getBranchMasterBO();
+        mBankSpin =  getView().findViewById(R.id.bankName);
+        mBranchSpin =  getView().findViewById(R.id.bankArea);
+        mBankET =  getView().findViewById(R.id.edit_bankname);
+        mBranchET =  getView().findViewById(R.id.edit_branchname);
+        mBankDetailsList = collectionHelper.getBankMasterBO();
+        mBranchDetailsList = collectionHelper.getBranchMasterBO();
         ArrayAdapter<BankMasterBO> bankSpinnerAdapter = new ArrayAdapter<>(
                 getActivity(), R.layout.spinner_bluetext_layout);
         bankSpinnerAdapter
@@ -269,8 +275,8 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                 BankMasterBO bank = (BankMasterBO) mBankSpin.getSelectedItem();
 
                 if (bank.getBankId() == 0) {
-                    ((LinearLayout) getView().findViewById(R.id.llBranch)).setVisibility(View.GONE);
-                    ((LinearLayout) getView().findViewById(R.id.llbankbranch)).setVisibility(View.VISIBLE);
+                    ( getView().findViewById(R.id.llBranch)).setVisibility(View.GONE);
+                    ( getView().findViewById(R.id.llbankbranch)).setVisibility(View.VISIBLE);
                     mBranchSpin.setSelection(0);
                     if (mSelectedPaymentBO != null) {
                         mSelectedPaymentBO.setBankID("0");
@@ -280,8 +286,8 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                     }
 
                 } else {
-                    ((LinearLayout) getView().findViewById(R.id.llBranch)).setVisibility(View.VISIBLE);
-                    ((LinearLayout) getView().findViewById(R.id.llbankbranch)).setVisibility(View.GONE);
+                    ( getView().findViewById(R.id.llBranch)).setVisibility(View.VISIBLE);
+                    ( getView().findViewById(R.id.llbankbranch)).setVisibility(View.GONE);
                     String bankID = String.valueOf(bank.getBankId());
                     if (mSelectedPaymentBO != null) {
                         mSelectedPaymentBO.setBankID(bankID);
@@ -391,8 +397,8 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         }
 
         try {
-            if (bmodel.collectionHelper.getCollectionPaymentList() == null
-                    || bmodel.collectionHelper.getCollectionPaymentList().size() == 0) {
+            if (collectionHelper.getCollectionPaymentList() == null
+                    || collectionHelper.getCollectionPaymentList().size() == 0) {
                 modeInvisible();
             }
             mPaymentTypeRB
@@ -444,14 +450,6 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                         } else {
                             Intent intent = new Intent(getActivity(), CameraActivity.class);
                             intent.putExtra("quality", 40);
-                            mImagePath = bmodel.userMasterHelper.getUserMasterBO
-                                    ().getDistributorid()
-                                    + "_"
-                                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                    + "_"
-                                    + bmodel.userMasterHelper.getUserMasterBO
-                                    ().getDownloadDate()
-                                    .replace("/", "") + "/";
                             String path = HomeScreenFragment.photoPath + "/" + mImageName;
                             intent.putExtra("path", path);
                             startActivityForResult(intent,
@@ -773,7 +771,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     @Override
     public void print(int printCount) {
         mSelectedPrintCount = printCount;
-        build = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
         customProgressDialog(build, "Printing....");
         alertDialog = build.create();
 
@@ -800,7 +798,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
         @Override
         protected Object doInBackground(Object[] params) {
-            bmodel.collectionHelper.saveAdvancePayment(mSelectedPaymentBO);
+            collectionHelper.saveAdvancePayment(mSelectedPaymentBO);
             return null;
         }
 
@@ -904,7 +902,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
     private void printInvoice() {
         try {
-            int printDoneCount = bmodel.reportHelper.getPaymentPrintCount(bmodel.collectionHelper.collectionGroupId.replace("'", ""));
+            int printDoneCount = bmodel.reportHelper.getPaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""));
             for (int i = 0; i <= mSelectedPrintCount; i++) {
                 if (i == 0 && printDoneCount == 0)
                     zebraPrinterConnection.write(bmodel.printHelper.printAdvancePayment(true));
@@ -912,7 +910,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                     zebraPrinterConnection.write(bmodel.printHelper.printAdvancePayment(false));
             }
 
-            bmodel.reportHelper.updatePaymentPrintCount(bmodel.collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
+            bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
 
             DemoSleeper.sleep(1500);
             if (zebraPrinterConnection instanceof BluetoothConnection) {
@@ -967,14 +965,10 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            bmodel.collectionHelper.setCollectionView(false);
+            collectionHelper.setCollectionView(false);
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
             getActivity().finish();
-           /* BusinessModel.loadActivity(getActivity(),
-                    DataMembers.actHomeScreenTwo);*/
-
-            //  DataMembers.actHomeScreenTwo);
             Intent  myIntent = new Intent(getActivity(), HomeScreenTwo.class);
             startActivityForResult(myIntent, 0);
             return true;

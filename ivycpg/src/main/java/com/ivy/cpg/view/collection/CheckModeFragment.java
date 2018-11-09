@@ -1,8 +1,6 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -43,6 +41,10 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
+import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,11 +71,9 @@ public class CheckModeFragment extends IvyBaseFragment
     private ArrayList<BranchMasterBO> mBranchDetailsList;
     private Button mChequeDateBTN;
     private UpdatePaymentByDateInterface mUpdatePaymentDateInterface;
-    private CustomKeyBoard dialogCustomKeyBoard;
 
     private String mImageName;
     private String mImagePath;
-    private final int mImageCount = 1;
     private View rootView;
     private boolean isAdvancePaymentAvailabe;
 
@@ -81,12 +81,12 @@ public class CheckModeFragment extends IvyBaseFragment
     private String append = "";
     private InputMethodManager inputManager;
     private Button applyBtn, cancelBTn;
-    private boolean isNumberPressed = false;
     private double tempPaidAmt = 0.0;
     private String mErrorMsg = "";
     private int chqMinDate = 0, chqMaxDate = 0;
     private LinearLayout llAccountNo;
     String mName = "";
+    private CollectionHelper collectionHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,6 +94,7 @@ public class CheckModeFragment extends IvyBaseFragment
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        collectionHelper = CollectionHelper.getInstance(getActivity());
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
 
@@ -102,7 +103,7 @@ public class CheckModeFragment extends IvyBaseFragment
         final int checkModePos = getArguments().getInt("position", 0);
         isAdvancePaymentAvailabe = getArguments().getBoolean("IsAdvancePaymentAvailable", false);
 
-        mPaymentList = bmodel.collectionHelper.getCollectionPaymentList();
+        mPaymentList = collectionHelper.getCollectionPaymentList();
         mPaymentBO = mPaymentList.get(checkModePos);
         tempPaidAmt = mPaymentBO.getAmount();
 
@@ -118,30 +119,29 @@ public class CheckModeFragment extends IvyBaseFragment
 
         rootView.findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
         if (getActivity().getActionBar() != null) {
-            // getActionBar().setIcon(R.drawable.icon_stock);
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
         if (mPaymentBO != null) {
             setScreenTitle(mPaymentBO.getListName());
         }
 
-        applyBtn = (Button) rootView.findViewById(R.id.applybtn);
+        applyBtn = rootView.findViewById(R.id.applybtn);
         applyBtn.setOnClickListener(this);
-        applyBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        cancelBTn = (Button) rootView.findViewById(R.id.cancelbtn);
+        applyBtn.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        cancelBTn = rootView.findViewById(R.id.cancelbtn);
         cancelBTn.setOnClickListener(this);
-        applyBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        cancelBTn.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
-        bmodel.collectionHelper.clearPaymentObjects(mPaymentBO);
-        mTotalAmountTV = (TextView) rootView.findViewById(R.id.tv_total_amount);
-        mCollectAmountET = (EditText) rootView.findViewById(R.id.edit_collectamt);
-        mChequeNoTitleTV = (TextView) rootView.findViewById(R.id.tv_chequeno_title);
-        mChequeDateTitleTV = (TextView) rootView.findViewById(R.id.tv_date_title);
-        mChequeNoET = (EditText) rootView.findViewById(R.id.edit_chequeno);
-        mBankET = (EditText) rootView.findViewById(R.id.edit_bankname);
-        mBranchET = (EditText) rootView.findViewById(R.id.edit_branchname);
-        mAccountnoET = (EditText) rootView.findViewById(R.id.edit_accountno);
-        llAccountNo = (LinearLayout) rootView.findViewById(R.id.llAccountNo);
+        collectionHelper.clearPaymentObjects(mPaymentBO);
+        mTotalAmountTV = rootView.findViewById(R.id.tv_total_amount);
+        mCollectAmountET = rootView.findViewById(R.id.edit_collectamt);
+        mChequeNoTitleTV = rootView.findViewById(R.id.tv_chequeno_title);
+        mChequeDateTitleTV = rootView.findViewById(R.id.tv_date_title);
+        mChequeNoET = rootView.findViewById(R.id.edit_chequeno);
+        mBankET = rootView.findViewById(R.id.edit_bankname);
+        mBranchET = rootView.findViewById(R.id.edit_branchname);
+        mAccountnoET = rootView.findViewById(R.id.edit_accountno);
+        llAccountNo = rootView.findViewById(R.id.llAccountNo);
 
         if (mPaymentBO.getAmount() > 0) {
             mCollectAmountET.setText(bmodel.formatValue(SDUtil.convertToDouble(SDUtil.getWithoutExponential(mPaymentBO.getAmount()))));
@@ -158,7 +158,7 @@ public class CheckModeFragment extends IvyBaseFragment
             mChequeNoET.setInputType(InputType.TYPE_CLASS_TEXT);
         }
 
-        mBankSpin = (Spinner) rootView.findViewById(R.id.spin_bank);
+        mBankSpin = rootView.findViewById(R.id.spin_bank);
         ArrayAdapter<BankMasterBO> bankSpinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);
         bankSpinnerAdapter
@@ -167,7 +167,7 @@ public class CheckModeFragment extends IvyBaseFragment
         bankMasterBO.setBankId(-1);
         bankMasterBO.setBankName(getResources().getString(R.string.sel_bank));
         bankSpinnerAdapter.add(bankMasterBO);
-        mBankDetailList = bmodel.collectionHelper.getBankMasterBO();
+        mBankDetailList = collectionHelper.getBankMasterBO();
         int size = mBankDetailList.size();
         for (int i = 0; i < size; ++i) {
             BankMasterBO ret = mBankDetailList.get(i);
@@ -179,25 +179,25 @@ public class CheckModeFragment extends IvyBaseFragment
         bankSpinnerAdapter.add(otherMasterBO);
         mBankSpin.setAdapter(bankSpinnerAdapter);
 
-        mBranchSpin = (Spinner) rootView.findViewById(R.id.spin_branch);
+        mBranchSpin = rootView.findViewById(R.id.spin_branch);
 
-        mBranchDetailsList = bmodel.collectionHelper.getBranchMasterBO();
+        mBranchDetailsList = collectionHelper.getBranchMasterBO();
 
         mBankSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 BankMasterBO bankBO = (BankMasterBO) mBankSpin.getSelectedItem();
                 if (bankBO.getBankId() == 0) {
-                    ((LinearLayout) rootView.findViewById(R.id.llBranch)).setVisibility(View.GONE);
-                    ((LinearLayout) rootView.findViewById(R.id.llbankbranch)).setVisibility(View.VISIBLE);
+                    (rootView.findViewById(R.id.llBranch)).setVisibility(View.GONE);
+                    (rootView.findViewById(R.id.llbankbranch)).setVisibility(View.VISIBLE);
                     mPaymentBO.setBankID(bankBO.getBankId() + "");
                     mPaymentBO.setBranchId("0");
                     mBankET.setText(mPaymentBO.getBankName());
                     mBranchET.setText(mPaymentBO.getBranchName());
 
                 } else {
-                    ((LinearLayout) rootView.findViewById(R.id.llBranch)).setVisibility(View.VISIBLE);
-                    ((LinearLayout) rootView.findViewById(R.id.llbankbranch)).setVisibility(View.GONE);
+                    (rootView.findViewById(R.id.llBranch)).setVisibility(View.VISIBLE);
+                    (rootView.findViewById(R.id.llbankbranch)).setVisibility(View.GONE);
                     mPaymentBO.setBankID(bankBO.getBankId() + "");
                     updateBranchSpiner(bankBO.getBankId() + "");
                 }
@@ -220,8 +220,8 @@ public class CheckModeFragment extends IvyBaseFragment
 
             }
         });
-        ImageView cameraBTN = (ImageView) rootView.findViewById(R.id.btn_camera);
-        mChequeDateBTN = (Button) rootView.findViewById(R.id.btn_datepicker);
+        ImageView cameraBTN = rootView.findViewById(R.id.btn_camera);
+        mChequeDateBTN = rootView.findViewById(R.id.btn_datepicker);
         if (mPaymentBO.getChequeDate() != null && !"".equals(mPaymentBO.getChequeDate()))
             mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(
                     mPaymentBO.getChequeDate(), ConfigurationMasterHelper.outDateFormat));
@@ -243,40 +243,17 @@ public class CheckModeFragment extends IvyBaseFragment
                 newFragment.setArguments(args);
 
                 newFragment.show(getFragmentManager(), "datePicker1");
-                //AssetTrackingFragment.DatePickerFragment newFragment = new AssetTrackingFragment.DatePickerFragment();
-                //newFragment.show(getFragmentManager(),"datePicker1");
             }
         });
 
         updateTotalAmountEntered();
         updateBankAndBranchSelectedItem();
 
-       /* mCollectAmountET.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
-                    dialogCustomKeyBoard = new CustomKeyBoard(getActivity(), mCollectAmountET, true, 12);
-                    dialogCustomKeyBoard.show();
-                    dialogCustomKeyBoard.setCancelable(false);
-
-                    //Grab the window of the dialog, and change the width
-                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                    Window window = dialogCustomKeyBoard.getWindow();
-                    lp.copyFrom(window.getAttributes());
-                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                    window.setAttributes(lp);
-                }
-            }
-        });*/
-
         cameraBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!"".equals(mChequeNoET.getText().toString()) && mPaymentBO.getAmount() > 0) {
-                    String fnameStarts;
-                    boolean nfiles_there;
-                    if (bmodel.isExternalStorageAvailable()) {
+                    if (AppUtils.isExternalStorageAvailable()) {
 
                         mImageName = "COL_CHQ_"
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -352,7 +329,7 @@ public class CheckModeFragment extends IvyBaseFragment
                     mPaymentBO.setAmount(value);
                     mPaymentBO.setUpdatePayableamt(value);
 
-                    if (value > 0 && isAdvancePaymentAvailabe && !bmodel.collectionHelper.isUseAllAdvancePaymentAmt()) {
+                    if (value > 0 && isAdvancePaymentAvailabe && !collectionHelper.isUseAllAdvancePaymentAmt()) {
                         if (!qty.contains("."))
                             qty = qty.length() > 1 ? qty.substring(0,
                                     qty.length() - 1) : "0";
@@ -362,8 +339,6 @@ public class CheckModeFragment extends IvyBaseFragment
                         mCollectAmountET.setText(SDUtil.getWithoutExponential(qty));
                         Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                 Toast.LENGTH_SHORT).show();
-                    } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CHEQUE)) {
-                        //updateTotalAmountEntered();
                     } else {
                         if (!qty.contains("."))
                             qty = qty.length() > 1 ? qty.substring(0,
@@ -570,46 +545,6 @@ public class CheckModeFragment extends IvyBaseFragment
         updateTotalAmountEntered();
     }
 
-    private void showFileDeleteAlert(final String imageNameStarts) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("");
-        builder.setMessage(getResources().getString(R.string.word_already)
-                + mImageCount
-                + getResources().getString(
-                R.string.word_photocaptured_delete_retake));
-
-        builder.setPositiveButton(getResources().getString(R.string.yes),
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
-                                imageNameStarts);
-                        dialog.dismiss();
-                        Intent intent = new Intent(getActivity(),
-                                CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String _path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        mPaymentBO.setImageName(mImageName);
-                        Commons.print("PhotoPAth:  -      " + _path);
-                        intent.putExtra("path", _path);
-                        startActivityForResult(intent,
-                                bmodel.CAMERA_REQUEST_CODE);
-                    }
-                });
-
-        builder.setNegativeButton(getResources().getString(R.string.no),
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which)
-
-
-                    {
-                        dialog.dismiss();
-                    }
-                });
-
-        builder.setCancelable(false);
-        bmodel.applyAlertDialogTheme(builder);
-    }
 
     public void updateView(PaymentBO paymentBO) {
         mPaymentBO = paymentBO;
@@ -698,11 +633,11 @@ public class CheckModeFragment extends IvyBaseFragment
 
                 if (s != null) {
                     if (!s.contains(".")) {
-                        QUANTITY.setText(s + ".");// QUANTITY.append(".");
+                        QUANTITY.setText(s + ".");
                     }
                 }
             } else {
-                Button ed = (Button) getView().findViewById(vw.getId());
+                Button ed = getView().findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }
@@ -741,7 +676,7 @@ public class CheckModeFragment extends IvyBaseFragment
             mPaymentBO.setUpdatePayableamt(tempPaidAmt);
             getActivity().finish();
 
-            if(mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.RTGS)){
+            if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.RTGS)) {
                 mPaymentBO.setAmount(0);
                 mPaymentBO.setUpdatePayableamt(0);
             }
@@ -787,7 +722,7 @@ public class CheckModeFragment extends IvyBaseFragment
                         mErrorMsg = getResources().getString(R.string.enter_account) + " in cheque";
                         return false;
                     }
-                    if (!bmodel.collectionHelper.checkRetailerWiseAccountMatched(paymentBO.getAccountNumber())) {
+                    if (!collectionHelper.checkRetailerWiseAccountMatched(paymentBO.getAccountNumber())) {
                         mErrorMsg = "Check the Retailer Account No. It is inCorrect in cheque";
                         return false;
                     }
@@ -854,10 +789,6 @@ public class CheckModeFragment extends IvyBaseFragment
                     mErrorMsg = getResources().getString(R.string.enter_amount) + " in RTGS";
                     return false;
                 }
-//                if (!(paymentBO.getAccountNumber().length() > 0)) {
-//                    mErrorMsg = getResources().getString(R.string.enter_account) + " in RTGS";
-//                    return false;
-//                }
             }
         }
 

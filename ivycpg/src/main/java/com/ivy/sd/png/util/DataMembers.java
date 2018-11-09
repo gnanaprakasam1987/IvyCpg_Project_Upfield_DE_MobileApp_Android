@@ -24,9 +24,9 @@ public class DataMembers {
     // Sync
     public static final String SFDC_URLDOWNLOAD_MASTER_URL = "/services/apexrest/ivybase/v1/URLDownload/Masters/";
     public static String SERVER_URL = BuildConfig.BASE_URL;
-    //  public static String SERVER_URL = BuildConfig.BASE_URL;
-    // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
-    // public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
+    //public static String SERVER_URL = BuildConfig.BASE_URL;
+    //public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
+    //public static String SERVER_URL = "http://india-dev.ivycpg.com/ivycpg_jnjindiagt_webApi01/api";
     //public static String SERVER_URL = "http://me-dev.ivycpg.com/IvyCPG_jnj_dubai_Webapi/api";
     //public static String SERVER_URL = "https://qa-product.ivycpg.com/webapi/api";
     //public static final String AUTHENTICATE = "/usermaster/AuthenticateUser";
@@ -34,7 +34,6 @@ public class DataMembers {
     public static final String CHANGE_PWD = "/ChangePassword/Validate";
 
     public static String fileName = "sd_png_asean_android.apk";
-
 
     public static final int MESSAGE_UNZIPPED = 10113;
 

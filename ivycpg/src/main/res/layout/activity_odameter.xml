@@ -6,7 +6,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context="com.ivy.sd.png.view.CollectionScreen">
+    tools:context="com.ivy.cpg.view.collection.CollectionScreen">
 
     <RelativeLayout
         android:id="@+id/tolllayout"
