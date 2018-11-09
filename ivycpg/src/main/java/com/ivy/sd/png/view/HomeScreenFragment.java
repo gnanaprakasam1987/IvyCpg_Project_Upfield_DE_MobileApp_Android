@@ -540,7 +540,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             break;
                         }
                     } else if (configureBO.getConfigCode().equalsIgnoreCase(MENU_VISIT)
-                            //|| configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
+                            || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_DAY)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_INC)

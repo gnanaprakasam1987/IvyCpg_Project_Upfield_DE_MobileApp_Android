@@ -242,4 +242,6 @@
     <string name="contact_list_mandatory">Contact List is Mandatory</string>
     <string name="condition">Condition</string>
 
+    <string name ="enter_serial_no">Please Enter Serial No</string>
+
 </resources>
