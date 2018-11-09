@@ -9,10 +9,10 @@ import com.google.android.gms.maps.model.Marker;
 public class SellerBo implements Parcelable {
 
     private int userId,billed,covered,target,retailerId,lpc,totallpc,productivityPercent,deviationCount;
-    private String userName,retailerName,imagePath,uid="";
+    private String userName,RetailerName,imagePath,uid="";
     private boolean isAttendanceDone = false,isSellerWorking = true;
-    private double latitude,longitude;
-    private long orderValue, inTime, outTime,totalOrderValue,totalCallDuration;
+    private double latitude,longitude,totalOrderValue,orderValue;
+    private long  inTime, outTime,totalCallDuration;
     private Marker marker;
 
 
@@ -34,17 +34,17 @@ public class SellerBo implements Parcelable {
         productivityPercent = in.readInt();
         deviationCount = in.readInt();
         userName = in.readString();
-        retailerName = in.readString();
+        RetailerName = in.readString();
         imagePath = in.readString();
         uid = in.readString();
         isAttendanceDone = in.readByte() != 0;
         isSellerWorking = in.readByte() != 0;
         latitude = in.readDouble();
         longitude = in.readDouble();
-        orderValue = in.readLong();
+        orderValue = in.readDouble();
         inTime = in.readLong();
         outTime = in.readLong();
-        totalOrderValue = in.readLong();
+        totalOrderValue = in.readDouble();
         totalCallDuration = in.readLong();
         targetLines = in.readInt();
         achievedLines = in.readInt();
@@ -107,11 +107,11 @@ public class SellerBo implements Parcelable {
     }
 
     public String getRetailerName() {
-        return retailerName;
+        return RetailerName;
     }
 
     public void setRetailerName(String retailerName) {
-        this.retailerName = retailerName;
+        this.RetailerName = retailerName;
     }
 
     public boolean isAttendanceDone() {
@@ -138,11 +138,11 @@ public class SellerBo implements Parcelable {
         this.longitude = longitude;
     }
 
-    public long getOrderValue() {
+    public double getOrderValue() {
         return orderValue;
     }
 
-    public void setOrderValue(long orderValue) {
+    public void setOrderValue(double orderValue) {
         this.orderValue = orderValue;
     }
 
@@ -226,11 +226,11 @@ public class SellerBo implements Parcelable {
         this.achievedValue = achievedValue;
     }
 
-    public long getTotalOrderValue() {
+    public double getTotalOrderValue() {
         return totalOrderValue;
     }
 
-    public void setTotalOrderValue(long totalOrderValue) {
+    public void setTotalOrderValue(double totalOrderValue) {
         this.totalOrderValue = totalOrderValue;
     }
 
@@ -316,17 +316,17 @@ public class SellerBo implements Parcelable {
         dest.writeInt(productivityPercent);
         dest.writeInt(deviationCount);
         dest.writeString(userName);
-        dest.writeString(retailerName);
+        dest.writeString(RetailerName);
         dest.writeString(imagePath);
         dest.writeString(uid);
         dest.writeByte((byte) (isAttendanceDone ? 1 : 0));
         dest.writeByte((byte) (isSellerWorking ? 1 : 0));
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
-        dest.writeLong(orderValue);
+        dest.writeDouble(orderValue);
         dest.writeLong(inTime);
         dest.writeLong(outTime);
-        dest.writeLong(totalOrderValue);
+        dest.writeDouble(totalOrderValue);
         dest.writeLong(totalCallDuration);
         dest.writeInt(targetLines);
         dest.writeInt(achievedLines);
