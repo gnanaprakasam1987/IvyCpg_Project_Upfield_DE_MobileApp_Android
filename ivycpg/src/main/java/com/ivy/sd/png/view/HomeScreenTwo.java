@@ -2816,14 +2816,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (assetTrackingHelper.getAssetTrackingList().size() > 0 ||
                             assetTrackingHelper.SHOW_ADD_NEW_ASSET) {
-
+                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
                         assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
                                 SDUtil.now(SDUtil.TIME), menu.getConfigCode());
-
-                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_ASSET);
 
                         Intent in = new Intent(HomeScreenTwo.this,
                                 AssetTrackingActivity.class);
