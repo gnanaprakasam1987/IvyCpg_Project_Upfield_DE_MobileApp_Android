@@ -116,9 +116,10 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
 
         if (item.getItemId() == android.R.id.home) {
-            startActivity(new Intent(this, HomeScreenActivity.class));
+            //  startActivity(new Intent(this, HomeScreenActivity.class));
             finish();
-            return true;
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            // return true;
         }
 
         return super.onOptionsItemSelected(item);
