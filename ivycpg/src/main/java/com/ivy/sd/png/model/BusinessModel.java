@@ -4440,6 +4440,8 @@ public class BusinessModel extends Application {
                             lineValue += (productWithMaxTaxRate.getSrp() * schemeProductBO.getQuantitySelected());
                         }
 
+                        lineValue=SDUtil.formatAsPerCalculationConfig(lineValue);
+
                         schemeProductBO.setLineValue(lineValue);
 
                         //

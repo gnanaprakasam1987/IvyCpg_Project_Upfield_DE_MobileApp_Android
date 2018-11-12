@@ -781,6 +781,10 @@ public class TaxGstHelper implements TaxInterface {
                             || batchProductBO.getOrderedOuterQty() > 0) {
                         double batchTaxValue = batchProductBO.getNetValue() / (1 + (taxRate / 100));
                         double appliedTaxValue = batchTaxValue * taxRate / 100;
+
+                        batchTaxValue=SDUtil.formatAsPerCalculationConfig(batchTaxValue);
+                        appliedTaxValue=SDUtil.formatAsPerCalculationConfig(appliedTaxValue);
+
                         taxValue = taxValue + batchTaxValue;
                         totalAppliedTaxValue = totalAppliedTaxValue + appliedTaxValue;
                         batchProductBO.setTaxableAmount(batchTaxValue);
@@ -794,6 +798,10 @@ public class TaxGstHelper implements TaxInterface {
         } else {
             taxValue = productBO.getNetValue() / (1 + (taxRate / 100));
             totalAppliedTaxValue = taxValue * taxRate / 100;
+
+            taxValue=SDUtil.formatAsPerCalculationConfig(taxValue);
+            totalAppliedTaxValue=SDUtil.formatAsPerCalculationConfig(totalAppliedTaxValue);
+
             productBO.setTaxAmount(totalAppliedTaxValue);
             productBO.setTaxableAmount(taxValue);
         }
@@ -993,8 +1001,7 @@ public class TaxGstHelper implements TaxInterface {
 
                                 for (TaxBO taxBO : taxList) {
                                     if (taxBO.getParentType().equals("0")) {
-                                        double calTax = SDUtil.truncateDecimal(productBo.getNetValue() * (taxBO.getTaxRate() / 100), 2).floatValue();
-                                        calTax=SDUtil.formatAsPerCalculationConfig(calTax);
+                                        double calTax = SDUtil.formatAsPerCalculationConfig(productBo.getNetValue() * (taxBO.getTaxRate() / 100));
                                         taxBO.setTotalTaxAmount(calTax);
                                         taxAmount += calTax;
                                     }

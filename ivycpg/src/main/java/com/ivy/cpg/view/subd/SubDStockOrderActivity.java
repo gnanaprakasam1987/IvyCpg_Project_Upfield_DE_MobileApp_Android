@@ -2331,6 +2331,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                                 + (productBO.getOrderedOuterQty() * productBO
                                 .getOsrp());
 
+                        lineValue=SDUtil.formatAsPerCalculationConfig(lineValue);
 
                         // Set the calculated values in productBO **/
                         productBO.setNetValue(lineValue);
