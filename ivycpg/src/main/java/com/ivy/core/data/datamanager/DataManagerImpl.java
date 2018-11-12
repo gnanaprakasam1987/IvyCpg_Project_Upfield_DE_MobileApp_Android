@@ -8,6 +8,7 @@ import com.ivy.core.data.db.AppDataManager;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.IndicativeBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -239,6 +240,11 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public Observable<ArrayList<ConfigureBO>> fetchNewActivityMenu(String menuName) {
+        return appDataManager.fetchNewActivityMenu(menuName);
+    }
+
+    @Override
     public int getSavedImageCount() {
 
         int imageSize = 0;
@@ -271,6 +277,23 @@ public class DataManagerImpl implements DataManager {
         }
         return imageSize;
 
+    }
+
+    @Override
+    public String getMenuName(String menuCode) {
+        String menuName = "";
+        try {
+
+            for (ConfigureBO configureBO : configurationMasterHelper.getConfig()) {
+                if (configureBO.getConfigCode().equals(menuCode)) {
+                    menuName = configureBO.getMenuName();
+                }
+
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return menuName;
     }
 
     @Override

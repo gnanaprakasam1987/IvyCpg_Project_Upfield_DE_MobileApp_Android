@@ -4,6 +4,7 @@ import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 
@@ -30,10 +31,13 @@ public interface SellerDashboardContract {
 
         void setWeekSpinner(ArrayList<String> weekList, int currentWeek);
 
+        void setupRouteSpinner(ArrayList<BeatMasterBO> beatMasterBOS);
     }
 
 
     interface SellerDashboardPresenter<V extends SellerDashboardContract.SellerDashboardView> extends BaseIvyPresenter<V> {
+
+        void fetchListRowLabels();
 
         void saveModuleCompletion(String menuCode);
 
@@ -55,6 +59,8 @@ public interface SellerDashboardContract {
 
         void fetchWeeks();
 
+        void fetchBeats();
+
         boolean isSMPBasedDash();
 
         boolean isUserBasedDash();
@@ -72,7 +78,6 @@ public interface SellerDashboardContract {
         void fetchUserList(String userId, boolean isMultiSelect);
 
         void fetchKPIDashboardData(String userid, String interval);
-
 
         HashMap<String, String> getLabelsMap();
 

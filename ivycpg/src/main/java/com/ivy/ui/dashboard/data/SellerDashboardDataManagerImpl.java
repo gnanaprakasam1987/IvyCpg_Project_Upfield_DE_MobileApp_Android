@@ -828,7 +828,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                     if (!configurationMasterHelper.IS_INVOICE) {
                         sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-                        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        sb.append("where upload!='X' and OrderDate=").append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
                         c = mDbUtil
                                 .selectSQL(sb.toString());
                         if (c != null) {
@@ -1150,11 +1150,10 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                     initDb();
 
-                    StringBuffer sb = new StringBuffer();
-                    sb.append("select count(distinct OrderID),sum(FocusPackValues) from OrderHeader");
-                    sb.append(" where invoicestatus=1");
+                    String sb = "select count(distinct OrderID),sum(FocusPackValues) from OrderHeader" +
+                            " where invoicestatus=1";
                     Cursor c = mDbUtil
-                            .selectSQL(sb.toString());
+                            .selectSQL(sb);
                     if (c != null) {
                         if (c.getCount() > 0) {
                             while (c.moveToNext()) {
@@ -1183,10 +1182,8 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 double salesReturnValue =0.0;
                 initDb();
                 try{
-                    StringBuffer sb = new StringBuffer();
-                    sb.append("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader where upload!='X'");
                     Cursor c = mDbUtil
-                            .selectSQL(sb.toString());
+                            .selectSQL("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader where upload!='X'");
                     if (c != null) {
                         if (c.getCount() > 0) {
                             while (c.moveToNext()) {
@@ -1276,11 +1273,8 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             if (chIDs.endsWith(","))
                                 chIDs = chIDs.substring(0, chIDs.length() - 1);
 
-                            StringBuffer sb = new StringBuffer();
-                            sb.append("SELECT count(PromoID) FROM PromotionMapping where chid in (" + chIDs + ")");
-
                             initDb();
-                            Cursor c = mDbUtil.selectSQL(sb.toString());
+                            Cursor c = mDbUtil.selectSQL(("SELECT count(PromoID) FROM PromotionMapping where chid in (" + chIDs + ")"));
                             if (c.getCount() > 0) {
                                 while (c.moveToNext()) {
                                     count = c.getInt(0);
@@ -1341,10 +1335,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 try{
                     initDb();
 
-                    StringBuffer sb = new StringBuffer();
-                    sb.append("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + QT(retailerID));
-
-                    Cursor c = mDbUtil.selectSQL(sb.toString());
+                    Cursor c = mDbUtil.selectSQL("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + QT(retailerID));
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
                             promotionExecutedCount += c.getInt(0);
@@ -1385,14 +1376,13 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             if (chIDs.endsWith(","))
                                 chIDs = chIDs.substring(0, chIDs.length() - 1);
 
-                            StringBuffer sb = new StringBuffer();
-                            sb.append("SELECT PTGM.pid FROM ProductTaggingMaster PTM ");
-                            sb.append("inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid ");
-                            sb.append("inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid ");
-                            sb.append("AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') ");
-                            sb.append("where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")");
+                            String sb = "SELECT PTGM.pid FROM ProductTaggingMaster PTM " +
+                                    "inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid " +
+                                    "inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid " +
+                                    "AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') " +
+                                    "where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")";
 
-                            Cursor c = mDbUtil.selectSQL(sb.toString());
+                            Cursor c = mDbUtil.selectSQL(sb);
                             if (c.getCount() > 0) {
                                 while (c.moveToNext()) {
                                     mslCount[0]++;
@@ -1429,10 +1419,10 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                                try{
                                    initDb();
 
-                                   StringBuffer sb = new StringBuffer();
-                                   sb.append("select count(*) from OrderDetail where retailerid in (" + rids + ")");
+                                   StringBuilder sb = new StringBuilder();
+                                   sb.append("select count(*) from OrderDetail where retailerid in (").append(rids).append(")");
                                    if (mslProdIDs != null && !mslProdIDs.isEmpty())
-                                       sb.append("and ProductID in (" + mslProdIDs + ")");
+                                       sb.append("and ProductID in (").append(mslProdIDs).append(")");
                                    Cursor c = mDbUtil.selectSQL(sb.toString());
                                    if (c.getCount() > 0) {
                                        while (c.moveToNext()) {

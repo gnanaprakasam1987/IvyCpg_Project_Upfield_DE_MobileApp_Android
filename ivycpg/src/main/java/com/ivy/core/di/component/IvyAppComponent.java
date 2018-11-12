@@ -5,6 +5,7 @@ import android.content.Context;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.beat.BeatDataManager;
 import com.ivy.core.data.channel.ChannelDataManager;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.distributor.DistributorDataManager;
@@ -14,6 +15,7 @@ import com.ivy.core.data.retailer.RetailerDataManager;
 import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.core.di.scope.BeatInfo;
 import com.ivy.core.di.scope.ChannelInfo;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.DistributorInfo;
@@ -97,6 +99,9 @@ public interface IvyAppComponent {
 
     @OutletTimeStampInfo
     OutletTimeStampDataManager outletTimeStampDataManager();
+
+    @BeatInfo
+    BeatDataManager beatDataManager();
 
     void inject(BusinessModel businessModel);
 

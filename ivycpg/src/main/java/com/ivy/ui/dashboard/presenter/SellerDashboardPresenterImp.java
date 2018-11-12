@@ -8,17 +8,21 @@ import android.arch.lifecycle.OnLifecycleEvent;
 import com.ivy.core.ViewTags;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.data.beat.BeatDataManager;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.user.UserDataManager;
+import com.ivy.core.di.scope.BeatInfo;
 import com.ivy.core.di.scope.DistributorInfo;
 import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -76,6 +80,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     private UserDataManager userDataManager;
     private LabelsDataManager labelsDataManager;
     private AppDataProvider appDataProvider;
+    private BeatDataManager beatDataManager;
 
     private ArrayList<DashBoardBO> dashBoardList = new ArrayList<>();
 
@@ -87,7 +92,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     public SellerDashboardPresenterImp(DataManager dataManager, SchedulerProvider schedulerProvider, CompositeDisposable compositeDisposable,
                                        ConfigurationMasterHelper configurationMasterHelper, V view, @OutletTimeStampInfo OutletTimeStampDataManager outletTimeStampDataManager,
                                        SellerDashboardDataManager sellerDashboardDataManager, @DistributorInfo DistributorDataManager distributorDataManager,
-                                       @UserInfo UserDataManager userDataManager, @LabelMasterInfo LabelsDataManager labelsDataManager, AppDataProvider appDataProvider) {
+                                       @UserInfo UserDataManager userDataManager, @LabelMasterInfo LabelsDataManager labelsDataManager, AppDataProvider appDataProvider,
+                                       @BeatInfo BeatDataManager beatDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mOutletTimeStampDataManager = outletTimeStampDataManager;
         this.sellerDashboardDataManager = sellerDashboardDataManager;
@@ -95,12 +101,40 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         this.userDataManager = userDataManager;
         this.labelsDataManager = labelsDataManager;
         this.appDataProvider = appDataProvider;
+        this.beatDataManager = beatDataManager;
 
         if (view instanceof LifecycleOwner) {
             ((LifecycleOwner) view).getLifecycle().addObserver(this);
         }
+
     }
 
+    @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void fetchListRowLabels() {
+        getCompositeDisposable().add(labelsDataManager.getLabels(ViewTags.DASHBOARD_ROW_ACHIEVED_TITLE, ViewTags.DASHBOARD_ROW_BALANCE_TITLE,
+                ViewTags.DASHBOARD_ROW_FLEX_TITLE, ViewTags.DASHBOARD_ROW_INCENTIVE_TITLE,
+                ViewTags.DASHBOARD_ROW_SCORE_TITLE, ViewTags.DASHBOARD_ROW_TARGET_TITLE).subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<HashMap<String, String>>() {
+                    @Override
+                    public void onNext(HashMap<String, String> labels) {
+
+                        labelsMap.clear();
+                        labelsMap.putAll(labels);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
 
     @Override
     public void saveModuleCompletion(String menuCode) {
@@ -432,6 +466,31 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 }));
     }
 
+    @Override
+    public void fetchBeats() {
+
+        getCompositeDisposable().add(beatDataManager.fetchBeats()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<BeatMasterBO>>() {
+                    @Override
+                    public void onNext(ArrayList<BeatMasterBO> beatMasterBOS) {
+                        if(beatMasterBOS.size()>0)
+                            getIvyView().setupRouteSpinner(beatMasterBOS);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
     private void fetchCurrentWeek(final ArrayList<String> weekList) {
         getCompositeDisposable().add(sellerDashboardDataManager.getCurrentWeekInterval()
                 .subscribeOn(getSchedulerProvider().io())
@@ -459,31 +518,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         return appDataProvider.getUser();
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private void fetchListRowLabels() {
-        getCompositeDisposable().add(labelsDataManager.getLabels(ViewTags.DASHBOARD_ROW_ACHIEVED_TITLE, ViewTags.DASHBOARD_ROW_BALANCE_TITLE,
-                ViewTags.DASHBOARD_ROW_FLEX_TITLE, ViewTags.DASHBOARD_ROW_INCENTIVE_TITLE,
-                ViewTags.DASHBOARD_ROW_SCORE_TITLE, ViewTags.DASHBOARD_ROW_TARGET_TITLE).subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<HashMap<String, String>>() {
-                    @Override
-                    public void onNext(HashMap<String, String> labels) {
 
-                        labelsMap.clear();
-                        labelsMap.putAll(labels);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                }));
-    }
 
     private void fetchUsersMatchingDistributor(String distributorIds, boolean isMultiSelect) {
         getCompositeDisposable().add(userDataManager.fetchUsersForDistributors(distributorIds)

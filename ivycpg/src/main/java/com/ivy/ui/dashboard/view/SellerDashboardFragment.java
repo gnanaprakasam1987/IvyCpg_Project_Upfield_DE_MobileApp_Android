@@ -1,10 +1,14 @@
 package com.ivy.ui.dashboard.view;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,12 +25,14 @@ import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.KeyPairBoolData;
 import com.ivy.sd.png.commons.MultiSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.commons.SpinnerListener;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.ui.dashboard.DashboardClickListener;
@@ -44,6 +50,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
 
 import static com.ivy.ui.dashboard.SellerDashboardConstants.DAY;
@@ -79,6 +86,9 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @BindView(R.id.multiSelectStub)
     ViewStub multiSelectStub;
 
+ /*   @BindView(R.id.routeSpinner)
+    ViewStub routeSpinnerStub;*/
+
     @BindView(R.id.viewpager)
     ViewPager pager;
 
@@ -104,10 +114,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private String menuCode;
 
-    private boolean isFromRetailer;
+    private boolean isFromRetailer; //isFromHomeScreenTwo
     private String type;
-
-    private SellerDashboardComponent sellerDashboardComponent;
 
     private String mSelectedDistributorId = "";
 
@@ -122,15 +130,17 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private String selectedInterval;
 
+    private String screenTitle;
+
     @Override
     public void initializeDi() {
 
-        sellerDashboardComponent = DaggerSellerDashboardComponent.builder()
+        DaggerSellerDashboardComponent.builder()
                 .ivyAppComponent(((BusinessModel) getActivity().getApplication()).getComponent())
                 .sellerDashboardModule(new SellerDashboardModule(this))
-                .build();
+                .build()
+                .inject(SellerDashboardFragment.this);
 
-        sellerDashboardComponent.inject(this);
 
         setBasePresenter((BasePresenter) presenter);
 
@@ -154,7 +164,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             menuCode = bundle.getString("menuCode");
             isFromRetailer = bundle.getBoolean("isFromHomeScreenTwo", false);
             type = bundle.getString("type");
+            screenTitle = bundle.getString("screentitle");
         }
+
+        setUpActionBar();
 
         dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>(), presenter.getLabelsMap(), this);
 
@@ -163,12 +176,15 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             getDashSpinnerData();
         } else {
             handleSellerDashboard();
+            pager.setVisibility(View.GONE);
+            collapsingToolbarLayout.setVisibility(View.GONE);
         }
 
+        if (type != null
+                && type.equals(ROUTE)) {
+            presenter.fetchBeats();
+        }
 
-    }
-
-    private void handleRetailerDashboard() {
 
     }
 
@@ -216,7 +232,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     public void setupMultiSelectDistributorSpinner(ArrayList<DistributorMasterBO> distributors) {
 
         List<KeyPairBoolData> distArray = new ArrayList<>();
-        distArray.add(new KeyPairBoolData(0, getResources().getString(R.string.all), true));
+        distArray.add(new KeyPairBoolData(0, getString(R.string.all), true));
 
         int count = 0;
 
@@ -327,6 +343,35 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     }
 
+    @Override
+    public void setupRouteSpinner(ArrayList<BeatMasterBO> beatMasterBOS) {
+
+        ViewStub routeSpinnerStub = dashSpinnerLayout.findViewById(R.id.routeSpinnerStub);
+
+        routeSpinnerStub.setVisibility(View.VISIBLE);
+
+
+        View spinnerStub = routeSpinnerStub.inflate();
+
+       // Spinner routeSpinner = (Spinner) routeSpinnerStub.inflate();
+        MyStubView routeSpinner = new MyStubView(spinnerStub);
+
+        ArrayAdapter<BeatMasterBO> routeAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, beatMasterBOS);
+        routeAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+        routeSpinner.dashSpinner.setAdapter(routeAdapter);
+
+        routeSpinner.dashSpinner.setOnItemSelectedListener(routeSpinnerSelectedListener);
+
+    }
+
+    public class MyStubView {
+        @BindView(R.id.dashSpinner)
+        Spinner dashSpinner;
+
+        public MyStubView(View view) {
+            ButterKnife.bind(this, view);
+        }
+    }
 
     private void loadMultiSelectData() {
 
@@ -357,8 +402,30 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
         spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
+        dashboardRecyclerView.setHasFixedSize(false);
+        dashboardRecyclerView.setNestedScrollingEnabled(false);
+        dashboardRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         dashboardRecyclerView.setAdapter(dashboardListAdapter);
 
+    }
+
+
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+    }
+
+    private void setUpActionBar() {
+        getActionBar().setDisplayShowTitleEnabled(false);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActionBar().setElevation(0);
+        }
+
+        if (screenTitle != null)
+            setScreenTitle(screenTitle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -405,6 +472,31 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         }
 
     }
+
+    private AdapterView.OnItemSelectedListener routeSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            String filterName = adapterView.getSelectedItem().toString();
+
+            dashboardListData.clear();
+
+            for (DashBoardBO dashBoardBO : presenter.getDashboardListData()) {
+                if (dashBoardBO.getMonthName().equalsIgnoreCase(filterName)) {
+                    dashboardListData.add(dashBoardBO);
+                }
+            }
+
+            dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), SellerDashboardFragment.this);
+            dashboardRecyclerView.setAdapter(dashboardListAdapter);
+
+            //TODO Handle p3m chart
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
 
 
     private AdapterView.OnItemSelectedListener dashSpinnerSelectedListener = new AdapterView.OnItemSelectedListener() {

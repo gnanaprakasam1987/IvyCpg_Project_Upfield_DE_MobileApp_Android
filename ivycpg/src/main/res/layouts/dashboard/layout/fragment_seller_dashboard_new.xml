@@ -74,7 +74,7 @@
 
                 <TextView
                     android:id="@+id/resultsHeaderTxt"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginEnd="30dp"
                     android:layout_marginLeft="@dimen/dash_margin"
@@ -92,7 +92,7 @@
 
                 <ViewStub
                     android:id="@+id/distributorSpinner"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:inflatedId="@+id/distributorSpinner"
                     android:layout="@layout/view_dashboard_spinner"
@@ -149,16 +149,16 @@
                     android:layout="@layout/view_dashboard_spinner"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/routeSpinner"
+                    app:layout_constraintEnd_toStartOf="@+id/routeSpinnerStub"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/monthSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ViewStub
-                    android:id="@+id/routeSpinner"
+                    android:id="@+id/routeSpinnerStub"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:inflatedId="@+id/routeSpinner"
+                    android:inflatedId="@+id/routeSpinnerStub"
                     android:layout="@layout/view_dashboard_spinner"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -182,8 +182,8 @@
                 android:layout_marginEnd="@dimen/dash_margin"
                 android:layout_marginStart="@dimen/dash_margin"
                 android:background="?mtdDashboardBackground"
-                android:visibility="gone"
                 android:layout="@layout/view_multi_spinner"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/dashboardLv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -1,6 +1,7 @@
 package com.ivy.core.data.db;
 
 import com.ivy.core.data.AppDataManagerContract;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.IndicativeBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -22,5 +23,6 @@ public interface AppDataManager extends AppDataManagerContract{
 
     Single<Boolean> saveModuleCompletion(String menuName);
 
+    Observable<ArrayList<ConfigureBO>> fetchNewActivityMenu(String menuName);
 
 }

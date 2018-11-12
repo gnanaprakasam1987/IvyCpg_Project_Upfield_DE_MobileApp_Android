@@ -1407,8 +1407,8 @@ public class BusinessModel extends Application {
 
 
     /**
-     * @deprecated
      * @See {@link RetailerDataManagerImpl#fetchRetailers()}
+     * @deprecated
      */
     public void downloadRetailerMaster() {
         try {
@@ -3752,7 +3752,8 @@ public class BusinessModel extends Application {
     }
 
     public void setRetailerMaster(Vector<RetailerMasterBO> retailerMaster) {
-        codeCleanUpUtil.setRetailerMaster(retailerMaster);
+        if (codeCleanUpUtil != null)
+            codeCleanUpUtil.setRetailerMaster(retailerMaster);
         this.retailerMaster = retailerMaster;
     }
 
@@ -5283,19 +5284,19 @@ public class BusinessModel extends Application {
     }
 
     public String checkDecimalValue(String value, int wholeValueCount,
-                                    int decimalValueCount){
-        if(!value.contains("."))
+                                    int decimalValueCount) {
+        if (!value.contains("."))
             return value;
         else {
             String fString = "", lString = "";
-            value = value.startsWith(".")? "0" + value:value;
-            value = value.endsWith(".")? value + "0":value;
+            value = value.startsWith(".") ? "0" + value : value;
+            value = value.endsWith(".") ? value + "0" : value;
             String[] valArr = value.split("\\.");
-            if(valArr[0].length()>wholeValueCount)
-                fString = valArr[0].substring(0,valArr[0].length()-1);
-            if(valArr[1].length()>decimalValueCount)
-                lString = valArr[1].substring(0,valArr[0].length()-1);
-            if(valArr[0].length() <= wholeValueCount && valArr[1].length() <= decimalValueCount) {
+            if (valArr[0].length() > wholeValueCount)
+                fString = valArr[0].substring(0, valArr[0].length() - 1);
+            if (valArr[1].length() > decimalValueCount)
+                lString = valArr[1].substring(0, valArr[0].length() - 1);
+            if (valArr[0].length() <= wholeValueCount && valArr[1].length() <= decimalValueCount) {
                 fString = valArr[0];
                 lString = valArr[1];
             }
@@ -5694,9 +5695,8 @@ public class BusinessModel extends Application {
     }
 
     /**
-     * @deprecated
-     * Handled inside the fetchRetailers() method itself
      * @See {@link RetailerDataManagerImpl#fetchRetailers()}
+     * @deprecated Handled inside the fetchRetailers() method itself
      */
     public void setWeeknoFoNewRetailer() {
         for (RetailerMasterBO retailer : getRetailerMaster()) {
@@ -6697,6 +6697,10 @@ public class BusinessModel extends Application {
         return retailerAttributeList;
     }
 
+    /**
+     * @deprecated
+     * @See {@link com.ivy.core.data.db.AppDataManagerImpl#fetchNewActivityMenu(String)}
+     */
     public void getAttributeHierarchyForRetailer() {
         retailerAttributeList = "";
         String str = "0";
@@ -7355,9 +7359,9 @@ public class BusinessModel extends Application {
     }
 
     /**
-     * @deprecated
-     * @See {@link ChannelDataManagerImpl#fetchChannelIds()}
      * @return
+     * @See {@link ChannelDataManagerImpl#fetchChannelIds()}
+     * @deprecated
      */
     public String getChannelids() {
         String sql;

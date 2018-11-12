@@ -7,4 +7,6 @@ import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 public interface DataManager extends AppDataManager,SharedPreferenceHelper,AppDataProvider {
 
     int getSavedImageCount();
+
+    String getMenuName(String menuCode);
 }

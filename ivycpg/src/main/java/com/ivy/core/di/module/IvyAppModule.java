@@ -8,6 +8,8 @@ import android.content.Context;
 import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
+import com.ivy.core.data.beat.BeatDataManager;
+import com.ivy.core.data.beat.BeatDataManagerImpl;
 import com.ivy.core.data.channel.ChannelDataManager;
 import com.ivy.core.data.channel.ChannelDataManagerImpl;
 import com.ivy.core.data.datamanager.DataManager;
@@ -27,6 +29,7 @@ import com.ivy.core.data.sharedpreferences.SharedPreferenceHelperImpl;
 import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.core.di.scope.BeatInfo;
 import com.ivy.core.di.scope.ChannelInfo;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.DistributorInfo;
@@ -127,6 +130,11 @@ public class IvyAppModule {
         return ((BusinessModel) mContext).labelsMasterHelper;
     }
 
+    @Provides
+    @BeatInfo
+    protected BeatDataManager providesBeatDataManager(BeatDataManagerImpl beatDataManager){
+        return beatDataManager;
+    }
 
     @Provides
     @LabelMasterInfo
