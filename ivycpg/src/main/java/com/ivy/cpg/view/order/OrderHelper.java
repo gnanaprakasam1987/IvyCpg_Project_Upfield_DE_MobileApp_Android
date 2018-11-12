@@ -2119,8 +2119,8 @@ public class OrderHelper {
 
         int totalqty;
         float srp;
-        double csrp;
-        double osrp;
+        float csrp;
+        float osrp;
         double prodDisc;
         double schemeDisc;
         double taxAmount;
