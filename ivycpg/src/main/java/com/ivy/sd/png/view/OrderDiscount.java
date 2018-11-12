@@ -159,6 +159,7 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                 temp = (ret.getOrderedPcsQty() * ret.getSrp())
                         + (ret.getOrderedCaseQty() * ret.getCsrp())
                         + (ret.getOrderedOuterQty() * ret.getOsrp());
+                temp=SDUtil.formatAsPerCalculationConfig(temp);
                 ret.setNetValue(temp);
                 totalOrderValue = totalOrderValue + temp;
                 mylist.add(ret);
@@ -517,32 +518,6 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
-    public double discountAmountCalc(ProductMasterBO productBO, int amount) {
-        /* apply batchwise  starts */
-        if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
-                && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-            if (productBO.getBatchwiseProductCount() > 0) {
-                double total = bmodel.batchAllocationHelper
-                        .updateDiscontBatchwise(productBO, 0);
-                total = total - amount;
-                productBO.setNetValue(total);
-                updateDiscountedOrderValue();
-                return total;
-            }
-        }
-        /* apply batchwise ends */
-
-
-        double line_total_price = (productBO.getOrderedCaseQty() * productBO
-                .getCsrp())
-                + (productBO.getOrderedPcsQty() * productBO.getSrp())
-                + (productBO.getOrderedOuterQty() * productBO.getOsrp());
-
-        double total = line_total_price - amount;
-        productBO.setNetValue(total);
-        updateDiscountedOrderValue();
-        return total;
-    }
 
     public double discountcalc(ProductMasterBO productBO, double sum) {
 
@@ -564,9 +539,11 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                 + (productBO.getOrderedPcsQty() * productBO.getSrp())
                 + (productBO.getOrderedOuterQty() * productBO.getOsrp());
 
+        line_total_price=SDUtil.formatAsPerCalculationConfig(line_total_price);
+
         double total = line_total_price - (line_total_price * sum / 100);
 
-        productBO.setNetValue(total);
+        productBO.setNetValue(SDUtil.formatAsPerCalculationConfig(total));
 
         updateDiscountedOrderValue();
 
@@ -677,6 +654,8 @@ public class OrderDiscount extends IvyBaseActivityNoActionBar implements OnClick
                 .getCsrp())
                 + (productBO.getOrderedPcsQty() * productBO.getSrp())
                 + (productBO.getOrderedOuterQty() * productBO.getOsrp());
+
+        SDUtil.formatAsPerCalculationConfig(line_total_price);
 
         double total = line_total_price - amount;
         productBO.setNetValue(total);
