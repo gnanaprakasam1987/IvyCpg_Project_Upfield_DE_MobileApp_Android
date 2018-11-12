@@ -780,12 +780,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     mOrderedProductList.add(productBO);
 
-                    double lineValue = (productBO.getOrderedCaseQty() * productBO
-                            .getCsrp())
-                            + (productBO.getOrderedPcsQty() * productBO
-                            .getSrp())
-                            + (productBO.getOrderedOuterQty() * productBO
-                            .getOsrp());
+                    double lineValue = calculateLineValue(productBO);
 
                     // Set the calculated flat line values in productBO
                     totalOrderValue += lineValue;
@@ -849,12 +844,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     .getTotalValueOfAllBatches(productBO);
 
         } else {
-            return (productBO.getOrderedCaseQty() * productBO
+
+            double totalValue=(productBO.getOrderedCaseQty() * productBO
                     .getCsrp())
                     + (productBO.getOrderedPcsQty() * productBO
                     .getSrp())
                     + (productBO.getOrderedOuterQty() * productBO
                     .getOsrp());
+
+            return SDUtil.formatAsPerCalculationConfig(totalValue);
         }
     }
 
