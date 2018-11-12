@@ -72,12 +72,12 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
             userImage = view.findViewById(R.id.user_img);
             messageLayout = view.findViewById(R.id.message_layout);
 
-            userName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            routeText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            statusTextview.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            performancePercent.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            outletCoveredTxt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-            messageText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+            userName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            routeText.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            statusTextview.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            performancePercent.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            outletCoveredTxt.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
+            messageText.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.REGULAR));
 
         }
     }

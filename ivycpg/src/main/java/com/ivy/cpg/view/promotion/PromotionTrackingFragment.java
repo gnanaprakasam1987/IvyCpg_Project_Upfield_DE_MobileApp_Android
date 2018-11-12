@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -64,6 +65,8 @@ import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -109,18 +112,25 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_promotion, container, false);
-        mDrawerLayout = (DrawerLayout) view.findViewById(
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
-        FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        FrameLayout drawer = view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
         businessModel = (BusinessModel) getActivity().getApplicationContext();
+        promotionHelper = PromotionHelper.getInstance(getContext());
         isFilterAvailable = businessModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_PROMO);
-
-        return view;
+        // Initialize the UI components
+        viewInitialization(view);
     }
 
     @Override
@@ -134,17 +144,13 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     public void onStart() {
         super.onStart();
 
-        promotionHelper = PromotionHelper.getInstance(getContext());
-
-        //businessModel.setContext(getActivity());
         if (businessModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this.getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
-        // Initialize the UI components
-        viewInitialization();
+
 
         // set a custom shadow that overlays the main content when the drawer
         // opens
@@ -189,14 +195,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         loadReason();
-        promotionHelper.downloadPromotionRating(getContext().getApplicationContext());
-        ArrayList<StandardListBO> ratingList = promotionHelper.getRatingList();
-        if (ratingList != null) {
-            mRatingAdapter = new ArrayAdapter<>(getActivity(),
-                    R.layout.spinner_bluetext_layout);
-            mRatingAdapter
-                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        }
+        loadRating();
 
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
@@ -225,34 +224,24 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 
-    private void viewInitialization() {
-        if (getView() != null) {
-            listView = (ListView) getView().findViewById(R.id.list);
+    private void viewInitialization(@NotNull View view) {
+        if (view != null) {
+            listView = view.findViewById(R.id.list);
             listView.setCacheColorHint(0);
         }
 
-        TextView tv_desc = (TextView) getView().findViewById(R.id.tvDesc);
-        tv_desc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tvExecuted = (TextView) getView().findViewById(R.id.tvExecuted);
-        tvExecuted.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tvPromoQty = (TextView) getView().findViewById(R.id.tvPromoQty);
-        tvPromoQty.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tv_reason = (TextView) getView().findViewById(R.id.tvReason);
-        tv_reason.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tv_executing_rating = (TextView) getView().findViewById(R.id.tv_executing_rating);
-        tv_executing_rating.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        card_keyboard = (CardView) getView().findViewById(R.id.card_keyboard);
+        card_keyboard = view.findViewById(R.id.card_keyboard);
 
         if (!promotionHelper.SHOW_PROMO_PHOTO) {
-            getView().findViewById(R.id.tvPhoto).setVisibility(View.GONE);
+            view.findViewById(R.id.tvPhoto).setVisibility(View.GONE);
 
         } else {
             try {
-                if (businessModel.labelsMasterHelper.applyLabels(getView().findViewById(
+                if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tvPhoto).getTag()) != null) {
-                    ((TextView) getView().findViewById(R.id.tvPhoto))
+                    ((TextView) view.findViewById(R.id.tvPhoto))
                             .setText(businessModel.labelsMasterHelper
-                                    .applyLabels(getView().findViewById(
+                                    .applyLabels(view.findViewById(
                                             R.id.tvPhoto).getTag()));
 
                 }
@@ -261,15 +250,15 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             }
         }
         if (!promotionHelper.SHOW_PROMO_REASON) {
-            getView().findViewById(R.id.tvReason).setVisibility(View.GONE);
+            view.findViewById(R.id.tvReason).setVisibility(View.GONE);
 
         } else {
             try {
-                if (businessModel.labelsMasterHelper.applyLabels(getView().findViewById(
+                if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tvReason).getTag()) != null) {
-                    ((TextView) getView().findViewById(R.id.tvReason))
+                    ((TextView) view.findViewById(R.id.tvReason))
                             .setText(businessModel.labelsMasterHelper
-                                    .applyLabels(getView().findViewById(
+                                    .applyLabels(view.findViewById(
                                             R.id.tvReason).getTag()));
 
                 }
@@ -278,15 +267,15 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             }
         }
         if (!promotionHelper.SHOW_PROMO_RATING) {
-            getView().findViewById(R.id.tv_executing_rating).setVisibility(View.GONE);
+            view.findViewById(R.id.tv_executing_rating).setVisibility(View.GONE);
 
         } else {
             try {
-                if (businessModel.labelsMasterHelper.applyLabels(getView().findViewById(
+                if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tv_executing_rating).getTag()) != null) {
-                    ((TextView) getView().findViewById(R.id.tv_executing_rating))
+                    ((TextView) view.findViewById(R.id.tv_executing_rating))
                             .setText(businessModel.labelsMasterHelper
-                                    .applyLabels(getView().findViewById(
+                                    .applyLabels(view.findViewById(
                                             R.id.tv_executing_rating).getTag()));
 
                 }
@@ -297,16 +286,16 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
         if (!promotionHelper.SHOW_PROMO_QTY) {
             card_keyboard.setVisibility(View.GONE);
-            getView().findViewById(R.id.tvPromoQty).setVisibility(View.GONE);
+            view.findViewById(R.id.tvPromoQty).setVisibility(View.GONE);
 
         } else {
             card_keyboard.setVisibility(View.VISIBLE);
             try {
-                if (businessModel.labelsMasterHelper.applyLabels(getView().findViewById(
+                if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
                         R.id.tvPromoQty).getTag()) != null) {
-                    ((TextView) getView().findViewById(R.id.tvPromoQty))
+                    ((TextView) view.findViewById(R.id.tvPromoQty))
                             .setText(businessModel.labelsMasterHelper
-                                    .applyLabels(getView().findViewById(
+                                    .applyLabels(view.findViewById(
                                             R.id.tvPromoQty).getTag()));
 
                 }
@@ -315,12 +304,11 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             }
         }
         if (promotionHelper.SHOW_PROMO_ANNOUNCER) {
-            getView().findViewById(R.id.tvAnnouncer).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.tvAnnouncer).setVisibility(View.VISIBLE);
         } else {
-            getView().findViewById(R.id.tvAnnouncer).setVisibility(View.GONE);
+            view.findViewById(R.id.tvAnnouncer).setVisibility(View.GONE);
         }
-        Button btn_save = (Button) getView().findViewById(R.id.btn_save);
-        btn_save.setTypeface(businessModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button btn_save = view.findViewById(R.id.btn_save);
         btn_save.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -406,6 +394,17 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             if ("PROR".equalsIgnoreCase(temp.getReasonCategory())
                     || "NONE".equalsIgnoreCase(temp.getReasonCategory()))
                 reasonAdapter.add(temp);
+        }
+    }
+
+    private void loadRating() {
+        promotionHelper.downloadPromotionRating(getContext().getApplicationContext());
+        ArrayList<StandardListBO> ratingList = promotionHelper.getRatingList();
+        if (ratingList != null) {
+            mRatingAdapter = new ArrayAdapter<>(getActivity(),
+                    R.layout.spinner_bluetext_layout, ratingList);
+            mRatingAdapter
+                    .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         }
     }
 
@@ -748,54 +747,36 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 row = LayoutInflater.from(getActivity()
                         .getBaseContext()).inflate(R.layout.row_promo, parent, false);
 
-                holder.tv_promoName = (TextView) row
+                holder.tv_promoName = row
                         .findViewById(R.id.tvPromoName);
-                holder.tv_promoName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.rbExecuted = (CheckBox) row
+                holder.rbExecuted = row
                         .findViewById(R.id.executed_CB);
-                holder.rbAnnounced = (CheckBox) row
+                holder.rbAnnounced = row
                         .findViewById(R.id.announced_CB);
 
-                holder.etPromoQty = (EditText) row.findViewById(R.id.et_promo_qty);
-                holder.etPromoQty.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.etPromoQty = row.findViewById(R.id.et_promo_qty);
 
-                holder.btnPhoto = (ImageView) row
+
+                holder.btnPhoto = row
                         .findViewById(R.id.btn_photo);
-                holder.tvGroupName = (TextView) row.findViewById(R.id.tv_group_name);
+                holder.tvGroupName = row.findViewById(R.id.tv_group_name);
 
-                holder.reasonSpin = (Spinner) row
+                holder.reasonSpin = row
                         .findViewById(R.id.spin_reason);
 
                 //Promotion Enhancement
-                holder.tvProductName = (TextView) row
+                holder.tvProductName = row
                         .findViewById(R.id.tv_product_name);
-                holder.mFromDateBTN = (Button) row.findViewById(R.id.btn_fromdatepicker);
-                holder.mToDateBTN = (Button) row.findViewById(R.id.btn_todatepicker);
-                holder.llSkuPromolayout = (LinearLayout) row.findViewById(R.id.skuPromolayout);
+                holder.mFromDateBTN = row.findViewById(R.id.btn_fromdatepicker);
+                holder.mToDateBTN = row.findViewById(R.id.btn_todatepicker);
+                holder.llSkuPromolayout = row.findViewById(R.id.skuPromolayout);
 
                 holder.reasonSpin.setAdapter(reasonAdapter);
-                holder.ratingSpin = (Spinner) row.findViewById(R.id.spin_rating);
+                holder.ratingSpin = row.findViewById(R.id.spin_rating);
                 if (mRatingAdapter != null)
                     holder.ratingSpin.setAdapter(mRatingAdapter);
 
-                if (!promotionHelper.SHOW_PROMO_TYPE) {
-                    row.findViewById(R.id.tv_group_name_header).setVisibility(View.GONE);
 
-                } else {
-                    try {
-                        ((TextView) row.findViewById(R.id.tv_group_name_header)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        if (businessModel.labelsMasterHelper.applyLabels(row.findViewById(
-                                R.id.tv_group_name_header).getTag()) != null) {
-                            ((TextView) row.findViewById(R.id.tv_group_name_header))
-                                    .setText(businessModel.labelsMasterHelper
-                                            .applyLabels(row.findViewById(
-                                                    R.id.tv_group_name_header).getTag()));
-
-                        }
-                    } catch (Exception e) {
-                        Commons.printException("" + e);
-                    }
-                }
                 if (promotionHelper.SHOW_PROMO_PHOTO) {
                     holder.btnPhoto.setVisibility(View.VISIBLE);
 
@@ -815,6 +796,18 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
                 if (promotionHelper.SHOW_PROMO_RATING) {
                     holder.ratingSpin.setVisibility(View.VISIBLE);
+                    try {
+                        if (businessModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.executing_rating_label).getTag()) != null) {
+                            ((TextView) row.findViewById(R.id.executing_rating_label))
+                                    .setText(businessModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.executing_rating_label).getTag()));
+
+                        }
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
                 } else {
                     holder.ratingSpin.setVisibility(View.GONE);
                 }
@@ -991,11 +984,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 //Promotion Enhancement
                 if (businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_SKUNAME) {
                     holder.tvProductName.setVisibility(View.VISIBLE);
-                    row.findViewById(R.id.tv_group_name_header).setVisibility(View.GONE);
                     holder.tvGroupName.setVisibility(View.GONE);
                 } else {
                     holder.tvProductName.setVisibility(View.GONE);
-                    row.findViewById(R.id.tv_group_name_header).setVisibility(View.VISIBLE);
                     holder.tvGroupName.setVisibility(View.VISIBLE);
                 }
 
@@ -1035,7 +1026,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
             if (holder.mPromotionMasterBO.getIsExecuted() == 0) {
                 holder.btnPhoto.setImageBitmap(null);
-                //  holder.btnPhoto.setImageResource(R.drawable.ic_photo_camera);
                 holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
 
             } else if ((holder.mPromotionMasterBO.getImageName() != null)
@@ -1052,7 +1042,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
             } else {
                 holder.btnPhoto.setImageBitmap(null);
-                // holder.btnPhoto.setImageResource(R.drawable.ic_photo_camera);
                 holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
             }
             if (holder.mPromotionMasterBO.getIsExecuted() == 1) {
@@ -1070,20 +1059,26 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     .setSelection(getReasonIndex(holder.mPromotionMasterBO
                             .getReasonID()));
             holder.ratingSpin.setSelection(getRatingIndex(holder.mPromotionMasterBO.getRatingId()));
-            String promo_groupName = " : " + holder.mPromotionMasterBO.getGroupName();
+
+            String promo_groupName = getString(R.string.group_name) + ": " + holder.mPromotionMasterBO.getGroupName();
+            try {
+                if (businessModel.labelsMasterHelper.applyLabels(holder.tvGroupName.getTag()) != null)
+                    promo_groupName = businessModel.labelsMasterHelper
+                            .applyLabels(holder.tvGroupName.getTag()) + ": "
+                            + holder.mPromotionMasterBO.getGroupName();
+                else
+                    promo_groupName = getString(R.string.group_name) + ": " + holder.mPromotionMasterBO.getGroupName();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                promo_groupName = getString(R.string.group_name) + ": " + holder.mPromotionMasterBO.getGroupName();
+            }
             holder.tvGroupName.setText(promo_groupName);
-            holder.tvGroupName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+
             String promoQty = holder.mPromotionMasterBO.getPromoQty() + "";
             holder.etPromoQty.setText(promoQty);
 
-            if (position % 2 == 0) {
-                row.setBackgroundColor(getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView).getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            } else {
-                row.setBackgroundColor(getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView).getColor(R.styleable.MyTextView_listcolor, 0));
-            }
-
             holder.tvProductName.setText(holder.mPromotionMasterBO.getpName() == null ? "" : holder.mPromotionMasterBO.getpName());
-            holder.tvProductName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.mFromDateBTN.setText(holder.mPromotionMasterBO.getFromDate() == null ? "" :
                     DateUtil.convertFromServerDateToRequestedFormat(
                             holder.mPromotionMasterBO.getFromDate(), ConfigurationMasterHelper.outDateFormat));

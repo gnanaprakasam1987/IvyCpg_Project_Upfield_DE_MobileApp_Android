@@ -30,7 +30,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.CollectionReportDialog;
+import com.ivy.cpg.view.reports.collectionreport.CollectionReportDialog;
 
 import java.util.List;
 

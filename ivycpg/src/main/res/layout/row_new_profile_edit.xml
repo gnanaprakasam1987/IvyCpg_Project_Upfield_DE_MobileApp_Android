@@ -42,7 +42,7 @@
                 android:layout_marginLeft="@dimen/dimens_2dp"
                 android:text="T Nagar"
                 android:textColor="@color/GRAY_TEXT"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
 
         </LinearLayout>
 

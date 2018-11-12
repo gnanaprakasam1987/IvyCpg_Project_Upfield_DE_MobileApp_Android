@@ -5,9 +5,11 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -114,7 +116,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         getMessageFromAliens();
 
         initVariables();
-
         setUpViews();
         hideLoading();
     }
@@ -535,6 +536,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         setFontStyle(fontSize);
     }
 
+
+
     @Override
     public void showAlert(String title, String msg) {
         showAlert(title, msg, null);
@@ -555,7 +558,28 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         dialog.show();
     }
 
+    @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener, getString(R.string.cancel), negativeOnClickListener);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 
+    @Override
+    public void onBackPressed() {
+    }
+
+    public void startActivity(Class activity){
+        Intent intent = new Intent(this, activity);
+        startActivity(intent);
+
+    }
+
+    public void startActivityAndFinish(Class activity){
+        startActivity(activity);
+        finish();
+
+    }
 }
 
 

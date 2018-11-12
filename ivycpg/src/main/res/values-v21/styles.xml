@@ -88,12 +88,12 @@
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center</item>
         <item name="android:keepScreenOn">true</item>
-        <item name="android:layout_marginRight">@dimen/list_margin</item>
         <item name="android:maxLength">4</item>
         <item name="android:selectAllOnFocus">true</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
-        <item name="android:textSize">@dimen/list_item_primary_text_size</item>
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
     <!-- New Design - Common Themes  -->
 

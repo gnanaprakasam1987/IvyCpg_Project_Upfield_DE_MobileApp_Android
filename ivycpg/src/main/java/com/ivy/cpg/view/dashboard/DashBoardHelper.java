@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.SparseArray;
 
+import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.PriorityBo;
@@ -16,6 +17,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,33 +94,11 @@ public class DashBoardHelper {
     private static final String WEEK = "WEEK";
     ArrayList<String> weekList = new ArrayList<>();
 
-//    public enum WEEKTYPE {
-//        wk1("Week 1"), wk2("Week 2"), wk3("Week 3"), wk4("Week 4");
-//
-//        private final String dataItem;
-//
-//        WEEKTYPE(String Item) {
-//            dataItem = Item;
-//        }
-//
-//        public String toString() {
-//            return dataItem;
-//        }
-//
-//        public static String getEnumByString(String code) {
-//            for (WEEKTYPE e : WEEKTYPE.values()) {
-//                if (code.equals(e.dataItem)) return e.name();
-//            }
-//            return null;
-//        }
-//    }
-
-    public String getEnumNamefromValue(String filterName) {
-        //WEEKTYPE.getEnumByString(filterName);
-        String weekCode = (filterName.contains("Week")) ? "wk" + filterName.substring(filterName.length() - 1,
-                filterName.length()) : "";
-        return weekCode;
-    }
+    public boolean PRD_FOR_ORDER = false;
+    public boolean PRD_FOR_SKT = false;
+    private static final String PRODUCTVIE_CALLS = "PRODUCTIVECALL";
+    private static final String PRD_ORD = "ORD";
+    private static final String PRD_STK = "STK";
 
     private DashBoardHelper(Context context) {
         this.mContext = context;
@@ -206,7 +186,10 @@ public class DashBoardHelper {
      * @param isFromHomeScreenTwo
      * @return isFromHomeScreenTwo - false  Load Month List for Seller P3M interval
      * isFromHomeScreenTwo - true   Load Month List for Retailer P3M interval
+     * @See {@link SellerDashboardDataManagerImpl#getKpiMonths(boolean)}
+     * @deprecated
      */
+    @Deprecated
     public ArrayList<String> getKpiMonthNameList(boolean isFromHomeScreenTwo) {
         ArrayList<String> monthNoList = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -274,6 +257,11 @@ public class DashBoardHelper {
         this.weekList = weekList;
     }
 
+    /**
+     * @See {@link SellerDashboardDataManagerImpl#getKpiWeekList()}
+     * @deprecated
+     */
+    @Deprecated
     public void getSellerKpiWeekList() {
         ArrayList<String> weekList = new ArrayList<>();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -315,7 +303,7 @@ public class DashBoardHelper {
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     //WEEKTYPE.valueOf(c.getString(0)).toString()
-//                    int index = getWeekList().indexOf((c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
+//                    int index = getKpiWeekList().indexOf((c.getString(0).contains("wk"))?"Week " + c.getString(0).substring(c.getString(0).length()-1,
 //                            c.getString(0).length()) : "");
                     int index = getWeekList().indexOf(c.getString(0));
                     return index;
@@ -511,6 +499,13 @@ public class DashBoardHelper {
         }
     }
 
+    /**
+     * @param data
+     * @return
+     * @See {@link SDUtil#getWholeNumber(String)}
+     * @deprecated
+     */
+    @Deprecated
     public String getWhole(String data) {
         String wholeNumber;
         try {
@@ -523,6 +518,13 @@ public class DashBoardHelper {
         return wholeNumber;
     }
 
+    /**
+     * @param retailerID
+     * @param interval
+     * @See {@link SellerDashboardDataManagerImpl#getRetailerDashboardForInterval(String, String)}
+     * @deprecated
+     */
+    @Deprecated
     public void loadRetailerDashBoard(String retailerID, String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -592,6 +594,12 @@ public class DashBoardHelper {
         }
     }
 
+
+    @Deprecated
+    /**
+     * @deprecated
+     * @see {@link SellerDashboardDataManagerImpl#getRouteDashboardForInterval(String)}
+     */
     public void loadRouteDashBoard(String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -936,7 +944,7 @@ public class DashBoardHelper {
             if (!isRetailer)
                 sql = "select distinct interval from SellerKPI";
             else
-                sql = "select distinct interval from RetailerKPI where RetailerId="+bmodel.getRetailerMasterBO().getRetailerID();
+                sql = "select distinct interval from RetailerKPI where RetailerId=" + bmodel.getRetailerMasterBO().getRetailerID();
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -953,6 +961,11 @@ public class DashBoardHelper {
         return dashList;
     }
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getRouteDashList()}
+     */
     public ArrayList<String> getRouteDashList() {
 
         ArrayList<String> dashList = null;
@@ -995,7 +1008,7 @@ public class DashBoardHelper {
 
         temp = new DashBoardBO();
         temp.setMonthID(month);
-        temp.setMonthName(MONTH_NAME[mon].substring(0,3));
+        temp.setMonthName(MONTH_NAME[mon].substring(0, 3));
 
         Commons.print("Month No>>>>," + "" + temp.getMonthID() + " Month Name>>>>" + temp.getMonthName());
 
@@ -1231,6 +1244,14 @@ public class DashBoardHelper {
     /////////SELLER DAHBOARD///////////
 
 
+    @Deprecated
+    /**
+     *
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getSellerDashboardForInterval(String, String)}
+     * @param userid
+     * @param interval
+     */
     public void loadSellerDashBoard(String userid, String interval) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1304,6 +1325,11 @@ public class DashBoardHelper {
     }
 
     //for Week Dashboard
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getSellerDashboardForWeek(String)}
+     */
     public void loadSellerDashBoardforWeek(String userid) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1366,7 +1392,11 @@ public class DashBoardHelper {
     }
 
     //for P3m Purpose
-
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link com.ivy.ui.dashboard.data.SellerDashboardDataManager#getP3MSellerDashboardData(String)}
+     */
     public void loadSellerDashBoard(String userid) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -1502,6 +1532,11 @@ public class DashBoardHelper {
     }
 
     //Only for loading trend chart
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardDataManagerImpl#getP3MTrendChart(String)}
+     */
     public void loadP3MTrendChaart(String userid) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -2102,11 +2137,11 @@ public class DashBoardHelper {
                 if (dashbo.getCode() != null
                         && dashbo.getCode().equalsIgnoreCase("DSR_PC"))
                     dashbo.setAcheived(c.getDouble(1)
-                            + bmodel.getProductiveCallsForTheDay());
+                            + getProductiveCallsForTheDay());
                 else if (dashbo.getCode() != null
                         && dashbo.getCode().equalsIgnoreCase("DSR_CALL"))
                     dashbo.setAcheived(c.getDouble(1)
-                            + bmodel.getVisitedCallsForTheDay());
+                            + getVisitedCallsForTheDay());
                 else if (dashbo.getCode() != null
                         && dashbo.getCode().equalsIgnoreCase("SV"))
                     dashbo.setAcheived(c.getDouble(1) + bmodel.getAcheived());
@@ -2947,7 +2982,6 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
 
             String sql = new String(
                     "select count(kpiid) from SellerKPISKUDetail"
@@ -2970,6 +3004,11 @@ public class DashBoardHelper {
         return count;
     }
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @See {@link UserDataManagerImpl#fetchDashboardUsers()}
+     */
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -3642,7 +3681,7 @@ public class DashBoardHelper {
 
 
         db.closeDB();
-        return  dailyRep;
+        return dailyRep;
     }
 
     public DailyReportBO getNoOfInvoiceAndValue() {
@@ -3886,4 +3925,264 @@ public class DashBoardHelper {
 
         return productive_calls;
     }
+
+    /**
+     * This method will return the total calls planned for today. On Week day
+     * the Deviated calls will be considered. On week end it will return total
+     * deviated retailers count.
+     *
+     * @return plannedCallsForTodayCount
+     */
+    public int getTotalCallsForTheDay() {
+        int total_calls = 0;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor c = null;
+            if (bmodel.beatMasterHealper == null
+                    || bmodel.beatMasterHealper.getTodayBeatMasterBO() == null
+                    || bmodel.beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                c = db.selectSQL("select  distinct RM.RetailerID from RetailerMaster RM"
+                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                        + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                        + " where RBM.isdeviated='Y' or RMI.isToday='1'");
+            } else {
+                c = db.selectSQL("select  distinct RM.RetailerID from RetailerMaster RM"
+                        + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid"
+                        + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID"
+                        + " where RBM.isdeviated='Y' or RMI.isToday='1'");
+            }
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    total_calls = c.getCount();
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("Error at calculating planned call.", e);
+        }
+        return total_calls;
+    }
+
+    /**
+     * This method will return the total retailers visited today. Atleast one
+     * activity for Eg. stockcheck has to be executed to consider as visited. On
+     * Week days the Deviated calls wont get counted.
+     *
+     * @return plannedCallsForTodayCount
+     */
+    public int getVisitedCallsForTheDay() {
+        int visited_calls = 0;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = null;
+            c = db.selectSQL("select count(distinct RM.retailerid) from retailermaster RM" +
+                    " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID" +
+                    " where RBM.isvisited='Y'");// and
+            // isdeviated='N'
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    if (c.moveToNext()) {
+                        visited_calls = c.getInt(0);
+                    }
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(
+                    "Error at calculating visited calls for the day.", e);
+        }
+        return visited_calls;
+    }
+
+
+    /**
+     * This method will return the productive retailers count for the Day. For
+     * Van Seller, this method will get distinct retailer count from
+     * InvoiceTable and For Pre-seller from OrderHeader if PRD_FOR_ORDER is TRUE and from ClosingStockHeader if PRD_FOR_STK is true.
+     * This config is computed through loadProductiveCallsConfig()
+     * Deviated retailer productivity wont be considered for deviated retailers.
+     *
+     * @return ProductiveCallsForTheDay
+     */
+    public int getProductiveCallsForTheDay() {
+        int productive_calls = 0;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = null;
+            if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                // c =
+                // db.selectSQL("SELECT distinct(Retailerid) FROM InvoiceMaster");
+
+                if (bmodel.beatMasterHealper.getTodayBeatMasterBO() == null
+                        || bmodel.beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                    c = db.selectSQL("select  distinct(Retailerid) from InvoiceMaster where upload='N'");
+                } else {
+                    c = db.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
+                            + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
+                            + "LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = r.RetailerID"
+                            + " where RBM.isdeviated='Y' or RMI.isToday=1 and i.IsPreviousInvoice = 0 ");
+                }
+            } else {
+                // c =
+                // db.selectSQL("select distinct(RetailerId) from OrderHeader");
+                loadProductiveCallsConfig();
+                if (PRD_FOR_ORDER) {
+                    if (bmodel.beatMasterHealper.getTodayBeatMasterBO() == null
+                            || bmodel.beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                        c = db.selectSQL("select  distinct(Retailerid) from OrderHeader where upload!='X'");
+                    } else {
+                        c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
+                                + "o.retailerid=r.retailerid where o.upload!='X' ");// where
+                        // r.isdeviated='N'
+                    }
+                } else if (PRD_FOR_SKT) {
+                    if (bmodel.beatMasterHealper.getTodayBeatMasterBO() == null
+                            || bmodel.beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                        c = db.selectSQL("select  distinct(RetailerID) from ClosingStockHeader");
+                    } else {
+                        c = db.selectSQL("select  distinct(CSH.RetailerID) from ClosingStockHeader CSH INNER JOIN RetailerMaster RM on "
+                                + "CSH.RetailerID=RM.RetailerID ");
+                    }
+                }
+            }
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    productive_calls = c.getCount();
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return productive_calls;
+    }
+
+    public int getProductiveCallsForTheDayKlgs() {
+        int productive_calls = 0;
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = null;
+
+            // c =
+            // db.selectSQL("select distinct(RetailerId) from OrderHeader");
+            loadProductiveCallsConfig();
+            if (PRD_FOR_ORDER) {
+                if (bmodel.beatMasterHealper.getTodayBeatMasterBO() == null
+                        || bmodel.beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                    c = db.selectSQL("select  distinct(Retailerid) from OrderHeader where upload!='X'");
+                } else {
+                    c = db.selectSQL("select  distinct(o.Retailerid) from OrderHeader o inner join retailermaster r on "
+                            + "o.retailerid=r.retailerid where o.upload!='X' ");// where
+                    // r.isdeviated='N'
+                }
+            } else if (PRD_FOR_SKT) {
+                if (bmodel.beatMasterHealper.getTodayBeatMasterBO() == null
+                        || bmodel.beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
+                    c = db.selectSQL("select  distinct(RetailerID) from ClosingStockHeader");
+                } else {
+                    c = db.selectSQL("select  distinct(CSH.RetailerID) from ClosingStockHeader CSH INNER JOIN RetailerMaster RM on "
+                            + "CSH.RetailerID=RM.RetailerID ");
+                }
+            }
+
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    productive_calls = c.getCount();
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return productive_calls;
+    }
+
+    /* This method will download the config for the productivecall. Based on the RField
+     * value the productive config will turn ON and accordingly the productiveCalls values will be computed*/
+
+    public void loadProductiveCallsConfig() {
+        try {
+            PRD_FOR_ORDER = false;
+            PRD_FOR_SKT = false;
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+
+            String sql = "SELECT RField FROM "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1' and ForSwitchSeller = 0";
+
+            Cursor c = db.selectSQL(sql);
+
+            if (c != null && c.getCount() != 0) {
+                while (c.moveToNext()) {
+                    if (c.getString(0).equalsIgnoreCase(PRD_ORD))
+                        PRD_FOR_ORDER = true;
+                    else if (c.getString(0).equalsIgnoreCase(PRD_STK))
+                        PRD_FOR_SKT = true;
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("loadProductiveCallsConfigs " + e);
+        } finally {
+            if (!PRD_FOR_ORDER && !PRD_FOR_SKT)
+                PRD_FOR_ORDER = true;
+        }
+    }
+
+    public float getTotalWeight(String retailerid) {
+        DBUtil db;
+        float totalWeight = 0;
+        try {
+            db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+
+            db.openDataBase();
+            StringBuffer sb = new StringBuffer();
+            sb.append("select sum(totalweight) from orderheader where OrderDate=");
+            sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            if (!retailerid.equals("")) {
+                sb.append("and upload!='X' and retailerid=" + bmodel.QT(retailerid));
+            }
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    totalWeight = c.getFloat(0);
+
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.print(e.getMessage());
+        }
+        return totalWeight;
+    }
+
+
 }

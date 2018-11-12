@@ -159,13 +159,13 @@ public class VanUnloadHistoryActivity extends IvyBaseActivityNoActionBar {
 
                 layoutBackground = itemView.findViewById(R.id.list_background);
 
-                labelInvNoTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, VanUnloadHistoryActivity.this));
-                labelSalableQtyTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, VanUnloadHistoryActivity.this));
-                labelNSQtyTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, VanUnloadHistoryActivity.this));
+                labelInvNoTV.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.REGULAR));
+                labelSalableQtyTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.REGULAR));
+                labelNSQtyTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.REGULAR));
 
-                invNoTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, VanUnloadHistoryActivity.this));
-                totSalableQtyTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, VanUnloadHistoryActivity.this));
-                labelNSQtyTv.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, VanUnloadHistoryActivity.this));
+                invNoTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.MEDIUM));
+                totSalableQtyTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.MEDIUM));
+                labelNSQtyTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.MEDIUM));
 
 
                 try {

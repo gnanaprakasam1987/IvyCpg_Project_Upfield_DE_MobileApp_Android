@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -57,8 +58,8 @@ public class PromotionHelper {
 
         /*businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);*/
         businessModel.productHelper.setFilterProductLevelsRex(businessModel.productHelper.downloadFilterLevel(mMenuCode));
-        businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(mMenuCode,
-                businessModel.productHelper.getRetailerModuleSequenceValues()));
+        businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(
+                businessModel.productHelper.getRetailerModuleSequenceValues(),false));
 
         downloadPromotionMaster(mContext);
         loadPromoEntered(mContext);
@@ -572,7 +573,7 @@ public class PromotionHelper {
                 }
                 standardListBO = new StandardListBO();
                 standardListBO.setListID("0");
-                standardListBO.setListName("-Select ");
+                standardListBO.setListName(mContext.getString(R.string.plain_select));
                 mRatingList.add(0, standardListBO);
             }
             c.close();

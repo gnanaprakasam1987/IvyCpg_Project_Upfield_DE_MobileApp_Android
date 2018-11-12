@@ -88,7 +88,7 @@
                             android:gravity="start"
                             android:maxLines="1"
                             android:textColor="?attr/primarycolor"
-                            android:textSize="@dimen/font_nano_small" />
+                            android:textSize="@dimen/text_size_secondary" />
 
                         <Button
                             android:id="@+id/btn_search"
@@ -129,7 +129,7 @@
                                 android:inputType="text"
                                 android:text=""
                                 android:textColor="@color/GRAY_TEXT"
-                                android:textSize="@dimen/font_nano_small" />
+                                android:textSize="@dimen/text_size_secondary" />
 
                             <Button
                                 android:id="@+id/btn_clear"
@@ -342,7 +342,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/zero"
                     android:textColor="@color/footer_lbl_text_color"
-                    android:textSize="@dimen/footer_lbl_text_size" />
+                    android:textSize="@dimen/footer_label_value" />
             </LinearLayout>
 
             <LinearLayout
@@ -364,7 +364,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/share_percent"
                     android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/greyed_text_size" />
+                    android:textSize="@dimen/footer_label_size" />
 
                 <TextView
                     android:id="@+id/tv_sharePercent"
@@ -374,7 +374,7 @@
                     android:maxLines="1"
                     android:text="@string/zero"
                     android:textColor="@color/WHITE"
-                    android:textSize="@dimen/footer_lbl_text_size" />
+                    android:textSize="@dimen/footer_label_value" />
 
             </LinearLayout>
 

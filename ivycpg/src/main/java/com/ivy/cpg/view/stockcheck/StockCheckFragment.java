@@ -75,7 +75,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
@@ -276,11 +275,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         viewFlipper =  view.findViewById(R.id.view_flipper);
         productName =  view.findViewById(R.id.productName);
-        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        productName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
         mEdt_searchProductName =  view.findViewById(
                 R.id.edt_searchproductName);
-        mEdt_searchProductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        mEdt_searchProductName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         mBtn_Search =  view.findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
         mBtn_clear =  view.findViewById(R.id.btn_clear);
@@ -291,8 +290,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
         tv_total_stockCheckedProducts =  view.findViewById(R.id.tv_stockCheckedProductscount);
         tv_total_products =  view.findViewById(R.id.tv_productsCount);
 
-        tv_total_stockCheckedProducts.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,getActivity()));
-        tv_total_products.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,getActivity()));
+        tv_total_stockCheckedProducts.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        tv_total_products.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
 
 
         btn_save =  view.findViewById(R.id.btn_save);
@@ -535,13 +534,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                     holder.productCode =  row
                             .findViewById(R.id.stock_and_order_listview_produtCode);
-                    holder.productCode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.productCode.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                     holder.ppq =  row
                             .findViewById(R.id.stock_and_order_listview_ppq);
-                    holder.ppq.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.ppq.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                     holder.psq =  row
                             .findViewById(R.id.stock_and_order_listview_psq);
-                    holder.psq.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.psq.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
                     holder.mReason =  row.findViewById(R.id.reason);
 
@@ -551,9 +550,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.stock_and_order_listview_sc_qty);
                     holder.shelfouter =  row
                             .findViewById(R.id.stock_and_order_listview_shelfouter_qty);
-                    holder.shelfPcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-                    holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-                    holder.shelfouter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.shelfPcsQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                    holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                    holder.shelfouter.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
                     holder.ll_stkCB =  row
                             .findViewById(R.id.ll_stock_and_order_listview_cb);
@@ -562,7 +561,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.btn_availability);
                     holder.total =  row
                             .findViewById(R.id.stock_check_listview_total);
-                    holder.total.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.total.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
 
                     holder.facingQty =  row
@@ -1818,7 +1817,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+            tab.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             tab.setTextColor(color);
             tab.setMaxLines(1);
             tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));

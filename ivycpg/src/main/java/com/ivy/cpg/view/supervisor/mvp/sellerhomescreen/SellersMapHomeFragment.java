@@ -160,25 +160,25 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         view.findViewById(R.id.seller_view_btn).setOnClickListener(this);
 
         //Bottom sheet layout Typeface
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_outlet)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
-        ((TextView) view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
-        ((TextView) view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
-        ((TextView) view.findViewById(R.id.tv_txt_order_value)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getContext()));
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getContext()));
-        ((TextView) view.findViewById(R.id.tv_inmarket_seller)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getContext()));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_order_value)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.tv_inmarket_seller)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.LIGHT));
 
-        totalSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
-        absentSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
-        marketSeller.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
-        tvCoveredOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
-        tvUnbilledOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
-        tvTotalOutlet.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
-        tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
-        tvSellerProductivePercent.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getContext()));
+        totalSeller.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+        absentSeller.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+        marketSeller.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+        tvCoveredOutlet.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+        tvUnbilledOutlet.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+        tvTotalOutlet.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+        tvOrderValue.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+        tvSellerProductivePercent.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
 
-        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext()));
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
 
 
         mapWrapperLayout = view.findViewById(R.id.map_wrap_layout);

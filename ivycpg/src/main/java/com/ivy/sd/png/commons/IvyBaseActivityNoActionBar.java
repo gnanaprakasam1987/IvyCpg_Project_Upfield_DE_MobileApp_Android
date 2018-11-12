@@ -140,7 +140,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
 
     public void setScreenTitle(String title) {
         mScreenTitleTV = (TextView) findViewById(R.id.tv_toolbar_title);
-        mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+       // mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mScreenTitleTV.setText(title);
     }
 

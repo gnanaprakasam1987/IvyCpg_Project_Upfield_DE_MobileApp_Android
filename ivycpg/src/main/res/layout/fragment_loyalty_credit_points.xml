@@ -43,7 +43,7 @@
                     android:paddingBottom="8dp"
                     android:text="Given Points"
                     android:textColor="@color/WHITE"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
             </LinearLayout>
 
@@ -70,7 +70,7 @@
                     android:paddingBottom="8dp"
                     android:text="Selected Points"
                     android:textColor="@color/WHITE"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
             </LinearLayout>
 

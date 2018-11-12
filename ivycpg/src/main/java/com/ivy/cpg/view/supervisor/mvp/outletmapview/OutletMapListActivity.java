@@ -118,12 +118,12 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         params.width = width;
         drawer.setLayoutParams(params);
 
-        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
-        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
-        ((TextView) findViewById(R.id.tv_planned_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
-        ((TextView) findViewById(R.id.tv_covered_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
-        ((TextView) findViewById(R.id.tv_unbilled_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        ((TextView) findViewById(R.id.tv_planned_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView) findViewById(R.id.tv_covered_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView) findViewById(R.id.tv_unbilled_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
@@ -426,7 +426,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             for (int i = 0; i < tabChildCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                 }
             }
         }

@@ -163,26 +163,26 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
 
         holder.text_retailerName.setText(reportBO.getRetailerName());
-        holder.text_retailerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.text_orderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.label_orderNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-        holder.tvOrderNo.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-        holder.text_delivery_date.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-        holder.tvFocusBrandCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-        holder.tvMustSellCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-        holder.tvFocusBrandCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-        holder.tvVolumeValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+        holder.text_retailerName.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.text_orderValue.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.label_orderNumber.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+        holder.tvOrderNo.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+        holder.text_delivery_date.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+        holder.tvFocusBrandCount.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+        holder.tvMustSellCount.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+        holder.tvFocusBrandCount.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+        holder.tvVolumeValue.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
 
-        holder.label_LPC.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.label_weight.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.label_PreORPost.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.label_focusBrand.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.label_MustSell.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.tv_tax_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-        holder.tv_discount_amt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-        holder.taxTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.discTitle.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
-        holder.tvVolumeLabel.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, mContext));
+        holder.label_LPC.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.label_weight.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.label_PreORPost.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.label_focusBrand.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.label_MustSell.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.tv_tax_value.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+        holder.tv_discount_amt.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+        holder.taxTitle.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.discTitle.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+        holder.tvVolumeLabel.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
 
         try {
             if (businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) != null) {

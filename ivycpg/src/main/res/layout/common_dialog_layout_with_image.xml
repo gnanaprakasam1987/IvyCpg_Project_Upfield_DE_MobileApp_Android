@@ -62,7 +62,7 @@
                    android:layout_margin="@dimen/profile_history_10dp"
                     android:text="@string/cancel"
                     android:textColor="@color/Black"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     android:visibility="visible" />
 
                 <Button
@@ -72,7 +72,7 @@
                     android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:text="@string/ok"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
             <TextView
                 android:id="@+id/text_move_next"

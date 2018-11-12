@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.channel.ChannelDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -13,6 +14,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import java.util.Vector;
+
 
 public class ChannelMasterHelper {
 
@@ -48,6 +50,13 @@ public class ChannelMasterHelper {
     }
 
 
+    /**
+     * @param channelID
+     * @return
+     * @See {@link ChannelDataManagerImpl#fetchChannelName(String)}
+     * @deprecated
+     */
+    @Deprecated
     public String getChannelName(String channelID) {
 
         ChannelBO beat;
@@ -66,12 +75,16 @@ public class ChannelMasterHelper {
         return "";
     }
 
-
     public Vector<ChannelBO> getChannelMaster() {
         return channelMaster;
     }
 
 
+    /**
+     * @See {@link ChannelDataManagerImpl#fetchChannels()}
+     * @deprecated
+     */
+    // Download Channel details
     public void downloadChannel() {
         try {
             ChannelBO temp;
@@ -138,7 +151,9 @@ public class ChannelMasterHelper {
             int mChildLevel = 0;
             int mContentLevel = 0;
             db.openDataBase();
-            Cursor c = db.selectSQL("select min(Sequence) as childlevel,(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + channelId + ") as contentlevel  from ChannelLevel");
+            Cursor c = db.selectSQL("select min(Sequence) as childlevel," +
+                    "(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId " +
+                    "where ch.ChId=" + channelId + ") as contentlevel  from ChannelLevel");
             if (c != null) {
                 while (c.moveToNext()) {
                     mChildLevel = c.getInt(0);
@@ -182,7 +197,13 @@ public class ChannelMasterHelper {
         return str;
     }
 
-
+    /**
+     * @param channelId
+     * @return mapping channelID
+     * @See {@link ChannelDataManagerImpl#getChannelHierarchy(int)}
+     * @deprecated
+     */
+    @Deprecated
     public String getChannelHierarchy(int channelId, Context mContext) {
         String sql, sql1 = "", str = "";
         try {
@@ -192,7 +213,9 @@ public class ChannelMasterHelper {
             int mChildLevel = 0;
             int mContentLevel = 0;
             db.openDataBase();
-            Cursor c = db.selectSQL("select min(Sequence) as childlevel,(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + channelId + ") as contentlevel  from ChannelLevel");
+            Cursor c = db.selectSQL("select min(Sequence) as childlevel," +
+                    "(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId " +
+                    "where ch.ChId=" + channelId + ") as contentlevel  from ChannelLevel");
             if (c != null) {
                 while (c.moveToNext()) {
                     mChildLevel = c.getInt(0);
@@ -203,29 +226,7 @@ public class ChannelMasterHelper {
 
             int loopEnd = mContentLevel - mChildLevel + 1;
 
-            for (int i = 2; i <= loopEnd; i++) {
-                sql1 = sql1 + " LM" + i + ".ChId";
-                if (i != loopEnd)
-                    sql1 = sql1 + ",";
-            }
-            sql = "select " + sql1 + "  from ChannelHierarchy LM1";
-            for (int i = 2; i <= loopEnd; i++)
-                sql = sql + " INNER JOIN ChannelHierarchy LM" + i + " ON LM" + (i - 1)
-                        + ".ParentId = LM" + i + ".ChId";
-            sql = sql + " where LM1.ChId=" + channelId;
-            c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    for (int i = 0; i < c.getColumnCount(); i++) {
-                        str = str + c.getString(i);
-                        if (c.getColumnCount() > 1 && i != c.getColumnCount())
-                            str = str + ",";
-                    }
-                    if (str.endsWith(","))
-                        str = str.substring(0, str.length() - 1);
-                }
-                c.close();
-            }
+            str = getString(channelId, sql1, str, db, loopEnd);
 
             db.closeDB();
         } catch (Exception e) {
@@ -237,6 +238,45 @@ public class ChannelMasterHelper {
     }
 
 
+    private String getString(int channelId, String sql1, String str, DBUtil db, int loopEnd) {
+        String sql;
+        Cursor c;
+        for (int i = 2; i <= loopEnd; i++) {
+            sql1 = sql1 + " LM" + i + ".ChId";
+            if (i != loopEnd)
+                sql1 = sql1 + ",";
+        }
+        sql = "select " + sql1 + "  from ChannelHierarchy LM1";
+        for (int i = 2; i <= loopEnd; i++)
+            sql = sql + " INNER JOIN ChannelHierarchy LM" + i + " ON LM" + (i - 1)
+                    + ".ParentId = LM" + i + ".ChId";
+        sql = sql + " where LM1.ChId=" + channelId;
+        c = db.selectSQL(sql);
+        if (c != null) {
+            while (c.moveToNext()) {
+                for (int i = 0; i < c.getColumnCount(); i++) {
+                    str = str + c.getString(i);
+                    if (c.getColumnCount() > 1 && i != c.getColumnCount())
+                        str = str + ",";
+                }
+                if (str.endsWith(","))
+                    str = str.substring(0, str.length() - 1);
+            }
+            c.close();
+        }
+        if (str.length() == 0)
+            str = "0";
+        return str;
+    }
+
+
+    /**
+     * @deprecated
+     * @See {@link ChannelDataManagerImpl#getLocationHierarchy()}
+     * @param mContext
+     * @return
+     */
+    @Deprecated
     public String getLocationHierarchy(Context mContext) {
         String sql, sql1 = "", str = bmodel.getRetailerMasterBO().getLocationId() + ",";
         try {

@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
@@ -18,6 +18,7 @@ import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -27,14 +28,16 @@ import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import java.io.File;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -81,9 +84,9 @@ public class AppUtils {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
-    public static  String latlongImageFileName;
+    public static String latlongImageFileName;
 
-    public static InputFilter getInputFilter(String regex ){
+    public static InputFilter getInputFilter(String regex) {
         InputFilter fil = new InputFilter.LengthFilter(25);
         if (regex != null && !regex.isEmpty()) {
             if (regex.contains("<") && regex.contains(">")) {
@@ -103,40 +106,6 @@ public class AppUtils {
         }
         return fil;
     }
-    public static boolean isExternalStorageAvailable() {
-
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
-                .getPath());
-        double sdAvailSize = (double) stat.getAvailableBlocks()
-                * (double) stat.getBlockSize();
-        // One binary gigabyte equals 1,073,741,824 bytes.
-        double mbAvailable = sdAvailSize / 1048576;
-
-        String state = Environment.getExternalStorageState();
-        boolean mExternalStorageAvailable = false;
-        boolean mExternalStorageWriteable = false;
-
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            // We can read and write the media
-            mExternalStorageAvailable = mExternalStorageWriteable = true;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            // We can only read the media
-            mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
-        } else {
-            // Something else is wrong. It may be one of many other states, but
-            // all we need
-            // to know is we can neither read nor write
-            mExternalStorageAvailable = mExternalStorageWriteable = false;
-        }
-
-        if (mExternalStorageAvailable == true
-                && mExternalStorageWriteable == true && mbAvailable > 10) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 
     public static boolean isEmptyString(String text) {
@@ -149,21 +118,12 @@ public class AppUtils {
         return f.exists();
     }
 
-    public static Uri getUriFromFile(Context mContext, String path) {
-        File f = new File(path);
-        if (Build.VERSION.SDK_INT >= 24) {
-            return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
-
-        } else {
-            return Uri.fromFile(f);
-        }
-    }
 
     /**
      * DecodeFile is convert the large size image to fixed size which mentioned
      * above
      */
-    public static  Bitmap decodeFile(File f) {
+    public static Bitmap decodeFile(File f) {
         int IMAGE_MAX_SIZE = 500;
         Bitmap b = null;
         try {
@@ -264,7 +224,6 @@ public class AppUtils {
 
     public static AlertDialog applyAlertDialogTheme(Context context, AlertDialog.Builder builder) {
         TypedArray typearr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-
         AlertDialog dialog = builder.show();
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 
@@ -272,15 +231,15 @@ public class AppUtils {
         dialog.getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         int alertTitleId = context.getResources().getIdentifier("alertTitle", "id", "android");
-        TextView alertTitle = (TextView) dialog.getWindow().getDecorView().findViewById(alertTitleId);
+        TextView alertTitle = dialog.getWindow().getDecorView().findViewById(alertTitleId);
         alertTitle.setTextColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0)); // change title text color
 
         Button negativeBtn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        negativeBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+        negativeBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
         negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
 
         Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        postiveBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+        postiveBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
         postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
 
         // Set title divider color
@@ -292,9 +251,6 @@ public class AppUtils {
         return dialog;
     }
 
-    public static String QT(String data) {
-        return "'" + data + "'";
-    }
 
     public static String convertToSting(Object object) {
         return new Gson().toJson(object);
@@ -302,6 +258,140 @@ public class AppUtils {
 
     public static Object convertToObject(String jsonString, Object object) {
         return new Gson().fromJson(jsonString, object.getClass());
+    }
+
+
+    /*
+     * This method will return total acheived value of the seller for the day.
+     * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
+     * value will not be considered.
+     */
+
+    public static String QT(String data) {
+        return "'" + data + "'";
+    }
+
+    public static boolean isNullOrEmpty(String string) {
+        return string == null || string.length() == 0;
+    }
+
+    /**
+     * To check file availability
+     *
+     * @param path File path
+     * @return Availability
+     */
+    public static boolean isFileExisting(String path) {
+        File f = new File(path);
+        return f.exists();
+    }
+
+    /**
+     * Getting file URI
+     *
+     * @param path File path
+     * @return URI
+     */
+    public static Uri getUriFromFile(Context mContext, String path) {
+        File f = new File(path);
+        if (Build.VERSION.SDK_INT >= 24) {
+            return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
+
+        } else {
+            return Uri.fromFile(f);
+        }
+
+    }
+
+    /**
+     * @return <code>true<code/> if external storage available else <code>false<code/>
+     */
+
+    public static boolean isExternalStorageAvailable() {
+
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
+                .getPath());
+        double sdAvailSize = (double) stat.getAvailableBlocks()
+                * (double) stat.getBlockSize();
+        // One binary gigabyte equals 1,073,741,824 bytes.
+        double mbAvailable = sdAvailSize / 1048576;
+
+        String state = Environment.getExternalStorageState();
+        boolean mExternalStorageAvailable = false;
+        boolean mExternalStorageWriteable = false;
+
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            // We can read and write the media
+            mExternalStorageAvailable = mExternalStorageWriteable = true;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            // We can only read the media
+            mExternalStorageAvailable = true;
+            mExternalStorageWriteable = false;
+        } else {
+            // Something else is wrong. It may be one of many other states, but
+            // all we need
+            // to know is we can neither read nor write
+            mExternalStorageAvailable = mExternalStorageWriteable = false;
+        }
+
+        if (mExternalStorageAvailable == true
+                && mExternalStorageWriteable == true && mbAvailable > 10) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /*
+     * It returns true if the folder contains the n or more than n files
+     * which starts name fnameStarts otherwiese returns false;
+     */
+
+    public static boolean checkForNFilesInFolder(String folderPath, int n,
+                                                 String fNameStarts) {
+        if (n < 1)
+            return true;
+
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            return false;
+        } else {
+            String fnames[] = folder.list();
+            if ((fnames == null) || (fnames.length < n)) {
+                return false;
+            } else {
+                int count = 0;
+                for (String str : fnames) {
+                    if ((str != null) && !fNameStarts.equals("") && (str.length() > 0)) {
+                        if (str.startsWith(fNameStarts)) {
+                            count++;
+                        }
+                    }
+
+                    if (count == n) {
+                        return true;
+                    }
+                }
+            }
+
+        }
+        return false;
+    }
+
+    public static void deleteFiles(String folderPath, String fnamesStarts) {
+        File folder = new File(folderPath);
+
+        File files[] = folder.listFiles();
+        if ((files != null) && (files.length >= 1)) {
+
+            for (File tempFile : files) {
+                if (tempFile != null) {
+                    if (tempFile.getName().startsWith(fnamesStarts))
+                        tempFile.delete();
+                }
+            }
+        }
     }
 
     /**
@@ -313,6 +403,24 @@ public class AppUtils {
         // how you store the regID in your app is up to you.
         return context.getSharedPreferences(HomeScreenActivity.class.getSimpleName(),
                 MODE_PRIVATE);
+    }
+
+    public static boolean validRegex(String pattern, String str) {
+
+        if (pattern.equals("")) {
+            return true;
+        }
+
+        Pattern mPattern = Pattern.compile(pattern);
+        Matcher matcher = mPattern.matcher(str);
+
+        // Entered text does not match the pattern
+        if (!matcher.matches()) {
+            // It does not match partially too
+            if (!matcher.hitEnd())
+                return false;
+        }
+        return true;
     }
 
 }

@@ -74,7 +74,7 @@
                     android:gravity="start|center"
                     android:padding="3dp"
                     android:text="@string/product_name"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     android:layout_marginLeft="@dimen/skuwise_right_margin" />
 
                 <TextView
@@ -84,7 +84,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
                     android:text="@string/gap"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <TextView
                     android:id="@+id/loading_stock_ou_title"
@@ -93,7 +93,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
                     android:text="@string/pm"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
             </LinearLayout>
 

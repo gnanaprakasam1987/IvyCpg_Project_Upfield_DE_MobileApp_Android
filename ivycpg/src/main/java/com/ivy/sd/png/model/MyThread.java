@@ -3,7 +3,9 @@ package com.ivy.sd.png.model;
 import android.app.Activity;
 import android.os.Handler;
 
+import com.baidu.platform.comapi.map.C;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.login.LoginBaseActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.LoginScreen;
@@ -14,6 +16,7 @@ import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -107,9 +110,9 @@ public class MyThread extends Thread {
                 bmodel.downloadVisit_Actual_Achieved();
                 bmodel.labelsMasterHelper.downloadLabelsMaster();
                 bmodel.productHelper.loadOldBatchIDMap();
-
-                bmodel.collectionHelper.updateCreditNoteACtualAmt();
-                bmodel.collectionHelper.loadCreditNote();
+                CollectionHelper collectionHelper = CollectionHelper.getInstance(ctx);
+                collectionHelper.updateCreditNoteACtualAmt();
+                collectionHelper.loadCreditNote();
                 bmodel.productHelper.downloadOrdeType();
                 bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
@@ -276,7 +279,7 @@ public class MyThread extends Thread {
 
                 }
 
-                if (orderHelper.saveOrder(ctx, bill2Products, false)) {
+                if (orderHelper.saveOrder(ctx, bill1Products, false) && orderHelper.saveOrder(ctx, bill2Products, false)) {
 
 
                     // Update review plan in DB
@@ -426,7 +429,7 @@ public class MyThread extends Thread {
                 // Insert Product Details to Empty Reconciliation tables if Type
                 // wise Group products Edited or updated
                 if (!bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-                    bmodel.mEmptyReconciliationhelper.saveSKUWiseTransaction();
+                    EmptyReconciliationHelper.getInstance(ctx).saveSKUWiseTransaction();
             }
             OrderSummary frm = (OrderSummary) ctx;
             frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_ORDER_SAVED);
@@ -488,7 +491,7 @@ public class MyThread extends Thread {
             // value while deleting the Order
             if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
                 bmodel.productHelper.clearBomReturnProductsTable();
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper.getInstance(ctx)
                         .deleteEmptyReconciliationOrder();
             }
 
@@ -553,7 +556,7 @@ public class MyThread extends Thread {
             // value while deleting the Order
             if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
                 bmodel.productHelper.clearBomReturnProductsTable();
-                bmodel.mEmptyReconciliationhelper
+                EmptyReconciliationHelper.getInstance(ctx)
                         .deleteEmptyReconciliationOrder();
             }
 
@@ -660,7 +663,7 @@ public class MyThread extends Thread {
                 }
                 // When Configuration Enabled the data inserted in to the Payment
                 if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
-                    bmodel.collectionHelper.collectionBeforeInvoice();
+                    CollectionHelper.getInstance(ctx).collectionBeforeInvoice();
 
                 Commons.print("Class Simple Name :"
                         + ctx.getClass().getSimpleName());

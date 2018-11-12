@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="@string/product_name"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/product_code"
@@ -63,7 +63,7 @@
         android:maxLines="1"
         android:text="0"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/PRDPCSQTY"
@@ -75,7 +75,7 @@
         android:tag="sih_piece"
         android:text="0"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/outerCaseQty"
@@ -86,7 +86,7 @@
         android:singleLine="true"
         android:text="0"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <TextView
         android:id="@+id/PRDVAL"
@@ -98,7 +98,7 @@
         android:tag="sih_piece"
         android:text="5"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
     <!-- <TextView
          android:id="@+id/prdweight"
          android:textColor="@android:color/black"
@@ -109,6 +109,6 @@
          android:gravity="center"
          android:text="56656"
 
-         android:textSize="@dimen/font_micro_small" />-->
+         android:textSize="@dimen/text_size_primary" />-->
 
 </LinearLayout>

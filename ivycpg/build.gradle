@@ -42,7 +42,7 @@ def revNumber = fetchRevisionNumber()
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
@@ -99,6 +99,7 @@ android {
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
             testCoverageEnabled = true
+            debuggable false
 
         }
         release {
@@ -172,6 +173,8 @@ android {
         main {
             // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
             res.srcDirs = [
+                    'src/main/res/layouts/dashboard',
+                    'src/main/res/layouts/photocapture',
                     'src/main/res/layouts/activation',
                     'src/main/res/layouts',
                     'src/main/res'

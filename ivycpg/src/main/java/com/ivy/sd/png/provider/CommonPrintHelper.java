@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.text.TextPaint;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
@@ -20,7 +21,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
-import com.ivy.sd.png.bo.TaxBO;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -1860,18 +1861,19 @@ public class CommonPrintHelper {
 
 
     private void getCollectionBeforeInvValue() {
-        List<PaymentBO> payment = bmodel.collectionHelper
-                .getPaymentList();
+        List<PaymentBO> payment = CollectionHelper.getInstance(context).getPaymentList();
         if (payment != null && payment.size() > 0) {
 
-            if (payment.get(0).getCashMode()
-                    .equals(StandardListMasterConstants.CHEQUE)) {
-                mCheque = payment.get(0).getAmount();
-            } else if (payment.get(0).getCashMode()
-                    .equals(StandardListMasterConstants.CASH)) {
-                mCash = payment.get(0).getAmount();
-            } else if (payment.get(0).getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
-                mCreditNoteValue = payment.get(0).getAmount();
+            switch (payment.get(0).getCashMode()) {
+                case StandardListMasterConstants.CHEQUE:
+                    mCheque = payment.get(0).getAmount();
+                    break;
+                case StandardListMasterConstants.CASH:
+                    mCash = payment.get(0).getAmount();
+                    break;
+                case StandardListMasterConstants.CREDIT_NOTE:
+                    mCreditNoteValue = payment.get(0).getAmount();
+                    break;
             }
 
 

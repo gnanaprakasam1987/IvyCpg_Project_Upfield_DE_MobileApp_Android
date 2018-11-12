@@ -454,14 +454,16 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA) {
+                if (businessModel.configurationMasterHelper.COMMON_PRINT_BIXOLON
+                        || businessModel.configurationMasterHelper.COMMON_PRINT_SCRYBE
+                        || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
+                        || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
                     InvoiceReportBO inv = list.get(params[0]);
                     mTotalAmount = inv.getInvoiceAmount();
                     orderHelper.setOrderId(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
                     businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
-                    businessModel.productHelper.downloadProducts("MENU_STK_ORD");
                     GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
                     if (genericObjectPair != null) {
                         businessModel.productHelper.setProductMaster(genericObjectPair.object1);

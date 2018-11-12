@@ -2,7 +2,6 @@ package com.ivy.cpg.view.collection;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -58,10 +57,10 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
 
         setScreenTitle("No Collection Reason");
 
-        ((TextView) findViewById(R.id.invoice_no)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.invoice_date)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.invoice_amount)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-        ((TextView) findViewById(R.id.invoice_reason)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        ((TextView) findViewById(R.id.invoice_no)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.invoice_date)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.invoice_amount)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.invoice_reason)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         recyclerView = findViewById(R.id.invoice_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -71,7 +70,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
         MyAdapter myAdapter = new MyAdapter();
         recyclerView.setAdapter(myAdapter);
 
-        mInvioceList = bmodel.collectionHelper.loadInvoiceList(bmodel.getRetailerMasterBO().getRetailerID(),this);
+        mInvioceList = CollectionHelper.getInstance(this).loadInvoiceList(bmodel.getRetailerMasterBO().getRetailerID(),this);
         loadCollectionReason();
 
         myAdapter.notifyDataSetChanged();
@@ -183,9 +182,9 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
                 invoicedate = view.findViewById(R.id.invoice_date);
                 invoiceAmt = view.findViewById(R.id.invoice_amount);
 
-                invoiceNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, NoCollectionReasonActivity.this));
-                invoicedate.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, NoCollectionReasonActivity.this));
-                invoiceAmt.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, NoCollectionReasonActivity.this));
+                invoiceNumber.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
+                invoicedate.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
+                invoiceAmt.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
 
             }
         }

@@ -91,7 +91,6 @@
     <string name="product_name">Nama Produk</string>
     <string name="ou">Ou</string>
     <string name="msq">Jumlah Stok Wajib</string>
-    <string name="wp">Stok Gudang (Pcs)</string>
     <string name="sp">Stok (Pcs)</string>
     <string name="item_piece">Order (Pcs)</string>
     <string name="collection">Collection</string>
@@ -128,14 +127,8 @@
     <string name="tin">Npwp</string>
     <string name="outlet_name">Nama Outlet</string>
     <string name="item">Item</string>
-    <string name="vat">Ppn</string>
-    <string name="vatt">(+) Ppn</string>
     <string name="discount">Diskon</string>
-    <string name="bill_value">Nilai Tagihan</string>
-    <string name="signature">Tanda Tangan Salesman</string>
-    <string name="calculator">Kalkulator</string>
     <string name="print">Print</string>
-    <string name="inv_print_prieview">Tampilan Cetak Invoice</string>
     <string name="plan_task">Masukkan Titel Tugas</string>
     <string name="applyto">Diterapkan Ke</string>
     <string name="day">Hari</string>
@@ -160,7 +153,6 @@
     <string name="start_sync">Mulai Sinkronisasi</string>
     <string name="with_images">Dengan Gambar</string>
     <string name="close_the_day">Tutup Buku Hari Ini</string>
-    <string name="reconnect">Menyambung Kembali</string>
     <string name="delete">Hapus</string>
     <string name="balance">Saldo</string>
     <string name="sales">Penjualan</string>
@@ -173,7 +165,6 @@
     <string name="no_channels_download">Tidak Ada Channel Yang Diunduh</string>
     <string name="no_sub_channels_download">Tidak Ada Sub Channel Yang Diunduh</string>
     <string name="no_beats_download">Tidak Ada Rute Yang Diunduh</string>
-    <string name="new_store_has_been_saved">Informasi Toko Baru Tersimpan</string>
     <string name="no_initiative_available">Tidak Ada Initiatif Yang Tersedia</string>
     <string name="order_saved_locally_order_id_is">Order Telah Disimpan. Order Id Adalah :</string>
     <string name="new_store_infn_not_saved">Informasi Toko Baru Tidak Tersimpan</string>
@@ -191,7 +182,6 @@
     <string name="enable_gps">Aktifkan Gps</string>
     <string name="no_data_exists">Tidak Ada Data!</string>
     <string name="data_upload_completed_sucessfully">Upload Data Berhasil</string>
-    <string name="connected">Terhubung</string>
     <string name="saving_sales_return"> Menyimpan…</string>
     <string name="uploading_data"> Upload Data…</string>
     <string name="image_uploading"> Upload Gambar…</string>
@@ -232,7 +222,6 @@
     <string name="order_po">Po</string>
     <string name="order_remarks">Keterangan</string>
     <string name="order_dialog_barcode">Barcode</string>
-    <string name="wc">Stok Gudang (Ctn)</string>
     <string name="sc">Stok (Ctn)</string>
     <string name="item_case">Order (Ctn)</string>
     <string name="distribution">Distribusi</string>
@@ -266,10 +255,7 @@
     <string name="select">--Pilih--</string>
     <string name="select_prod">--Pilih Produk--</string>
     <string name="retailer_name">Nama Retailer</string>
-    <string name="gross_sales">Penjualan Kotor:</string>
     <string name="customer">Pelanggan:</string>
-    <string name="invoice_slip">Copy Pelanggan</string>
-    <string name="net_sales">Penjualan Bersih</string>
     <string name="printer_not_connected">Printer Tidak Tersambung</string>
     <string name="print_preview">Pratinjau Cetak</string>
     <string name="invoice_report_details">Detil Laporan Invoice</string>
@@ -278,38 +264,28 @@
     <string name="about">Tentang</string>
     <string name="capture">Capture</string>
     <string name="avail">Tersedia</string>
-    <string name="connecting">Menyambungkan…</string>
     <string name="out_of_memory">Kehabisan Memory</string>
-    <string name="no_error">Nomor Error</string>
     <string name="low_voltage">Voltase Rendah</string>
     <string name="normal_voltage">Voltase Normal</string>
-    <string name="ph_no">Nomor Telp</string>
     <string name="only_order">Hanya Order</string>
     <string name="total_amount_due">Total Jumlah Jatuh Tempo</string>
     <string name="select_no_order_reason">Pilih Alasan Tidak Ada Order</string>
     <string name="select_reason">Pilih Alasan</string>
-    <string name="order_created_successfully">Order Berhasil Dibuat</string>
     <string name="done">Selesai</string>
     <string name="lbl_continue">Lanjut</string>
     <string name="brand">Produk</string>
     <string name="please_finish_mandatory_modules">Silakan Selesaikan Modul-Modul Wajib</string>
     <string name="summary">Rangkuman</string>
     <string name="apply_so">Menetapkan Jumlah Yang Disarankan</string>
-    <string name="cust">Pelanggan</string>
     <string name="tel">Telpon</string>
-    <string name="salesman">Salesman</string>
     <string name="route">Rute</string>
-    <string name="itemno">Nomor Item</string>
     <string name="description">Deskripsi</string>
-    <string name="case_unit">Ca/Un</string>
-    <string name="case_price">Harga Konsumer</string>
     <string name="amount">Jumlah</string>
     <string name="your_name">Nama Anda</string>
     <string name="all_channel">Semua Channel</string>
     <string name="id">Id</string>
     <string name="ico">Ico</string>
     <string name="so_case">Saran Order (Ctn)</string>
-    <string name="imagename">Nama Gambar</string>
     <string name="spl_filter">Filter Khusus</string>
     <string name="prd_filter">Filter Produk</string>
     <string name="barcode">Barcode</string>
@@ -323,7 +299,6 @@
     <string name="outer_label">Lapisan Luar</string>
     <string name="delivery_date_label">Tanggal Pengiriman</string>
     <string name="remarks_label">Keterangan</string>
-    <string name="p_qty">Jumlah Kuantiti</string>
     <string name="lock">Semua</string>
     <string name="total_lines">Poin Utama</string>
     <string name="are_you_sure_you_want_to_download">Sinkronisasi</string>
@@ -335,7 +310,6 @@
     <string name="unloadimage">Silakan Memasukkan Detil Yang Diperlukan</string>
     <string name="deviate_retailers">Gambar Tidak Tersedia</string>
     <string name="admin_contact_no">Toko Unplanned </string>
-    <string name="ord_id">No Kontak Admin :</string>
     <string name="invno">Nomor Order</string>
     <string name="apply_sih">Anda Mencoba Untuk Memisah 0 Sku</string>
     <string name="please_answer_all_mandatory_questions">Melaksanakan Sih</string>
@@ -351,23 +325,12 @@
     <string name="no_paired_device">Tidak Ada Alat Yang Terhubung</string>
     <string name="paired_bluetooth_printers">Printer Terhubung Dengan Bluetooth</string>
     <string name="printed_successfully">Berhasil Dicetak</string>
-    <string name="printer_connected">Printer Terhubung</string>
-    <string name="complete_to_print">Selesai Untuk Di Cetak</string>
     <string name="cover_is_open">Penutup Terbuka</string>
     <string name="paper_not_present">Kertas Tidak Tersedia</string>
-    <string name="bluetooth_connection_not_available">Koneksi Bluetooth Tidak Tersedia</string>
-    <string name="total_print">Total</string>
-    <string name="print_footer3">Total Tva A 20.00%</string>
-    <string name="print_footer4">Total Ttc A Payer</string>
     <string name="you_are_closing">Anda Sedang Tutup Buku</string>
     <string name="delete_stock_and_order">Hapus Stok Dan Order</string>
-    <string name="received_by">Diterima Oleh:</string>
     <string name="post_dated_cheque_notallow">Tanggal Mundur Cek Tidak Diizinkan</string>
     <string name="order_report_details">Detil Laporan Order</string>
-    <string name="order_print_preview">Print Preview Order</string>
-    <string name="invoice_print_preview">Tampilan Cetak Invoice</string>
-    <string name="order_slip">Copy Order</string>
-    <string name="invoice_saved_and_print_preview_created_successfully">Invoice Tersimpan Dan Preview Berhasil Dibuat</string>
     <string name="no_invoice_exist">Nomor Invoice Tersedia</string>
     <string name="scheme_name">Nama Skema</string>
     <string name="max_disc">Maksimum Diskon</string>
@@ -427,25 +390,12 @@
     <string name="journey_not_ended">Perjalanan Belum Selesai</string>
     <string name="batch_no">Nomor Batch</string>
     <string name="you_are">Kamu Adalah</string>
-    <string name="wouter">Wo</string>
     <string name="souter">Sho</string>
     <string name="enter_otp_skip_seq">Memasukkan Otp Untuk Lewati Urutan</string>
     <string name="disc_amt">Nilai Diskon</string>
     <string name="enter_cheque_no">Memasukkan Nomor Cek</string>
-    <string name="arabian_trading_supplies">Arabian Trading Supplies</string>
-    <string name="cash_tc_invoice">Cash/Tc Invoice#</string>
     <string name="sales_date">Tanggal Penjualan</string>
     <string name="time">Waktu Mulai</string>
-    <string name="upc">Upc</string>
-    <string name="good_returns">Barang Retur</string>
-    <string name="expiry_return">Tgl Kadaluwarsa</string>
-    <string name="free_goods">Barang Gratis</string>
-    <string name="net_due_invoice">Net Due</string>
-    <string name="cash_paid">Pembayaran Tunai</string>
-    <string name="tc_charged">Tc Charged</string>
-    <string name="salesman_signature">Tanda Tangan Salesman</string>
-    <string name="customer_signature">Tanda Tangan Pelanggan</string>
-    <string name="orginal">Asli</string>
     <string name="from">Dari</string>
     <string name="to">Ke</string>
     <string name="scheme">Skema</string>
@@ -456,7 +406,6 @@
     <string name="select_collection_reason">Pilih Alasan Penagihan</string>
     <string name="reason_saved">Alasan Telah Disimpan</string>
     <string name="acc_no">Nomor Akun</string>
-    <string name="emp_id">No. Id Jabatan</string>
     <string name="device_status">Status Alat</string>
     <string name="current_date">Tanggal Sekarang</string>
     <string name="network_status">Status Jaringan</string>
@@ -501,7 +450,6 @@
     <string name="invaliddate">Tanggal Salah</string>
     <string name="saverequired">Apakah Save Diperlukan?</string>
     <string name="cant_skip_go_by_sequence">Tidak Bisa Dilewati, Harus Sesuai Urutan</string>
-    <string name="duplicate">Duplikat</string>
     <string name="no_damaged_stock_to_unload">Tidak Ada Stok Rusak Untuk Dibongkar</string>
     <string name="do_you_want_to_save_stock">Apa Anda Ingin Menyimpan Stok?</string>
     <string name="stock_saved">Stok Telah Disimpan</string>
@@ -520,7 +468,6 @@
     <string name="feedback">Saran :</string>
     <string name="tracking_list">Daftar Tracking</string>
     <string name="vanno">No Kendaraan :</string>
-    <string name="BATCH_NO">Batch</string>
     <string name="select_reason_skip_seq">Pilih Alasan Untuk Melewati Urutan</string>
     <string name="crown">Manajemen Crown</string>
     <string name="crown_count">Jumlah Crown</string>
@@ -544,13 +491,11 @@
     <string name="batch_no_already_exist">Nomor Batch Sudah Ada</string>
     <string name="select_sub_depot">Pilih Sub Gudang Untuk Disimpan</string>
     <string name="enter">Masukkan </string>
-    <string name="code">Kode</string>
     <string name="case_u">Karton/Dus</string>
     <string name="bottle">Botol</string>
     <string name="totfullstockcs">Total Stok Penuh-Karton/Dus</string>
     <string name="totfullstockbtl">Total Stok Penuh-Botol</string>
     <string name="totempties">Total Embalase</string>
-    <string name="totduecoll">Total Nilai Jatuh Tempo</string>
     <string name="already_another_user_login">Ada Pengguna Lain Yang Login</string>
     <string name="please_pay_old_invoice">Silakan Bayar Tagihan Yang Lama</string>
     <string name="detail">Detil</string>
@@ -564,9 +509,6 @@
     <string name="file_not_found">File Tidak Ditemukan</string>
     <string name="order_number">Nomor Order</string>
     <string name="invoice_number">Nomor Invoice</string>
-    <string name="bt_not_enabled_turn_on_bluetooth">Bluetooth Tidak Aktif. Silakan Aktifkan Bluetooth.</string>
-    <string name="button_disconnect_text">Memutuskan</string>
-    <string name="button_connect_text">Menyambungkan</string>
     <string name="exceed_free_product">Anda Sudah Melebihi Batas Maksimum Yang Sudah Ditawarkan</string>
     <string name="exceed_allocation">Anda Sudah Melebihi Alokasi Yang Ditentukan</string>
     <string name="vat_no">Vatno</string>
@@ -575,12 +517,8 @@
     <string name="previous_activation_not_done_for_this_device">Aktivasi Sebelumnya Belum Selesai Untuk Perangkat Ini</string>
     <string name="minimum_amount">Nilai Minimum</string>
     <string name="enter_minimum_amount">Bayar Nilai Minimum Untuk Memproses Invoice</string>
-    <string name="total_stock_sold">Total Produk Terjual (Termasuk Pajak)</string>
     <string name="total_exec_tax">Total Produk Terjual (Belum Termasuk Pajak)</string>
-    <string name="total_paid">Total Dibayarkan</string>
-    <string name="credit">Kredit</string>
     <string name="customer_sign">Tanda Tangan Customer</string>
-    <string name="rep_sign">Tanda Tangan Representatif</string>
     <string name="invoice_created_dou_wnt_print">Invoice Berhasil Dibuat. Apakah Anda Ingin Mencetaknya ?</string>
     <string name="are_you_sure_you_want_to_print">Apakah Anda Ingin Mencetak Invoice ?</string>
     <string name="choose">Pilih</string>
@@ -592,7 +530,6 @@
     <string name="shelf_max_shelf_count">Hitungan Maksimum Rak Adalah</string>
     <string name="label_check_box_do_not_show_again">Jangan Tampilkan Lagi</string>
     <string name="selectany">Pilih Sembarang</string>
-    <string name="tin_no">Npwp</string>
     <string name="currprice">Harga Sekarang</string>
     <string name="no_location_download">Tidak Ada Lokasi Yang Diunduh</string>
     <string name="app_url_is_empty">Url Applikasi Kosong</string>
@@ -602,7 +539,6 @@
     <string name="choose_location">Pilih Lokasi</string>
     <string name="questscore">Skor Pertanyaan:</string>
     <string name="surevyscore">Skor Survey:</string>
-    <string name="outer_price">Harga Krat</string>
     <string name="photo_capture_not_saved_go_back">Foto Yang Diambil Tidak Tersimpan. Apakah Anda Ingin Kembali?</string>
     <string name="addpromo">Tambah Promosi Baru</string>
     <string name="startdate">Tanggal Mulai</string>
@@ -888,7 +824,6 @@
     <string name="selected_date_already_applied">Terapkan Tanggal Yang Sudah Dipilih</string>
     <string name="download_date_mismatch">Tanggal Download Tidak Cocok</string>
     <string name="user_account_locked">Akun Terkunci. Mohon Hubungi Sistem Administrator</string>
-    <string name="scheme_discount">Skema Diskon</string>
     <string name="tab_text_images">Gambar</string>
     <string name="tab_text_audio">Suara</string>
     <string name="tab_text_video">Video</string>
@@ -1167,9 +1102,7 @@
     <string name="shipment_type_label">Shipment Type</string>
     <string name="payment_type_label">Payment Type</string>
     <string name="select_shipment_type">Select Shipment Type</string>
-    <string name="select_pay_term_type">Select PayTerm Type</string>
     <string name="shipment_mandatory">Please select shipment type</string>
-    <string name="pay_term_mandatory">Please select payterm type</string>
     <string name="dist_channel_mandatory">Please select Distribution channel</string>
     <string name="select_channel">Select channel</string>
     <string name="supplier_label">Supplier</string>
@@ -1234,22 +1167,6 @@
     <string name="profile">Profile</string>
     <string name="view">View</string>
     <string name="volume">Volume</string>
-
-    <string-array name="task_tab_header">
-        <item>All</item>
-        <item>Assigned</item>
-        <item>My Task</item>
-    </string-array>
-    <string-array name="days_in_week">
-        <item>Sun</item>
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-        <item>Sat</item>
-    </string-array>
-
     <string name="share_percent">Share %</string>
     <string name="total_value_less_than_actual_value">Total value is lesser than Actual value.</string>
     <string name="answer_to_take_photo">Answer to take photo.</string>
@@ -1268,17 +1185,136 @@
     <string name="bill">Bill</string>
     <string name="line_value">Line value</string>
     <string name="tax_Value">Tax Value</string>
-    <!-- <string name="Disc">Disc</string>-->
     <string name="cash_disc">Cash Disc</string>
-    <string name="tls">TLS</string>
-    <string name="payment_term">Payment term</string>
-    <string name="oth_disc">Oth. Disc (Other Discount)</string>
-    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
-    <!--<string name="Signature">Signature</string>-->
-    <string name="attachment">Attachment</string>
-    <string name="ns">NS</string>
-    <string name="ul">UL</string>
-    <string name="salable">Laku</string>
+    <string name="retailer_kpi_not_available">Retailer KPI not available.</string>
+    <string name="bill1_value">Bill1 Value</string>
+    <string name="bill1_line">Bill1 Line</string>
+    <string name="bill2_value">Bill2 Value</string>
+    <string name="bill2_line">Bill2 Line</string>
+    <string name="notification_text">Realtime location tracking enabled. </string>
+    <string name="status_time_mismatch">Start Time is Greater than end time</string>
+    <string name="status_location_accuracy">Change high location Accuracy</string>
+    <string name="status_mock_location">Mock Location is Enabled</string>
+    <string name="status_alarm_time_zero">Alarm time should not be zero</string>
+    <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
+    <string name="enter_account">Enter account no</string>
+    <string name="otp_download_url_empty">OTP Generate Url is Empty </string>
+    <string name="profile_edit_verify_email_id">Please verify Email Id</string>
+    <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
+    <string name="planogram_image_count_reached">Reached Maximum planogram image count</string>
+    <string name="planogram_image_count_not_reached">Planogram image not added</string>
+    <string name="enter_valid">Enter valid </string>
+    <string name="stock">Stock</string>
+    <string name="Order_Summary_dialog_header">Order_Summary_dialog_header</string>
+    <string name="collection_mandatory">Please do collection for Pending Invoice !</string>
+    <string name="todate_validation">To Date should be greater than From Date</string>
+    <string name="backup_seller">Backup Seller</string>
+    <string name="error_connecting_printer">Error connecting Printer</string>
+    <string name="allocation">Allocation</string>
+    <string name="you_have_unchecked_applicable_scheme">You have unchecked few applicable scheme ?</string>
+    <string name="regular_incentive_detail">Regular Incentive Detail</string>
+    <string name="top_up_incentive_detail">Top Up Incentive Detail</string>
+    <string name="rcpt_date">Rcpt Date</string>
+    <string name="rcpt_no">Rcpt NO</string>
+    <string name="seller_code">Seller Code</string>
+    <string name="pls_enter_rtgsno">Please Enter RTGS No </string>
+    <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
+    <string name="drug_license_expired">Drug License Expired</string>
+    <string name="uom_not_available">Uom Not Available</string>
+    <string name="pwd_policy_not_match">Password Policy Not Matched</string>
+    <string name="last_vist">Last Vist : </string>
+    <string name="visit_time">Visit Time : </string>
+    <string name="yet_to_visit">Yet to visit </string>
+    <string name="targeted">Targeted </string>
+    <string name="covered">Covered </string>
+    <string name="please_complete">Please Complete</string>
+    <string name="complete">Complete</string>
+    <string name="enter_receipt_no">Enter Receipt Number</string>
+    <string name="please_enter">Please Enter</string>
+    <string name="lpc">LPC</string>
+    <string name="return_value">Return Value</string>
+    <string name="salesreport_details">SalesReturn Report Details</string>
+    <string name="last_download_on">Last Download: </string>
+    <string name="last_upload_on">Last Upload: </string>
+    <string name="select_category">Select Category</string>
+    <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
+    <string name="retailer_contact_list">Contact data not Available!</string>
+    <string name="not_able_to_register_visit">Not able to register the visit</string>
+    <string name="outlet">Outlet</string>
+    <string name="contact">Contact</string>
+    <string name="isprimary">Is Primary</string>
+    <string name="contact_title">Contact Title</string>
+    <string name="enter_first_name">Enter Contact FirstName</string>
+    <string name="enter_last_name">Enter Contact LastName</string>
+    <string name="enter_other_name">Enter Contact Other Title</string>
+    <string name="select_contact_title">Select Contact Title</string>
+    <string name="primary_contact_available">Primary Contact already available!</string>
+    <string name="max_contacts_added">Maximum Contacts already added!</string>
+    <string name="discount_amt_cannot_be_higher_than_percentage">Discount Amount cannot be Higher than “%1$s” of product price.</string>
+    <string name="select_reason_for_price_change">Select Reason for Price Change.</string>
+    <string name="filter_by">Filter By</string>
+    <string name="show_results">Show Results</string>
+    <string name="please_choose_address">Please choose any one address</string>
+    <string name="mark_attendance_working">Please Mark Attendance As "Working" To Proceed.</string>
+    <string name="planned_activities">Planned Activities</string>
+    <string name="do_u_want_to_cancel">Do you want to cancel?</string>
+    <string name="asset_service">Asset Service</string>
+    <string name="select_asset_service">Nothing selected to Service.</string>
+    <string name="visit_plan_updated">Visit Plan Updated</string>
+    <string name="stock_allocated">Stock Allocated</string>
+    <string name="vanload_stock_applied">VanLoad Stock Applied </string>
+    <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
+    <string name="check_any_one_list">Check any one list</string>
+    <string name="new_order">New Order</string>
+    <string name="new_outlet_order">You have changed the Distributor, Order will be lost. Do you want to Continue?</string>
+    <string name="outlet_code">Outlet Code</string>
+    <string name="sub_channel">Sub Channel</string>
+    <string name="contract_id">Contract ID</string>
+    <string name="type_of_trade_offer">Type of Trade Offer</string>
+    <string name="days_to_expire">Days to Expire</string>
+    <string name="selected">selected</string>
+    <string name="select_order_type">Select order type</string>
+    <string name="withold_title">With Hold Tax</string>
+    <string name="no_collection_reason">No collection \nReason</string>
+    <string name="invoice_with_no_collection">Invoice With No Collection Reason Found</string>
+    <string name="skip">Skip</string>
+    <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
+    <string name="Orde_Saved">Order Saved.</string>
+    <string name="Order_id">Order ID is: </string>
+    <string name="denomination_error">Total amount not match with you denomination count amount </string>
+    <string name="pay">Pay</string>
+    <string name="order_id">Order ID</string>
+    <string name="ordered_cases">Ordered Cases</string>
+    <string name="ordered_pieces">Ordered Pieces</string>
+    <string name="fulfilled_cases">Fulfilled Cases</string>
+    <string name="fulfilled_pieces">Fulfilled Pieces</string>
+    <string name="order_fulfillment_detail">Order Fulfillment Detail</string>
+    <string name="logout_joint_user">Please logout JointCall User before downloading</string>
+    <string name="licensing">About Open Source Library</string>
+    <string name="software_licensing">Open Source Library</string>
+    <string name="click_to_show_licensing">Open Source Library - Licence</string>
+    <string name="margin_price">Mgn Prc</string>
+    <string name="margin_per">Mgn Per</string>
+    <string name="invoice_already_generated">* Invoice Generated</string>
+    <string name="order_rejected">* Order Rejected</string>
+    <string name="do_you_want_to_reject">Do you want to reject?</string>
+    <string name="already_invoice_has_been_generated">Already invoice has been generated.</string>
+    <string name="rejected_order">Rejected Order</string>
+
+    <string-array name="task_tab_header">
+        <item>All</item>
+        <item>Assigned</item>
+        <item>My Task</item>
+    </string-array>
+    <string-array name="days_in_week">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
 
     <string name="stores">Stores</string>
     <string name="check_anyone_fromlist">Check anyone from the List</string>
@@ -1288,5 +1324,23 @@
     <string name="tos_amount">TOS Amount</string>
     <string name="other_reason_with_credit">Others</string>
     <string name="store_activities">Store Activities</string>
+
+    <string name="sales_type_presale">PreSales</string>
+    <string name="sales_type_vansale">VanSales</string>
+    <string name="digital_content_header_this_month">This Month</string>
+    <string name="digital_content_header_prev_month">Previous Month</string>
+    <string name="digital_content_header_older">Older</string>
+
+
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">Salable</string>
+    <string name="tls">TLS</string>
+    <string name="payment_term">Payment term</string>
+    <string name="oth_disc">Oth. Disc (Other Discount)</string>
+    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
+    <string name="attachment">Attachment</string>
+
+
 </resources>
 

@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.platform.comapi.map.C;
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
@@ -125,7 +127,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
         collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
         collapsingToolbar.setCollapsedTitleTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
         collapsingToolbar.setExpandedTitleColor(Color.WHITE);
-        collapsingToolbar.setExpandedTitleTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        collapsingToolbar.setExpandedTitleTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
     }
 
@@ -238,7 +240,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                 img_arrow =  view.findViewById(R.id.img_arrow);
                 activityname =  view.findViewById(R.id.activityName);
                 childListView =  view.findViewById(R.id.childList);
-                activityname.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDHomeActivity.this));
+                activityname.setTypeface(FontUtils.getFontRoboto(SubDHomeActivity.this, FontUtils.FontType.LIGHT));
             }
         }
     }
@@ -402,12 +404,14 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
     private void loadRequiredMethodsForStockAndOrder(String configCode, String menuName) {
         try {
 
+            CollectionHelper collectionHelper = CollectionHelper.getInstance(SubDHomeActivity.this);
+
             if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
                 bmodel.downloadGuidedSelling();
             }
 
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                bmodel.collectionHelper.downloadDiscountSlab();
+                collectionHelper.downloadDiscountSlab();
             }
 
             //  bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
@@ -459,10 +463,10 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
             schemeHelper.downloadOffInvoiceSchemeDetails(getApplicationContext(),bmodel.getRetailerMasterBO().getRetailerID());
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
-                bmodel.collectionHelper.downloadBankDetails();
-                bmodel.collectionHelper.downloadBranchDetails();
-                bmodel.collectionHelper.downloadRetailerAccountDetails();
-                bmodel.collectionHelper.loadCreditNote();
+                collectionHelper.downloadBankDetails();
+                collectionHelper.downloadBranchDetails();
+                collectionHelper.downloadRetailerAccountDetails();
+                collectionHelper.loadCreditNote();
             }
 
             bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SUBD_ORD), 1);

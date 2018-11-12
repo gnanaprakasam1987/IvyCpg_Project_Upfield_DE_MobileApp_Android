@@ -249,11 +249,11 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 holder.sih = convertView.findViewById(R.id.sih);
 
                 holder.productNameTV.setTypeface(FontUtils.getProductNameFont(DeliveryManagementDetail.this));
-                holder.batchNoTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
-                holder.pieceET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
-                holder.caseET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
-                holder.outerET.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
-                holder.sih.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, DeliveryManagementDetail.this));
+                holder.batchNoTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagementDetail.this, FontUtils.FontType.LIGHT));
+                holder.pieceET.setTypeface(FontUtils.getFontRoboto(DeliveryManagementDetail.this, FontUtils.FontType.LIGHT));
+                holder.caseET.setTypeface(FontUtils.getFontRoboto(DeliveryManagementDetail.this, FontUtils.FontType.LIGHT));
+                holder.outerET.setTypeface(FontUtils.getFontRoboto(DeliveryManagementDetail.this, FontUtils.FontType.LIGHT));
+                holder.sih.setTypeface(FontUtils.getFontRoboto(DeliveryManagementDetail.this, FontUtils.FontType.LIGHT));
 
                 if (!bmodel.configurationMasterHelper.SHOW_DELIVERY_PC)
                     holder.pieceET.setVisibility(View.GONE);
@@ -929,7 +929,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             setTitle(mTitle);
             mTitleTV = rootView.findViewById(R.id.title);
             if (mTitleTV != null) {
-                mTitleTV.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, DeliveryManagementDetail.this));
+                mTitleTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagementDetail.this, FontUtils.FontType.MEDIUM));
             }
             mOkBtn = rootView.findViewById(R.id.btn_ok);
             mDismisBtn = rootView.findViewById(R.id.btn_dismiss);

@@ -66,7 +66,7 @@ android:background="@color/list_odd_item_bg">
                             android:gravity="start"
                             android:text="@string/reason"
                             android:textColor="@android:color/black"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textStyle="bold" />
 
                         <Spinner
@@ -104,7 +104,7 @@ android:background="@color/list_odd_item_bg">
                                 android:gravity="start"
                                 android:text="@string/username"
                                 android:textColor="@android:color/black"
-                                android:textSize="@dimen/font_micro_small"
+                                android:textSize="@dimen/text_size_primary"
                                 android:textStyle="bold" />
 
                             <Spinner
@@ -137,7 +137,7 @@ android:background="@color/list_odd_item_bg">
                                 android:gravity="start"
                                 android:text="@string/text_leave_type"
                                 android:textColor="@android:color/black"
-                                android:textSize="@dimen/font_micro_small"
+                                android:textSize="@dimen/text_size_primary"
                                 android:textStyle="bold" />
 
 
@@ -168,7 +168,7 @@ android:background="@color/list_odd_item_bg">
                                 android:gravity="start"
                                 android:text="@string/username"
                                 android:textColor="@android:color/black"
-                                android:textSize="@dimen/font_micro_small"
+                                android:textSize="@dimen/text_size_primary"
                                 android:textStyle="bold" />
 
                             <Spinner
@@ -205,14 +205,14 @@ android:background="@color/list_odd_item_bg">
                         android:tag="leave_applied"
                         android:text="Leave Applied: "
                         android:textColor="@color/colorPrimaryDarkRed"
-                        android:textSize="@dimen/font_nano_small" />
+                        android:textSize="@dimen/text_size_secondary" />
 
                     <TextView
                         android:id="@+id/txt_total_value"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimaryDarkRed"
-                        android:textSize="@dimen/font_nano_small" />
+                        android:textSize="@dimen/text_size_secondary" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -244,7 +244,7 @@ android:background="@color/list_odd_item_bg">
                         android:tag="period_leave"
                         android:text="Period"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small"
+                        android:textSize="@dimen/text_size_primary"
                         android:textStyle="bold" />
 
                     <RadioGroup
@@ -302,7 +302,7 @@ android:background="@color/list_odd_item_bg">
                             android:paddingLeft="@dimen/date_btn_padding"
                             android:paddingStart="@dimen/date_btn_padding"
                             android:text="@string/from"
-                            android:textSize="@dimen/font_nano_small" />
+                            android:textSize="@dimen/text_size_secondary" />
 
                         <!--android:textColor="@android:color/black"-->
                         <!--android:textSize="@dimen/font_small"-->
@@ -336,7 +336,7 @@ android:background="@color/list_odd_item_bg">
                             android:paddingLeft="@dimen/date_btn_padding"
                             android:paddingStart="@dimen/date_btn_padding"
                             android:text="@string/to"
-                            android:textSize="@dimen/font_nano_small"
+                            android:textSize="@dimen/text_size_secondary"
                             android:visibility="gone" />
                         <!--android:layout_width="@dimen/todate_width"-->
                         <!--android:textColor="@android:color/black"-->
@@ -380,7 +380,7 @@ android:background="@color/list_odd_item_bg">
                     android:gravity="start"
                     android:text="@string/session"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/font_micro_small"
+                    android:textSize="@dimen/text_size_primary"
                     android:textStyle="bold" />
 
                 <RelativeLayout
@@ -429,7 +429,7 @@ android:background="@color/list_odd_item_bg">
                             android:gravity="start"
                             android:text="@string/travel_time"
                             android:textColor="@android:color/black"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textStyle="bold" />
 
 
@@ -458,7 +458,7 @@ android:background="@color/list_odd_item_bg">
                             android:gravity="start"
                             android:text="@string/description"
                             android:textColor="@android:color/black"
-                            android:textSize="@dimen/font_micro_small"
+                            android:textSize="@dimen/text_size_primary"
                             android:textStyle="bold" />
                         <!--android:layout_width="@dimen/nonfield_descr_width"-->
                         <EditText

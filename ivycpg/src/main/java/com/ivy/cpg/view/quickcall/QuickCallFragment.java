@@ -18,29 +18,27 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.order.tax.TaxGstHelper;
+import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
-import com.ivy.sd.png.provider.TaxGstHelper;
-import com.ivy.sd.png.provider.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderTransactionListDialog;
 
 import java.util.Map;
@@ -191,14 +189,14 @@ public class QuickCallFragment extends IvyBaseFragment {
                     }
 
 
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
-                            bmodel.productHelper.getFilterProductLevels()));
                     GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getFilterProductLevels(),true));
 
 
                     bmodel.configurationMasterHelper
@@ -387,13 +385,14 @@ public class QuickCallFragment extends IvyBaseFragment {
 
     private void loadRequiredMethodsForStockAndOrder() {
         try {
+            CollectionHelper collectionHelper = CollectionHelper.getInstance(getActivity());
 
             if (bmodel.configurationMasterHelper.IS_GUIDED_SELLING) {
                 bmodel.downloadGuidedSelling();
             }
 
             if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
-                bmodel.collectionHelper.downloadDiscountSlab();
+                collectionHelper.downloadDiscountSlab();
             }
 
             //  bmodel.productHelper.downloadProductFilter("MENU_STK_ORD"); /*03/09/2015*/
@@ -439,17 +438,17 @@ public class QuickCallFragment extends IvyBaseFragment {
             bmodel.productHelper.downloadInStoreLocations();
             SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getActivity());
             if (schemeHelper.IS_SCHEME_ON_MASTER) {
-                OrderHelper orderHelper=OrderHelper.getInstance(getActivity());
+                OrderHelper orderHelper = OrderHelper.getInstance(getActivity());
                 schemeHelper.downloadSchemeHistoryDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID(), bmodel.isEdit(), orderHelper.selectedOrderId);
             }
             schemeHelper.downloadOffInvoiceSchemeDetails(getActivity(), bmodel.getRetailerMasterBO().getRetailerID());
 
 
             if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
-                bmodel.collectionHelper.downloadBankDetails();
-                bmodel.collectionHelper.downloadBranchDetails();
-                bmodel.collectionHelper.downloadRetailerAccountDetails();
-                bmodel.collectionHelper.loadCreditNote();
+                collectionHelper.downloadBankDetails();
+                collectionHelper.downloadBranchDetails();
+                collectionHelper.downloadRetailerAccountDetails();
+                collectionHelper.loadCreditNote();
             }
 
             bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_STK_ORD), 1);

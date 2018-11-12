@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:fontFamily="@font/roboto_regular"
         android:gravity="center|start"
         android:text="@string/total"
         android:textColor="@color/task_title"
@@ -22,9 +23,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
+        android:fontFamily="@font/roboto_regular"
         android:gravity="center|start"
         android:maxLength="4"
-        android:text="0"
-        android:textSize="@dimen/font_small" />
+        android:text="@string/zero"
+        android:textSize="@dimen/font_small"
+         />
 
 </LinearLayout>

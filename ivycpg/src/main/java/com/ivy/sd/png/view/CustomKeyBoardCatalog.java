@@ -803,7 +803,7 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         }
     }
 
-    private int getProductTotalValue(ProductMasterBO product) {
+    private int getTotalStockInPcs(ProductMasterBO product) {
         int totalQty = 0;
         Vector<StandardListBO> locationList = bmodel.productHelper
                 .getInStoreLocation();
@@ -828,13 +828,10 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
 
     private void calculateSONew() {
         int SOLogic = bmodel.configurationMasterHelper.getSOLogic();
-        int totalStockInPcs = getProductTotalValue(pdtBO);
+        int totalStockInPcs = getTotalStockInPcs(pdtBO);
         int so = 0;
         if (SOLogic == 1) {
-            so = bmodel.productHelper.calculateSO(pdtBO.getIco(),
-                    totalStockInPcs, pdtBO.isRPS(),
-                    pdtBO.getIsInitiativeProduct(),
-                    pdtBO.getDropQty(), pdtBO.getInitDropSize());
+            // Do nothing. Depreciated.
         } else if (SOLogic == 2) {
             so = pdtBO.getIco() - totalStockInPcs;
         } else if (SOLogic == 3) {

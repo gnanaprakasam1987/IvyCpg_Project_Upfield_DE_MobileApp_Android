@@ -14,7 +14,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -111,7 +110,7 @@ public class DeliveryManagementRetailersFragment extends IvyBaseFragment {
                 super(v);
                 retailer_name = v.findViewById(R.id.tv_retailername);
                 retailer_card = v.findViewById(R.id.retailer_card);
-                retailer_name.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+                retailer_name.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
             }
 

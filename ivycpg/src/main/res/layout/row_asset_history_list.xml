@@ -20,14 +20,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/asset_name"
                 android:textColor="@color/history_label_color"
-                android:textSize="@dimen/list_item_primary_text_size"/>
+                android:textSize="@dimen/text_size_secondary"/>
             <TextView
                 android:id="@+id/txt_history_assetName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/asset_name"
                 android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -39,14 +39,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/serial_no"
                 android:textColor="@color/history_label_color"
-                android:textSize="@dimen/list_item_primary_text_size"/>
+                android:textSize="@dimen/text_size_secondary"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/serial_no"
                 android:id="@+id/txt_history_serialNo"
                 android:textColor="@color/history_date_color"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -58,14 +58,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/date_label"
                 android:textColor="@color/history_label_color"
-                android:textSize="@dimen/list_item_primary_text_size"/>
+                android:textSize="@dimen/text_size_secondary"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/date_label"
                 android:id="@+id/txt_history_date"
                 android:textColor="@color/history_date_color"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
     </LinearLayout>
 

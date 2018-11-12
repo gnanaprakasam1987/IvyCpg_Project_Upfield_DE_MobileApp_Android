@@ -43,7 +43,7 @@
                 android:layout_toStartOf="@+id/refresh_catalog"
                 android:text="@string/download"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/font_micro_small"
+                android:textSize="@dimen/text_size_primary"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/card_margin"
                 android:layout_marginRight="@dimen/margin_left_retailer_name"
@@ -76,7 +76,7 @@
                 android:layout_marginStart="@dimen/card_margin"
                 android:text="@string/last_image_download_time"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/font_nano_small"
+                android:textSize="@dimen/text_size_secondary"
                 android:paddingTop="@dimen/dimen_5dp"
                 android:layout_marginLeft="@dimen/card_margin" />
         </RelativeLayout>

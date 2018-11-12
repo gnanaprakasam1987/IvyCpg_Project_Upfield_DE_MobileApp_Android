@@ -22,7 +22,7 @@
             android:layout_width="@dimen/dimens_100dp"
             android:layout_height="@dimen/dimens_40dp"
             android:text="@string/ok"
-            android:textSize="@dimen/font_micro_small"
+            android:textSize="@dimen/text_size_primary"
             android:textStyle="bold" />
 
     </LinearLayout>

@@ -55,7 +55,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/id"
-                    android:textSize="@dimen/font_nano_small" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <TextView
                     android:layout_width="@dimen/list_item_width"
@@ -63,7 +63,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/lpc"
-                    android:textSize="@dimen/font_nano_small" />
+                    android:textSize="@dimen/text_size_secondary" />
 
                 <TextView
                     android:layout_width="@dimen/list_item_width"
@@ -71,7 +71,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:text="@string/return_value"
-                    android:textSize="@dimen/font_nano_small" />
+                    android:textSize="@dimen/text_size_secondary" />
 
             </LinearLayout>
 
@@ -91,7 +91,7 @@
                     android:padding="2dp"
                     android:text="uid"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
                 <TextView
                     android:id="@+id/text_lpc"
@@ -102,7 +102,7 @@
                     android:padding="2dp"
                     android:text="0"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
 
                 <TextView
@@ -113,7 +113,7 @@
                     android:gravity="center"
                     android:padding="2dp"
                     android:textColor="@color/kpi_value_text_color"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
 
             </LinearLayout>
         </RelativeLayout>

@@ -49,7 +49,7 @@
                         android:maxLines="1"
                         android:text="@string/product_name"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_micro_small"/>
+                        android:textSize="@dimen/text_size_primary"/>
 
                     <TextView
                         android:id="@+id/txtPromoName"
@@ -61,7 +61,7 @@
                         android:text="@string/dist"
                         android:textColor="@color/BLUE"
                         android:visibility="visible"
-                        android:textSize="@dimen/font_nano_small" />
+                        android:textSize="@dimen/text_size_secondary" />
 
                 </RelativeLayout>
 
@@ -113,7 +113,7 @@
                                 android:tag="achieved_day"
                                 android:text="@string/executed"
                                 android:textColor="?primarycolor"
-                                android:textSize="@dimen/greyed_text_size"
+                                android:textSize="@dimen/footer_label_size"
                                 android:textStyle="normal" />
                         </LinearLayout>
 
@@ -179,7 +179,7 @@
                                 android:tag="balance_day"
                                 android:text="@string/hasannouncer"
                                 android:textColor="@color/Orange"
-                                android:textSize="@dimen/greyed_text_size"
+                                android:textSize="@dimen/footer_label_size"
                                 android:textStyle="normal" />
                         </LinearLayout>
 
@@ -245,7 +245,7 @@
                                 android:tag="target_day"
                                 android:text="@string/reason"
                                 android:textColor="?accentcolor"
-                                android:textSize="@dimen/greyed_text_size"
+                                android:textSize="@dimen/footer_label_size"
                                 android:textStyle="normal" />
                         </LinearLayout>
 

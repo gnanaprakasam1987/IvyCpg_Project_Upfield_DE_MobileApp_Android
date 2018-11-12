@@ -26,7 +26,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/avg_lines"
                 android:textColor="?attr/accentcolor"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:textStyle="bold"
                 android:visibility="gone" />
 
@@ -70,7 +70,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/tot_line"
                 android:textColor="?attr/accentcolor"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:textStyle="bold"
                 android:visibility="gone" />
 
@@ -113,7 +113,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/total_value"
                 android:textColor="?attr/accentcolor"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:textStyle="bold" />
 
             <TextView
@@ -154,7 +154,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/order_report_avg_line"
                 android:textColor="?attr/accentcolor"
-                android:textSize="@dimen/text_sz_small"
+                android:textSize="@dimen/text_size_caption"
                 android:textStyle="bold" />
 
             <TextView
@@ -197,7 +197,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/volume"
                 android:textColor="?attr/accentcolor"
-                android:textSize="@dimen/text_sz_small" />
+                android:textSize="@dimen/text_size_caption" />
 
             <TextView
                 android:id="@+id/txt_totalVolume_val"

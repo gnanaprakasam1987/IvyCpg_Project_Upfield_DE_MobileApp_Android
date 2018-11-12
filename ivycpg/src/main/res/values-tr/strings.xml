@@ -91,7 +91,6 @@
     <string name="product_name">Ürün İsmi</string>
     <string name="ou">OU</string>
     <string name="msq">MSQ</string>
-    <string name="wp">WP</string>
     <string name="sp">MSK</string>
     <string name="item_piece"></string>
     <string name="collection">Tahsilat</string>
@@ -128,14 +127,8 @@
     <string name="tin">Vg No:</string>
     <string name="outlet_name">Mağaza İsmi</string>
     <string name="item">Ürün</string>
-    <string name="vat">KDV:</string>
-    <string name="vatt">(+) KDV</string>
     <string name="discount">Ek İskonto</string>
-    <string name="bill_value">Fatura Tutarı</string>
-    <string name="signature">İmza</string>
-    <string name="calculator">Hesap Makinesi</string>
     <string name="print">Yazdır</string>
-    <string name="inv_print_prieview">Fatura Önizleme</string>
     <string name="plan_task">Görev Başlığı Girin</string>
     <string name="applyto">Uygulanabilir</string>
     <string name="day">Gün</string>
@@ -160,7 +153,6 @@
     <string name="start_sync">Senkronizasyona Başla</string>
     <string name="with_images">Fotoğrafla birlikte</string>
     <string name="close_the_day">Günü Kapat</string>
-    <string name="reconnect">Tekrar Bağlan</string>
     <string name="delete">Sil</string>
     <string name="balance">Hedefe Uzaklık</string>
     <string name="sales">Satış</string>
@@ -173,7 +165,6 @@
     <string name="no_channels_download">Kanal indirilmedi</string>
     <string name="no_sub_channels_download">Alt kanal indirilmedi</string>
     <string name="no_beats_download">İndirilecek Ziyaret Planı yok</string>
-    <string name="new_store_has_been_saved">Yeni mağaza bilgisi kaydedildi.</string>
     <string name="no_initiative_available">No Initiative Available</string>
     <string name="order_saved_locally_order_id_is">Sipariş kaydedildi. Sipariş numarası:</string>
     <string name="new_store_infn_not_saved">Yeni mağaza bilgisi kaydedilmedi.</string>
@@ -191,7 +182,6 @@
     <string name="enable_gps">GPS\'i aç.</string>
     <string name="no_data_exists">Bilgi mevcut değil.</string>
     <string name="data_upload_completed_sucessfully">Bilgiler başarıyla yüklendi.</string>
-    <string name="connected">Bağlandı.</string>
     <string name="saving_sales_return">Kaydediliyor...</string>
     <string name="uploading_data">Bilgiler yükleniyor...</string>
     <string name="image_uploading">Fotoğraf yükleniyor...</string>
@@ -232,7 +222,6 @@
     <string name="order_po">PO</string>
     <string name="order_remarks">Not</string>
     <string name="order_dialog_barcode">Barkod</string>
-    <string name="wc">WC</string>
     <string name="sc">SC</string>
     <string name="item_case">OC</string>
     <string name="distribution">Dağılım</string>
@@ -266,10 +255,7 @@
     <string name="select">Seç--</string>
     <string name="select_prod">--Kategori Seç--</string>
     <string name="retailer_name">Müşteri İsmi:</string>
-    <string name="gross_sales">Brüt Satış:</string>
     <string name="customer">Müşteri:</string>
-    <string name="invoice_slip">Müşteri Kopyası</string>
-    <string name="net_sales">Net Satış:</string>
     <string name="printer_not_connected">Printer bağlı değil</string>
     <string name="print_preview">Print Öngörüntüsü</string>
     <string name="invoice_report_details">Detaylı Fatura Raporu</string>
@@ -278,38 +264,28 @@
     <string name="about">Hakkında</string>
     <string name="capture">Foto Çek</string>
     <string name="avail">Var</string>
-    <string name="connecting">Bağlanılıyor..</string>
     <string name="out_of_memory">Hafıza doldu</string>
-    <string name="no_error">Hata yok</string>
     <string name="low_voltage">Düşük Voltaj</string>
     <string name="normal_voltage">Normal Voltaj</string>
-    <string name="ph_no">Tel No:</string>
     <string name="only_order">Only Order</string>
     <string name="total_amount_due">Total Amount Due:</string>
     <string name="select_no_order_reason">Sipariş Alınmama Sebebi Seçin</string>
     <string name="select_reason">Sebep Seç</string>
-    <string name="order_created_successfully">Sipariş başarıyla oluşturuldu</string>
     <string name="done">TAMAM</string>
     <string name="lbl_continue">Devam</string>
     <string name="brand">Marka</string>
     <string name="please_finish_mandatory_modules">Lütfen mecburi modülleri tamamlayın.</string>
     <string name="summary">Özet</string>
     <string name="apply_so">Önerilen Miktarı Uygula</string>
-    <string name="cust">Müşteri</string>
     <string name="tel">Tel</string>
-    <string name="salesman">Satışçı</string>
     <string name="route">Rut</string>
-    <string name="itemno">ÜrünNo</string>
     <string name="description">Açıklama</string>
-    <string name="case_unit">CA/Un</string>
-    <string name="case_price">C.Price</string>
     <string name="amount">Miktar</string>
     <string name="your_name">Yıl İsmi</string>
     <string name="all_channel">Tüm Kanallar</string>
     <string name="id">ID</string>
     <string name="ico">ICO</string>
     <string name="so_case">SO C</string>
-    <string name="imagename">Görüntü İsmi</string>
     <string name="spl_filter">Özel Filtre</string>
     <string name="prd_filter">Ürün Filtresi</string>
     <string name="barcode">Barkod</string>
@@ -323,7 +299,6 @@
     <string name="outer_label">Outer</string>
     <string name="delivery_date_label">Teslimat Tarihi</string>
     <string name="remarks_label">Notlar</string>
-    <string name="p_qty">P Qty</string>
     <string name="lock">Kilitle</string>
     <string name="total_lines">Toplam Satır Sayısı</string>
     <string name="are_you_sure_you_want_to_download">İndirmek istediğine emin misin?</string>
@@ -335,7 +310,6 @@
     <string name="unloadimage">Görüntüye ulaşılamıyor</string>
     <string name="deviate_retailers">Plandışı Müşteri Ekle</string>
     <string name="admin_contact_no">Admin Numarası:</string>
-    <string name="ord_id">Sip No</string>
     <string name="invno">Fat No</string>
     <string name="apply_sih">Apply SIH</string>
     <string name="please_answer_all_mandatory_questions">Lütfen tüm mecburi soruları cevapla</string>
@@ -351,23 +325,12 @@
     <string name="no_paired_device">Eşleşilen Cihaz Yok</string>
     <string name="paired_bluetooth_printers">Eşleşilen Bluetooth Yazıcılar</string>
     <string name="printed_successfully">Başarıyla yazdırıldı</string>
-    <string name="printer_connected">Yazıcı bağlandı</string>
-    <string name="complete_to_print">Yazdırmak için tamamla.</string>
     <string name="cover_is_open">Cover is open</string>
     <string name="paper_not_present">Kağıt sensörü: Kağıt yok.</string>
-    <string name="bluetooth_connection_not_available">Bluetooth bağlantısı yok.</string>
-    <string name="total_print">Toplam</string>
-    <string name="print_footer3">Total TVA a 20.00%</string>
-    <string name="print_footer4">Total TTC a payer</string>
     <string name="you_are_closing">Kapatıyorsunuz</string>
     <string name="delete_stock_and_order">Sipariş Girişini Sil</string>
-    <string name="received_by">Alındı:</string>
     <string name="post_dated_cheque_notallow">Post Dated Cheque Not Allowed</string>
     <string name="order_report_details">Detaylı Sipariş Raporu</string>
-    <string name="order_print_preview">Sipariş Yazdırma Öngörüntüsü</string>
-    <string name="invoice_print_preview">Fatura Önizleme</string>
-    <string name="order_slip">Fatura kopyası</string>
-    <string name="invoice_saved_and_print_preview_created_successfully">Fatura kaydedildi ve print öngörüntüsü başarıyla oluşturuldu.</string>
     <string name="no_invoice_exist">Uygun fatura yok.</string>
     <string name="scheme_name">Promosyon İsmi</string>
     <string name="max_disc">Max İsk</string>
@@ -427,25 +390,12 @@
     <string name="journey_not_ended">Gün Bitirilmedi</string>
     <string name="batch_no">Batch No</string>
     <string name="you_are">You are</string>
-    <string name="wouter">WO</string>
     <string name="souter">SHO</string>
     <string name="enter_otp_skip_seq">Enter OTP for Skip Sequence</string>
     <string name="disc_amt">İnd. Mik.</string>
     <string name="enter_cheque_no">Enter Cheque No</string>
-    <string name="arabian_trading_supplies">Arabian Trading Supplies</string>
-    <string name="cash_tc_invoice">CASH/TC INVOICE#</string>
     <string name="sales_date">Satış Tarihi</string>
     <string name="time">Başlangıç Zamanı</string>
-    <string name="upc">UPC</string>
-    <string name="good_returns">Düzgün İade</string>
-    <string name="expiry_return">Tarihi geçmiş İade</string>
-    <string name="free_goods">Bedelsiz ürünler</string>
-    <string name="net_due_invoice">Net Due</string>
-    <string name="cash_paid">Nakit ödenen</string>
-    <string name="tc_charged">Tc Charged</string>
-    <string name="salesman_signature">SATIŞÇI İMZASI</string>
-    <string name="customer_signature">MÜŞTERİ İMZASI</string>
-    <string name="orginal">ORGINAL</string>
     <string name="from">Başlangıç</string>
     <string name="to">Bitiş</string>
     <string name="scheme">Promosyon</string>
@@ -456,7 +406,6 @@
     <string name="select_collection_reason">Tahsilat Sebebi Seç</string>
     <string name="reason_saved">Gerekçe seçildi</string>
     <string name="acc_no">Account No</string>
-    <string name="emp_id">Emp Id</string>
     <string name="device_status">Cihaz Statüsü</string>
     <string name="current_date">Güncel Tarih</string>
     <string name="network_status">Ağ Statüsü</string>
@@ -501,7 +450,6 @@
     <string name="invaliddate">Geçersiz Tarih</string>
     <string name="saverequired">Kaydetmeniz Gerekiyor</string>
     <string name="cant_skip_go_by_sequence">Atlayamazsınız, Sıraya göre ilerleyin</string>
-    <string name="duplicate">Çift</string>
     <string name="no_damaged_stock_to_unload">No damaged stock to unload</string>
     <string name="do_you_want_to_save_stock">Stoğu kaydetmek ister misin?</string>
     <string name="stock_saved">Stok kaydedildi</string>
@@ -520,7 +468,6 @@
     <string name="feedback">Geri bildirim</string>
     <string name="tracking_list">Takip Listesi</string>
     <string name="vanno">Load Van</string>
-    <string name="BATCH_NO">BATCH</string>
     <string name="select_reason_skip_seq">Sırayı bozmak için sebep seçin</string>
     <string name="crown">Crown Management</string>
     <string name="crown_count">Crown Count</string>
@@ -544,13 +491,11 @@
     <string name="batch_no_already_exist">Batch No. already exist</string>
     <string name="select_sub_depot">Select Sub Depot to Save</string>
     <string name="enter">Gir</string>
-    <string name="code">Kod</string>
     <string name="case_u">Kutu</string>
     <string name="bottle">Şişe</string>
     <string name="totfullstockcs">Total Full Stock-Cs</string>
     <string name="totfullstockbtl">Total Full Stock-Btl</string>
     <string name="totempties">Toplam Boşlar</string>
-    <string name="totduecoll">Total Amount Due</string>
     <string name="already_another_user_login">Başka bir kullanıcı zaten giriş yaptı</string>
     <string name="please_pay_old_invoice">Lütfen eski faturaları ödeyin</string>
     <string name="detail">Detay</string>
@@ -564,9 +509,6 @@
     <string name="file_not_found">Dosya bulunamadı</string>
     <string name="order_number">Sipariş No</string>
     <string name="invoice_number">Fatura Numarası</string>
-    <string name="bt_not_enabled_turn_on_bluetooth">Bluetoth devre dışı. Lütfen bluetooth\'u açın.</string>
-    <string name="button_disconnect_text">Bağlantıyı kopar.</string>
-    <string name="button_connect_text">Bağlan</string>
     <string name="exceed_free_product">Maximum önerileni aştınız.</string>
     <string name="exceed_allocation">You have exceeded allocation</string>
     <string name="vat_no">KDV no</string>
@@ -575,12 +517,8 @@
     <string name="previous_activation_not_done_for_this_device">Önceki aktivasyon bu cihaz için yapılmadı</string>
     <string name="minimum_amount">Min. Tutar</string>
     <string name="enter_minimum_amount">Faturaya geçmek için minimum tutarı öde</string>
-    <string name="total_stock_sold">Toplam Satılan Ürünler(KDV dahil)</string>
     <string name="total_exec_tax">Total exec.Tax</string>
-    <string name="total_paid">Toplam Ödenen</string>
-    <string name="credit">Kredi</string>
     <string name="customer_sign">Müşteri İmzası</string>
-    <string name="rep_sign">Satışçı İmzası</string>
     <string name="invoice_created_dou_wnt_print">Fatura başarıyla oluşturuldu. Yazdırmak ister misin?</string>
     <string name="are_you_sure_you_want_to_print">Faturanın bir kopyasını yazdırmak ister misin?</string>
     <string name="choose">Seç</string>
@@ -592,7 +530,6 @@
     <string name="shelf_max_shelf_count">Maksimum raf sayısı </string>
     <string name="label_check_box_do_not_show_again">Tekrar gösterme</string>
     <string name="selectany">Select any</string>
-    <string name="tin_no">Vg No:</string>
     <string name="currprice">Mevcut Fiyat</string>
     <string name="no_location_download">Konum indirilemedi</string>
     <string name="app_url_is_empty">Uygulama url\'si boş</string>
@@ -602,7 +539,6 @@
     <string name="choose_location">Konum Seç</string>
     <string name="questscore">Soru Puanı</string>
     <string name="surevyscore">Anket Puanı</string>
-    <string name="outer_price">Dış Koli Fiyatı</string>
     <string name="photo_capture_not_saved_go_back">Görüntü Kaydedilmedi. Geri dönülsün mü?</string>
     <string name="addpromo">Yeni Promosyon Ekle</string>
     <string name="startdate">Başlangıç Tarihi</string>
@@ -888,7 +824,6 @@
     <string name="selected_date_already_applied">Seçilen tarih için izin uygulandı</string>
     <string name="download_date_mismatch">İndirilme Tarihi eşleşmiyor</string>
     <string name="user_account_locked">Hesap kilitlendi. Lütfen sistem yöneticisiyle iletişime geç.</string>
-    <string name="scheme_discount">İndirim Promosyonu</string>
     <string name="tab_text_images">Görüntüler yüklenmedi</string>
     <string name="tab_text_audio">Ses</string>
     <string name="tab_text_video">Video</string>
@@ -1176,9 +1111,7 @@
     <string name="shipment_type_label">Shipment Type</string>
     <string name="payment_type_label">Payment Type</string>
     <string name="select_shipment_type">Select Shipment Type</string>
-    <string name="select_pay_term_type">Select PayTerm Type</string>
     <string name="shipment_mandatory">Please select shipment type</string>
-    <string name="pay_term_mandatory">Please select payterm type</string>
     <string name="dist_channel_mandatory">Please select Distribution channel</string>
     <string name="select_channel">Select channel</string>
     <string name="supplier_label">Supplier</string>
@@ -1234,22 +1167,6 @@
     <string name="foc">FfoOC</string>
     <string name="sr">SR</string>
     <string name="volume">Volume</string>
-
-    <string-array name="task_tab_header">
-        <item>TÜMÜ</item>
-        <item>VERİLENLER</item>
-        <item>KENDİME AİT</item>
-    </string-array>
-    <string-array name="days_in_week">
-        <item>Paz</item>
-        <item>Pts</item>
-        <item>Sal</item>
-        <item>Çrş</item>
-        <item>Prş</item>
-        <item>Cum</item>
-        <item>Cts</item>
-    </string-array>
-
     <string name="share_percent">Share %</string>
     <string name="total_value_less_than_actual_value">Total value is lesser than Actual value.</string>
     <string name="answer_to_take_photo">Answer to take photo.</string>
@@ -1269,17 +1186,136 @@
     <string name="bill">Bill</string>
     <string name="line_value">Line value</string>
     <string name="tax_Value">Tax Value</string>
-    <!-- <string name="Disc">Disc</string>-->
     <string name="cash_disc">Cash Disc</string>
-    <string name="tls">TLS</string>
-    <string name="payment_term">Payment term</string>
-    <string name="oth_disc">Oth. Disc (Other Discount)</string>
-    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
-    <!--<string name="Signature">Signature</string>-->
-    <string name="attachment">Attachment</string>
-    <string name="ns">NS</string>
-    <string name="ul">UL</string>
-    <string name="salable">Satılabilir</string>
+    <string name="retailer_kpi_not_available">Retailer KPI not available.</string>
+    <string name="bill1_value">Bill1 Value</string>
+    <string name="bill1_line">Bill1 Line</string>
+    <string name="bill2_value">Bill2 Value</string>
+    <string name="bill2_line">Bill2 Line</string>
+    <string name="notification_text">Realtime location tracking enabled. </string>
+    <string name="status_time_mismatch">Start Time is Greater than end time</string>
+    <string name="status_location_accuracy">Change high location Accuracy</string>
+    <string name="status_mock_location">Mock Location is Enabled</string>
+    <string name="status_alarm_time_zero">Alarm time should not be zero</string>
+    <string name="mandatory_fileds_empty">Mandatory fields empty!</string>
+    <string name="enter_account">Enter account no</string>
+    <string name="otp_download_url_empty">OTP Generate Url is Empty </string>
+    <string name="profile_edit_verify_email_id">Please verify Email Id</string>
+    <string name="profile_edit_verify_mobile_no">Please verify Mobile No</string>
+    <string name="planogram_image_count_reached">Reached Maximum planogram image count</string>
+    <string name="planogram_image_count_not_reached">Planogram image not added</string>
+    <string name="enter_valid">Enter valid </string>
+    <string name="stock">Stock</string>
+    <string name="Order_Summary_dialog_header">Order_Summary_dialog_header</string>
+    <string name="collection_mandatory">Please do collection for Pending Invoice !</string>
+    <string name="todate_validation">To Date should be greater than From Date</string>
+    <string name="backup_seller">Backup Seller</string>
+    <string name="error_connecting_printer">Error connecting Printer</string>
+    <string name="allocation">Allocation</string>
+    <string name="you_have_unchecked_applicable_scheme">You have unchecked few applicable scheme ?</string>
+    <string name="regular_incentive_detail">Regular Incentive Detail</string>
+    <string name="top_up_incentive_detail">Top Up Incentive Detail</string>
+    <string name="rcpt_date">Rcpt Date</string>
+    <string name="rcpt_no">Rcpt NO</string>
+    <string name="seller_code">Seller Code</string>
+    <string name="pls_enter_rtgsno">Please Enter RTGS No </string>
+    <string name="pls_enter_ddno">Please Enter Demand Draft No </string>
+    <string name="drug_license_expired">Drug License Expired</string>
+    <string name="uom_not_available">Uom Not Available</string>
+    <string name="pwd_policy_not_match">Password Policy Not Matched</string>
+    <string name="last_vist">Last Vist : </string>
+    <string name="visit_time">Visit Time : </string>
+    <string name="yet_to_visit">Yet to visit </string>
+    <string name="targeted">Targeted </string>
+    <string name="covered">Covered </string>
+    <string name="please_complete">Please Complete</string>
+    <string name="complete">Complete</string>
+    <string name="enter_receipt_no">Enter Receipt Number</string>
+    <string name="please_enter">Please Enter</string>
+    <string name="lpc">LPC</string>
+    <string name="return_value">Return Value</string>
+    <string name="salesreport_details">SalesReturn Report Details</string>
+    <string name="last_download_on">Last Download: </string>
+    <string name="last_upload_on">Last Upload: </string>
+    <string name="select_category">Select Category</string>
+    <string name="retailer_contact_menu">Retailer Contact Menu not Available!</string>
+    <string name="retailer_contact_list">Contact data not Available!</string>
+    <string name="not_able_to_register_visit">Not able to register the visit</string>
+    <string name="outlet">Outlet</string>
+    <string name="contact">Contact</string>
+    <string name="isprimary">Is Primary</string>
+    <string name="contact_title">Contact Title</string>
+    <string name="enter_first_name">Enter Contact FirstName</string>
+    <string name="enter_last_name">Enter Contact LastName</string>
+    <string name="enter_other_name">Enter Contact Other Title</string>
+    <string name="select_contact_title">Select Contact Title</string>
+    <string name="primary_contact_available">Primary Contact already available!</string>
+    <string name="max_contacts_added">Maximum Contacts already added!</string>
+    <string name="discount_amt_cannot_be_higher_than_percentage">Discount Amount cannot be Higher than “%1$s” of product price.</string>
+    <string name="select_reason_for_price_change">Select Reason for Price Change.</string>
+    <string name="filter_by">Filter By</string>
+    <string name="show_results">Show Results</string>
+    <string name="please_choose_address">Please choose any one address</string>
+    <string name="mark_attendance_working">Please Mark Attendance As "Working" To Proceed.</string>
+    <string name="planned_activities">Planned Activities</string>
+    <string name="do_u_want_to_cancel">Do you want to cancel?</string>
+    <string name="asset_service">Asset Service</string>
+    <string name="select_asset_service">Nothing selected to Service.</string>
+    <string name="visit_plan_updated">Visit Plan Updated</string>
+    <string name="stock_allocated">Stock Allocated</string>
+    <string name="vanload_stock_applied">VanLoad Stock Applied </string>
+    <string name="vanload_reject_applied">VanLoad Stock Rejected</string>
+    <string name="check_any_one_list">Check any one list</string>
+    <string name="new_order">New Order</string>
+    <string name="new_outlet_order">You have changed the Distributor, Order will be lost. Do you want to Continue?</string>
+    <string name="outlet_code">Outlet Code</string>
+    <string name="sub_channel">Sub Channel</string>
+    <string name="contract_id">Contract ID</string>
+    <string name="type_of_trade_offer">Type of Trade Offer</string>
+    <string name="days_to_expire">Days to Expire</string>
+    <string name="selected">selected</string>
+    <string name="select_order_type">Select order type</string>
+    <string name="withold_title">With Hold Tax</string>
+    <string name="no_collection_reason">No collection \nReason</string>
+    <string name="invoice_with_no_collection">Invoice With No Collection Reason Found</string>
+    <string name="skip">Skip</string>
+    <string name="pdf_attached">Pdf Attached. Do you want to delete and re-attach?</string>
+    <string name="Orde_Saved">Order Saved.</string>
+    <string name="Order_id">Order ID is: </string>
+    <string name="denomination_error">Total amount not match with you denomination count amount </string>
+    <string name="pay">Pay</string>
+    <string name="order_id">Order ID</string>
+    <string name="ordered_cases">Ordered Cases</string>
+    <string name="ordered_pieces">Ordered Pieces</string>
+    <string name="fulfilled_cases">Fulfilled Cases</string>
+    <string name="fulfilled_pieces">Fulfilled Pieces</string>
+    <string name="order_fulfillment_detail">Order Fulfillment Detail</string>
+    <string name="logout_joint_user">Please logout JointCall User before downloading</string>
+    <string name="licensing">About Open Source Library</string>
+    <string name="software_licensing">Open Source Library</string>
+    <string name="click_to_show_licensing">Open Source Library - Licence</string>
+    <string name="margin_price">Mgn Prc</string>
+    <string name="margin_per">Mgn Per</string>
+    <string name="invoice_already_generated">* Invoice Generated</string>
+    <string name="order_rejected">* Order Rejected</string>
+    <string name="do_you_want_to_reject">Do you want to reject?</string>
+    <string name="already_invoice_has_been_generated">Already invoice has been generated.</string>
+    <string name="rejected_order">Rejected Order</string>
+
+    <string-array name="task_tab_header">
+        <item>TÜMÜ</item>
+        <item>VERİLENLER</item>
+        <item>KENDİME AİT</item>
+    </string-array>
+    <string-array name="days_in_week">
+        <item>Paz</item>
+        <item>Pts</item>
+        <item>Sal</item>
+        <item>Çrş</item>
+        <item>Prş</item>
+        <item>Cum</item>
+        <item>Cts</item>
+    </string-array>
 
     <string name="stores">Stores</string>
     <string name="check_anyone_fromlist">Check anyone from the List</string>
@@ -1289,4 +1325,20 @@
     <string name="tos_amount">TOS Amount</string>
     <string name="other_reason_with_credit">Others</string>
     <string name="store_activities">Store Activities</string>
+
+    <string name="sales_type_presale">PreSales</string>
+    <string name="sales_type_vansale">VanSales</string>
+    <string name="digital_content_header_this_month">This Month</string>
+    <string name="digital_content_header_prev_month">Previous Month</string>
+    <string name="digital_content_header_older">Older</string>
+
+    <string name="ns">NS</string>
+    <string name="ul">UL</string>
+    <string name="salable">Salable</string>
+    <string name="tls">TLS</string>
+    <string name="payment_term">Payment term</string>
+    <string name="oth_disc">Oth. Disc (Other Discount)</string>
+    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
+    <string name="attachment">Attachment</string>
+
 </resources>

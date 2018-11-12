@@ -64,6 +64,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
@@ -103,7 +104,7 @@ import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
-import com.ivy.sd.png.view.TaskListFragment;
+import com.ivy.cpg.view.task.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
 
 import org.json.JSONObject;
@@ -708,7 +709,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 Window window = comReasonDialog.getWindow();
                 lp.copyFrom(window != null ? window.getAttributes() : null);
                 lp.width = displaymetrics.widthPixels - 100;
-                lp.height = (int) (displaymetrics.heightPixels / 2.5);//WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.height = (int) (displaymetrics.heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
                 if (window != null) {
                     window.setAttributes(lp);
                 }
@@ -1617,6 +1618,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     onCreateDialogNew(2);
                 return;
             }
+
+            if (!LocationServiceHelper.getInstance().isLocationHighAccuracyEnabled(this)) {
+                onCreateDialogNew(3);
+                return;
+            }
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -1895,6 +1901,23 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 bmodel.applyAlertDialogTheme(builderGPS);
                 return builderGPS.create();
 
+            case 3:
+                AlertDialog.Builder highAccuracy = new AlertDialog.Builder(this)
+                        .setIcon(null)
+                        .setTitle(getResources().getString(R.string.status_location_accuracy))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        Intent myIntent = new Intent(
+                                                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                        startActivity(myIntent);
+
+                                    }
+                                });
+                bmodel.applyAlertDialogTheme(highAccuracy);
+                return highAccuracy.create();
+
         }
         return null;
     }
@@ -2076,14 +2099,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                     if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
 
-                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_STK_ORD,
-                                bmodel.productHelper.getFilterProductLevels()));
+                        Commons.print("time start : " + SDUtil.now(5));
                         GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
                         if (genericObjectPair != null) {
                             bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                             bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                         }
+                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                                bmodel.productHelper.getFilterProductLevels(), true));
+
+                        Commons.print("time stop : " + SDUtil.now(5));
+
 
                     } else {
                         //to reload product filter if diffrent retailer selected

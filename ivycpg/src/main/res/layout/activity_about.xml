@@ -41,7 +41,7 @@
             android:layout_below="@+id/iv_logo"
             android:text="@string/copyright_warning"
             android:textColor="#000000"
-            android:textSize="@dimen/text_sz_small"
+            android:textSize="@dimen/text_size_caption"
             android:layout_marginTop="@dimen/dimen_20dp"></TextView>
 
 

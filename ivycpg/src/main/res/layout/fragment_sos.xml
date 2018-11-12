@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,156 +11,138 @@
         android:gravity="center_horizontal"
         android:windowSoftInputMode="stateAlwaysHidden">
 
-        <android.support.v7.widget.CardView
+
+        <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/footer"
+            android:layout_height="@dimen/list_header_height"
             android:layout_alignParentTop="true"
-            android:layout_margin="@dimen/list_margin"
-            card_view:cardBackgroundColor="@color/WHITE"
-            card_view:cardCornerRadius="0dp"
-            card_view:cardElevation="5dp"
-            card_view:cardPreventCornerOverlap="true"
-            card_view:cardUseCompatPadding="true"
-            card_view:contentPadding="0dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:id="@+id/header"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/list_header_height"
-                    android:background="@color/store_title"
-                    android:orientation="horizontal">
+            android:background="@color/list_title_bg_color"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/list_padding_left_n_right"
+            android:paddingEnd="@dimen/list_padding_left_n_right">
 
 
-                    <TextView
-                        android:id="@+id/audit"
-                        style="?attr/customListTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/audit"
-                        android:visibility="gone" />
+            <TextView
+                android:id="@+id/audit"
+                style="?attr/customListTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/audit"
+                android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/levelName"
-                        style="?attr/customListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/target_top_margin"
-                        android:layout_marginLeft="@dimen/target_top_margin"
-                        android:layout_weight="3"
-                        android:tag="level_name"
-                        android:gravity="center|start"
-                        android:text="@string/brand"
-                        android:textStyle="bold" />
+            <TextView
+                android:id="@+id/levelName"
+                style="?attr/customListTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="center|start"
+                android:tag="level_name"
+                android:text="@string/brand" />
 
 
-                    <TextView
-                        android:id="@+id/hTotal"
-                        style="?attr/customListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.8"
-                        android:gravity="center"
-                        android:tag="item_total"
-                        android:text="@string/total"
-                        android:textStyle="bold" />
+            <TextView
+                android:id="@+id/hTotal"
+                style="?attr/customListTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:tag="item_total"
+                android:text="@string/total" />
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2.2"
-                        android:gravity="center"
-                        android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.3"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/hlength"
-                            style="?attr/customListTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/s_length"
-                            android:tag="item_slength"
-                            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/hlength"
+                    style="?attr/customListTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="item_slength"
+                    android:text="@string/s_length" />
 
-                        <TextView
-                            android:id="@+id/hlengthacttar"
-                            style="?attr/customListTitleSecondary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/act_tar" />
-                    </LinearLayout>
+                <TextView
+                    android:id="@+id/hlengthacttar"
+                    style="?attr/customListTitleSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/act_tar" />
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2.2"
-                        android:gravity="center"
-                        android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.3"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/hpercent"
-                            style="?attr/customListTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:tag="item_spercent"
-                            android:text="@string/s_percent"
-                            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/hpercent"
+                    style="?attr/customListTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="item_spercent"
+                    android:text="@string/s_percent" />
 
-                        <TextView
-                            android:id="@+id/hpercentacttar"
-                            style="?attr/customListTitleSecondary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/act_tar" />
-                    </LinearLayout>
+                <TextView
+                    android:id="@+id/hpercentacttar"
+                    style="?attr/customListTitleSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/act_tar" />
+            </LinearLayout>
 
 
-                    <TextView
-                        android:id="@+id/hGap"
-                        style="?attr/customListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:gravity="center"
-                        android:tag="item_hgap"
-                        android:text="@string/gap"
-                        android:textStyle="bold" />
+            <TextView
+                android:id="@+id/hGap"
+                style="?attr/customListTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:tag="item_hgap"
+                android:text="@string/gap"
+                android:visibility="gone" />
 
-                </LinearLayout>
+        </LinearLayout>
 
 
-                <ListView
-                    android:id="@+id/list"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_below="@+id/header"
-                    android:background="@android:color/transparent"
-                    android:cacheColorHint="@null"
-                    android:divider="@android:color/white"
-                    android:dividerHeight="1dp"
-                    android:fitsSystemWindows="true" />
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/header"
+            android:layout_above="@+id/footer"
+            android:cacheColorHint="@null"
+            android:divider="@color/GRAY"
+            android:dividerHeight="0.5dp"
+            android:fitsSystemWindows="true" />
+
 
         <LinearLayout
             android:id="@+id/footer"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/footer_bg"
-            android:orientation="horizontal"
-            android:gravity="center|end">
+            android:gravity="center|end"
+            android:orientation="horizontal">
+
 
             <Button
                 android:id="@+id/btn_save"
                 style="?attr/roundedCustomButtonSmall"
-                android:text="@string/save"
-                android:layout_margin="@dimen/target_top_margin"
                 android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/target_top_margin"
+                android:text="@string/save"
                 android:textAllCaps="false" />
         </LinearLayout>
 

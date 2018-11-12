@@ -220,7 +220,7 @@
                         android:text="@string/zero"
                         android:maxLines="1"
                         android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/font_micro_small" />
+                        android:textSize="@dimen/text_size_primary" />
                 </LinearLayout>
 
 
@@ -741,7 +741,7 @@
                         android:gravity="start|center"
                         android:maxLines="1"
                         android:text="@string/prod_code"
-                        android:textSize="@dimen/font_nano_small"
+                        android:textSize="@dimen/text_size_secondary"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -887,7 +887,7 @@
                             android:gravity="center|end"
                             android:text="@string/zero"
                             android:textColor="@color/black_bg1"
-                            android:textSize="@dimen/font_micro_small" />
+                            android:textSize="@dimen/text_size_primary" />
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
@@ -1056,7 +1056,7 @@
                     android:gravity="center|end"
                     android:text="@string/zero"
                     android:textColor="@color/black_bg1"
-                    android:textSize="@dimen/font_micro_small" />
+                    android:textSize="@dimen/text_size_primary" />
             </LinearLayout>
 
             <com.ivy.sd.png.view.SlantView

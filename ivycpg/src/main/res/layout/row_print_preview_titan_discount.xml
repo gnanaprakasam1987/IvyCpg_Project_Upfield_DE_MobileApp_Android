@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
 
             <TextView
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_micro_small" />
+                android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
         <TextView
 
@@ -40,7 +40,7 @@
             android:layout_weight=".9"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:layout_width="0dp"
@@ -49,7 +49,7 @@
             android:layout_weight="1.1"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
         <TextView
             android:id="@+id/discamt"
@@ -58,7 +58,7 @@
             android:layout_weight=".9"
             android:text=""
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_micro_small" />
+            android:textSize="@dimen/text_size_primary" />
 
     </LinearLayout>
 

@@ -407,8 +407,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 .setVisibility(View.VISIBLE);
 
         productName =  findViewById(R.id.productName);
-        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
-        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        productName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
 
         lvwplist =  findViewById(R.id.list);
@@ -926,7 +926,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                                             .getMonthly_target()));
                 }
                 try {
-                    ((TextView) findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                    ((TextView) findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                     if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                             R.id.totalTitle).getTag()) != null)
                         ((TextView) findViewById(R.id.totalTitle))
@@ -944,7 +944,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.caseTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                        ((TextView) findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.caseTitle))
@@ -959,7 +959,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.pcsTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+                        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.pcsTitle))
@@ -974,7 +974,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.focTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+                        ((TextView) findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.focTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.focTitle))
@@ -990,7 +990,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.outercaseTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+                        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.outercaseTitle))
@@ -1007,7 +1007,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.icoTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.icoTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                        ((TextView) findViewById(R.id.icoTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.icoTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.icoTitle))
@@ -1025,7 +1025,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                        ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.productBarcodetitle).getTag()) != null)
                             ((TextView) findViewById(R.id.productBarcodetitle))
@@ -1043,7 +1043,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.weight).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.weight)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                        ((TextView) findViewById(R.id.weight)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.weight).getTag()) != null)
                             ((TextView) findViewById(R.id.weight))
@@ -1239,11 +1239,11 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
                 holder.psname.setTypeface(FontUtils.getProductNameFont(SubDStockOrderActivity.this));
-                holder.mrp.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
-                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
-                holder.pcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
-                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
-                holder.total.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+                holder.mrp.setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.MEDIUM));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.MEDIUM));
+                holder.pcsQty.setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.MEDIUM));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.MEDIUM));
+                holder.total.setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.MEDIUM));
 
 
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
@@ -1255,7 +1255,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     ( row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -1270,7 +1270,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     ( row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -1286,7 +1286,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     ( row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.focTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.focTitle))
@@ -1302,7 +1302,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outercaseTitle))
@@ -1319,7 +1319,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     ( row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.stkRtTitle))
                                     .setText(bmodel.labelsMasterHelper
@@ -1334,7 +1334,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     ( row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.totalTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.totalTitle))
@@ -2153,12 +2153,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 findViewById(R.id.ll_lpc).setVisibility(View.GONE);
             }
 
-            ((TextView) findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.totalValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.lcp)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.distText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.distValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
+            ((TextView) findViewById(R.id.totalValue)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
+            ((TextView) findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
+            ((TextView) findViewById(R.id.lcp)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
+            ((TextView) findViewById(R.id.distText)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
+            ((TextView) findViewById(R.id.distValue)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -2999,7 +2999,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             mylist = new Vector<>();
 
             pnametitle =  findViewById(R.id.productnametitle);
-            ((TextView) findViewById(R.id.productnametitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.productnametitle)).setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.MEDIUM));
 
 
             // Add the products into list
@@ -3408,8 +3408,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
            /* bmodel.productHelper
                     .downloadFiveLevelFilterNonProducts("MENU_SURVEY");*/
             bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY"));
-            bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts("MENU_SURVEY",
-                    bmodel.productHelper.getRetailerModuleSequenceValues()));
+            bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                    bmodel.productHelper.getRetailerModuleSequenceValues(),false));
             bmodel.mSelectedActivityName = "Survey";
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;
@@ -4152,7 +4152,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+            tab.setTypeface(FontUtils.getFontRoboto(SubDStockOrderActivity.this, FontUtils.FontType.MEDIUM));
             tab.setTextColor(color);
             tab.setMaxLines(1);
             tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));

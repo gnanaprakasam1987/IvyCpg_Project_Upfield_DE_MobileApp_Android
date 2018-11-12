@@ -113,10 +113,10 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                                 .applyLabels(view.findViewById(R.id.actual_PcQty)
                                         .getTag()));
 
-            ((TextView) view.findViewById(R.id.cqty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-            ((TextView) view.findViewById(R.id.piececqty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-            ((TextView) view.findViewById(R.id.actual_caseQty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
-            ((TextView) view.findViewById(R.id.actual_PcQty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+            ((TextView) view.findViewById(R.id.cqty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+            ((TextView) view.findViewById(R.id.piececqty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+            ((TextView) view.findViewById(R.id.actual_caseQty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+            ((TextView) view.findViewById(R.id.actual_PcQty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
             ((TextView) view.findViewById(R.id.btn_save)).setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
@@ -447,11 +447,11 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                     actualPieceQuantity = itemView.findViewById(R.id.txt_actualPieceQuantity);
 
                     productName.setTypeface(FontUtils.getProductNameFont(mContext));
-                    reason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-                    returnCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-                    returnPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-                    actualCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-                    actualPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
+                    reason.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+                    returnCaseQuantity.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+                    returnPieceQuantity.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+                    actualCaseQuantity.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+                    actualPieceQuantity.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
 
                     SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
                     if (!salesReturnDeliveryHelper.SHOW_SALES_RET_PCS) {

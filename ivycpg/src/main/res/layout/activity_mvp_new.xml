@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/mvp_fragment"
-        android:name="com.ivy.sd.png.view.MVPFragment"
+        android:name="com.ivy.cpg.view.mvp.MVPFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" />
