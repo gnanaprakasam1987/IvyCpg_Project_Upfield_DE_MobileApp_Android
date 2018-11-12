@@ -1109,8 +1109,8 @@ public class OrderHelper {
 
         int pieceCount;
         float srp;
-        double csrp;
-        double osrp;
+        float csrp;
+        float osrp;
         int orderPieceQty;
         int orderCaseQty;
         int orderOuterQty;
