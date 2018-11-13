@@ -3787,9 +3787,11 @@ public class ProductHelper {
                     product.setDSIH(c.getInt(4));
                     product.setProductShortName(c.getString(5));
 //                    product.setBarCode(c.getString(6));
-                    product.setSrp(c.getFloat(7));
-                    product.setCsrp(c.getFloat(8));
-                    product.setOsrp(c.getFloat(9));
+
+                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(7),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(8),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(9),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+
                     product.setMSQty(c.getInt(10));
                     product.setCaseSize(c.getInt(11));
                     product.setCaseUomId(c.getInt(12)); // caseuomid

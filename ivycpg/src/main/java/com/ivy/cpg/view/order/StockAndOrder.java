@@ -3205,12 +3205,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                         if (!"".equals(qty)) {
                             if (bmodel.validDecimalValue(qty, 8, 2)) {
-                                holder.productObj.setSrp(SDUtil
-                                        .convertToFloat(qty));
-                                holder.productObj.setCsrp(holder.productObj.getCaseSize() * SDUtil
-                                        .convertToFloat(qty));
-                                holder.productObj.setOsrp(holder.productObj.getOutersize() * SDUtil
-                                        .convertToFloat(qty));
+
+                                holder.productObj.setSrp(SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+
+                                float csrp=holder.productObj.getCaseSize() * SDUtil.convertToFloat(qty);
+                                holder.productObj.setCsrp(SDUtil.convertToFloat(SDUtil.format(csrp,bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+
+                                float osrp=holder.productObj.getOutersize() * SDUtil.convertToFloat(qty);
+                                holder.productObj.setOsrp(SDUtil.convertToFloat(SDUtil.format(osrp,bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
                             } else {
                                 holder.srpEdit.setText(qty.length() > 1 ? qty
                                         .substring(0, qty.length() - 1) : "0");

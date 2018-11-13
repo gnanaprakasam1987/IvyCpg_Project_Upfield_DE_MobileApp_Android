@@ -30,7 +30,7 @@ public interface SellerMapHomeContract {
 
         void updateSellerAttendance(int absentSellerCount,int marketSellerCount);
 
-        void updateOrderValue(int totalOrderValue);
+        void updateOrderValue(double totalOrderValue);
 
         void displayTotalOutletCount(int totalOutlet);
 

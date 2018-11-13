@@ -690,6 +690,7 @@
 
 
     <dimen name="actionbar_title_text_size">24sp</dimen>
+    <dimen name="actionbar_subtitle_text_size">22sp</dimen>
     <dimen name="text_size_primary">16sp</dimen>
     <dimen name="text_size_secondary">14sp</dimen>
     <dimen name="text_size_caption">14sp</dimen>
@@ -749,7 +750,7 @@
 
     <!-- subbu to check -->
     <dimen name="activity_name_text_size">24sp</dimen>
-    <dimen name="sub_activity_name_text_size">18sp</dimen>
+    <dimen name="sub_activity_name_text_size">20sp</dimen>
 
     <dimen name="activation_edittext_text_size">18sp</dimen>
     <dimen name="survey_answer_left">35dp</dimen>

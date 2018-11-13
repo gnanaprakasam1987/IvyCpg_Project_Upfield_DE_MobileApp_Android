@@ -9,12 +9,12 @@ import java.util.Set;
 public class RetailerBo {
 
     private int retailerId,userId,visitedSequence,masterSequence,lastVisitedRetailer,channelId;
-    private String retailerName,date,address,imgPath,userName,ParentHierarchy;
-    private double latitude,longitude,masterLatitude,masterLongitude;
+    private String RetailerName,date,address,imgPath,userName,ParentHierarchy;
+    private double latitude,longitude,masterLatitude,masterLongitude,totalOrderValue,orderValue;
     private boolean isDeviated=false
             ,isOrdered=false
             ,isSkipped = false,isVisited = false;
-    private long totalOrderValue,orderValue, inTime, outTime;
+    private long  inTime, outTime;
     private Marker marker;
     private Set<Integer> productIds = new HashSet<>();
 
@@ -43,11 +43,11 @@ public class RetailerBo {
     }
 
     public String getRetailerName() {
-        return retailerName;
+        return RetailerName;
     }
 
     public void setRetailerName(String retailerName) {
-        this.retailerName = retailerName;
+        this.RetailerName = retailerName;
     }
 
     public double getLatitude() {
@@ -82,11 +82,11 @@ public class RetailerBo {
         isOrdered = ordered;
     }
 
-    public long getOrderValue() {
+    public double getOrderValue() {
         return orderValue;
     }
 
-    public void setOrderValue(long orderValue) {
+    public void setOrderValue(double orderValue) {
         this.orderValue = orderValue;
     }
 
@@ -130,11 +130,11 @@ public class RetailerBo {
         this.masterSequence = masterSequence;
     }
 
-    public long getTotalOrderValue() {
+    public double getTotalOrderValue() {
         return totalOrderValue;
     }
 
-    public void setTotalOrderValue(long totalOrderValue) {
+    public void setTotalOrderValue(double totalOrderValue) {
         this.totalOrderValue = totalOrderValue;
     }
 

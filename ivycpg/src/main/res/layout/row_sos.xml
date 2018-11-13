@@ -192,7 +192,7 @@
                 android:layout_gravity="start"
                 android:layout_marginStart="@dimen/dimens_6dp"
                 android:layout_marginLeft="@dimen/dimens_6dp"
-                android:text="@string/reason" />
+                android:text="@string/remark" />
 
             <EditText
                 android:id="@+id/edt_other_remarks"
