@@ -35,10 +35,10 @@ static def fetchRevisionNumber() {
 }
 
 def majorVersion = 2
-def minorVersion = 134
+def minorVersion = 133
 def patchVersion = 0
-def verCode = 1340
-def revNumber = 3227 //fetchRevisionNumber()
+def verCode = 3047
+def revNumber = 3047 //fetchRevisionNumber()
 
 android {
     compileSdkVersion 26
@@ -53,9 +53,9 @@ android {
         multiDexEnabled true
         resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"${BASE_CPG_PROD_QA_DMS}\"")
-        buildConfigField("String", "TEST_USER_NAME", "\"${TEST_CPG_STAGING_USER_NAME}\"")
-        buildConfigField("String", "TEST_PASSWORD", "\"${TEST_CPG_STAGING_PASSWORD}\"")
+        buildConfigField("String", "BASE_URL", "\"${BASE_QA_URL_CARLSBERG_NEPAL}\"")
+        buildConfigField("String", "TEST_USER_NAME", "\"${TEST_QA_CARLSBERG_NEPAL_USER_NAME}\"")
+        buildConfigField("String", "TEST_PASSWORD", "\"${TEST_QA_CARLSBERG_NEPAL_PASSWORD}\"")
         buildConfigField("boolean", "IS_AUTO_LOGIN_ENABLED", IS_AUTO_LOGIN_ENABLED)
     }
     lintOptions {

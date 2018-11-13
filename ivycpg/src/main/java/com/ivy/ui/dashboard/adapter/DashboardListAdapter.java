@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -294,8 +295,8 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         int offset = (int) (height * 0.20); /* percent to move */
 
-        RelativeLayout.LayoutParams rlParams =
-                (RelativeLayout.LayoutParams) mChart.getLayoutParams();
+        ConstraintLayout.LayoutParams rlParams =
+                (ConstraintLayout.LayoutParams) mChart.getLayoutParams();
         rlParams.setMargins(0, 10, 0, -offset);
         mChart.setLayoutParams(rlParams);
     }
@@ -432,7 +433,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 indexTxtView.setVisibility(View.GONE);
             }
 
-            if (configurationMasterHelper.SHOW_TARGET_DASH) {
+            if (!configurationMasterHelper.SHOW_TARGET_DASH) {
                 targetGroup.setVisibility(View.GONE);
             } else {
                 targetGroup.setVisibility(View.VISIBLE);

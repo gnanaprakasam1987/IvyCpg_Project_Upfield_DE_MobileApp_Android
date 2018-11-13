@@ -338,6 +338,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     @Override
     public void fetchSellerDashboardForUserAndInterval(int selectedUser, String interval) {
+        getIvyView().showLoading();
         getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForInterval(Integer.toString(selectedUser), interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -348,6 +349,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
+
                     }
 
                     @Override
@@ -357,13 +359,14 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
                     @Override
                     public void onComplete() {
-
+                        getIvyView().hideLoading();
                     }
                 }));
     }
 
     @Override
     public void fetchRouteDashboardData(String interval) {
+        getIvyView().showLoading();
         getCompositeDisposable().add(sellerDashboardDataManager.getRouteDashboardForInterval(interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -374,6 +377,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
                         getIvyView().setDashboardListAdapter(dashBoardList);
+                        getIvyView().hideLoading();
                     }
 
                     @Override
@@ -383,7 +387,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
                     @Override
                     public void onComplete() {
-
+                        getIvyView().hideLoading();
                     }
                 }));
     }

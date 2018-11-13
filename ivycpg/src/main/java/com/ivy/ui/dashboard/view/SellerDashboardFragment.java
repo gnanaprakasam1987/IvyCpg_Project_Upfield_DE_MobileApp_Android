@@ -32,7 +32,6 @@ import com.ivy.sd.png.commons.MultiSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.commons.SpinnerListener;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.ui.dashboard.DashboardClickListener;
@@ -40,7 +39,6 @@ import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.adapter.DashboardListAdapter;
 import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
-import com.ivy.ui.dashboard.di.SellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardModule;
 import com.ivy.utils.FontUtils;
 
@@ -69,19 +67,19 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     ConstraintLayout dashSpinnerLayout;
 
     @BindView(R.id.distributorSpinner)
-    ViewStub distributorSpinnerStub;
+    Spinner distributorSpinnerStub;
 
     @BindView(R.id.userSpinner)
-    ViewStub userSpinnerStub;
+    Spinner userSpinnerStub;
 
     @BindView(R.id.dashSpinner)
-    ViewStub dashSpinnerStub;
+    Spinner dashSpinner;
 
     @BindView(R.id.monthSpinner)
-    ViewStub monthSpinnerStub;
+    Spinner monthSpinnerStub;
 
     @BindView(R.id.weekSpinner)
-    ViewStub weekSpinnerStub;
+    Spinner weekSpinnerStub;
 
     @BindView(R.id.multiSelectStub)
     ViewStub multiSelectStub;
@@ -125,12 +123,13 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private ArrayList<DashBoardBO> dashboardListData;
 
-
     private int mSelectedUser = 0;
 
     private String selectedInterval;
 
     private String screenTitle;
+
+    private boolean isFromProfile;
 
     @Override
     public void initializeDi() {
@@ -165,6 +164,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             isFromRetailer = bundle.getBoolean("isFromHomeScreenTwo", false);
             type = bundle.getString("type");
             screenTitle = bundle.getString("screentitle");
+            isFromProfile = bundle.getBoolean("isFromTab", false);
         }
 
         setUpActionBar();
@@ -172,12 +172,16 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>(), presenter.getLabelsMap(), this);
 
 
+
+
         if (isFromRetailer) {
             getDashSpinnerData();
-        } else {
-            handleSellerDashboard();
             pager.setVisibility(View.GONE);
             collapsingToolbarLayout.setVisibility(View.GONE);
+        } else {
+            mSelectedUser = presenter.getCurrentUser().getUserid();
+            handleSellerDashboard();
+
         }
 
         if (type != null
@@ -209,10 +213,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 dashSpinnerLayout.setVisibility(View.VISIBLE);
                 multiSelectStub.setVisibility(View.GONE);
                 distributorSpinnerStub.setVisibility(View.VISIBLE);
-                distributorSpinner = (Spinner) distributorSpinnerStub.inflate();
+                distributorSpinner = (Spinner) distributorSpinnerStub;
 
                 userSpinnerStub.setVisibility(View.VISIBLE);
-                userSpinner = (Spinner) userSpinnerStub.inflate();
+                userSpinner = (Spinner) userSpinnerStub;
 
                 presenter.fetchDistributorList(false);
 
@@ -223,8 +227,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             multiSelectStub.setVisibility(View.GONE);
 
             userSpinnerStub.setVisibility(View.VISIBLE);
-            userSpinner = (Spinner) userSpinnerStub.inflate();
-        }
+            userSpinner = (Spinner) userSpinnerStub;
+        } else
+            getDashSpinnerData();
+
 
     }
 
@@ -340,6 +346,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS) {
 
         dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS, presenter.getLabelsMap(), this);
+        dashboardRecyclerView.setAdapter(dashboardListAdapter);
 
     }
 
@@ -353,7 +360,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
         View spinnerStub = routeSpinnerStub.inflate();
 
-       // Spinner routeSpinner = (Spinner) routeSpinnerStub.inflate();
+        // Spinner routeSpinner = (Spinner) routeSpinnerStub.inflate();
         MyStubView routeSpinner = new MyStubView(spinnerStub);
 
         ArrayAdapter<BeatMasterBO> routeAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, beatMasterBOS);
@@ -461,7 +468,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         // Creating adapter for spinner
 
         if (!dashList.isEmpty()) {
-            Spinner dashSpinner = (Spinner) dashSpinnerStub.inflate();
             dashSpinner.setVisibility(View.VISIBLE);
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, dashList);
 
@@ -543,7 +549,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     public void setUpMonthSpinner(ArrayList<String> monthList) {
         monthSpinnerStub.setVisibility(View.VISIBLE);
         weekSpinnerStub.setVisibility(View.GONE);
-        Spinner monthSpinner = (Spinner) monthSpinnerStub.inflate();
+        Spinner monthSpinner = (Spinner) monthSpinnerStub;
         ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthList);
         monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
         monthSpinner.setAdapter(monthdapter);
@@ -554,7 +560,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @Override
     public void setWeekSpinner(ArrayList<String> weekList, int currentWeek) {
         weekSpinnerStub.setVisibility(View.VISIBLE);
-        Spinner weekSpinner = (Spinner) weekSpinnerStub.inflate();
+        Spinner weekSpinner = (Spinner) weekSpinnerStub;
         ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
         monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
         weekSpinner.setAdapter(monthdapter);
