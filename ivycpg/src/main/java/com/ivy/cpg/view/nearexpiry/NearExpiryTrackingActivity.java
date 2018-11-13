@@ -17,22 +17,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar implements
-        BrandDialogInterface,FiveLevelFilterCallBack {
+        BrandDialogInterface, FiveLevelFilterCallBack {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_nearexpiry_tracking);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
 
     public void numberPressed(View vw) {

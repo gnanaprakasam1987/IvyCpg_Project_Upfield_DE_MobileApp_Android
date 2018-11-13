@@ -1,693 +1,764 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
-        android:weightSum="4"
         android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
+        android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
-        android:layout_marginLeft="@dimen/dialog_list_item_left_margin">
-
-        <Button
-            android:id="@+id/datePicker1"
-            style="@style/datePickerButton"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/list_items_date_picker_height"
-            android:text="03/APR/2017"
-            android:layout_weight="1.3"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_marginEnd="@dimen/dialog_list_item_margin"
-            android:layout_marginRight="@dimen/dialog_list_item_margin" />
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/ll_start_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="1.3"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_piece"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/item_piece"
-                android:tag="item_piece"/>
+                android:text="@string/select_date" />
 
-            <EditText
-                android:id="@+id/pc1"
-                style="@style/EditText_ListItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
-                android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+            <Button
+                android:id="@+id/datePicker1"
+                style="@style/datePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:text="@string/startdate" />
         </LinearLayout>
 
+
         <LinearLayout
+            android:id="@+id/ll_case"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_case"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center|start"
                 android:gravity="center"
                 android:padding="2dp"
-                android:text="@string/item_case"
-                android:tag="item_case"/>
+                android:tag="item_case"
+                android:text="@string/item_case" />
 
             <EditText
                 android:id="@+id/ca1"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
                 android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_outer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_outer"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center|start"
                 android:gravity="center"
                 android:padding="2dp"
-                android:text="@string/item_outer"
-                android:tag="item_outer"/>
+                android:tag="item_outer"
+                android:text="@string/item_outer" />
 
             <EditText
                 android:id="@+id/ou1"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:textSize="@dimen/font_small"
+                android:inputType="number"
                 android:text="@string/zero"
-                android:inputType="number" />
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_piece"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_piece"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:gravity="center"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/item_piece" />
+
+            <EditText
+                android:id="@+id/pc1"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="3dp"
-        android:background="@drawable/dashed_line"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginStart="@dimen/near_expiry_dialog_divider_padding"
-        android:layout_marginLeft="@dimen/near_expiry_dialog_divider_padding" />
+        android:background="@drawable/dashed_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
-        android:weightSum="4"
         android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
+        android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
-        android:layout_marginLeft="@dimen/dialog_list_item_left_margin">
-
-        <Button
-            android:id="@+id/datePicker2"
-            style="@style/datePickerButton"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/list_items_date_picker_height"
-            android:text="@string/date"
-            android:layout_weight="1.3"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_marginEnd="@dimen/dialog_list_item_margin"
-            android:layout_marginRight="@dimen/dialog_list_item_margin" />
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/ll_start_date2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="1.3"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_piece2"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/item_piece"
-                android:tag="item_piece"/>
+                android:text="@string/select_date" />
 
-            <EditText
-                android:id="@+id/pc2"
-                style="@style/EditText_ListItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:textSize="@dimen/font_small"
-                android:text="@string/zero"
-                android:inputType="number" />
+            <Button
+                android:id="@+id/datePicker2"
+                style="@style/datePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:text="@string/startdate" />
         </LinearLayout>
 
+
         <LinearLayout
+            android:id="@+id/ll_case2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_case2"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_case"
-                android:tag="item_case"/>
+                android:tag="item_case"
+                android:text="@string/item_case" />
 
             <EditText
                 android:id="@+id/ca2"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:textSize="@dimen/font_small"
+                android:inputType="number"
                 android:text="@string/zero"
-                android:inputType="number" />
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_outer2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_outer2"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_outer"
-                android:tag="item_outer"/>
+                android:tag="item_outer"
+                android:text="@string/item_outer" />
 
             <EditText
                 android:id="@+id/ou2"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:textSize="@dimen/font_small"
+                android:inputType="number"
                 android:text="@string/zero"
-                android:inputType="number" />
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_piece2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_piece2"
+                style="?attr/customListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|start"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/item_piece" />
+
+            <EditText
+                android:id="@+id/pc2"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="3dp"
-        android:background="@drawable/dashed_line"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginStart="@dimen/near_expiry_dialog_divider_padding"
-        android:layout_marginLeft="@dimen/near_expiry_dialog_divider_padding" />
+        android:background="@drawable/dashed_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
-        android:weightSum="4"
         android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
+        android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
-        android:layout_marginLeft="@dimen/dialog_list_item_left_margin">
-
-        <Button
-            android:id="@+id/datePicker3"
-            style="@style/datePickerButton"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/list_items_date_picker_height"
-            android:text="@string/date"
-            android:layout_weight="1.3"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_marginEnd="@dimen/dialog_list_item_margin"
-            android:layout_marginRight="@dimen/dialog_list_item_margin" />
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/ll_start_date3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="1.3"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_piece3"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/item_piece"
-                android:tag="item_piece"/>
+                android:text="@string/select_date" />
 
-            <EditText
-                android:id="@+id/pc3"
-                style="@style/EditText_ListItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
-                android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+            <Button
+                android:id="@+id/datePicker3"
+                style="@style/datePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:text="@string/startdate" />
         </LinearLayout>
 
+
         <LinearLayout
+            android:id="@+id/ll_case3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_case3"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_case"
-                android:tag="item_case"/>
+                android:tag="item_case"
+                android:text="@string/item_case" />
 
             <EditText
                 android:id="@+id/ca3"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
                 android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_outer3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_outer3"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_outer"
-                android:tag="item_outer"/>
+                android:tag="item_outer"
+                android:text="@string/item_outer" />
 
             <EditText
                 android:id="@+id/ou3"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:textSize="@dimen/font_small"
+                android:inputType="number"
                 android:text="@string/zero"
-                android:inputType="number" />
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_piece3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_piece3"
+                style="?attr/customListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|start"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/item_piece" />
+
+            <EditText
+                android:id="@+id/pc3"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="3dp"
-        android:background="@drawable/dashed_line"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginStart="@dimen/near_expiry_dialog_divider_padding"
-        android:layout_marginLeft="@dimen/near_expiry_dialog_divider_padding" />
+        android:background="@drawable/dashed_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
-        android:weightSum="4"
         android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
+        android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
-        android:layout_marginLeft="@dimen/dialog_list_item_left_margin">
-
-        <Button
-            android:id="@+id/datePicker4"
-            style="@style/datePickerButton"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/list_items_date_picker_height"
-            android:text="@string/date"
-            android:layout_weight="1.3"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_marginEnd="@dimen/dialog_list_item_margin"
-            android:layout_marginRight="@dimen/dialog_list_item_margin" />
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/ll_start_date4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="1.3"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_piece4"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/item_piece"
-                android:tag="item_piece"/>
+                android:text="@string/select_date" />
 
-            <EditText
-                android:id="@+id/pc4"
-                style="@style/EditText_ListItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
-                android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+            <Button
+                android:id="@+id/datePicker4"
+                style="@style/datePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:text="@string/startdate" />
         </LinearLayout>
 
+
         <LinearLayout
+            android:id="@+id/ll_case4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_case4"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_case"
-                android:tag="item_case"/>
+                android:tag="item_case"
+                android:text="@string/item_case" />
 
             <EditText
                 android:id="@+id/ca4"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
                 android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_outer4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_outer4"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_outer"
-                android:tag="item_outer"/>
+                android:tag="item_outer"
+                android:text="@string/item_outer" />
 
             <EditText
                 android:id="@+id/ou4"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:textSize="@dimen/font_small"
+                android:inputType="number"
                 android:text="@string/zero"
-                android:inputType="number" />
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_piece4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_piece4"
+                style="?attr/customListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|start"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/item_piece" />
+
+            <EditText
+                android:id="@+id/pc4"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="3dp"
-        android:background="@drawable/dashed_line"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginStart="@dimen/near_expiry_dialog_divider_padding"
-        android:layout_marginLeft="@dimen/near_expiry_dialog_divider_padding" />
+        android:background="@drawable/dashed_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
-        android:weightSum="4"
         android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
+        android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
-        android:layout_marginLeft="@dimen/dialog_list_item_left_margin">
-
-        <Button
-            android:id="@+id/datePicker5"
-            style="@style/datePickerButton"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/list_items_date_picker_height"
-            android:text="@string/date"
-            android:layout_weight="1.3"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_marginEnd="@dimen/dialog_list_item_margin"
-            android:layout_marginRight="@dimen/dialog_list_item_margin" />
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/ll_start_date5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="1.3"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_piece5"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/item_piece"
-                android:tag="item_piece"/>
+                android:text="@string/select_date" />
 
-            <EditText
-                android:id="@+id/pc5"
-                style="@style/EditText_ListItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
-                android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+            <Button
+                android:id="@+id/datePicker5"
+                style="@style/datePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:text="@string/startdate" />
         </LinearLayout>
 
+
         <LinearLayout
+            android:id="@+id/ll_case5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_case5"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_case"
-                android:tag="item_case"/>
+                android:tag="item_case"
+                android:text="@string/item_case" />
 
             <EditText
                 android:id="@+id/ca5"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
                 android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_outer5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_outer5"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_outer"
-                android:tag="item_outer"/>
+                android:tag="item_outer"
+                android:text="@string/item_outer" />
 
             <EditText
                 android:id="@+id/ou5"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:textSize="@dimen/font_small"
+                android:inputType="number"
                 android:text="@string/zero"
-                android:inputType="number" />
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_piece5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_piece5"
+                style="?attr/customListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|start"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/item_piece" />
+
+            <EditText
+                android:id="@+id/pc5"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="3dp"
-        android:background="@drawable/dashed_line"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginStart="@dimen/near_expiry_dialog_divider_padding"
-        android:layout_marginLeft="@dimen/near_expiry_dialog_divider_padding" />
+        android:background="@drawable/dashed_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
-        android:weightSum="4"
         android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dialog_list_item_left_margin"
+        android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
-        android:layout_marginLeft="@dimen/dialog_list_item_left_margin">
-
-        <Button
-            android:id="@+id/datePicker6"
-            style="@style/datePickerButton"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/list_items_date_picker_height"
-            android:text="@string/date"
-            android:layout_weight="1.3"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_marginEnd="@dimen/dialog_list_item_margin"
-            android:layout_marginRight="@dimen/dialog_list_item_margin" />
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/ll_start_date6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="1.3"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_piece6"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
+                style="?attr/customListItemSecondary"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/item_piece"
-                android:tag="item_piece"/>
+                android:text="@string/select_date" />
 
-            <EditText
-                android:id="@+id/pc6"
-                style="@style/EditText_ListItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
-                android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+            <Button
+                android:id="@+id/datePicker6"
+                style="@style/datePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:text="@string/startdate" />
         </LinearLayout>
 
+
         <LinearLayout
+            android:id="@+id/ll_case6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_case6"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_case"
-                android:tag="item_case"/>
+                android:tag="item_case"
+                android:text="@string/item_case" />
 
             <EditText
                 android:id="@+id/ca6"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:text="@string/zero"
                 android:inputType="number"
-                android:textSize="@dimen/font_small"/>
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_outer6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="0.9">
+            android:layout_weight="0.9"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_outer6"
-                style="?attr/customListItemPrimary"
+                style="?attr/customListItemSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="center|start"
                 android:padding="2dp"
-                android:text="@string/item_outer"
-                android:tag="item_outer"/>
+                android:tag="item_outer"
+                android:text="@string/item_outer" />
 
             <EditText
                 android:id="@+id/ou6"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:textSize="@dimen/font_small"
+                android:inputType="number"
                 android:text="@string/zero"
-                android:inputType="number" />
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_piece6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_piece6"
+                style="?attr/customListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|start"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/item_piece" />
+
+            <EditText
+                android:id="@+id/pc6"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
