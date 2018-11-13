@@ -311,7 +311,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                             .getUniqueSerialNo(mSNO.getText()
                                     .toString())) {
                         setAddAssetDetails();
-                        mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                        //mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                         assetTrackingHelper
                                 .saveAssetAddAndDeleteDetails(getContext().getApplicationContext(), "MENU_ASSET");
                         Toast.makeText(
