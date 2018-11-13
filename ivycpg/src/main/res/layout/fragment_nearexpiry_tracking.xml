@@ -11,12 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/list_margin"
-            app:cardBackgroundColor="@android:color/transparent"
-            android:layout_above="@id/footer">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,8 +33,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/list_header_height"
                                 android:orientation="horizontal"
+                                android:gravity="center_vertical"
                                 android:background="@color/list_title_bg_color"
-                                android:weightSum="4"
                                 android:paddingStart="@dimen/list_padding_left_n_right"
                                 android:paddingEnd="@dimen/list_padding_left_n_right">
 
@@ -71,33 +65,9 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:text="@string/opencalendar"
-                                    android:visibility="gone"
                                     android:layout_weight="1"
                                     android:layout_gravity="center"
                                     android:gravity="center" />
-
-                                <TextView
-                                    android:id="@+id/tvpiece"
-                                    style="?attr/customListTitle"
-                                    android:layout_width="@dimen/availability_value"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/pc"
-                                    android:visibility="gone"/>
-
-                                <TextView
-                                    android:id="@+id/tvouter"
-                                    style="?attr/customListTitle"
-                                    android:layout_width="@dimen/availability_value"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/ou"
-                                    android:visibility="gone"/>
-                                <TextView
-                                    android:id="@+id/tvcase"
-                                    style="?attr/customListTitle"
-                                    android:layout_width="@dimen/availability_value"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/ca"
-                                    android:visibility="gone"/>
 
                             </LinearLayout>
 
@@ -106,8 +76,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:cacheColorHint="@null"
-                                android:divider="@android:color/white"
-                                android:dividerHeight="1dp"
+                                android:divider="@color/GRAY"
+                                android:dividerHeight="0.5dp"
                                 android:fitsSystemWindows="true"
                                 android:scrollbarAlwaysDrawHorizontalTrack="true"
                                 android:scrollbarAlwaysDrawVerticalTrack="true" >
@@ -115,15 +85,13 @@
                         </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
 
         <RelativeLayout
             android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            android:padding="@dimen/footer_padding">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -141,6 +109,7 @@
                     style="?attr/roundedCustomButtonSmall"
                     android:layout_marginBottom="@dimen/activity_margin1"
                     android:layout_marginTop="@dimen/activity_margin1"
+                    android:layout_margin="@dimen/footer_padding"
                     android:text="@string/save"
                     android:textAllCaps="false"
                     android:layout_gravity="end"/>

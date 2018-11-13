@@ -4,10 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,7 +39,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -74,6 +73,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     private ArrayList<ProductMasterBO> clearList = null;
 
     NearExpiryTrackingHelper mNearExpiryHelper;
+    private ActionBar actionBar;
 
     public NearExpiryDialogueFragment getDialog() {
         return dialog;
@@ -93,32 +93,33 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_nearexpiry_tracking,
-                container, false);
 
-        mDrawerLayout =  view.findViewById(
+        return inflater.inflate(R.layout.fragment_nearexpiry_tracking,
+                container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            setScreenTitle(mNearExpiryHelper.mSelectedActivityName);
+        }
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
         FrameLayout drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
-
-        return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        mBModel.setContext(getActivity());
-        mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(getActivity());
-    }
-
-    @Override
-    public void onStart() {
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        mBModel.setContext(getActivity());
         // set a custom shadow that overlays the main content when the drawer
         // opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -128,14 +129,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
+
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
-
-        setScreenTitle(mNearExpiryHelper.mSelectedActivityName);
-
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
@@ -149,7 +144,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     setScreenTitle(mNearExpiryHelper.mSelectedActivityName);
                 }
 
-                getActivity().supportInvalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -158,42 +153,56 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     setScreenTitle(getResources().getString(R.string.filter));
                 }
 
-                getActivity().supportInvalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
         };
 
         clearList = new ArrayList<>();
 
         if (getView() != null) {
-            lvwplist = (ListView) getView().findViewById(R.id.list);
+            lvwplist = view.findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
         }
-        tvSelectedFilter = (TextView) getView().findViewById(R.id.sku);
-        tvSelectedFilter.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tvcalendar = (TextView) getView().findViewById(R.id.opencalendar);
-        tvcalendar.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tvaudit = (TextView) getView().findViewById(R.id.audit);
-        tvaudit.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TextView tvpiece = (TextView) getView().findViewById(R.id.tvpiece);
-        TextView tvouter = (TextView) getView().findViewById(R.id.tvouter);
-        TextView tvcase = (TextView) getView().findViewById(R.id.tvcase);
+        tvSelectedFilter = view.findViewById(R.id.sku);
+        TextView tvcalendar = view.findViewById(R.id.opencalendar);
+        TextView tvaudit = view.findViewById(R.id.audit);
+
 
         if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
             tvaudit.setVisibility(View.VISIBLE);
 
         }
-
-
-        tvcalendar.setVisibility(View.VISIBLE);
-        //layout_keypad.setVisibility(View.GONE);
-        tvpiece.setVisibility(View.GONE);
-        tvouter.setVisibility(View.GONE);
-        tvcase.setVisibility(View.GONE);
-
         // load location filter
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.select_dialog_singlechoice);
 
+        lvwplist.setLongClickable(true);
+
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+        Button btn_save = getView().findViewById(R.id.btn_save);
+        btn_save.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextButtonClick();
+            }
+        });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
+        mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(getActivity());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel.setContext(getActivity());
 
         for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
             mLocationAdapter.add(temp);
@@ -204,27 +213,12 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     .get(mBModel.productHelper.getmSelectedGLobalLocationIndex()).getListName();
         }
 
-        lvwplist.setLongClickable(true);
-
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
-       /* mSelectedFilterMap.put("Brand",
-                String.valueOf(mBModel.mSFSelectedFilter));*/
         updateGeneralText(GENERAL);
         updateBrandText(BRAND, -1);
         FiveFilterFragment();
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
-        Button btn_save = (Button) getView().findViewById(R.id.btn_save);
-        btn_save.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        btn_save.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nextButtonClick();
-            }
-        });
-
-        super.onStart();
     }
 
     @Override
@@ -411,26 +405,21 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 row = inflater.inflate(
                         R.layout.nearexpiry_tracking_listview, parent, false);
 
-                holder.mBarCode = (TextView) row
+                holder.mBarCode = row
                         .findViewById(R.id.barcode);
-                holder.mBarCode.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-                holder.mSKU = (TextView) row.findViewById(R.id.sku);
-                holder.mSKU.setTypeface(mBModel.configurationMasterHelper.getProductNameFont());
+                holder.mSKU = row.findViewById(R.id.sku);
 
-                holder.rlCalendar = (LinearLayout) row
+                holder.rlCalendar = row
                         .findViewById(R.id.rl_calendar);
 
-                holder.mCalendar = (ImageButton) row
+                holder.mCalendar = row
                         .findViewById(R.id.calendar);
 
-                //holder.mCalendarDone = (ImageButton) row.findViewById(R.id.calendar_done);
-
-                holder.audit = (ImageButton) row
+                holder.audit = row
                         .findViewById(R.id.btn_audit);
-                holder.productCodeTV = (TextView) row
+                holder.productCodeTV = row
                         .findViewById(R.id.product_code);
-                holder.productCodeTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                 holder.audit.setOnClickListener(new OnClickListener() {
 
@@ -535,13 +524,6 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 holder.mCalendar.setImageResource(R.drawable.ic_date_picker_blue);
             else {
                 holder.mCalendar.setImageResource(R.drawable.ic_date_picker);
-            }
-
-            TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            if (position % 2 == 0) {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            } else {
-                row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
             }
 
             return row;
