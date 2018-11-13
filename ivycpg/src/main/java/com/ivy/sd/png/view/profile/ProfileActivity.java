@@ -1586,7 +1586,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
                 takePhotoForRetailer();
-                return;
             } else
                 validationToProceed();
         }
@@ -2417,7 +2416,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                             }
                             if (mLocationAlertDialog != null && mLocationAlertDialog.isShowing()) {
                                 mLocationAlertDialog.dismiss();
-                                retailerClick();
+                                validationToProceed();
                             }
 
                             if (LocationUtil.latitude == 0 && LocationUtil.longitude == 0) {
@@ -2433,7 +2432,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                 }
                                 if (mLocationAlertDialog != null && mLocationAlertDialog.isShowing()) {
                                     mLocationAlertDialog.dismiss();
-                                    retailerClick();
+                                    validationToProceed();
                                 }
                                 Toast.makeText(ProfileActivity.this, getResources().getString(R.string.location_captured), Toast.LENGTH_LONG).show();
 
