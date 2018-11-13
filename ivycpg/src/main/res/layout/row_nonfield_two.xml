@@ -12,115 +12,130 @@
     card_view:cardUseCompatPadding="true"
     card_view:contentPadding="@dimen/list_margin">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/ll1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_Tit_To"
-                style="?attr/customListItemSecondary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Start_Time" />
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/column_padding">
-
-                <Button
-                    android:id="@+id/btn_toTime"
-                    style="?attr/roundedCustomButtonSmall"
-                    android:visibility="gone" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txt_toTime"
+                    android:id="@+id/txt_Tit_To"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Start_Time" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/column_padding">
+
+                    <Button
+                        android:id="@+id/btn_toTime"
+                        style="?attr/roundedCustomButtonSmall"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txt_toTime"
+                        style="?attr/customListItemPrimary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_Tit_from"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/End_Time" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/column_padding">
+
+                    <Button
+                        android:id="@+id/btn_fromTime"
+                        style="?attr/roundedCustomButtonSmall"
+                        android:text="@string/endC"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txt_fromTime"
+                        style="?attr/customListItemPrimary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_Tit_Status"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/status" />
+
+                <TextView
+                    android:id="@+id/txt_status"
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone" />
+                    android:layout_marginTop="@dimen/column_padding" />
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_Tit_from"
-                style="?attr/customListItemSecondary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/End_Time" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/column_padding">
-
-                <Button
-                    android:id="@+id/btn_fromTime"
-                    style="?attr/roundedCustomButtonSmall"
-                    android:text="@string/endC"
-                    android:visibility="gone" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txt_fromTime"
+                    android:id="@+id/txt_Tit_Reason"
+                    style="?attr/customListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reason" />
+
+                <TextView
+                    android:id="@+id/txt_reason"
                     style="?attr/customListItemPrimary"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/column_padding" />
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_Tit_Status"
-                style="?attr/customListItemSecondary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/status" />
-
-            <TextView
-                android:id="@+id/txt_status"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/column_padding" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_Tit_Reason"
-                style="?attr/customListItemSecondary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/reason" />
-
-            <TextView
-                android:id="@+id/txt_reason"
-                style="?attr/customListItemPrimary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/column_padding" />
-        </LinearLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/txt_remarks"
+            style="?attr/customListItemSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll1"
+            android:textStyle="italic" />
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -1056,7 +1057,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             visitConfig = bmodel.mRetailerHelper.getVisitCoverage();
         }
 
-        if(visitConfig != null) {
+        if (visitConfig != null) {
             for (VisitConfiguration configObj : visitConfig)
                 mRetTgtAchv.put(configObj.getCode(), configObj.getDesc());
         }
@@ -1392,7 +1393,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
 
             if (!calledBy.equals(MENU_PLANNING)) {
-               // bmodel.loadProductiveCallsConfig();
+                // bmodel.loadProductiveCallsConfig();
                 if (("Y").equals(retailerObj.isOrdered()) && (!bmodel.PRD_FOR_SKT)) {   // If ProductiveStockCheck is OFF
                     if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             && ("N").equals(retailerObj.isInvoiceDone())) {
@@ -1712,11 +1713,14 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     holder.imgLine2.setVisibility(View.GONE);
                 }
 
-
                 if (bmodel.configurationMasterHelper.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER) {
                     try {
                         if (holder.retailerObjectHolder.getRField5() != null) {
                             holder.iv_outlet_color.setVisibility(View.VISIBLE);
+
+                            if (bmodel.configurationMasterHelper.COLOR_ICON == 1)
+                                holder.iv_outlet_color.setImageDrawable(getResources().getDrawable(R.drawable.badge_circle));
+
                             holder.iv_outlet_color.setColorFilter(Color.parseColor(holder.retailerObjectHolder.getRField5()));
                         } else {
                             holder.iv_outlet_color.setVisibility(View.GONE);
