@@ -523,6 +523,28 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
 
+    @Override
+    public void fetchP3mTrendChartData(String userId) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getP3MTrendChart(userId)
+                .subscribeOn(getSchedulerProvider().io())
+        .observeOn(getSchedulerProvider().ui())
+        .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+            @Override
+            public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        }));
+    }
 
     private void fetchUsersMatchingDistributor(String distributorIds, boolean isMultiSelect) {
         getCompositeDisposable().add(userDataManager.fetchUsersForDistributors(distributorIds)

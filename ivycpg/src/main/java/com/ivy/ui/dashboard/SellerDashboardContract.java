@@ -57,6 +57,8 @@ public interface SellerDashboardContract {
 
         void fetchKpiMonths(boolean isFromRetailer);
 
+        void fetchP3mTrendChartData(String userId);
+
         void fetchWeeks();
 
         void fetchBeats();
@@ -86,6 +88,7 @@ public interface SellerDashboardContract {
         UserMasterBO getCurrentUser();
 
         void computeDayAchievements();
+
 
     }
 }

@@ -167,21 +167,27 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             isFromProfile = bundle.getBoolean("isFromTab", false);
         }
 
+
+    }
+
+    @Override
+    protected void setUpViews() {
+
         setUpActionBar();
 
         dashboardListAdapter = new DashboardListAdapter(getActivity(), new ArrayList<DashBoardBO>(), presenter.getLabelsMap(), this);
 
-
-
-
         if (isFromRetailer) {
             getDashSpinnerData();
-            pager.setVisibility(View.GONE);
-            collapsingToolbarLayout.setVisibility(View.GONE);
+            hidePager();
         } else {
             mSelectedUser = presenter.getCurrentUser().getUserid();
             handleSellerDashboard();
 
+        }
+
+        if (!presenter.isSMPBasedDash()) {
+            hidePager();
         }
 
         if (type != null
@@ -189,6 +195,17 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             presenter.fetchBeats();
         }
 
+
+        setHasOptionsMenu(true);
+        getActivity().invalidateOptionsMenu();
+
+        spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+
+        dashboardRecyclerView.setHasFixedSize(false);
+        dashboardRecyclerView.setNestedScrollingEnabled(false);
+        dashboardRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        dashboardRecyclerView.setAdapter(dashboardListAdapter);
 
     }
 
@@ -206,8 +223,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 presenter.fetchDistributorList(true);
 
                 if (!presenter.isSMPBasedDash()) {
-                    pager.setVisibility(View.GONE);
-                    collapsingToolbarLayout.setVisibility(View.GONE);
+                    hidePager();
                 }
             } else {
                 dashSpinnerLayout.setVisibility(View.VISIBLE);
@@ -401,20 +417,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     }
 
-    @Override
-    protected void setUpViews() {
 
-        setHasOptionsMenu(true);
-        getActivity().invalidateOptionsMenu();
 
-        spinnerHeaderTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-
-        dashboardRecyclerView.setHasFixedSize(false);
-        dashboardRecyclerView.setNestedScrollingEnabled(false);
-        dashboardRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        dashboardRecyclerView.setAdapter(dashboardListAdapter);
-
+    private void hidePager() {
+        pager.setVisibility(View.GONE);
+        collapsingToolbarLayout.setVisibility(View.GONE);
     }
 
 
@@ -635,6 +642,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             if (presenter.shouldShowTrendChart()) {
                 //TODO Add chart fragments
+                presenter.fetchP3MSellerDashboardData();
             }
 
         }
