@@ -49,6 +49,7 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.sync.catalogdownload.Util;
+import com.ivy.lib.Utils;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.collection.CollectionBO;
@@ -135,7 +136,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Button button_order;
     private Button button_invoice;
     private TextView text_LPC;
-    private TextView text_totalOrderValue, textbill1, textbill2, linesBill1, linesBill2;
+    private TextView text_totalOrderValue, textbill1, textbill2, linesBill1, linesBill2, text_totweigh;
     private TextView text_totalOrderedQuantity;
     private Button button_deliveryDate;
     private ExpandableListView listView;
@@ -319,6 +320,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         text_totalOrderedQuantity = findViewById(R.id.tv_totalqty);
         imageView_amountSplitUp = findViewById(R.id.icAmountSpilitup);
         text_creditNote = findViewById(R.id.tvCreditNote);
+        text_totweigh = findViewById(R.id.tvTotWeigh);
 
         //typefaces
         ((TextView) findViewById(R.id.tv_deliveryDate)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -328,7 +330,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         ((TextView) findViewById(R.id.lblbill1)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.lblbill2)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.lblbill1Line)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lblbill2Line)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblweigh)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         button_deliveryDate.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         text_LPC.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
@@ -338,6 +340,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         linesBill1.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         linesBill2.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         text_totalOrderedQuantity.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        text_totweigh.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         button_order.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         button_invoice.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         text_creditNote.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -443,6 +446,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         } catch (Exception e) {
             Commons.printException(" " + e);
         }
+        if (bModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+            try {
+                if (bModel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.lblweigh).getTag()) != null)
+                    ((TextView) findViewById(R.id.lblweigh))
+                            .setText(bModel.labelsMasterHelper
+                                    .applyLabels(findViewById(R.id.lblweigh)
+                                            .getTag()));
+            } catch (Exception e) {
+                Commons.printException(" " + e);
+            }
+        }
 
     }
 
@@ -495,7 +510,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             } else {
                 imageView_amountSplitUp.setVisibility(View.GONE);
             }
-
+            if (!bModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+                findViewById(R.id.ll_totweight).setVisibility(View.GONE);
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -508,7 +524,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         try {
             if (bModel.isEdit()) {
 
-                String delDate = DateUtil.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(OrderHelper.getInstance(this).selectedOrderId,bModel.getRetailerMasterBO()
+                String delDate = DateUtil.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(OrderHelper.getInstance(this).selectedOrderId, bModel.getRetailerMasterBO()
                                 .getRetailerID()),
                         ConfigurationMasterHelper.outDateFormat);
                 button_deliveryDate.setText(delDate);
@@ -711,7 +727,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount, bModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
                 enteredDiscAmtOrPercent = billWiseDiscount;
 
-            } else if(bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
+            } else if (bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
                 // user manually enter bill wise discount
                 double discount = bModel.orderAndInvoiceHelper.restoreDiscountAmount(bModel
                         .getRetailerMasterBO().getRetailerID());
@@ -739,7 +755,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             //Applying bill wise tax
             if (bModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 bModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-                double billLevelTax=bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
+                double billLevelTax = bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
                 bModel.getOrderHeaderBO().setBillLevelTaxValue(billLevelTax);
 
                 if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
@@ -750,6 +766,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
             text_LPC.setText(String.valueOf(linesPerCall));
             text_totalOrderedQuantity.setText(String.valueOf(totalQuantityOrdered));
+            text_totweigh.setText(Utils.formatAsTwoDecimal((double) totalWeight));
 
             if (bModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION &&
                     bModel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase(CREDIT_TYPE) &&
@@ -849,7 +866,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         } else {
 
-            double totalValue=(productBO.getOrderedCaseQty() * productBO
+            double totalValue = (productBO.getOrderedCaseQty() * productBO
                     .getCsrp())
                     + (productBO.getOrderedPcsQty() * productBO
                     .getSrp())
@@ -1213,7 +1230,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         isEditMode = true;
         discountHelper.clearSchemeFreeProduct(OrderSummary.this, mOrderedProductList);
 
-        if (bModel.configurationMasterHelper.SHOW_DISCOUNT||bModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY)
+        if (bModel.configurationMasterHelper.SHOW_DISCOUNT || bModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY)
             discountHelper.clearDiscountQuantity();
 
         if (bModel.remarksHelper.getRemarksBO().getModuleCode() == null
@@ -1368,7 +1385,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         .setTitle(getResources().getString(R.string.Orde_Saved))
                         .setMessage(getResources().getString(R.string.Order_id) + orderHelper.getOrderId() + "\n" +
                                 (delivery_date_txt.equals("") ? "" : getResources().getString(R.string.delivery_date_is) + " " + delivery_date_txt))
-                        .setPositiveButton(bModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY ? getResources().getString(R.string.next):getResources().getString(R.string.ok),
+                        .setPositiveButton(bModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY ? getResources().getString(R.string.next) : getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -1942,7 +1959,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                             orderHelper.invoiceDiscount = Double.toString(enteredDiscAmtOrPercent);
 
-                        //Removed as per the JIRA changes
+                            //Removed as per the JIRA changes
 //                            if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
 //                                    && bModel.getOrderHeaderBO().getOrderValue() < orderHelper.getTotalReturnValue(mOrderedProductList)) {
 //                                Toast.makeText(this, getResources().getString(R.string.sales_return_value_exceeds_order_value), Toast.LENGTH_LONG).show();
@@ -2853,7 +2870,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             holder.text_total.setText(String.valueOf(bModel.formatValue(holder.productBO
                     .getNetValue())));
             int weight = holder.productBO.getOrderedPcsQty() + (holder.productBO.getOrderedCaseQty() * holder.productBO.getCaseSize()) + (holder.productBO.getOrderedOuterQty() * holder.productBO.getOutersize());
-            holder.weight.setText(String.valueOf(weight * holder.productBO.getWeight()));
+            holder.weight.setText(Utils.formatAsTwoDecimal((double) weight * holder.productBO.getWeight()));
 
             if (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
                 int total = 0;
@@ -3121,7 +3138,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
 
-            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null,null);
+            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null, null);
             if (bModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
                         StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
@@ -3200,7 +3217,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
-            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName, null,null);
+            bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName, null, null);
 
 
             bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),

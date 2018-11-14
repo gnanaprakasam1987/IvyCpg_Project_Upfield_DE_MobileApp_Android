@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:layout_weight="1">
+    android:layout_weight="1"
+    android:orientation="horizontal">
 
     <!--<LinearLayout
         android:layout_width="@dimen/list_product_name_width"
@@ -50,8 +50,8 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="4">
+        android:layout_weight="5"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -61,41 +61,53 @@
 
             <TextView
                 android:id="@+id/prd_nameTv"
-                android:textColor="@color/black_bg1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="1dp"
-                tools:text="hjjhjjhjj"
-                android:gravity="start|center_vertical"
                 android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/divder_margin"
+                android:gravity="start|center_vertical"
+                android:padding="1dp"
+                android:textColor="@color/black_bg1"
                 android:textSize="@dimen/text_size_primary"
-                android:layout_marginTop="@dimen/divder_margin" />
+                tools:text="hjjhjjhjj" />
         </RelativeLayout>
     </LinearLayout>
 
     <TextView
         android:id="@+id/pdt_total_qty"
-        android:textColor="@android:color/black"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:gravity="center"
-        tools:text="ggdfff"
-        android:textSize="@dimen/font_small"
+        android:layout_marginTop="@dimen/divder_margin"
         android:layout_weight="1.3"
+        android:gravity="center"
         android:maxLines="1"
-        android:layout_marginTop="@dimen/divder_margin" />
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_small"
+        tools:text="ggdfff" />
 
     <TextView
         android:id="@+id/pdt_total_value"
-        android:textColor="@android:color/black"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:gravity="center"
-        tools:text="dfghfh fg"
-        android:textSize="@dimen/text_size_primary"
+        android:layout_marginTop="@dimen/divder_margin"
         android:layout_weight="1.3"
+        android:gravity="center"
         android:maxLines="1"
-        android:layout_marginTop="@dimen/divder_margin" />
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_primary"
+        tools:text="dfghfh fg" />
+
+    <TextView
+        android:id="@+id/pdt_total_weight"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/divder_margin"
+        android:layout_weight="1.3"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_primary"
+        tools:text="dfghfh fg" />
 
 
 </LinearLayout>

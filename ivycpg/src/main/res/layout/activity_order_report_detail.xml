@@ -265,6 +265,50 @@
                 android:layout_toRightOf="@+id/view1" />
 
 
+            <View
+                android:id="@+id/view2"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/ret_card_image"
+                android:layout_marginStart="@dimen/margin_height"
+                android:layout_marginTop="@dimen/icons_top_margin"
+                android:layout_toEndOf="@+id/label_totalValue"
+                android:background="@android:color/darker_gray"
+                android:layout_marginLeft="@dimen/margin_height"
+                android:layout_toRightOf="@+id/label_totalValue" />
+
+            <TextView
+                android:id="@+id/label_totalweight"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:text="@string/total_weight"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/text_size_caption"
+                android:layout_toEndOf="@+id/view2"
+                android:layout_marginStart="@dimen/store_margin_top"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/view2"
+                android:layout_marginLeft="@dimen/store_margin_top" />
+
+            <TextView
+                android:id="@+id/txtWeight"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/label_totalValue"
+                android:layout_span="1"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:text="@string/zero"
+                android:textColor="@color/white"
+                android:layout_marginStart="@dimen/store_margin_top"
+                android:textSize="@dimen/login_edittext_text_size"
+                android:layout_toEndOf="@+id/view2"
+                android:layout_marginLeft="@dimen/store_margin_top"
+                android:layout_toRightOf="@+id/view2" />
+
+
         </RelativeLayout>
 
         <LinearLayout

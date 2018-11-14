@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -20,6 +21,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -30,13 +32,14 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         OnClickListener {
 
     private Button back;
-    private TextView text_total, totalLines, tv_lbl_total_lines;
+    private TextView text_total, totalLines, tv_lbl_total_lines, txtWeight;
 
     private BusinessModel businessModel;
     private OrderReportBO obj;
 
     private boolean isFromOrderReport;
     private double TotalValue;
+    private float TotalWeight;
     private String TotalLines;
 
     private ArrayList<OrderReportBO> list;
@@ -52,16 +55,19 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        totalLines = (TextView) findViewById(R.id.txttotallines);
-        tv_lbl_total_lines = (TextView) findViewById(R.id.lbl_total_lines);
-        TextView outletName = (TextView) findViewById(R.id.BtnBrandPrev);
-        TextView label_total = (TextView) findViewById(R.id.label_totalValue);
-        label_total.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        tv_lbl_total_lines.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        totalLines = findViewById(R.id.txttotallines);
+        tv_lbl_total_lines = findViewById(R.id.lbl_total_lines);
+        TextView outletName = findViewById(R.id.BtnBrandPrev);
+        TextView label_total = findViewById(R.id.label_totalValue);
+        txtWeight = findViewById(R.id.txtWeight);
+        label_total.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        tv_lbl_total_lines.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.label_totalweight)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        txtWeight.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         try {
-            back = (Button) findViewById(R.id.btnPersBack);
+            back = findViewById(R.id.btnPersBack);
             back.setOnClickListener(this);
 
             try {
@@ -107,7 +113,11 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 if (extras.containsKey("TotalLines")) {
                     TotalLines = extras.getString("TotalLines");
                 }
+                if (extras.containsKey("TotalWeight")) {
+                    TotalWeight = extras.getFloat("TotalWeight");
+                }
             }
+
 
             text_total = (TextView) findViewById(R.id.txttotal);
             String value = getResources().getString(R.string.order_report)
@@ -209,13 +219,15 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
 
 
+        txtWeight.setText(Utils.formatAsTwoDecimal((double) TotalWeight));
+
+
         elv.setAdapter(new MyAdapter());
         int orderedProductCount = list.size();
         for (int i = 0; i < orderedProductCount; i++) {
             ((ExpandableListView) elv).expandGroup(i);
         }
     }
-
 
 
     class MyAdapter extends BaseExpandableListAdapter {
@@ -427,7 +439,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             holder.tvcaseqty.setText(holder.productBO.getCQty() + "");
             holder.outerQty.setText(holder.productBO.getOuterOrderedCaseQty() + "");
             int totalQty = holder.productBO.getTotalQty();
-            holder.tvWeight.setText(" WGT : " + totalQty * holder.productBO.getWeight() + "");
+            holder.tvWeight.setText(" WGT : " + Utils.formatAsTwoDecimal((double) totalQty * holder.productBO.getWeight()) + "");
             /**
              * This line wise total may be wrong is amount discount appied via
              * scheme

@@ -26,6 +26,7 @@ import com.ivy.cpg.view.reports.dayreport.DaggerReportComponent;
 import com.ivy.cpg.view.reports.dayreport.ReportComponent;
 import com.ivy.cpg.view.reports.dayreport.ReportModule;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -90,6 +91,9 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
     @BindView(R.id.view2)
     View dividerVolume;
 
+    @BindView(R.id.txt_totalWeight)
+    TextView text_totalWeight;
+
 
     private ArrayList<OrderReportBO> list;
 
@@ -112,7 +116,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        System.out.println("Start"+System.currentTimeMillis());
+        System.out.println("Start" + System.currentTimeMillis());
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         View view = inflater.inflate(R.layout.fragment_order_report, container, false);
@@ -157,7 +161,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
 
         //list = businessModel.reportHelper.downloadOrderreport();
 
-         list = mOrderReportModelPresenter.getOrderReport();
+        list = mOrderReportModelPresenter.getOrderReport();
 
         updateOrderGrid();
 
@@ -221,7 +225,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                             .setText(businessModel.labelsMasterHelper
                                     .applyLabels(getActivity().findViewById(R.id.weighttitle)
                                             .getTag()));
-                ((TextView) view.findViewById(R.id.weighttitle)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                ((TextView) view.findViewById(R.id.weighttitle)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             } catch (Exception e) {
                 Commons.printException(e);
             }
@@ -256,7 +260,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                 ((TextView) view.findViewById(R.id.lpc))
                         .setText(businessModel.labelsMasterHelper.applyLabels(view
                                 .findViewById(R.id.lpc).getTag()));
-            ((TextView) view.findViewById(R.id.lpc)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) view.findViewById(R.id.lpc)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -270,7 +274,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                                 .applyLabels(view.findViewById(
                                         R.id.outid)
                                         .getTag()));
-            ((TextView) view.findViewById(R.id.outid)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) view.findViewById(R.id.outid)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -299,7 +303,24 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         if (businessModel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
             showVolume();
         }
-        System.out.println("Start"+System.currentTimeMillis());
+        System.out.println("Start" + System.currentTimeMillis());
+
+        if (businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+            view.findViewById(R.id.ll_totweight).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.view3).setVisibility(View.VISIBLE);
+            try {
+                if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.lbl_totweigh).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.lbl_totweigh))
+                            .setText(businessModel.labelsMasterHelper.applyLabels(view
+                                    .findViewById(R.id.lbl_totweigh).getTag()));
+                ((TextView) view.findViewById(R.id.lbl_totweigh)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+        }
+
         return view;
 
     }
@@ -326,6 +347,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             intent.putExtra("isFromOrder", true);
             intent.putExtra("TotalValue", ret.getOrderTotal());
             intent.putExtra("TotalLines", ret.getLPC());
+            intent.putExtra("TotalWeight", ret.getWeight());
             intent.setClass(getActivity(), OrderReportDetail.class);
             startActivityForResult(intent, 0);
 
@@ -338,6 +360,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
     private void updateOrderGrid() {
         double mTotalValue = 0;
         int pre = 0, post = 0;
+        float mTotalWeight = 0;
 
         // Show alert if error loading data.
         if (list == null) {
@@ -361,6 +384,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             mTotalValue = mTotalValue + SDUtil.convertToDouble(SDUtil.format(ret.getOrderTotal(),
                     businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
                     0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+            mTotalWeight = mTotalWeight + ret.getWeight();
         }
 
         if (businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
@@ -442,7 +466,6 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                             .applyLabels("item_outer");
 
 
-
                 if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
 
                     sb.append(pcQty + " " + op);
@@ -471,6 +494,10 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             }
 
 
+        }
+
+        if (businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+            text_totalWeight.setText(Utils.formatAsTwoDecimal((double) mTotalWeight));
         }
 
 

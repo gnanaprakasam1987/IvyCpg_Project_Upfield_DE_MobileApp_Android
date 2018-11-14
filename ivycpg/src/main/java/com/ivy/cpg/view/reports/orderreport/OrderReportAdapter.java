@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -218,7 +219,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         holder.text_LPC.setText(reportBO.getLPC());
         holder.tvwDist.setText(reportBO.getDist());
         holder.tvOrderNo.setText(reportBO.getOrderID());
-        holder.tvWeight.setText(String.valueOf(reportBO.getWeight()));
+        holder.tvWeight.setText(Utils.formatAsTwoDecimal((double) reportBO.getWeight()));
 
 
         try {
@@ -326,7 +327,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         try {
             String delivery_date;
 
-            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(OrderHelper.getInstance(mContext).selectedOrderId,reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
+            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(OrderHelper.getInstance(mContext).selectedOrderId, reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
 
             if (businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
                 String value = businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;
