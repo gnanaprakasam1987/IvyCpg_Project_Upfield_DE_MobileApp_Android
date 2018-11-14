@@ -193,7 +193,7 @@ public class AssetServiceActivity extends BaseActivity implements AssetServiceCo
                     assetTrackingHelper
                             .saveAssetServiceDetails(getApplicationContext(), assetId, serialNo, mReasonID, mModuleName);
                 }
-                bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                //bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
             }
         }
         if (isAdded)
