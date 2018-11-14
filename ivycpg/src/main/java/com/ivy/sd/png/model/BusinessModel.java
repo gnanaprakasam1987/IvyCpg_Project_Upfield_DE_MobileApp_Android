@@ -5360,7 +5360,7 @@ public class BusinessModel extends Application {
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
                             "and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID() +
-                            " and (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW')" +
+                            " and (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW' OR SMA.menucode='MENU_SURVEY_QDVP3')" +
                             " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
@@ -5393,7 +5393,7 @@ public class BusinessModel extends Application {
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
                             + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
-                            + " and AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW') and AD.upload='N' group by SM.groupName");
+                            + " and AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW','MENU_SURVEY_QDVP3') and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
                 ConfigureBO bo;
