@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -101,6 +102,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     @BindView(R.id.resultsHeaderTxt)
     TextView spinnerHeaderTxt;
+
+    private ArrayList<Fragment> fragments;
 
     private Spinner distributorSpinner;
 
@@ -391,7 +394,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         @BindView(R.id.dashSpinner)
         Spinner dashSpinner;
 
-        public MyStubView(View view) {
+        MyStubView(View view) {
             ButterKnife.bind(this, view);
         }
     }
@@ -669,6 +672,18 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
         }
     };
+
+    private void generatePagerFragments(){
+
+        fragments = new ArrayList<>();
+
+        if(presenter.isSMPBasedDash()){
+            if (!selectedInterval.matches("WEEK|ROUTE")) {
+
+            }
+        }
+
+    }
 
 
 }

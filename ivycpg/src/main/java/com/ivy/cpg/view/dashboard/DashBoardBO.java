@@ -1,9 +1,10 @@
 package com.ivy.cpg.view.dashboard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DashBoardBO {
+public class DashBoardBO implements Serializable{
 
     private String text, score;
     private double target, initiative;
