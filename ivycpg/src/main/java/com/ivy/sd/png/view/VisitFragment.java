@@ -112,6 +112,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private Map<String, String> mRetTgtAchv;
     private boolean hasOrderScreen;
     private String mSelecteRetailerType = "ALL";
+    RetailerSelectionAdapter mSchedule;
     private RetailerSelectionAdapter.ViewHolder mSelectedRetailer;
     private AutoCompleteTextView mBrandAutoCompleteTV;
     private MapViewListener mapViewListener;
@@ -724,6 +725,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         else
             tv_target1.setText(getTotalVisitActual());
 
+        if(mSchedule != null)
+            mSchedule.notifyDataSetChanged();
 
     }
 
@@ -909,7 +912,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         if (!hasOrderScreen)
             setRetailerDoneforNoOrderMenu(retailer);
-        RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
+        mSchedule = new RetailerSelectionAdapter(
                 retailer);
         mSchedule.notifyDataSetChanged();
 
@@ -1001,7 +1004,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         if (!hasOrderScreen)
             setRetailerDoneforNoOrderMenu(retailer);
-        RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
+        mSchedule = new RetailerSelectionAdapter(
                 new ArrayList<>(retailer));
         String strCount = "" + mSchedule.getCount();
         tv_storeVisit.setText(strCount);
