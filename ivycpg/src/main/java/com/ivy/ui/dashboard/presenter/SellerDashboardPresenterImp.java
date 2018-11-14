@@ -189,7 +189,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     @Override
     public boolean isSMPBasedDash() {
-        return isP3M || getConfigurationMasterHelper().IS_SMP_BASED_DASH;
+        return getConfigurationMasterHelper().IS_SMP_BASED_DASH;
     }
 
     @Override
@@ -210,6 +210,21 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     @Override
     public boolean shouldShowTrendChart() {
         return isP3M || getConfigurationMasterHelper().IS_SMP_BASED_DASH;
+    }
+
+    @Override
+    public boolean shouldShowInvoiceDash() {
+        return getConfigurationMasterHelper().SHOW_INV_DASH;
+    }
+
+    @Override
+    public boolean shouldShowP3MDash() {
+        return getConfigurationMasterHelper().SHOW_P3M_DASH;
+    }
+
+    @Override
+    public boolean shouldShowSMPDash() {
+        return getConfigurationMasterHelper().SHOW_SMP_DASH;
     }
 
     @Override

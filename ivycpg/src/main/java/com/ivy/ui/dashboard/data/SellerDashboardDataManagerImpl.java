@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.Callable;
@@ -652,10 +653,25 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 }
                 shutDownDb();
 
+                if (dashBoardBOS.size() > 0) {
+                    Collections.sort(dashBoardBOS, paramsIDComparator);
+                }
+
                 return dashBoardBOS;
             }
         });
     }
+
+    private Comparator<DashBoardBO> paramsIDComparator = new Comparator<DashBoardBO>() {
+
+        public int compare(DashBoardBO file1, DashBoardBO file2) {
+
+            return (int) file1.getKpiTypeLovID() - (int) file2.getKpiTypeLovID();
+
+        }
+
+    };
+
 
     @Override
     public Observable<ArrayList<Double>> getCollectedValue() {

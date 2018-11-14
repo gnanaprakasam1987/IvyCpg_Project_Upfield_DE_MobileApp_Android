@@ -39,6 +39,7 @@ import com.ivy.ui.dashboard.DashboardClickListener;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.adapter.DashboardListAdapter;
+import com.ivy.ui.dashboard.chart.p3m.P3MChartFragment;
 import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardModule;
 import com.ivy.utils.FontUtils;
@@ -189,7 +190,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
         }
 
-        if (!presenter.isSMPBasedDash()) {
+        if (!presenter.shouldShowTrendChart()) {
             hidePager();
         }
 
@@ -225,7 +226,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
                 presenter.fetchDistributorList(true);
 
-                if (!presenter.isSMPBasedDash()) {
+                if (!presenter.shouldShowTrendChart()) {
                     hidePager();
                 }
             } else {
@@ -402,7 +403,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     private void loadMultiSelectData() {
 
         presenter.fetchKPIDashboardData(mFilterUser, mSelectedDistributorId);
-        if (presenter.isSMPBasedDash()) {
+        if (presenter.shouldShowTrendChart()) {
             pager.setVisibility(View.VISIBLE);
             circleIndicatorView.setViewPager(pager);
         }
@@ -679,6 +680,15 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
         if(presenter.isSMPBasedDash()){
             if (!selectedInterval.matches("WEEK|ROUTE")) {
+                if(presenter.shouldShowP3MDash()){
+                    P3MChartFragment p3MChartFragment = new P3MChartFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("dashChartList",null);
+                    bundle.putInt("paramLovId",0);
+
+                    fragments.add(p3MChartFragment);
+                }
+
 
             }
         }

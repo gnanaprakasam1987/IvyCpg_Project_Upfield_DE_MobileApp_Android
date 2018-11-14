@@ -73,6 +73,12 @@ public interface SellerDashboardContract {
 
         boolean shouldShowTrendChart();
 
+        boolean shouldShowP3MDash();
+
+        boolean shouldShowSMPDash();
+
+        boolean shouldShowInvoiceDash();
+
         void fetchP3MSellerDashboardData();
 
         void fetchDistributorList(boolean isMultiSelect);
