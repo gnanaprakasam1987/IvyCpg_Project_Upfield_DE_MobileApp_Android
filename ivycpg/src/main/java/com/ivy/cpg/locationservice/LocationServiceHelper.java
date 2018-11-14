@@ -83,7 +83,7 @@ public class LocationServiceHelper {
             return (locationMode != Settings.Secure.LOCATION_MODE_OFF && locationMode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY); //check location mode
 
         }
-        return false;
+        return true;
     }
 
     //Check whether Mock Location is enabled or not
