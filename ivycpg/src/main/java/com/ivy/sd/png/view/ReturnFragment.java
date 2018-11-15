@@ -169,8 +169,8 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY || salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
                     for (SalesReturnReasonBO sb : productMasterBO.getSalesReturnReasonList()) {
-                        if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && sb.getInvoiceno().equals("0"))
-                                || (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && sb.getLotNumber().equals("0"))) {
+                        if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && (sb.getInvoiceno().equals("0") || sb.getInvoiceno().isEmpty()))
+                                || (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && (sb.getLotNumber().equals("0") || sb.getLotNumber().isEmpty()))) {
                             Toast.makeText(getActivity(), getResources().getString(R.string.mandatory_fileds_empty), Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -279,7 +279,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
                     return false;
                 } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
-                        (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && sb.getLotNumber().equals(""))) {//inv n lot num validation done based on their conifguration
+                        (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && (sb.getLotNumber().equals("")|| sb.getLotNumber().equals("0")))) {//inv n lot num validation done based on their conifguration
                     Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
                     return false;
                 }
