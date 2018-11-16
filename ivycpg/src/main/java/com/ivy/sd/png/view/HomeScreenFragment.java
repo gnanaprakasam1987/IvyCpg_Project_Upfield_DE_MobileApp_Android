@@ -1570,6 +1570,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 if (bmodel.getRetailerMaster().size() > 0) {
                     if (!isClicked) {
                         isClicked = false;
+                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menuItem.getConfigCode());
+                        bmodel.configurationMasterHelper.downloadFloatingSurveyConfig(menuItem.getConfigCode());
                         bmodel.distributorMasterHelper.downloadDistributorsList();
                         bmodel.configurationMasterHelper
                                 .setSubdtitle(menuItem.getMenuName());

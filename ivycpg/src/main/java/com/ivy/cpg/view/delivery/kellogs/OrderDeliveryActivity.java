@@ -41,6 +41,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
     final String Str_ACCEPT = "ACCEPT";
     final String Str_VIEW = "VIEW";
     final String Str_EDIT = "EDIT";
+    private boolean isClicked = false, isClickedAccept = false, isClickedEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,9 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         super.onResume();
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-
+        isClicked = false;
+        isClickedAccept = false;
+        isClickedEdit = false;
         //session out if user id becomes 0
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
@@ -154,16 +157,17 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
 
-
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
-                    if(orderHeaders.get(position).getInvoiceStatus()!=1) {
+                    if (!isClicked) {
                         new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
-                    }
-                    else {
-                        Toast.makeText(
-                                OrderDeliveryActivity.this,
-                                "Already invoice has been generated",
-                                Toast.LENGTH_SHORT).show();
+                        if (orderHeaders.get(position).getInvoiceStatus() != 1) {
+                            new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
+                        } else {
+                            Toast.makeText(
+                                    OrderDeliveryActivity.this,
+                                    "Already invoice has been generated",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        isClicked = true;
                     }
 
                 }
@@ -172,33 +176,34 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
             holder.orderEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    if(orderHeaders.get(position).getInvoiceStatus() == 1) {
-                        Toast.makeText(
-                                OrderDeliveryActivity.this,
-                                "Already invoice has been generated",
-                                Toast.LENGTH_SHORT).show();
-                        return;
+                    if (!isClickedEdit) {
+                        if (orderHeaders.get(position).getInvoiceStatus() == 1) {
+                            Toast.makeText(
+                                    OrderDeliveryActivity.this,
+                                    "Already invoice has been generated",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        isClickedEdit = true;
+                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_EDIT, orderHeaders.get(position).getInvoiceStatus()).execute();
                     }
-
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),Str_EDIT,orderHeaders.get(position).getInvoiceStatus()).execute();
                 }
             });
 
             holder.orderAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    if(orderHeaders.get(position).getInvoiceStatus() == 1) {
-                        Toast.makeText(
-                                OrderDeliveryActivity.this,
-                                "Already invoice has been generated",
-                                Toast.LENGTH_SHORT).show();
-                        return;
+                    if (!isClickedAccept) {
+                        if (orderHeaders.get(position).getInvoiceStatus() == 1) {
+                            Toast.makeText(
+                                    OrderDeliveryActivity.this,
+                                    "Already invoice has been generated",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        isClickedAccept = true;
+                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_ACCEPT, orderHeaders.get(position).getInvoiceStatus()).execute();
                     }
-
-                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(),Str_ACCEPT,orderHeaders.get(position).getInvoiceStatus()).execute();
-
                 }
             });
 
@@ -249,12 +254,13 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
             if(from.equalsIgnoreCase(Str_ACCEPT)) {
 
-                if(orderDeliveryHelper.getTotalProductQty() == 0)
+                if(orderDeliveryHelper.getTotalProductQty() == 0) {
                     Toast.makeText(
                             OrderDeliveryActivity.this,
                             getResources().getString(R.string.no_ordered_products_found),
                             Toast.LENGTH_SHORT).show();
-                else if (orderDeliveryHelper.isSIHAvailable(false)) {
+                    isClickedAccept = false;
+                } else if (orderDeliveryHelper.isSIHAvailable(false)) {
 
                     CommonDialog dialog = new CommonDialog(getApplicationContext(), OrderDeliveryActivity.this, "", getResources().getString(R.string.order_delivery_approve), false,
                             getResources().getString(R.string.ok), getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
@@ -298,7 +304,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                     }, new CommonDialog.negativeOnClickListener() {
                         @Override
                         public void onNegativeButtonClick() {
-
+                            isClickedAccept = false;
                         }
                     });
                     dialog.show();
@@ -308,6 +314,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                             OrderDeliveryActivity.this,
                             getResources().getString(R.string.ordered_value_exceeds_sih_value_please_edit_the_order),
                             Toast.LENGTH_SHORT).show();
+                    isClickedAccept = false;
                 }
             }
 

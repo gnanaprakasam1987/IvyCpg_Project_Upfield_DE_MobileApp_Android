@@ -1918,9 +1918,11 @@ public class ReportHelper {
         sb.append(",PM.pcode from SchemeFreeProductDetail SFP ");
         sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
         sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
-        if (isInvoice)
-            sb.append("where invoiceid=" + bmodel.QT(id));
-        else // Order Report
+
+        if (isInvoice) {
+            sb.append("inner join SchemeMaster SM ON SM.SchemeID = SFP.SchemeID ");
+            sb.append("where invoiceid=" + bmodel.QT(id) + " and SM.IsOnInvoice = '1'");
+        } else // Order Report
             sb.append("where OrderID=" + bmodel.QT(id));
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
