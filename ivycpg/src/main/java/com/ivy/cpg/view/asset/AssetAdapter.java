@@ -328,7 +328,7 @@ public class AssetAdapter extends BaseAdapter {
                         mAssetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();
 
                         String _path = HomeScreenFragment.photoPath + "/" + mAssetPresenter.mSelectedImageName;
-                        mBModel.getPhotosTakeninCurrentCoolerTracking().put(mAssetPresenter.mSelectedAssetID +"", _path);
+                        mBModel.getPhotosTakeninCurrentAssetTracking().put(mAssetPresenter.mSelectedAssetID +"", _path);
 
                         boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,
                                 fileNameStarts);

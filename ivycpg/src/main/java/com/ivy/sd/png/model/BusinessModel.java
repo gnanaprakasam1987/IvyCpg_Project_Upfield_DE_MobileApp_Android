@@ -8735,14 +8735,14 @@ public class BusinessModel extends Application {
         this.photosTakeninCurrentCompetitorTracking = photosTakeninCurrentCompetitorTracking;
     }
 
-    HashMap<String, String> photosTakeninCurrentCoolerTracking = new HashMap<>();
+    HashMap<String, String> photosTakeninCurrentAssetTracking = new HashMap<>();
 
-    public HashMap<String, String> getPhotosTakeninCurrentCoolerTracking() {
-        return photosTakeninCurrentCoolerTracking;
+    public HashMap<String, String> getPhotosTakeninCurrentAssetTracking() {
+        return photosTakeninCurrentAssetTracking;
     }
 
-    public void setPhotosTakeninCurrentCoolerTracking(HashMap<String, String> photosTakeninCurrentCoolerTracking) {
-        this.photosTakeninCurrentCoolerTracking = photosTakeninCurrentCoolerTracking;
+    public void setPhotosTakeninCurrentAssetTracking(HashMap<String, String> photosTakeninCurrentAssetTracking) {
+        this.photosTakeninCurrentAssetTracking = photosTakeninCurrentAssetTracking;
     }
 }
 

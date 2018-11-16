@@ -34,7 +34,6 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -436,7 +435,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                 save();
             } else {
                 try {
-                    Iterator it = mBModel.getPhotosTakeninCurrentCoolerTracking().entrySet().iterator();
+                    Iterator it = mBModel.getPhotosTakeninCurrentAssetTracking().entrySet().iterator();
                     while (it.hasNext()) {
                         Map.Entry pair = (Map.Entry) it.next();
                         String mAssetId = pair.getKey().toString();
@@ -452,7 +451,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                         System.out.println("Deleted Image " + mAssetId + " = " + photoPath);
                         //it.remove(); // avoids a ConcurrentModificationException
                     }
-                    mBModel.getPhotosTakeninCurrentCoolerTracking().clear();
+                    mBModel.getPhotosTakeninCurrentAssetTracking().clear();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -747,7 +746,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                 @Override
                 public void onPositiveButtonClick() {
                     try{
-                        mBModel.getPhotosTakeninCurrentCoolerTracking().clear();
+                        mBModel.getPhotosTakeninCurrentAssetTracking().clear();
                     } catch(Exception e){
                         e.printStackTrace();
                     }
