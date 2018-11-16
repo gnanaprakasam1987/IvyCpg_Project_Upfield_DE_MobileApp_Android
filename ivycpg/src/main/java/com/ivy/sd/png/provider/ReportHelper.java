@@ -30,6 +30,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1921,9 +1922,9 @@ public class ReportHelper {
 
         if (isInvoice) {
             sb.append("inner join SchemeMaster SM ON SM.SchemeID = SFP.SchemeID ");
-            sb.append("where invoiceid=" + bmodel.QT(id) + " and SM.IsOnInvoice = '1'");
+            sb.append("where invoiceid=" + AppUtils.QT(id) + " and SM.IsOnInvoice = '1'");
         } else // Order Report
-            sb.append("where OrderID=" + bmodel.QT(id));
+            sb.append("where OrderID=" + AppUtils.QT(id));
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
             SchemeProductBO schemeProductBO;
