@@ -69,7 +69,7 @@ public class SalesReturnHelper {
     public boolean SHOW_SALABLE_AND_NON_SALABLE_SKU;
     public boolean SHOW_SR_CATEGORY;
     private static final String CODE_SR_INVOICE_NO_HISTORY = "SR22";
-    public boolean IS_SHOW_SR_INVOICE_NO_HISTORY =true;
+    public boolean IS_SHOW_SR_INVOICE_NO_HISTORY;
 
 
     public static final String CREDIT_TYPE = "CREDIT";
@@ -275,7 +275,7 @@ public class SalesReturnHelper {
             SHOW_SALES_RET_OUTER_CASE = false;
             SHOW_SALABLE_AND_NON_SALABLE_SKU = false;
             SHOW_SR_CATEGORY = false;
-            IS_SHOW_SR_INVOICE_NO_HISTORY = true;
+            IS_SHOW_SR_INVOICE_NO_HISTORY = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
