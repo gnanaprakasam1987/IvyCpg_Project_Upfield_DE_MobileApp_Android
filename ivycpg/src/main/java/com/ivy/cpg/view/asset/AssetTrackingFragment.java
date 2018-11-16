@@ -56,6 +56,8 @@ import com.ivy.sd.png.view.RemarksDialog;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 public class
@@ -433,6 +435,27 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             if(adapter.isEmpty()){
                 save();
             } else {
+                try {
+                    Iterator it = mBModel.getPhotosTakeninCurrentCoolerTracking().entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry) it.next();
+                        String mAssetId = pair.getKey().toString();
+                        String photoPath = pair.getValue().toString();
+
+                        String fileName = photoPath.substring(photoPath.lastIndexOf('/') + 1, photoPath.length());
+                        String fileNameStarts = fileName.substring(0, fileName.length() - 14);
+
+                        String path = photoPath.substring(0, photoPath.lastIndexOf('/'));
+
+                        assetPresenter.removeExistingImage(mAssetId, fileNameStarts, path);
+
+                        System.out.println("Deleted Image " + mAssetId + " = " + photoPath);
+                        //it.remove(); // avoids a ConcurrentModificationException
+                    }
+                    mBModel.getPhotosTakeninCurrentCoolerTracking().clear();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                     mDrawerLayout.closeDrawers();
                 } else {
@@ -723,6 +746,11 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                     null, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
+                    try{
+                        mBModel.getPhotosTakeninCurrentCoolerTracking().clear();
+                    } catch(Exception e){
+                        e.printStackTrace();
+                    }
                     Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
                     Bundle extras = getActivity().getIntent().getExtras();
