@@ -26,6 +26,7 @@ public interface OrderDeliveryContractor {
         void updateAmountDetails(String orderVal,String discountAmt,String taxAmt,String totalOrderAmt);
         void updateSaveStatus(boolean isSuccess);
         void updatePrintStatus(String msg,boolean status);
+        void cancelClick();
     }
 
 }

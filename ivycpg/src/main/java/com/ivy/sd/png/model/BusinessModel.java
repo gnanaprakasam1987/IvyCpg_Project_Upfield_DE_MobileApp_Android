@@ -974,7 +974,7 @@ public class BusinessModel extends Application {
      * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
      * value will not be considered.
      */
-
+    @Deprecated
     public String QT(String data) {
         return "'" + data + "'";
     }

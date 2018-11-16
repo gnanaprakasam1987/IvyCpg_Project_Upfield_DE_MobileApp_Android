@@ -30,6 +30,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1918,10 +1919,12 @@ public class ReportHelper {
         sb.append(",PM.pcode from SchemeFreeProductDetail SFP ");
         sb.append("inner join Productmaster PM on SFP.freeproductid=PM.pid ");
         sb.append("left join Batchmaster BM on SFP.freeproductid=BM.pid and SFP.batchid=BM.batchid ");
-        if (isInvoice)
-            sb.append("where invoiceid=" + bmodel.QT(id));
-        else // Order Report
-            sb.append("where OrderID=" + bmodel.QT(id));
+
+        if (isInvoice) {
+            sb.append("inner join SchemeMaster SM ON SM.SchemeID = SFP.SchemeID ");
+            sb.append("where invoiceid=" + AppUtils.QT(id) + " and SM.IsOnInvoice = '1'");
+        } else // Order Report
+            sb.append("where OrderID=" + AppUtils.QT(id));
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
             SchemeProductBO schemeProductBO;
