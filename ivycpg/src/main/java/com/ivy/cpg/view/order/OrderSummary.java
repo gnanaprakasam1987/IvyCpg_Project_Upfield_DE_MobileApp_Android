@@ -2868,6 +2868,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             String strRepPcsQty = holder.productBO.getRepPieceQty() + "";
             holder.rep_pcs.setText(strRepPcsQty);
 
+            holder.cbSeparateBill.setChecked(holder.productBO.isSeparateBill());
+
             return row;
         }
 

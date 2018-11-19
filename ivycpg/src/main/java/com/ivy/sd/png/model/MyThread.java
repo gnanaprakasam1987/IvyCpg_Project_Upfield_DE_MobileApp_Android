@@ -275,8 +275,8 @@ public class MyThread extends Thread {
                     }
 
                 }
-
-                if (orderHelper.saveOrder(ctx, bill2Products, false)) {
+                orderHelper.setOrderId(null);
+                if ( orderHelper.saveOrder(ctx, bill2Products,false)) {
 
 
                     // Update review plan in DB

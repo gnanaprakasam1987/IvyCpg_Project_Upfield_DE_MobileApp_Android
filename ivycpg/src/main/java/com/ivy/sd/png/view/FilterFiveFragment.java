@@ -474,13 +474,14 @@ public class FilterFiveFragment<E> extends Fragment {
                 int selectedPid = 0;
                 for (int i = size - 1; i >= 0; i--) {
                     if (mSelectedIdByLevelId.get(filterProductLevels.get(i).getProductID()) != null && mSelectedIdByLevelId.get(filterProductLevels.get(i).getProductID()) > 0) {
-                        for (LevelBO bo : filterProductsByLevelId.get(filterProductLevels.get(i).getProductID())) {
-                            if (bo.getProductID() == mSelectedIdByLevelId.get(filterProductLevels.get(i).getProductID())) {
-                                selectedPid = bo.getProductID();
-                                i = -1;
-                                break;
+                        if (filterProductLevels.get(pos).getProductID() > filterProductLevels.get(i).getProductID())
+                            for (LevelBO bo : filterProductsByLevelId.get(filterProductLevels.get(i).getProductID())) {
+                                if (bo.getProductID() == mSelectedIdByLevelId.get(filterProductLevels.get(i).getProductID())) {
+                                    selectedPid = bo.getProductID();
+                                    i = -1;
+                                    break;
+                                }
                             }
-                        }
                     }
                 }
                 LevelBO levelBO = filterProductLevels.get(pos);

@@ -57,6 +57,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private String orderId;
     private String referenceId = "";
     private double totalReturnValue,totalOrderValue;
+    private boolean isClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,10 +146,19 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         findViewById(R.id.accept_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                orderDeliveryPresenter.saveOrderDeliveryDetail(
+                if(!isClicked) {
+
+                    orderDeliveryPresenter.saveOrderDeliveryDetail(
                         isEdit,orderId,getIntent().getExtras().getString("menuCode"),totalOrderValue,totalReturnValue,referenceId);
-            }
+
+                    isClicked = true;
+                } }
         });
+    }
+
+    @Override
+    public void cancelClick() {
+        isClicked = false;
     }
 
     @Override
@@ -156,6 +166,7 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         super.onResume();
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        isClicked = false;
         //session out if user id becomes 0
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,

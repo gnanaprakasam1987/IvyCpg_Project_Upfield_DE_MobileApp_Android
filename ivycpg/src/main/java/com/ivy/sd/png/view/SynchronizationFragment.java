@@ -782,6 +782,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 DataMembers.actHomeScreen);*/
                         moveToHomeScreenActivity();
                     } else {
+                        bmodel.daySpinnerPositon = 0;
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
                     }
 

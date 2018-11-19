@@ -2616,7 +2616,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     if (assetTrackingHelper.getAssetTrackingList().size() > 0 ||
                             assetTrackingHelper.SHOW_ADD_NEW_ASSET) {
-
+                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
                         assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(

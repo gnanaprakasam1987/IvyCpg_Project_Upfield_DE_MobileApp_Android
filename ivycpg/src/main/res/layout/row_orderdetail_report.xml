@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:weightSum="10">
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -34,10 +33,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/PRDNAME1"
-                android:padding="@dimen/dimen_2dp"
                 android:layout_marginBottom="@dimen/icons_top_margin"
                 android:gravity="center"
                 android:maxLines="1"
+                android:padding="@dimen/dimen_2dp"
                 android:text="@string/prod_code" />
 
             <TextView
@@ -46,12 +45,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/PRDNAME1"
-                android:padding="@dimen/dimen_2dp"
+                android:layout_marginBottom="@dimen/icons_top_margin"
                 android:layout_toEndOf="@+id/product_code"
                 android:layout_toRightOf="@+id/product_code"
-                android:layout_marginBottom="@dimen/icons_top_margin"
                 android:gravity="center"
                 android:maxLines="1"
+                android:padding="@dimen/dimen_2dp"
                 android:text="@string/batch_no" />
 
             <TextView
@@ -59,15 +58,15 @@
                 style="?attr/customListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dimen_2dp"
                 android:layout_below="@+id/PRDNAME1"
                 android:layout_marginBottom="@dimen/icons_top_margin"
                 android:layout_toEndOf="@+id/prdbatchid"
+                android:layout_toRightOf="@+id/prdbatchid"
                 android:gravity="center"
+                android:padding="@dimen/dimen_2dp"
                 android:singleLine="true"
                 android:tag="sih"
-                android:text=""
-                android:layout_toRightOf="@+id/prdbatchid" />
+                android:text="" />
         </RelativeLayout>
     </LinearLayout>
 
