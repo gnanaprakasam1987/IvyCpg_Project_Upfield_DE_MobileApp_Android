@@ -98,7 +98,6 @@
                                     android:gravity="start|center_vertical"
                                     android:text="@string/product_name"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/list_item_primary_text_size"
 
                                     />
                             </RelativeLayout>
