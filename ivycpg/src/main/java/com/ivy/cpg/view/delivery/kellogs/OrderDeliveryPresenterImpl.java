@@ -106,12 +106,13 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
 
     @Override
     public void saveOrderDeliveryDetail(final boolean isEdit, final String orderId,final String menuCode,double totalOrderValue,double totalReturnValue,final String referenceId) {
-        if (orderDeliveryHelper.getTotalProductQty() == 0)
+        if (orderDeliveryHelper.getTotalProductQty() == 0) {
             Toast.makeText(
                     context,
                     context.getResources().getString(R.string.no_ordered_products_found),
                     Toast.LENGTH_SHORT).show();
-        else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
+            orderDeliveryView.cancelClick();
+        } else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
 
             //Removed as per JIRA Changes
 //            if(bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
@@ -137,7 +138,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
             }, new CommonDialog.negativeOnClickListener() {
                 @Override
                 public void onNegativeButtonClick() {
-
+                    orderDeliveryView.cancelClick();
                 }
             });
             dialog.show();
@@ -149,6 +150,7 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     Toast.LENGTH_SHORT).show();
 
             orderDeliveryView.updateSaveStatus(false);
+            orderDeliveryView.cancelClick();
         }
     }
 

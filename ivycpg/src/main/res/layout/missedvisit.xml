@@ -6,6 +6,7 @@
 
 
     <LinearLayout
+        android:background="?attr/weekBackground"
         android:id="@+id/list_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_title_height"
@@ -19,6 +20,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.40"
             android:text="@string/retailer_name"
+            android:background="?attr/weekBackground"
             android:textSize="@dimen/text_size_primary" />
 
         <TextView
@@ -29,6 +31,7 @@
             android:layout_weight="0.30"
             android:text="@string/text_missed"
             android:tag="missed"
+            android:background="?attr/weekBackground"
             android:textSize="@dimen/text_size_primary" />
 
         <TextView
@@ -39,6 +42,7 @@
             android:layout_weight="0.30"
             android:tag="planned"
             android:text="@string/text_planned"
+            android:background="?attr/weekBackground"
             android:textSize="@dimen/text_size_primary" />
 
 

@@ -325,6 +325,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                         if (constraint != null) {
                             suggestions.clear();
                             for (BeatMasterBO bmBO : tempItems) {
+                                if(constraint.toString().equalsIgnoreCase("all")) constraint = "";
                                 if (bmBO.toString().toLowerCase().contains(constraint.toString().toLowerCase())) {
                                     suggestions.add(bmBO);
                                 }

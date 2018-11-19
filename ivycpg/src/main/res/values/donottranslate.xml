@@ -94,4 +94,8 @@
 
     <string name="select_future_date">Select future date</string>
 
+    <string name ="enter_serial_no">Please Enter Serial No</string>
+
+    <string name="fill_photo_and_adherence">Please take photo and fill adherence</string>
+
 </resources>
