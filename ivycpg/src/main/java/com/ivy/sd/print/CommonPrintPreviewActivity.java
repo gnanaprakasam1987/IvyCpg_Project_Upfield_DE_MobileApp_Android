@@ -485,9 +485,9 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 //Attachment
                 DataSource source;
                 if (bmodel.configurationMasterHelper.IS_ATTACH_PDF) {
-                   // LayoutInflater inflater = (LayoutInflater) CommonPrintPreviewActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-                   // RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
-                   // root.setDrawingCacheEnabled(true);
+                    // LayoutInflater inflater = (LayoutInflater) CommonPrintPreviewActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                    // RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
+                    // root.setDrawingCacheEnabled(true);
                     screen = getBitmapFromView(CommonPrintPreviewActivity.this.getWindow().findViewById(R.id.root_print));
                     createPdf(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber);
                    /* File newFile = new File(Environment.getExternalStorageDirectory().getPath() + "/IvyInvoice/"
@@ -1161,6 +1161,21 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         return mMAcAddress;
     }
 
+    public boolean isPrintFileExsist() {
+        String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                + "/" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + DataMembers.PRINTFILE + "/";
+        File directory = new File(path);
+        File[] contents = directory.listFiles();
+        if (contents == null) {
+            return false;
+        } else if (contents.length == 0) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
     private void showAlert() {
 
         if (isUpdatePrintCount)
@@ -1182,7 +1197,11 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     R.string.printed_successfully);
         } else {
             updateStatus("Printer error.");
-            msg = getResources().getString(R.string.error_connecting_printer);
+            if (!isPrintFileExsist())
+                msg = getString(R.string.printFile_missing_error);
+            else
+                msg = getResources().getString(R.string.error_connecting_printer);
+
         }
         if (commonDialog != null && commonDialog.isShowing()) {
             commonDialog.dismiss();
@@ -1230,6 +1249,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         commonDialog.setCancelable(false);
         commonDialog.show();
     }
+
 
     private void moveBack() {
         if (isFromOrder) {
