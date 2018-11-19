@@ -127,13 +127,12 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private ArrayList<DashBoardBO> dashboardListData;
 
-    private int mSelectedUser = 0;
+    private String mSelectedUser = "0";
 
     private String selectedInterval;
 
     private String screenTitle;
 
-    private boolean isFromProfile;
 
     @Override
     public void initializeDi() {
@@ -168,7 +167,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             isFromRetailer = bundle.getBoolean("isFromHomeScreenTwo", false);
             type = bundle.getString("type");
             screenTitle = bundle.getString("screentitle");
-            isFromProfile = bundle.getBoolean("isFromTab", false);
         }
 
 
@@ -185,7 +183,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             getDashSpinnerData();
             hidePager();
         } else {
-            mSelectedUser = presenter.getCurrentUser().getUserid();
+            mSelectedUser = String.valueOf(presenter.getCurrentUser().getUserid());
             handleSellerDashboard();
 
         }
@@ -537,7 +535,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             monthSpinnerStub.setVisibility(View.GONE);
 
-            if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser == presenter.getCurrentUser().getUserid()) {
+            if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser == String.valueOf(presenter.getCurrentUser().getUserid())) {
                 presenter.computeDayAchievements();
                 dashboardListAdapter.notifyDataSetChanged();
             } else if (selectedInterval.equals(P3M))
@@ -635,7 +633,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-            mSelectedUser = ((UserMasterBO) adapterView.getSelectedItem()).getUserid();
+            mSelectedUser = String.valueOf(((UserMasterBO) adapterView.getSelectedItem()).getUserid());
 
             if (!isFromRetailer) {
                 if (selectedInterval.equalsIgnoreCase(P3M))

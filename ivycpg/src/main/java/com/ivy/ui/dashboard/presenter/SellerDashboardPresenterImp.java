@@ -300,8 +300,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
-    public void fetchSellerDashboardDataForUser(int selectedUser) {
-        getCompositeDisposable().add(sellerDashboardDataManager.getP3MSellerDashboardData(Integer.toString(selectedUser))
+    public void fetchSellerDashboardDataForUser(String selectedUser) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getP3MSellerDashboardData(selectedUser)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
@@ -326,8 +326,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
-    public void fetchSellerDashboardDataForWeek(int selectedUser) {
-        getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForWeek(Integer.toString(selectedUser))
+    public void fetchSellerDashboardDataForWeek(String selectedUser) {
+        getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForWeek(selectedUser)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
@@ -352,9 +352,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
-    public void fetchSellerDashboardForUserAndInterval(int selectedUser, String interval) {
+    public void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval) {
         getIvyView().showLoading();
-        getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForInterval(Integer.toString(selectedUser), interval)
+        getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForInterval(selectedUser, interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
@@ -494,7 +494,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .subscribeWith(new DisposableObserver<ArrayList<BeatMasterBO>>() {
                     @Override
                     public void onNext(ArrayList<BeatMasterBO> beatMasterBOS) {
-                        if(beatMasterBOS.size()>0)
+                        if (beatMasterBOS.size() > 0)
                             getIvyView().setupRouteSpinner(beatMasterBOS);
                     }
 
@@ -542,23 +542,23 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     public void fetchP3mTrendChartData(String userId) {
         getCompositeDisposable().add(sellerDashboardDataManager.getP3MTrendChart(userId)
                 .subscribeOn(getSchedulerProvider().io())
-        .observeOn(getSchedulerProvider().ui())
-        .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
-            @Override
-            public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                    @Override
+                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-            }
-        }));
+                    }
+                }));
     }
 
     private void fetchUsersMatchingDistributor(String distributorIds, boolean isMultiSelect) {
@@ -773,7 +773,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             @Override
             public SingleSource<DayAchievementData> apply(ArrayList<Double> collectionData) throws Exception {
 
-                if(collectionData!=null)
+                if (collectionData != null)
                     dayAchievementData.setCollectionData(collectionData);
 
                 return Single.fromCallable(new Callable<DayAchievementData>() {
@@ -802,11 +802,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                                 computeDailyAchievementsForMSP(dashBoardBO, dayAchievementData.outletReport);
                             else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_COV))
                                 computeDailyAchievementForCOV(dashBoardBO);
-                            else if(dashBoardBO.getCode().equalsIgnoreCase(CODE_PRM))
-                                computeDailyAchievementsForPRM(dashBoardBO,dayAchievementData.promotionCount,dayAchievementData.promotionExecutionCount);
+                            else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_PRM))
+                                computeDailyAchievementsForPRM(dashBoardBO, dayAchievementData.promotionCount, dayAchievementData.promotionExecutionCount);
                             else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_MSL))
-                                computeDailyAchievementsForMSL(dashBoardBO,dayAchievementData.mslCount,dayAchievementData.mslExecutedCount);
-                             else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_COVD))
+                                computeDailyAchievementsForMSL(dashBoardBO, dayAchievementData.mslCount, dayAchievementData.mslExecutedCount);
+                            else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_COVD))
                                 computeDailyAchievementsForCOVD(dashBoardBO);
                             else if (dashBoardBO.getCode().equalsIgnoreCase(CODE_COL))
                                 computeDailyAchievementsForCol(dashBoardBO, dayAchievementData.collectionData);
@@ -834,7 +834,6 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     }
                 }));
     }
-
 
 
     private class DayAchievementData {

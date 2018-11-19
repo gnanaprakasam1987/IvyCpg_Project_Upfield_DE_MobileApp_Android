@@ -45,11 +45,11 @@ public interface SellerDashboardContract {
 
         void fetchSellerDashList(SellerDashboardConstants.DashBoardType dashBoardType);
 
-        void fetchSellerDashboardDataForUser(int selectedUser);
+        void fetchSellerDashboardDataForUser(String selectedUser);
 
-        void fetchSellerDashboardDataForWeek(int selectedUser);
+        void fetchSellerDashboardDataForWeek(String selectedUser);
 
-        void fetchSellerDashboardForUserAndInterval(int selectedUser, String interval);
+        void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval);
 
         void fetchRouteDashboardData(String interval);
 
