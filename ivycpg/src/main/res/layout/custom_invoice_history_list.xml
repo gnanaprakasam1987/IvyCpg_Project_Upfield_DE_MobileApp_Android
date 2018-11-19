@@ -22,8 +22,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/profile_margin_top_minus"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="4.75">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/id_layout"
