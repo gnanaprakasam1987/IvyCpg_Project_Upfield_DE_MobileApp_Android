@@ -1868,7 +1868,6 @@ public class ProductHelper {
                 product.setRepCaseQty(0);
                 product.setRepOuterQty(0);
                 product.setSelectedSalesReturnPosition(0);
-                product.setTaxValue(0);
                 product.setSeparateBill(false);
                 product.setTaxableAmount(0);
 
