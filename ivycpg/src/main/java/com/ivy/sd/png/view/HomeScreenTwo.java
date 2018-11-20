@@ -2609,7 +2609,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isClick = false;
             }
 
-        } else if (menu.getConfigCode().equals(MENU_ASSET) && hasLink == 1) {
+        } else if (menu.getConfigCode().equals(MENU_ASSET) && hasLink == 122) {
             if (!isClick) {
                 isClick = true;
                 if (isPreviousDone(menu)

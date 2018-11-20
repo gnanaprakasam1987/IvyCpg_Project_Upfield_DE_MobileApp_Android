@@ -257,6 +257,17 @@ public class DataMembers {
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
     private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks,toRetailerId";
 
+    public static final String tbl_SerializedAssetHeader = "SerializedAssetHeader";
+    public static final String tbl_SerializedAssetHeader_cols = "uid,DateTime,RetailerId,remarks";
+
+    public static final String tbl_SerializedAssetDetail = "SerializedAssetDetail";
+    public static final String tbl_SerializedAssetDetail_cols = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate";
+
+    public static final String tbl_SerializedAssetImageDetail = "SerializedAssetImageDetails";
+    public static final String tbl_SerializedAssetImageDetail_cols = "uid,AssetID,ImageName,serialNumber";
+
+    public static final String tbl_SerializedAssetServiceRequest = "SerializedAssetServiceRequest";
+
     public static final String tbl_SerializedAssetTransfer = "SerializedAssetTransfer";
     private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
@@ -314,7 +325,6 @@ public class DataMembers {
     public static final String tbl_AssetHeader = "AssetHeader";
     public static final String tbl_AssetDetail = "AssetDetail";
     public static final String tbl_AssetImgInfo = "AssetImageDetails";
-    public static final String tbl_SerializedAssetImgInfo = "SerializedAssetImageDetails";
     public static final String tbl_NearExpiryHeader = "NearExpiry_Tracking_Header";
     private static final String tbl_NearExpiryHeader_cols = "Tid,RetailerId,Uid,Date,TimeZone,RefId";
     private static final String tbl_NearExpiryDetail = "NearExpiry_Tracking_Detail";
