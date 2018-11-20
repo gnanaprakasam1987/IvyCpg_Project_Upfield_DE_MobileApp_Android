@@ -331,11 +331,11 @@ public class SerializedAssetHelper {
 
             db.openDataBase();
 
-            sb.append("select Distinct A.assetId,P.assetName,B.serialNumber,C.Productid,B.NFCNumber,PM.ParentHierarchy as ParentHierarchy from SerializedAssetMaster A  ");
-            sb.append("inner join SerializedAssetMapping B on P.PosmID=SBD.posmid ");
-            sb.append("inner join SerializedAssetProductMapping C on P.PosmID=SBD.posmid ");
+            sb.append("select Distinct A.assetId,A.assetName,B.serialNumber,C.Productid,B.NFCNumber,PM.ParentHierarchy as ParentHierarchy from SerializedAssetMaster A  ");
+            sb.append("inner join SerializedAssetMapping B on A.AssetId=B.AssetId ");
+            sb.append("inner join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
 
-            sb.append("left join ProductMaster PM on PM.PID=SBD.Productid ");
+            sb.append("left join ProductMaster PM on PM.PID=C.Productid ");
 
             String allMasterSb = sb.toString();
 
@@ -350,7 +350,7 @@ public class SerializedAssetHelper {
                 allMasterSb = allMasterSb + ("and (C.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR C.Productid = 0 )");
             }
 
-            sb.append(" GROUP BY RetailerId,C.Productid,B.PosmId,B.SerialNO ORDER BY RetailerId");
+            sb.append(" GROUP BY RetailerId,C.Productid,B.AssetId,B.SerialNumber ORDER BY RetailerId");
 
             Cursor c = db.selectSQL(sb.toString());
             Cursor c1 = db.selectSQL(allMasterSb);
@@ -671,18 +671,18 @@ public class SerializedAssetHelper {
             db.openDataBase();
 
 
-            String query = "select uid,refid from SerializedAssetHeader where retailerid ="
+            String query = "select uid from SerializedAssetHeader where retailerid ="
                     + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
             query += " and upload='N'";
 
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 c.moveToNext();
-                db.deleteSQL(DataMembers.tbl_AssetHeader,
+                db.deleteSQL(DataMembers.tbl_SerializedAssetHeader,
                         "uid=" + AppUtils.QT(c.getString(0)), false);
-                db.deleteSQL(DataMembers.tbl_AssetDetail,
+                db.deleteSQL(DataMembers.tbl_SerializedAssetDetail,
                         "uid=" + AppUtils.QT(c.getString(0)), false);
-                db.deleteSQL(DataMembers.tbl_AssetImgInfo,
+                db.deleteSQL(DataMembers.tbl_SerializedAssetImageDetail,
                         "uid=" + AppUtils.QT(c.getString(0)), false);
             }
 
@@ -700,7 +700,7 @@ public class SerializedAssetHelper {
             assetHeaderValues.append(",");
             assetHeaderValues.append(AppUtils.QT(mBusinessModel.getAssetRemark()));
 
-            db.insertSQL(DataMembers.tbl_AssetHeader, assetHeaderColumns,
+            db.insertSQL(DataMembers.tbl_SerializedAssetHeader, assetHeaderColumns,
                     assetHeaderValues.toString());
 
 
@@ -757,7 +757,7 @@ public class SerializedAssetHelper {
                                                 : ""));
 
 
-                                db.insertSQL(DataMembers.tbl_AssetDetail,
+                                db.insertSQL(DataMembers.tbl_SerializedAssetDetail,
                                         AssetDetailColumns,
                                         assetDetailValues.toString());
 
@@ -772,7 +772,7 @@ public class SerializedAssetHelper {
                                         assetImgInofValues.append(",");
                                         assetImgInofValues.append(AppUtils.QT(assetBo.getNFCTagId()));
 
-                                        db.insertSQL(DataMembers.tbl_SerializedAssetImgInfo,
+                                        db.insertSQL(DataMembers.tbl_SerializedAssetImageDetail,
                                                 AssetImageInfoColumns,
                                                 assetImgInofValues.toString());
                                     }
