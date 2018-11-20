@@ -481,7 +481,7 @@ public class SerializedAssetHelper {
                 mBusinessModel.setAssetRemark("");
             }
 
-            String sb2 = "select assetid,isAvailable,reasonId,conditionId,serialNumber,NFCNumber,installDate,lastServiceDate  from assetDetail where uid=" +
+            String sb2 = "select assetid,isAvailable,reasonId,conditionId,serialNumber,NFCNumber,installDate,lastServiceDate  from SerializedAssetDetail where uid=" +
                     AppUtils.QT(uid);
 
 

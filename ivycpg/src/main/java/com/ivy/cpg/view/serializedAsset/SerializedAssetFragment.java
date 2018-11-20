@@ -534,7 +534,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
     private void updateListView(ArrayList<SerializedAssetBO> list) {
         android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
         SerializedAssetFragment fragment = (SerializedAssetFragment) fm
-                .findFragmentById(R.id.asset_tracking_fragment);
+                .findFragmentById(R.id.serialized_asset_fragment);
 
         adapter = new SerializedAssetAdapter(getActivity(), mBModel, assetPresenter, fragment, list);
         listview.setAdapter(adapter);
