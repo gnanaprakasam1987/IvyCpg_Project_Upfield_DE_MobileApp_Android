@@ -119,9 +119,10 @@ public class BatchAllocationHelper {
 
                     productBO.setProductShortName(c.getString(6));
 
-                    productBO.setSrp(c.getFloat(10));
-                    productBO.setCsrp(c.getFloat(11));
-                    productBO.setOsrp(c.getFloat(12));
+                    productBO.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(10),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    productBO.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(11),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    productBO.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(12),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+
                     productBO.setBatchid(c.getString(13));
                     productBO.setBatchNo(c.getString(14));
                     productBO.setMfgDate(c.getString(15));
@@ -200,9 +201,11 @@ public class BatchAllocationHelper {
                     productBO.setDA(c.getDouble(8));
                     productBO.setNetValue(c.getDouble(9));
                     productBO.setPriceoffvalue(c.getDouble(10));
-                    productBO.setSrp(c.getFloat(11));
-                    productBO.setCsrp(c.getFloat(12));
-                    productBO.setOsrp(c.getFloat(13));
+
+                    productBO.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(11),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    productBO.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(12),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    productBO.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(13),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+
                     productBO.setBatchNo(c.getString(14));
 
 					/*productBO.setSrp(c.getFloat(10));
@@ -446,6 +449,8 @@ public class BatchAllocationHelper {
                             .getSrp())
                             + (product.getOrderedCaseQty() * product.getCsrp())
                             + (product.getOrderedOuterQty() * product.getOsrp());
+
+                    batchwiseTotalvalue=SDUtil.formatAsPerCalculationConfig(batchwiseTotalvalue);
 
 
                     product.setNetValue(batchwiseTotalvalue

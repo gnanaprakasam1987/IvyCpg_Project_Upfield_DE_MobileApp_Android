@@ -69,6 +69,8 @@ import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
 import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
+import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -117,7 +119,6 @@ import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.CloseCallHelper;
-import com.ivy.sd.png.provider.CollectionHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -151,7 +152,6 @@ import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CircleTransform;
-import com.ivy.sd.png.view.CollectionScreen;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -263,7 +263,6 @@ public class BusinessModel extends Application {
     public RemarksHelper remarksHelper;
     public ReasonHelper reasonHelper;
     public BatchAllocationHelper batchAllocationHelper;
-    public CollectionHelper collectionHelper;
     public NewOutletHelper newOutletHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
@@ -409,7 +408,6 @@ public class BusinessModel extends Application {
         reasonHelper = ReasonHelper.getInstance(this);
 
         batchAllocationHelper = BatchAllocationHelper.getInstance(this);
-        collectionHelper = CollectionHelper.getInstance(this);
         orderAndInvoiceHelper = OrderAndInvoiceHelper.getInstance(this);
         closecallhelper = CloseCallHelper.getInstance(this);
         printHelper = PrintHelper.getInstance(this);
@@ -726,6 +724,7 @@ public class BusinessModel extends Application {
 
     public CodeCleanUpUtil codeCleanUpUtil;
 
+
     public IvyAppComponent getComponent() {
         return mApplicationComponent;
     }
@@ -976,7 +975,7 @@ public class BusinessModel extends Application {
 
                     int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
                             SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
-                    final double discountpercentage = collectionHelper.getDiscountSlabPercent(count + 1);
+                    final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
                     if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
@@ -1023,6 +1022,7 @@ public class BusinessModel extends Application {
      * This method will return total acheived value of the seller for the day.
      * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
      * value will not be considered.
+     * @See {@link AppUtils#QT}
      */
 
     /**
@@ -1688,7 +1688,7 @@ public class BusinessModel extends Application {
 
             setWeeknoFoNewRetailer();
 
-            collectionHelper.updateHasPaymentIssue();
+            CollectionHelper.getInstance(ctx).updateHasPaymentIssue();
 
             /********************************************/
 
@@ -4175,6 +4175,8 @@ public class BusinessModel extends Application {
                             lineValue += (productWithMaxTaxRate.getSrp() * schemeProductBO.getQuantitySelected());
                         }
 
+                        lineValue=SDUtil.formatAsPerCalculationConfig(lineValue);
+
                         schemeProductBO.setLineValue(lineValue);
 
                         //
@@ -5093,7 +5095,7 @@ public class BusinessModel extends Application {
                             "INNER JOIN SurveyMaster SMA ON SMA.surveyid = SM.surveyid   " +
                             "and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID() +
-                            " and (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW')" +
+                            " and (SMA.menucode='MENU_SURVEY' OR SMA.menucode='MENU_SURVEY_SW' OR SMA.menucode='MENU_SURVEY_QDVP3')" +
                             " and AD.upload='N' group by AD.surveyId");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
@@ -5126,7 +5128,7 @@ public class BusinessModel extends Application {
                             + " INNER JOIN AnswerHeader AH ON AH.uid=AD.uid"
                             + "  INNER JOIN SurveyMapping SM  ON SM.surveyid=AD.surveyid and SM.qid=AD.qid where AH.retailerid="
                             + getRetailerMasterBO().getRetailerID()
-                            + " and AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW') and AD.upload='N' group by SM.groupName");
+                            + " and AH.menuCode in('MENU_SURVEY','MENU_SURVEY_SW','MENU_SURVEY_QDVP3') and AD.upload='N' group by SM.groupName");
             if (c.getCount() > 0) {
                 lst = new ArrayList<>();
                 ConfigureBO bo;
@@ -7092,7 +7094,7 @@ public class BusinessModel extends Application {
 
                     int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
                             SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
-                    final double discountpercentage = collectionHelper.getDiscountSlabPercent(count + 1);
+                    final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
                     if (configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
@@ -7580,6 +7582,16 @@ public class BusinessModel extends Application {
 
     public void setPhotosTakeninCurrentCompetitorTracking(HashMap<String, String> photosTakeninCurrentCompetitorTracking) {
         this.photosTakeninCurrentCompetitorTracking = photosTakeninCurrentCompetitorTracking;
+    }
+
+    HashMap<String, String> photosTakeninCurrentAssetTracking = new HashMap<>();
+
+    public HashMap<String, String> getPhotosTakeninCurrentAssetTracking() {
+        return photosTakeninCurrentAssetTracking;
+    }
+
+    public void setPhotosTakeninCurrentAssetTracking(HashMap<String, String> photosTakeninCurrentAssetTracking) {
+        this.photosTakeninCurrentAssetTracking = photosTakeninCurrentAssetTracking;
     }
 }
 

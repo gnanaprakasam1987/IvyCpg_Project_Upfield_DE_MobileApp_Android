@@ -35,6 +35,7 @@ import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.google.gson.JsonObject;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.sfdc.AccountData;
@@ -4346,8 +4347,9 @@ SynchronizationHelper {
         bmodel.productHelper.loadOldBatchIDMap();
 
         //credintote updatation and loading
-        bmodel.collectionHelper.updateCreditNoteACtualAmt();
-        bmodel.collectionHelper.loadCreditNote();
+        CollectionHelper collectionHelper = CollectionHelper.getInstance(context);
+        collectionHelper.updateCreditNoteACtualAmt();
+        collectionHelper.loadCreditNote();
 
         bmodel.reasonHelper.downloadReasons();
         bmodel.updateIsTodayAndIsVanSalesInRetailerMasterInfo();

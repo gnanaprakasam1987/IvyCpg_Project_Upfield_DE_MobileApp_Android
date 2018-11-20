@@ -27,7 +27,7 @@ public interface TaxInterface {
     void insertBillLevelTax(String orderId, DBUtil db);
     void loadTaxDetailsForPrint(String invoiceid);
     void loadTaxProductDetailsForPrint(String invoiceid);
-    HashMap<String,Double> prepareProductTaxForPrint(Context context, String orderId);
+    HashMap<String,Double> prepareProductTaxForPrint(Context context, String orderId, boolean isFromInvoice);
     void updateProductWiseExcludeTax();
     void saveProductLeveltax(String orderId, DBUtil db);
     void updateInvoiceIdInProductLevelTax(DBUtil db, String invid, String orderId);

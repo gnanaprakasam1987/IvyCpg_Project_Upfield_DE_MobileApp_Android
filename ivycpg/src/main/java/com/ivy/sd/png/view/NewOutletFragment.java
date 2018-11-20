@@ -2258,7 +2258,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         editText[i].addTextChangedListener(watcher);
                         break;
                     }
-                } else if(bmodel.configurationMasterHelper.IS_CONTACT_TAB){
+                } else if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
                     ArrayList<RetailerContactBo> contactList = bmodel.newOutletHelper.getRetailerContactList();
                     if (contactList.size() == 0) {
                         validate = false;
@@ -5001,15 +5001,10 @@ public class NewOutletFragment extends IvyBaseFragment
             if (surveyHelperNew.isSurveyAvaliable(bmodel.newOutletHelper.getId()))
                 showAlert(getResources().getString(R.string.are_you_sure_to_close_without_savingthe_data));
             else if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
-                startActivity(new Intent(getActivity(),
-                        HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
-                getActivity().finish();
-            } else {
-                startActivity(new Intent(getActivity(),
-                        HomeScreenActivity.class));
+               /* startActivity(new Intent(getActivity(),
+                        HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));*/
                 getActivity().finish();
             }
-
             return true;
         }
         if (i == R.id.menu_survey) {
@@ -5120,7 +5115,11 @@ public class NewOutletFragment extends IvyBaseFragment
                                             Toast.makeText(getActivity(),
                                                     getResources().getString(R.string.external_storage_not_available),
                                                     Toast.LENGTH_SHORT).show();
-                                            getActivity().finish();
+                                            if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
+                                                getActivity().finish();
+                                            } else {
+                                                detachFragment();
+                                            }
                                         }
                                         dialog.dismiss();
                                     }
@@ -5219,10 +5218,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
-                                        if (currentFragment != null) {
-                                            currentFragment.detach("MENU_NEW_RET");
-                                        }
+                                        detachFragment();
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder);
@@ -5266,6 +5262,13 @@ public class NewOutletFragment extends IvyBaseFragment
                                 });
                 bmodel.applyAlertDialogTheme(builder);
                 break;
+        }
+    }
+
+    private void detachFragment() {
+        HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+        if (currentFragment != null) {
+            currentFragment.detach("MENU_NEW_RET");
         }
     }
 
@@ -5961,9 +5964,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
                         showToast(getResources().getString(
                                 R.string.saved_successfully));
-                        startActivity(new Intent(getActivity(),
-                                HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));
-//                        getActivity().finish();
+                        getActivity().finish();
                     } else {
 
                         onCreateDialogNew(2);
@@ -6076,33 +6077,24 @@ public class NewOutletFragment extends IvyBaseFragment
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
                     onCreateDialogNew(2);
-                   /* bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.new_store_has_been_saved),
-                            DataMembers.NOTIFY_NEW_OUTLET_SAVED);*/
                     return true;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert(
-                            "Error: "
+                    showAlert("Error: "
                                     + getResources().getString(
-                                    R.string.new_store_infn_not_saved), 0);
+                                    R.string.new_store_infn_not_saved));
                     return true;
                 case DataMembers.SAVENEWOUTLET:
                     alertDialog.dismiss();
                     showToast(getResources().getString(
                             R.string.saved_successfully));
-                    startActivity(new Intent(getActivity(), HomeScreenActivity.class));
-                    getActivity().finish();
                     return true;
                 case DataMembers.RETAILER_DOWNLOAD_FAILED:
                     alertDialog.dismiss();
                     showToast(getResources().getString(
                             R.string.data_not_downloaded));
-                    startActivity(new Intent(getActivity(), HomeScreenActivity.class));
-                    getActivity().finish();
-
+                    detachFragment();
                     return true;
                 case DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL:
                     alertDialog.dismiss();
@@ -6113,8 +6105,8 @@ public class NewOutletFragment extends IvyBaseFragment
                 case DataMembers.NOTIFY_URL_NOT_CONFIGURED:
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert(
-                            getResources().getString(R.string.url_not_mapped), 0);
+                    showAlert(
+                            getResources().getString(R.string.url_not_mapped));
                     return true;
                 default:
                     return false;
@@ -6286,9 +6278,9 @@ public class NewOutletFragment extends IvyBaseFragment
                     }
                     alertDialog.dismiss();
                     if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
-                        /*startActivity(new Intent(getActivity(),
-                                HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));*/
                         getActivity().finish();
+                    } else {
+                        detachFragment();
                     }
                 }
                 break;
@@ -6301,9 +6293,9 @@ public class NewOutletFragment extends IvyBaseFragment
                         getResources().getString(R.string.data_download_successfully),
                         Toast.LENGTH_SHORT).show();
                 if (screenMode == VIEW || screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN) {
-                   /* startActivity(new Intent(getActivity(),
-                            HomeScreenActivity.class).putExtra("menuCode", "MENU_NEWRET_EDT"));*/
                     getActivity().finish();
+                } else {
+                    detachFragment();
                 }
                 break;
         }
@@ -6468,14 +6460,12 @@ public class NewOutletFragment extends IvyBaseFragment
                     public void onClick(DialogInterface dialog, int which) {
 
                         surveyHelperNew.deleteNewRetailerSurvey(bmodel.newOutletHelper.getId());
-                        if (screenMode == VIEW || screenMode == EDIT) {
-                            startActivity(new Intent(getActivity(),
-                                    NewOutletEdit.class));
+                        if (screenMode == VIEW
+                                || screenMode == EDIT
+                                || screenMode == CREATE_FRM_EDT_SCREEN) {
                             getActivity().finish();
                         } else {
-                            startActivity(new Intent(getActivity(),
-                                    HomeScreenActivity.class));
-                            getActivity().finish();
+                            detachFragment();
                         }
                     }
 

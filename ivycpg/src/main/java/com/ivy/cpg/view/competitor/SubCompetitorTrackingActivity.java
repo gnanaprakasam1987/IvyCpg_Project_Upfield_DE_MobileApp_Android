@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -18,7 +17,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -39,7 +37,6 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -55,7 +52,6 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
@@ -143,19 +139,16 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void initializeView() {
-        et_feedback = (EditText) findViewById(R.id.edt_feedback);
-        lvwplist = (ListView) findViewById(R.id.list);
-        btnSave = (Button) findViewById(R.id.btn_save);
+        et_feedback = findViewById(R.id.edt_feedback);
+        lvwplist = findViewById(R.id.list);
+        btnSave = findViewById(R.id.btn_save);
         lvwplist.setCacheColorHint(0);
 
-        ((TextView) findViewById(R.id.tvTitleTrackingList)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tvTitlePeriod)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tvTitlePhoto)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tvTitleAvaialabilty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        et_feedback.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        if (!bmodel.configurationMasterHelper.SHOW_COMP_QTY)
+            (findViewById(R.id.tvTitleQty)).setVisibility(View.GONE);
+
         if (!bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR) {
-            ((TextView) findViewById(R.id.tvTitlePhoto)).setVisibility(View.GONE);
+            (findViewById(R.id.tvTitlePhoto)).setVisibility(View.GONE);
         }
     }
 
@@ -339,42 +332,42 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 holder = new ViewHolder();
 
                 LayoutInflater inflater = LayoutInflater.from(SubCompetitorTrackingActivity.this);
-                convertView = (View) inflater.inflate(
+                convertView = inflater.inflate(
                         R.layout.row_sub_comp, null);
 
-                holder.checkBox = (CheckBox) convertView
+                holder.checkBox = convertView
                         .findViewById(R.id.chk_comp_activity);
-                holder.tvTrackingList = (TextView) convertView
+                holder.tvTrackingList = convertView
                         .findViewById(R.id.tv_trackinglist);
-                holder.btnFromDate = (Button) convertView
+                holder.btnFromDate = convertView
                         .findViewById(R.id.btn_fromdate);
-                holder.btnToDate = (Button) convertView
+                holder.btnToDate = convertView
                         .findViewById(R.id.btn_todate);
-                holder.btnPhoto = (ImageView) convertView
+                holder.btnPhoto = convertView
                         .findViewById(R.id.btn_photo);
-                holder.edtComFeedback = (EditText) convertView
+                holder.edtComFeedback = convertView
                         .findViewById(R.id.edt_competitor_feedback);
-                holder.edtQty = (EditText) convertView
+                holder.edtQty = convertView
                         .findViewById(R.id.et_qty);
-                holder.spnReason = (Spinner) convertView
+                holder.spnReason = convertView
                         .findViewById(R.id.spn_reason);
 
                 if (!bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR) {
-                    ((LinearLayout) convertView.findViewById(R.id.ll_photoView)).setVisibility(View.GONE);
+                    (convertView.findViewById(R.id.ll_photoView)).setVisibility(View.GONE);
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_TIME_VIEW) {
-                    ((Button) convertView.findViewById(R.id.btn_fromdate)).setVisibility(View.GONE);
-                    ((Button) convertView.findViewById(R.id.btn_todate)).setVisibility(View.GONE);
+                    (convertView.findViewById(R.id.ll_from_date)).setVisibility(View.GONE);
+                    (convertView.findViewById(R.id.ll_to_date)).setVisibility(View.GONE);
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_SPINNER) {
-                    ((Spinner) convertView.findViewById(R.id.spn_reason)).setVisibility(View.GONE);
+                    (convertView.findViewById(R.id.ll_spin)).setVisibility(View.GONE);
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_COMP_FEEDBACK) {
                     convertView.findViewById(R.id.ll_hg).setVisibility(View.GONE);
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_COMP_QTY) {
-                    convertView.findViewById(R.id.LL_qty).setVisibility(View.GONE);
+                    convertView.findViewById(R.id.et_qty).setVisibility(View.GONE);
                 }
 
                 holder.checkBox
@@ -384,6 +377,8 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                             public void onCheckedChanged(
                                     CompoundButton buttonView, boolean isChecked) {
                                 if (!isChecked) {
+                                    holder.edtQty.setText("0");
+                                    holder.edtQty.setEnabled(false);
                                     holder.btnPhoto.setEnabled(false);
                                     holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                                     holder.edtComFeedback.setText("");
@@ -402,6 +397,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                         holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
 
                                     }
+                                    holder.edtQty.setEnabled(true);
                                     holder.edtComFeedback.setEnabled(true);
                                     holder.btnFromDate.setEnabled(true);
                                     holder.btnToDate.setEnabled(true);
@@ -463,17 +459,8 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     @Override
                     public void onClick(View view) {
 
-                        /*if (bmodel.competitorTrackingHelper.getNoOfImages())
-                            Toast.makeText(
-                                    SubCompetitorTrackingActivity.this,
-                                    getResources()
-                                            .getString(
-                                                    R.string.its_highly_recommend_you_to_upload_the_images_before_capturing_new_image),
-                                    Toast.LENGTH_SHORT).show();
-                        else {*/
                         trackinglistId = holder.mCompTrackBO.getId();
                         takephoto(bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR);
-                        //}
                     }
                 });
 
@@ -525,14 +512,6 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
             holder.mCompTrackBO = items.get(position);
 
-            //typefaces
-            holder.tvTrackingList.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.btnFromDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.btnToDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.edtComFeedback.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.edtQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            ((TextView) convertView.findViewById(R.id.tv_qty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
 
             holder.checkBox.setChecked(holder.mCompTrackBO.isExecuted());
             holder.tvTrackingList.setText(holder.mCompTrackBO.getName());
@@ -549,6 +528,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 holder.mCompTrackBO.setToDate(holder.btnToDate.getText()
                         .toString());
                 //holder.mCompTrackBO.setReasonID(resonId);
+                holder.edtQty.setEnabled(false);
                 holder.btnPhoto.setEnabled(false);
                 holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                 holder.edtComFeedback.setEnabled(false);
@@ -568,35 +548,22 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                         SDUtil.now(SDUtil.DATE_GLOBAL),
                                         outPutDateFormat))
                                 : holder.mCompTrackBO.getToDate());
+                holder.edtQty.setEnabled(true);
                 holder.btnPhoto.setEnabled(true);
-                holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
                 holder.edtComFeedback.setEnabled(true);
                 holder.btnFromDate.setEnabled(true);
                 holder.btnToDate.setEnabled(true);
                 holder.spnReason.setEnabled(true);
+
+                if ((holder.mCompTrackBO.getImageName() != null)
+                        && (!"".equals(holder.mCompTrackBO.getImageName()))
+                        && (!"null".equals(holder.mCompTrackBO.getImageName()))) {
+                    setPictureToImageView(holder.mCompTrackBO.getImageName(), holder.btnPhoto);
+                } else {
+                    holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
+                }
             }
 
-            if ((holder.mCompTrackBO.getImageName() != null)
-                    && (!"".equals(holder.mCompTrackBO.getImageName()))
-                    && (!"null".equals(holder.mCompTrackBO.getImageName()))) {
-                //  Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
-                setPictureToImageView(holder.mCompTrackBO.getImageName(), holder.btnPhoto);
-//                Glide.with(SubCompetitorTrackingActivity.this).load(HomeScreenFragment.photoPath + "/" + holder.mCompTrackBO.getImageName()).asBitmap().centerCrop().placeholder(new BitmapDrawable(getResources(), defaultIcon)).into(new BitmapImageViewTarget(holder.btnPhoto) {
-//                    @Override
-//                    protected void setResource(Bitmap resource) {
-//                        holder.btnPhoto.setImageDrawable(new BitmapDrawable(getResources(), getCircularBitmapFrom(resource)));
-//                    }
-//                });
-
-            } else {
-                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(SubCompetitorTrackingActivity.this, R.drawable.ic_photo_camera_grey_24dp));
-            }
-            TypedArray typearr = SubCompetitorTrackingActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-            if (position % 2 == 0) {
-                convertView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            } else {
-                convertView.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-            }
             holder.spnReason.setAdapter(spinnerAdapter);
             holder.spnReason
                     .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -697,7 +664,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     Thread.sleep(100);
 
                     String _path = HomeScreenFragment.photoPath + "/" + imageName;
-                    bmodel.getPhotosTakeninCurrentCompetitorTracking().put(trackinglistId +"", _path);
+                    bmodel.getPhotosTakeninCurrentCompetitorTracking().put(trackinglistId + "", _path);
 
                     Intent intent = new Intent(this,
                             CameraActivity.class);
@@ -988,44 +955,6 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         }
         return false;
     }
-
-  /*  private void eff() {
-        String s = mSelectedET.getText().toString();
-        if (!"0".equals(s) && !"0.0".equals(s)) {
-            String strQuantity = mSelectedET.getText() + append;
-            mSelectedET.setText(strQuantity);
-        } else
-            mSelectedET.setText(append);
-    }
-
-    public void numberPressed(View vw) {
-        int val;
-        if (mSelectedET == null) {
-            bmodel.showAlert(
-                    getResources().getString(R.string.please_select_item), 0);
-        } else {
-            int id = vw.getId();
-            if (id == R.id.calcdel) {
-
-                int s = SDUtil.convertToInt(mSelectedET.getText()
-                        .toString());
-                s = s / 10;
-                String strS = s + "";
-                mSelectedET.setText(strS);
-                val = s;
-
-
-            } else {
-                Button ed = (Button) findViewById(vw.getId());
-                append = ed.getText().toString();
-                eff();
-                val = SDUtil.convertToInt(append);
-            }
-
-
-
-        }
-    }*/
 
     /**
      * Initialize Adapter and add reason

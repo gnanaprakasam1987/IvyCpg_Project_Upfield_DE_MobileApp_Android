@@ -305,13 +305,21 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                 if (!mAsset.getSelectedItem().toString()
                         .equals(SELECT)
                         && !mBrand.getSelectedItem().toString()
-                        .equals(SELECT)
-                        && !mSNO.getText().toString().equals("")) {
+                        .equals(SELECT)) {
+                    if(mSNO.getText().toString().trim().equals("")){
+                        Toast.makeText(
+                                getActivity(),
+                                getResources()
+                                        .getString(
+                                                R.string.enter_serial_no),
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (!assetTrackingHelper
                             .getUniqueSerialNo(mSNO.getText()
                                     .toString())) {
                         setAddAssetDetails();
-                        mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                        //mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                         assetTrackingHelper
                                 .saveAssetAddAndDeleteDetails(getContext().getApplicationContext(), "MENU_ASSET");
                         Toast.makeText(

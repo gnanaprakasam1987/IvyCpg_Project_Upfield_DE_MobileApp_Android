@@ -9,6 +9,7 @@ package com.ivy.cpg.view.delivery.kellogs;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -360,6 +361,13 @@ public class OrderDeliveryHelper {
         for (ProductMasterBO product : businessModel.productHelper.getProductMaster()) {
             if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 || product.getOrderedOuterQty() > 0
                     || isReturnOrReplacementAvailable(product)) {
+
+                double temp = (product.getOrderedPcsQty() * product.getSrp())
+                        + (product.getOrderedCaseQty() * product.getCsrp())
+                        + product.getOrderedOuterQty() * product.getOsrp();
+                temp = SDUtil.convertToDouble(SDUtil.format(temp, businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
+                product.setTaxableAmount(temp);
+
                 orderedProductMasterBOS.add(product);
 
                 int prodQty = product.getOrderedPcsQty()
@@ -590,7 +598,7 @@ public class OrderDeliveryHelper {
                 else
                     salesReturned = 0;
 
-                double discountPercentage = businessModel.collectionHelper.getSlabwiseDiscountpercentage();
+                double discountPercentage = CollectionHelper.getInstance(context).getSlabwiseDiscountpercentage();
 
                 if (businessModel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                     if (discountPercentage > 0) {
@@ -754,7 +762,7 @@ public class OrderDeliveryHelper {
             if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || businessModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(context);
                 salesReturnHelper.setSalesReturnID(AppUtils.QT(uid));
-                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(db, AppUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),true);
+                salesReturnHelper.saveSalesReturnTaxAndCreditNoteDetail(context,db, AppUtils.QT(uid), "ORDER", businessModel.retailerMasterBO.getRpTypeCode(),true);
             }
 
             updateOrderDeliverySIH(db, isEdit,false);
@@ -1347,4 +1355,70 @@ public class OrderDeliveryHelper {
 
         }
     }
+
+    public void updateDiscountInLineValue(Context context,String orderId){
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+
+        try {StringBuilder sb=new StringBuilder();
+            sb.append("select pid,sum(Value) from OrderDiscountDetail" +
+                    " where orderid="+businessModel.QT(orderId)+"  group by pid");
+            Cursor c = db.selectSQL(sb.toString());
+            while (c.moveToNext()){
+
+                ProductMasterBO productMasterBO=businessModel.productHelper.getProductMasterBOById(c.getString(0));
+
+                if(productMasterBO!=null) {
+                    double productDiscount = c.getDouble(1);
+
+                    if (productMasterBO.getLineValue() > 0)
+                        productMasterBO.setLineValue(productMasterBO.getLineValue() - productDiscount);
+
+                    productMasterBO.setProductLevelDiscountValue(productDiscount);
+                }
+            }
+
+
+            db.closeDB();
+        }catch (Exception e){
+            Commons.printException(e);
+
+            db.closeDB();
+
+        }
+
+
+    }
+
+    public void updateTaxInLineValue(Context context,String orderId){
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db.createDataBase();
+        db.openDataBase();
+
+        try {StringBuilder sb=new StringBuilder();
+            sb.append("select pid,sum(taxValue) from InvoiceTaxDetails" +
+                    " where orderid="+businessModel.QT(orderId)+"  group by pid");
+            Cursor c = db.selectSQL(sb.toString());
+            while (c.moveToNext()){
+
+                double lineValue= businessModel.productHelper.getProductMasterBOById(c.getString(0)).getLineValue();
+                double productTax=c.getDouble(1);
+
+                if(lineValue>0)
+                    businessModel.productHelper.getProductMasterBOById(c.getString(0)).setLineValue(lineValue+productTax);
+            }
+
+
+            db.closeDB();
+        }catch (Exception e){
+            Commons.printException(e);
+
+            db.closeDB();
+
+        }
+
+
+    }
+
 }

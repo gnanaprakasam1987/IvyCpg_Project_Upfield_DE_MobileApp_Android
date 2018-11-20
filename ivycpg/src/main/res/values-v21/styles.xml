@@ -88,7 +88,6 @@
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center</item>
         <item name="android:keepScreenOn">true</item>
-        <item name="android:layout_marginRight">@dimen/list_margin</item>
         <item name="android:maxLength">4</item>
         <item name="android:selectAllOnFocus">true</item>
         <item name="android:singleLine">true</item>

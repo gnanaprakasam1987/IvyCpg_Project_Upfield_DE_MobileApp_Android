@@ -421,7 +421,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
         ArrayList<SellerBo> inMarketSellerList = new ArrayList<>();
 
-        long totatlOrderValue = 0L;
+        double totatlOrderValue = 0;
         int coveredOutlet = 0;
         int billedOutlet = 0;
 
@@ -437,14 +437,14 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                 inMarketSellerList.add(sellerBo);
         }
 
-        sellerMapHomeView.updateOrderValue((int)totatlOrderValue);
+        sellerMapHomeView.updateOrderValue(totatlOrderValue);
         sellerMapHomeView.updateCoveredCount(coveredOutlet);
 
         int unBilledoutlet = coveredOutlet - billedOutlet;
         sellerMapHomeView.updateUnbilledCount(unBilledoutlet);
 
         int sellerProductive = 0;
-        if (coveredOutlet!=0) {
+        if (totalOutletCount!=0 ) {
             sellerProductive = (int)((float)billedOutlet / (float)totalOutletCount * 100);
         }
         sellerMapHomeView.sellerProductivity(sellerProductive);

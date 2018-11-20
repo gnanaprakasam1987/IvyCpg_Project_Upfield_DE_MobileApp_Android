@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.text.TextPaint;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
@@ -214,6 +215,8 @@ public class CommonPrintHelper {
     private double mSchemeValueByAmountType = 0;
     private double netSchemeAmount = 0;
     private double mCash = 0, mCheque = 0, mTotCredit = 0, mCreditNoteValue = 0;
+
+    public boolean isFromInvoiceTransaction;
 
 
     private CommonPrintHelper(Context context) {
@@ -781,11 +784,11 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_PRICE_OFF)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint(totalPriceOffValue, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_APPLY)) {
-            value = getProductLevelApplyDiscount(precisionCount);
+            value = getProductLevelApplyDiscount(label,precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_ENTRY)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint((DiscountHelper.getInstance(context).calculateUserEntryLevelDiscount(mOrderedProductList)), precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_TAX_PRODUCT)) {
-            value = getProductLevelTax(precisionCount);
+            value = getProductLevelTax(label,precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_BILL_ENTRY)) {
             int extraSpace = 0;
             extraSpace = SDUtil.convertToInt(attr_space_str);
@@ -1737,50 +1740,22 @@ public class CommonPrintHelper {
      *
      * @return
      */
-    private String getProductLevelApplyDiscount(int precision) {
-        StringBuffer sb = new StringBuffer();
-        ArrayList<Integer> mDiscountTypeIdList = bmodel.productHelper.getTypeIdList();
-        SparseArray<ArrayList<Integer>> mDiscountIdListByTypeId = bmodel.productHelper.getDiscountIdListByTypeId();
-        if (mDiscountTypeIdList != null && mDiscountIdListByTypeId != null) {
+    private String getProductLevelApplyDiscount(String label,int precision) {
+        StringBuffer sb=new StringBuffer();
 
-            for (Integer typeId : mDiscountTypeIdList) {
-                ArrayList<Integer> discountIdList = mDiscountIdListByTypeId.get(typeId);
+        DiscountHelper discountHelper=DiscountHelper.getInstance(context);
 
-                if (discountIdList != null) {
-                    String discountDescription = "";
-                    double totalDiscountValue = 0;
+        HashMap<String,Double> discountList=discountHelper.prepareProductDiscountForPrint(context,orderHelper.getOrderId().replaceAll("\'", ""));
 
-                    for (int discountId : discountIdList) {
-                        ArrayList<StoreWiseDiscountBO> discountList = bmodel.productHelper.getProductDiscountListByDiscountID().get(discountId);
-                        if (discountList != null) {
+        if(discountList.size()>0) {
+            for (String discountName : discountList.keySet()) {
+                sb.append(alignWithLabelForSingleLine(discountName, formatValueInPrint(discountList.get(discountName), precision)));
+                sb.append("\n");
 
-                            for (StoreWiseDiscountBO storeWiseDiscountBO : discountList) {
-                                discountDescription = storeWiseDiscountBO.getDescription();
-
-                                ProductMasterBO productMasterBO = bmodel.productHelper.getProductMasterBOById(String.valueOf(storeWiseDiscountBO.getProductId()));
-                                if (productMasterBO != null) {
-
-                                    if (productMasterBO.getTotalOrderedQtyInPieces() > 0) {
-                                        totalDiscountValue = totalDiscountValue + storeWiseDiscountBO.getDiscountValue();
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (totalDiscountValue > 0) {
-                        String s = "";
-                        if (discountDescription.length() < 20) {
-                            s = discountDescription;
-                        } else {
-                            s = discountDescription.substring(0, 20);
-                        }
-                        s = alignWithLabelForSingleLine(s, formatValueInPrint(totalDiscountValue, precision));
-                        sb.append(s);
-                        sb.append("\n");
-                    }
-                }
             }
+        }else {
+            sb.append(alignWithLabelForSingleLine(label, formatValueInPrint(0, precision)));
+            sb.append("\n");
         }
 
         return sb.toString();
@@ -1792,13 +1767,20 @@ public class CommonPrintHelper {
      *
      * @return
      */
-    private String getProductLevelTax(int precision) {
+    private String getProductLevelTax(String label,int precision) {
 
         StringBuilder sb=new StringBuilder();
 
-        HashMap<String,Double> taxList=bmodel.productHelper.taxHelper.prepareProductTaxForPrint(context,orderHelper.getOrderId().replaceAll("\'", ""));
-        for(String taxName:taxList.keySet()){
-            sb.append(alignWithLabelForSingleLine(taxName, formatValueInPrint(taxList.get(taxName), precision)));
+        HashMap<String,Double> taxList=bmodel.productHelper.taxHelper.prepareProductTaxForPrint(context,orderHelper.getOrderId().replaceAll("\'", ""),isFromInvoiceTransaction);
+        if(taxList.size()>0) {
+            for (String taxName : taxList.keySet()) {
+                sb.append(alignWithLabelForSingleLine(taxName, formatValueInPrint(taxList.get(taxName), precision)));
+                sb.append("\n");
+            }
+        }
+        else {
+            // Printing tax value as 0.
+            sb.append(alignWithLabelForSingleLine(label, formatValueInPrint(0, precision)));
             sb.append("\n");
         }
 
@@ -1879,18 +1861,19 @@ public class CommonPrintHelper {
 
 
     private void getCollectionBeforeInvValue() {
-        List<PaymentBO> payment = bmodel.collectionHelper
-                .getPaymentList();
+        List<PaymentBO> payment = CollectionHelper.getInstance(context).getPaymentList();
         if (payment != null && payment.size() > 0) {
 
-            if (payment.get(0).getCashMode()
-                    .equals(StandardListMasterConstants.CHEQUE)) {
-                mCheque = payment.get(0).getAmount();
-            } else if (payment.get(0).getCashMode()
-                    .equals(StandardListMasterConstants.CASH)) {
-                mCash = payment.get(0).getAmount();
-            } else if (payment.get(0).getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
-                mCreditNoteValue = payment.get(0).getAmount();
+            switch (payment.get(0).getCashMode()) {
+                case StandardListMasterConstants.CHEQUE:
+                    mCheque = payment.get(0).getAmount();
+                    break;
+                case StandardListMasterConstants.CASH:
+                    mCash = payment.get(0).getAmount();
+                    break;
+                case StandardListMasterConstants.CREDIT_NOTE:
+                    mCreditNoteValue = payment.get(0).getAmount();
+                    break;
             }
 
 

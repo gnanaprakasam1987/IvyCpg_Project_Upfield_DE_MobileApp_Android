@@ -73,7 +73,7 @@ public class SellerPerformanceListAdapter extends RecyclerView.Adapter<SellerPer
             sellerProductive = (int)((float)billed / (float)target * 100);
         }
 
-        holder.sellerPerformancePercentTv.setText(sellerProductive+"%");
+        holder.sellerPerformancePercentTv.setText(sellerProductive>100?"100%":sellerProductive+"%");
         holder.progressBar.setProgress(sellerProductive);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

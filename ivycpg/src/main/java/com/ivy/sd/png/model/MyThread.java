@@ -3,7 +3,9 @@ package com.ivy.sd.png.model;
 import android.app.Activity;
 import android.os.Handler;
 
+import com.baidu.platform.comapi.map.C;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.login.LoginBaseActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.LoginScreen;
@@ -108,9 +110,9 @@ public class MyThread extends Thread {
                 bmodel.downloadVisit_Actual_Achieved();
                 bmodel.labelsMasterHelper.downloadLabelsMaster();
                 bmodel.productHelper.loadOldBatchIDMap();
-
-                bmodel.collectionHelper.updateCreditNoteACtualAmt();
-                bmodel.collectionHelper.loadCreditNote();
+                CollectionHelper collectionHelper = CollectionHelper.getInstance(ctx);
+                collectionHelper.updateCreditNoteACtualAmt();
+                collectionHelper.loadCreditNote();
                 bmodel.productHelper.downloadOrdeType();
                 bmodel.configurationMasterHelper.downloadPasswordPolicy();
 
@@ -276,8 +278,8 @@ public class MyThread extends Thread {
                     }
 
                 }
-
-                if (orderHelper.saveOrder(ctx, bill1Products, false) && orderHelper.saveOrder(ctx, bill2Products, false)) {
+                orderHelper.setOrderId(null);
+                if ( orderHelper.saveOrder(ctx, bill1Products, false) && orderHelper.saveOrder(ctx, bill2Products,false)) {
 
 
                     // Update review plan in DB
@@ -661,7 +663,7 @@ public class MyThread extends Thread {
                 }
                 // When Configuration Enabled the data inserted in to the Payment
                 if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
-                    bmodel.collectionHelper.collectionBeforeInvoice();
+                    CollectionHelper.getInstance(ctx).collectionBeforeInvoice();
 
                 Commons.print("Class Simple Name :"
                         + ctx.getClass().getSimpleName());

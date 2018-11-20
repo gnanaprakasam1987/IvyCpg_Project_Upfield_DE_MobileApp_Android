@@ -1483,7 +1483,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                 + (productBO.getOrderedOuterQty() * productBO
                                 .getOsrp());
 
-                        line_total_price = line_total_price + each_total;
+                        line_total_price = line_total_price + SDUtil.formatAsPerCalculationConfig(each_total);
 
                         productBO.setNetValue(each_total);
                     }

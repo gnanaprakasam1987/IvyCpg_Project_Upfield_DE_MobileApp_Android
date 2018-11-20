@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,10 +69,10 @@ public class PrintCountDialogFragment extends DialogFragment {
         super.onStart();
         getDialog().setTitle(mTitle);
         getDialog().setCancelable(false);
-        mTitleTV = (TextView) rootView.findViewById(R.id.title);
-        mOkBtn = (Button) rootView.findViewById(R.id.btn_ok);
-        mDismisBtn = (Button) rootView.findViewById(R.id.btn_dismiss);
-        mCountLV = (ListView) rootView.findViewById(R.id.lv_colletion_print);
+        mTitleTV =  rootView.findViewById(R.id.title);
+        mOkBtn =  rootView.findViewById(R.id.btn_ok);
+        mDismisBtn =  rootView.findViewById(R.id.btn_dismiss);
+        mCountLV =  rootView.findViewById(R.id.lv_colletion_print);
         mCountLV.setVisibility(View.GONE);
         mTitleTV.setText(mTextViewTitle);
         mPrintCountArray = bmodel.printHelper.getPrintCountArray();

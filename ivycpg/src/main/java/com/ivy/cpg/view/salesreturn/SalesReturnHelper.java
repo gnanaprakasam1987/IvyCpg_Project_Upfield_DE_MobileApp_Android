@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.CreditNoteListBO;
@@ -710,7 +711,7 @@ public class SalesReturnHelper {
 
             // If credit note is generated, then tax appyled details should get saved.
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
-                saveSalesReturnTaxAndCreditNoteDetail(db, getSalesReturnID(), module, bmodel.retailerMasterBO.getRpTypeCode(), isInvoice);
+                saveSalesReturnTaxAndCreditNoteDetail(mContext, db, getSalesReturnID(), module, bmodel.retailerMasterBO.getRpTypeCode(), isInvoice);
 
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
@@ -1306,7 +1307,7 @@ public class SalesReturnHelper {
      * @param db  db
      * @param uid uid
      */
-    public void saveSalesReturnTaxAndCreditNoteDetail(DBUtil db, String uid, String module, String code, boolean isInvoice) {
+    public void saveSalesReturnTaxAndCreditNoteDetail(Context context, DBUtil db, String uid, String module, String code, boolean isInvoice) {
 
         String columns = "uid,Retailerid,taxRate,taxType,applyLevelId,taxValue,pid";
         setTotalValue(getTotalCreditNoteWithOutTAX(db));
@@ -1396,7 +1397,7 @@ public class SalesReturnHelper {
                 crBo.setChecked(false);
                 crBo.setRetailerId(bmodel.getRetailerMasterBO().getRetailerID());
 
-                bmodel.collectionHelper.getCreditNoteList().add(crBo);
+                CollectionHelper.getInstance(context).getCreditNoteList().add(crBo);
                 db.updateSQL("UPDATE SalesReturnHeader SET IsCreditNoteApplicable = 1,credit_flag=1 WHERE uid = "
                         + getSalesReturnID());
             }
@@ -1575,7 +1576,7 @@ public class SalesReturnHelper {
                     mSalesReturnProductById = genericObjectPair.object2;
                 }
                 filterProductLevels = bmodel.productHelper.downloadFilterLevel("MENU_SALES_RET");
-                filterProductsByLevelId = bmodel.productHelper.downloadFilterLevelProducts(filterProductLevels,true);
+                filterProductsByLevelId = bmodel.productHelper.downloadFilterLevelProducts(filterProductLevels, true);
             } else {
 
                 for (ProductMasterBO sku : bmodel.productHelper.getProductMaster()) {

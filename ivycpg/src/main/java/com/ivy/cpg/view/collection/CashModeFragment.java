@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.collection;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -26,8 +26,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -39,18 +39,15 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
     private LinearLayout mPaymentNoLL;
     private BusinessModel bmodel;
     private UpdatePaymentByDateInterface mUpdatePaymentInterface;
-    private CustomKeyBoard dialogCustomKeyBoard;
     private EditText mPaymentNoET;
-    private View rootView;
     private boolean isAdvancePaymentAvailable;
     private int mCashModePos;
-    //private TextInputLayout amtTextHint,refnoTextHint;
     private EditText QUANTITY;
     private String append = "";
     private InputMethodManager inputManager;
     private Button applyBtn, cancelBTn;
-    private boolean isNumberPressed = false;
     private double tempPaidAmt = 0.0;
+    private CollectionHelper collectionHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,13 +55,14 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        collectionHelper = CollectionHelper.getInstance(getActivity());
 
         mUpdatePaymentInterface = (UpdatePaymentByDateInterface) getActivity();
 
         mCashModePos = getArguments().getInt("position", 0);
         isAdvancePaymentAvailable = getArguments().getBoolean("IsAdvancePaymentAvailable", false);
 
-        mPaymentList = bmodel.collectionHelper.getCollectionPaymentList();
+        mPaymentList = collectionHelper.getCollectionPaymentList();
         mPaymentBO = mPaymentList.get(mCashModePos);
         tempPaidAmt = mPaymentBO.getAmount();
     }
@@ -77,43 +75,39 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_cash_mode, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_cash_mode, container, false);
 
         setHasOptionsMenu(true);
         if (getActivity().getActionBar() != null) {
-            // getActionBar().setIcon(R.drawable.icon_stock);
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
         if (mPaymentBO != null) {
             setScreenTitle(mPaymentBO.getListName());
         }
 
-        bmodel.collectionHelper.clearPaymentObjects(mPaymentBO);
+        collectionHelper.clearPaymentObjects(mPaymentBO);
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
 
-        mTotalTV = (TextView) rootView.findViewById(R.id.tv_total_amount);
+        mTotalTV = rootView.findViewById(R.id.tv_total_amount);
 
-        mEnteredAmountTitleTV = (TextView) rootView.findViewById(R.id.tv_enteramount_title);
-        mCollectAmtET = (EditText) rootView.findViewById(R.id.edit_amount);
-
-        /*mCollectAmtET.setRawInputType(InputType.TYPE_CLASS_NUMBER
-                | InputType.TYPE_NUMBER_FLAG_DECIMAL);*/
+        mEnteredAmountTitleTV = rootView.findViewById(R.id.tv_enteramount_title);
+        mCollectAmtET = rootView.findViewById(R.id.edit_amount);
 
         mCollectAmtET.requestFocus();
         QUANTITY = mCollectAmtET;
 
-        applyBtn = (Button) rootView.findViewById(R.id.applybtn);
-        applyBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        applyBtn = rootView.findViewById(R.id.applybtn);
+        applyBtn.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
         applyBtn.setOnClickListener(this);
 
-        cancelBTn = (Button) rootView.findViewById(R.id.cancelbtn);
-        cancelBTn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        cancelBTn = rootView.findViewById(R.id.cancelbtn);
+        cancelBTn.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
         cancelBTn.setOnClickListener(this);
 
-        mPaymentNoLL = (LinearLayout) rootView.findViewById(R.id.ll3);
-        mRefNoTitleTV = (TextView) rootView.findViewById(R.id.tv_refno_title);
-        mPaymentNoET = (EditText) rootView.findViewById(R.id.edit_refno);
+        mPaymentNoLL = rootView.findViewById(R.id.ll3);
+        mRefNoTitleTV = rootView.findViewById(R.id.tv_refno_title);
+        mPaymentNoET = rootView.findViewById(R.id.edit_refno);
 
         if (StandardListMasterConstants.CASH.equals(mPaymentBO.getCashMode())) {
             mPaymentNoLL.setVisibility(View.GONE);
@@ -123,7 +117,6 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
         }
 
         mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
-        //updateTotalAmountEntered();
         mPaymentNoET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -183,7 +176,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                     }
                     mPaymentBO.setAmount(value);
                     mPaymentBO.setUpdatePayableamt(value);
-                    if (value > 0 && isAdvancePaymentAvailable && !bmodel.collectionHelper.isUseAllAdvancePaymentAmt()) {
+                    if (value > 0 && isAdvancePaymentAvailable && !collectionHelper.isUseAllAdvancePaymentAmt()) {
                         if (!qty.contains("."))
                             qty = qty.length() > 1 ? qty.substring(0,
                                     qty.length() - 1) : "0";
@@ -193,8 +186,6 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                         mCollectAmtET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(qty)));
                         Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                 Toast.LENGTH_SHORT).show();
-                    } else if (!bmodel.collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CASH)) {
-                        //updateTotalAmountEntered();
                     } else {
                         if (value > 0) {
                             if (!qty.contains("."))
@@ -220,25 +211,6 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                 }
             }
         });
-        /*mCollectAmtET.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCollectAmtET.setFocusable(false);
-                if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
-                    dialogCustomKeyBoard = new CustomKeyBoard(getActivity(), mCollectAmtET, true, 12);
-                    dialogCustomKeyBoard.show();
-                    dialogCustomKeyBoard.setCancelable(false);
-
-                    //Grab the window of the dialog, and change the width
-                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                    Window window = dialogCustomKeyBoard.getWindow();
-                    lp.copyFrom(window.getAttributes());
-                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                    window.setAttributes(lp);
-                }
-            }
-        });*/
 
         rootView.findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
         updateFragments(mCashModePos);
@@ -319,14 +291,12 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
             case CA:
                 updatePaymentDetails();
                 updateUI(paymentBO);
-                //updatePaymentDetails(Utils.getDate("yyyy/dd/MM"));
                 break;
 
             case CM:
 
                 updatePaymentDetails();
                 updateUI(paymentBO);
-                //updatePaymentDetails(Utils.getDate("yyyy/dd/MM"));
 
                 break;
 
@@ -334,14 +304,12 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
 
                 updatePaymentDetails();
                 updateUI(paymentBO);
-                //updatePaymentDetails(Utils.getDate("yyyy/dd/MM"));
 
                 break;
             case CD:
 
                 updatePaymentDetails();
                 updateUI(paymentBO);
-                //updatePaymentDetails(Utils.getDate("yyyy/dd/MM"));
 
                 break;
 
@@ -380,7 +348,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                     }
                 }
             } else {
-                Button ed = (Button) getView().findViewById(vw.getId());
+                Button ed = getView().findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }

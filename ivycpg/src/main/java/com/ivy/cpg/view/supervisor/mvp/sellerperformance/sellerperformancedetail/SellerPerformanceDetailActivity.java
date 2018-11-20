@@ -264,7 +264,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         valueTargetTv.setText(String.valueOf(sellerBo.getTargetValue()));
 
         int covered,lines;
-        long orderValue;
+        double orderValue;
 
         if(tabLayout.getSelectedTabPosition() == 1){
             covered = sellerBo.getAchievedCoverage();

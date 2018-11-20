@@ -12,7 +12,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -33,7 +32,6 @@ import com.ivy.sd.png.bo.CompetitorBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -96,8 +94,8 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
      */
     private void viewInitialise(View view) {
 
-        lvcategorylist = (ListView) view.findViewById(R.id.lvcategorylist);
-        tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        lvcategorylist = view.findViewById(R.id.lvcategorylist);
+        tabLayout = view.findViewById(R.id.tab_layout);
 
         float scale = getContext().getResources().getDisplayMetrics().widthPixels;
         scale = scale / bmodel.competitorTrackingHelper.getCompanyList().size();
@@ -117,8 +115,6 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
             txtVw.setGravity(Gravity.CENTER);
             txtVw.setWidth((int) scale);
 
-            txtVw.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            txtVw.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             txtVw.setText(companyBO.getCompetitorName());
             txtVw.setEllipsize(TextUtils.TruncateAt.MARQUEE);
             txtVw.setMarqueeRepeatLimit(-1);
@@ -136,10 +132,10 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
         updateList();
 
         if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
-            LinearLayout footer = (LinearLayout) view.findViewById(R.id.footer);
+            LinearLayout footer = view.findViewById(R.id.footer);
             footer.setVisibility(View.VISIBLE);
 
-            Button btnClose = (Button) view.findViewById(R.id.btn_close);
+            Button btnClose = view.findViewById(R.id.btn_close);
             btnClose.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -251,7 +247,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
                     //it.remove(); // avoids a ConcurrentModificationException
                 }
                 bmodel.getPhotosTakeninCurrentCompetitorTracking().clear();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -301,9 +297,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
         }
 
         protected void onPreExecute() {
-            /*progressDialogue = ProgressDialog.show(getActivity(),
-                    DataMembers.SD, getResources().getString(R.string.saving),
-					true, false);*/
+
             builder = new AlertDialog.Builder(getActivity());
 
             customProgressDialog(builder, getResources().getString(R.string.saving));
@@ -348,7 +342,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 
         for (int i = 0; i < bmodel.competitorTrackingHelper
                 .getCompetitorMaster().size(); i++) {
-            CompetitorBO ret = (CompetitorBO) bmodel.competitorTrackingHelper
+            CompetitorBO ret = bmodel.competitorTrackingHelper
                     .getCompetitorMaster().get(i);
             if (ret.getCompanyID() == mSelectedCompany || mSelectedCompany == -1)
                 items.add(ret);
@@ -381,22 +375,17 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
             final CompetitorViewHolder holder;
 
             if (convertView == null) {
-
                 holder = new CompetitorViewHolder();
-
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                convertView = (View) inflater.inflate(
+                convertView = inflater.inflate(
                         R.layout.competitor_home, null);
 
-
-                holder.tvCategoryName = (TextView) convertView
+                holder.tvCategoryName = convertView
                         .findViewById(R.id.activity_name);
-                holder.ivIndicator = (ImageView) convertView
+                holder.ivIndicator = convertView
                         .findViewById(R.id.list_item_icon_iv);
-                holder.llCircle = (LinearLayout) convertView
+                holder.llCircle = convertView
                         .findViewById(R.id.icon_ll);
-
-
                 convertView.setTag(holder);
 
             } else {
@@ -404,8 +393,6 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
             }
 
             holder.mCompetitorBO = items.get(position);
-
-            holder.tvCategoryName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             holder.tvCategoryName.setText(holder.mCompetitorBO.getProductname());
             if (holder.mCompetitorBO.isAchieved()) {

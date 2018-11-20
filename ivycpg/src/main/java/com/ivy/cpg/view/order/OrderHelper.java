@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -1105,8 +1106,8 @@ public class OrderHelper {
 
         int pieceCount;
         float srp;
-        double csrp;
-        double osrp;
+        float csrp;
+        float osrp;
         int orderPieceQty;
         int orderCaseQty;
         int orderOuterQty;
@@ -1780,7 +1781,7 @@ public class OrderHelper {
             db.createDataBase();
             db.openDataBase();
 
-            double discountPercentage = businessModel.collectionHelper.getSlabwiseDiscountpercentage();
+            double discountPercentage = CollectionHelper.getInstance(mContext).getSlabwiseDiscountpercentage();
 
             String invoiceId;
             // Normally Generating Invoice ID
@@ -2115,8 +2116,8 @@ public class OrderHelper {
 
         int totalqty;
         float srp;
-        double csrp;
-        double osrp;
+        float csrp;
+        float osrp;
         double prodDisc;
         double schemeDisc;
         double taxAmount;

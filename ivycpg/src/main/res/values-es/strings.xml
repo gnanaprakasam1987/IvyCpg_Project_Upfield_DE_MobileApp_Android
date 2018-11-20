@@ -1331,4 +1331,13 @@
     <string name="digital_content_header_this_month">Este mes</string>
     <string name="digital_content_header_prev_month">Mes anterior</string>
     <string name="digital_content_header_older">Antiguos</string>
+
+    <string name="tls">TLS</string>
+    <string name="payment_term">Payment term</string>
+    <string name="oth_disc">Oth. Disc (Other Discount)</string>
+    <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
+    <string name="attachment">Attachment</string>
+    <string name="bill">Bill</string>
+
+
 </resources>

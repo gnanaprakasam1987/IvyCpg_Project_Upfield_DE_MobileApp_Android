@@ -564,7 +564,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             break;
                         }
                     } else if (configureBO.getConfigCode().equalsIgnoreCase(MENU_VISIT)
-                            //|| configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
+                            || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_KPI)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_DAY)
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DASH_INC)
@@ -1595,6 +1595,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 if (bmodel.getRetailerMaster().size() > 0) {
                     if (!isClicked) {
                         isClicked = false;
+                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menuItem.getConfigCode());
+                        bmodel.configurationMasterHelper.downloadFloatingSurveyConfig(menuItem.getConfigCode());
                         bmodel.distributorMasterHelper.downloadDistributorsList();
                         bmodel.configurationMasterHelper
                                 .setSubdtitle(menuItem.getMenuName());

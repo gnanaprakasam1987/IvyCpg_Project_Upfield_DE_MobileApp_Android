@@ -42,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
@@ -50,7 +51,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.CollectionBO;
+import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -66,7 +67,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.AdvancePaymentDialogFragment;
+import com.ivy.cpg.view.collection.AdvancePaymentDialogFragment;
 import com.ivy.sd.png.view.AmountSplitUpDialog;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.CatalogOrder;
@@ -193,6 +194,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private boolean isWihtHoldApplied = false;
     private int linesPerCall = 0;
 
+    private CollectionHelper collectionHelper;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,6 +211,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         discountHelper = DiscountHelper.getInstance(this);
         orderHelper = OrderHelper.getInstance(this);
         mCalendar = Calendar.getInstance();
+        collectionHelper = CollectionHelper.getInstance(this);
 
         // Close the screen if user id becomes 0 **/
         if (bModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -297,7 +301,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         // If Collection before invoice module enable, clear object
         if (bModel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE) {
             collectionbo = new CollectionBO();
-            bModel.collectionHelper.getPaymentList().clear();
+            collectionHelper.getPaymentList().clear();
         }
     }
 
@@ -780,12 +784,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     mOrderedProductList.add(productBO);
 
-                    double lineValue = (productBO.getOrderedCaseQty() * productBO
-                            .getCsrp())
-                            + (productBO.getOrderedPcsQty() * productBO
-                            .getSrp())
-                            + (productBO.getOrderedOuterQty() * productBO
-                            .getOsrp());
+                    double lineValue = calculateLineValue(productBO);
 
                     // Set the calculated flat line values in productBO
                     totalOrderValue += lineValue;
@@ -849,12 +848,15 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     .getTotalValueOfAllBatches(productBO);
 
         } else {
-            return (productBO.getOrderedCaseQty() * productBO
+
+            double totalValue=(productBO.getOrderedCaseQty() * productBO
                     .getCsrp())
                     + (productBO.getOrderedPcsQty() * productBO
                     .getSrp())
                     + (productBO.getOrderedOuterQty() * productBO
                     .getOsrp());
+
+            return SDUtil.formatAsPerCalculationConfig(totalValue);
         }
     }
 
@@ -1167,13 +1169,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private void CollectionBeforeInvoiceCall() {
         bModel.downloadBankDetails();
         bModel.downloadBranchDetails();
-        bModel.collectionHelper.loadPaymentModes();
+        collectionHelper.loadPaymentModes();
 
         double minimumAmount;
         double creditBalance;
 
         if (bModel.getRetailerMasterBO().getCreditLimit() != 0) {
-            creditBalance = bModel.getRetailerMasterBO().getCreditLimit() - bModel.collectionHelper.calculatePendingOSTAmount();
+            creditBalance = bModel.getRetailerMasterBO().getCreditLimit() - collectionHelper.calculatePendingOSTAmount();
         } else
             creditBalance = 0;
 
@@ -1187,7 +1189,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (!isClicked) {
             isClicked = true;
 
-            int paymentModeSize = bModel.collectionHelper.getPaymentModes()
+            int paymentModeSize = collectionHelper.getPaymentModes()
                     .size();
             if (paymentModeSize > 0) {
 
@@ -1882,7 +1884,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 double pendingAmount;
                 double collectedAmount = 0;
 
-                pendingAmount = bModel.getRetailerMasterBO().getCreditLimit() - bModel.collectionHelper.calculatePendingOSTAmount();
+                pendingAmount = bModel.getRetailerMasterBO().getCreditLimit() - collectionHelper.calculatePendingOSTAmount();
 
                 if (collectionbo.getCashamt() > 0
                         || collectionbo.getChequeamt() > 0 || collectionbo.getCreditamt() > 0) {
@@ -2869,6 +2871,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             holder.rep_ou.setText(strRepOuterQty);
             String strRepPcsQty = holder.productBO.getRepPieceQty() + "";
             holder.rep_pcs.setText(strRepPcsQty);
+
+            holder.cbSeparateBill.setChecked(holder.productBO.isSeparateBill());
 
             return row;
         }

@@ -644,6 +644,7 @@
 
 
     <dimen name="actionbar_title_text_size">19.2sp</dimen>
+    <dimen name="actionbar_subtitle_text_size">17.2sp</dimen>
     <dimen name="text_size_primary">12.8sp</dimen>
     <dimen name="text_size_secondary">11.2sp</dimen>
     <dimen name="text_size_caption">8.8sp</dimen>

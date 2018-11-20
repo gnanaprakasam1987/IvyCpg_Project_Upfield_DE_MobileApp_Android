@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -57,6 +56,8 @@ import com.ivy.sd.png.view.RemarksDialog;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 public class
@@ -162,7 +163,26 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                assetPresenter.checkDataExistToSave();
+                if(adapter.isEmpty()){
+                    String titleText = getString(R.string.no_data_tosave);
+                    AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
+                            getActivity());
+                    alertDialogBuilder1
+                            .setIcon(null)
+                            .setCancelable(false)
+                            .setTitle(titleText)
+                            .setPositiveButton(getResources().getString(R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,
+                                                            int whichButton) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                    mBModel.applyAlertDialogTheme(alertDialogBuilder1);
+                } else {
+                    assetPresenter.checkDataExistToSave();
+                }
             }
         });
 
@@ -408,15 +428,40 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
-                mDrawerLayout.closeDrawers();
+            if(adapter.isEmpty()){
+                save();
             } else {
-                assetPresenter.updateTimeStamp();
-                startActivity(new Intent(getActivity(),
-                        HomeScreenTwo.class));
-                getActivity().finish();
+                try {
+                    Iterator it = mBModel.getPhotosTakeninCurrentAssetTracking().entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry) it.next();
+                        String mAssetId = pair.getKey().toString();
+                        String photoPath = pair.getValue().toString();
+
+                        String fileName = photoPath.substring(photoPath.lastIndexOf('/') + 1, photoPath.length());
+                        String fileNameStarts = fileName.substring(0, fileName.length() - 14);
+
+                        String path = photoPath.substring(0, photoPath.lastIndexOf('/'));
+
+                        assetPresenter.removeExistingImage(mAssetId, fileNameStarts, path);
+
+                        System.out.println("Deleted Image " + mAssetId + " = " + photoPath);
+                        //it.remove(); // avoids a ConcurrentModificationException
+                    }
+                    mBModel.getPhotosTakeninCurrentAssetTracking().clear();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    mDrawerLayout.closeDrawers();
+                } else {
+                    assetPresenter.updateTimeStamp();
+                    startActivity(new Intent(getActivity(),
+                            HomeScreenTwo.class));
+                    getActivity().finish();
+                }
+                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i == R.id.menu_next) {
 
@@ -675,34 +720,51 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
 
     @Override
     public void cancelProgressDialog() {
-        assetPresenter.updateTimeStamp();
-        if (alertDialog != null) {
-            alertDialog.dismiss();
-        }
-
-        new CommonDialog(getActivity().getApplicationContext(), getActivity(),
-                "", getResources().getString(R.string.saved_successfully),
-                false, getActivity().getResources().getString(R.string.ok),
-                null, new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
-
-                Bundle extras = getActivity().getIntent().getExtras();
-                if (extras != null) {
-                    intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
-                    intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
-                }
-
-                startActivity(intent);
+        if(adapter.isEmpty()){
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                mDrawerLayout.closeDrawers();
+            } else {
+                assetPresenter.updateTimeStamp();
+                startActivity(new Intent(getActivity(),
+                        HomeScreenTwo.class));
                 getActivity().finish();
+            }
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        } else {
+            assetPresenter.updateTimeStamp();
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
 
-            }
-        }, new CommonDialog.negativeOnClickListener() {
-            @Override
-            public void onNegativeButtonClick() {
-            }
-        }).show();
+            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                    "", getResources().getString(R.string.saved_successfully),
+                    false, getActivity().getResources().getString(R.string.ok),
+                    null, new CommonDialog.PositiveClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+                    try{
+                        mBModel.getPhotosTakeninCurrentAssetTracking().clear();
+                    } catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+                    Bundle extras = getActivity().getIntent().getExtras();
+                    if (extras != null) {
+                        intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
+                        intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+                    }
+
+                    startActivity(intent);
+                    getActivity().finish();
+
+                }
+            }, new CommonDialog.negativeOnClickListener() {
+                @Override
+                public void onNegativeButtonClick() {
+                }
+            }).show();
+        }
     }
 
 

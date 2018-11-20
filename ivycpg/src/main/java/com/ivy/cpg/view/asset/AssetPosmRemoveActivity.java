@@ -338,7 +338,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
                                 .deletePosmDetails(getApplicationContext(), assetTrackingBO.getSNO());
                         itr.remove();
                     }
-                    bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                    //bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                 }
             }
 
