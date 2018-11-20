@@ -473,6 +473,9 @@
             android:name="com.ivy.cpg.view.asset.AssetPosmRemoveActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.ivy.cpg.view.serializedAsset.RemoveSerializedAssetActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.ivy.cpg.view.van.damagestock.DamageStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -824,6 +827,11 @@
 
         <activity android:name="com.ivy.cpg.view.supervisor.chat.StartChatActivity"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

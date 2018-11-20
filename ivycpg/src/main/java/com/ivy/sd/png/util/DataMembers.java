@@ -81,6 +81,7 @@ public class DataMembers {
     public static final String FIT_PROMO = "FIT_PROMO";
     public static final String FIT_ASSET = "FIT_ASSET";
     public static final String FIT_POSM = "FIT_POSM";
+    public static final String FIT_SERIALIZED_ASSET = "FIT_SERIALIZED_ASSET";
 
     public static final String MENU_STOCK = "MENU_STOCK";
     public static final String MENU_PRICE = "MENU_PRICE";
@@ -256,6 +257,9 @@ public class DataMembers {
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
     private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks,toRetailerId";
 
+    public static final String tbl_SerializedAssetTransfer = "SerializedAssetTransfer";
+    private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
+
     public static final String tbl_HhtModuleMaster = "HhtModuleMaster";
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
 
@@ -310,6 +314,7 @@ public class DataMembers {
     public static final String tbl_AssetHeader = "AssetHeader";
     public static final String tbl_AssetDetail = "AssetDetail";
     public static final String tbl_AssetImgInfo = "AssetImageDetails";
+    public static final String tbl_SerializedAssetImgInfo = "SerializedAssetImageDetails";
     public static final String tbl_NearExpiryHeader = "NearExpiry_Tracking_Header";
     private static final String tbl_NearExpiryHeader_cols = "Tid,RetailerId,Uid,Date,TimeZone,RefId";
     private static final String tbl_NearExpiryDetail = "NearExpiry_Tracking_Detail";

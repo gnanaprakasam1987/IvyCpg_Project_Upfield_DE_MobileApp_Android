@@ -94,4 +94,6 @@
 
     <string name="select_future_date">Select future date</string>
 
+    <string name="enter_nfc_number">Enter NFC NO</string>
+
 </resources>

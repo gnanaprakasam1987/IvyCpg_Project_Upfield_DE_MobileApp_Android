@@ -153,7 +153,9 @@ public class UpSellingActivity extends IvyBaseActivityNoActionBar implements Vie
 
                     }
 
+                    if(schemeBO.getBuyType().equals(QUANTITY_TYPE))
                     label_product.setText("Product("+schemeProductBO.getUomDescription()+")");
+                    else label_product.setText("Product");
 
                     if(schemeProductBO.getGroupLogic().equals("ANY")){
                         text_toAdd.setVisibility(View.GONE);
