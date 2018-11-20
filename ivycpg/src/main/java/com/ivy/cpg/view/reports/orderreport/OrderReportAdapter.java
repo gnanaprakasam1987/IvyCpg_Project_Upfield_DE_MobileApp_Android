@@ -326,7 +326,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         try {
             String delivery_date;
 
-            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(OrderHelper.getInstance(mContext).selectedOrderId,holder.reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
+            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(holder.reportBO.getOrderID(),holder.reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
 
             if (businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
                 String value = businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;
