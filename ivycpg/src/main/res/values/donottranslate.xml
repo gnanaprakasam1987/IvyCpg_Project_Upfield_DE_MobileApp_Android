@@ -91,8 +91,13 @@
     <string name="please_provide_valid_reason_or_Availability">Please Provide Valid Reason or Availability</string>
     <string name="contact_list_mandatory">Contact List is Mandatory</string>
     <string name="condition">Condition</string>
+    <string name="printFile_missing_error">Print file is not available</string>
 
     <string name="select_future_date">Select future date</string>
+
+    <string name ="enter_serial_no">Please Enter Serial No</string>
+
+    <string name="fill_photo_and_adherence">Please take photo and fill adherence</string>
 
     <string name="enter_nfc_number">Enter NFC NO</string>
 
