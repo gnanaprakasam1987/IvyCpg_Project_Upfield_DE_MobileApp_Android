@@ -136,7 +136,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                             .setText("Last visit at " + convertTime(sellerListBos.get(holder.getAdapterPosition()).getInTime()))
                             .setTextSize(R.dimen._11sdp)
                             .setBackgroundColor(ContextCompat.getColor(context, R.color.tootl_tip_bg))
-                            .setTextColor(ContextCompat.getColor(context, R.color.WHITE))
+                            .setTextColor(ContextCompat.getColor(context, R.color.white))
                             .setPadding(10f);
                     builder.show();
                 }

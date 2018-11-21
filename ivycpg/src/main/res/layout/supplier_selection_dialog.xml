@@ -19,7 +19,7 @@
             android:gravity="left|center_vertical"
             android:text="@string/select_supplier"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/font_small"
             android:textStyle="bold" />
 
 

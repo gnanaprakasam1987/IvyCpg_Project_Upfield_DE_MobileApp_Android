@@ -40,7 +40,7 @@
             android:layout_toEndOf="@+id/outlet_iv"
             android:singleLine="true"
             android:text="@string/dummy_txt"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/font_small"
             android:layout_toRightOf="@+id/outlet_iv" />
 
@@ -53,7 +53,7 @@
             android:layout_toEndOf="@+id/outletName_tv"
             android:singleLine="true"
             android:text="@string/visit_frequency"
-            android:textColor="@color/blue_btn_txt"
+            android:textColor="@color/highlighter"
             android:textSize="@dimen/font_small"
             android:layout_toRightOf="@+id/outletName_tv" />
     </RelativeLayout>

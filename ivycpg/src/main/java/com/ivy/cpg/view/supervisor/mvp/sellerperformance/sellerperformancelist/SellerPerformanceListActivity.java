@@ -86,7 +86,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
 
         mChart = findViewById(R.id.combined_chart);
         mChart.setNoDataText("Loading...");
-        mChart.setNoDataTextColor(ContextCompat.getColor(this,R.color.WHITE));
+        mChart.setNoDataTextColor(ContextCompat.getColor(this,R.color.white));
         mChart.animateXY(3000,3000,
                 Easing.EasingOption.EaseInBack, Easing.EasingOption.EaseOutBack);
 
@@ -298,7 +298,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
+        l.setTextColor(ContextCompat.getColor(this,R.color.white));
         l.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         l.setDrawInside(false);
 
@@ -330,7 +330,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         xAxis.setAxisLineColor(ContextCompat.getColor(this,R.color.chart_horizontal_line_color));
         xAxis.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
-        xAxis.setTextColor(ContextCompat.getColor(this,R.color.WHITE));
+        xAxis.setTextColor(ContextCompat.getColor(this,R.color.white));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
@@ -346,7 +346,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         xAxis.setAxisMaximum(data.getXMax() + 0.25f);
 
         mChart.getAxisRight().setDrawLabels(false);
-        mChart.getAxisLeft().setTextColor(ContextCompat.getColor(this,R.color.WHITE));
+        mChart.getAxisLeft().setTextColor(ContextCompat.getColor(this,R.color.white));
 
         mChart.setData(data);
         mChart.invalidate();
@@ -359,7 +359,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         LineDataSet set = new LineDataSet(sellerPerformancePresenter.getSellerCoveredEntry(), "Covered");
         set.setColor((ContextCompat.getColor(this,R.color.chart_covered_line)));
         set.setLineWidth(4f);
-        set.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
+        set.setCircleColor(ContextCompat.getColor(this,R.color.white));
         set.setCircleColorHole(ContextCompat.getColor(this,R.color.chart_point_circle));
         set.setCircleRadius(6f);
         set.setCircleHoleRadius(4f);
@@ -374,12 +374,12 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
                 return String.valueOf((int)value);
             }
         });
-        set.setValueTextColor((ContextCompat.getColor(this,R.color.WHITE)));
+        set.setValueTextColor((ContextCompat.getColor(this,R.color.white)));
 
         LineDataSet set1 = new LineDataSet(sellerPerformancePresenter.getSellerBilledEntry(), "Productivity");
         set1.setColor(ContextCompat.getColor(this,R.color.chart_productivity_line));
         set1.setLineWidth(4f);
-        set1.setCircleColor(ContextCompat.getColor(this,R.color.WHITE));
+        set1.setCircleColor(ContextCompat.getColor(this,R.color.white));
         set1.setCircleColorHole(ContextCompat.getColor(this,R.color.chart_point_circle));
         set1.setCircleRadius(6f);
         set1.setCircleHoleRadius(4f);
@@ -396,7 +396,7 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
             }
         });
 
-        set1.setValueTextColor(ContextCompat.getColor(this,R.color.WHITE));
+        set1.setValueTextColor(ContextCompat.getColor(this,R.color.white));
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);

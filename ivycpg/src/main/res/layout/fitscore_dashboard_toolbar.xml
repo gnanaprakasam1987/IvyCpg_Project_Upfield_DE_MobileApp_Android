@@ -79,7 +79,7 @@
                             android:layout_toEndOf="@+id/color_rep_black"
                             android:layout_toRightOf="@+id/color_rep_black"
                             android:text="Target"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_secondary" />
                     </LinearLayout>
 
@@ -95,7 +95,7 @@
                             android:id="@+id/target_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_primary"
                             android:textStyle="normal"
                             tools:text="70" />
@@ -109,7 +109,7 @@
                             android:layout_toRightOf="@+id/target_tv"
                             android:paddingEnd="20dp"
                             android:text=" pts"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
@@ -137,7 +137,7 @@
                             android:layout_height="@dimen/qn_text_margin_left"
                             android:layout_gravity="center"
                             android:layout_marginEnd="@dimen/dimen_5dp"
-                            android:background="@color/GREEN"
+                            android:background="@color/green_productivity"
                             android:padding="2dp"
                             android:layout_marginRight="@dimen/dimen_5dp">
 
@@ -150,7 +150,7 @@
                             android:layout_toEndOf="@+id/color_rep_orange"
                             android:layout_toRightOf="@+id/color_rep_orange"
                             android:text="Score"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_secondary" />
                     </LinearLayout>
 
@@ -166,7 +166,7 @@
                             android:id="@+id/growth_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_primary"
                             android:textStyle="normal"
                             tools:text="70" />
@@ -180,7 +180,7 @@
                             android:layout_toRightOf="@+id/growth_tv"
                             android:paddingEnd="20dp"
                             android:text=" pts"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
@@ -223,7 +223,7 @@
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:text="Previous Score"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_secondary" />
                     </LinearLayout>
 
@@ -239,7 +239,7 @@
                             android:id="@+id/previous_score_TV"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_primary"
                             android:textStyle="normal"
                             tools:text="70" />
@@ -253,7 +253,7 @@
                             android:layout_toRightOf="@+id/previous_score_TV"
                             android:paddingEnd="20dp"
                             android:text=" pts"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />

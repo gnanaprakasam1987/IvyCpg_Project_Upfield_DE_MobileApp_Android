@@ -410,7 +410,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
         if (groupPosition % 2 == 0) {
             row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
         } else {
-            row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.history_list_bg));
+            row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
         }
         return row;
     }

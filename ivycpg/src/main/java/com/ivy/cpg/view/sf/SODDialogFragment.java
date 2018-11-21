@@ -559,7 +559,7 @@ public class SODDialogFragment extends DialogFragment {
             mBrandNameColorCount.put(mBrandNameList.get(i), hashMap);
         }
 
-        int color = ContextCompat.getColor(getActivity(), R.color.competitor_brand);
+        int color = ContextCompat.getColor(getActivity(), R.color.gray_text);
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(COLOR, color);
         hashMap.put(COUNT, 0);
@@ -726,7 +726,7 @@ public class SODDialogFragment extends DialogFragment {
             setCellColor(view, String.valueOf(position));
         } else {
             setCellColor(view,
-                    ContextCompat.getColor(getActivity(), R.color.competitor_brand));
+                    ContextCompat.getColor(getActivity(), R.color.gray_text));
             addShelfDetails(String.valueOf(position), mEmpty, mEmpty,
                     mEmpty, mEmpty, 1, true);
         }
@@ -861,7 +861,7 @@ public class SODDialogFragment extends DialogFragment {
                 addShelfDetails(positionKey, mEmpty, mEmpty, mEmpty, mEmpty, 1,
                         false);
                 setCellColor(view,
-                        ContextCompat.getColor(getActivity(), R.color.competitor_brand));
+                        ContextCompat.getColor(getActivity(), R.color.gray_text));
             } else {
                 addShelfDetails(positionKey, mSelectedBrandName,
                         mSelectedBrandName, mSelectedBrandName,
@@ -1042,7 +1042,7 @@ public class SODDialogFragment extends DialogFragment {
      */
     private int getOppositeColor(String brandName) {
         int competitorBrandColor = ContextCompat.getColor(getActivity(),
-                R.color.competitor_brand);
+                R.color.gray_text);
         return brandName.equals(mSelectedBrandName) ? competitorBrandColor
                 : mSelectedBrandColor;
     }

@@ -40,7 +40,7 @@
 
                 <EditText
                     android:id="@+id/edittext_target"
-                    style="@style/EditText"
+                    style="@style/EditText_ListItem"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"

@@ -36,7 +36,7 @@
 
     <EditText
         android:id="@+id/qty"
-        style="@style/EditText"
+        style="@style/EditText_ListItem"
         android:layout_width="@dimen/price_value"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

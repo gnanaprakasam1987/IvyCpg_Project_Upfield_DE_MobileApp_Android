@@ -60,13 +60,5 @@
         <item name="android:textColor">@color/colorAccentCB</item>
     </style>
 
-    <style name="DialogStylePink" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="buttonBarButtonStyle">@style/DialogButtonStylePink</item>
-        <item name="colorAccent">@color/colorAccentPink</item>
-        <item name="android:buttonStyle">@style/MyButtonPink</item>
-    </style>
 
-    <style name="DialogButtonStylePink" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/colorAccentPink</item>
-    </style>
 </resources>

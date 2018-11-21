@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:cursorVisible="false"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:textSize="@dimen/text_size_secondary"
         android:visibility="gone"
         tools:text="rg tgerg dfgdfgdf g"
@@ -49,6 +49,6 @@
         <TextView
             android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
             android:layout_height="1dp"
-            android:background="@color/GRAY" />
+            android:background="@color/light_gray" />
     </LinearLayout>
 </LinearLayout>

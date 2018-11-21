@@ -85,9 +85,9 @@ public class DynamicReportFragment extends Fragment {
         ll_item = (LinearLayout) view.findViewById(R.id.ll_item);
 
         if (isFrom.equals("Expense"))
-            ll_item.setBackgroundResource(R.color.WHITE);
+            ll_item.setBackgroundResource(R.color.white);
         else if ("Profile".equalsIgnoreCase(isFrom)) {
-            ll_item.setBackgroundResource(R.color.WHITE);
+            ll_item.setBackgroundResource(R.color.white);
             dynamicReportHelper.setRep_retailer(false);
             dynamicReportHelper.downloadRetailerReport(Integer.parseInt(bmodel.getRetailerMasterBO().getRetailerID()));
         } else
@@ -171,7 +171,7 @@ public class DynamicReportFragment extends Fragment {
                     int pixelLength = ReportUtil.dpToPixel(getActivity(), length);
                     String value = (dynamicReportHeaderBO.getColumnName() != null) ? dynamicReportHeaderBO.getColumnName() : "";
                     int textSizeSmall = (int) (getResources().getDimension(R.dimen.font_small) / getResources().getDisplayMetrics().density);
-                    int textSizeMedium = (int) (getResources().getDimension(R.dimen.font_medium) / getResources().getDisplayMetrics().density);
+                    int textSizeMedium = (int) (getResources().getDimension(R.dimen.font_small) / getResources().getDisplayMetrics().density);
 
 
                     if (firstIteration) {

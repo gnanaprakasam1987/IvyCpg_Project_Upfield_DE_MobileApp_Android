@@ -13,7 +13,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="0dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="true"
@@ -106,7 +106,7 @@
                         android:padding="2dp"
                         android:tag="must_sell"
                         android:text="@string/order_number"
-                        android:textColor="@color/BLUE"
+                        android:textColor="@color/highlighter"
                         android:textSize="@dimen/text_size_primary"
                         android:visibility="gone" />
 
@@ -118,7 +118,7 @@
                         android:layout_marginTop="2dp"
                         android:gravity="center"
                         android:text="@string/dist"
-                        android:textColor="@color/BLUE"
+                        android:textColor="@color/highlighter"
                         android:textSize="@dimen/text_size_primary" />
 
                     <TextView
@@ -186,7 +186,7 @@
                         android:gravity="center"
                         android:tag="value_or_volume"
                         android:text="@string/focus_brand"
-                        android:textColor="@color/kpi_value_text_color"
+                        android:textColor="@color/list_item_secondary_text_color"
                         android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
@@ -198,7 +198,7 @@
                         android:gravity="center"
                         android:tag="value_or_volume"
                         android:text="@string/must_sell"
-                        android:textColor="@color/kpi_value_text_color"
+                        android:textColor="@color/list_item_secondary_text_color"
                         android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
@@ -210,7 +210,7 @@
                         android:gravity="center"
                         android:tag="value_or_volume"
                         android:text="@string/pre_post"
-                        android:textColor="@color/kpi_value_text_color"
+                        android:textColor="@color/list_item_secondary_text_color"
                         android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
@@ -222,7 +222,7 @@
                         android:gravity="center"
                         android:tag="lines"
                         android:text="@string/lines"
-                        android:textColor="@color/kpi_value_text_color"
+                        android:textColor="@color/list_item_secondary_text_color"
                         android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 

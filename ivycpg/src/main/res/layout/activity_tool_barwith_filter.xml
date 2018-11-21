@@ -62,7 +62,7 @@
                             android:layout_gravity="center"
                             android:maxLines="1"
                             android:text="@string/zero"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
@@ -91,7 +91,7 @@
                             android:layout_gravity="center"
                             android:maxLines="1"
                             android:text="@string/zero"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
@@ -121,7 +121,7 @@
                             android:layout_gravity="center"
                             android:maxLines="1"
                             android:text="@string/zero"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
@@ -151,7 +151,7 @@
                             android:layout_gravity="center"
                             android:maxLines="1"
                             android:text="@string/zero"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
@@ -181,7 +181,7 @@
                             android:layout_gravity="center"
                             android:maxLines="1"
                             android:text="@string/zero"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
@@ -211,7 +211,7 @@
                             android:layout_gravity="center"
                             android:maxLines="1"
                             android:text="@string/zero"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/footer_label_value" />
 
                     </LinearLayout>
@@ -311,7 +311,7 @@
                                     android:maxLines="1"
                                     android:inputType="text"
                                     android:text=""
-                                    android:textColor="@color/GRAY_TEXT"
+                                    android:textColor="@color/gray_text"
                                     android:textSize="@dimen/text_size_secondary" />
 
                                 <Button
@@ -333,7 +333,7 @@
                     android:layout_above="@+id/footer"
                     android:layout_alignParentTop="true"
                     android:layout_margin="@dimen/list_margin"
-                    card_view:cardBackgroundColor="@color/WHITE"
+                    card_view:cardBackgroundColor="@color/white"
                     card_view:cardCornerRadius="2dp"
                     card_view:cardElevation="5dp"
                     card_view:cardPreventCornerOverlap="true"

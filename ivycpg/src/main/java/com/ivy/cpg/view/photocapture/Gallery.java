@@ -485,7 +485,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                         String imagePath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
                                 + DataMembers.photoFolderName + "/" + imgArrList.get(position);
                         if (isChecked) {
-                            holder.RLCheckBg.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.shelfs_bg_semi_transperant, null));
+                            holder.RLCheckBg.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.light_gray, null));
                             imgPathShare.add(imagePath);
                             imgPathDelete.add(imgArrList.get(position));
                             imgFileDelete.add(new File(imagePath));

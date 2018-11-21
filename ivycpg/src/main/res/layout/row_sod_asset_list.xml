@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    card_view:cardBackgroundColor="@color/GRAY"
+    card_view:cardBackgroundColor="@color/light_gray"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="5dp"
     card_view:cardPreventCornerOverlap="true"

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,18 +15,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_margin"
-            card_view:cardBackgroundColor="@color/WHITE"
-            card_view:cardCornerRadius="0dp"
-            card_view:cardElevation="5dp"
-            card_view:cardPreventCornerOverlap="true"
-            card_view:cardUseCompatPadding="true"
-            card_view:contentPadding="0dp">
+        android:layout_height="match_parent"
+        android:padding="@dimen/dimens_2dp">
 
             <android.support.v4.widget.NestedScrollView xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
@@ -43,13 +34,13 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/list_odd_item_bg"
+                        android:background="@color/zxing_transparent"
                         android:orientation="vertical">
 
                         <RelativeLayout
+                            android:id="@+id/availability_lty"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/availability_lty"
                             android:layout_margin="@dimen/card_margin">
 
                             <TextView
@@ -70,8 +61,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
 
                             <LinearLayout
@@ -79,8 +70,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
                                 android:layout_marginTop="@dimen/target_top_margin"
+                                android:layout_marginEnd="@dimen/right_margin"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -89,8 +80,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="item_exp_facing"
-                                    android:text="@string/is_distributed"
-                                    android:textSize="@dimen/card_margin" />
+                                    android:text="@string/is_distributed" />
 
                                 <android.support.v7.widget.AppCompatCheckBox
                                     android:id="@+id/is_distributed"
@@ -109,8 +99,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
                                 android:layout_marginTop="@dimen/target_top_margin"
+                                android:layout_marginEnd="@dimen/right_margin"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -119,8 +109,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="item_exp_facing"
-                                    android:text="@string/is_Listed"
-                                    android:textSize="@dimen/card_margin" />
+                                    android:text="@string/is_Listed" />
 
                                 <android.support.v7.widget.AppCompatCheckBox
                                     android:id="@+id/is_listed"
@@ -136,8 +125,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
                                 android:layout_marginTop="@dimen/target_top_margin"
+                                android:layout_marginEnd="@dimen/right_margin"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -146,8 +135,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="item_exp_facing"
-                                    android:text="@string/avail"
-                                    android:textSize="@dimen/card_margin" />
+                                    android:text="@string/avail" />
 
                                 <android.support.v7.widget.AppCompatCheckBox
                                     android:id="@+id/chk_availability"
@@ -188,21 +176,20 @@
                         <View
                             android:id="@+id/view_dotted_line_avg"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dimen_2dp"
-                            android:layout_marginBottom="@dimen/list_item_inter_margin"
-                            android:layout_marginTop="@dimen/list_item_inter_margin"
-                            android:background="@drawable/line_dotted" />
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/card_margin"
+                            android:background="@color/light_gray" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/card_margin"
                             android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/tvTitleCurrentStock"
                                 style="?attr/customListItemPrimary"
                                 android:layout_width="wrap_content"
+                                android:layout_margin="@dimen/card_margin"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentLeft="true"
@@ -214,16 +201,18 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:layout_marginStart="@dimen/card_margin"
+                                android:orientation="horizontal"
+                                android:layout_marginLeft="@dimen/card_margin"
+                                android:layout_marginRight="@dimen/card_margin">
 
                                 <LinearLayout
                                     android:id="@+id/ll_avail_piece"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="vertical"
-                                    android:layout_marginRight="@dimen/right_margin">
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_avail_pctitle"
@@ -231,8 +220,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="@string/item_piece"
-                                        android:text="@string/avail_pcs"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/avail_pcs" />
 
                                     <EditText
                                         android:id="@+id/et_avail_pcValue"
@@ -240,8 +228,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="start"
-                                         />
+                                        android:gravity="start" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -250,7 +237,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/right_margin"
                                     android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -259,8 +245,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="@string/item_case"
-                                        android:text="@string/avail_cases"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/avail_cases" />
 
                                     <EditText
                                         android:id="@+id/et_avail_csValue"
@@ -268,8 +253,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="start"
-                                        />
+                                        android:gravity="start" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -277,9 +261,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/right_margin"
-                                    android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="vertical"
-                                    android:layout_marginLeft="@dimen/right_margin">
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_avail_outitle"
@@ -287,8 +270,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="@string/item_outer"
-                                        android:text="@string/avail_outer"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/avail_outer" />
 
                                     <EditText
                                         android:id="@+id/et_avail_ouValue"
@@ -296,8 +278,7 @@
                                         android:layout_width="@dimen/discount_editbox_width"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:gravity="start"
-                                        />
+                                        android:gravity="start" />
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -306,7 +287,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/right_margin"
                                     android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginTop="@dimen/target_top_margin"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -315,8 +295,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="item_exp_facing"
-                                        android:text="@string/facing"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/facing" />
 
                                     <EditText
                                         android:id="@+id/et_faceqty_csValue"
@@ -328,16 +307,23 @@
                                         android:text="@string/zero" />
                                 </LinearLayout>
                             </LinearLayout>
+
+
                             <View
                                 android:id="@+id/view_dotted_line"
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/dimen_2dp"
-                                android:layout_marginTop="@dimen/dimen_2dp"
-                                android:background="@drawable/line_dotted" />
+                                android:layout_height="1dp"
+                                android:layout_marginTop="@dimen/card_margin"
+                                android:background="@color/light_gray" />
+
                             <LinearLayout
                                 android:id="@+id/ll_avgdays"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/card_margin"
+                                android:layout_marginStart="@dimen/card_margin"
+                                android:layout_marginLeft="@dimen/card_margin"
+                                android:layout_marginRight="@dimen/card_margin"
                                 android:orientation="horizontal">
 
 
@@ -346,18 +332,17 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="horizontal"
-                                    android:layout_marginRight="@dimen/right_margin">
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:orientation="horizontal">
 
                                     <TextView
                                         android:id="@+id/tv_avg_qty_label"
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/qty"
                                         android:tag="avg_qty"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/qty" />
+
                                     <TextView
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
@@ -372,8 +357,7 @@
                                         style="?attr/customListItemPrimary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/zero"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/zero" />
                                 </LinearLayout>
 
 
@@ -382,18 +366,17 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="horizontal"
-                                    android:layout_marginRight="@dimen/right_margin">
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:orientation="horizontal">
 
                                     <TextView
                                         android:id="@+id/tv_avg_rfield1_label"
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/rfield1_klgs"
                                         android:tag="avg_rfield1"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/rfield1_klgs" />
+
                                     <TextView
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
@@ -408,8 +391,7 @@
                                         style="?attr/customListItemPrimary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/zero"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/zero" />
                                 </LinearLayout>
 
 
@@ -418,18 +400,17 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="horizontal"
-                                    android:layout_marginRight="@dimen/right_margin">
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:orientation="horizontal">
 
                                     <TextView
                                         android:id="@+id/tv_avg_rfield2_label"
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/rfield2_klgs"
                                         android:tag="avg_rfield2"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/rfield2_klgs" />
+
                                     <TextView
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
@@ -444,8 +425,7 @@
                                         style="?attr/customListItemPrimary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/zero"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/zero" />
                                 </LinearLayout>
 
 
@@ -454,18 +434,17 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="horizontal"
-                                    android:layout_marginRight="@dimen/right_margin">
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:orientation="horizontal">
 
                                     <TextView
                                         android:id="@+id/tv_avg_rfield3_label"
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/rfield3_klgs"
                                         android:tag="avg_rfield3"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/rfield3_klgs" />
+
                                     <TextView
                                         style="?attr/customListItemSecondary"
                                         android:layout_width="wrap_content"
@@ -480,8 +459,7 @@
                                         style="?attr/customListItemPrimary"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/zero"
-                                        android:textSize="@dimen/footer_label_size" />
+                                        android:text="@string/zero" />
                                 </LinearLayout>
 
                             </LinearLayout>
@@ -490,11 +468,10 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_price_parentLty"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/ll_price_parentLty"
-                        android:layout_marginTop="@dimen/target_top_margin"
-                        android:background="@color/list_even_item_bg"
+                        android:background="@color/zxing_transparent"
                         android:orientation="vertical">
 
 
@@ -510,11 +487,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
+                                android:layout_alignParentLeft="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/price_check"
                                 android:textSize="@dimen/font_small"
                                 android:textStyle="bold"
-                                android:layout_alignParentLeft="true" />
+                                tools:ignore="ObsoleteLayoutParam" />
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -526,10 +504,10 @@
                                     android:id="@+id/ll_price_piece"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="vertical"
-                                    android:layout_marginRight="@dimen/right_margin">
+                                    android:layout_marginEnd="@dimen/right_margin"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_price_pcTitle"
@@ -537,20 +515,17 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="price_piece"
-                                        android:text="@string/avail_pcs"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/avail_pcs" />
 
                                     <EditText
                                         android:id="@+id/et_price_pcValue"
                                         style="@style/EditText_ListItem"
                                         android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="0dp"
                                         android:layout_weight="1"
                                         android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
-
-
 
 
                                 <LinearLayout
@@ -558,11 +533,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/right_margin"
-                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_toEndOf="@+id/ll_price_piece"
-                                    android:orientation="vertical"
-                                    android:layout_toRightOf="@+id/ll_price_piece">
+                                    android:layout_toRightOf="@+id/ll_price_piece"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_price_csTitle"
@@ -570,14 +545,13 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="price_case"
-                                        android:text="@string/avail_cases"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/avail_cases" />
 
                                     <EditText
                                         android:id="@+id/et_price_csValue"
                                         style="@style/EditText_ListItem"
                                         android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="0dp"
                                         android:layout_weight="1"
                                         android:gravity="start"
                                         android:text="@string/zero" />
@@ -588,11 +562,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/right_margin"
+                                    android:layout_marginLeft="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:layout_toEndOf="@+id/ll_price_case"
-                                    android:orientation="vertical"
-                                    android:layout_marginLeft="@dimen/right_margin"
-                                    android:layout_toRightOf="@+id/ll_price_case">
+                                    android:layout_toRightOf="@+id/ll_price_case"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_price_ouTitle"
@@ -600,17 +574,71 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="price_outer"
-                                        android:text="@string/avail_outer"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/avail_outer" />
 
                                     <EditText
                                         android:id="@+id/et_price_ouValue"
                                         style="@style/EditText_ListItem"
                                         android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="0dp"
                                         android:layout_weight="1"
                                         android:gravity="start"
                                         android:text="@string/zero" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_priceRadio_grpLty"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/right_margin"
+                                    android:layout_marginLeft="@dimen/right_margin"
+                                    android:layout_marginTop="@dimen/target_top_margin"
+                                    android:layout_toEndOf="@+id/ll_price_outer"
+                                    android:layout_toRightOf="@+id/ll_price_outer"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_change_price"
+                                        style="?attr/customListItemSecondary"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/change_in_price" />
+
+                                    <RadioGroup
+                                        android:id="@+id/rg_price"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="0dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_weight="1"
+                                        android:orientation="horizontal">
+
+                                        <RadioButton
+                                            android:id="@+id/priceYes"
+                                            style="?attr/customListItemPrimary"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginEnd="@dimen/radio_margin"
+                                            android:layout_marginRight="@dimen/radio_margin"
+                                            android:button="@drawable/ic_tick_disable"
+                                            android:paddingStart="@dimen/plano_rb_padding"
+                                            android:paddingLeft="@dimen/plano_rb_padding"
+                                            android:text="@string/yes"
+                                            tools:ignore="RtlSymmetry" />
+
+                                        <RadioButton
+                                            android:id="@+id/priceno"
+                                            style="?attr/customListItemPrimary"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_toEndOf="@id/priceYes"
+                                            android:layout_toRightOf="@id/priceYes"
+                                            android:button="@drawable/ic_cross_disable"
+                                            android:paddingStart="@dimen/plano_rb_padding"
+                                            android:paddingEnd="@dimen/plano_rb_padding"
+                                            android:text="@string/no"
+                                            tools:ignore="ObsoleteLayoutParam" />
+
+                                    </RadioGroup>
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -618,10 +646,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/ll_price_piece"
-                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
-                                    android:orientation="vertical"
-                                    android:layout_marginRight="@dimen/right_margin">
+                                    android:layout_marginEnd="@dimen/right_margin"
+                                    android:layout_marginRight="@dimen/right_margin"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_priceMrp_pcTitle"
@@ -629,14 +657,13 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="priceMrp_pcLabel"
-                                        android:text="@string/avail_pcs"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/avail_pcs" />
 
                                     <EditText
                                         android:id="@+id/et_priceMrp_pcValue"
                                         style="@style/EditText_ListItem"
                                         android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="0dp"
                                         android:layout_weight="1"
                                         android:gravity="start"
                                         android:text="@string/zero" />
@@ -649,11 +676,11 @@
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/ll_price_case"
                                     android:layout_marginStart="@dimen/right_margin"
-                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
+                                    android:layout_marginEnd="@dimen/right_margin"
                                     android:layout_toEndOf="@+id/ll_price_piece"
-                                    android:orientation="vertical"
-                                    android:layout_toRightOf="@+id/ll_price_piece">
+                                    android:layout_toRightOf="@+id/ll_price_piece"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_priceMrp_csTitle"
@@ -661,14 +688,13 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="priceMrp_csLabel"
-                                        android:text="@string/avail_cases"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/avail_cases" />
 
                                     <EditText
                                         android:id="@+id/et_priceMrp_csValue"
                                         style="@style/EditText_ListItem"
                                         android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="0dp"
                                         android:layout_weight="1"
                                         android:gravity="start"
                                         android:text="@string/zero" />
@@ -680,11 +706,11 @@
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/ll_price_outer"
                                     android:layout_marginStart="@dimen/right_margin"
+                                    android:layout_marginLeft="@dimen/right_margin"
                                     android:layout_marginTop="@dimen/target_top_margin"
                                     android:layout_toEndOf="@+id/ll_price_case"
-                                    android:orientation="vertical"
-                                    android:layout_marginLeft="@dimen/right_margin"
-                                    android:layout_toRightOf="@+id/ll_price_case">
+                                    android:layout_toRightOf="@+id/ll_price_case"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         android:id="@+id/tv_priceMrp_ouTitle"
@@ -692,82 +718,36 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="priceMrp_ouLabel"
-                                        android:text="@string/avail_outer"
-                                        android:textSize="@dimen/card_margin" />
+                                        android:text="@string/avail_outer" />
 
                                     <EditText
                                         android:id="@+id/et_priceMrp_ouValue"
                                         style="@style/EditText_ListItem"
                                         android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="0dp"
                                         android:layout_weight="1"
                                         android:gravity="start"
                                         android:text="@string/zero" />
                                 </LinearLayout>
 
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:id="@+id/ll_priceRadio_grpLty"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_centerVertical="true"
-                                    android:orientation="vertical"
-                                    android:layout_alignParentRight="true">
 
-                                    <TextView
-                                        android:id="@+id/tv_change_price"
-                                        style="?attr/customListItemPrimary"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/change_in_price"
-                                        android:textSize="@dimen/footer_label_size" />
-
-                                    <RadioGroup
-                                        android:id="@+id/rg_price"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="3dp"
-                                        android:orientation="horizontal">
-
-                                        <RadioButton
-                                            android:id="@+id/priceYes"
-                                            style="?attr/customListItemSecondary"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginEnd="@dimen/radio_margin"
-                                            android:button="@drawable/ic_tick_disable"
-                                            android:paddingStart="@dimen/plano_rb_padding"
-                                            android:text="@string/yes"
-                                            android:textSize="@dimen/text_size_secondary"
-                                            android:layout_marginRight="@dimen/radio_margin"
-                                            android:paddingLeft="@dimen/plano_rb_padding" />
-
-                                        <RadioButton
-                                            android:id="@+id/priceno"
-                                            style="?attr/customListItemSecondary"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_toEndOf="@id/priceYes"
-                                            android:button="@drawable/ic_cross_disable"
-                                            android:paddingStart="@dimen/plano_rb_padding"
-                                            android:paddingEnd="@dimen/plano_rb_padding"
-                                            android:text="@string/no"
-                                            android:textSize="@dimen/text_size_secondary"
-                                            android:layout_toRightOf="@id/priceYes" />
-
-                                    </RadioGroup>
-                                </LinearLayout>
                             </RelativeLayout>
 
                         </LinearLayout>
                     </LinearLayout>
 
+                    <View
+                        android:id="@+id/view_dotted_line2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/dimens_2dp"
+                        android:background="@color/light_gray" />
+
                     <LinearLayout
+                        android:id="@+id/ll_expriyCheck_parentLty"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/ll_expriyCheck_parentLty"
-                        android:layout_marginTop="@dimen/target_top_margin"
-                        android:background="@color/list_odd_item_bg"
+                        android:background="@color/zxing_transparent"
                         android:orientation="vertical">
 
 
@@ -783,11 +763,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
+                                android:layout_alignParentLeft="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/expiry_check"
                                 android:textSize="@dimen/font_small"
                                 android:textStyle="bold"
-                                android:layout_alignParentLeft="true" />
+                                tools:ignore="ObsoleteLayoutParam" />
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -800,16 +781,16 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentStart="true"
-                                    android:layout_marginTop="@dimen/target_top_margin"
-                                    android:layout_alignParentLeft="true">
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_marginTop="@dimen/target_top_margin">
 
                                     <LinearLayout
                                         android:id="@+id/ll_exp_piece"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="@dimen/right_margin"
-                                        android:orientation="vertical"
-                                        android:layout_marginRight="@dimen/right_margin">
+                                        android:layout_marginRight="@dimen/right_margin"
+                                        android:orientation="vertical">
 
                                         <TextView
                                             android:id="@+id/tv_exp_pcTitle"
@@ -817,14 +798,13 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:tag="expiry_piece"
-                                            android:text="@string/avail_pcs"
-                                            android:textSize="@dimen/card_margin" />
+                                            android:text="@string/avail_pcs" />
 
                                         <EditText
                                             android:id="@+id/et_exp_pcValue"
                                             style="@style/EditText_ListItem"
                                             android:layout_width="@dimen/discount_editbox_width"
-                                            android:layout_height="wrap_content"
+                                            android:layout_height="0dp"
                                             android:layout_weight="1"
                                             android:gravity="start"
                                             android:text="@string/zero" />
@@ -835,10 +815,10 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="@dimen/right_margin"
-                                        android:layout_toEndOf="@+id/ll_exp_piece"
-                                        android:orientation="vertical"
                                         android:layout_marginRight="@dimen/right_margin"
-                                        android:layout_toRightOf="@+id/ll_exp_piece">
+                                        android:layout_toEndOf="@+id/ll_exp_piece"
+                                        android:layout_toRightOf="@+id/ll_exp_piece"
+                                        android:orientation="vertical">
 
                                         <TextView
                                             android:id="@+id/tv_exp_csTitle"
@@ -846,14 +826,13 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:tag="expiry_case"
-                                            android:text="@string/avail_cases"
-                                            android:textSize="@dimen/card_margin" />
+                                            android:text="@string/avail_cases" />
 
                                         <EditText
                                             android:id="@+id/et_exp_csValue"
                                             style="@style/EditText_ListItem"
                                             android:layout_width="@dimen/discount_editbox_width"
-                                            android:layout_height="wrap_content"
+                                            android:layout_height="0dp"
                                             android:layout_weight="1"
                                             android:gravity="start"
                                             android:text="@string/zero" />
@@ -864,10 +843,10 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/right_margin"
-                                        android:layout_toEndOf="@+id/ll_exp_case"
-                                        android:orientation="vertical"
                                         android:layout_marginLeft="@dimen/right_margin"
-                                        android:layout_toRightOf="@+id/ll_exp_case">
+                                        android:layout_toEndOf="@+id/ll_exp_case"
+                                        android:layout_toRightOf="@+id/ll_exp_case"
+                                        android:orientation="vertical">
 
                                         <TextView
                                             android:id="@+id/tv_exp_ouTitle"
@@ -875,14 +854,13 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:tag="expiry_outer"
-                                            android:text="@string/avail_outer"
-                                            android:textSize="@dimen/card_margin" />
+                                            android:text="@string/avail_outer" />
 
                                         <EditText
                                             android:id="@+id/et_exp_ouValue"
                                             style="@style/EditText_ListItem"
                                             android:layout_width="@dimen/discount_editbox_width"
-                                            android:layout_height="wrap_content"
+                                            android:layout_height="0dp"
                                             android:layout_weight="1"
                                             android:gravity="start"
                                             android:text="@string/zero" />
@@ -895,7 +873,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v4.widget.NestedScrollView>
-        </android.support.v7.widget.CardView>
 
         <include
             android:id="@+id/keypad"
@@ -915,7 +892,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/GRAY" />
+                android:background="@color/light_gray" />
 
             <Button
                 android:id="@+id/btn_save"

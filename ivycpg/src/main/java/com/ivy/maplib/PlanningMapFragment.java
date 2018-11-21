@@ -385,14 +385,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
                     } else {
                         carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
                     }
-                    carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
+                    carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.highlighter));
                     //walk iocn's
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                     } else {
                         walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                     }
-                    walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
+                    walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.divider_view_color));
                 }
 
             }
@@ -427,14 +427,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 } else {
                     walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
                 }
-                walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
+                walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.highlighter));
                 //walk iocn's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     carDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 } else {
                     carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 }
-                carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
+                carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.divider_view_color));
             }
         });
 
@@ -455,14 +455,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 } else {
                     carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
                 }
-                carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
+                carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.highlighter));
                 //walk iocn's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 } else {
                     walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 }
-                walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
+                walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.divider_view_color));
             }
         });
 
@@ -478,14 +478,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 } else {
                     carDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.map_button_round_corner_white));
                 }
-                carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.map_car_color));
+                carDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.highlighter));
                 //walk iocn's
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     walkDirBtn.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 } else {
                     walkDirBtn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.button_round_corner_transparent));
                 }
-                walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.light_grey));
+                walkDirBtn.setColorFilter(ContextCompat.getColor(getActivity(), R.color.divider_view_color));
             }
         });
 

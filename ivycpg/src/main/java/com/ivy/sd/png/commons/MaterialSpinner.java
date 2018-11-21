@@ -155,17 +155,17 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
     private void initAttributes(Context context, AttributeSet attrs) {
 
         TypedArray defaultArray = context.obtainStyledAttributes(new int[]{R.attr.colorControlNormal, R.attr.colorAccent});
-        int defaultBaseColor = ContextCompat.getColor(context, R.color.profile_edit_spinner_color);
+        int defaultBaseColor = ContextCompat.getColor(context, R.color.gray_text);
         int defaultHighlightColor = defaultArray.getColor(1, 0);
         int defaultErrorColor = context.getResources().getColor(R.color.RED);
-        int defaultfloatinglabelColor = context.getResources().getColor(R.color.GRAY_TEXT);
+        int defaultfloatinglabelColor = context.getResources().getColor(R.color.gray_text);
         defaultArray.recycle();
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.MaterialSpinner);
         baseColor = array.getColor(R.styleable.MaterialSpinner_ms_baseColor, defaultBaseColor);
         highlightColor = array.getColor(R.styleable.MaterialSpinner_ms_highlightColor, defaultHighlightColor);
         errorColor = array.getColor(R.styleable.MaterialSpinner_ms_errorColor, defaultErrorColor);
-        disabledColor = ContextCompat.getColor(context, R.color.GRAY_TEXT);
+        disabledColor = ContextCompat.getColor(context, R.color.gray_text);
         floatingLabelText = array.getString(R.styleable.MaterialSpinner_ms_floatingLabelText);
         floatingLabelColor = array.getColor(R.styleable.MaterialSpinner_ms_floatingLabelColor, defaultfloatinglabelColor);
 //        multiline = true;
@@ -739,7 +739,7 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
             if (position == 0) {
                 // Set the hint text color for 0th position of mSpinneradapter
 
-                textView.setTextColor(ContextCompat.getColor(mContext, R.color.GRAY_TEXT));
+                textView.setTextColor(ContextCompat.getColor(mContext, R.color.gray_text));
             } else {
 
                 textView.setTextColor(ContextCompat.getColor(mContext, R.color.filer_level_text_color));

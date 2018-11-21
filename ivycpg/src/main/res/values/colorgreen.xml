@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--CARLSBERG THEME-->
+    <color name="colorPrimaryCB">#0A4704</color>
+    <color name="colorPrimaryDarkCB">#0A4704</color>
+    <color name="colorAccentCB">#FFA000</color>
+    <color name="textColorSecondaryCB">#296126</color>
+    <color name="textColorPrimaryCB">#297304</color>
+
+    <color name="colorPrimaryDarkGreen">#004D40</color>
+
+    <color name="colorGreenripple_pressed">#015416</color>
+    <color name="colorGreenripple_selected">#267037</color>
+    <color name="colorGreenripple_focused">#016924</color>
+
+    <color name="green_week_background">#1a330d</color>
+    <color name="select_week_color_green">#c5f9ac</color>
+
+    <!--List item Header background color-->
+    <color name="list_title_bg_color_green">#212121</color>
+
+</resources>

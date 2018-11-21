@@ -129,7 +129,7 @@
                                 android:maxLines="1"
                                 android:inputType="text"
                                 android:text=""
-                                android:textColor="@color/GRAY_TEXT"
+                                android:textColor="@color/gray_text"
                                 android:textSize="@dimen/text_size_secondary" />
 
                             <Button
@@ -254,7 +254,7 @@
                         android:layout_gravity="center"
                         android:maxLines="1"
                         android:text="@string/zero"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
@@ -283,7 +283,7 @@
                         android:layout_gravity="center"
                         android:maxLines="1"
                         android:text="@string/zero"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>

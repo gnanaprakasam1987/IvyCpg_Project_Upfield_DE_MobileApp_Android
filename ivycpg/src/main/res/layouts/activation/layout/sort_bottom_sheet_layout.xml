@@ -21,7 +21,7 @@
         android:layout_marginLeft="@dimen/_15sdp"
         android:layout_marginRight="@dimen/_10sdp"
         android:text="Sort By"
-        android:textColor="@color/BLUE"
+        android:textColor="@color/highlighter"
         android:textSize="@dimen/_14sdp" />
 
     <View

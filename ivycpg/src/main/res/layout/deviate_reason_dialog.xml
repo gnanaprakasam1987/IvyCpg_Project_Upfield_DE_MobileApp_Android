@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/font_inactive">
+    android:background="@color/white">
     <ImageView
         android:id="@+id/img_close"
         android:layout_width="wrap_content"
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/reason_height"
         android:layout_below="@+id/img_close"
-        android:textColor="@color/dialog_title"
+        android:textColor="@color/highlighter"
         android:gravity="center"
         android:textSize="@dimen/font_small"
         android:textStyle="bold"
@@ -27,7 +27,7 @@
         android:layout_height="@dimen/dimen_1dp"
         android:layout_below="@+id/tv_title"
 
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         android:layout_margin="@dimen/margin_10px"/>
     <TextView
         android:id="@+id/title2"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_secondary"
         android:text="Reason for visit"
-        android:textColor="@color/btn_round_green"
+        android:textColor="?attr/accentcolor"
         android:layout_below="@+id/line"
         android:layout_marginStart="@dimen/margin_week_layout"
         android:layout_marginTop="@dimen/margin_week_layout"

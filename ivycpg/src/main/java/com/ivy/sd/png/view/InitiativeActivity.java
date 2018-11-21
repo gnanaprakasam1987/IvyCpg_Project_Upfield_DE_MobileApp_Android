@@ -27,6 +27,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.Vector;
 
@@ -85,9 +86,9 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
             finish();
         }
 
-        btn_next.setOnClickListener(new OnClickListener() {
+        btn_next.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                     if (bmodel.configurationMasterHelper.IS_PRESENTATION_INORDER) {
                         Intent i = new Intent(InitiativeActivity.this,
                                 DigitalContentActivity.class);

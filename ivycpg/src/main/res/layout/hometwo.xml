@@ -157,7 +157,7 @@
                     android:textColor="#000000"
                     android:fontFamily="@font/roboto_regular"
                     android:textStyle="bold"
-                    android:textSize="@dimen/font_medium" />
+                    android:textSize="@dimen/font_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -174,7 +174,7 @@
                     android:layout_marginLeft="@dimen/activity_margin2"
                     android:textColor="#000000"
                     android:fontFamily="@font/roboto_regular"
-                    android:textSize="@dimen/font_medium" />
+                    android:textSize="@dimen/font_small" />
 
                 <TextView
                     android:id="@+id/activity_total_count"
@@ -182,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
                     android:fontFamily="@font/roboto_regular"
-                    android:textSize="@dimen/font_medium" />
+                    android:textSize="@dimen/font_small" />
 
             </LinearLayout>
 
@@ -234,7 +234,6 @@
         <Button
             android:id="@+id/btn_call_analysis"
             style="?attr/roundedCustomButtonSmall"
-            android:onClick="CallAnalysisClick"
             android:tag="call_analysis"
             android:text="@string/close_call"
             android:textAllCaps="false"

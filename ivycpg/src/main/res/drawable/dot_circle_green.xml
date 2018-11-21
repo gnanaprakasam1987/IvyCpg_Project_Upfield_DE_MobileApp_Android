@@ -4,7 +4,7 @@
     <solid
         android:width="1dp"
         android:height="1dp"
-        android:color="@color/btn_round_green" />
+        android:color="@color/green_productivity" />
     <!--
         <stroke
             android:color="@color/colorPrimaryDark" />-->

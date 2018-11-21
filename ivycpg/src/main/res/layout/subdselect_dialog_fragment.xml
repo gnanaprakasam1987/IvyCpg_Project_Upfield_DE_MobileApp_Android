@@ -16,7 +16,7 @@
         android:padding="@dimen/profile_header_txt_layout_marginleft"
         android:text="@string/select_distributor"
         android:textColor="@color/white"
-        android:textSize="@dimen/font_medium" />
+        android:textSize="@dimen/font_small" />
 
     <ListView
         android:id="@+id/lvSubd"
