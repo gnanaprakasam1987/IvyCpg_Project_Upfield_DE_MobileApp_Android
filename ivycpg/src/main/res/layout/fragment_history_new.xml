@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
             android:layout_weight="0.1"
-            card_view:cardBackgroundColor="?customLayoutBackground"
+            card_view:cardBackgroundColor="?attr/customLayoutBackgroundColor"
             card_view:cardCornerRadius="4dp"
             card_view:cardElevation="3dp"
             android:visibility="gone"

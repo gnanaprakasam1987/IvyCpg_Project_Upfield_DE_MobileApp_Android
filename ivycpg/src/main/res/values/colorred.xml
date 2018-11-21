@@ -16,4 +16,6 @@
     <!--List item Header background color-->
     <color name="list_title_bg_color_red">#212121</color>
 
+    <color name="highlighter_red">#83c341</color>
+
 </resources>

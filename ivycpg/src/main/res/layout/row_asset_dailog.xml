@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/tv_lt_sno"
-            style="?attr/customListItemSecondary"
+            style="?attr/customListItemCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"

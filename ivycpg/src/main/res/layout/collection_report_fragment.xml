@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?customLayoutBackground"
+        android:background="?attr/customLayoutBackgroundColor"
         android:weightSum="3"
         android:paddingTop="@dimen/margin_20px"
         android:paddingBottom="@dimen/margin_20px"

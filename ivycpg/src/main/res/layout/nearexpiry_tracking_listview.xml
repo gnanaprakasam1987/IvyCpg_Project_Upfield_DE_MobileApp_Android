@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/product_code"
-            style="@style/SecondaryTextAppearance"
+            style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/sku"
@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/barcode"
-            style="@style/SecondaryTextAppearance"
+            style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_code"

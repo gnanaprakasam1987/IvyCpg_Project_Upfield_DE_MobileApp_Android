@@ -62,7 +62,7 @@
 
     <TextView
         android:id="@+id/totalQty"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

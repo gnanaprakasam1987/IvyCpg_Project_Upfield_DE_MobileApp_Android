@@ -20,4 +20,6 @@
     <!--List item Header background color-->
     <color name="list_title_bg_color_orange">#212121</color>
 
+    <color name="highlighter_orange">#cd202c</color>
+
 </resources>

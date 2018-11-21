@@ -41,7 +41,7 @@
                 android:layout_alignParentRight="true" />
             <TextView
                 android:id="@+id/text_scheme_desc"
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"

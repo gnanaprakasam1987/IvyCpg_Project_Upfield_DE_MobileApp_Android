@@ -26,7 +26,7 @@
             android:layout_height="@dimen/screen_title_height"
             android:layout_marginEnd="@dimen/list_margin"
             android:layout_marginStart="@dimen/list_margin"
-            android:background="?customLayoutBackground"
+            android:background="?attr/customLayoutBackgroundColor"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:weightSum="1">

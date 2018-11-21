@@ -48,7 +48,7 @@
 
                 <TextView
                     android:id="@+id/TOTAL"
-                    style="?attr/customListItemSecondary"
+                    style="?attr/customListItemCaption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -86,7 +86,7 @@
 
                     <TextView
                         android:id="@+id/shelfPcsTitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -97,7 +97,7 @@
                         android:text="@string/sp" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -107,7 +107,7 @@
 
                     <TextView
                         android:id="@+id/sp_quantity"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -138,7 +138,7 @@
 
                     <TextView
                         android:id="@+id/shelfCaseTitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -149,7 +149,7 @@
                         android:text="@string/sc" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -159,7 +159,7 @@
 
                     <TextView
                         android:id="@+id/sc_quantity"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -190,7 +190,7 @@
 
                     <TextView
                         android:id="@+id/shelfOuterTitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -201,7 +201,7 @@
                         android:text="@string/souter" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -211,7 +211,7 @@
 
                     <TextView
                         android:id="@+id/sho_quantity"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -241,7 +241,7 @@
 
                     <TextView
                         android:id="@+id/weighttitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -252,7 +252,7 @@
                         android:text="@string/weight" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -262,7 +262,7 @@
 
                     <TextView
                         android:id="@+id/tv_weight"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -466,7 +466,7 @@
 
                     <TextView
                         android:id="@+id/caseTitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -477,7 +477,7 @@
                         android:text="@string/item_case" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -487,7 +487,7 @@
 
                     <TextView
                         android:id="@+id/C_QUANTITY"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -517,7 +517,7 @@
 
                     <TextView
                         android:id="@+id/outercaseTitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -528,7 +528,7 @@
                         android:text="@string/item_outer" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -538,7 +538,7 @@
 
                     <TextView
                         android:id="@+id/OC_QUANTITY"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -567,7 +567,7 @@
 
                     <TextView
                         android:id="@+id/pcsTitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -578,7 +578,7 @@
                         android:text="@string/item_piece" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -588,7 +588,7 @@
 
                     <TextView
                         android:id="@+id/P_QUANTITY"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -617,7 +617,7 @@
 
                     <TextView
                         android:id="@+id/focTitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -628,7 +628,7 @@
                         android:text="@string/foc" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -638,7 +638,7 @@
 
                     <TextView
                         android:id="@+id/FOC_QUANTITY"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -666,7 +666,7 @@
 
                     <TextView
                         android:id="@+id/srpTitle"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -677,7 +677,7 @@
                         android:text="@string/unit_price" />
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -687,7 +687,7 @@
 
                     <TextView
                         android:id="@+id/MRP"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"

@@ -50,14 +50,14 @@
 
             <TextView
                 android:id="@+id/tv_location_name"
-                style="@style/SecondaryTextAppearance"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start" />
 
             <TextView
                 android:id="@+id/tv_grp"
-                style="@style/SecondaryTextAppearance"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -175,7 +175,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/installed_on" />
@@ -201,7 +201,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/serviced_on" />
@@ -226,7 +226,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -255,7 +255,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"

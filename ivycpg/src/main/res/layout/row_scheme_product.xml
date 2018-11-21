@@ -54,7 +54,7 @@
 
                     <TextView
                         android:id="@+id/tv_scheme"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -65,7 +65,7 @@
 
                     <TextView
                         android:id="@+id/tv_buying_qty"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="2dp"
@@ -137,7 +137,7 @@
 
                     <TextView
                         android:id="@+id/tv_quantity_range"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -217,7 +217,7 @@
 
                     <TextView
                         android:id="@+id/tv_price_range"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -291,7 +291,7 @@
 
                     <TextView
                         android:id="@+id/tv_amount_range"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -363,7 +363,7 @@
 
                     <TextView
                         android:id="@+id/tv_percent_range"
-                        style="?attr/customListItemSecondary"
+                        style="?attr/customListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -378,7 +378,7 @@
     </LinearLayout>
         <TextView
             android:id="@+id/text_stock_availability"
-            style="?attr/customListItemSecondary"
+            style="?attr/customListItemCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"

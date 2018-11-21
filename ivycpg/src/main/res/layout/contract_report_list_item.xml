@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/tvSNO"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -26,7 +26,7 @@
 
     <TextView
         android:id="@+id/tvOutletCode"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -43,7 +43,7 @@
 
     <TextView
         android:id="@+id/tvOutletName"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -60,7 +60,7 @@
 
     <TextView
         android:id="@+id/tvSubChannel"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -77,7 +77,7 @@
 
     <TextView
         android:id="@+id/tvContractId"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -94,7 +94,7 @@
 
     <TextView
         android:id="@+id/tvTradeType"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -111,7 +111,7 @@
 
     <TextView
         android:id="@+id/tvStartDate"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -128,7 +128,7 @@
 
     <TextView
         android:id="@+id/tvEndDate"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -145,7 +145,7 @@
 
     <TextView
         android:id="@+id/tvNoOfDays"
-        style="?attr/customListItemSecondary"
+        style="?attr/customListItemCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

@@ -155,7 +155,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="?attr/customListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -186,7 +186,7 @@
 
             <TextView
                 android:id="@+id/remark_tv_label"
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -207,7 +207,7 @@
                 android:hint="@string/enter_remarks"
                 android:overlapAnchor="false"
                 android:textAlignment="textStart"
-                style="@style/SecondaryTextAppearance"
+                style="@style/TextViewListItemSecondaryHighlight"
                 tools:ignore="UnusedAttribute" />
         </LinearLayout>
         <LinearLayout
@@ -220,7 +220,7 @@
 
             <TextView
                 android:id="@+id/tv_to_date_title"
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -229,7 +229,7 @@
 
             <TextView
                 android:id="@+id/tvGap"
-                style="@style/SecondaryTextAppearance"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"

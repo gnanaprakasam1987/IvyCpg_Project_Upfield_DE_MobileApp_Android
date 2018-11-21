@@ -33,7 +33,7 @@
 
             <TextView
                 android:id="@+id/tgt"
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -43,7 +43,7 @@
 
             <TextView
                 android:id="@+id/doa"
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/assetName"
@@ -63,7 +63,7 @@
 
                 <TextView
                     android:id="@+id/tvactual"
-                    style="?attr/customListItemSecondary"
+                    style="?attr/customListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/actual" />
@@ -100,7 +100,7 @@
 
                 <TextView
                     android:id="@+id/tvreason"
-                    style="?attr/customListItemSecondary"
+                    style="?attr/customListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reason" />
@@ -125,7 +125,7 @@
 
                 <TextView
                     android:id="@+id/tvpromo"
-                    style="?attr/customListItemSecondary"
+                    style="?attr/customListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/promotion" />
@@ -148,7 +148,7 @@
 
                 <TextView
                     android:id="@+id/tvdisplay"
-                    style="?attr/customListItemSecondary"
+                    style="?attr/customListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Full" />
@@ -171,7 +171,7 @@
 
                 <TextView
                     android:id="@+id/tvlocation"
-                    style="?attr/customListItemSecondary"
+                    style="?attr/customListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/location" />

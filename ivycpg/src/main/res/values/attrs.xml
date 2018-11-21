@@ -13,6 +13,7 @@
         <attr name="textColor" format="color" />
         <attr name="weekBackground" format="color" />
         <attr name="selectWeekBackground" format="color" />
+        <attr name="highLightColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="MaterialSpinner">
@@ -40,7 +41,7 @@
         <attr name="roundedCustomButtonNormal" format="reference" />
         <attr name="roundedCustomButtonNormalTransparent" format="reference" />
         <attr name="roundedCustomDashboardButton" format="reference" />
-        <attr name="boxCustomButtonSmallGrey" format="reference"/>
+        <attr name="boxCustomButtonSmallGrey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="MyCustomSpinner">
@@ -65,21 +66,21 @@
         <attr name="customListTitle" format="reference" />
         <attr name="customListTitleSecondary" format="reference" />
         <attr name="customListItemPrimary" format="reference" />
-        <attr name="customListItemSecondary" format="reference" />
+        <attr name="customListItemCaption" format="reference" />
         <attr name="customListItemValue" format="reference" />
         <attr name="customListTitleBlack" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="customLayout">
-        <attr name="customLayoutBackground" format="reference" />
-        <attr name="tradeCoverageBackgroundOne" format="reference"/>
-        <attr name="tradeCoverageBackgroundTwo" format="reference"/>
-        <attr name="tradeCoverageBackgroundThree" format="reference"/>
-        <attr name="dashboardSpinnerBackground" format="reference"/>
-        <attr name="homescreenbackground" format="reference"/>
+        <attr name="customLayoutBackgroundColor" format="color" />
+        <attr name="tradeCoverageBackgroundOne" format="reference" />
+        <attr name="tradeCoverageBackgroundTwo" format="reference" />
+        <attr name="tradeCoverageBackgroundThree" format="reference" />
+        <attr name="dashboardSpinnerBackground" format="reference" />
+        <attr name="homescreenbackground" format="reference" />
         <attr name="mtdDashboardBackground" format="reference" />
         <attr name="dashboardSpinnerSelector" format="reference" />
-        <attr name="customListTitleBackground" format="reference"/>
+        <attr name="customListTitleBackgroundColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="cardViewLayout">
@@ -102,7 +103,7 @@
         <attr name="rvp_triggerOffset" format="float" />
         <attr name="rvp_flingFactor" format="float" />
         <attr name="rvp_singlePageFling" format="boolean" />
-        <attr name="rvp_inertia" format="boolean"/>
+        <attr name="rvp_inertia" format="boolean" />
         <attr name="rvp_millisecondsPerInch" format="float" />
     </declare-styleable>
 
@@ -118,25 +119,25 @@
     </declare-styleable>
 
     <declare-styleable name="Tooltip">
-        <attr name="cancelable" format="boolean"/>
-        <attr name="dismissOnClick" format="boolean"/>
-        <attr name="backgroundColor" format="color"/>
-        <attr name="cornerRadius" format="dimension"/>
-        <attr name="arrowHeight" format="dimension"/>
-        <attr name="arrowWidth" format="dimension"/>
-        <attr name="arrowDrawable" format="reference"/>
-        <attr name="margin" format="dimension"/>
-        <attr name="textAppearance" format="reference"/>
-        <attr name="android:padding"/>
-        <attr name="android:text"/>
-        <attr name="android:textSize"/>
-        <attr name="android:textColor"/>
-        <attr name="android:textStyle"/>
-        <attr name="android:gravity"/>
-        <attr name="android:fontFamily"/>
-        <attr name="android:typeface"/>
-        <attr name="android:lineSpacingExtra"/>
-        <attr name="android:lineSpacingMultiplier"/>
+        <attr name="cancelable" format="boolean" />
+        <attr name="dismissOnClick" format="boolean" />
+        <attr name="backgroundColor" format="color" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="arrowHeight" format="dimension" />
+        <attr name="arrowWidth" format="dimension" />
+        <attr name="arrowDrawable" format="reference" />
+        <attr name="margin" format="dimension" />
+        <attr name="textAppearance" format="reference" />
+        <attr name="android:padding" />
+        <attr name="android:text" />
+        <attr name="android:textSize" />
+        <attr name="android:textColor" />
+        <attr name="android:textStyle" />
+        <attr name="android:gravity" />
+        <attr name="android:fontFamily" />
+        <attr name="android:typeface" />
+        <attr name="android:lineSpacingExtra" />
+        <attr name="android:lineSpacingMultiplier" />
     </declare-styleable>
 
     <declare-styleable name="TickerView">

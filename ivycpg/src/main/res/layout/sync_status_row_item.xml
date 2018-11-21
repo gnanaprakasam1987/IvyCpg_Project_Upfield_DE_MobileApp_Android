@@ -63,7 +63,7 @@
 
             <TextView
                 android:id="@+id/transactionValue"
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="start"
@@ -75,7 +75,7 @@
 
             <TextView
                 android:id="@+id/lineCountValue"
-                style="?attr/customListItemSecondary"
+                style="?attr/customListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

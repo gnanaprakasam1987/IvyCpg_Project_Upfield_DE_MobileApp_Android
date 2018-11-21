@@ -60,7 +60,7 @@
 
                 <TextView
                     android:id="@+id/input_serialNo"
-                    style="?attr/customListItemSecondary"
+                    style="?attr/customListItemCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_10dp"

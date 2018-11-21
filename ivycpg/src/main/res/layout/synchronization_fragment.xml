@@ -164,7 +164,7 @@
 
                         <TextView
                             android:id="@+id/closingDay"
-                            style="?attr/customListItemSecondary"
+                            style="?attr/customListItemCaption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/close_day_tv"

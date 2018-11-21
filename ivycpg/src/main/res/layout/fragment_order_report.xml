@@ -36,7 +36,7 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/screen_title_height"
-                android:background="?customLayoutBackground"
+                android:background="?attr/customLayoutBackgroundColor"
                 android:orientation="horizontal"
                 android:visibility="gone">
 

@@ -20,4 +20,5 @@
     <!--List item Header background color-->
     <color name="list_title_bg_color_green">#212121</color>
 
+    <color name="highlighter_green">#FFA000</color>
 </resources>
