@@ -683,6 +683,7 @@ negative button and neutral button -->
         <item name="android:textColor">@color/date_picker_text_color</item>
     </style>
 
+    <!-- Footer View Text Style-->
     <style name="TextViewFooterLabel" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/footer_label_size</item>
         <item name="android:textColor">?attr/accentcolor</item>
