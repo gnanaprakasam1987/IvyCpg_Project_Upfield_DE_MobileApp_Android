@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/list_margin"
     android:layout_marginEnd="@dimen/list_margin"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="2dp"
     card_view:cardPreventCornerOverlap="true"
@@ -83,7 +83,7 @@
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:text="@string/date"
-                    android:textColor="@color/GRAY_TEXT"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/footer_label_size" />
 
                 <TextView
@@ -114,7 +114,7 @@
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:text="@string/value"
-                    android:textColor="@color/GRAY_TEXT"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/footer_label_size" />
 
                 <TextView
@@ -145,7 +145,7 @@
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:text="@string/lines"
-                    android:textColor="@color/GRAY_TEXT"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/footer_label_size" />
 
                 <TextView
@@ -176,7 +176,7 @@
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:text="@string/status"
-                    android:textColor="@color/GRAY_TEXT"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/footer_label_size" />
 
                 <Spinner

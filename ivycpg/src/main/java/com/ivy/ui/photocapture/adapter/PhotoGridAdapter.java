@@ -99,7 +99,7 @@ public class PhotoGridAdapter extends BaseAdapter {
                     String imagePath = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
                             + DataMembers.photoFolderName + "/" + photoCaptureLocationBOS.get(position).getImageName();
                     if (isChecked) {
-                        holder.RLCheckBg.setBackgroundColor(ResourcesCompat.getColor(mContext.getResources(), R.color.shelfs_bg_semi_transperant, null));
+                        holder.RLCheckBg.setBackgroundColor(ResourcesCompat.getColor(mContext.getResources(), R.color.light_gray, null));
                         mPhotoClickListener.onPhotoClicked(photoCaptureLocationBOS.get(position).getProductID()
                                 + "_" + photoCaptureLocationBOS.get(position).getPhotoTypeId() + "_"
                                 + photoCaptureLocationBOS.get(position).getLocationId());

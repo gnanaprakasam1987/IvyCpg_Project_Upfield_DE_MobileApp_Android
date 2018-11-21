@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/list_margin"
     android:layout_marginRight="@dimen/list_margin"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="2dp"
     card_view:cardElevation="2dp"
     card_view:cardPreventCornerOverlap="true"
@@ -97,7 +97,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
 
                 </LinearLayout>
 
@@ -142,7 +142,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
 
                 </LinearLayout>
 
@@ -202,7 +202,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="@dimen/dimens_4dp"
                             android:layout_marginTop="@dimen/dimens_4dp"
-                            android:background="@color/GRAY_TEXT" />
+                            android:background="@color/gray_text" />
 
                     </LinearLayout>
 
@@ -247,7 +247,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="@dimen/dimens_4dp"
                             android:layout_marginTop="@dimen/dimens_4dp"
-                            android:background="@color/GRAY_TEXT" />
+                            android:background="@color/gray_text" />
 
                     </LinearLayout>
 
@@ -294,7 +294,7 @@
                             android:layout_gravity="center"
                             android:layout_marginBottom="@dimen/dimens_4dp"
                             android:layout_marginTop="@dimen/dimens_4dp"
-                            android:background="@color/GRAY_TEXT" />
+                            android:background="@color/gray_text" />
                     </LinearLayout>
                 </LinearLayout>
                 <EditText

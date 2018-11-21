@@ -17,7 +17,7 @@
         android:gravity="center_vertical"
         android:singleLine="true"
         android:text="@string/product_name"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:tag="prod_name"/>
 
     <EditText
@@ -28,7 +28,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:tag="d_piece"/>
 
     <EditText
@@ -39,7 +39,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:tag="d_case"/>
 
     <EditText
@@ -50,7 +50,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:tag="d_outer"/>
 
     <TextView
@@ -61,7 +61,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:focusable="false"
         android:enabled="false"
         android:tag="d_sr"/>
@@ -75,7 +75,7 @@
         android:gravity="center"
         android:text="@string/zero"
         android:maxLines="1"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:focusable="false"
         android:enabled="false"
         android:tag="d_replace"/>
@@ -88,7 +88,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:focusable="false"
         android:enabled="false"
         android:tag="d_sih"/>

@@ -9,15 +9,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_40dp"
-        android:background="@color/blue_btn_normal_center">
+        android:background="?attr/colorPrimary">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/text_renew_contract"
-            android:textColor="@color/WHITE"
-            android:textSize="@dimen/font_medium"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small"
             android:textStyle="bold" />
 
     </RelativeLayout>
@@ -97,11 +97,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.50"
-            android:background="@color/blue_btn_normal_center"
+            style="?attr/roundedCustomButtonSmall"
             android:gravity="center"
             android:text="@string/cancel"
-            android:textColor="@color/WHITE"
-            android:textSize="@dimen/font_medium" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small" />
         <TextView
             android:layout_width="@dimen/dimen_1dp"
             android:layout_height="match_parent"
@@ -112,11 +112,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.50"
-            android:background="@color/blue_btn_normal_center"
+            style="?attr/roundedCustomButtonSmall"
             android:gravity="center"
             android:text="@string/ok"
-            android:textColor="@color/WHITE"
-            android:textSize="@dimen/font_medium" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small" />
 
     </LinearLayout>
 

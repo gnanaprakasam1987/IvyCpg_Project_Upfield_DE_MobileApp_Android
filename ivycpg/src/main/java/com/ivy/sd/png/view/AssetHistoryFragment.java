@@ -108,7 +108,7 @@ public class AssetHistoryFragment extends IvyBaseFragment {
             if (position % 2 == 0)
                 holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             else
-                holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
+                holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             holder.TVAssetName.setText(holder.assetHistoryBO.getAssetName());
             holder.TVSerialNumber.setText(holder.assetHistoryBO.getAssetSerialNo());
             holder.TVDate.setText(holder.assetHistoryBO.getAssetDate());

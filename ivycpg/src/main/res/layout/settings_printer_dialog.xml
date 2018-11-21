@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/ll_login_box"
-            android:background="@color/WHITE"
+            android:background="@color/white"
             android:gravity="center">
 
             <TextView
@@ -31,7 +31,7 @@
                 android:padding="@dimen/profile_header_txt_layout_marginleft"
                 android:text="Enter your password"
                 android:textColor="#175fab"
-                android:textSize="@dimen/font_medium" />
+                android:textSize="@dimen/font_small" />
         </LinearLayout>
 
         <LinearLayout
@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Username"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption" />
 
             <EditText

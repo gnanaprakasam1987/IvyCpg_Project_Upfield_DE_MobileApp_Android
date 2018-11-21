@@ -245,7 +245,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
         view.setMinimumWidth(1500);
         view.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorRedripple_focused));//cardview_dark_background));
         TextView snackbarTV = view.findViewById(android.support.design.R.id.snackbar_text);
-        snackbarTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
+        snackbarTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
         snackbar.show();
 
 

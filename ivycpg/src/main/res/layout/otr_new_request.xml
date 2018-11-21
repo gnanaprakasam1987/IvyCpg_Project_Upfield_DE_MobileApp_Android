@@ -39,7 +39,7 @@ android:background="@color/list_odd_item_bg">
                 android:id="@+id/ll_spin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/history_list_bg"
+                android:background="@color/white"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -180,7 +180,7 @@ android:background="@color/list_odd_item_bg">
                                 android:background="@android:color/transparent"
                                 android:gravity="start"
                                 android:overlapAnchor="false"
-                                android:popupBackground="@color/GRAY" />
+                                android:popupBackground="@color/light_gray" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -223,7 +223,6 @@ android:background="@color/list_odd_item_bg">
                 android:layout_below="@+id/ll_spin"
                 android:background="@color/list_even_item_bg"
                 android:padding="@dimen/dimen_12dp">
-                <!--android:background="@color/list_menu_left_end"-->
 
 
                 <LinearLayout
@@ -252,7 +251,7 @@ android:background="@color/list_odd_item_bg">
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-                        <!--android:background="@color/Black"-->
+                        <!--android:background="@color/half_Black"-->
                         <RadioButton
                             android:id="@+id/rb_single"
                             android:layout_width="wrap_content"
@@ -260,8 +259,8 @@ android:background="@color/list_odd_item_bg">
                             android:buttonTint="?attr/colorAccent"
                             android:gravity="center"
                             android:text="@string/single"
-                            android:textColor="@color/Black" />
-                        <!--android:textColor="@color/Black"-->
+                            android:textColor="@color/half_Black" />
+                        <!--android:textColor="@color/half_Black"-->
                         <!--android:background="@drawable/background_item"-->
                         <!--android:layout_weight="1"-->
 
@@ -272,7 +271,7 @@ android:background="@color/list_odd_item_bg">
                             android:buttonTint="?attr/colorAccent"
                             android:gravity="center"
                             android:text="@string/multiple"
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/half_Black" />
                         <!--android:layout_marginLeft="@dimen/dimen_2dp"-->
                         <!--android:background="@drawable/background_item"-->
                         <!--android:layout_weight="1"-->
@@ -366,10 +365,10 @@ android:background="@color/list_odd_item_bg">
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/min_rl"
-                android:background="@color/history_list_bg"
+                android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="@dimen/dimen_12dp">
-                <!--android:background="@color/WHITE"-->
+                <!--android:background="@color/white"-->
                 <!--android:layout_marginTop="@dimen/dimen_2dp"-->
 
                 <TextView
@@ -403,7 +402,7 @@ android:background="@color/list_odd_item_bg">
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll_session"
-                android:background="@color/list_menu_left_end"
+                android:background="@color/light_gray"
                 android:minHeight="0dp">
                 <!--android:padding="@dimen/dimen_12dp"-->
                 <LinearLayout
@@ -440,7 +439,7 @@ android:background="@color/list_odd_item_bg">
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:gravity="center"
-                            android:popupBackground="@color/GRAY" />
+                            android:popupBackground="@color/light_gray" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -475,7 +474,7 @@ android:background="@color/list_odd_item_bg">
                             android:maxLines="3"
                             android:scrollbars="vertical"
                             android:text=""
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/half_Black" />
                     </LinearLayout>
 
                 </LinearLayout>

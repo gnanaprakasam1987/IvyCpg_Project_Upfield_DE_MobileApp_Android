@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/WHITE"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <ImageView
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="@dimen/card_elevation"
         card_view:cardPreventCornerOverlap="false"
@@ -48,7 +48,7 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:padding="2dp"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/font_small"
                 tools:text="Product name" />
 
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:padding="2dp"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption"
                 tools:text="Product name" />
         </LinearLayout>
@@ -71,7 +71,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="0dp"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="@dimen/card_elevation"
         card_view:cardPreventCornerOverlap="false"

@@ -33,7 +33,7 @@
                 android:layout_below="@+id/tab_layout"
                 android:background="@android:color/transparent"
                 android:cacheColorHint="@null"
-                android:divider="@color/GRAY"
+                android:divider="@color/light_gray"
                 android:dividerHeight="0.5dp"
                 android:fitsSystemWindows="true" />
 
@@ -48,7 +48,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/GRAY" />
+                android:background="@color/light_gray" />
 
             <Button
                 android:id="@+id/btn_close"

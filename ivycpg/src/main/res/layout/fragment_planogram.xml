@@ -105,7 +105,7 @@
             android:layout_height="@dimen/plano_list_footer_line"
             android:layout_above="@+id/saveButton"
             android:layout_marginBottom="@dimen/plano_save_padding"
-            android:background="@color/plano_footer_line" />
+            android:background="@color/divider_view_color" />
 
         <Button
             android:id="@+id/saveButton"

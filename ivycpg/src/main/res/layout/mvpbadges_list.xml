@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:gravity="center"
         android:text="Badge Name"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:maxLines="1"
         android:ellipsize="end"
         android:textSize="@dimen/font_small"/>
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/badge"
         android:padding="@dimen/dimen_10dp"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:layout_centerHorizontal="true"
         android:textSize="@dimen/font_small"
         android:textStyle="bold"

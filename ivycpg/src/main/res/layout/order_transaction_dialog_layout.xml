@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/profile_devider_color" />
+        android:background="@color/divider_view_color" />
     <LinearLayout
         android:id="@+id/ll4"
         android:layout_width="match_parent"

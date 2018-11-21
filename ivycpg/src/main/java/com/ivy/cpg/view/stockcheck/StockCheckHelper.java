@@ -55,6 +55,7 @@ public class StockCheckHelper {
     public boolean SHOW_STOCK_NEAREXPIRY_CB;
     public boolean SHOW_STOCK_NEAREXPIRY_CS;
     public boolean SHOW_STOCK_NEAREXPIRY_OU;
+    public boolean SHOW_PRICE_CHANGED;
 
 
     private StockCheckHelper(Context context) {
@@ -158,6 +159,7 @@ public class StockCheckHelper {
         SHOW_STOCK_PRICECHECK_MRP_PCS = false;
         SHOW_STOCK_PRICECHECK_MRP_CS = false;
         SHOW_STOCK_PRICECHECK_MRP_OU = false;
+        SHOW_PRICE_CHANGED = false;
 
         SHOW_STOCK_NEAREXPIRY_PCS = false;
         SHOW_STOCK_NEAREXPIRY_CB = false;
@@ -282,6 +284,18 @@ public class StockCheckHelper {
                 }
             }
         }
+
+        sql = "select RField from "
+                + DataMembers.tbl_HhtModuleMaster
+                + " where hhtCode='PRICE_CHANGED' and ForSwitchSeller = 0 and Flag=1";
+        c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            if (c.moveToNext()) {
+                SHOW_PRICE_CHANGED = true;
+            }
+            c.close();
+        }
+
     }
 
     public boolean hasStockCheck() {

@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/asset_name"
-                android:textColor="@color/history_label_color"
+                android:textColor="@color/gray_text"
                 android:textSize="@dimen/text_size_secondary"/>
             <TextView
                 android:id="@+id/txt_history_assetName"
@@ -38,14 +38,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/serial_no"
-                android:textColor="@color/history_label_color"
+                android:textColor="@color/gray_text"
                 android:textSize="@dimen/text_size_secondary"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/serial_no"
                 android:id="@+id/txt_history_serialNo"
-                android:textColor="@color/history_date_color"
+                android:textColor="@color/FullBlack"
                 android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
         <LinearLayout
@@ -57,14 +57,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/date_label"
-                android:textColor="@color/history_label_color"
+                android:textColor="@color/gray_text"
                 android:textSize="@dimen/text_size_secondary"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/date_label"
                 android:id="@+id/txt_history_date"
-                android:textColor="@color/history_date_color"
+                android:textColor="@color/FullBlack"
                 android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
     </LinearLayout>

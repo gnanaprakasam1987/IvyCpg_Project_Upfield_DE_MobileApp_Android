@@ -74,7 +74,7 @@
                             android:paddingStart="3dp"
                             android:tag="invoice_outlet_code"
                             android:text="Invoice Code"
-                            android:textColor="@color/Black"
+                            android:textColor="@color/half_Black"
                             android:textSize="@dimen/text_size_caption" />
 
                         <TextView
@@ -94,7 +94,7 @@
                         android:layout_width="@dimen/dimens_1dp"
                         android:layout_height="@dimen/dimens_22dp"
                         android:layout_gravity="center"
-                        android:background="@color/new_grey"
+                        android:background="@color/light_gray"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="@dimen/dimens_4dp" />
@@ -117,7 +117,7 @@
                             android:paddingStart="3dp"
                             android:tag="invoice_date"
                             android:text="Invoice Date"
-                            android:textColor="@color/Black"
+                            android:textColor="@color/half_Black"
                             android:textSize="@dimen/text_size_caption" />
 
                         <TextView
@@ -157,7 +157,7 @@
                             android:paddingStart="3dp"
                             android:tag="invoice_id"
                             android:text="Invoice ID"
-                            android:textColor="@color/Black"
+                            android:textColor="@color/half_Black"
                             android:textSize="@dimen/text_size_caption" />
 
                         <TextView
@@ -177,7 +177,7 @@
                         android:layout_width="@dimen/dimens_1dp"
                         android:layout_height="@dimen/dimens_22dp"
                         android:layout_gravity="center"
-                        android:background="@color/new_grey"
+                        android:background="@color/light_gray"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="@dimen/dimens_4dp" />
@@ -200,7 +200,7 @@
                             android:paddingStart="3dp"
                             android:tag="invoice_value"
                             android:text="Value"
-                            android:textColor="@color/Black"
+                            android:textColor="@color/half_Black"
                             android:textSize="@dimen/text_size_caption" />
 
                         <TextView
@@ -243,7 +243,7 @@
                         android:paddingStart="3dp"
                         android:text="Status"
                         android:tag="invoice_status"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/text_size_caption" />
 
                     <TextView

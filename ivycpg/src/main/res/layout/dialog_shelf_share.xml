@@ -29,7 +29,7 @@
                     android:layout_width="@dimen/dimen_60dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:background="@color/competitor_brand"
+                    android:background="@color/gray_text"
                     android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <RelativeLayout
@@ -37,7 +37,7 @@
                     android:layout_width="@dimen/dimen_60dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:background="@color/competitor_brand"
+                    android:background="@color/gray_text"
                     android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <RelativeLayout
@@ -45,14 +45,14 @@
                     android:layout_width="@dimen/dimen_60dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:background="@color/competitor_brand"
+                    android:background="@color/gray_text"
                     android:layout_marginRight="@dimen/dimen_1dp" />
 
                 <RelativeLayout
                     android:id="@+id/relLytFourth"
                     android:layout_width="@dimen/dimen_60dp"
                     android:layout_height="match_parent"
-                    android:background="@color/competitor_brand" />
+                    android:background="@color/gray_text" />
             </LinearLayout>
 
             <ImageButton

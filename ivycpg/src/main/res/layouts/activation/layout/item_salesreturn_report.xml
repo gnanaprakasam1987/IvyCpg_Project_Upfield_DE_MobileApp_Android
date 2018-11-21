@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/list_margin"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="5dp"
     card_view:cardPreventCornerOverlap="true"
@@ -90,7 +90,7 @@
                     android:gravity="center"
                     android:padding="2dp"
                     android:text="uid"
-                    android:textColor="@color/kpi_value_text_color"
+                    android:textColor="@color/list_item_secondary_text_color"
                     android:textSize="@dimen/text_size_primary" />
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:gravity="center"
                     android:padding="2dp"
                     android:text="0"
-                    android:textColor="@color/kpi_value_text_color"
+                    android:textColor="@color/list_item_secondary_text_color"
                     android:textSize="@dimen/text_size_primary" />
 
 
@@ -112,7 +112,7 @@
                     android:layout_weight="25"
                     android:gravity="center"
                     android:padding="2dp"
-                    android:textColor="@color/kpi_value_text_color"
+                    android:textColor="@color/list_item_secondary_text_color"
                     android:textSize="@dimen/text_size_primary" />
 
             </LinearLayout>

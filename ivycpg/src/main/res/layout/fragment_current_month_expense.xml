@@ -40,7 +40,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="@null"
-        android:divider="@color/GRAY"
+        android:divider="@color/light_gray"
         android:dividerHeight="1dp"
         android:drawSelectorOnTop="false"
         android:fitsSystemWindows="true"

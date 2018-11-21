@@ -25,25 +25,25 @@
             android:id="@+id/relLytFirst"
             android:layout_width="@dimen/dimen_20dp"
             android:layout_height="match_parent"
-            android:background="@color/competitor_brand" />
+            android:background="@color/gray_text" />
 
         <RelativeLayout
             android:id="@+id/relLytSecond"
             android:layout_width="@dimen/dimen_20dp"
             android:layout_height="match_parent"
-            android:background="@color/competitor_brand" />
+            android:background="@color/gray_text" />
 
         <RelativeLayout
             android:id="@+id/relLytThird"
             android:layout_width="@dimen/dimen_20dp"
             android:layout_height="match_parent"
-            android:background="@color/competitor_brand" />
+            android:background="@color/gray_text" />
 
         <RelativeLayout
             android:id="@+id/relLytFourth"
             android:layout_width="@dimen/dimen_20dp"
             android:layout_height="match_parent"
-            android:background="@color/competitor_brand" />
+            android:background="@color/gray_text" />
     </LinearLayout>
 
 </LinearLayout>

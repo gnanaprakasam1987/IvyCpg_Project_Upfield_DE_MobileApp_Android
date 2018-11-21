@@ -88,7 +88,7 @@
             android:layout_gravity="end|center"
             android:layout_marginEnd="@dimen/profile_history_10dp"
             android:src="@drawable/activity_icon_next"
-            android:tint="@color/new_grey"
+            android:tint="@color/light_gray"
             android:gravity="end|center"
             android:layout_marginRight="@dimen/profile_history_10dp" />
 

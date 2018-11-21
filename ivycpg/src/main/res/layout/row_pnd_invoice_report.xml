@@ -12,7 +12,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="0dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="true"
@@ -52,7 +52,7 @@
                     android:layout_below="@+id/tv_retailer_name"
                     android:layout_marginStart="@dimen/store_margin_top"
                     android:text="@string/invoice_number"
-                    android:textColor="@color/BLUE"
+                    android:textColor="@color/highlighter"
                     android:textSize="@dimen/text_size_primary"
                     android:layout_marginLeft="@dimen/store_margin_top" />
 

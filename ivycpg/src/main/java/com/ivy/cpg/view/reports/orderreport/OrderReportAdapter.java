@@ -266,15 +266,15 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
         if (holder.reportBO.getUpload().equalsIgnoreCase("Y")) {
             holder.text_retailerName.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
             holder.text_orderValue.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
             holder.text_LPC.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
             holder.tvwDist.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
             holder.tvOrderNo.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
 
         } else {
 

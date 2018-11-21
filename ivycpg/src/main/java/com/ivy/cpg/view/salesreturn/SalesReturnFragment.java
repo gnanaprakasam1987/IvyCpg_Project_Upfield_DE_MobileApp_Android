@@ -59,6 +59,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -164,7 +165,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         mBtn_Search.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
-        btn_next.setOnClickListener(this);
         mBtn_clear.setOnEditorActionListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
         lvwplist = (ListView) view.findViewById(R.id.list);
@@ -176,6 +176,13 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         lpcText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         totalValueText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         btn_next.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btn_next.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                onNextButtonClick();
+            }
+        });
+
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.totalTitle).getTag()) != null)
@@ -327,8 +334,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                     });
             bmodel.applyAlertDialogTheme(builderSingle);
 
-        } else if (vw == btn_next) {
-            onNextButtonClick();
         }
     }
 

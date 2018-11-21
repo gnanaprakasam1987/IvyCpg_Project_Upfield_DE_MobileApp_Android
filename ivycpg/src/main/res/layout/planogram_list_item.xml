@@ -7,7 +7,7 @@
     android:layout_marginBottom="@dimen/plano_save_padding"
     android:layout_marginTop="@dimen/plano_save_padding"
     android:orientation="vertical"
-    card_view:cardBackgroundColor="@color/font_inactive"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="@dimen/dimen_2dp"
     card_view:cardElevation="@dimen/dimen_1dp"
     card_view:cardPreventCornerOverlap="true"
@@ -31,15 +31,15 @@
                 android:id="@+id/plano_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/plano_list_header"
+                android:background="@color/list_title_bg_color"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/plano_list_header_bottom"
                 android:paddingStart="@dimen/plano_list_header_left"
                 android:paddingLeft="@dimen/plano_list_header_left"
                 android:paddingTop="@dimen/plano_list_header_top"
                 android:text=""
-                android:textColor="@color/font_inactive"
-                android:textSize="@dimen/font_medium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_small"
                 android:visibility="visible"
                 tools:ignore="RtlSymmetry" />
 
@@ -123,7 +123,7 @@
                         android:gravity="center"
                         android:text="@string/click_to_take_pic"
                         android:visibility="gone"
-                        android:textColor="@color/plano_click_picture" />
+                        android:textColor="@color/gray_text" />
 
                 </LinearLayout>
 
@@ -197,13 +197,12 @@
 
                 <TextView
                     android:id="@+id/adherence_text_view"
-                    style="?textFieldStyle"
                     android:layout_width="@dimen/textview_width"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:gravity="center"
                     android:text="@string/plano_adherence"
-                    android:textColor="@color/plano_adherence"
+                    android:textColor="@color/list_item_text_primary_color"
                     android:textSize="@dimen/text_size_primary" />
 
                 <RadioButton

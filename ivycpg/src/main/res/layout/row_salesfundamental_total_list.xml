@@ -14,7 +14,7 @@
         android:fontFamily="@font/roboto_regular"
         android:gravity="center|start"
         android:text="@string/total"
-        android:textColor="@color/task_title"
+        android:textColor="@color/FullBlack"
         android:textSize="@dimen/font_small" />
 
     <EditText

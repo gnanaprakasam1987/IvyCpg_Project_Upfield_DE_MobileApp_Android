@@ -440,7 +440,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
 //                rdbtn = (RadioButton) View.inflate(this, R.layout.radio_btn_leave_session, null);
                 if (isSingle) {
                     rdbtn.setId(i);
-                    rdbtn.setTextColor(ContextCompat.getColor(this, R.color.Black));
+                    rdbtn.setTextColor(ContextCompat.getColor(this, R.color.half_Black));
                     rdbtn.setText(lstRadioBtns.get(i).getSession());
                     rdbtn.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
                     if (i == 0) {
@@ -453,7 +453,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                 } else {
                     if ("FD".equals(lstRadioBtns.get(i).getSessionCode())) {
                         rdbtn.setId(i);
-                        rdbtn.setTextColor(ContextCompat.getColor(this, R.color.Black));
+                        rdbtn.setTextColor(ContextCompat.getColor(this, R.color.half_Black));
                         rdbtn.setText(lstRadioBtns.get(i).getSession());
                         rdbtn.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
                         rdbtn.setChecked(true);

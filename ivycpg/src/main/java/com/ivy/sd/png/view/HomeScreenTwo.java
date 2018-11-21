@@ -30,7 +30,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -122,6 +121,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -297,9 +297,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         retProfileImage = findViewById(R.id.retProfileImage);
         retailer_name_header = findViewById(R.id.retailer_name_header);
         setSupportActionBar(toolbar);
-        retailer_name_header.setOnClickListener(new OnClickListener() {
+        retailer_name_header.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 Intent prof = new Intent(HomeScreenTwo.this, ProfileActivity.class);
                 prof.putExtra("hometwo", true);
                 startActivity(prof);
@@ -307,9 +307,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         });
 
         setRetailerProfileImage();
-        retProfileImage.setOnClickListener(new OnClickListener() {
+        retProfileImage.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onSingleClick(View v) {
                 if (bmodel.retailerMasterBO.getProfileImagePath() != null &&
                         !"".equals(bmodel.retailerMasterBO.getProfileImagePath())) {
                     File filePath = null;
@@ -344,6 +344,24 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         Toast.makeText(HomeScreenTwo.this,
                                 getResources().getString(R.string.unloadimage),
                                 Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
+        callAnalysisBtn.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                for (ConfigureBO menu : menuDB) {
+                    if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
+                        gotoNextActivity(menu, menu.getHasLink(), false);
+                        break;
+                    } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
+                        gotoNextActivity(menu, menu.getHasLink(), false);
+                        break;
+                    } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
+                        gotoNextActivity(menu, menu.getHasLink(), false);
+                        break;
                     }
                 }
             }
@@ -530,24 +548,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         return null;
     }
 
-    public void CallAnalysisClick(View v) {
-        if (!isClick) {
-            isClick = true;
-            for (ConfigureBO menu : menuDB) {
-                if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_CALL)) {
-                    gotoNextActivity(menu, menu.getHasLink(), false);
-                    break;
-                } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CLOSE_KLGS)) {
-                    gotoNextActivity(menu, menu.getHasLink(), false);
-                    break;
-                } else if (menu.getConfigCode().equalsIgnoreCase(MENU_CALL_ANLYS)) {
-                    gotoNextActivity(menu, menu.getHasLink(), false);
-                    break;
-                }
-            }
-        }
-
-    }
 
     private void prepareMenuIcons() {
         menuIcons.put(MENU_STOCK, R.drawable.activity_icon_stock_check);
@@ -2500,6 +2500,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                                 R.string.reasonmaster_not_downloaded),
                                 Toast.LENGTH_SHORT).show();
                         isCreated = false;
+
                         isClick = false;
                         menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                         if (!menuCode.equals(menu.getConfigCode()))
@@ -2513,6 +2514,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.please_complete_previous_activity),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                     isClick = false;
                 }
             }
@@ -2540,6 +2542,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     } else {
                         dataNotMapped();
                         isCreated = false;
+
                         isClick = false;
                         menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                         if (!menuCode.equals(menu.getConfigCode()))
@@ -2553,6 +2556,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
 
         } else if (menu.getConfigCode().equals(MENU_CALL_ANLYS)) {
@@ -2562,6 +2566,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isCreated = false;
                 isClick = false;
                 Toast.makeText(this, getString(R.string.invoice_with_no_collection), Toast.LENGTH_SHORT).show();
+
             } else if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
                     || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                     || !canAllowCallAnalysis()) {
@@ -2593,6 +2598,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.please_complete_previous_activity),
                             Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
                 isClick = false;
             }
 
@@ -2626,6 +2632,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         dataNotMapped();
                         isCreated = false;
+
                         isClick = false;
                         menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                         if (!menuCode.equals(menu.getConfigCode()))
@@ -2638,6 +2645,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.please_complete_previous_activity),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                     isClick = false;
                 }
             }
@@ -2669,6 +2677,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
                     dataNotMapped();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -2680,6 +2689,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
 
         } else if (menu.getConfigCode().equals(MENU_NEAREXPIRY) && hasLink == 1) {
@@ -2718,6 +2728,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(MENU_SKUWISERTGT)
                 && hasLink == 1) {
@@ -2744,6 +2755,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
 
         } else if (menu.getConfigCode().equals(MENU_CONTRACT_VIEW)
@@ -2773,6 +2785,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
 
         } else if (menu.getConfigCode().equals(MENU_PLANOGRAM) && hasLink == 1) {
@@ -2807,6 +2820,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
                     dataNotMapped();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -2818,6 +2832,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
 
         } else if (menu.getConfigCode().equals(MENU_PRICE) && hasLink == 1) {
@@ -2881,6 +2896,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(MENU_PRICE_COMP) && hasLink == 1) {
             if (isPreviousDone(menu)
@@ -2938,6 +2954,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(MENU_EMPTY_RETURN)
                 && hasLink == 1) {
@@ -2961,6 +2978,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(
                 MENU_PROMO)
@@ -2986,6 +3004,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
                     dataNotMapped();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -2997,6 +3016,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode()
                 .equals(MENU_SOS) && hasLink == 1) {
@@ -3047,6 +3067,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     dataNotMapped();
                     isCreated = false;
 
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -3059,6 +3080,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode()
                 .equals(MENU_SOS_PROJ) && hasLink == 1) {
@@ -3083,6 +3105,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode()
                 .equals(MENU_SOD) && hasLink == 1) {
@@ -3126,6 +3149,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
                     dataNotMapped();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -3138,6 +3162,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode()
                 .equals(MENU_SOD_ASSET) && hasLink == 1) {
@@ -3179,6 +3204,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     dataNotMapped();
                     isCreated = false;
 
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -3191,6 +3217,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(
                 MENU_SOSKU)
@@ -3230,6 +3257,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     dataNotMapped();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -3242,6 +3270,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(
                 MENU_COMPETITOR)
@@ -3272,6 +3301,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
                     dataNotMapped();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -3283,6 +3313,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(MENU_CLOSE_CALL)
                 && hasLink == 1) {
@@ -3305,6 +3336,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
                     dataNotMapped();
                     isCreated = false;
+
                     isClick = false;
                 }
             } else {
@@ -3317,6 +3349,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.please_complete_previous_activity),
                             Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
                 isClick = false;
             }
         } else if (menu.getConfigCode().equals(MENU_CLOSE_KLGS)
@@ -3346,6 +3379,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                         R.string.please_complete_previous_activity),
                                 Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                     isClick = false;
                 }
 
@@ -3385,6 +3419,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
                     dataNotMapped();
                     isCreated = false;
+
                 }
 
 
@@ -3420,6 +3455,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             R.string.no_data_exists),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
@@ -3431,6 +3467,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
 
         } else if (menu.getConfigCode().equals(MENU_DASH_ACT) && hasLink == 1) {
@@ -3455,6 +3492,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
 
             }
 
@@ -3489,6 +3527,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.no_orders_available),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                 }
 
 
@@ -3499,6 +3538,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
 
         } else if (menu.getConfigCode().equals(MENU_FIT_DASH) && hasLink == 1) {
@@ -3528,6 +3568,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.data_not_mapped),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                 }
 
             } else {
@@ -3537,6 +3578,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(MENU_DISPLAY_SCH) && hasLink == 1) {
             if (isPreviousDone(menu)
@@ -3558,6 +3600,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.data_not_mapped),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                 }
             } else {
                 Toast.makeText(
@@ -3566,6 +3609,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(MENU_ORD_DELIVERY) && hasLink == 1) {
             if (isPreviousDone(menu)
@@ -3596,6 +3640,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     R.string.data_not_mapped),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                 }
 
             } else {
@@ -3605,6 +3650,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+
             }
         } else if (menu.getConfigCode().equals(MENU_SALES_RET_DELIVERY) && hasLink == 1) {
             if (isPreviousDone(menu)
@@ -3618,7 +3664,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 finish();
             }
         } else {
+            Toast.makeText(
+                    this,
+                    getResources().getString(
+                            R.string.please_complete_previous_activity),
+                    Toast.LENGTH_SHORT).show();
             isCreated = false;
+
         }
 
     }
@@ -4090,6 +4142,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         isCreated = false;
+
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builder1);
@@ -4169,6 +4222,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         isClick = false;
+
                                         dialog.dismiss();
 
                                     }
@@ -4255,6 +4309,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     public void onClick(DialogInterface dialog, int which) {
                         isCreated = false;
+
                     }
 
                 });
@@ -4474,31 +4529,32 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 holder.iconIV.setColorFilter(Color.argb(0, 0, 0, 0));
             }
 
-            itemView.setOnClickListener(new OnClickListener() {
+            itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
-                    if (!isCreated) {
-                        isCreated = true;
-                        if (holder.config.getConfigCode().equals(MENU_STORECHECK)) {
-                            isCreated = false;
+                public void onSingleClick(View v) {
+                    /*if (!isCreated) {
+                        isCreated = true;*/
+                    if (holder.config.getConfigCode().equals(MENU_STORECHECK)) {
+                        isCreated = false;
 
-                            if (holder.childListView.getVisibility() == View.GONE) {
-                                holder.img_arrow.setImageResource(R.drawable.activity_icon_close);
-                                isInstoreMenuVisible = true;
 
-                                holder.childListView.setLayoutParams(getListLayoutParam(holder.childListView));
-                                holder.childListView.setAdapter(mSchedule);
-                                holder.childListView.setVisibility(View.VISIBLE);
-                            } else {
-                                holder.img_arrow.setImageResource(R.drawable.activity_icon_next);
-                                isInstoreMenuVisible = false;
+                        if (holder.childListView.getVisibility() == View.GONE) {
+                            holder.img_arrow.setImageResource(R.drawable.activity_icon_close);
+                            isInstoreMenuVisible = true;
 
-                                holder.childListView.setVisibility(View.GONE);
-                            }
+                            holder.childListView.setLayoutParams(getListLayoutParam(holder.childListView));
+                            holder.childListView.setAdapter(mSchedule);
+                            holder.childListView.setVisibility(View.VISIBLE);
                         } else {
-                            gotoNextActivity(holder.config, holder.hasLink, false);
+                            holder.img_arrow.setImageResource(R.drawable.activity_icon_next);
+                            isInstoreMenuVisible = false;
+
+                            holder.childListView.setVisibility(View.GONE);
                         }
+                    } else {
+                        gotoNextActivity(holder.config, holder.hasLink, false);
                     }
+                    // }
                 }
             });
 
@@ -4582,14 +4638,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 holder.activityname = convertView
                         .findViewById(R.id.activityName);
 
-                convertView.setOnClickListener(new OnClickListener() {
+                convertView.setOnClickListener(new OnSingleClickListener() {
 
                     @Override
-                    public void onClick(View v) {
-                        if (!isCreated) {
-                            isCreated = true;
-                            gotoNextActivity(holder.config, holder.hasLink, true);
-                        }
+                    public void onSingleClick(View v) {
+                        /*if (!isCreated) {
+                            isCreated = true;*/
+                        gotoNextActivity(holder.config, holder.hasLink, true);
+                        //  }
                     }
                 });
 
@@ -4937,6 +4993,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 finish();
             } else {
                 isCreated = false;
+
                 isClick = false;
                 Toast.makeText(
                         HomeScreenTwo.this,

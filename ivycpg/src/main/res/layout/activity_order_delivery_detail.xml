@@ -49,7 +49,7 @@
                 android:gravity="center_vertical|right"
                 android:singleLine="true"
                 android:text="@string/order_value"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:layout_weight="0.7"/>
 
             <TextView
@@ -62,7 +62,7 @@
                 android:gravity="right|center_vertical"
                 android:singleLine="true"
                 android:text="0.0"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:layout_weight="0.3"/>
 
         </LinearLayout>
@@ -83,7 +83,7 @@
                 android:gravity="center_vertical|right"
                 android:singleLine="true"
                 android:text="@string/disc_amt"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:layout_weight="0.7"/>
 
             <TextView
@@ -96,7 +96,7 @@
                 android:gravity="right|center_vertical"
                 android:singleLine="true"
                 android:text="0.0"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:layout_weight="0.3"/>
 
         </LinearLayout>
@@ -117,7 +117,7 @@
                 android:gravity="center_vertical|right"
                 android:singleLine="true"
                 android:text="@string/tax_value"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:layout_weight="0.7"/>
 
             <TextView
@@ -130,7 +130,7 @@
                 android:gravity="right|center_vertical"
                 android:singleLine="true"
                 android:text="0.0"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:layout_weight="0.3"/>
 
         </LinearLayout>
@@ -152,7 +152,7 @@
                 android:gravity="center_vertical|right"
                 android:singleLine="true"
                 android:text="@string/net_price"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:layout_weight="0.7"/>
 
             <TextView
@@ -166,7 +166,7 @@
                 android:gravity="right|center_vertical"
                 android:singleLine="true"
                 android:text="0.0"
-                android:textColor="@color/Black" />
+                android:textColor="@color/half_Black" />
 
         </LinearLayout>
 

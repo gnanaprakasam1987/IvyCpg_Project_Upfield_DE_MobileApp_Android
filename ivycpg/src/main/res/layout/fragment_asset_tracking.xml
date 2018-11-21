@@ -83,7 +83,7 @@
                 android:layout_above="@+id/ll_keypad"
                 android:layout_below="@+id/ll_header"
                 android:cacheColorHint="@null"
-                android:divider="@color/GRAY"
+                android:divider="@color/light_gray"
                 android:dividerHeight="0.5dp"
                 android:fitsSystemWindows="true" />
 
@@ -110,7 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_1dp"
             android:layout_above="@id/footer"
-            android:background="@color/GRAY"
+            android:background="@color/light_gray"
             android:orientation="horizontal" />
 
         <RelativeLayout

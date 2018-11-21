@@ -6,12 +6,12 @@
     android:orientation="horizontal">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+android:id/title"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimen_20dp"
         android:text=""
         android:textAllCaps="true"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:layout_marginLeft="@dimen/dimen_20dp" />
 </LinearLayout>

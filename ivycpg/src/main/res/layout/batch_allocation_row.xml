@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="5dp"
     card_view:cardPreventCornerOverlap="true"
@@ -15,7 +15,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/WHITE"
+        android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:padding="@dimen/card_margin">
@@ -121,7 +121,7 @@
                 <TextView
                     android:layout_width="@dimen/dimen_1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/GRAY" />
+                    android:background="@color/light_gray" />
 
                 <TextView
                     android:id="@+id/caseTitle"
@@ -172,7 +172,7 @@
                 <TextView
                     android:layout_width="@dimen/dimen_1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/GRAY" />
+                    android:background="@color/light_gray" />
 
                 <TextView
                     android:id="@+id/outercaseTitle"

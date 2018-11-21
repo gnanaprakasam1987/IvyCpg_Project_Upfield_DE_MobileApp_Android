@@ -1023,7 +1023,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
         Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
         imageView_capture.setImageBitmap(bitmap);
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.photocapture_toolbar_bg));
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.light_gray));
 
         imageView_reTake.setVisibility(View.VISIBLE);
         imageView_dummyCapture.setVisibility(View.GONE);

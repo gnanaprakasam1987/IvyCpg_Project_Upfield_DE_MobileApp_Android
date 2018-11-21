@@ -17,7 +17,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/GRAY"
+    android:background="@color/light_gray"
     android:orientation="vertical">
 
     <TextView
@@ -28,8 +28,8 @@
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:text="@string/Name"
-        android:textColor="@color/ink_blue"
-        android:textSize="@dimen/font_medium"
+        android:textColor="@color/highlighter"
+        android:textSize="@dimen/font_small"
         android:textStyle="italic" />
 
     <RelativeLayout
@@ -77,7 +77,7 @@
                     android:layout_marginStart="@dimen/dimen_4dp"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:layout_marginLeft="@dimen/dimen_4dp" />
             </LinearLayout>
 
@@ -103,7 +103,7 @@
                     android:layout_marginStart="@dimen/dimen_4dp"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:layout_marginLeft="@dimen/dimen_4dp" />
             </LinearLayout>
 
@@ -128,7 +128,7 @@
                     android:layout_marginStart="@dimen/dimen_4dp"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:layout_marginLeft="@dimen/dimen_4dp" />
             </LinearLayout>
 
@@ -156,7 +156,7 @@
                     android:gravity="center"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:layout_marginLeft="@dimen/dimen_4dp" />
             </LinearLayout>
         </LinearLayout>
@@ -171,7 +171,7 @@
 
         <TextView
             android:id="@+id/tv_line"
-            style="@style/TextViewHorizontalLineBlue"
+            style="@style/HorizontalLine"
 
             />
     </LinearLayout>
@@ -231,7 +231,7 @@
 
         <TextView
             android:id="@+id/tv_bt_line"
-            style="@style/TextViewHorizontalLineBlue"
+            style="@style/HorizontalLine"
 
             />
     </LinearLayout>

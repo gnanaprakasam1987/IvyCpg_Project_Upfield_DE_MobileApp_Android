@@ -445,7 +445,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
             }
             holder.etRemark.setText(holder.invoiceHeaderBO.getDocRemark());
             if (holder.invoiceHeaderBO.getDocSignImage() != null && holder.invoiceHeaderBO.getDocSignImage().length() > 0) {
-                holder.ivSignature.setColorFilter(ContextCompat.getColor(CollectionReference.this, R.color.font_green), android.graphics.PorterDuff.Mode.MULTIPLY);
+                holder.ivSignature.setColorFilter(ContextCompat.getColor(CollectionReference.this, R.color.green_productivity), android.graphics.PorterDuff.Mode.MULTIPLY);
             }
             if (!bmodel.configurationMasterHelper.IS_DOC_SIGN) {
                 holder.ivSignature.setVisibility(View.GONE);

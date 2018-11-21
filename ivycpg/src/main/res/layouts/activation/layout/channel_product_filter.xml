@@ -24,7 +24,7 @@
             android:id="@+id/filter_list_rv"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:background="@color/WHITE" />
+            android:background="@color/white" />
 
     </LinearLayout>
 

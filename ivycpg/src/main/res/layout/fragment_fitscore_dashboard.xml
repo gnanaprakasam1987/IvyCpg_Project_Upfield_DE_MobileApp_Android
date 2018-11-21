@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/WHITE">
+    android:background="@color/white">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -89,7 +89,7 @@
                     android:gravity="center_horizontal"
                     android:maxLines="1"
                     android:padding="2dp"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/text_size_secondary"
                     android:textStyle="normal"
                     android:visibility="gone"
@@ -140,7 +140,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:text="@string/Thursday"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textStyle="normal"
                     android:textSize="@dimen/text_size_large"
                     android:gravity="center"
@@ -215,7 +215,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:visibility="gone"
-            card_view:cardBackgroundColor="@color/WHITE"
+            card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="4dp"
             card_view:cardElevation="5dp"
             card_view:cardPreventCornerOverlap="false"
@@ -247,7 +247,7 @@
                         android:minLines="1"
                         android:padding="2dp"
                         android:text="Achieved /Target"
-                        android:textColor="@color/GREEN"
+                        android:textColor="@color/green_productivity"
                         android:textSize="@dimen/font_small"
                         android:textStyle="bold" />
 
@@ -259,7 +259,7 @@
                             android:id="@+id/ach_tv_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/Black"
+                            android:textColor="@color/half_Black"
                             android:textSize="@dimen/font_large"
                             android:textStyle="normal"
                             tools:text="70" />
@@ -274,7 +274,7 @@
                             android:layout_toRightOf="@+id/ach_tv_content"
                             android:paddingEnd="20dp"
                             android:text="weight"
-                            android:textColor="@color/GRAY_TEXT"
+                            android:textColor="@color/gray_text"
                             android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
@@ -285,7 +285,7 @@
                     android:layout_width="1dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:background="@color/GRAY"/>
+                    android:background="@color/light_gray"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -303,7 +303,7 @@
                         android:minLines="1"
                         android:padding="2dp"
                         android:text="Previous Score"
-                        android:textColor="@color/GREEN"
+                        android:textColor="@color/green_productivity"
                         android:textSize="@dimen/font_small"
                         android:textStyle="bold" />
 
@@ -315,7 +315,7 @@
                             android:id="@+id/previous_score_tv_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/Black"
+                            android:textColor="@color/half_Black"
                             android:textSize="@dimen/font_large"
                             android:textStyle="normal"
                             tools:text="70" />
@@ -329,7 +329,7 @@
                             android:layout_toRightOf="@+id/previous_score_tv_content"
                             android:paddingEnd="20dp"
                             android:text=" pts"
-                            android:textColor="@color/GRAY_TEXT"
+                            android:textColor="@color/gray_text"
                             android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
@@ -340,7 +340,7 @@
                     android:layout_width="1dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:background="@color/GRAY"/>
+                    android:background="@color/light_gray"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -358,7 +358,7 @@
                         android:minLines="1"
                         android:padding="2dp"
                         android:text="Score Growth"
-                        android:textColor="@color/GREEN"
+                        android:textColor="@color/green_productivity"
                         android:textSize="@dimen/font_small"
                         android:textStyle="bold" />
 
@@ -370,7 +370,7 @@
                             android:id="@+id/score_growth_tv_content"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/Black"
+                            android:textColor="@color/half_Black"
                             android:textSize="@dimen/font_large"
                             android:textStyle="normal"
                             tools:text="70" />
@@ -384,7 +384,7 @@
                             android:layout_toRightOf="@+id/score_growth_tv_content"
                             android:paddingEnd="20dp"
                             android:text=" pts"
-                            android:textColor="@color/GRAY_TEXT"
+                            android:textColor="@color/gray_text"
                             android:textSize="@dimen/text_size_secondary"
                             android:textStyle="normal"
                             android:paddingRight="20dp" />
@@ -415,7 +415,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="5dp"
-                android:background="@color/GRAY"
+                android:background="@color/light_gray"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -429,7 +429,7 @@
                     android:singleLine="true"
                     android:text="@string/details"
                     android:textStyle="bold"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_primary" />
 
                 <TextView
@@ -441,7 +441,7 @@
                     android:padding="5dp"
                     android:singleLine="true"
                     android:text="Target"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold"
                     android:visibility="gone" />
@@ -454,7 +454,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Achieved"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
@@ -468,7 +468,7 @@
                     android:text="Weight"
                     android:textStyle="bold"
                     android:visibility="gone"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_primary" />
 
                 <TextView
@@ -482,7 +482,7 @@
                     android:text="Score"
                     android:textStyle="bold"
                     android:visibility="gone"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_primary"
                     android:paddingRight="5dp" />
             </LinearLayout>
@@ -509,7 +509,7 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardElevation="4dp"
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true"
@@ -617,7 +617,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:text="Total Weightage"
-                    android:textColor="@color/GREEN"
+                    android:textColor="@color/green_productivity"
                     android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
@@ -634,7 +634,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small"
                         android:textStyle="normal" />
 
@@ -647,7 +647,7 @@
                         android:layout_toRightOf="@+id/total_weightage_bottom"
                         android:paddingEnd="20dp"
                         android:text=" pts"
-                        android:textColor="@color/GRAY_TEXT"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary"
                         android:textStyle="normal"
                         android:paddingRight="20dp" />
@@ -661,7 +661,7 @@
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/relativeLayout"
-                android:background="@color/Black"
+                android:background="@color/half_Black"
                 android:layout_toLeftOf="@+id/relativeLayout"/>
 
             <RelativeLayout
@@ -685,7 +685,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="Total Score"
-                    android:textColor="@color/GREEN"
+                    android:textColor="@color/green_productivity"
                     android:textSize="@dimen/text_size_secondary"
                     android:textStyle="bold" />
 
@@ -700,7 +700,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small"
                         android:textStyle="normal" />
 
@@ -713,7 +713,7 @@
                         android:layout_toRightOf="@+id/total_score_bottom"
                         android:paddingEnd="20dp"
                         android:text=" pts"
-                        android:textColor="@color/GRAY_TEXT"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary"
                         android:textStyle="normal"
                         android:paddingRight="20dp" />

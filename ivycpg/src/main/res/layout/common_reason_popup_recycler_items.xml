@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:cursorVisible="false"
         style="@style/EditTextGravity"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:textSize="@dimen/text_size_secondary"
         android:visibility="gone"
         tools:text="rg tgerg dfgdfgdf g"

@@ -7,7 +7,7 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         android:orientation="vertical"
         android:padding="0dp">
 
@@ -15,7 +15,7 @@
             android:id="@+id/scheme_tab_widget"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/WHITE"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <LinearLayout
@@ -26,7 +26,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginTop="2dp"
-                android:background="@color/WHITE"
+                android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="3dp"
                 >
@@ -35,7 +35,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:background="@color/WHITE"
+                        android:background="@color/white"
                         android:gravity="center|start"
                         android:text=""
                         android:textColor="@android:color/black"

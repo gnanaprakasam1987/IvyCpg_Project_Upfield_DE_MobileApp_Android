@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/card_child_margin"
-            card_view:cardBackgroundColor="@color/WHITE"
+            card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="0dp"
             card_view:cardElevation="5dp"
             card_view:cardPreventCornerOverlap="true"
@@ -157,7 +157,7 @@
             android:layout_marginTop="@dimen/viewpger_padding"
             android:adjustViewBounds="true"
             android:text="@string/total_value"
-            android:textColor="@color/GREEN"
+            android:textColor="@color/green_productivity"
             android:textSize="@dimen/text_size_caption" />
 
         <TextView
@@ -194,7 +194,7 @@
             android:layout_toEndOf="@+id/view0"
             android:adjustViewBounds="true"
             android:text="@string/tot_qty"
-            android:textColor="@color/GREEN"
+            android:textColor="@color/green_productivity"
             android:textSize="@dimen/text_size_caption" />
 
         <TextView

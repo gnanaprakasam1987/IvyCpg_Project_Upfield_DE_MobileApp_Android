@@ -22,7 +22,7 @@
             android:singleLine="true"
             android:text="Retailer Name"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_medium" />
+            android:textSize="@dimen/font_small" />
 
         <TextView
             android:id="@+id/productName"
@@ -34,7 +34,7 @@
             android:singleLine="true"
             android:text="Product Name"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_medium" />
+            android:textSize="@dimen/font_small" />
     </LinearLayout>
 
     <ImageView
@@ -55,7 +55,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/dimen_12dp"
         android:layout_marginTop="@dimen/dimen_12dp"
-        android:background="@color/new_grey"
+        android:background="@color/light_gray"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/dimens_4dp"

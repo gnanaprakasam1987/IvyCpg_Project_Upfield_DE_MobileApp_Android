@@ -32,7 +32,7 @@
             android:background="#2196F3"
             android:gravity="center"
             android:text="@string/absentees_retailer"
-            android:textColor="@color/WHITE"
+            android:textColor="@color/white"
             android:textSize="@dimen/font_small" />
 
         <ListView
