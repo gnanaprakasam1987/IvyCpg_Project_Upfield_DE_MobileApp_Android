@@ -19,7 +19,7 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/list_header_height"
-                android:background="?attr/customLayoutBackgroundColor"
+                android:background="?attr/customFooterBackgroundColor"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/kpi_spinner_title_size" />
@@ -44,7 +44,7 @@
 
             <TextView
                 android:id="@+id/tv_sales_parameter"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -58,7 +58,7 @@
 
             <TextView
                 android:id="@+id/tv_sfactor"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -75,7 +75,7 @@
 
             <TextView
                 android:id="@+id/tv_sachper"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -89,7 +89,7 @@
 
             <TextView
                 android:id="@+id/tv_smax_possible"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

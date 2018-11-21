@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/tv_retailername"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="@dimen/list_product_name_width_tiny"
             android:layout_height="wrap_content"
             android:gravity="start"
@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/tv_purchase_values"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="@dimen/list_item_width_double"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/tv_lines_value"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="@dimen/list_item_width_double"
             android:layout_height="wrap_content"
             android:gravity="center"

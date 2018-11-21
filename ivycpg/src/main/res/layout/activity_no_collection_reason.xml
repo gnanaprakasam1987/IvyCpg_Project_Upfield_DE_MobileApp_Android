@@ -26,14 +26,14 @@
             android:layout_height="@dimen/screen_title_height"
             android:layout_marginEnd="@dimen/list_margin"
             android:layout_marginStart="@dimen/list_margin"
-            android:background="?attr/customLayoutBackgroundColor"
+            android:background="?attr/customFooterBackgroundColor"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:weightSum="1">
 
             <TextView
                 android:id="@+id/invoice_no"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -44,7 +44,7 @@
 
             <TextView
                 android:id="@+id/invoice_date"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -54,7 +54,7 @@
 
             <TextView
                 android:id="@+id/invoice_amount"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -64,7 +64,7 @@
 
             <TextView
                 android:id="@+id/invoice_reason"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

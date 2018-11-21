@@ -21,4 +21,11 @@
     <color name="list_title_bg_color_green">#212121</color>
 
     <color name="highlighter_green">#FFA000</color>
+
+    <!--Footer background color-->
+    <color name="footer_bg_color_green">#121212</color>
+
+    <!--List item Header Title Text color-->
+    <color name="list_header_text_color_green">#ffffff</color>
+
 </resources>

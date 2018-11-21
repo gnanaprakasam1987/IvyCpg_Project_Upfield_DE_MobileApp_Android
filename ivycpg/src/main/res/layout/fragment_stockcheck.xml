@@ -178,7 +178,7 @@
 
                             <TextView
                                 android:id="@+id/audit"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/audit_width"
                                 android:layout_height="match_parent"
                                 android:text="@string/audit"
@@ -186,7 +186,7 @@
 
                             <TextView
                                 android:id="@+id/tvProductNameTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="4"
@@ -202,7 +202,7 @@
 
                                 <TextView
                                     android:id="@+id/shelfPcsCB"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -220,7 +220,7 @@
                                     android:weightSum="10">
 
                                     <TextView
-                                        style="?attr/customListTitle"
+                                        style="@style/TextViewListTitle"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
                                         android:layout_weight="5"
@@ -263,7 +263,7 @@
 
                                 <TextView
                                     android:id="@+id/et_facingQty"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -272,7 +272,7 @@
 
                                 <TextView
                                     android:id="@+id/exp_stktotalTitle"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -317,7 +317,7 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/footer_height"
             android:layout_alignParentBottom="true"
-            android:background="@color/footer_bg"
+            android:background="@color/footer_bg_color"
             android:orientation="horizontal"
             android:padding="@dimen/footer_padding">
 

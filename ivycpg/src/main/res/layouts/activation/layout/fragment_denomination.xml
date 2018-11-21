@@ -64,7 +64,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/customLayoutBackgroundColor"
+        android:background="?attr/customFooterBackgroundColor"
         android:orientation="horizontal">
 
         <LinearLayout

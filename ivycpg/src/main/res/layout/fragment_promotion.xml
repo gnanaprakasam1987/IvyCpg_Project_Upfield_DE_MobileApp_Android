@@ -23,7 +23,7 @@
 
             <TextView
                 android:id="@+id/tvDesc"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4.5"
@@ -33,7 +33,7 @@
             <!--android:layout_weight="1.8"-->
             <TextView
                 android:id="@+id/tvPromoQty"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
@@ -43,7 +43,7 @@
 
             <TextView
                 android:id="@+id/tvAnnouncer"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
@@ -52,7 +52,7 @@
 
             <TextView
                 android:id="@+id/tvExecuted"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
@@ -62,7 +62,7 @@
 
             <TextView
                 android:id="@+id/tvReason"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
@@ -71,7 +71,7 @@
 
             <TextView
                 android:id="@+id/tv_executing_rating"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
@@ -81,7 +81,7 @@
 
             <TextView
                 android:id="@+id/tvPhoto"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

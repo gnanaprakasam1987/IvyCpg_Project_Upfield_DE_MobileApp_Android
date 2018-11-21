@@ -27,18 +27,19 @@
     <!--List item Header background color-->
     <color name="list_title_bg_color">#212121</color>
 
+    <!--List item Header Title Text color-->
+    <color name="list_header_text_color">#ffffff</color>
+
+
     <!--**************************************************************************************-->
 
     <!--common-->
-
-    <color name="list_header_text_color">#ffffff</color>
-
     <color name="list_item_text_primary_color">#DE262626</color>
     <color name="list_item_secondary_text_color">#ae000000</color>
     <color name="list_item_values_text_color">#262626</color>
 
     <!--footer color-->
-    <color name="footer_bg">#212121</color>
+    <color name="footer_bg_color">#212121</color>
     <color name="bottom_bg">#F5F7FE</color>
 
     <color name="keypad_bg_color">#606060</color>

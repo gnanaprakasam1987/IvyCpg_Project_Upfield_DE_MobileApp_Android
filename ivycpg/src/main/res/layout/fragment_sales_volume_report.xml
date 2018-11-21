@@ -62,7 +62,7 @@
 
                                 <TextView
                                     android:id="@+id/outna"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/product_name"
@@ -75,7 +75,7 @@
 
                         <TextView
                             android:id="@+id/total_qty"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -84,7 +84,7 @@
 
                         <TextView
                             android:id="@+id/total_value"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"

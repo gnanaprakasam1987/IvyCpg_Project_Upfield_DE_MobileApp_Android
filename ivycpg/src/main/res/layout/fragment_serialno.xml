@@ -12,7 +12,7 @@
 
         android:layout_alignParentTop="true">
         <TextView
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="@dimen/order_stock_list_product_name_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -20,13 +20,13 @@
             android:text="@string/product_name"
             />
         <TextView
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="@dimen/serial_no_qty_width"
             android:layout_height="match_parent"
             android:text="@string/qty"
             android:layout_gravity="center"/>
         <TextView
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="@dimen/serial_no_qty_width"
             android:layout_height="match_parent"
             android:text="@string/scanned"

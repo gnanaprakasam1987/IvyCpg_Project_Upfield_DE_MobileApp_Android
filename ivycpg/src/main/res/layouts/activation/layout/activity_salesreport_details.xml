@@ -14,7 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/dimen_40dp"
         android:layout_below="@+id/toolbar"
-        android:background="?attr/customLayoutBackgroundColor"
+        android:background="?attr/customFooterBackgroundColor"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dimen_8dp"
         android:paddingRight="@dimen/dimen_8dp">
@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/productName"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/cqty"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -48,7 +48,7 @@
 
         <TextView
             android:id="@+id/outercqty"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -58,7 +58,7 @@
 
         <TextView
             android:id="@+id/piececqty"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -69,7 +69,7 @@
 
         <TextView
             android:id="@+id/text_returnValue"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -94,7 +94,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/resetbox_header_height"
         android:layout_alignParentBottom="true"
-        android:background="?attr/customLayoutBackgroundColor"
+        android:background="?attr/customFooterBackgroundColor"
         android:orientation="vertical"
         android:stretchColumns="*">
 

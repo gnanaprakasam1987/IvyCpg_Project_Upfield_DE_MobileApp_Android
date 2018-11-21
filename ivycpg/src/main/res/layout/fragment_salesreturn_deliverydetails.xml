@@ -8,7 +8,7 @@
         android:id="@+id/container_titles"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="?attr/customLayoutBackgroundColor"
+        android:background="?attr/customFooterBackgroundColor"
         android:orientation="horizontal"
         android:weightSum="8">
 
@@ -120,7 +120,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
+        android:background="@color/footer_bg_color"
         android:orientation="horizontal"
         android:padding="@dimen/footer_padding">
 

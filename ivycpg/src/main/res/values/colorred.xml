@@ -18,4 +18,10 @@
 
     <color name="highlighter_red">#83c341</color>
 
+    <!--Footer background color-->
+    <color name="footer_bg_color_red">#121212</color>
+
+    <!--List item Header Title Text color-->
+    <color name="list_header_text_color_red">#ffffff</color>
+
 </resources>

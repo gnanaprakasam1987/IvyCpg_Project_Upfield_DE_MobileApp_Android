@@ -22,4 +22,10 @@
 
     <color name="highlighter_orange">#cd202c</color>
 
+    <!--Footer background color-->
+    <color name="footer_bg_color_orange">#121212</color>
+
+    <!--List item Header Title Text color-->
+    <color name="list_header_text_color_orange">#ffffff</color>
+
 </resources>

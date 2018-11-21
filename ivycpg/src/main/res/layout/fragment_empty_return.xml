@@ -48,7 +48,7 @@
 
                             <TextView
                                 android:id="@+id/sku"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_product_name"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/dimen_5dp"
@@ -59,7 +59,7 @@
 
                             <TextView
                                 android:id="@+id/qty"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_gravity="center"
                                 android:layout_height="wrap_content"

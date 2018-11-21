@@ -13,7 +13,7 @@
             android:id="@+id/dashboard_fragment"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spinner_layout_bg_height"
-            android:background="?attr/customLayoutBackgroundColor" />
+            android:background="?attr/customFooterBackgroundColor" />
 
         <LinearLayout
             android:id="@+id/spinnerLayout"

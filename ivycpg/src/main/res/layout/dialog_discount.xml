@@ -11,14 +11,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
+        android:background="@color/footer_bg_color"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/footer_bg"
+            android:background="@color/footer_bg_color"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:padding="@dimen/target_top_margin">
@@ -53,7 +53,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/footer_bg"
+                android:background="@color/footer_bg_color"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="@dimen/target_top_margin">
@@ -246,7 +246,7 @@
 
                             <TextView
                                 android:id="@+id/tvProductNameTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="@dimen/list_margin"
@@ -257,14 +257,14 @@
 
                             <TextView
                                 android:id="@+id/minmax"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:text="@string/text_min_max" />
                             <TextView
                                 android:id="@+id/u_price_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
@@ -272,7 +272,7 @@
                                 android:text="Price" />
                             <TextView
                                 android:id="@+id/disc_price_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
@@ -280,7 +280,7 @@
                                 android:text="@string/discounted_price" />
                             <TextView
                                 android:id="@+id/d1title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
@@ -289,7 +289,7 @@
 
                             <TextView
                                 android:id="@+id/datitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
@@ -297,7 +297,7 @@
 
                             <TextView
                                 android:id="@+id/tvTotalTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"

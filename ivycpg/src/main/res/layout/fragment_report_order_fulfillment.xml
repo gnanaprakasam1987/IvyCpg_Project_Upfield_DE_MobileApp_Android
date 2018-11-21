@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/txtHeaderProductName"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/skuwise_right_margin"
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/txtHeaderOrderedCases"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/skuwise_right_margin"
@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/txtHeaderOrderedPieces"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/skuwise_right_margin"
@@ -55,7 +55,7 @@
 
         <TextView
             android:id="@+id/txtHeaderFulfilledCases"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/skuwise_right_margin"
@@ -68,7 +68,7 @@
 
         <TextView
             android:id="@+id/txtHeaderFulfilledPieces"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/skuwise_right_margin"
@@ -103,7 +103,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:background="@color/footer_bg"
+        android:background="@color/footer_bg_color"
         android:gravity="center_vertical"
         android:orientation="vertical">
 

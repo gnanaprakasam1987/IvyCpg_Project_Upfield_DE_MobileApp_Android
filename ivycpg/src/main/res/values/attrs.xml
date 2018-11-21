@@ -63,16 +63,16 @@
     </declare-styleable>
 
     <declare-styleable name="customTextView">
-        <attr name="customListTitle" format="reference" />
         <attr name="customListTitleSecondary" format="reference" />
         <attr name="customListItemPrimary" format="reference" />
         <attr name="customListItemCaption" format="reference" />
         <attr name="customListItemValue" format="reference" />
         <attr name="customListTitleBlack" format="reference" />
+        <attr name="listHeaderTitleTextColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="customLayout">
-        <attr name="customLayoutBackgroundColor" format="color" />
+        <attr name="customFooterBackgroundColor" format="color" />
         <attr name="tradeCoverageBackgroundOne" format="reference" />
         <attr name="tradeCoverageBackgroundTwo" format="reference" />
         <attr name="tradeCoverageBackgroundThree" format="reference" />

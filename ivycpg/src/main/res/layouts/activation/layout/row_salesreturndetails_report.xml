@@ -18,7 +18,7 @@
 
             <TextView
                 android:id="@+id/text_productName"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"

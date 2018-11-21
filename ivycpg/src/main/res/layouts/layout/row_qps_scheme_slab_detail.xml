@@ -29,7 +29,7 @@
 
                 <TextView
                     android:id="@+id/tv_header_productName"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
@@ -42,7 +42,7 @@
 
                 <TextView
                     android:id="@+id/tv_header_pcs_ordered_qty"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
@@ -54,7 +54,7 @@
 
                 <TextView
                     android:id="@+id/tv_header_cases_ordered_qty"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
@@ -66,7 +66,7 @@
 
                 <TextView
                     android:id="@+id/tv_header_uom"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
@@ -78,7 +78,7 @@
 
                 <TextView
                     android:id="@+id/tv_header_pcs_final_qty"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
@@ -90,7 +90,7 @@
 
                 <TextView
                     android:id="@+id/tv_header_cases_final_qty"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
@@ -102,7 +102,7 @@
 
                 <TextView
                     android:id="@+id/tv_header_gqt"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/list_margin"
