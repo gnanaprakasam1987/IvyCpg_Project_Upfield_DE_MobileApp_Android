@@ -57,7 +57,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
         visitedRetailers.addAll(sellerPerformanceDetailPresenter.getVisitedRetailers());
         outletListAdapter.notifyDataSetChanged();
 
-        tvStoreCount.setText("Total Stores "+visitedRetailers.size());
+        tvStoreCount.setText("Total Stores - "+visitedRetailers.size());
 
         rootView.findViewById(R.id.close_img).setOnClickListener(new View.OnClickListener() {
             @Override

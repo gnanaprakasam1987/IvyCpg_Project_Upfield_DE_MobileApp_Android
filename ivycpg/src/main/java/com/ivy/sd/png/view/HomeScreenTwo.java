@@ -1925,7 +1925,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_STK_ORD)
                 || menu.getConfigCode().equals(MENU_CATALOG_ORDER) && hasLink == 1) {
             new StockAndOrderTask(menu, this).execute();
-           // moveToStockAndOrder(menu);
+            // moveToStockAndOrder(menu);
         } else if (menu.getConfigCode().equals(MENU_CLOSING) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
@@ -3783,7 +3783,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 //loadOrderedProducts,loadSerialNo,enableSchemeModule are used in edit mode so avoided here as in this case screen should be loaded fresh
                                 bmodel.setOrderHeaderBO(null);
                                 loadRequiredMethodsForStockAndOrder(menu.getConfigCode(), menu.getMenuName());
-                               // loadstockorderscreen(menu.getConfigCode());
+                                // loadstockorderscreen(menu.getConfigCode());
                                 return 2;
                             }
                         } else {
@@ -3800,11 +3800,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             }
                             loadRequiredMethodsForStockAndOrder(menu.getConfigCode(), menu.getMenuName());
                             if (bmodel.isEdit()) {
-                               // loadOrderSummaryScreen(menu.getConfigCode());
+                                // loadOrderSummaryScreen(menu.getConfigCode());
                                 return 3;
 
                             } else {
-                               // loadstockorderscreen(menu.getConfigCode());
+                                // loadstockorderscreen(menu.getConfigCode());
                                 return 2;
                             }
                         }
@@ -3820,12 +3820,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     }
 
                 } else {
-                    dataNotMapped();
+
                     isCreated = false;
                     isClick = false;
                     menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
                     if (!menuCode.equals(menu.getConfigCode()))
                         menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
+
+                    return 4;
                 }
             }
 
@@ -5068,6 +5070,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         private Context mContext;
         private AlertDialog.Builder builder;
         private AlertDialog alertDialog;
+
         public StockAndOrderTask(ConfigureBO configureBO, Context context) {
             this.menu = configureBO;
             this.mContext = context;
@@ -5105,10 +5108,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         getResources().getString(
                                 R.string.please_pay_old_invoice),
                         Toast.LENGTH_SHORT).show();
-            }else if(integer != null && integer==2){
+            } else if (integer != null && integer == 2) {
                 loadstockorderscreen(menu.getConfigCode());
-            }else if(integer != null && integer==3){
+            } else if (integer != null && integer == 3) {
                 loadOrderSummaryScreen(menu.getConfigCode());
+            } else if (integer != null && integer == 4) {
+                dataNotMapped();
             }
         }
     }

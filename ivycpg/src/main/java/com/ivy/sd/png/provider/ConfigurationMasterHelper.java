@@ -123,7 +123,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_VOLUME_PRECISION_COUNT = "VolDecimal";
     private static final String CODE_PERCENT_PRECISION_COUNT = "PerDecimal";
     private static final String CODE_CALCULATION_PRECISION_COUNT = "CalcDecimal";
-    public int PRECISION_COUNT_FOR_CALCULATION=3;
+    public int PRECISION_COUNT_FOR_CALCULATION = 3;
     public int VALUE_PRECISION_COUNT = 2;
     public int VALUE_COMMA_COUNT = 0;
     public int PERCENT_PRECISION_COUNT = 0;
@@ -1001,7 +1001,6 @@ public class ConfigurationMasterHelper {
     public boolean isRetailerBOMEnabled = false;
 
 
-
     //To show volume qty in order header report
     private static final String CODE_ORDER_RPT_VOLUME = "ORDRPT03";
     public boolean SHOW_VOLUME_QTY;
@@ -1023,11 +1022,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_SKU_CODE = "FUN06";
     public boolean IS_SHOW_SKU_CODE;
 
-    private static final String CODE_SR_VALIDATE_BY_RETAILER_TYPE= "SR20";
+    private static final String CODE_SR_VALIDATE_BY_RETAILER_TYPE = "SR20";
     public boolean IS_SR_VALIDATE_BY_RETAILER_TYPE;
 
-    private static final String CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL= "SR21";
-    public boolean IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL,IS_INDICATIVE_MASTER;
+    private static final String CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = "SR21";
+    public boolean IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL, IS_INDICATIVE_MASTER;
 
     //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -1196,7 +1195,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN,SHOW_STOCK_NON_SALABLE,SHOW_STOCK_VAN_UNLOAD;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN, SHOW_STOCK_NON_SALABLE, SHOW_STOCK_VAN_UNLOAD;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -1405,7 +1404,6 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
     public boolean SHOW_SALES_RETURN_IN_DELIVERY;
-
 
 
     public int retailerLocAccuracyLvl;
@@ -2343,8 +2341,8 @@ public class ConfigurationMasterHelper {
         this.VALUE_COMMA_COUNT = hashMapHHTModuleOrder.get(CODE_VOLUME_COMMA_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_VOLUME_COMMA_COUNT) : 0;
         this.VALUE_PRECISION_COUNT = hashMapHHTModuleOrder.get(CODE_VOLUME_PRECISION_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_VOLUME_PRECISION_COUNT) : 2;
         this.PERCENT_PRECISION_COUNT = hashMapHHTModuleOrder.get(CODE_PERCENT_PRECISION_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PERCENT_PRECISION_COUNT) : 0;
-        this.PRECISION_COUNT_FOR_CALCULATION = hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT)!=null?hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT):3;
-        SDUtil.CALCULATION_PRECISION_COUNT =hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT)!=null?hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT):3;
+        this.PRECISION_COUNT_FOR_CALCULATION = hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT) : 3;
+        SDUtil.CALCULATION_PRECISION_COUNT = hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_CALCULATION_PRECISION_COUNT) : 3;
 
         this.printCount = hashMapHHTModuleOrder.get(CODE_PRINT_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PRINT_COUNT) : 0;
         this.photocount = hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_COUNT) != null ? hashMapHHTModuleOrder.get(CODE_PHOTO_CAPTURE_COUNT) : 0;
@@ -2654,11 +2652,11 @@ public class ConfigurationMasterHelper {
 
         this.IS_SR_VALIDATE_BY_RETAILER_TYPE = hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_SR_VALIDATE_BY_RETAILER_TYPE) : false;
         this.IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL) : false;
-        this.IS_INDICATIVE_MASTER= hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
+        this.IS_INDICATIVE_MASTER = hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) != null ? hashMapHHTModuleConfig.get(CODE_SR_INDICATIVE) : false;
 
 
-        this.IS_NAVIGATE_CREDIT_NOTE_SCREEN= hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) : false;
-        this.SHOW_NO_COLLECTION_REASON= hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) != null ? hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) : false;
+        this.IS_NAVIGATE_CREDIT_NOTE_SCREEN = hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) != null ? hashMapHHTModuleConfig.get(CODE_NAVIGATE_CREDIT_NOTE_SCREEN) : false;
+        this.SHOW_NO_COLLECTION_REASON = hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) != null ? hashMapHHTModuleConfig.get(CODE_NO_COLLECTION_REASON) : false;
         // Unload non salable product returns.
         this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
 
@@ -3460,7 +3458,7 @@ public class ConfigurationMasterHelper {
             SHOW_DELIVERY_PC = false;
             SHOW_DELIVERY_CA = false;
             SHOW_DELIVERY_OU = false;
-            SHOW_SALES_RETURN_IN_DELIVERY=false;
+            SHOW_SALES_RETURN_IN_DELIVERY = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3491,7 +3489,7 @@ public class ConfigurationMasterHelper {
                             SHOW_DELIVERY_CA = true;
                             break;
                         case "SR":
-                            SHOW_SALES_RETURN_IN_DELIVERY=true;
+                            SHOW_SALES_RETURN_IN_DELIVERY = true;
                             break;
                     }
 
@@ -3644,12 +3642,15 @@ public class ConfigurationMasterHelper {
                         case "ST":
                             SHOW_INV_HST_STATUS = true;
                             break;
-                        case"VOL":
+                        case "VOL":
                             SHOW_INV_HST_VOLUME = true;
-                        case"MGNPRC":
-                            SHOW_INV_HST_MARGIN_PRICE= true;
-                        case"MGNPER":
+                            break;
+                        case "MGNPRC":
+                            SHOW_INV_HST_MARGIN_PRICE = true;
+                            break;
+                        case "MGNPER":
                             SHOW_INV_HST_MARGIN_PER = true;
+                            break;
 
                     }
 
@@ -3878,7 +3879,7 @@ public class ConfigurationMasterHelper {
             SHOW_NEW_OUTLET_OPPR = false;
             SHOW_NEW_OUTLET_ORDER = false;
             IS_STK_ORD_BS = false;
-            IS_STK_ORD_PROJECT= false;
+            IS_STK_ORD_PROJECT = false;
             SHOW_SALES_RETURN_IN_ORDER = false;
 
 
@@ -3931,7 +3932,7 @@ public class ConfigurationMasterHelper {
 
                 String codeSplit[] = codeValue.split(",");
                 for (String temp : codeSplit) {
-                     if (temp.equals("SP"))
+                    if (temp.equals("SP"))
                         SHOW_STOCK_SP = true;
                     else if (temp.equals("CASP"))
                         SHOW_CAT_STOCK_SP = true;
@@ -4351,7 +4352,7 @@ public class ConfigurationMasterHelper {
                 if (c.moveToNext()) {
                     codeValue = c.getString(0);
                 }
-            c.close();
+                c.close();
             }
 
             if (codeValue != null) {
@@ -4393,7 +4394,6 @@ public class ConfigurationMasterHelper {
                 }
             }
             c.close();
-
 
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -4526,7 +4526,7 @@ public class ConfigurationMasterHelper {
         SHOW_STOCK_RETURN = false;
         SHOW_STOCK_EMPTY = false;
         SHOW_STOCK_FREE_ISSUED = false;
-        SHOW_STOCK_NON_SALABLE =false;
+        SHOW_STOCK_NON_SALABLE = false;
         SHOW_STOCK_VAN_UNLOAD = false;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -4838,7 +4838,7 @@ public class ConfigurationMasterHelper {
      * @return menuname
      */
     public String getHomescreentwomenutitle(String menucode) {
-        String menuName="";
+        String menuName = "";
         Vector<ConfigureBO> config = getActivityMenu();
         if (config != null) {
             for (int i = 0; i < config.size(); i++) {
@@ -5536,7 +5536,7 @@ public class ConfigurationMasterHelper {
     }
 
     public int getMVPTheme() {
-       // MVPTheme = R.style.MVPTheme_Blue;
+        // MVPTheme = R.style.MVPTheme_Blue;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
 
@@ -6167,9 +6167,9 @@ public class ConfigurationMasterHelper {
         if (switchToPreSeller) {
             bmodel.configurationMasterHelper.downloadSwitchConfig();
 
-            bmodel.configurationMasterHelper.IS_INDICATIVE_SR=true;
-            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH=false;
-            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION=false;
+            bmodel.configurationMasterHelper.IS_INDICATIVE_SR = true;
+            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH = false;
+            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION = false;
 
         } else {
             SchemeDetailsMasterHelper schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(context);
@@ -6185,9 +6185,9 @@ public class ConfigurationMasterHelper {
             bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
             bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
 
-            bmodel.configurationMasterHelper.IS_INDICATIVE_SR=bmodel.configurationMasterHelper.IS_INDICATIVE_MASTER;
-            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH=true;
-            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION=true;
+            bmodel.configurationMasterHelper.IS_INDICATIVE_SR = bmodel.configurationMasterHelper.IS_INDICATIVE_MASTER;
+            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH = true;
+            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION = true;
         }
 
     }

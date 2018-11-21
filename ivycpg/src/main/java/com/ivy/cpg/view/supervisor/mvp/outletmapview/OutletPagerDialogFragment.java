@@ -61,7 +61,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
         scrollToPosition(retailerId);
 
-        tvStoreCount.setText("Total Stores "+visitedRetailers.size());
+        tvStoreCount.setText("Total Stores - "+visitedRetailers.size());
 
         rootView.findViewById(R.id.close_img).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -57,11 +57,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implements SellerDetailMapContractor.SellerDetailMapView,
-        OnMapReadyCallback,GoogleMap.OnMarkerClickListener,GoogleMap.OnInfoWindowClickListener,FilterScreenFragment.FilterItemSelectedListener  {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, FilterScreenFragment.FilterItemSelectedListener {
 
     private GoogleMap mMap;
     private int userId;
-    private String userName,seletedDate,sellerUId="";
+    private String userName, seletedDate, sellerUId = "";
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName, tvInfoVisitTime, tvSellerName, tvSellerStartTime, tvSellerLastVisit, tvTarget, tvCovered;
@@ -113,7 +113,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         }
 
         sellerMapViewPresenter = new SellerDetailMapPresenter();
-        sellerMapViewPresenter.setView(this,SellerDetailMapActivity.this);
+        sellerMapViewPresenter.setView(this, SellerDetailMapActivity.this);
 
         initViews();
         setViewValues();
@@ -121,7 +121,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
     private void initViews() {
 
-        mymarkerview = (ViewGroup)getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
+        mymarkerview = (ViewGroup) getLayoutInflater().inflate(R.layout.map_custom_outlet_info_window, null);
 
         tvMapInfoUserName = mymarkerview.findViewById(R.id.tv_usr_name);
         tvInfoVisitTime = mymarkerview.findViewById(R.id.tv_visit_time);
@@ -135,20 +135,20 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         ImageView imgMessage = findViewById(R.id.message_img);
 
-        tvSellerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerStartTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerLastVisit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvSellerPerformanceBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvTarget.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvCovered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvSellerName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        tvSellerStartTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        tvSellerLastVisit.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        tvSellerPerformanceBtn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        tvTarget.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        tvCovered.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
 
-        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        tvInfoVisitTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
 
-        ((TextView)findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.store_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.time_in_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
-        ((TextView)findViewById(R.id.time_out_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,this));
+        ((TextView) findViewById(R.id.number_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        ((TextView) findViewById(R.id.store_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        ((TextView) findViewById(R.id.time_in_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
+        ((TextView) findViewById(R.id.time_out_text)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, this));
 
         mapWrapperLayout = findViewById(R.id.map_wrap_layout);
         mapWrapperLayout.init(mMap, getPixelsFromDp(this, getPixelsFromDp(this, 39 + 20)));
@@ -167,12 +167,12 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 if (SupervisorActivityHelper.getInstance().isChatConfigAvail(SellerDetailMapActivity.this)) {
                     if (!sellerUId.equals("")) {
                         Intent intent = new Intent(SellerDetailMapActivity.this, StartChatActivity.class);
-                        intent.putExtra("name",userName);
+                        intent.putExtra("name", userName);
                         intent.putExtra("UUID", sellerUId);
                         startActivity(intent);
                     } else
                         Toast.makeText(SellerDetailMapActivity.this, "No Chat Found..", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Toast.makeText(SellerDetailMapActivity.this, "No Chat Config Enabled..", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -181,14 +181,13 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         tvSellerPerformanceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SellerDetailMapActivity.this,SellerPerformanceDetailActivity.class);
-                intent.putExtra("SellerId",userId);
-                intent.putExtra("Date",seletedDate);
+                Intent intent = new Intent(SellerDetailMapActivity.this, SellerPerformanceDetailActivity.class);
+                intent.putExtra("SellerId", userId);
+                intent.putExtra("Date", seletedDate);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
-
 
 
         bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.user_info_layout));
@@ -241,7 +240,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         });
     }
 
-    private void setViewValues(){
+    private void setViewValues() {
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -301,7 +300,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         //Download retailers from Master Seller wise
         //Plot pins base on retailer master location
-        sellerMapViewPresenter.downloadSellerOutletAWS(userId,seletedDate);
+        sellerMapViewPresenter.downloadSellerOutletAWS(userId, seletedDate);
 
         sellerMapViewPresenter.isRealtimeLocation();
 
@@ -309,15 +308,15 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         sellerMapViewPresenter.getMarkerForFocus();
 
         //Current Seller last visit info listener
-        sellerMapViewPresenter.setSellerActivityListener(userId,seletedDate);
+        sellerMapViewPresenter.setSellerActivityListener(userId, seletedDate);
 
         //Current Seller Realtime Location listener
-        sellerMapViewPresenter.setSellerMovementListener(userId,seletedDate);
+        sellerMapViewPresenter.setSellerMovementListener(userId, seletedDate);
 
         //Draw route based on sellers activity
-        sellerMapViewPresenter.setSellerActivityDetailListener(userId,seletedDate);
+        sellerMapViewPresenter.setSellerActivityDetailListener(userId, seletedDate);
 
-        sellerMapViewPresenter.downloadSellerRoute(String.valueOf(userId),seletedDate);
+        sellerMapViewPresenter.downloadSellerRoute(String.valueOf(userId), seletedDate);
 
     }
 
@@ -333,7 +332,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         double angle = 130.0;
         double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
         double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
-        marker.setInfoWindowAnchor((float)x, (float)y);
+        marker.setInfoWindowAnchor((float) x, (float) y);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
 
@@ -345,20 +344,20 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     @Override
     public void onInfoWindowClick(Marker marker) {
 
-        if(sellerMapViewPresenter.getRetailerVisitDetailsByRId(Integer.valueOf(marker.getSnippet())) == null){
+        if (sellerMapViewPresenter.getRetailerVisitDetailsByRId(Integer.valueOf(marker.getSnippet())) == null) {
             Toast.makeText(this, "No visited details found for this retailer", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment(marker,sellerMapViewPresenter);
+        OutletPagerDialogFragment outletPagerDialogFragment = new OutletPagerDialogFragment(marker, sellerMapViewPresenter);
         outletPagerDialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, 0);
         outletPagerDialogFragment.setCancelable(false);
-        outletPagerDialogFragment.show(getSupportFragmentManager(),"OutletPager");
+        outletPagerDialogFragment.show(getSupportFragmentManager(), "OutletPager");
 
     }
 
     @Override
-    public void setRetailerMarker(RetailerBo retailerBo,MarkerOptions markerOptions) {
+    public void setRetailerMarker(RetailerBo retailerBo, MarkerOptions markerOptions) {
 
         Marker marker = mMap.addMarker(markerOptions);
         retailerBo.setMarker(marker);
@@ -370,7 +369,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                if(builder != null) {
+                if (builder != null) {
                     if (sellerMapViewPresenter.checkAreaBoundsTooSmall(builder.build())) {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
                     } else {
@@ -382,7 +381,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
     }
 
     @Override
-    public void setOutletListAdapter(ArrayList<RetailerBo> retailerMasterList ,int lastVisitSeq) {
+    public void setOutletListAdapter(ArrayList<RetailerBo> retailerMasterList, int lastVisitSeq) {
         outletListBos.clear();
         outletListBos.addAll(retailerMasterList);
         outletListAdapter.notifyDataSetChanged();
@@ -390,14 +389,14 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void updateSellerInfo(String timeIn,String retailerName,String target,String covered,LatLng sellerLatLng ) {
+    public void updateSellerInfo(String timeIn, String retailerName, String target, String covered, LatLng sellerLatLng) {
         tvSellerName.setText(userName);
-        tvSellerStartTime.setText(getResources().getString(R.string.visit_time)+" "+timeIn);
-        tvSellerLastVisit.setText(getResources().getString(R.string.last_vist)+" "+retailerName);
-        tvTarget.setText(getResources().getString(R.string.targeted)+" "+target);
-        tvCovered.setText(getResources().getString(R.string.covered)+" "+covered);
+        tvSellerStartTime.setText(getResources().getString(R.string.visit_time) + " " + timeIn);
+        tvSellerLastVisit.setText(getResources().getString(R.string.last_vist) + " " + retailerName);
+        tvTarget.setText(getResources().getString(R.string.targeted) + " : " + target);
+        tvCovered.setText(getResources().getString(R.string.covered) + " : " + covered);
 
-        if(sellerLatLng != null) {
+        if (sellerLatLng != null) {
             if (sellerMarker == null) {
                 MarkerOptions markerOptions = new MarkerOptions()
                         .position(sellerLatLng)
@@ -406,14 +405,14 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 sellerMarker = mMap.addMarker(markerOptions);
             } else {
 //                sellerMarker.setPosition(sellerLatLng);
-                sellerMapViewPresenter.animateSellerMarker(sellerLatLng,sellerMarker);
+                sellerMapViewPresenter.animateSellerMarker(sellerLatLng, sellerMarker);
             }
         }
 
     }
 
-    public void updateSellerLocation(LatLng sellerLatLng ){
-        if(sellerLatLng != null) {
+    public void updateSellerLocation(LatLng sellerLatLng) {
+        if (sellerLatLng != null) {
             if (sellerMarker == null) {
                 MarkerOptions markerOptions = new MarkerOptions()
                         .position(sellerLatLng)
@@ -421,7 +420,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                         .title("SELLER");
                 sellerMarker = mMap.addMarker(markerOptions);
             } else {
-                sellerMapViewPresenter.animateSellerMarker(sellerLatLng,sellerMarker);
+                sellerMapViewPresenter.animateSellerMarker(sellerLatLng, sellerMarker);
 
                 sellerMapViewPresenter.addRoutePoint(sellerLatLng);
             }
@@ -458,7 +457,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         mDrawerLayout.closeDrawers();
         invalidateOptionsMenu();
 
-        if(mSelectedIdByLevelId!=null) {
+        if (mSelectedIdByLevelId != null) {
             this.mSelectedIdByLevelId = mSelectedIdByLevelId;
         }
     }
@@ -476,11 +475,11 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
             String[] stringSplit = marker.getTitle().split("//");
 
-            if(stringSplit.length > 1){
+            if (stringSplit.length > 1) {
                 tvMapInfoUserName.setText(stringSplit[0]);
-                tvInfoVisitTime.setText(getResources().getString(R.string.visit_time)+" "+
+                tvInfoVisitTime.setText(getResources().getString(R.string.visit_time) + " " +
                         sellerMapViewPresenter.convertMillisToTime(Long.valueOf(stringSplit[1])));
-            }else {
+            } else {
                 tvMapInfoUserName.setText(stringSplit[0]);
                 tvInfoVisitTime.setText(getResources().getString(R.string.visit_time));
             }
@@ -524,8 +523,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
             menu.findItem(R.id.menu_search).setVisible(false);
-        }
-        else {
+        } else {
             menu.findItem(R.id.menu_search).setVisible(true);
         }
 
@@ -537,12 +535,11 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             else if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
-            }
-            else{
+            } else {
                 finish();
                 sellerMapViewPresenter.removeFirestoreListener();
                 overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -560,14 +557,15 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
 
         private Context context;
         private ArrayList<RetailerBo> outletListBos;
-        OutletListAdapter(Context context,ArrayList<RetailerBo> outletListBos){
+
+        OutletListAdapter(Context context, ArrayList<RetailerBo> outletListBos) {
             this.context = context;
             this.outletListBos = outletListBos;
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             private LinearLayout linearLayout;
-            private TextView tvSerialNumber,tvStoreName,tvTimeIn,tvTimeOut,tvSkipped;
+            private TextView tvSerialNumber, tvStoreName, tvTimeIn, tvTimeOut, tvSkipped;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -579,11 +577,11 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 tvTimeOut = view.findViewById(R.id.time_out_text);
                 tvSkipped = view.findViewById(R.id.skipped_text);
 
-                tvSerialNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvSkipped.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvSerialNumber.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvTimeIn.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvTimeOut.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvSkipped.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
 
             }
         }
@@ -599,7 +597,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-            if(holder.getAdapterPosition()%2 == 0)
+            if (holder.getAdapterPosition() % 2 == 0)
                 holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.white));
             else
                 holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.outlet_item_bg));
@@ -609,19 +607,19 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             if (outletListBos.get(holder.getAdapterPosition()).getMasterSequence() != 0)
                 sequenceStr = String.valueOf(outletListBos.get(holder.getAdapterPosition()).getMasterSequence());
             else if (!outletListBos.get(holder.getAdapterPosition()).getIsDeviated())
-                sequenceStr = (holder.getAdapterPosition()+1)+"";
+                sequenceStr = (holder.getAdapterPosition() + 1) + "";
 
             holder.tvSerialNumber.setText(sequenceStr);
             holder.tvStoreName.setText(outletListBos.get(holder.getAdapterPosition()).getRetailerName());
             holder.tvTimeIn.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(holder.getAdapterPosition()).getInTime()));
             holder.tvTimeOut.setText(sellerMapViewPresenter.convertMillisToTime(outletListBos.get(holder.getAdapterPosition()).getOutTime()));
 
-            if(sellerMapViewPresenter.getLastVisited() != 0 && sellerMapViewPresenter.getLastVisited() > outletListBos.get(holder.getAdapterPosition()).getMasterSequence()
-                    && !outletListBos.get(holder.getAdapterPosition()).isVisited()){
+            if (sellerMapViewPresenter.getLastVisited() != 0 && sellerMapViewPresenter.getLastVisited() > outletListBos.get(holder.getAdapterPosition()).getMasterSequence()
+                    && !outletListBos.get(holder.getAdapterPosition()).isVisited()) {
                 holder.tvTimeIn.setVisibility(View.GONE);
                 holder.tvTimeOut.setVisibility(View.GONE);
                 holder.tvSkipped.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.tvTimeIn.setVisibility(View.VISIBLE);
                 holder.tvTimeOut.setVisibility(View.VISIBLE);
                 holder.tvSkipped.setVisibility(View.GONE);
@@ -634,7 +632,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                     double angle = 130.0;
                     double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
                     double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
-                    outletListBos.get(holder.getAdapterPosition()).getMarker().setInfoWindowAnchor((float)x, (float)y);
+                    outletListBos.get(holder.getAdapterPosition()).getMarker().setInfoWindowAnchor((float) x, (float) y);
 
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(outletListBos.get(holder.getAdapterPosition()).getMarker().getPosition()));
                     outletListBos.get(holder.getAdapterPosition()).getMarker().showInfoWindow();
@@ -660,11 +658,11 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
             mDrawerLayout.openDrawer(GravityCompat.END);
 
             Set<Integer> integers = new HashSet<>();
-            for(RetailerBo retailerBo : outletListBos){
+            for (RetailerBo retailerBo : outletListBos) {
                 integers.addAll(retailerBo.getProductIds());
             }
 
-            String productIds = TextUtils.join(",", integers.toArray(new Integer[integers.size()])) ;
+            String productIds = TextUtils.join(",", integers.toArray(new Integer[integers.size()]));
 
             android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
             FilterScreenFragment frag = (FilterScreenFragment) fm
@@ -675,10 +673,10 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 ft.detach(frag);
 
             FilterScreenFragment fragobj = new FilterScreenFragment();
-            Bundle bundle =new Bundle();
-            bundle.putSerializable("ChannelId",mSelectedIdByLevelId);
-            bundle.putString("Date",sellerMapViewPresenter.convertPlaneDateToGlobal(seletedDate));
-            bundle.putString("ProductId",productIds);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("ChannelId", mSelectedIdByLevelId);
+            bundle.putString("Date", sellerMapViewPresenter.convertPlaneDateToGlobal(seletedDate));
+            bundle.putString("ProductId", productIds);
             fragobj.setArguments(bundle);
 
             ft.replace(R.id.right_drawer, fragobj, "FilterScreen");
