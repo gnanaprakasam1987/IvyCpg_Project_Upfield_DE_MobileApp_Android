@@ -22,14 +22,17 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!--screen background -->
-        <item name="android:windowBackground">@color/screen_bg_color</item>
-
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/half_Black</item>
 
+        <!--screen background -->
+        <item name="android:windowBackground">@color/screen_bg_color</item>
+
+
+
         <!--Customize all Labels based on Theme -->
         <item name="textFieldStyle">@style/TextViewLabel</item>
+        <item name="textColor">@color/white</item>
 
         <!--Customize Title of Dialogs like Discount,Initiative,..etc -->
         <item name="dialogTitleStyle">@style/DialogTitleTextStyle</item>
@@ -40,7 +43,7 @@
         <item name="accentcolor">@color/colorAccent</item>
         <item name="textColorPrimary">@color/list_item_text_primary_color</item>
         <item name="textColorSecondary">@color/list_item_secondary_text_color</item>
-        <item name="textColor">@color/white</item>
+
 
         <!--Deviation screen week selection  -->
         <item name="weekBackground">@color/blue_week_background</item>
@@ -693,7 +696,7 @@ negative button and neutral button -->
 
     <!-- List Item Value View Text Style-->
     <style name="TextViewListItemValues" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:textColor">?attr/listItemValueTextColor</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
@@ -744,7 +747,7 @@ negative button and neutral button -->
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
         <item name="android:textSize">@dimen/text_size_primary</item>
-        <item name="android:textColorHighlight">@color/colorAccent</item>
+        <item name="android:textColorHighlight">?attr/accentcolor</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
