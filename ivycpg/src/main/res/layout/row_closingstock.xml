@@ -17,28 +17,28 @@
 
     <EditText
         android:id="@+id/woqty"
-        style="@style/EditText"
+        style="@style/EditText_ListItem"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:text="@string/zero" />
 
     <EditText
         android:id="@+id/souterqty"
-        style="@style/EditText"
+        style="@style/EditText_ListItem"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:text="@string/zero" />
 
     <EditText
         android:id="@+id/shpqty"
-        style="@style/EditText"
+        style="@style/EditText_ListItem"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:text="@string/zero" />
 
     <EditText
         android:id="@+id/shcqty"
-        style="@style/EditText"
+        style="@style/EditText_ListItem"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:text="@string/zero"
@@ -54,7 +54,7 @@
 
     <EditText
         android:id="@+id/whcqty"
-        style="@style/EditText"
+        style="@style/EditText_ListItem"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="match_parent"
         android:text="@string/zero"
@@ -62,7 +62,7 @@
 
     <EditText
         android:id="@+id/whpqty"
-        style="@style/EditText"
+        style="@style/EditText_ListItem"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="match_parent"
         android:text="@string/zero" />

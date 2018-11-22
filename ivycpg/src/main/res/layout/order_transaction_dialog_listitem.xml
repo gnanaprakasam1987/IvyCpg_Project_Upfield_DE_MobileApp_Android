@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="start|center_vertical"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/filter_list_secondary_text_size"
             android:layout_toEndOf="@+id/edit_icon"
             android:layout_toRightOf="@+id/edit_icon" />
@@ -31,6 +31,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/profile_devider_color" />
+        android:background="@color/divider_view_color" />
 
 </RelativeLayout>

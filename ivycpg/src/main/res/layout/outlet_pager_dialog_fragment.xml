@@ -44,7 +44,7 @@
             android:layout_below="@+id/viewpager"
             android:layout_marginTop="@dimen/_50sdp"
             app:spi_dotSelectedColor="@color/colorPrimaryDark"
-            app:spi_dotColor="@color/new_grey"
+            app:spi_dotColor="@color/light_gray"
             app:spi_visibleDotCount="9"/>
 
     </RelativeLayout>

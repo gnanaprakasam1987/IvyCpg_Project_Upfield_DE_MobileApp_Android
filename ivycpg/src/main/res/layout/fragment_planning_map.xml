@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_image_height"
         android:layout_marginTop="-3dp"
-        android:background="@color/colorPrimary"
+        android:background="?attr/primarycolor"
         android:fitsSystemWindows="true" />
 
     <LinearLayout
@@ -103,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/retailer_map_bottom"
+        android:background="?attr/colorPrimaryDark"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -124,7 +124,7 @@
                 android:background="@drawable/map_button_round_corner_white"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_directions_car"
-                android:tint="@color/map_car_color" />
+                android:tint="@color/highlighter" />
 
             <ImageButton
                 android:id="@+id/walk_direction"
@@ -135,7 +135,7 @@
                 android:background="@drawable/button_round_corner_transparent"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_directions_walk"
-                android:tint="@color/light_grey" />
+                android:tint="@color/divider_view_color" />
 
             <ImageButton
                 android:id="@+id/clear_route_id"
@@ -171,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|start"
                     android:text="@string/from"
-                    android:textColor="@color/from_to_color"
+                    android:textColor="@color/divider_view_color"
                     android:textSize="@dimen/text_size_caption" />
 
                 <TextView
@@ -202,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|start"
                     android:text="@string/to"
-                    android:textColor="@color/from_to_color"
+                    android:textColor="@color/divider_view_color"
                     android:textSize="@dimen/text_size_caption" />
 
                 <TextView
@@ -255,7 +255,7 @@
         android:layout_marginRight="@dimen/profile_23dp"
         android:clickable="true"
         android:src="@drawable/map_marker_radius"
-        android:tint="@color/my_location_color"
+        android:tint="@color/light_gray"
         android:visibility="visible"
         app:backgroundTint="@color/white"
         app:fabSize="mini"
@@ -273,7 +273,7 @@
         android:layout_marginRight="@dimen/profile_23dp"
         android:clickable="true"
         android:src="@drawable/ic_my_location"
-        android:tint="@color/my_location_color"
+        android:tint="@color/light_gray"
         android:visibility="visible"
         app:backgroundTint="@color/white"
         app:fabSize="mini"
@@ -291,7 +291,7 @@
         android:layout_marginRight="@dimen/sos_dialog_margin"
         android:clickable="true"
         android:src="@drawable/ic_navigation"
-        android:tint="@color/btn_round_green"
+        android:tint="@color/green_productivity"
         android:visibility="visible"
         app:backgroundTint="@color/FullBlack"
         app:fabSize="normal"

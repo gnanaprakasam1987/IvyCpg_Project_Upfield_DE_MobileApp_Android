@@ -24,8 +24,8 @@
                 android:gravity="start"
                 android:text="Name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textColor="@color/Black"
-                android:textSize="@dimen/font_medium" />
+                android:textColor="@color/half_Black"
+                android:textSize="@dimen/font_small" />
 
 
         </LinearLayout>
@@ -38,7 +38,7 @@
 
             <TextView
                 android:id="@+id/tv_line"
-                style="@style/TextViewHorizontalLineBlue" />
+                style="@style/HorizontalLine" />
         </LinearLayout>
 
         <LinearLayout
@@ -61,7 +61,7 @@
                     android:layout_marginLeft="@dimen/dimen_10dp"
                     android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="Rank"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/font_small" />
 
                 <TextView
@@ -71,7 +71,7 @@
                     android:layout_marginLeft="@dimen/dimen_10dp"
                     android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="Name"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/font_small" />
 
                 <TextView
@@ -80,7 +80,7 @@
                     android:layout_marginLeft="@dimen/dimen_10dp"
                     android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="with"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/font_small" />
 
 
@@ -91,7 +91,7 @@
                     android:layout_marginLeft="@dimen/dimen_10dp"
                     android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="Score"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/font_small" />
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:layout_marginLeft="@dimen/dimen_10dp"
                     android:layout_marginStart="@dimen/dimen_10dp"
                     android:text="Name"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/font_small" />
             </LinearLayout>
 

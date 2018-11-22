@@ -66,7 +66,7 @@
         android:layout_height="@dimen/first_layout_height"
         android:layout_below="@+id/llRetailers"
         android:layout_margin="5dp"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         card_view:cardCornerRadius="4dp">
 
 
@@ -106,7 +106,7 @@
         android:layout_height="@dimen/second_layout_height"
         android:layout_below="@+id/cardview1"
         android:layout_margin="5dp"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         card_view:cardCornerRadius="4dp">
 
 

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/list_margin"
     android:layout_marginStart="@dimen/list_margin"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="2dp"
     card_view:cardPreventCornerOverlap="true"
@@ -123,7 +123,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
 
                 </LinearLayout>
 
@@ -175,7 +175,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
 
                 </LinearLayout>
 
@@ -227,7 +227,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
 
                 </LinearLayout>
 
@@ -290,7 +290,7 @@
                         android:paddingRight="5dp"
                         android:tag="sales_return"
                         android:text="@string/sr"
-                        android:textColor="@color/GRAY_TEXT"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/footer_label_size" />
 
                     <TextView
@@ -334,7 +334,7 @@
                         android:paddingRight="5dp"
                         android:tag="item_sr_case"
                         android:text="@string/rep_case"
-                        android:textColor="@color/GRAY_TEXT"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/footer_label_size" />
 
                     <TextView
@@ -378,7 +378,7 @@
                         android:paddingRight="5dp"
                         android:tag="item_sr_outer"
                         android:text="@string/rep_outer"
-                        android:textColor="@color/GRAY_TEXT"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/footer_label_size" />
 
                     <TextView
@@ -422,7 +422,7 @@
                         android:paddingRight="5dp"
                         android:tag="item_sr_piece"
                         android:text="@string/rep_pcs"
-                        android:textColor="@color/GRAY_TEXT"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/footer_label_size" />
 
                     <TextView
@@ -503,7 +503,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
 
                 </LinearLayout>
 
@@ -555,7 +555,7 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -604,7 +604,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
 
                 </LinearLayout>
 
@@ -655,7 +655,7 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="@dimen/dimens_4dp"
                         android:layout_marginTop="@dimen/dimens_4dp"
-                        android:background="@color/GRAY_TEXT" />
+                        android:background="@color/gray_text" />
                 </LinearLayout>
 
 

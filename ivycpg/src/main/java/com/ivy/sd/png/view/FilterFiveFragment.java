@@ -372,8 +372,8 @@ public class FilterFiveFragment<E> extends Fragment {
 
             if (holder.levelBO.getProductID() == mSelectedLevelBO
                     .getProductID()) {
-                holder.text.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
-                holder.gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Black));
+                holder.text.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+                holder.gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.half_Black));
             } else {
                 holder.text.setTextColor(Color.BLACK);
                 holder.gridItem.setBackgroundColor(Color.parseColor("#f7f7f7"));

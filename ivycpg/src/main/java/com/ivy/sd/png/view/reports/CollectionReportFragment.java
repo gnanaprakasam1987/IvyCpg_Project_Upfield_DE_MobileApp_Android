@@ -549,7 +549,7 @@ public class CollectionReportFragment extends Fragment {
             if (groupPosition % 2 == 0) {
                 row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             } else {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
+                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             }
             return row;
         }

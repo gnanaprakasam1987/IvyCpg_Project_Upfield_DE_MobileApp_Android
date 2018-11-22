@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -46,7 +45,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.google.android.gms.common.stats.StatsUtils;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
@@ -492,7 +490,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         .getText().toString());
                 str.setSpan(new UnderlineSpan(), 0, str.length(),
                         Spanned.SPAN_PARAGRAPH);
-                str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.Black)), 0,
+                str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.half_Black)), 0,
                         str.length(), 0);
                 holder.tvSkuWise.setText(str);
             } else {

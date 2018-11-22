@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:elevation="@dimen/dimens_6dp"
-        app:cardBackgroundColor="?cardViewLayoutStyle"
+        app:cardBackgroundColor="?attr/customLayoutBackground"
 
         app:cardCornerRadius="@dimen/dimens_4dp">
 
@@ -41,7 +41,7 @@
                     android:layout_marginTop="@dimen/margin_5px"
                     android:gravity="center"
                     android:text="@string/tos_amount"
-                    android:textColor="@color/collection_toptitle_color"
+                    android:textColor="?attr/accentcolor"
                     android:textSize="@dimen/text_size_caption" />
 
                 <TextView
@@ -50,7 +50,7 @@
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
                     android:paddingBottom="@dimen/dimen_8dp"
-                    android:textColor="@color/collection_textlight_color"
+                    android:textColor="@color/list_header_text_color"
                     android:textSize="@dimen/font_small" />
 
 
@@ -59,7 +59,7 @@
             <LinearLayout
                 android:layout_width="@dimen/dimens_1dp"
                 android:layout_height="@dimen/dimens_40dp"
-                android:background="@color/GRAY_TEXT"
+                android:background="@color/gray_text"
                 android:padding="@dimen/dimens_4dp" />
 
             <LinearLayout
@@ -77,7 +77,7 @@
                     android:layout_marginTop="@dimen/margin_5px"
                     android:gravity="center"
                     android:text="@string/PendingBills"
-                    android:textColor="@color/collection_toptitle_color"
+                    android:textColor="?attr/accentcolor"
                     android:textSize="@dimen/text_size_caption" />
 
                 <TextView
@@ -86,7 +86,7 @@
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
                     android:paddingBottom="@dimen/dimen_8dp"
-                    android:textColor="@color/collection_textlight_color"
+                    android:textColor="@color/list_header_text_color"
                     android:textSize="@dimen/font_small" />
 
             </LinearLayout>
@@ -94,7 +94,7 @@
             <LinearLayout
                 android:layout_width="@dimen/dimens_1dp"
                 android:layout_height="@dimen/dimens_40dp"
-                android:background="@color/GRAY_TEXT"
+                android:background="@color/gray_text"
                 android:padding="@dimen/dimens_4dp" />
 
             <LinearLayout
@@ -113,7 +113,7 @@
                     android:layout_marginTop="@dimen/margin_5px"
                     android:gravity="center"
                     android:text="Due Bills"
-                    android:textColor="@color/collection_toptitle_color"
+                    android:textColor="?attr/accentcolor"
                     android:textSize="@dimen/text_size_caption" />
 
                 <TextView
@@ -123,7 +123,7 @@
                     android:gravity="center"
                     android:paddingBottom="@dimen/dimens_8dp"
                     android:text="0"
-                    android:textColor="@color/collection_textlight_color"
+                    android:textColor="@color/list_header_text_color"
                     android:textSize="@dimen/font_small" />
 
             </LinearLayout>
@@ -152,7 +152,7 @@
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_1dp"
-            android:background="@color/GRAY"
+            android:background="@color/light_gray"
             android:orientation="horizontal" />
 
         <LinearLayout
@@ -209,7 +209,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
-                    android:textSize="@dimen/font_medium" />
+                    android:textSize="@dimen/font_small" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -231,7 +231,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
-                    android:textSize="@dimen/font_medium" />
+                    android:textSize="@dimen/font_small" />
 
                 <TextView
 
@@ -254,7 +254,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
-                    android:textSize="@dimen/font_medium" />
+                    android:textSize="@dimen/font_small" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -276,8 +276,8 @@
         android:background="?attr/primarycolor"
         android:visibility="gone"
         app:tabGravity="fill"
-        app:tabIndicatorColor="@color/collection_tab_indicateColor"
-        app:tabSelectedTextColor="@color/WHITE"
+        app:tabIndicatorColor="@color/colorPrimaryAlpha"
+        app:tabSelectedTextColor="@color/white"
         app:tabTextAppearance="@style/MineCustomTabText" />
 
     <android.support.v4.view.ViewPager

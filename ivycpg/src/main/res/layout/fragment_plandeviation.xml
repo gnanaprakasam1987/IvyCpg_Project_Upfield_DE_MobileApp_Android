@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/WHITE"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -85,7 +85,7 @@
         android:layout_above="@+id/reason_btns"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/dimens_10dp"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         android:src="@drawable/downloadsuccess" />
 
 

@@ -16,6 +16,6 @@
         android:adjustViewBounds="true"
         android:text="@string/filter"
         android:textAllCaps="false"
-        android:textColor="@color/Black" />
+        android:textColor="@color/half_Black" />
 
 </LinearLayout>

@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/kpi_value_text_color"
+            android:textColor="@color/list_item_secondary_text_color"
             android:textSize="@dimen/highlight_small" />
 
     </LinearLayout>
@@ -37,7 +37,7 @@
         android:id="@+id/view_separator"
         android:layout_width="@dimen/dimen_1dp"
         android:layout_height="match_parent"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         android:visibility="gone" />
 
     <LinearLayout
@@ -73,7 +73,7 @@
                     android:id="@+id/tv_menuvalue_achieved_two"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/kpi_value_text_color"
+                    android:textColor="@color/list_item_secondary_text_color"
                     android:textSize="@dimen/highlight_small" />
 
                 <TextView
@@ -81,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/kpi_value_text_color"
+                    android:textColor="@color/list_item_secondary_text_color"
                     android:textSize="@dimen/text_size_secondary" />
             </LinearLayout>
 
@@ -93,7 +93,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/tv_menuvalue_lty2"
                 android:layout_centerVertical="true"
-                android:textColor="@color/kpi_value_text_color"
+                android:textColor="@color/list_item_secondary_text_color"
                 android:textSize="@dimen/text_size_caption"/>
         </RelativeLayout>
 

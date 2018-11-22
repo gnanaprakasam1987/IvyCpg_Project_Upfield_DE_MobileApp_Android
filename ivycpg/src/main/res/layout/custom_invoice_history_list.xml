@@ -22,8 +22,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/profile_margin_top_minus"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="4.75">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/id_layout"
@@ -53,7 +52,7 @@
                         android:gravity="start|top"
                         android:tag="invoice_history_label"
                         android:text="@string/inv_no"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                 </LinearLayout>
 
@@ -108,7 +107,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/invoice_date"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
 
                 </LinearLayout>
@@ -131,7 +130,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -164,7 +163,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/invoiceamt"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                 </LinearLayout>
 
@@ -217,7 +216,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/tot_line"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                 </LinearLayout>
 
@@ -264,7 +263,7 @@
                     android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="start|top"
                     android:text="@string/total_vol"
-                    android:textColor="@color/history_label_color"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/text_size_secondary" />
 
 
@@ -319,7 +318,7 @@
                         android:gravity="start|top"
                         android:tag="order_history_label"
                         android:text="@string/order_number"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                 </LinearLayout>
 
@@ -372,7 +371,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/overdue"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                     <!--android:tag="RField3"-->
                 </LinearLayout>
@@ -426,7 +425,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/due_date"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                     <!--android:tag="RField1"-->
                 </LinearLayout>
@@ -448,7 +447,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -480,7 +479,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/os_amt"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                     <!--android:tag="RField2"-->
                 </LinearLayout>
@@ -502,7 +501,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -535,7 +534,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/status"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                     <!--android:tag="RField4"-->
                 </LinearLayout>
@@ -589,7 +588,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/margin_price"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                     <!--android:tag="RField4"-->
                 </LinearLayout>
@@ -643,7 +642,7 @@
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/margin_per"
-                        android:textColor="@color/history_label_color"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_secondary" />
                     <!--android:tag="RField4"-->
                 </LinearLayout>
@@ -692,7 +691,7 @@
             android:layout_marginEnd="@dimen/profile_header_txt_layout_marginbottom"
             android:layout_marginRight="@dimen/profile_header_txt_layout_marginbottom"
             android:background="@drawable/ic_double_right_arrow"
-            android:backgroundTint="@color/history_invbtn_color"
+            android:backgroundTint="@color/half_Black"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
             android:textColor="@color/toolbar_title"

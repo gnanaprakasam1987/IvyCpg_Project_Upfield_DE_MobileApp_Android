@@ -4,7 +4,7 @@
     <item>
         <shape>
             <solid 
-                android:color="@color/shelfs_bg_semi_transperant"/>
+                android:color="@color/light_gray"/>
             <corners android:radius="@dimen/dimen_8dp"
                 android:topLeftRadius="@dimen/dimen_8dp"
                 android:topRightRadius="@dimen/dimen_8dp"

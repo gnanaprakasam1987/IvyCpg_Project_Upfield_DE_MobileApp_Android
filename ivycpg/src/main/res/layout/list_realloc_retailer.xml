@@ -45,7 +45,7 @@
                     android:gravity="center"
                     android:text="0"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/BLUE"
+                    android:textColor="@color/highlighter"
                     android:textStyle="bold" />
 
                 <FrameLayout
@@ -76,7 +76,7 @@
                 android:layout_marginBottom="3dp"
                 android:layout_marginEnd="@dimen/dimen_4dp"
                 android:layout_marginStart="@dimen/dimen_4dp"
-                android:background="@color/GRAY" />
+                android:background="@color/light_gray" />
 
             <LinearLayout
                 android:id="@+id/ll_retailer_name"

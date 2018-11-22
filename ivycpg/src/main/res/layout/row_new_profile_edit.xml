@@ -41,7 +41,7 @@
                 android:layout_gravity="left|center"
                 android:layout_marginLeft="@dimen/dimens_2dp"
                 android:text="T Nagar"
-                android:textColor="@color/GRAY_TEXT"
+                android:textColor="@color/gray_text"
                 android:textSize="@dimen/text_size_primary" />
 
         </LinearLayout>
@@ -70,7 +70,7 @@
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_edit"
-                    android:tint="@color/competitor_brand" />
+                    android:tint="@color/gray_text" />
             </LinearLayout>
 
             <ImageView
@@ -78,7 +78,7 @@
                 android:layout_height="@dimen/dialog_list_item_left_margin"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/dimens_4dp"
-                android:background="@color/competitor_brand" />
+                android:background="@color/gray_text" />
 
             <LinearLayout
                 android:id="@+id/lay_delete"
@@ -95,7 +95,7 @@
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_delete_white_24dp"
-                    android:tint="@color/competitor_brand" />
+                    android:tint="@color/gray_text" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

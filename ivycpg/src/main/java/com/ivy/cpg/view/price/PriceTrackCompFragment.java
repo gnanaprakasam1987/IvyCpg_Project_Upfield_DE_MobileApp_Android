@@ -1134,7 +1134,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                     holder.btnFilter.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
                 } else {
                     holder.btnFilter.setBackgroundResource(R.drawable.button_round_corner_grey);
-                    holder.btnFilter.setTextColor(ContextCompat.getColor(getActivity(), R.color.Black));
+                    holder.btnFilter.setTextColor(ContextCompat.getColor(getActivity(), R.color.half_Black));
                 }
 
             } catch (Exception e) {

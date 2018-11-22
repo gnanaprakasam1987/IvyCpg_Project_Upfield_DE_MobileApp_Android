@@ -60,7 +60,6 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
     // Adapter used for Load Reason
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
     private Button btnSave;
-    private PriceTrackingHelper priceTrackingHelper;
     private AppCompatCheckBox chkAvailability;
     private StockCheckHelper stockCheckHelper;
 
@@ -81,7 +80,6 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
-        priceTrackingHelper = PriceTrackingHelper.getInstance(this);
         stockCheckHelper = StockCheckHelper.getInstance(this);
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
@@ -141,7 +139,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
 
         btnSave = findViewById(R.id.btn_save);
 
-        rbYesPrice.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+        /*rbYesPrice.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         rbNoPrice.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
         etShelfPiece.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
@@ -181,7 +179,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
         ((TextView) findViewById(R.id.tv_avg_qty_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         ((TextView) findViewById(R.id.tv_avg_rfield1_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         ((TextView) findViewById(R.id.tv_avg_rfield2_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_avg_rfield3_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_avg_rfield3_label)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));*/
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(
@@ -414,7 +412,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 (findViewById(R.id.ll_priceMrp_piece)).setVisibility(View.GONE);
                 (findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
             }
-            if (!priceTrackingHelper.SHOW_PRICE_CHANGED) {
+            if (!stockCheckHelper.SHOW_PRICE_CHANGED) {
                 (findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.GONE);
             } else {
                 (findViewById(R.id.ll_priceRadio_grpLty)).setVisibility(View.VISIBLE);
@@ -1547,7 +1545,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     if (isChecked) {
                         rbNoPrice.setChecked(false);
                         rbYesPrice.setButtonDrawable(R.drawable.ic_tick_enable);
-                        rbYesPrice.setTextColor(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.plano_yes_green));
+                        rbYesPrice.setTextColor(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.green_productivity));
                         rbNoPrice.setTextColor(ContextCompat.getColor(CombinedStockDetailActivity.this, R.color.plano_yes_grey));
                         rbNoPrice.setButtonDrawable(R.drawable.ic_cross_disable);
                         mProductMasterBO.setPriceChanged(1);

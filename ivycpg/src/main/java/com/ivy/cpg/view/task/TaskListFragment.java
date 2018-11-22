@@ -247,7 +247,7 @@ public class TaskListFragment extends Fragment {
                     if (i % 2 == 0)
                         holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
                     else
-                        holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
+                        holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
 
                 } else
                     holder.layoutCB.setVisibility(View.VISIBLE);

@@ -852,7 +852,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
 
         if (hasSchemeApplied())
-            imageView_amountSplitUp.setColorFilter(getResources().getColor(R.color.new_orange));
+            imageView_amountSplitUp.setColorFilter(getResources().getColor(R.color.Orange));
     }
 
     private double calculateLineValue(ProductMasterBO productBO) {
@@ -891,7 +891,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
             if (bModel.getOrderHeaderBO() != null && bModel.getOrderHeaderBO().getOrderImageName() != null && bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_photo_camera_grey_24dp);
-                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
+                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.Orange), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_capture).setIcon(drawable);
             } else {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_photo_camera_grey_24dp);
@@ -972,7 +972,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (bModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
             if (bModel.getOrderHeaderBO().getOrderImageName().length() > 0) {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_attach_file_black_24dp);
-                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.toolbar_icon_selection), PorterDuff.Mode.SRC_ATOP);
+                drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.Orange), PorterDuff.Mode.SRC_ATOP);
                 menu.findItem(R.id.menu_attach_file).setIcon(drawable);
             } else {
                 Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_attach_file_black_24dp);
@@ -2888,6 +2888,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             holder.rep_ou.setText(strRepOuterQty);
             String strRepPcsQty = holder.productBO.getRepPieceQty() + "";
             holder.rep_pcs.setText(strRepPcsQty);
+
+            holder.cbSeparateBill.setChecked(holder.productBO.isSeparateBill());
 
             return row;
         }

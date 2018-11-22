@@ -8,5 +8,5 @@
     android:ellipsize="marquee"
     android:padding="@dimen/target_top_margin"
     android:textSize="@dimen/spinner_normal"
-    android:textColor="@color/WHITE"
+    android:textColor="@color/white"
     android:singleLine="true" />

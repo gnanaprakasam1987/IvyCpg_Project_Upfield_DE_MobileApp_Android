@@ -326,15 +326,15 @@ public class DistOrderReportFragment extends IvyBaseFragment implements OnClickL
 
             if (orderreport.getUpload().equalsIgnoreCase("Y")) {
                 holder.tvwrname.setTextColor(getResources().getColor(
-                        R.color.GREEN));
+                        R.color.green_productivity));
                 holder.tvwvalue.setTextColor(getResources().getColor(
-                        R.color.GREEN));
+                        R.color.green_productivity));
                 holder.tvwlpc.setTextColor(getResources().getColor(
-                        R.color.GREEN));
+                        R.color.green_productivity));
                 holder.tvwDist.setTextColor(getResources().getColor(
-                        R.color.GREEN));
+                        R.color.green_productivity));
                 holder.tvOrderNo.setTextColor(getResources().getColor(
-                        R.color.GREEN));
+                        R.color.green_productivity));
 
             } else {
 

@@ -79,10 +79,6 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
         try {
             int theme = bmodel.configurationMasterHelper.getMVPTheme();
             super.getActivity().setTheme(theme);
-
-            String font = bmodel.configurationMasterHelper.getFontSize();
-            setFontStyle(font);
-
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -282,18 +278,6 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
         AmazonS3Client s3 = new AmazonS3Client(myCredentials);
         s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
         transferUtility = new TransferUtility(s3, getActivity().getApplicationContext());
-    }
-
-    public void setFontStyle(String font) {
-        if (font.equalsIgnoreCase("Small")) {
-            getActivity().getTheme().applyStyle(R.style.FontStyle_Small, true);
-        } else if (font.equalsIgnoreCase("Medium")) {
-            getActivity().getTheme().applyStyle(R.style.FontStyle_Medium, true);
-        } else if (font.equalsIgnoreCase("Large")) {
-            getActivity().getTheme().applyStyle(R.style.FontStyle_Large, true);
-        } else {
-            getActivity().getTheme().applyStyle(R.style.FontStyle_Small, true);
-        }
     }
 
     @Override

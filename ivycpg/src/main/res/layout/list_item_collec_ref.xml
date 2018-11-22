@@ -16,7 +16,7 @@
         android:layout_marginStart="@dimen/card_margin_lr"
         android:layout_marginEnd="@dimen/card_margin_lr"
         android:layout_marginTop="@dimen/card_margin_top"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="1dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="false"

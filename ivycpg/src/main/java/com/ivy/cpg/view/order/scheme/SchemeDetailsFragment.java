@@ -1539,9 +1539,9 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         textView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
 
         if (isBackGround)
-            textView.setBackgroundColor(mContext.getResources().getColor(R.color.BLUE));
+            textView.setBackgroundColor(mContext.getResources().getColor(R.color.highlighter));
         if (isTextColor)
-            textView.setTextColor(mContext.getResources().getColor(R.color.BLUE));
+            textView.setTextColor(mContext.getResources().getColor(R.color.highlighter));
 
 
         return textView;
@@ -1562,7 +1562,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         TextView horizontalLine = new TextView(mContext);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((mTotalScreenWidth * 97) / (100), 1);
         horizontalLine.setLayoutParams(layoutParams);
-        horizontalLine.setBackgroundColor(mContext.getResources().getColor(R.color.edit_text_grey));
+        horizontalLine.setBackgroundColor(mContext.getResources().getColor(R.color.gray_text));
         horizontalLine.setPadding(0, 20, 0, 20);
         horizontalLine.setGravity(Gravity.CENTER);
         return horizontalLine;

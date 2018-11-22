@@ -51,8 +51,6 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
-        final OrderReportBO reportBO = items
-                .get(position);
         View row = convertView;
 
         if (row == null) {
@@ -135,26 +133,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             }
 
 
-            holder.orderImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (reportBO.getOrderedImage() != null) {
-                        File imgFile = new File(mContext.getExternalFilesDir(
-                                Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + reportBO.getOrderedImage());
-                        if (imgFile.exists() && !"".equals(reportBO.getOrderedImage())) {
-                            try {
-                                iOrderReportImageView.openImageView(imgFile.getAbsolutePath());
-                            } catch (Exception e) {
-                                Commons.printException("" + e);
-                            }
-                        } else {
-                            Toast.makeText(mContext,
-                                    mContext.getResources().getString(R.string.unloadimage),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            });
+
 
 
             row.setTag(holder);
@@ -162,8 +141,9 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             holder = (ViewHolder) row.getTag();
         }
 
+        holder.reportBO = items .get(position);
 
-        holder.text_retailerName.setText(reportBO.getRetailerName());
+        holder.text_retailerName.setText(holder.reportBO.getRetailerName());
         holder.text_retailerName.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
         holder.text_orderValue.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
         holder.label_orderNumber.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
@@ -187,21 +167,21 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
         try {
             if (businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) != null) {
-                String value = businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) + " : " + reportBO.getMustSellCount();
+                String value = businessModel.labelsMasterHelper.applyLabels(holder.tvMustSellCount.getTag()) + " : " + holder.reportBO.getMustSellCount();
                 holder.tvMustSellCount.setText(value);
             } else {
-                String value = mContext.getResources().getString(R.string.must_sell) + " : " + reportBO.getMustSellCount();
+                String value = mContext.getResources().getString(R.string.must_sell) + " : " + holder.reportBO.getMustSellCount();
                 holder.tvMustSellCount.setText(value);
-                holder.text_mustSellCount.setText(String.valueOf(reportBO.getMustSellCount()));
+                holder.text_mustSellCount.setText(String.valueOf(holder.reportBO.getMustSellCount()));
 
             }
             if (businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) != null) {
-                String value = businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) + " : " + reportBO.getFocusBrandCount();
+                String value = businessModel.labelsMasterHelper.applyLabels(holder.tvFocusBrandCount.getTag()) + " : " + holder.reportBO.getFocusBrandCount();
                 holder.tvFocusBrandCount.setText(value);
             } else {
-                String value = mContext.getResources().getString(R.string.focus_brand) + " : " + reportBO.getFocusBrandCount();
+                String value = mContext.getResources().getString(R.string.focus_brand) + " : " + holder.reportBO.getFocusBrandCount();
                 holder.tvFocusBrandCount.setText(value);
-                holder.focus_brand_count1.setText(String.valueOf(reportBO.getFocusBrandCount()));
+                holder.focus_brand_count1.setText(String.valueOf(holder.reportBO.getFocusBrandCount()));
 
             }
 
@@ -212,14 +192,14 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             Commons.printException(e);
         }
 
-        holder.text_orderValue.setText(businessModel.formatValue((reportBO
+        holder.text_orderValue.setText(businessModel.formatValue((holder.reportBO
                 .getOrderTotal())));
 
 
-        holder.text_LPC.setText(reportBO.getLPC());
-        holder.tvwDist.setText(reportBO.getDist());
-        holder.tvOrderNo.setText(reportBO.getOrderID());
-        holder.tvWeight.setText(Utils.formatAsTwoDecimal((double) reportBO.getWeight()));
+        holder.text_LPC.setText(holder.reportBO.getLPC());
+        holder.tvwDist.setText(holder.reportBO.getDist());
+        holder.tvOrderNo.setText(holder.reportBO.getOrderID());
+        holder.tvWeight.setText(Utils.formatAsTwoDecimal((double)holder.reportBO.getWeight()));
 
 
         try {
@@ -246,26 +226,26 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
             if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
 
-                sb.append(reportBO.getVolumePcsQty() + " " + op + " ");
+                sb.append(holder.reportBO.getVolumePcsQty() + " " + op + " ");
             }
 
 
             if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
 
                 if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    sb.append(": " + (reportBO.getVolumeCaseQty()) + " "
+                    sb.append(": " + (holder.reportBO.getVolumeCaseQty()) + " "
                             + oc + " ");
                 else
-                    sb.append(reportBO.getVolumeCaseQty() + " "
+                    sb.append(holder.reportBO.getVolumeCaseQty() + " "
                             + oc + " ");
             }
 
             if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE) {
                 if (businessModel.configurationMasterHelper.SHOW_ORDER_PCS || businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    sb.append(": " + (reportBO.getVolumeOuterQty()) + " "
+                    sb.append(": " + (holder.reportBO.getVolumeOuterQty()) + " "
                             + ou + " ");
                 else
-                    sb.append(reportBO.getVolumeCaseQty() + " "
+                    sb.append(holder.reportBO.getVolumeCaseQty() + " "
                             + ou + " ");
             }
 
@@ -277,7 +257,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
 
         if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
-            if (reportBO.getIsVanSeller() == 1)
+            if (holder.reportBO.getIsVanSeller() == 1)
                 holder.tv_seller_type.setText("V");
             else
                 holder.tv_seller_type.setText("P");
@@ -285,17 +265,17 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             holder.tv_seller_type.setVisibility(View.INVISIBLE);
         }
 
-        if (reportBO.getUpload().equalsIgnoreCase("Y")) {
+        if (holder.reportBO.getUpload().equalsIgnoreCase("Y")) {
             holder.text_retailerName.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
             holder.text_orderValue.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
             holder.text_LPC.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
             holder.tvwDist.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
             holder.tvOrderNo.setTextColor(mContext.getResources().getColor(
-                    R.color.GREEN));
+                    R.color.green_productivity));
 
         } else {
 
@@ -304,16 +284,16 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         }
 
         if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
-            if (reportBO.getUpload().equalsIgnoreCase("Y")
+            if (holder.reportBO.getUpload().equalsIgnoreCase("Y")
                     && !businessModel.checkForNFilesInFolder(HomeScreenFragment.photoPath,
-                    1, reportBO.getOrderedImage())) {
+                    1, holder.reportBO.getOrderedImage())) {
 
                 holder.orderImage.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_image_available));
 
             } else {
 
                 Glide.with(mContext)
-                        .load(HomeScreenFragment.photoPath + "/" + reportBO.getOrderedImage())
+                        .load(HomeScreenFragment.photoPath + "/" + holder.reportBO.getOrderedImage())
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .centerCrop()
@@ -324,10 +304,30 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             }
         }
 
+        holder.orderImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.reportBO.getOrderedImage() != null) {
+                    File imgFile = new File(HomeScreenFragment.photoPath + "/" + holder.reportBO.getOrderedImage());
+                    if (imgFile.exists() && !"".equals(holder.reportBO.getOrderedImage())) {
+                        try {
+                            iOrderReportImageView.openImageView(imgFile.getAbsolutePath());
+                        } catch (Exception e) {
+                            Commons.printException("" + e);
+                        }
+                    } else {
+                        Toast.makeText(mContext,
+                                mContext.getResources().getString(R.string.unloadimage),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
         try {
             String delivery_date;
 
-            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(OrderHelper.getInstance(mContext).selectedOrderId, reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
+            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(OrderHelper.getInstance(mContext).selectedOrderId,holder.reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
 
             if (businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
                 String value = businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;
@@ -340,13 +340,13 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             if (businessModel.labelsMasterHelper.applyLabels(holder.taxTitle.getTag()) != null)
                 holder.taxTitle.setText(businessModel.labelsMasterHelper.applyLabels(holder.taxTitle.getTag()));
 
-            holder.tv_tax_value.setText(businessModel.formatValue(reportBO.getTaxValue()));
+            holder.tv_tax_value.setText(businessModel.formatValue(holder.reportBO.getTaxValue()));
 
 
             if (businessModel.labelsMasterHelper.applyLabels(holder.discTitle.getTag()) != null)
                 holder.discTitle.setText(businessModel.labelsMasterHelper.applyLabels(holder.discTitle.getTag()));
 
-            holder.tv_discount_amt.setText(businessModel.formatValue(reportBO.getDiscountValue()));
+            holder.tv_discount_amt.setText(businessModel.formatValue(holder.reportBO.getDiscountValue()));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -360,7 +360,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
-
+        OrderReportBO reportBO;
         TextView text_retailerName, label_orderNumber;
         TextView text_orderValue, text_LPC, tvwDist, tvWeight, label_LPC, label_PreORPost, focus_brand_count1, text_mustSellCount, tvVolumeValue;
         TextView text_delivery_date, tv_tax_value, tv_discount_amt, taxTitle, discTitle;

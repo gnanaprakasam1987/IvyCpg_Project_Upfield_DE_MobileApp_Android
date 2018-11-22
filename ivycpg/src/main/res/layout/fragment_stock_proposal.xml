@@ -53,7 +53,7 @@
                         android:layout_gravity="center"
                         android:maxLines="1"
                         android:text="@string/zero"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
@@ -82,7 +82,7 @@
                         android:layout_gravity="center"
                         android:maxLines="1"
                         android:text="@string/zero"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
@@ -102,7 +102,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/total_sih"
-                        android:textColor="@color/font_green"
+                        android:textColor="?attr/accentcolor"
                         android:textSize="@dimen/footer_label_size" />
 
                     <TextView
@@ -112,7 +112,7 @@
                         android:layout_gravity="center"
                         android:maxLines="1"
                         android:text="@string/zero"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
@@ -132,7 +132,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/total_cases"
-                        android:textColor="@color/font_green"
+                        android:textColor="?attr/accentcolor"
                         android:textSize="@dimen/footer_label_size" />
 
                     <TextView
@@ -142,7 +142,7 @@
                         android:layout_gravity="center"
                         android:maxLines="1"
                         android:text="@string/zero"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
@@ -162,7 +162,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/total_outer"
-                        android:textColor="@color/font_green"
+                        android:textColor="?attr/accentcolor"
                         android:textSize="@dimen/footer_label_size" />
 
                     <TextView
@@ -172,7 +172,7 @@
                         android:layout_gravity="center"
                         android:maxLines="1"
                         android:text="@string/zero"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
@@ -192,7 +192,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/total_piece"
-                        android:textColor="@color/font_green"
+                        android:textColor="?attr/accentcolor"
                         android:textSize="@dimen/footer_label_size" />
 
                     <TextView
@@ -202,7 +202,7 @@
                         android:layout_gravity="center"
                         android:maxLines="1"
                         android:text="@string/zero"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/footer_label_value" />
 
                 </LinearLayout>
@@ -239,7 +239,7 @@
                 android:layout_above="@+id/footer"
                 android:layout_alignParentTop="true"
                 android:layout_margin="@dimen/list_margin"
-                card_view:cardBackgroundColor="@color/WHITE"
+                card_view:cardBackgroundColor="@color/white"
                 card_view:cardCornerRadius="2dp"
                 card_view:cardElevation="5dp"
                 card_view:cardPreventCornerOverlap="true"

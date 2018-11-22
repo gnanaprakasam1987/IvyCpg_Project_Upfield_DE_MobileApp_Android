@@ -24,7 +24,7 @@
             android:id="@+id/filtergridview"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:background="@color/WHITE" />
+            android:background="@color/white" />
 
     </LinearLayout>
 
@@ -55,7 +55,7 @@
                 android:adjustViewBounds="true"
                 android:text="@string/clear"
                 android:textAllCaps="false"
-                android:textColor="@color/Black" />
+                android:textColor="@color/half_Black" />
 
             <Button
                 android:id="@+id/btn_ok"

@@ -680,8 +680,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.slantView.setColor(Color.WHITE);
                 holder.rowLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             } else {
-                holder.slantView.setColor(ContextCompat.getColor(getActivity(), R.color.row_alternate_grey));
-                holder.rowLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.row_alternate_grey));
+                holder.slantView.setColor(ContextCompat.getColor(getActivity(), R.color.divider_view_color));
+                holder.rowLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider_view_color));
             }
             if ("".equals(holder.questionBO.getGroupName())) {
                 holder.groupNameLayout.setVisibility(View.GONE);
@@ -862,10 +862,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 groupName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 minPhoto = (TextView) row
                         .findViewById(R.id.minphotoTV);
-                minPhoto.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                minPhoto.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
                 imp = (TextView) row.findViewById(R.id.imp);
                 QscoreTV = (TextView) row.findViewById(R.id.scoreTV);
-                QscoreTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                QscoreTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
                 QscoreTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 rowLayout = (LinearLayout) row
                         .findViewById(R.id.rowLayout);
@@ -1418,11 +1418,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 TextView minPhoto = (TextView) view
                         .findViewById(R.id.minphotoTV);
                 minPhoto.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                minPhoto.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                minPhoto.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
                 TextView imp = (TextView) view.findViewById(R.id.imp);
                 TextView QscoreTV = (TextView) view.findViewById(R.id.scoreTV);
                 QscoreTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                QscoreTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                QscoreTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
                 LinearLayout answerLayout = (LinearLayout) view
                         .findViewById(R.id.answerLL);
                 LinearLayout subQuestLayout = (LinearLayout) view

@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="0dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="true"
@@ -59,7 +59,7 @@
                         android:layout_marginTop="2dp"
                         android:gravity="center"
                         android:text="@string/dist"
-                        android:textColor="@color/BLUE"
+                        android:textColor="@color/highlighter"
                         android:visibility="visible"
                         android:textSize="@dimen/text_size_secondary" />
 
@@ -132,7 +132,7 @@
                                 android:layout_height="wrap_content"
                                 android:paddingStart="5dp"
                                 android:text="0"
-                                android:textColor="@color/GRAY_TEXT"
+                                android:textColor="@color/gray_text"
                                 android:textSize="@dimen/value_text_size"
                                 android:textStyle="normal"
                                 android:paddingLeft="5dp" />
@@ -145,7 +145,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/target_top_margin"
                         android:layout_marginEnd="@dimen/target_top_margin"
-                        android:background="@color/GRAY" />
+                        android:background="@color/light_gray" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -198,7 +198,7 @@
                                 android:layout_height="wrap_content"
                                 android:paddingStart="5dp"
                                 android:text="0"
-                                android:textColor="@color/GRAY_TEXT"
+                                android:textColor="@color/gray_text"
                                 android:textSize="@dimen/value_text_size"
                                 android:textStyle="normal"
                                 android:paddingLeft="5dp" />
@@ -211,7 +211,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/target_top_margin"
                         android:layout_marginEnd="@dimen/target_top_margin"
-                        android:background="@color/GRAY" />
+                        android:background="@color/light_gray" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -264,7 +264,7 @@
                                 android:layout_height="wrap_content"
                                 android:paddingStart="5dp"
                                 android:text="0"
-                                android:textColor="@color/GRAY_TEXT"
+                                android:textColor="@color/gray_text"
                                 android:textSize="@dimen/value_text_size"
                                 android:textStyle="normal"
                                 android:paddingLeft="5dp" />

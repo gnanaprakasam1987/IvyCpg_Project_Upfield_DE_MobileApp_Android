@@ -4,5 +4,5 @@
     <corners android:radius="40dp" />
     <stroke
         android:width="@dimen/dimen_2dp"
-        android:color="@color/blue_btn_txt" />
+        android:color="@color/highlighter" />
 </shape>

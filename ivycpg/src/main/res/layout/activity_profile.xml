@@ -137,7 +137,7 @@
                             android:contentDescription="@null"
                             android:focusable="true"
                             android:src="@drawable/ic_directions"
-                            android:tint="@color/WHITE" />
+                            android:tint="@color/white" />
 
                         <ImageView
                             android:id="@+id/profile_edit_click"
@@ -180,7 +180,7 @@
                 app:tabIndicatorHeight="4dp"
                 app:tabMaxWidth="1500dp"
                 app:tabMode="fixed"
-                app:tabTextColor="@color/tab_unselcted_text_color"
+                app:tabTextColor="@color/gray_text"
 
                 />
 
@@ -201,7 +201,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_gravity="center"
-            android:background="@color/GRAY"
+            android:background="@color/light_gray"
             android:src="@drawable/downloadsuccess" />
 
         <LinearLayout

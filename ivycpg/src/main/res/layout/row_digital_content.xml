@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:textColor="@color/GRAY_TEXT"
+        android:textColor="@color/gray_text"
         android:visibility="gone"
         tools:text="THIS MONTH" />
 
@@ -77,7 +77,7 @@
                     android:padding="@dimen/dimen_2dp"
                     android:text="@string/date"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                    android:textColor="@color/GRAY_TEXT" />
+                    android:textColor="@color/gray_text" />
             </LinearLayout>
             <!--<LinearLayout-->
             <!--android:id="@+id/pdt_details_layout"-->

@@ -16,7 +16,7 @@
         android:padding="@dimen/profile_header_txt_layout_marginleft"
         android:text="Would you like to add this store \n in today's plan?"
         android:textColor="@color/white"
-        android:textSize="@dimen/font_medium" />
+        android:textSize="@dimen/font_small" />
 
     <LinearLayout
         android:id="@+id/footer"

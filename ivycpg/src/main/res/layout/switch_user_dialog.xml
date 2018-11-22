@@ -13,7 +13,7 @@
         android:layout_marginStart="@dimen/card_margin_lr"
         android:layout_marginEnd="@dimen/card_margin_lr"
         android:layout_marginTop="@dimen/card_margin_top"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="1dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="false"
@@ -47,8 +47,8 @@
                     android:maxLines="1"
                     android:minHeight="70dp"
                     android:padding="18dp"
-                    android:textColor="@color/Black"
-                    android:textColorHighlight="@color/GRAY_TEXT"
+                    android:textColor="@color/half_Black"
+                    android:textColorHighlight="@color/gray_text"
                     android:textColorHint="@color/list_item_secondary_text_color"
                     android:textSize="@dimen/font_small" />
 
@@ -64,8 +64,8 @@
                     android:maxLines="1"
                     android:minHeight="70dp"
                     android:padding="18dp"
-                    android:textColor="@color/Black"
-                    android:textColorHighlight="@color/GRAY_TEXT"
+                    android:textColor="@color/half_Black"
+                    android:textColorHighlight="@color/gray_text"
                     android:textColorHint="@color/list_item_secondary_text_color"
                     android:textSize="@dimen/font_small" />
 
@@ -85,7 +85,7 @@
                     android:text="@string/cancel"
                     android:textAllCaps="false"
                     android:layout_margin="@dimen/dimen_2dp"
-                    android:textColor="@color/Black" />
+                    android:textColor="@color/half_Black" />
 
                 <Button
                     android:id="@+id/btn_switchuser"

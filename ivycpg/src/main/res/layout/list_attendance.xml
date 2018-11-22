@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/attendance_lv_height"
-    android:background="@color/WHITE"
+    android:background="@color/white"
     android:orientation="horizontal"
     android:padding="2dp" >
     <CheckBox

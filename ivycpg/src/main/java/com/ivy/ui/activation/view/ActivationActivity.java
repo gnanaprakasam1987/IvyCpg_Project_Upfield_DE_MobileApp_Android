@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -203,6 +204,11 @@ public class ActivationActivity extends BaseActivity implements ActivationContra
         finish();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
+    }
 
     DialogInterface.OnDismissListener activationDialogDismissListener = new DialogInterface.OnDismissListener() {
 

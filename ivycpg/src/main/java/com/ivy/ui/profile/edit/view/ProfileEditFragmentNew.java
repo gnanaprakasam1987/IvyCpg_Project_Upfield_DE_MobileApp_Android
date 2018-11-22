@@ -1503,7 +1503,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         latlongtextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
         latlongtextview.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         latlongtextview.setText(textvalue);
-        latlongtextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
+        latlongtextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
 
         latlongCameraBtn = new ImageView(getActivity());
         latlongCameraBtn.setBackgroundResource(R.drawable.ic_photo_camera);
@@ -1668,7 +1668,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 // title
                 TextView titleTV = new TextView(getActivity());
                 titleTV.setText(getResources().getString(R.string.attribute));
-                titleTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_medium));
+                titleTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                 titleTV.setTextColor(Color.BLACK);
                 titleLayout.addView(titleTV, titleParams);
 

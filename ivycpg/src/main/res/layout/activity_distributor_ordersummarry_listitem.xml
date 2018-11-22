@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/list_margin"
     android:layout_marginEnd="@dimen/list_margin"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="2dp"
     card_view:cardPreventCornerOverlap="true"
@@ -77,7 +77,7 @@
                     android:paddingEnd="5dp"
                     android:tag="item_piece"
                     android:text="@string/item_piece"
-                    android:textColor="@color/GRAY_TEXT"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/footer_label_size"
                     android:paddingRight="5dp" />
 
@@ -110,7 +110,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="@dimen/dimens_4dp"
                     android:layout_marginTop="@dimen/dimens_4dp"
-                    android:background="@color/GRAY_TEXT" />
+                    android:background="@color/gray_text" />
 
             </LinearLayout>
 
@@ -131,7 +131,7 @@
                     android:paddingEnd="5dp"
                     android:tag="item_case"
                     android:text="@string/item_case"
-                    android:textColor="@color/GRAY_TEXT"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/footer_label_size"
                     android:paddingRight="5dp" />
 
@@ -164,7 +164,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginBottom="@dimen/dimens_4dp"
                     android:layout_marginTop="@dimen/dimens_4dp"
-                    android:background="@color/GRAY_TEXT" />
+                    android:background="@color/gray_text" />
 
             </LinearLayout>
 
@@ -186,7 +186,7 @@
                     android:paddingEnd="5dp"
                     android:tag="outer_case"
                     android:text="@string/item_outer"
-                    android:textColor="@color/GRAY_TEXT"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/footer_label_size"
                     android:paddingRight="5dp" />
 
@@ -220,7 +220,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/dimens_4dp"
                     android:layout_marginTop="@dimen/dimens_4dp"
-                    android:background="@color/GRAY_TEXT" />
+                    android:background="@color/gray_text" />
             </LinearLayout>
 
 
@@ -238,7 +238,7 @@
                     android:paddingEnd="5dp"
                     android:tag="srp"
                     android:text="@string/unit_price"
-                    android:textColor="@color/GRAY_TEXT"
+                    android:textColor="@color/gray_text"
                     android:textSize="@dimen/footer_label_size"
                     android:paddingRight="5dp" />
 

@@ -35,7 +35,7 @@
         android:src="@drawable/downloadsuccess"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/profile_history_20dp"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         android:id="@+id/reason_view"
         android:layout_above="@+id/reason_btns" />
 

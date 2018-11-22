@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/dimen_5dp"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         android:scrollbars="none"
         android:minHeight="@dimen/dimens_180dp"
         android:padding="@dimen/dimen_5dp">
