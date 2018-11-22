@@ -41,7 +41,7 @@
 
             <TextView
                 android:id="@+id/tv_asset_name"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -70,7 +70,7 @@
 
         <TextView
             android:id="@+id/tv_target"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
@@ -175,7 +175,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/installed_on" />
@@ -201,7 +201,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/serviced_on" />
@@ -226,7 +226,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -255,7 +255,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"

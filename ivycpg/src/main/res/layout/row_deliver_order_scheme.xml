@@ -24,7 +24,7 @@ card_view:contentPadding="5dp">
 
         <TextView
             android:id="@+id/stock_and_order_listview_productname"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -73,7 +73,7 @@ card_view:contentPadding="5dp">
 
                 <TextView
                     android:id="@+id/tv_case_Title"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tag="totaltitle"
@@ -82,7 +82,7 @@ card_view:contentPadding="5dp">
 
                 <TextView
                     android:id="@+id/tv_case"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="@dimen/meter_text_width"
                     android:layout_height="match_parent"
                     android:gravity="center|end"
@@ -101,7 +101,7 @@ card_view:contentPadding="5dp">
 
                 <TextView
                     android:id="@+id/tv_outer_Title"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tag="totaltitle"
@@ -110,7 +110,7 @@ card_view:contentPadding="5dp">
 
                 <TextView
                     android:id="@+id/tv_outer"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="@dimen/meter_text_width"
                     android:layout_height="match_parent"
                     android:gravity="center|end"
@@ -129,7 +129,7 @@ card_view:contentPadding="5dp">
 
                 <TextView
                     android:id="@+id/tv_pcs_Title"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tag="totaltitle"
@@ -138,7 +138,7 @@ card_view:contentPadding="5dp">
 
                 <TextView
                     android:id="@+id/tv_pcs"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="@dimen/meter_text_width"
                     android:layout_height="match_parent"
                     android:gravity="center|end"

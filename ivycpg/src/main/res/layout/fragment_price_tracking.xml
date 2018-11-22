@@ -172,7 +172,7 @@
 
                                 <TextView
                                     android:id="@+id/ca_price"
-                                    style="?attr/customListTitleSecondary"
+                                    style="@style/TextViewListTitleSecondary"
                                     android:layout_width="@dimen/dimen_0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -181,7 +181,7 @@
 
                                 <TextView
                                     android:id="@+id/oo_price"
-                                    style="?attr/customListTitleSecondary"
+                                    style="@style/TextViewListTitleSecondary"
                                     android:layout_width="@dimen/dimen_0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -190,7 +190,7 @@
 
                                 <TextView
                                     android:id="@+id/pc_price"
-                                    style="?attr/customListTitleSecondary"
+                                    style="@style/TextViewListTitleSecondary"
                                     android:layout_width="@dimen/dimen_0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"

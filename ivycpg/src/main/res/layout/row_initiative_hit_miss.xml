@@ -16,7 +16,7 @@
 
     <Button
         android:id="@+id/text"
-        style="?attr/customListItemCaption"
+        style="@style/TextViewCaption"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:singleLine="true"

@@ -63,12 +63,10 @@
     </declare-styleable>
 
     <declare-styleable name="customTextView">
-        <attr name="customListTitleSecondary" format="reference" />
-        <attr name="customListItemPrimary" format="reference" />
-        <attr name="customListItemCaption" format="reference" />
-        <attr name="customListItemValue" format="reference" />
-        <attr name="customListTitleBlack" format="reference" />
         <attr name="listHeaderTitleTextColor" format="color" />
+        <attr name="listItemPrimaryTextColor" format="color" />
+        <attr name="captionTextColor" format="color" />
+        <attr name="listItemValueTextColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="customLayout">

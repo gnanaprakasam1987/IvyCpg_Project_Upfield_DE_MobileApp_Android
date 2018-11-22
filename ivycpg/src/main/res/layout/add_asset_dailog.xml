@@ -22,7 +22,7 @@
         android:orientation="horizontal">
 
         <TextView
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/brand_spinner_txt"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -81,7 +81,7 @@
         android:orientation="horizontal">
 
         <TextView
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_10dp"
@@ -90,7 +90,7 @@
             android:text="@string/addassetsno" />
 
         <TextView
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"

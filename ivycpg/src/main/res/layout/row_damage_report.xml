@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/productname"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center"
@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/batchnum"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -41,7 +41,7 @@
 
     <TextView
         android:id="@+id/caseqty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -52,7 +52,7 @@
 
     <TextView
         android:id="@+id/outerqty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -63,7 +63,7 @@
 
     <TextView
         android:id="@+id/pieceqty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -74,7 +74,7 @@
 
     <TextView
         android:id="@+id/reason"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -126,7 +126,7 @@
 
             <TextView
                 android:id="@+id/tv_productName"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
@@ -139,7 +139,7 @@
 
             <TextView
                 android:id="@+id/tv_pcs_ordered_qty"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
@@ -150,7 +150,7 @@
 
             <TextView
                 android:id="@+id/tv_cases_ordered_qty"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
@@ -161,7 +161,7 @@
 
             <TextView
                 android:id="@+id/tv_uom"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
@@ -172,7 +172,7 @@
 
             <EditText
                 android:id="@+id/tv_pcs_final_qty"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
@@ -184,7 +184,7 @@
 
             <EditText
                 android:id="@+id/tv_cases_final_qty"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"
@@ -196,7 +196,7 @@
 
             <TextView
                 android:id="@+id/tv_gqt"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/list_margin"

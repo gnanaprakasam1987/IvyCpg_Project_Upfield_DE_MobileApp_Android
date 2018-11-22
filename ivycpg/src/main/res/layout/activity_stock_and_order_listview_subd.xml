@@ -33,7 +33,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_productname"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -54,7 +54,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_mrp"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_5px"
@@ -82,7 +82,7 @@
 
                 <TextView
                     android:id="@+id/outercaseTitle"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tag="item_outer"
@@ -108,7 +108,7 @@
 
                 <TextView
                     android:id="@+id/caseTitle"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tag="item_case"
@@ -133,7 +133,7 @@
 
                 <TextView
                     android:id="@+id/pcsTitle"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tag="item_piece"
@@ -160,7 +160,7 @@
 
                 <TextView
                     android:id="@+id/totalTitle"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -169,7 +169,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_total"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"

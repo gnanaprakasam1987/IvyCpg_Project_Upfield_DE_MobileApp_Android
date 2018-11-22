@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/product_code"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/prd_nameTv"
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/batch_no"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/prd_nameTv"
@@ -44,7 +44,7 @@
 
         <TextView
             android:id="@+id/prdweight"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_code"

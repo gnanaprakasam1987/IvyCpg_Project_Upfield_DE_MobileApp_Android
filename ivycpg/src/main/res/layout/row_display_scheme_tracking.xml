@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/text_scheme_name"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -43,7 +43,7 @@
 
             <TextView
                 android:id="@+id/text_slab_name"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"

@@ -22,7 +22,7 @@
 
             <TextView
                 android:id="@+id/text_group"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -48,7 +48,7 @@
 
             <TextView
                 android:id="@+id/tv_name"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -60,7 +60,7 @@
 
             <TextView
                 android:id="@+id/tv_sih"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -101,7 +101,7 @@
 
                 <TextView
                     android:id="@+id/tv_min_actualvalue"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -110,7 +110,7 @@
 
                 <TextView
                     android:id="@+id/tv_maxvalue"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"

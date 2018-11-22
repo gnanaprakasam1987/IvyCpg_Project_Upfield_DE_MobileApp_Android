@@ -8,20 +8,20 @@
 
         <TextView
             android:id="@+id/text_product"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6" />
         <TextView
             android:id="@+id/text_ordered"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center" />
         <TextView
             android:id="@+id/text_add"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"

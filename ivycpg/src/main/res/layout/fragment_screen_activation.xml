@@ -18,7 +18,7 @@
 
         <TextView
             android:id="@+id/version"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -94,7 +94,7 @@
 
             <TextView
                 android:id="@+id/tv_already_activated"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rr"

@@ -24,4 +24,13 @@
     <!--List item Header Title Text color-->
     <color name="list_header_text_color_red">#ffffff</color>
 
+    <!--List item Primary Text color-->
+    <color name="list_item_primary_text_color_red">@color/FullBlack</color>
+
+    <!--Caption Text color-->
+    <color name="caption_text_color_red">#cc262626</color>
+
+    <!--List item Value Text color-->
+    <color name="list_item_values_text_color_red">#262626</color>
+
 </resources>

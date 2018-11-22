@@ -31,4 +31,13 @@
     <!--List item Header Title Text color-->
     <color name="list_header_text_color_nblue">#ffffff</color>
 
+    <!--List item Primary Text color-->
+    <color name="list_item_primary_text_color_nblue">@color/FullBlack</color>
+
+    <!--Caption Text color-->
+    <color name="caption_text_color_nblue">#cc262626</color>
+
+    <!--List item Value Text color-->
+    <color name="list_item_values_text_color_nblue">#262626</color>
+
 </resources>

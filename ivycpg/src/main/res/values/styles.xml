@@ -79,13 +79,10 @@
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
 
         <!--Custom List Title - TextViews Style-->
-
         <item name="listHeaderTitleTextColor">@color/list_header_text_color</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemCaption">@style/TextViewCaption</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color</item>
+        <item name="captionTextColor">@color/caption_text_color</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color</item>
 
 
         <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
@@ -232,13 +229,12 @@ negative button and neutral button -->
             @style/ButtonNormalRoundCornerTransparent
         </item>
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-        <!-- Custom Buttons -->
-        <!--CustomTextViews-->
+
+        <!--Custom List Title - TextViews Style-->
         <item name="listHeaderTitleTextColor">@color/list_header_text_color_nblue</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemCaption">@style/TextViewCaption</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+        <item name="captionTextColor">@color/caption_text_color_nblue</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_nblue</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color_nblue</item>
 
 
         <item name="customFooterBackgroundColor">@color/footer_bg_color_nblue</item>
@@ -339,10 +335,9 @@ negative button and neutral button -->
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
         <item name="listHeaderTitleTextColor">@color/list_header_text_color_red</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemCaption">@style/TextViewCaption</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_red</item>
+        <item name="captionTextColor">@color/caption_text_color_red</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color_red</item>
 
 
         <item name="customFooterBackgroundColor">@color/footer_bg_color_red</item>
@@ -436,14 +431,12 @@ negative button and neutral button -->
             @style/ButtonNormalRoundCornerTransparent
         </item>
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-        <!-- Custom Buttons -->
-        <!--CustomTextViews-->
 
+        <!--Custom List Title - TextViews Style-->
         <item name="listHeaderTitleTextColor">@color/list_header_text_color_orange</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemCaption">@style/TextViewCaption</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_orange</item>
+        <item name="captionTextColor">@color/caption_text_color_orange</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color_orange</item>
 
 
         <item name="customFooterBackgroundColor">@color/footer_bg_color_orange</item>
@@ -538,14 +531,12 @@ negative button and neutral button -->
             @style/ButtonNormalRoundCornerTransparent
         </item>
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-        <!-- Custom Buttons -->
-        <!--CustomTextViews-->
 
+        <!--Custom List Title - TextViews Style-->
         <item name="listHeaderTitleTextColor">@color/list_header_text_color_green</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemCaption">@style/TextViewCaption</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_green</item>
+        <item name="captionTextColor">@color/caption_text_color_green</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color_green</item>
 
 
         <item name="customFooterBackgroundColor">@color/footer_bg_color_green</item>
@@ -660,7 +651,7 @@ negative button and neutral button -->
     <!-- List Item View Text Style-->
     <style name="TextViewListItemPrimary" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
-        <item name="android:textColor">@color/FullBlack</item>
+        <item name="android:textColor">?attr/listItemPrimaryTextColor</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -683,7 +674,7 @@ negative button and neutral button -->
     <style name="TextViewCaption" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_caption</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textColor">@color/date_picker_text_color</item>
+        <item name="android:textColor">?attr/captionTextColor</item>
     </style>
 
     <!-- Footer View Text Style-->
@@ -703,7 +694,7 @@ negative button and neutral button -->
     <!-- List Item Value View Text Style-->
     <style name="TextViewListItemValues" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_secondary</item>
-        <item name="android:textColor">@color/list_item_values_text_color</item>
+        <item name="android:textColor">?attr/listItemValueTextColor</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 

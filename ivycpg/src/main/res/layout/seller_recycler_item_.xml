@@ -67,7 +67,7 @@
 
                         <TextView
                             android:id="@+id/tv_user_name"
-                            style="?attr/customListItemPrimary"
+                            style="@style/TextViewListItemPrimary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/_2sdp"
@@ -79,7 +79,7 @@
 
                         <TextView
                             android:id="@+id/tv_outlet_covered"
-                            style="?attr/customListItemCaption"
+                            style="@style/TextViewCaption"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/_2sdp"
@@ -107,7 +107,7 @@
 
                             <TextView
                                 android:id="@+id/tv_percent_txt"
-                                style="?attr/customListItemCaption"
+                                style="@style/TextViewCaption"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/_10sdp"
@@ -143,7 +143,7 @@
 
                             <TextView
                                 android:id="@+id/tv_status"
-                                style="?attr/customListItemCaption"
+                                style="@style/TextViewCaption"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -208,7 +208,7 @@
 
                     <TextView
                         android:id="@+id/tv_message"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
@@ -246,7 +246,7 @@
 
                     <TextView
                         android:id="@+id/tv_route"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"

@@ -25,7 +25,7 @@
             app:ticker_defaultCharacterList="number"
             app:ticker_animationDuration="1000"
             android:id="@+id/tv_ttl_market_seller"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.12"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/tv_txt_ttl_market_seller"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
@@ -53,7 +53,7 @@
 
         <TextView
             android:id="@+id/tv_txt_ttl_absent_seller"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
@@ -70,7 +70,7 @@
             app:ticker_defaultCharacterList="number"
             app:ticker_animationDuration="1000"
             android:id="@+id/tv_ttl_absent_seller"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -125,7 +125,7 @@
                         app:ticker_defaultCharacterList="number"
                         app:ticker_animationDuration="1000"
                         android:id="@+id/tv_ttl_seller"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -138,7 +138,7 @@
 
                     <TextView
                         android:id="@+id/tv_txt_ttl_seller"
-                        style="?attr/customListItemCaption"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_ttl_seller"
@@ -181,7 +181,7 @@
                         app:ticker_defaultCharacterList="number"
                         app:ticker_animationDuration="1000"
                         android:id="@+id/tv_order_value"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -193,7 +193,7 @@
 
                     <TextView
                         android:id="@+id/tv_txt_order_value"
-                        style="?attr/customListItemCaption"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_order_value"
@@ -246,7 +246,7 @@
                         app:ticker_defaultCharacterList="number"
                         app:ticker_animationDuration="1000"
                         android:id="@+id/tv_ttl_outlet"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -258,7 +258,7 @@
 
                     <TextView
                         android:id="@+id/tv_txt_ttl_outlet"
-                        style="?attr/customListItemCaption"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_ttl_outlet"
@@ -312,7 +312,7 @@
                             app:ticker_defaultCharacterList="number"
                             app:ticker_animationDuration="1000"
                             android:id="@+id/tv_covered_outlet"
-                            style="?attr/customListItemPrimary"
+                            style="@style/TextViewListItemPrimary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
@@ -324,7 +324,7 @@
 
                         <TextView
                             android:id="@+id/tv_txt_covered_outlet"
-                            style="?attr/customListItemCaption"
+                            style="@style/TextViewCaption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_covered_outlet"
@@ -368,7 +368,7 @@
                             app:ticker_defaultCharacterList="number"
                             app:ticker_animationDuration="1000"
                             android:id="@+id/tv_unbilled_outlet"
-                            style="?attr/customListItemPrimary"
+                            style="@style/TextViewListItemPrimary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
@@ -380,7 +380,7 @@
 
                         <TextView
                             android:id="@+id/tv_txt_unbilled_outlet"
-                            style="?attr/customListItemCaption"
+                            style="@style/TextViewCaption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_unbilled_outlet"
@@ -445,7 +445,7 @@
                         android:progressDrawable="@drawable/circle_progress_rotate" />
 
                     <TextView
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="@dimen/_45sdp"
                         android:layout_height="@dimen/_45sdp"
                         android:layout_centerInParent="true"
@@ -460,7 +460,7 @@
 
                 <TextView
                     android:id="@+id/tv_inmarket_seller"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"

@@ -43,7 +43,7 @@
 
                 <TextView
                     android:id="@+id/label_line_sold"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -51,7 +51,7 @@
 
                 <TextView
                     android:id="@+id/linessold"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -85,7 +85,7 @@
 
                 <TextView
                     android:id="@+id/label_tgt"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -93,7 +93,7 @@
 
                 <TextView
                     android:id="@+id/vtgt"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -110,7 +110,7 @@
 
                 <TextView
                     android:id="@+id/label_ach"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -118,7 +118,7 @@
 
                 <TextView
                     android:id="@+id/vact"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -134,7 +134,7 @@
 
                 <TextView
                     android:id="@+id/label_gap"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -142,7 +142,7 @@
 
                 <TextView
                     android:id="@+id/vgap"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -174,7 +174,7 @@
 
                 <TextView
                     android:id="@+id/label_start"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -182,7 +182,7 @@
 
                 <TextView
                     android:id="@+id/start"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -198,7 +198,7 @@
 
                 <TextView
                     android:id="@+id/label_end"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -206,7 +206,7 @@
 
                 <TextView
                     android:id="@+id/end"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -223,7 +223,7 @@
 
                 <TextView
                     android:id="@+id/label_duration"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -231,7 +231,7 @@
 
                 <TextView
                     android:id="@+id/duration"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

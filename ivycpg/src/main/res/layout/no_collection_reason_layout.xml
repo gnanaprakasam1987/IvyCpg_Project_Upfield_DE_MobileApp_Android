@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/invoice_no"
-        style="?attr/customListItemCaption"
+        style="@style/TextViewCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/invoice_date"
-        style="?attr/customListItemCaption"
+        style="@style/TextViewCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -33,7 +33,7 @@
 
     <TextView
         android:id="@+id/invoice_amount"
-        style="?attr/customListItemCaption"
+        style="@style/TextViewCaption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"

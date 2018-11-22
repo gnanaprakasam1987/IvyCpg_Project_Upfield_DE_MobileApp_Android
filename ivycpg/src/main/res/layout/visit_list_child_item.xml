@@ -44,7 +44,7 @@
 
                 <TextView
                     android:id="@+id/outletName_tv"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -54,7 +54,7 @@
 
                 <TextView
                     android:id="@+id/outletLocation_tv"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -192,7 +192,7 @@
 
                     <TextView
                         android:id="@+id/tv_achvTgt1"
-                        style="?attr/customListItemValue"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""
@@ -200,7 +200,7 @@
 
                     <TextView
                         android:id="@+id/tv_actualTgt1"
-                        style="?attr/customListItemCaption"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_5px"
@@ -248,7 +248,7 @@
 
                     <TextView
                         android:id="@+id/tv_achvTgt2"
-                        style="?attr/customListItemValue"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""
@@ -256,7 +256,7 @@
 
                     <TextView
                         android:id="@+id/tv_actualTgt2"
-                        style="?attr/customListItemCaption"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_5px"

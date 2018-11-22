@@ -30,7 +30,7 @@
 
                 <TextView
                     android:id="@+id/outletName_tv"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -41,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/outlet_address_tv"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -53,7 +53,7 @@
 
                 <TextView
                     android:id="@+id/outlet_location_tv"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

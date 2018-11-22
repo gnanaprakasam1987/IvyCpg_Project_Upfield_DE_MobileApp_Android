@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/tv_productname"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

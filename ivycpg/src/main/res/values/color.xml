@@ -30,13 +30,21 @@
     <!--List item Header Title Text color-->
     <color name="list_header_text_color">#ffffff</color>
 
+    <!--List item Primary Text color-->
+    <color name="list_item_primary_text_color">@color/FullBlack</color>
+    
+    <!--Caption Text color-->
+    <color name="caption_text_color">#cc262626</color>
+
+    <!--List item Value Text color-->
+    <color name="list_item_values_text_color">#262626</color>
+
 
     <!--**************************************************************************************-->
 
     <!--common-->
     <color name="list_item_text_primary_color">#DE262626</color>
     <color name="list_item_secondary_text_color">#ae000000</color>
-    <color name="list_item_values_text_color">#262626</color>
 
     <!--footer color-->
     <color name="footer_bg_color">#212121</color>

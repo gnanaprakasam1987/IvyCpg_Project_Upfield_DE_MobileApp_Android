@@ -51,7 +51,7 @@
 
                 <TextView
                     android:id="@+id/seller_name"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -63,7 +63,7 @@
 
                 <TextView
                     android:id="@+id/seller_position"
-                    style="?attr/customListItemCaption"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -94,7 +94,7 @@
                     android:progressDrawable="@drawable/circle_progress_rotate" />
 
                 <TextView
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="@dimen/_45sdp"
                     android:layout_height="@dimen/_45sdp"
                     android:layout_centerInParent="true"
@@ -163,7 +163,7 @@
 
             <TextView
                 android:id="@+id/number_text"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -175,7 +175,7 @@
 
             <TextView
                 android:id="@+id/target_text"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -187,7 +187,7 @@
 
             <TextView
                 android:id="@+id/actual_text"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -199,7 +199,7 @@
 
             <TextView
                 android:id="@+id/percent_text"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.14"
@@ -226,7 +226,7 @@
 
             <TextView
                 android:id="@+id/value_text"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -238,7 +238,7 @@
 
             <TextView
                 android:id="@+id/value_target"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -250,7 +250,7 @@
 
             <TextView
                 android:id="@+id/value_actual"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -262,7 +262,7 @@
 
             <TextView
                 android:id="@+id/value_percent"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.16"
@@ -289,7 +289,7 @@
 
             <TextView
                 android:id="@+id/coverage_text"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -301,7 +301,7 @@
 
             <TextView
                 android:id="@+id/coverage_target"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -313,7 +313,7 @@
 
             <TextView
                 android:id="@+id/coverage_actual"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -325,7 +325,7 @@
 
             <TextView
                 android:id="@+id/coverage_percent"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.16"
@@ -352,7 +352,7 @@
 
             <TextView
                 android:id="@+id/lines_text"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -364,7 +364,7 @@
 
             <TextView
                 android:id="@+id/lines_target"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -376,7 +376,7 @@
 
             <TextView
                 android:id="@+id/lines_actual"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -388,7 +388,7 @@
 
             <TextView
                 android:id="@+id/lines_percent"
-                style="?attr/customListItemCaption"
+                style="@style/TextViewCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.16"
@@ -402,7 +402,7 @@
 
         <TextView
             android:id="@+id/calls_status_text"
-            style="?attr/customListItemCaption"
+            style="@style/TextViewCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lines_layout"
@@ -438,7 +438,7 @@
 
                 <TextView
                     android:id="@+id/planned_text"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_2sdp"
@@ -450,7 +450,7 @@
 
                 <TextView
                     android:id="@+id/planned_value"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_2sdp"
@@ -470,7 +470,7 @@
 
                 <TextView
                     android:id="@+id/deviated_text"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_2sdp"
@@ -482,7 +482,7 @@
 
                 <TextView
                     android:id="@+id/deviated_value"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="92dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_2sdp"
@@ -502,7 +502,7 @@
 
                 <TextView
                     android:id="@+id/duration_text"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_2sdp"
@@ -514,7 +514,7 @@
 
                 <TextView
                     android:id="@+id/duration_value"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_2sdp"
@@ -534,7 +534,7 @@
 
                 <TextView
                     android:id="@+id/productive_txt"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_2sdp"
@@ -546,7 +546,7 @@
 
                 <TextView
                     android:id="@+id/productive_value"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_2sdp"
