@@ -328,7 +328,7 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
                             mReasonID = assetTrackingBO.getReason1ID();
                             assetTrackingHelper
                                     .deleteAsset(getApplicationContext(), mPOSMIdDialog,
-                                            mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName,assetTrackingBO.getNFCTagId());
+                                            mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName,assetTrackingBO.getNFCTagId(),assetTrackingBO.getReferenceId());
 
                             itr.remove();
                         }

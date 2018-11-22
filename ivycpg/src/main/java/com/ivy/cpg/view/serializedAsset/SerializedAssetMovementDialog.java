@@ -55,9 +55,10 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     protected ArrayList<ReasonMaster> mAssetReasonList;
     protected ArrayList<RetailerMasterBO> retailerMasterBOs;
     protected String serialNo,reasonId,retailerId,assetName,brand,retailerName;
-    protected Integer retailerSelected=-1,assetId;
+    protected Integer retailerSelected=-1,assetId,referenceId;
     private final SerializedAssetBO assetBo = new SerializedAssetBO();
     SerializedAssetHelper assetTrackingHelper;
+    private String movementType="RTR_WH";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,6 +113,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         assetName = getArguments().getString("assetName");
         brand=getArguments().getString("brand");
         assetId=getArguments().getInt("assetId");
+        referenceId=getArguments().getInt("referenceId");
         String mSerialNumber=getString(R.string.serial_no) + ": " + serialNo;
         TVSerialNo.setText(mSerialNumber);
         TVOutletName.setText(retailerName);
@@ -166,6 +168,10 @@ public class SerializedAssetMovementDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 retailerSelected=position;
+
+                if(position>0)
+                    movementType="RTR_RTR";
+                else movementType="RTR_WH";
             }
 
             @Override
@@ -183,7 +189,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
                     setAddAssetDetails();
                     mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                     assetTrackingHelper
-                            .saveAssetMovementDetails(getContext().getApplicationContext(), "RTR_RTR",0);
+                            .saveAssetMovementDetails(getContext().getApplicationContext(), movementType,referenceId);
                     Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
                             Toast.LENGTH_SHORT).show();
                     dismiss();

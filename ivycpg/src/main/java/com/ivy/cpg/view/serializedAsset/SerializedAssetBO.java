@@ -34,6 +34,10 @@ public class SerializedAssetBO {
     private ArrayList<String> imageList;
 
 
+
+    private int referenceId=0;
+
+
     public SerializedAssetBO() {
 
     }
@@ -412,4 +416,11 @@ public class SerializedAssetBO {
 
     private boolean isSelectedReason = false;
 
+    public int getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(int referenceId) {
+        this.referenceId = referenceId;
+    }
 }

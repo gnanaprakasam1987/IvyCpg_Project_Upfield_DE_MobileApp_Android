@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -340,6 +341,11 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                     break;
                 }
             }
+        }
+
+
+        if (!assetTrackingHelper.SHOW_ASSET_BARCODE) {
+            menu.findItem(R.id.menu_assetScan).setVisible(false);
         }
 
         if (!assetTrackingHelper.SHOW_REMARKS_ASSET) {

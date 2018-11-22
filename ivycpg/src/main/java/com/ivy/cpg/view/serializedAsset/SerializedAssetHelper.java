@@ -30,20 +30,20 @@ public class SerializedAssetHelper {
     private SerializedAssetBO mAssetTrackingBO;
 
     // Asset configuration
-    private static final String CODE_ASSET_COLUMNS = "AT01";
-    private static final String CODE_ASSET_BARCODE = "AT02";
-    private static final String CODE_ASSET_ADD = "AT03";
-    private static final String CODE_REMOVE_ASSET = "AT04";
-    private static final String CODE_SHOW_ALL = "AT05";
-    private static final String CODE_REMARKS_ASSET = "AT06";
-    private static final String CODE_NFC_SEARCH_IN_ASSET = "AT07";
-    private static final String CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = "AT08";
-    private static final String CODE_MOVE_ASSET = "AT09";
-    private static final String CODE_ASSET_PHOTO_VALIDATION = "AT10";
+    private static final String CODE_ASSET_COLUMNS = "SAT01";
+    private static final String CODE_ASSET_BARCODE = "SAT02";
+    private static final String CODE_ASSET_ADD = "SAT03";
+    private static final String CODE_REMOVE_ASSET = "SAT04";
+    private static final String CODE_SHOW_ALL = "SAT05";
+    private static final String CODE_REMARKS_ASSET = "SAT06";
+    private static final String CODE_NFC_SEARCH_IN_ASSET = "SAT07";
+    private static final String CODE_ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = "SAT08";
+    private static final String CODE_MOVE_ASSET = "SAT09";
+    private static final String CODE_ASSET_PHOTO_VALIDATION = "SAT10";
     private static final String ASSET_REASON = "AR";
     private static final String ASSET_REMARK = "ARR";
     private static final String ASSET_CONDITION = "CD";
-    private static final String CODE_ASSET_SERVICE = "AT11";
+    private static final String CODE_ASSET_SERVICE = "SAT11";
     public boolean SHOW_ASSET_TARGET;
     public boolean SHOW_ASSET_QTY;
     public boolean SHOW_ASSET_REASON;
@@ -161,6 +161,8 @@ public class SerializedAssetHelper {
             ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = false;
             SHOW_MOVE_ASSET = false;
             SHOW_SERVICE_ASSET = false;
+            ASSET_PHOTO_VALIDATION=false;
+            SHOW_NFC_SEARCH_IN_ASSET=false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -168,7 +170,7 @@ public class SerializedAssetHelper {
 
             String sql = "SELECT hhtCode, RField FROM "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " WHERE menu_type = 'MENU_ASSET' AND flag='1' and ForSwitchSeller = 0";
+                    + " WHERE menu_type = 'MENU_SERIALIZED_ASSET' AND flag='1' and ForSwitchSeller = 0";
 
             Cursor c = db.selectSQL(sql);
 
@@ -197,6 +199,8 @@ public class SerializedAssetHelper {
                         ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = true;
                     else if (c.getString(0).equalsIgnoreCase(CODE_MOVE_ASSET))
                         SHOW_MOVE_ASSET = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_ASSET_PHOTO_VALIDATION))
+                        ASSET_PHOTO_VALIDATION = true;
                     else if (CODE_ASSET_SERVICE.equalsIgnoreCase(c.getString(0)))
                         SHOW_SERVICE_ASSET = true;
                 }
@@ -332,9 +336,9 @@ public class SerializedAssetHelper {
 
             db.openDataBase();
 
-            sb.append("select Distinct A.assetId,A.assetName,B.serialNumber,C.Productid,B.NFCNumber,PM.ParentHierarchy as ParentHierarchy from SerializedAssetMaster A  ");
+            sb.append("select Distinct A.assetId,A.assetName,B.serialNumber,C.Productid,B.NFCNumber,PM.ParentHierarchy as ParentHierarchy,AllocationRefId from SerializedAssetMaster A  ");
             sb.append("inner join SerializedAssetMapping B on A.AssetId=B.AssetId ");
-            sb.append("inner join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
+            sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
 
             sb.append("left join ProductMaster PM on PM.PID=C.Productid ");
 
@@ -370,6 +374,7 @@ public class SerializedAssetHelper {
 
                     assetTrackingBO.setNFCTagId(c.getString(c.getColumnIndex("NFCNumber")));
                     assetTrackingBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                    assetTrackingBO.setReferenceId(c.getInt(c.getColumnIndex("AllocationRefId")));
 
 
                     mAssetTrackingList.add(assetTrackingBO);
@@ -392,7 +397,7 @@ public class SerializedAssetHelper {
             }
 
 
-            String sb1 = "select  serialNumber from SerializedAssetTransfer";
+            String sb1 = "select  serialNumber from SerializedAssetTransfer where transfer_type='RTR_WH' and retailerid="+mBusinessModel.getRetailerMasterBO().getRetailerID();
             Cursor cursorDelete = db.selectSQL(sb1);
             SerializedAssetBO assetBoDelete = null;
             List<SerializedAssetBO> deletedAssetList = new ArrayList<>();
@@ -1073,11 +1078,11 @@ public class SerializedAssetHelper {
 
 
             StringBuilder sb = new StringBuilder();
-            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid  from SerializedAssetMaster P  inner join SerializedAssetProductMapping SBD on P.AssetId=SBD.AssetId ");
+            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid,AllocationRefId  from SerializedAssetMaster P  inner join SerializedAssetProductMapping SBD on P.AssetId=SBD.AssetId ");
             sb.append(" inner join SerializedAssetMapping SAM ON SAM.assetId=P.AssetId");
             sb.append(" where (SAM.SerialNumber  in (select distinct SerialNumber from SerializedAssetTransfer AAD where Transfer_Type!='RTR_WH'");
             sb.append(") or SAM.SerialNumber not in (select distinct SerialNumber from SerializedAssetTransfer AAD1");
-            sb.append("))");
+            sb.append(")) and retailerid in (0,"+mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID())+")");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1094,6 +1099,7 @@ public class SerializedAssetHelper {
                     assetBO.setNewInstallDate(" ");
                     assetBO.setFlag("N");
                     assetBO.setBrand(c.getString(3));
+                    assetBO.setReferenceId(c.getInt(4));
                     mRemovableAssets.add(assetBO);
                 }
             }
@@ -1146,7 +1152,7 @@ public class SerializedAssetHelper {
      * @param moduleName Module Name
      */
     public void deleteAsset(Context mContext, String posmId, String mSno,
-                            String mSbdId, String mBrandId, String reasonId, String moduleName, String NFCId) {
+                            String mSbdId, String mBrandId, String reasonId, String moduleName, String NFCId,int refId) {
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1163,7 +1169,7 @@ public class SerializedAssetHelper {
             String values = id + ","
                     + AppUtils.QT(posmId) + "," + AppUtils.QT(mSno) + ","+AppUtils.QT(NFCId)+","+AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))+","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT("T") + ","
-                    + AppUtils.QT(reasonId) + "," + AppUtils.QT("") + "," + mBusinessModel.getRetailerMasterBO().getRetailerID()+","+0 + "," + AppUtils.QT("RTR_WH ")+","+0;
+                    + AppUtils.QT(reasonId) + "," + AppUtils.QT("") + "," + mBusinessModel.getRetailerMasterBO().getRetailerID()+","+0 + "," + AppUtils.QT("RTR_WH")+","+refId;
 
             db.insertSQL(DataMembers.tbl_SerializedAssetTransfer, columns,
                     values);
@@ -1221,7 +1227,7 @@ public class SerializedAssetHelper {
     /**
      * Method to save Asset Movement Details in sql table
      */
-    public void saveAssetMovementDetails(Context mContext, String movementType,int transferTo) {
+    public void saveAssetMovementDetails(Context mContext, String movementType,int referenceId) {
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1238,7 +1244,7 @@ public class SerializedAssetHelper {
             String values = id + "," +AppUtils.QT(assets.getPOSM())+"," + AppUtils.QT(assets.getSNO()) + ","
                     + AppUtils.QT(assets.getNFCTagId()) + "," +AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))+","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT("T") + ","  +
-                    AppUtils.QT(assets.getReasonId()) + "," + AppUtils.QT(assets.getRemarks()) + "," + AppUtils.QT(assets.getToRetailerId())+","+transferTo+","+AppUtils.QT(movementType)+",0";
+                    AppUtils.QT(assets.getReasonId()) + "," + AppUtils.QT(assets.getRemarks()) + ","+mBusinessModel.getRetailerMasterBO().getRetailerID()+"," + AppUtils.QT(assets.getToRetailerId())+","+AppUtils.QT(movementType)+","+referenceId;
 
 
             db.insertSQL(DataMembers.tbl_SerializedAssetTransfer, columns,

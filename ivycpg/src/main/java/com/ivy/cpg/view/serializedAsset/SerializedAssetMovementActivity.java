@@ -176,6 +176,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
                     args.putString("assetName", holder.assetTrackingBO.getAssetName());
                     args.putInt("assetId", holder.assetTrackingBO.getAssetID());
                     args.putString("brand", holder.assetTrackingBO.getProductId()+"");
+                    args.putString("referenceId", holder.assetTrackingBO.getReferenceId()+"");
                     movementAssetDialog.setArguments(args);
                     movementAssetDialog.show(getSupportFragmentManager(), "Asset");
                 }

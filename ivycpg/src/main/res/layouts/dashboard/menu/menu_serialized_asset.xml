@@ -71,7 +71,7 @@
         android:orderInCategory="101"
         android:title="Reason"
         android:visible="false"
-        ivydist:showAsAction="ifRoom" />
+        ivydist:showAsAction="never" />
 
 </menu>
 

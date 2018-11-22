@@ -2609,7 +2609,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isClick = false;
             }
 
-        } else if (menu.getConfigCode().equals(MENU_ASSET) && hasLink == 122) {
+        } else if (menu.getConfigCode().equals(MENU_ASSET) && hasLink == 1) {
             if (!isClick) {
                 isClick = true;
                 if (isPreviousDone(menu)
@@ -2654,20 +2654,21 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     isClick = false;
                 }
             }
-        }else if (menu.getConfigCode().equals(MENU_ASSET) && hasLink == 1) {
+        }else if (menu.getConfigCode().equals(MENU_SERIALIZED_ASSET) && hasLink == 1) {
             if (!isClick) {
                 isClick = true;
                 if (isPreviousDone(menu)
                         || bmodel.configurationMasterHelper.IS_JUMP) {
 
                     SerializedAssetHelper assetTrackingHelper = SerializedAssetHelper.getInstance(this);
-                    assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_ASSET);
+                    assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_SERIALIZED_ASSET);
 
                     if (assetTrackingHelper.getAssetTrackingList().size() > 0 ||
                             assetTrackingHelper.SHOW_ADD_NEW_ASSET) {
 
                         assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
+                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
 
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
