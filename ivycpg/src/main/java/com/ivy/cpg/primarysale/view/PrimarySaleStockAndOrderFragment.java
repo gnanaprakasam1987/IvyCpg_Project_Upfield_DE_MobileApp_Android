@@ -96,10 +96,11 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
         mBtn_clear.setOnClickListener(this);
         mSearchTypeArray = new ArrayList<String>();
         // mSearchTypeArray.add(getResources().getString(R.string.product_short_name));
+        mSearchTypeArray.add(getResources().getString(R.string.all));
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
-//        mSearchTypeArray.add(getResources().getString(R.string.order_gcas));
-//        mSearchTypeArray.add(getResources().getString(
-//                R.string.order_dialog_barcode));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
+        mSearchTypeArray.add(getResources().getString(
+                R.string.order_dialog_barcode));
 
         mEdt_searchproductName.setOnEditorActionListener(this);
 
@@ -498,17 +499,40 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                         mylist.add(ret);
 
                 } else if (mSelectedFilter.equals(getResources().getString(
-                        R.string.order_gcas))) {
-                    if (ret.getRField1() != null && ret.getRField1()
+                        R.string.prod_code))) {
+                    if ((ret.getRField1() != null && ret.getRField1()
                             .toLowerCase()
                             .contains(
                                     mEdt_searchproductName.getText().toString()
-                                            .toLowerCase()))
+                                            .toLowerCase())) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                            .toLowerCase())))
                         mylist.add(ret);
 
                 } else if (mSelectedFilter.equals(getResources().getString(
                         R.string.product_name))) {
                     if (ret.getProductShortName() != null && ret.getProductShortName()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase()))
+                        mylist.add(ret);
+                } else {
+                    if (ret.getBarCode() != null && ret.getBarCode()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase()))
+                        mylist.add(ret);
+                    else if ((ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase())) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                            .toLowerCase())))
+                        mylist.add(ret);
+                    else if (ret.getProductShortName() != null && ret.getProductShortName()
                             .toLowerCase()
                             .contains(
                                     mEdt_searchproductName.getText().toString()

@@ -600,6 +600,11 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_HST_DUETDATE;
     public boolean SHOW_HST_PAID_AMOUNT;
     public boolean SHOW_HST_BAL_AMOUNT;
+    public boolean SHOW_HST_DRIVER_NAME;
+    public boolean SHOW_HST_PO_NUM;
+    public boolean SHOW_HST_DOC_NO;
+    public boolean SHOW_HST_DET_FREE_QTY;
+    public boolean SHOW_HST_DET_VALUE;
 
     public boolean SHOW_INV_HST_ORDERID;
     public boolean SHOW_INV_HST_INVOICEDATE;
@@ -1491,6 +1496,10 @@ public class ConfigurationMasterHelper {
     //Provision to highlight 0 qty of warehouse stock in ordered products
     private static final String CODE_SHOW_OOS = "ORDB76";
     public boolean IS_SHOW_OOS;
+
+    //Provision to load stock check whether from last visit or closed stock
+    private static final String CODE_STK_CHECK_LAST_VISIT = "ORDB77";
+    public boolean IS_LOAD_STK_CHECK_LAST_VISIT;
 
     private static final String CODE_KPI_CALENDAR = "KPI_CALENDER";
     public boolean IS_KPI_CALENDAR;
@@ -2666,6 +2675,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
         this.IS_SHOW_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_OOS) : false;
+        this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
     }
 
     private boolean isInOutModule() {
@@ -3527,6 +3537,9 @@ public class ConfigurationMasterHelper {
             SHOW_HST_DUETDATE = false;
             SHOW_HST_PAID_AMOUNT = false;
             SHOW_HST_BAL_AMOUNT = false;
+            SHOW_HST_DRIVER_NAME = false;
+            SHOW_HST_PO_NUM = false;
+            SHOW_HST_DOC_NO = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3582,6 +3595,15 @@ public class ConfigurationMasterHelper {
                             break;
                         case "BAMT":
                             SHOW_HST_BAL_AMOUNT = true;
+                            break;
+                        case "PONUM":
+                            SHOW_HST_PO_NUM = true;
+                            break;
+                        case "DRIVER":
+                            SHOW_HST_DRIVER_NAME = true;
+                            break;
+                        case "DOCNO":
+                            SHOW_HST_DOC_NO = true;
                             break;
                     }
 
@@ -3845,6 +3867,8 @@ public class ConfigurationMasterHelper {
             SHOW_D3 = false;
             SHOW_DA = false;
             SHOW_DISCOUNTED_PRICE = false;
+            SHOW_HST_DET_FREE_QTY = false;
+            SHOW_HST_DET_VALUE = false;
 
             SHOW_INDEX_DASH = false;
             SHOW_TARGET_DASH = false;
@@ -4006,6 +4030,10 @@ public class ConfigurationMasterHelper {
                         SHOW_STK_ORD_SRP_EDT = true;
                     else if (temp.equals("STKQTY"))
                         SHOW_STK_QTY_IN_ORDER = true;
+                    else if (temp.equals("FREEQTY"))
+                        SHOW_HST_DET_FREE_QTY = true;
+                    else if (temp.equals("VALUE"))
+                        SHOW_HST_DET_VALUE = true;
                 }
             }
 

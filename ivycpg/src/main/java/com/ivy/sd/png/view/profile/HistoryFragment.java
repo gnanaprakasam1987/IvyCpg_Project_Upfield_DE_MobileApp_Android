@@ -19,6 +19,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -180,6 +181,10 @@ public class HistoryFragment extends IvyBaseFragment {
             holder.deliveryStatus_val.setText(projectObj.getDelieveryStatus());
             holder.paidAmtVal.setText(String.valueOf(projectObj.getPaidAmount()));
             holder.balAmtVal.setText(String.valueOf(projectObj.getBalanceAmount()));
+            holder.cust_pono_val.setText(projectObj.getPoNumber());
+            holder.delivery_date_val.setText(projectObj.getDelDate());
+            holder.driver_name_val.setText(projectObj.getDriverName());
+            holder.del_docno_val.setText(projectObj.getDelDocNum());
 
 
             try {
@@ -201,14 +206,14 @@ public class HistoryFragment extends IvyBaseFragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            private final TextView del_date_txt, invoice_date_txt, invoice_qty_txt, del_rep_code_txt;
             private final LinearLayout del_date_layout, invoice_date_layout, invoice_qty_layout, del_rep_code_layout;
             private LinearLayout listBgLayout, invViewLayout;
-            private TextView orderIdTxt, dateTxt, totLinesTxt, totValTxt, totVolTxt, dueDateTxt, paidAmtTxt, balAmtTxt;
             private TextView orderId, orderDate, totLines, totVal, totVol, paidAmtVal, balAmtVal;
             private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val, due_date_val;
             private LinearLayout tot_val_layout, tot_vol_layout, del_status_layout, start_date_layout, due_date_layout, paid_amt_layout, bal_amt_layout;
-            private TextView deliveryStatus_txt, deliveryStatus_val;
+            private LinearLayout driver_name_layout, del_docno_layout, cust_pono_layout, delivery_date_layout;
+            private TextView deliveryStatus_val;
+            private TextView driver_name_val, del_docno_val, cust_pono_val, delivery_date_val;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -216,12 +221,6 @@ public class HistoryFragment extends IvyBaseFragment {
                 invViewLayout = (LinearLayout) itemView.findViewById(R.id.inv_view_layout);
                 due_date_layout = (LinearLayout) itemView.findViewById(R.id.due_date_layout);
                 listBgLayout = (LinearLayout) itemView.findViewById(R.id.list_background);
-                orderIdTxt = (TextView) itemView.findViewById(R.id.order_id_txt);
-                dateTxt = (TextView) itemView.findViewById(R.id.date_txt);
-                totLinesTxt = (TextView) itemView.findViewById(R.id.tot_lines_txt);
-                totValTxt = (TextView) itemView.findViewById(R.id.tot_val_txt);
-                totVolTxt = (TextView) itemView.findViewById(R.id.tot_vol_txt);
-                dueDateTxt = (TextView) itemView.findViewById(R.id.due_date_txt);
 
 
                 orderId = (TextView) itemView.findViewById(R.id.order_id_val);
@@ -237,10 +236,6 @@ public class HistoryFragment extends IvyBaseFragment {
                 del_rep_code_val = (TextView) itemView.findViewById(R.id.del_rep_code_val);
                 due_date_val = (TextView) itemView.findViewById(R.id.due_date_val);
 
-                del_date_txt = (TextView) itemView.findViewById(R.id.del_date_txt);
-                invoice_date_txt = (TextView) itemView.findViewById(R.id.invoice_date_txt);
-                invoice_qty_txt = (TextView) itemView.findViewById(R.id.invoice_qty_txt);
-                del_rep_code_txt = (TextView) itemView.findViewById(R.id.del_rep_code_txt);
 
                 del_date_layout = (LinearLayout) itemView.findViewById(R.id.del_date_layout);
                 invoice_date_layout = (LinearLayout) itemView.findViewById(R.id.invoice_date_layout);
@@ -250,14 +245,21 @@ public class HistoryFragment extends IvyBaseFragment {
                 tot_vol_layout = (LinearLayout) itemView.findViewById(R.id.tot_vol_layout);
                 del_status_layout = (LinearLayout) itemView.findViewById(R.id.del_status_layout);
                 start_date_layout = (LinearLayout) itemView.findViewById(R.id.date_layout);
-                deliveryStatus_txt = (TextView) itemView.findViewById(R.id.del_status_txt);
                 deliveryStatus_val = (TextView) itemView.findViewById(R.id.deliveryStatusValue);
                 paid_amt_layout = (LinearLayout) itemView.findViewById(R.id.paid_amt_layout);
-                paidAmtTxt = (TextView) itemView.findViewById(R.id.paid_amt_txt);
                 paidAmtVal = (TextView) itemView.findViewById(R.id.paid_amt_val);
                 bal_amt_layout = (LinearLayout) itemView.findViewById(R.id.bal_amt_layout);
-                balAmtTxt = (TextView) itemView.findViewById(R.id.bal_amt_txt);
                 balAmtVal = (TextView) itemView.findViewById(R.id.bal_amt_val);
+
+                driver_name_layout = itemView.findViewById(R.id.driver_name_layout);
+                del_docno_layout = itemView.findViewById(R.id.del_docno_layout);
+                cust_pono_layout = itemView.findViewById(R.id.cust_pono_layout);
+                delivery_date_layout = itemView.findViewById(R.id.delivery_date_layout);
+
+                driver_name_val = itemView.findViewById(R.id.driver_name_val);
+                del_docno_val = itemView.findViewById(R.id.del_docno_val);
+                cust_pono_val = itemView.findViewById(R.id.cust_pono_val);
+                delivery_date_val = itemView.findViewById(R.id.delivery_date_val);
 
 
                 /*if (!bmodel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
@@ -305,30 +307,43 @@ public class HistoryFragment extends IvyBaseFragment {
                                         .applyLabels(itemView.findViewById(
                                                 R.id.date_txt)
                                                 .getTag()));
-                } catch (Exception ex) {
 
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.driver_name_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.driver_name_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.driver_name_txt)
+                                                .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.cust_pono_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.cust_pono_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.cust_pono_txt)
+                                                .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.del_docno_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.del_docno_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.del_docno_txt)
+                                                .getTag()));
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.delivery_date_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.delivery_date_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.delivery_date_txt)
+                                                .getTag()));
+                } catch (Exception ex) {
+                    Commons.printException(ex);
                 }
 
-
-                //typeface for label text
-                orderIdTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                dateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                totLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                totValTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                totVolTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                dueDateTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                deliveryStatus_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                paidAmtTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                balAmtTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-
-                due_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                del_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                invoice_date_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                invoice_qty_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                del_rep_code_txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-
-
                 //typeface for value text font
+                due_date_val.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 orderId.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 orderDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 totLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -344,10 +359,17 @@ public class HistoryFragment extends IvyBaseFragment {
                 paidAmtVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 balAmtVal.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
+                driver_name_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                del_docno_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                cust_pono_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+                delivery_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+
                 if (bmodel.configurationMasterHelper.SHOW_HST_DELDATE) {
                     del_date_layout.setVisibility(View.VISIBLE);
+                    delivery_date_layout.setVisibility(View.VISIBLE);
                 } else {
                     del_date_layout.setVisibility(View.GONE);
+                    delivery_date_layout.setVisibility(View.GONE);
                 }
                 if (bmodel.configurationMasterHelper.SHOW_HST_INVDATE) {
                     invoice_date_layout.setVisibility(View.VISIBLE);
@@ -403,6 +425,21 @@ public class HistoryFragment extends IvyBaseFragment {
                     bal_amt_layout.setVisibility(View.VISIBLE);
                 } else {
                     bal_amt_layout.setVisibility(View.GONE);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_HST_DRIVER_NAME) {
+                    driver_name_layout.setVisibility(View.VISIBLE);
+                } else {
+                    driver_name_layout.setVisibility(View.GONE);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_HST_PO_NUM) {
+                    cust_pono_layout.setVisibility(View.VISIBLE);
+                } else {
+                    cust_pono_layout.setVisibility(View.GONE);
+                }
+                if (bmodel.configurationMasterHelper.SHOW_HST_DOC_NO) {
+                    del_docno_layout.setVisibility(View.VISIBLE);
+                } else {
+                    del_docno_layout.setVisibility(View.GONE);
                 }
             }
         }

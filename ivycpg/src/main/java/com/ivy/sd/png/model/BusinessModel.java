@@ -2923,7 +2923,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public void loadLastVisitStockCheckedProducts(String retailerId) {
+    public void loadLastVisitStockCheckedProducts(String retailerId, String menucode) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -2959,7 +2959,7 @@ public class BusinessModel extends Application {
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", availability);
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, menucode, availability);
 
                 }
                 orderDetailCursor.close();

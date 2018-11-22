@@ -367,8 +367,9 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         updateValue();
 
         mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(getResources().getString(R.string.all));
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
-        mSearchTypeArray.add(getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
 
@@ -1793,12 +1794,14 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                     mylist.add(ret);
                             }
                         } else if (mSelectedFilter.equals(getResources().getString(
-                                R.string.order_gcas))) {
-                            if (ret.getRField1() != null && ret.getRField1()
+                                R.string.prod_code))) {
+                            if ((ret.getRField1() != null && ret.getRField1()
                                     .toLowerCase()
                                     .contains(
                                             mEdt_searchproductName.getText().toString()
-                                                    .toLowerCase()) && ret.getIsSaleable() == 1) {
+                                                    .toLowerCase()) || (ret.getProductCode() != null
+                                    && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString().toLowerCase())))
+                                    && ret.getIsSaleable() == 1) {
                                 if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                                     mylist.add(ret);
                                 else if (applyProductAndSpecialFilter(ret))
@@ -1815,6 +1818,40 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                     mylist.add(ret);
                                 else if (applyProductAndSpecialFilter(ret))
                                     mylist.add(ret);
+                        } else {
+                            if (ret.getBarCode() != null
+                                    && (ret.getBarCode().toLowerCase()
+                                    .contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                    || ret.getCasebarcode().toLowerCase().
+                                    contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                    || ret.getOuterbarcode().toLowerCase().
+                                    contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+
+                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                    mylist.add(ret);
+                                else if (applyProductAndSpecialFilter(ret))
+                                    mylist.add(ret);
+                            } else if ((ret.getRField1() != null && ret.getRField1()
+                                    .toLowerCase()
+                                    .contains(
+                                            mEdt_searchproductName.getText().toString()
+                                                    .toLowerCase()) || (ret.getProductCode() != null
+                                    && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString().toLowerCase())))
+                                    && ret.getIsSaleable() == 1) {
+                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                    mylist.add(ret);
+                                else if (applyProductAndSpecialFilter(ret))
+                                    mylist.add(ret);
+                            } else if (ret.getProductShortName() != null && ret.getProductShortName()
+                                    .toLowerCase()
+                                    .contains(
+                                            mEdt_searchproductName.getText().toString()
+                                                    .toLowerCase()) && ret.getIsSaleable() == 1) {
+                                if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                    mylist.add(ret);
+                                else if (applyProductAndSpecialFilter(ret))
+                                    mylist.add(ret);
+                            }
                         }
                     }
                 }

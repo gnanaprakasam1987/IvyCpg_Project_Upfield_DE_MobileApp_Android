@@ -54,14 +54,13 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/pieces_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/pieces_label"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/pieces_label" />
 
                 </LinearLayout>
 
@@ -108,14 +107,13 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/cases_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/cases_label"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/cases_label" />
 
                 </LinearLayout>
 
@@ -162,14 +160,13 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/outer_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/outer_label"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/outer_label" />
 
                 </LinearLayout>
 
@@ -215,14 +212,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/freeQty_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="Free Qty"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:tag="item_free"
+                        android:text="@string/free_qty" />
 
                 </LinearLayout>
 
@@ -268,15 +265,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/value_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:tag="history_label_customer_po_no"
-                        android:text="Value"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:tag="item_value"
+                        android:text="@string/value" />
 
                 </LinearLayout>
 
@@ -302,23 +298,6 @@
 
                 </LinearLayout>
             </LinearLayout>
-            <!--<TextView
-                android:id="@+id/freeQty"
-                style="?attr/customListItemSecondary"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Free Quantity" />
-
-            <TextView
-                android:id="@+id/value"
-                style="?attr/customListItemSecondary"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Value" />-->
         </LinearLayout>
 
     </LinearLayout>

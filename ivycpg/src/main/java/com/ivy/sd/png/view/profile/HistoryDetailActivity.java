@@ -18,7 +18,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
@@ -149,21 +148,14 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
                 holder.ll_piece = row.findViewById(R.id.piece_layout);
                 holder.ll_case = row.findViewById(R.id.cases_layout);
                 holder.ll_outer = row.findViewById(R.id.outer_layout);
+                holder.ll_freeQty = row.findViewById(R.id.freeQty_layout);
+                holder.ll_value = row.findViewById(R.id.value_layout);
 
                 holder.piece_label = row.findViewById(R.id.pieces_txt);
-                holder.piece_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
-
                 holder.case_label = row.findViewById(R.id.cases_txt);
-                holder.case_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
-
                 holder.outer_label = row.findViewById(R.id.outer_txt);
-                holder.outer_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
-
                 holder.freeQty_label = row.findViewById(R.id.freeQty_txt);
-                holder.freeQty_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
-
                 holder.value_label = row.findViewById(R.id.value_txt);
-                holder.value_label.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.REGULAR));
 
                 row.setTag(holder);
 
@@ -181,55 +173,73 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
             holder.piecevalue.setText(holder.childHistoryList.get(position).getPcsQty() + "");
             holder.casevalue.setText(holder.childHistoryList.get(position).getCaseQty() + "");
             holder.outervalue.setText(holder.childHistoryList.get(position).getOuterQty() + "");
+            holder.value.setText(holder.childHistoryList.get(position).getValue() + "");
+            holder.freeQty.setText(holder.childHistoryList.get(position).getFreeQty() + "");
 
 
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                tvcase.setVisibility(View.GONE);
                 holder.ll_case.setVisibility(View.GONE);
-
-
             } else {
                 try {
-                    tvcase.setVisibility(View.VISIBLE);
                     holder.ll_case.setVisibility(View.VISIBLE);
-                    if (bmodel.labelsMasterHelper.applyLabels(tvcase.getTag()) != null)
-                        tvcase
+                    if (bmodel.labelsMasterHelper.applyLabels(holder.case_label.getTag()) != null)
+                        holder.case_label
                                 .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(tvcase.getTag()));
+                                        .applyLabels(holder.case_label.getTag()));
                 } catch (Exception e) {
-                    Commons.printException(e + "");
+                    Commons.printException(e);
                 }
             }
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                tvpiece.setVisibility(View.GONE);
                 holder.ll_piece.setVisibility(View.GONE);
-
-
             } else {
                 try {
-                    tvpiece.setVisibility(View.VISIBLE);
                     holder.ll_piece.setVisibility(View.VISIBLE);
-                    if (bmodel.labelsMasterHelper.applyLabels(tvpiece.getTag()) != null)
-                        tvpiece
+                    if (bmodel.labelsMasterHelper.applyLabels(holder.piece_label.getTag()) != null)
+                        holder.piece_label
                                 .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(tvpiece.getTag()));
+                                        .applyLabels(holder.piece_label.getTag()));
                 } catch (Exception e) {
-                    Commons.printException(e + "");
+                    Commons.printException(e);
                 }
             }
             if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                tvouter.setVisibility(View.GONE);
                 holder.ll_outer.setVisibility(View.GONE);
             } else {
                 try {
-                    tvouter.setVisibility(View.VISIBLE);
                     holder.ll_outer.setVisibility(View.VISIBLE);
-                    if (bmodel.labelsMasterHelper.applyLabels(tvouter.getTag()) != null)
-                        tvouter
+                    if (bmodel.labelsMasterHelper.applyLabels(holder.outer_label.getTag()) != null)
+                        holder.outer_label
                                 .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(tvouter.getTag()));
+                                        .applyLabels(holder.outer_label.getTag()));
                 } catch (Exception e) {
-                    Commons.printException(e + "");
+                    Commons.printException(e);
+                }
+            }
+            if (!bmodel.configurationMasterHelper.SHOW_HST_DET_FREE_QTY) {
+                holder.ll_freeQty.setVisibility(View.GONE);
+            } else {
+                try {
+                    holder.ll_freeQty.setVisibility(View.VISIBLE);
+                    if (bmodel.labelsMasterHelper.applyLabels(holder.freeQty_label.getTag()) != null)
+                        holder.freeQty_label
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(holder.freeQty_label.getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+            if (!bmodel.configurationMasterHelper.SHOW_HST_DET_VALUE) {
+                holder.ll_value.setVisibility(View.GONE);
+            } else {
+                try {
+                    holder.ll_value.setVisibility(View.VISIBLE);
+                    if (bmodel.labelsMasterHelper.applyLabels(holder.value_label.getTag()) != null)
+                        holder.value_label
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(holder.value_label.getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e);
                 }
             }
 
@@ -239,8 +249,8 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
         class ViewHolder {
             TextView brandname, piecevalue, casevalue, outervalue,freeQty,value;
             private TextView piece_label,case_label,outer_label,freeQty_label,value_label;
-            private LinearLayout ll_piece,ll_case,ll_outer;
-            public Vector<OrderHistoryBO> childHistoryList;
+            private LinearLayout ll_piece,ll_case,ll_outer, ll_freeQty, ll_value;
+            private Vector<OrderHistoryBO> childHistoryList;
         }
 
     }

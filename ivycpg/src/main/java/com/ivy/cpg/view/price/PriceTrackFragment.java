@@ -1752,19 +1752,15 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 //                            stockList.add(ret);
                     }
                 }
-//                else if (mSelectedFilter.equals(context.getResources().getString(
-//                        R.string.order_gcas))) {
-//                    if (ret.getRField1() != null && ret.getRField1()
-//                            .toLowerCase()
-//                            .contains(
-//                                    s.toLowerCase()) && ret.getIsSaleable() == 1) {
-//                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
-//                            stockList.add(ret);
-//                        else if (applyProductAndSpecialFilter(ret))
-//                            stockList.add(ret);
-//                    }
-//                } 
-                else if (mSelectedFilter.equals(getContext().getResources().getString(
+                else if (mSelectedFilter.equals(getResources().getString(
+                        R.string.prod_code))) {
+                    if (((ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(s.toLowerCase())) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(s.toLowerCase()))) && ret.getIsSaleable() == 1) {
+                            stockList.add(ret);
+                    }
+                } else if (mSelectedFilter.equals(getContext().getResources().getString(
                         R.string.product_name))) {
                     if (ret.getProductShortName() != null && ret.getProductShortName()
                             .toLowerCase()
@@ -1774,6 +1770,25 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         stockList.add(ret);
 //                        else if (applyProductAndSpecialFilter(ret))
 //                            stockList.add(ret);
+                } else {
+                    if (ret.getBarCode() != null
+                            && (ret.getBarCode().toLowerCase()
+                            .contains(s.toLowerCase())
+                            || ret.getCasebarcode().toLowerCase().
+                            contains(s.toLowerCase())
+                            || ret.getOuterbarcode().toLowerCase().
+                            contains(s.toLowerCase())) && ret.getIsSaleable() == 1) {
+                        stockList.add(ret);
+                    } else  if (((ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(s.toLowerCase())) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(s.toLowerCase()))) && ret.getIsSaleable() == 1) {
+                        stockList.add(ret);
+                    } else  if (ret.getProductShortName() != null && ret.getProductShortName()
+                            .toLowerCase()
+                            .contains(
+                                    s.toLowerCase()) && ret.getIsSaleable() == 1)
+                        stockList.add(ret);
                 }
 
             }

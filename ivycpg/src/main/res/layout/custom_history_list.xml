@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/profile_margin_top_minus"
-            android:gravity="center"
+            android:weightSum="8"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -29,7 +29,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -39,21 +39,19 @@
                     android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/order_id_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="history_label_order_id"
-                        android:text="@string/id"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/id" />
 
                 </LinearLayout>
 
@@ -63,7 +61,6 @@
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginLeft="@dimen/profile_history_10dp">
@@ -96,21 +93,19 @@
                     android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/date_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/date"
-                        android:tag="history_label_start_date"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:tag="history_label_start_date" />
 
                 </LinearLayout>
 
@@ -120,7 +115,6 @@
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginLeft="@dimen/profile_history_10dp">
@@ -153,20 +147,18 @@
                     android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/due_date_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/due_date"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/due_date" />
 
                 </LinearLayout>
 
@@ -176,7 +168,6 @@
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginLeft="@dimen/profile_history_10dp">
@@ -214,14 +205,13 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/tot_lines_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/tot_line"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/tot_line" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -267,14 +257,13 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/tot_val_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/total_value"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/total_value" />
 
                 </LinearLayout>
 
@@ -321,14 +310,13 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/tot_vol_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/total_vol"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/total_vol" />
 
                 </LinearLayout>
 
@@ -375,14 +363,13 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/del_status_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/status"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/status" />
 
                 </LinearLayout>
 
@@ -439,15 +426,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/del_date_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="RField1"
-                        android:text="@string/delivery_date_label"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/delivery_date_label" />
 
                 </LinearLayout>
 
@@ -494,15 +480,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/invoice_date_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="RField2"
-                        android:text="@string/invoice_date"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/invoice_date" />
 
                 </LinearLayout>
 
@@ -549,15 +534,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/invoice_qty_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="RField3"
-                        android:text="@string/invoice_qty"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/invoice_qty" />
 
                 </LinearLayout>
 
@@ -604,15 +588,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/del_rep_code_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="RField4"
-                        android:text="@string/delivery_rep_code"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/delivery_rep_code" />
 
                 </LinearLayout>
 
@@ -658,14 +641,13 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/paid_amt_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|top"
                         android:gravity="left|top"
-                        android:text="@string/amount_paid"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/amount_paid" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -709,14 +691,13 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/bal_amt_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left|top"
                         android:gravity="left|top"
-                        android:text="@string/balance"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/balance" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -771,15 +752,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/driver_name_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="history_label_driver_name"
-                        android:text="Driver Name"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/driver_name" />
 
                 </LinearLayout>
 
@@ -800,7 +780,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -826,15 +806,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/del_docno_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="history_label_del_doc_no"
-                        android:text="Del Doc No"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/delivery_doc_no" />
 
                 </LinearLayout>
 
@@ -855,7 +834,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -881,15 +860,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/cust_pono_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="history_label_customer_po_no"
-                        android:text="Cust PO No"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/customer_po_no" />
 
                 </LinearLayout>
 
@@ -936,15 +914,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
+                        style="?attr/customListItemSecondary"
                         android:id="@+id/delivery_date_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:tag="RField4"
-                        android:text="@string/delivery_date_label"
-                        android:textColor="@color/history_label_color"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:tag="history_label_del_date"
+                        android:text="@string/delivery_date_label" />
 
                 </LinearLayout>
 

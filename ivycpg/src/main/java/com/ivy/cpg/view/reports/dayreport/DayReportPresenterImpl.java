@@ -332,6 +332,21 @@ public class DayReportPresenterImpl implements DayReportPresenter {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT35")) {
 
                 con.setMenuNumber(mBusinessModel.formatValue(mBusinessModel.fitscoreHelper.getFitScoreAverage()) + "");
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT36")) { //Total time spent on retailer vs Total calls
+
+                con.setMenuNumber(outlet.getAverageTimeSpent() + "/" + totalcalls);
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT37")) { //Total no of deviated calls
+
+                con.setMenuNumber(outlet.getDeviatedCalls());
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT38")) { //Sos completed vs Total calls
+
+                con.setMenuNumber(outlet.getSosCount() + "/" + totalcalls);
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT39")) { //Price Check completed vs Total calls
+
+                con.setMenuNumber(outlet.getPriceCheckCount() + "/" + totalcalls);
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT40")) { //Planogram completed vs Total calls
+
+                con.setMenuNumber(outlet.getPlanogramCount() + "/" + totalcalls);
             }
         }
 

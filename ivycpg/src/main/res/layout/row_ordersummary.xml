@@ -705,14 +705,16 @@
                     android:visibility="visible">
 
                     <Button
-                        android:layout_height="28dp"
+                        android:layout_height="@dimen/total_title_size"
                         android:layout_width="60dp"
                         android:background="@drawable/rounded_corner_red"
-                        android:textSize="@dimen/value_text_size"
+                        android:textSize="@dimen/text_size_caption"
                         android:gravity="center"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textColor="@color/white"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:text="OOS"/>
+                        android:text="@string/oos"/>
 
                 </RelativeLayout>
 
