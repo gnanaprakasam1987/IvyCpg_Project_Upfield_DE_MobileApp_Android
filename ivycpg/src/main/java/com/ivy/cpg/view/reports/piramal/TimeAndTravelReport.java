@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.reports.piramal;
 
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -37,10 +38,10 @@ public class TimeAndTravelReport extends Fragment {
         mTabHost.addTab(mTabHost.newTabSpec("Travel On Map").setIndicator("Travel On Map"),
                 TravelOnMap.class, null);
 
-
+        TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
             //Unselected Tabs
-            mTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.btn);
+            mTabHost.getTabWidget().getChildAt(i).setBackgroundColor(typearr.getColor(R.styleable.MyTextView_tablayout, 0));
             TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
             tv.setTextColor(Color.parseColor("#000000"));
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
@@ -48,7 +49,7 @@ public class TimeAndTravelReport extends Fragment {
         }
 
         //Unselected Tabs
-        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundResource(R.drawable.btn);
+        mTabHost.getTabWidget().getChildAt(mTabHost.getCurrentTab()).setBackgroundColor(typearr.getColor(R.styleable.MyTextView_tablayout, 0));
         TextView tv = (TextView) mTabHost.getTabWidget().findViewById(android.R.id.title);
         tv.setTextColor(Color.parseColor("#FFFFFF"));
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));

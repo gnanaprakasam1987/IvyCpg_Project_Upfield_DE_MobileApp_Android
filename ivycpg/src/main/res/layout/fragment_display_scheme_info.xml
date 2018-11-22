@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardElevation="5dp"
         card_view:contentPadding="5dp"
         android:layout_margin="@dimen/dimen_5dp">
@@ -125,7 +125,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardElevation="5dp"
         card_view:contentPadding="5dp"
         android:layout_below="@+id/card"

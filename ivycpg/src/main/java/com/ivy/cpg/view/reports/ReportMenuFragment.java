@@ -379,7 +379,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
             if (position % 2 == 0)
                 convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             else
-                convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
+                convertView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
 
             return convertView;
         }

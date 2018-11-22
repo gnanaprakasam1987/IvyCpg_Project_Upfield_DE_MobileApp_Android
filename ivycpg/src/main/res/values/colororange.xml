@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimaryOrange">#FDB813</color>
+    <color name="colorPrimaryDarkOrange">#FDB813</color>
+    <color name="colorAccentOrange">#cd202c</color>
+    <color name="textColorSecondaryOrange">#FDB813</color>
+    <color name="textColorPrimaryOrange">#009B3A</color>
+
+    <!-- Added for Ripple effect for button -->
+
+    <color name="ColorOrangeripple_default">#FDB813</color>
+    <color name="colorOrangeripple_pressed">#fee09a</color>
+    <color name="colorOrangeripple_selected">#fed881</color>
+    <color name="colorOrangeripple_focused">#fee8b3</color>
+
+    <color name="orange_week_background">#844D50</color>
+    <color name="select_week_color_orange">#FFCCCD</color>
+
+    <!--List item Header background color-->
+    <color name="list_title_bg_color_orange">#212121</color>
+
+</resources>

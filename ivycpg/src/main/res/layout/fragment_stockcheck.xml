@@ -128,7 +128,7 @@
                                 android:maxLines="1"
                                 android:inputType="text"
                                 android:text=""
-                                android:textColor="@color/GRAY_TEXT"
+                                android:textColor="@color/gray_text"
                                 android:textSize="@dimen/text_size_secondary" />
 
                             <Button
@@ -340,8 +340,8 @@
                     android:id="@+id/tv_productsCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/zero"
-                    android:textColor="@color/footer_lbl_text_color"
+                    android:text="/0"
+                    android:textColor="@color/footer_value_text_color"
                     android:textSize="@dimen/footer_label_value" />
             </LinearLayout>
 
@@ -373,7 +373,7 @@
                     android:layout_gravity="center"
                     android:maxLines="1"
                     android:text="@string/zero"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/footer_label_value" />
 
             </LinearLayout>

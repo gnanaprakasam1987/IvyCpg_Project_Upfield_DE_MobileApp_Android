@@ -2465,7 +2465,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         latlongtextview.setTextColor(ContextCompat.getColor(getContext(), R.color.filer_level_text_color));
         latlongtextview.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         latlongtextview.setText(textvalue);
-        latlongtextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
+        latlongtextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
 
         latlongCameraBtn = new ImageView(getActivity());
         latlongCameraBtn.setBackgroundResource(R.drawable.ic_photo_camera);
@@ -2537,7 +2537,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 }
             }
         });
-        priorityproducttextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));//setTextSize(TypedValue.COMPLEX_UNIT_SP, getContext().getResources().getDimension(R.dimen.font_medium));
+        priorityproducttextview.setTextSize(TypedValue.COMPLEX_UNIT_PX, getActivity().getResources().getDimension(R.dimen.font_small));
         secondlayout.addView(priorityproducttextview);
 
         linearlayout.addView(firstlayout, params5);
@@ -2675,7 +2675,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 // title
                 TextView titleTV = new TextView(getActivity());
                 titleTV.setText(getResources().getString(R.string.attribute));
-                titleTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_medium));
+                titleTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
                 titleTV.setTextColor(Color.BLACK);
                 titleLayout.addView(titleTV, titleParams);
 

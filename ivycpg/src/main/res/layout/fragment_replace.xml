@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/list_margin"
-            card_view:cardBackgroundColor="@color/WHITE"
+            card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="0dp"
             card_view:cardElevation="5dp"
             card_view:cardPreventCornerOverlap="true"
@@ -199,7 +199,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/GRAY" />
+                android:background="@color/light_gray" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

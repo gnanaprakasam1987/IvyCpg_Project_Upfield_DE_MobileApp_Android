@@ -289,22 +289,22 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
 
-        viewFlipper = (ViewFlipper) getView().findViewById(R.id.view_flipper);
-        productName = (TextView) getView().findViewById(R.id.productName);
+        viewFlipper =  getView().findViewById(R.id.view_flipper);
+        productName =  getView().findViewById(R.id.productName);
 
         mEdt_searchproductName = (EditText) getView().findViewById(
                 R.id.edt_searchproductName);
         mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mBtn_Search = (Button) getView().findViewById(R.id.btn_search);
+        mBtn_Search =  getView().findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
-        mBtn_clear = (Button) getView().findViewById(R.id.btn_clear);
+        mBtn_clear =  getView().findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
-        mBtnFilterPopup = (Button) getView().findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup =  getView().findViewById(R.id.btn_filter_popup);
         mBtnFilterPopup.setOnClickListener(this);
-        btnSave = (Button) getView().findViewById(R.id.btn_save);
-        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btnSave =  getView().findViewById(R.id.btn_save);
+       // btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
-        ((TextView) getView().findViewById(R.id.tvTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        //((TextView) getView().findViewById(R.id.tvTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         mEdt_searchproductName.setOnEditorActionListener(this);
 
         mLocationAdapter = new ArrayAdapter<>(getActivity(),
@@ -718,16 +718,15 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             R.layout.activity_combined_stock_listview, parent,
                             false);
                     holder = new ViewHolder();
-                    holder.psname = (TextView) row
+                    holder.psname =  row
                             .findViewById(R.id.stock_and_order_listview_productname);
-                    holder.tvProductCode = (TextView) row
+                    holder.tvProductCode =  row
                             .findViewById(R.id.tvProductCode);
-                    holder.tvbarcode = (TextView) row
+                    holder.tvbarcode =  row
                             .findViewById(R.id.tvbarcode);
-                    holder.ivAvailable = (ImageView) row
+                    holder.ivAvailable =  row
                             .findViewById(R.id.ivAvailable);
-                    holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                    holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+
 
                     if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                         holder.tvProductCode.setVisibility(View.GONE);
@@ -826,15 +825,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     holder.ivAvailable.setVisibility(View.VISIBLE);
                 } else
                     holder.ivAvailable.setVisibility(View.GONE);
-
-
-                TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-                if (position % 2 == 0) {
-                    row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-                } else {
-                    row.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor, 0));
-                }
-
 
             } catch (Exception e) {
                 Commons.printException(e + "");

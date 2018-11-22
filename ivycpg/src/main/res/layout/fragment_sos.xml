@@ -122,7 +122,7 @@
             android:layout_below="@+id/header"
             android:layout_above="@+id/footer"
             android:cacheColorHint="@null"
-            android:divider="@color/GRAY"
+            android:divider="@color/light_gray"
             android:dividerHeight="0.5dp"
             android:fitsSystemWindows="true" />
 

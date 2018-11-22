@@ -4764,7 +4764,7 @@ public class NewOutletFragment extends IvyBaseFragment
             }
             TextView titleTV = new TextView(getActivity());
             titleTV.setText(MName);
-            titleTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_medium));
+            titleTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             titleTV.setTextColor(Color.BLACK);
             titleLayout.addView(titleTV, titleParams);
 

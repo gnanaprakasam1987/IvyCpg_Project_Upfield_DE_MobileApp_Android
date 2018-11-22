@@ -225,7 +225,7 @@ public class AttendanceReport extends IvyBaseFragment {
             if (attendance.getStatus().equalsIgnoreCase("P")) {
                 String mPresent = "Present";
                 holder.status.setText(mPresent);
-                holder.status.setTextColor(ContextCompat.getColor(getActivity(), R.color.GREEN));
+                holder.status.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
             } else if (attendance.getStatus().equalsIgnoreCase("H")) {
                 String mHoilday = "Holiday";
                 holder.status.setText(mHoilday);

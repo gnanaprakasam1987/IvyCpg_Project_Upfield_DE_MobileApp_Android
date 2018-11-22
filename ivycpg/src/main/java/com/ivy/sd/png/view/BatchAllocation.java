@@ -33,6 +33,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -116,9 +117,9 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
         ((LinearLayout) findViewById(R.id.ll_totqty)).setVisibility(View.GONE);//ll_totqty is not used, hence made invisible
 
 
-        mBtnNext.setOnClickListener(new OnClickListener() {
+        mBtnNext.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
                 nextButtonClick();
             }
         });

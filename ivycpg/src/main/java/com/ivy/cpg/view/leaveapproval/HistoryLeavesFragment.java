@@ -112,7 +112,7 @@ public class HistoryLeavesFragment extends IvyBaseFragment {
                 holder.tvStatus.setText(holder.leaveApprovalBO.getStatus());
 
                 if (holder.leaveApprovalBO.getStatusCode().equals(CODE_APPROVED))
-                    holder.tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.GREEN));
+                    holder.tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                 else if (holder.leaveApprovalBO.getStatusCode().equals(CODE_REJECTED))
                     holder.tvStatus.setTextColor(ContextCompat.getColor(getActivity(), R.color.RED));
 

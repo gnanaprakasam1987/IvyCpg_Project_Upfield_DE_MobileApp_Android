@@ -34,15 +34,10 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.dashboard.DashboardClickListener;
-import com.ivy.ui.dashboard.SellerDashboardContract;
-import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
-import com.ivy.ui.dashboard.di.SellerDashboardModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,7 +102,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                         .getText().toString());
                 str.setSpan(new UnderlineSpan(), 0, str.length(),
                         Spanned.SPAN_PARAGRAPH);
-                str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.Black)), 0,
+                str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.half_Black)), 0,
                         str.length(), 0);
                 dashBoardListViewHolder.skuWiseTxtView.setText(str);
                 dashBoardListViewHolder.skuWiseTxtView.setOnClickListener(new View.OnClickListener() {
@@ -256,7 +251,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                         .getText().toString());
                 str.setSpan(new UnderlineSpan(), 0, str.length(),
                         Spanned.SPAN_PARAGRAPH);
-                str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.Black)), 0,
+                str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.half_Black)), 0,
                         str.length(), 0);
                 dashBoardListViewHolder.skuWiseTxtView.setText(str);
                 dashBoardListViewHolder.skuWiseTxtView.setOnClickListener(new View.OnClickListener() {

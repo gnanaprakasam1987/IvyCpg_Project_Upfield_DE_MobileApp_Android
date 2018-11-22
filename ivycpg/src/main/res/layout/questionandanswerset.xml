@@ -224,7 +224,7 @@
                                 <View
                                     android:layout_width="@dimen/dimen_1dp"
                                     android:layout_height="20dp"
-                                    android:background="@color/new_grey" />
+                                    android:background="@color/light_gray" />
 
                             </LinearLayout>
 

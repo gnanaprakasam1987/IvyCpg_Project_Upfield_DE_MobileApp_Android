@@ -30,7 +30,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:text="@string/manual_stock_apply_header_validation"
                 android:textSize="@dimen/dimen_20dp"
                 android:textStyle="normal"
@@ -86,7 +86,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Other Pictures"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/dimen_16dp"
                         android:id="@+id/txt_thumbnailTitle"
                         android:textStyle="bold"/>

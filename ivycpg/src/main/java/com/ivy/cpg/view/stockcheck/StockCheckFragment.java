@@ -685,7 +685,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     holder.productObj.getLocations()
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
 
-                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
+                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.green_productivity)));
                                     holder.imageButton_availability.setChecked(true);
 
                                     if (stockCheckHelper.SHOW_STOCK_SP)
@@ -709,7 +709,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     holder.productObj.getLocations()
                                             .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
 
-                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.GREEN)));
+                                    CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.green_productivity)));
                                     holder.imageButton_availability.setChecked(true);
 
                                     if (stockCheckHelper.SHOW_STOCK_SP

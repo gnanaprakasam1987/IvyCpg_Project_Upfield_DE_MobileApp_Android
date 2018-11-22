@@ -696,7 +696,7 @@
     <dimen name="text_size_caption">14sp</dimen>
 
     <!-- List header text size -->
-    <dimen name="list_header_text_size">16sp</dimen>
+    <dimen name="list_header_text_size">15sp</dimen>
     <dimen name="list_header_secondary_text_size">14sp</dimen>
 
     <!-- Button text size -->
@@ -716,8 +716,7 @@
 
 
 
-    <dimen name="font_small">18sp</dimen>
-    <dimen name="font_medium">20sp</dimen>
+    <dimen name="font_small">19sp</dimen>
     <dimen name="font_large">22sp</dimen>
 
 

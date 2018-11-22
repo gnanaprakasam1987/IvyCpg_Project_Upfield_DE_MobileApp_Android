@@ -490,7 +490,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         .getText().toString());
                 str.setSpan(new UnderlineSpan(), 0, str.length(),
                         Spanned.SPAN_PARAGRAPH);
-                str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.Black)), 0,
+                str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.half_Black)), 0,
                         str.length(), 0);
                 holder.tvSkuWise.setText(str);
             } else {

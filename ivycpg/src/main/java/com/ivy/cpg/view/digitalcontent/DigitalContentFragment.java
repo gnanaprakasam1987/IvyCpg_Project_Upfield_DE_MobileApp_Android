@@ -52,6 +52,7 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -213,9 +214,9 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         Button btn_next = view.findViewById(R.id.btn_next);
         if (MENU_Init.equals(calledFrom)) {
             btn_next.setVisibility(View.VISIBLE);
-            btn_next.setOnClickListener(new View.OnClickListener() {
+            btn_next.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onSingleClick(View v) {
                     click(2);
                 }
             });

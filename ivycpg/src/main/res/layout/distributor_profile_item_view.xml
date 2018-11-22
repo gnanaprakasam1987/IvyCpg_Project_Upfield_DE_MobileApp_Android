@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/list_margin"
     android:layout_marginStart="@dimen/list_margin"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="2dp"
     card_view:cardPreventCornerOverlap="true"
@@ -75,7 +75,7 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/profile_devider_color" />
+            android:background="@color/divider_view_color" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -102,7 +102,7 @@
                     android:layout_marginBottom="@dimen/dimen_2dp"
                     android:gravity="start|center_vertical"
                     android:text="@string/contact_no"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_primary" />
 
                 <TextView
@@ -123,7 +123,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dimen_10dp"
                 android:layout_marginRight="@dimen/dimen_20dp"
-                android:background="@color/profile_devider_color" />
+                android:background="@color/divider_view_color" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -141,7 +141,7 @@
                     android:layout_marginBottom="@dimen/dimen_2dp"
                     android:gravity="start|center_vertical"
                     android:text="@string/email"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_primary" />
 
                 <TextView
@@ -162,7 +162,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginTop="@dimen/dimen_5dp"
-            android:background="@color/profile_devider_color"
+            android:background="@color/divider_view_color"
             />
 
 

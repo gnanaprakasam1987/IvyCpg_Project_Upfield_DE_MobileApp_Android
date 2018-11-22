@@ -313,7 +313,6 @@ public class UserSettingsActivity extends PreferenceActivity {
         Button mCancelBTN = (Button) view.findViewById(R.id.btn_cancel);
         mCancelBTN.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
         mDoneBTN.setText("Ok");
-        //eText.setBackgroundResource(android.R.drawable.edit_text);
 //        TypedArray typearr = getTheme().obtainStyledAttributes(R.styleable.MyTextView);
 //        eText.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0));
         mCancelBTN.setOnClickListener(new OnClickListener() {

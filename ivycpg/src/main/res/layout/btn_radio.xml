@@ -11,6 +11,6 @@
     android:textSize="@dimen/font_small"
     android:checkMark="?android:attr/listChoiceIndicatorSingle"
     android:ellipsize="marquee"
-    android:checkMarkTint="@color/btn_round_green"
+    android:checkMarkTint="@color/green_productivity"
 
     />

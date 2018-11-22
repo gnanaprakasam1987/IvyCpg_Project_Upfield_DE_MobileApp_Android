@@ -58,7 +58,7 @@
                 android:paddingLeft="3dp"
                 android:paddingStart="3dp"
                 android:text="Ref No"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption" />
 
             <TextView
@@ -78,7 +78,7 @@
             android:layout_width="@dimen/dimens_1dp"
             android:layout_height="@dimen/dimens_22dp"
             android:layout_gravity="center"
-            android:background="@color/new_grey"
+            android:background="@color/light_gray"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="@dimen/dimens_4dp" />
@@ -100,7 +100,7 @@
                 android:paddingLeft="3dp"
                 android:paddingStart="3dp"
                 android:text="@string/amount_paid"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption" />
 
             <TextView
@@ -121,7 +121,7 @@
             android:layout_width="@dimen/dimens_1dp"
             android:layout_height="@dimen/dimens_22dp"
             android:layout_gravity="center"
-            android:background="@color/new_grey"
+            android:background="@color/light_gray"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="@dimen/dimens_4dp"
@@ -146,7 +146,7 @@
                 android:paddingLeft="3dp"
                 android:paddingStart="3dp"
                 android:text="@string/discounted_amt"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption" />
 
             <TextView

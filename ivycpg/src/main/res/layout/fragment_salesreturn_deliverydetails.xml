@@ -25,7 +25,7 @@
         <View
             android:layout_width="0.5dp"
             android:layout_height="match_parent"
-            android:background="@color/Black" />
+            android:background="@color/half_Black" />
 
         <TextView
             android:id="@+id/cqty"
@@ -42,7 +42,7 @@
         <View
             android:layout_width="0.5dp"
             android:layout_height="wrap_content"
-            android:background="@color/Black" />
+            android:background="@color/half_Black" />
 
         <TextView
             android:id="@+id/piececqty"
@@ -59,7 +59,7 @@
         <View
             android:layout_width="0.5dp"
             android:layout_height="wrap_content"
-            android:background="@color/Black" />
+            android:background="@color/half_Black" />
 
         <TextView
             android:id="@+id/actual_caseQty"
@@ -76,7 +76,7 @@
         <View
             android:layout_width="0.5dp"
             android:layout_height="wrap_content"
-            android:background="@color/Black" />
+            android:background="@color/half_Black" />
 
         <TextView
             android:id="@+id/actual_PcQty"

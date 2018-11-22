@@ -6,7 +6,7 @@
     android:layout_marginLeft="@dimen/_10sdp"
     android:layout_marginRight="@dimen/_10sdp"
     android:layout_marginTop="@dimen/_10sdp"
-    app:cardBackgroundColor="@color/WHITE"
+    app:cardBackgroundColor="@color/white"
     app:cardElevation="@dimen/_4sdp"
     android:layout_below="@+id/chart_layout">
 

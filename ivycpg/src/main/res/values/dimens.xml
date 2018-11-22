@@ -759,8 +759,7 @@
 
 
     <!-- ALL test size -->
-    <dimen name="font_small">16sp</dimen>
-    <dimen name="font_medium">18sp</dimen>
+    <dimen name="font_small">17sp</dimen>
     <dimen name="font_large">20sp</dimen>
 
 

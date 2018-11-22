@@ -28,8 +28,8 @@
             android:gravity="center_vertical"
             android:padding="5dp"
             android:text="Welcome"
-            android:textColor="@color/Black"
-            android:textSize="@dimen/font_medium"/>
+            android:textColor="@color/half_Black"
+            android:textSize="@dimen/font_small"/>
 
             <TextView
                 android:layout_width="wrap_content"

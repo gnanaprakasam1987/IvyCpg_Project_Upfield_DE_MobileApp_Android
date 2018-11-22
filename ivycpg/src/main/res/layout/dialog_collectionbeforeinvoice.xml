@@ -17,7 +17,7 @@
 
             <LinearLayout
                 android:id="@+id/LL_titleBar"
-                style="?textTitleStyle"
+                style="?attr/dialogTitleStyle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
@@ -74,8 +74,8 @@
                         android:padding="4dp"
                         android:singleLine="true"
                         android:text="@string/inv_amt"
-                        android:textColor="@color/Black"
-                        android:textSize="@dimen/font_medium">
+                        android:textColor="@color/half_Black"
+                        android:textSize="@dimen/font_small">
 
                     </TextView>
 
@@ -121,8 +121,8 @@
                         android:padding="4dp"
                         android:singleLine="true"
                         android:text="@string/minimum_amount"
-                        android:textColor="@color/Black"
-                        android:textSize="@dimen/font_medium">
+                        android:textColor="@color/half_Black"
+                        android:textSize="@dimen/font_small">
 
                     </TextView>
 
@@ -162,7 +162,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/plano_list_footer_line"
-                android:background="@color/GRAY" />
+                android:background="@color/light_gray" />
 
             <LinearLayout
                 android:id="@+id/widget61"
@@ -195,7 +195,7 @@
                                 android:gravity="center"
                                 android:tag="@string/ca"
                                 android:text="@string/cash"
-                                android:textSize="@dimen/font_medium"
+                                android:textSize="@dimen/font_small"
                                 android:textColor="?attr/primarycolor"
                                 android:visibility="visible">
 
@@ -209,7 +209,7 @@
                                 android:gravity="center"
                                 android:tag="@string/cq"
                                 android:text="@string/cheque"
-                                android:textSize="@dimen/font_medium"
+                                android:textSize="@dimen/font_small"
                                 android:textColor="?attr/primarycolor"
                                 android:visibility="visible">
 
@@ -221,7 +221,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
                                 android:gravity="center"
-                                android:textSize="@dimen/font_medium"
+                                android:textSize="@dimen/font_small"
                                 android:tag="@string/credit_note"
                                 android:text="@string/credit_note"
                                 android:textColor="?attr/primarycolor"
@@ -236,7 +236,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/plano_list_footer_line"
-                android:background="@color/GRAY" />
+                android:background="@color/light_gray" />
         </LinearLayout>
 
         <LinearLayout
@@ -266,7 +266,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimens_10dp"
-                android:drawableTint="@color/BLUE"
+                android:drawableTint="@color/highlighter"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/date"
@@ -297,7 +297,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="@string/bank_name"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold" />
 
@@ -324,7 +324,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="@string/branch_area"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold" />
 

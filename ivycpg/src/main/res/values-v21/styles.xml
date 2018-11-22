@@ -64,17 +64,6 @@
 
     <!-- Green Theme End-->
 
-    <!-- Pink Theme Start-->
-
-    <!-- To apply theme to dialogs
-            colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
-            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
-    <style name="DialogStylePink" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorAccentPink</item>
-        <item name="android:buttonStyle">@style/MyButtonPink</item>
-    </style>
-
-    <!-- Pink Theme End-->
 
 
     <style name="ActivitySubListClickEffect" parent="@android:style/Widget">
@@ -136,13 +125,6 @@
         <item name="android:background">@drawable/ripple_button_rounded_corner_green</item>
     </style>
 
-    <style name="ButtonSmallRoundCornerPink" parent="@style/ButtonSmall">
-        <item name="android:background">@drawable/ripple_button_rounded_corner_pink</item>
-    </style>
-
-    <style name="ButtonNormalRoundCornerPink" parent="@style/ButtonNormal">
-        <item name="android:background">@drawable/ripple_button_rounded_corner_pink</item>
-    </style>
 
     <style name="ButtonSmallRoundCornerGrey" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/button_round_corner_grey</item>

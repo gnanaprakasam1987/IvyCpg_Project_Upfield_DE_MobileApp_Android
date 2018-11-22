@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/store_margin_left"
                 android:text="@string/stores"
-                android:textColor="@color/store_label"
+                android:textColor="@color/FullBlack"
                 android:textSize="@dimen/highlight_normal"
                 android:textStyle="bold"
                 android:tag="store_title"

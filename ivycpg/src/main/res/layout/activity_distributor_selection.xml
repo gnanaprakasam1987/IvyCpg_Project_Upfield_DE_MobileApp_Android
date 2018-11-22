@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/list_margin"
-            card_view:cardBackgroundColor="@color/WHITE"
+            card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="0dp"
             card_view:cardElevation="5dp"
             card_view:cardPreventCornerOverlap="true"
@@ -33,7 +33,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:divider="@color/GRAY"
+                android:divider="@color/light_gray"
                 android:dividerHeight="1dp"
                 android:fitsSystemWindows="true"></ListView>
 

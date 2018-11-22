@@ -136,7 +136,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
 
                 text.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
 
-                text.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
+                text.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
                 gridItem.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.total_seller_bg));
             }
         }
@@ -155,7 +155,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
             holder.text.setText(levelList.get(position));
 
             if (selectedLevelPosition == holder.getAdapterPosition()){
-                holder.text.setTextColor(ContextCompat.getColor(getActivity(), R.color.WHITE));
+                holder.text.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
                 holder.gridItem.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.total_seller_bg));
             }else{
                 holder.text.setTextColor(Color.BLACK);

@@ -445,17 +445,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     }
 
 
-    public void setFontStyle(String font) {
-        if (font.equalsIgnoreCase("Small")) {
-            getTheme().applyStyle(R.style.FontStyle_Small, true);
-        } else if (font.equalsIgnoreCase("Medium")) {
-            getTheme().applyStyle(R.style.FontStyle_Medium, true);
-        } else if (font.equalsIgnoreCase("Large")) {
-            getTheme().applyStyle(R.style.FontStyle_Large, true);
-        } else {
-            getTheme().applyStyle(R.style.FontStyle_Small, true);
-        }
-    }
 
     @Override
     public void setScreenTitle(String title) {
@@ -498,8 +487,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void setPinkTheme() {
-        mCurrentTheme = R.style.MVPTheme_Pink;
-        setTheme(R.style.MVPTheme_Pink);
+        mCurrentTheme = R.style.MVPTheme_Green;
+        setTheme(R.style.MVPTheme_Green);
         initScreen();
     }
 
@@ -533,7 +522,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void setFontSize(String fontSize) {
-        setFontStyle(fontSize);
     }
 
 

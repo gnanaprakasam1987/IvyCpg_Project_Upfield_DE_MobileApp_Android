@@ -338,8 +338,8 @@ public class CompetitorFilterFragment extends Fragment implements View.OnClickLi
 
             if (holder.levelBO.getProductId() == mSelectedLevelBO
                     .getProductId()) {
-                holder.text.setTextColor(ContextCompat.getColor(getActivity(),R.color.WHITE));
-                holder.gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.Black));
+                holder.text.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
+                holder.gridItem.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.half_Black));
             } else {
                 holder.text.setTextColor(Color.BLACK);
                 holder.gridItem.setBackgroundColor(Color.parseColor("#f7f7f7"));

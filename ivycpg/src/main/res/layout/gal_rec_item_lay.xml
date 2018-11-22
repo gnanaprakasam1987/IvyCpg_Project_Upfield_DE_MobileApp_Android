@@ -12,7 +12,7 @@
         android:adjustViewBounds="true"
         android:padding="@dimen/gall_rec_item_padding"
         android:text="@string/gallery"
-        android:textColor="@color/DependentBlack"/>
+        android:textColor="@color/drop_down_black"/>
 
     <com.ivy.sd.png.commons.MyGridView
         android:id="@+id/PhoneCaptureGrid"

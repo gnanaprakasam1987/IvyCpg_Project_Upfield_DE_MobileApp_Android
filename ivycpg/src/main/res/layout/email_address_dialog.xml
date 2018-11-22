@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/txt_send_to"
-            style="?textTitleStyle"
+            style="?attr/dialogTitleStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

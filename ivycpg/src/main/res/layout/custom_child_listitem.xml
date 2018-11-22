@@ -3,7 +3,7 @@
     android:id="@+id/orderScreenListRow"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/history_list_bg"
+    android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 

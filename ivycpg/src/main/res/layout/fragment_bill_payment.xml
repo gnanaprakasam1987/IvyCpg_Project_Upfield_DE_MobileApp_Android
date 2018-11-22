@@ -41,8 +41,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
-                    android:textColor="@color/Black"
-                    android:textSize="@dimen/font_medium" />
+                    android:textColor="@color/half_Black"
+                    android:textSize="@dimen/font_small" />
 
             </LinearLayout>
 
@@ -51,7 +51,7 @@
                 android:layout_width="@dimen/dimens_1dp"
                 android:layout_height="@dimen/dimens_40dp"
                 android:layout_gravity="center"
-                android:background="@color/new_grey"
+                android:background="@color/light_gray"
                 android:gravity="center"
                 android:padding="@dimen/dimens_4dp" />
 
@@ -76,8 +76,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
-                    android:textColor="@color/Black"
-                    android:textSize="@dimen/font_medium" />
+                    android:textColor="@color/half_Black"
+                    android:textSize="@dimen/font_small" />
 
             </LinearLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_width="@dimen/dimens_1dp"
                 android:layout_height="@dimen/dimens_40dp"
                 android:layout_gravity="center"
-                android:background="@color/new_grey"
+                android:background="@color/light_gray"
                 android:gravity="center"
                 android:padding="@dimen/dimens_4dp" />
 
@@ -110,8 +110,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
-                    android:textColor="@color/Black"
-                    android:textSize="@dimen/font_medium" />
+                    android:textColor="@color/half_Black"
+                    android:textSize="@dimen/font_small" />
 
             </LinearLayout>
 
@@ -160,8 +160,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tv_osamt_height"
                 android:gravity="center"
-                android:textColor="@color/WHITE"
-                android:textSize="@dimen/font_medium" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_small" />
 
         </LinearLayout>
 

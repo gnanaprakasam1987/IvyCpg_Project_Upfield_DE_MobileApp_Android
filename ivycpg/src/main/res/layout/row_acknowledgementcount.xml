@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="5dp"
     card_view:cardPreventCornerOverlap="true"
@@ -33,7 +33,7 @@
                 android:layout_weight="6"
                 android:paddingStart="@dimen/whats_on_item_padding"
                 android:text="Value"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/factor_title_size"
                 android:textStyle="bold"
                 android:paddingLeft="@dimen/whats_on_item_padding" />
@@ -47,7 +47,7 @@
                 android:paddingEnd="@dimen/recycler_margin"
                 android:tag="incentive_day"
                 android:text="Total Calls"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/footer_label_size"
                 android:textStyle="normal"
                 android:paddingRight="@dimen/recycler_margin" />

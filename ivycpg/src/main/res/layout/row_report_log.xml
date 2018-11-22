@@ -22,9 +22,9 @@
                 android:layout_width="@dimen/dimen_30dp"
                 android:layout_height="@dimen/dimen_20dp"
                 android:layout_gravity="center"
-                android:background="@color/BLUE"
+                android:background="@color/highlighter"
                 android:text="JE"
-                android:textColor="@color/WHITE" />
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <LinearLayout
@@ -38,8 +38,8 @@
                 android:id="@+id/tv_retailer_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Black"
-                android:textSize="@dimen/font_medium"
+                android:textColor="@color/half_Black"
+                android:textSize="@dimen/font_small"
                 android:text="Retailer Name" />
 
             <TextView
@@ -48,15 +48,15 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:textStyle="italic"
-                android:textColor="@color/Black"
-                android:textSize="@dimen/font_medium"
+                android:textColor="@color/half_Black"
+                android:textSize="@dimen/font_small"
                 android:text="10.00AM - 10.30AM"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_1dp"
                 android:layout_marginTop="@dimen/dimen_6dp"
-                android:background="@color/Black" />
+                android:background="@color/half_Black" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
