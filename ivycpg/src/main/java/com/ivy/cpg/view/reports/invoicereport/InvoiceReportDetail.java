@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -77,6 +78,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
     boolean isPrinterLanguageDetected = false;
     private SharedPreferences sharedPreferences;
     private double tot = 0;
+    private float totalWeight = 0;
     private String mInvoiceId;
     private int mSelectedPrintCount = 0;
 
@@ -106,25 +108,29 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             if (extras.containsKey("lineinvoice")) {
                 mInvoiceId = extras.getString("lineinvoice");
             }
+            if (extras.containsKey("TotalWeight")) {
+                totalWeight = extras.getFloat("TotalWeight");
+            }
         }
         try {
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
 
 
-            TextView text_totalValue = (TextView) findViewById(R.id.txttotal);
-            TextView text_totalLines = (TextView) findViewById(R.id.txttotalqty);
-            TextView label_totalLines = (TextView) findViewById(R.id.TextView52);
+            TextView text_totalValue = findViewById(R.id.txttotal);
+            TextView text_totalLines = findViewById(R.id.txttotalqty);
+            TextView label_totalLines = findViewById(R.id.TextView52);
 
-            ListView listView = (ListView) findViewById(R.id.lvwplistorddet);
+            ListView listView = findViewById(R.id.lvwplistorddet);
             listView.setCacheColorHint(0);
-            ExpandableListView expandableListView = (ExpandableListView) findViewById(R.id.elv);
+            ExpandableListView expandableListView = findViewById(R.id.elv);
 
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(getResources().getString(R.string.invoice_report_details));
+                setScreenTitle(getResources().getString(R.string.invoice_report_details));
             getSupportActionBar().setIcon(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
             if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
@@ -170,35 +176,33 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     Commons.printException(e);
                 }
             }
-            /*if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
-                findViewById(R.id.weighttitle).setVisibility(View.GONE);
+
+
+            //total weight
+            if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+                findViewById(R.id.lbl_totWgt).setVisibility(View.GONE);
+                findViewById(R.id.txt_totwgt).setVisibility(View.GONE);
             } else {
                 try {
                     if (businessModel.labelsMasterHelper.applyLabels(findViewById(
-                            R.id.weighttitle).getTag()) != null)
-                        ((TextView) findViewById(R.id.weighttitle))
+                            R.id.lbl_totWgt).getTag()) != null)
+                        ((TextView) findViewById(R.id.lbl_totWgt))
                                 .setText(businessModel.labelsMasterHelper
                                         .applyLabels(findViewById(
-                                                R.id.weighttitle)
+                                                R.id.lbl_totWgt)
                                                 .getTag()));
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }*/
-
+                ((TextView) findViewById(R.id.txt_totwgt)).setText(Utils.formatAsTwoDecimal((double) totalWeight));
+            }
 
             mProducts = businessModel.productHelper.getProductMaster();
 
             sharedPreferences = getSharedPreferences(BusinessModel.PREFS_NAME, MODE_PRIVATE);
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             mRes = getResources();
-            /*if (mBluetoothAdapter == null)
-            {
-				//Toast.makeText(this, "Bluetooth not enabled ",Toast.LENGTH_LONG).show();
-				//!!!!!
-				finish();
-				return;
-			}*/
+
             double totalLines = 0;
             int totalAllQty = 0;
             if (businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
@@ -998,7 +1002,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             holder.text_caseQuantity.setText(String.valueOf(holder.productBO.getOrderedCaseQty()));
             holder.outerQty.setText(String.valueOf(holder.productBO.getOrderedOuterQty()));
             int totalQty = holder.productBO.getOrderedPcsQty() + (holder.productBO.getOrderedCaseQty() * holder.productBO.getCaseSize()) + (holder.productBO.getOrderedOuterQty() * holder.productBO.getOutersize());
-            String weightValue = " WGT : " + totalQty * holder.productBO.getWeight();
+            String weightValue = " WGT : " + Utils.formatAsTwoDecimal((double) totalQty * holder.productBO.getWeight());
             holder.tvWeight.setText(weightValue);
             holder.tvWeight.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 

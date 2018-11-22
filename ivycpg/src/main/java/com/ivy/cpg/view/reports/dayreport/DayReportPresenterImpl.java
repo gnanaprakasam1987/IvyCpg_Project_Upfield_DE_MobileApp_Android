@@ -5,6 +5,7 @@ import android.content.Context;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -249,7 +250,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 con.setMenuNumber(mBusinessModel.formatValue(FB2value) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT18")) {
                 final float totalWeight = dashBoardHelper.getTotalWeight("");
-                con.setMenuNumber(mBusinessModel.formatValue(totalWeight) + "");
+                con.setMenuNumber(Utils.formatAsTwoDecimal((double) totalWeight));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT19")) {
                 con.setMenuNumber(mBusinessModel.formatValue((SDUtil.convertToDouble(outlet.getTotValues())) - SalesReturnHelper.getInstance(mContext).getTotalSalesReturnValue(mContext.getApplicationContext())));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT20")) {

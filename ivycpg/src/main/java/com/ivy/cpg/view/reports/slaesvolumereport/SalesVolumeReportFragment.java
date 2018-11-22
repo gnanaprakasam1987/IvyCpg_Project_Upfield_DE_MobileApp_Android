@@ -257,7 +257,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
             holder.PRDNAME.setText(holder.productMasterBO.getProductShortName());
             holder.pdt_total_qty.setText(holder.productMasterBO.getTotalQty() + "");
             holder.pdt_total_value.setText(SDUtil.getWithoutExponential(holder.productMasterBO.getTotalamount()) + "");
-            holder.pdt_total_weight.setText(Utils.formatAsTwoDecimal((double) holder.productMasterBO.getTotalWeight()));
+            holder.pdt_total_weight.setText(Utils.formatAsTwoDecimal((double) holder.productMasterBO.getTotalWeight()*holder.productMasterBO.getTotalQty()));
 
             return (row);
         }

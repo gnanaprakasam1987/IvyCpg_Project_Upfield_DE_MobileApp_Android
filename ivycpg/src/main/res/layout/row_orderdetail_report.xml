@@ -65,7 +65,6 @@
                 android:layout_toEndOf="@+id/prdbatchid"
                 android:gravity="center"
                 android:singleLine="true"
-                android:tag="sih"
                 android:text=""
                 android:layout_toRightOf="@+id/prdbatchid" />
         </RelativeLayout>
