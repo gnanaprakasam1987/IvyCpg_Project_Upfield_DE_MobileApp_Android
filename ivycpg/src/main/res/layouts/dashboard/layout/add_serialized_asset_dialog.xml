@@ -32,15 +32,13 @@
             android:text="@string/addasset" />
 
         <TextView
-            android:id="@+id/brand_spinner_txt"
             style="?attr/customdialogLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_weight="1"
-            android:text="@string/addassetbrand" />
+            android:text="@string/enter_nfc_number" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,22 +54,24 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:layout_toRightOf="@+id/spin_reason1"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:overlapAnchor="false" />
 
-        <Spinner
-            android:id="@+id/spinner_brand"
+        <EditText
+            android:id="@+id/etxt_nfc_number"
+            style="@style/EditText_ListItem"
             android:layout_width="0dp"
-            android:layout_height="@dimen/spinner_height"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dimen_10dp"
-            android:layout_marginStart="@dimen/dimen_10dp"
-            android:layout_toRightOf="@+id/spin_reason1"
+            android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:overlapAnchor="false" />
+            android:cursorVisible="true"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+            android:hint="@string/zero"
+            android:maxLength="50"
+            android:paddingBottom="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -132,47 +132,7 @@
             android:text="@string/servicedate" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_40dp"
-        android:orientation="horizontal"
-        android:weightSum="2">
 
-        <TextView
-            style="?attr/customdialogLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_10dp"
-            android:layout_weight="1"
-            android:text="@string/enter_nfc_number" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        >
-
-        <EditText
-            android:id="@+id/etxt_nfc_number"
-            style="@style/EditText_ListItem"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginEnd="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_10dp"
-            android:layout_weight="1"
-            android:cursorVisible="true"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-            android:hint="@string/zero"
-            android:maxLength="50"
-            android:paddingBottom="10dp" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

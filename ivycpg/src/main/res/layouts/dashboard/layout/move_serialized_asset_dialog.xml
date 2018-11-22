@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_10dp"
                     android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:text="Current Retailer Name:"
+                    android:text="From:"
                     android:textSize="@dimen/dimens_16dp"
 
                     />
@@ -113,7 +113,7 @@
                     android:id="@+id/to_outletcode_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="To Retailer Name"
+                    android:text="To:"
                     android:textStyle="normal"
                     android:layout_margin="@dimen/dimen_5dp"
                     android:textSize="@dimen/dimens_16dp"

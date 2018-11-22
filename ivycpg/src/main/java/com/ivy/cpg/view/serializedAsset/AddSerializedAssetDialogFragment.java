@@ -139,7 +139,7 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
 
-                assetTrackingHelper
+               /* assetTrackingHelper
                         .downloadAssetBrand(getActivity().getApplicationContext(), assetTrackingHelper
                                 .getAssetIds(mAsset.getSelectedItem()
                                         .toString()));
@@ -151,7 +151,9 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
                     if (position == 0 || assetTrackingHelper.getAssetBrandNames().size() == 0)
                         ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.GONE);
                     mBrand.setVisibility(View.GONE);
-                }
+                }*/
+
+
             }
 
             @Override
@@ -282,14 +284,14 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
             assetBo.setPOSM(assetTrackingHelper.getAssetIds(mAsset
                     .getSelectedItem().toString()));
 
-            if (mBrand.getSelectedItem() != null) {
+            /*if (mBrand.getSelectedItem() != null) {
                 if (!mBrand.getSelectedItem().toString()
                         .equals(SELECT))
                     assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(mBrand
                             .getSelectedItem().toString()));
                 else
                     assetBo.setBrand("0");
-            } else
+            } else*/
                 assetBo.setBrand("0");
 
             assetBo.setNewInstallDate(btnAddInstallDate.getText().toString());
@@ -310,8 +312,6 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
 
             try {
                 if (!mAsset.getSelectedItem().toString()
-                        .equals(SELECT)
-                        && !mBrand.getSelectedItem().toString()
                         .equals(SELECT)
                         && !mSNO.getText().toString().equals("")) {
                     if (!assetTrackingHelper

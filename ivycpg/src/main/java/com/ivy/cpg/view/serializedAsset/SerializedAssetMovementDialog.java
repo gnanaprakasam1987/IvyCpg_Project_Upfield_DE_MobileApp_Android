@@ -145,7 +145,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         //Generating Retailer List
         RetailerMasterBO retailer = new RetailerMasterBO();
         // retailer.setMovRetailerCode(Integer.toString(0));
-        retailer.setMovRetailerName("Select Retailer");
+        retailer.setMovRetailerName("Warehouse");
         retailer.setMovRetailerId(Integer.toString(0));
 
         retailerMasterBOs = mBModel.downloadRetailerMasterData();
@@ -177,22 +177,22 @@ public class SerializedAssetMovementDialog extends DialogFragment {
 
     private void saveFunction() {
         if (validateDesc())
-            if (SpToOutletName.getSelectedItemPosition() != 0 && retailerSelected>0) {
+            //if (SpToOutletName.getSelectedItemPosition() != 0 && retailerSelected>0) {
                 if (SpReason.getSelectedItemPosition() != 0) {
 
                     setAddAssetDetails();
                     mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
                     assetTrackingHelper
-                            .saveAssetMovementDetails(getContext().getApplicationContext(), "MENU_ASSET",0);
+                            .saveAssetMovementDetails(getContext().getApplicationContext(), "RTR_RTR",0);
                     Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
                             Toast.LENGTH_SHORT).show();
                     dismiss();
                 } else {
                     Toast.makeText(mBModel, "Select Reason and Try again", Toast.LENGTH_SHORT).show();
                 }
-            } else {
+           /* } else {
                 Toast.makeText(mBModel, "Select OutletName and Try again", Toast.LENGTH_SHORT).show();
-            }
+            }*/
     }
     private void setAddAssetDetails() {
 

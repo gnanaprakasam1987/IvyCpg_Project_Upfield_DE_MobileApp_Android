@@ -831,6 +831,12 @@
         <activity
             android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetMovementActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetServiceActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

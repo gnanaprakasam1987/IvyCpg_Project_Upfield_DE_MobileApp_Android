@@ -316,7 +316,7 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
         try {
             Iterator itr = mList.iterator();
             while (itr.hasNext()) {
-                AssetTrackingBO assetTrackingBO = (AssetTrackingBO) itr.next();
+                SerializedAssetBO assetTrackingBO = (SerializedAssetBO) itr.next();
                 if (assetTrackingBO.isSelectedToRemove()) {
 
                     if ("N".equals(assetTrackingBO.getFlag())) {

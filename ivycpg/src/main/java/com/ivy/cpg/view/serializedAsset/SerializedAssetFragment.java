@@ -415,7 +415,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
 
             return true;
         } else if (i == R.id.menu_remove) {
-            Intent intent = new Intent(getActivity(), AssetPosmRemoveActivity.class);
+            Intent intent = new Intent(getActivity(), RemoveSerializedAssetActivity.class);
             intent.putExtra("module", MENU_SERIALIZED_ASSET);
             startActivity(intent);
             return true;
@@ -425,7 +425,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             return true;
         } else if (i == R.id.menu_move) {
             if (assetPresenter.getAssetListSize() >= 0) {
-                Intent intent = new Intent(getActivity(), AssetMovementActivity.class);
+                Intent intent = new Intent(getActivity(), SerializedAssetMovementActivity.class);
                 intent.putExtra("module", MENU_SERIALIZED_ASSET);
                 startActivityForResult(intent, MOVEMENT_ASSET);
             } else {
@@ -436,7 +436,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         } else if (i == R.id.menu_assetservice) {
 
 
-            Intent intent = new Intent(getActivity(), AssetServiceActivity.class);
+            Intent intent = new Intent(getActivity(), SerializedAssetServiceActivity.class);
             intent.putExtra("module", MENU_SERIALIZED_ASSET);
             startActivity(intent);
 
@@ -480,7 +480,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
 
     private void scanBarCode(){
         {
-            ((AssetTrackingActivity) getActivity()).checkAndRequestPermissionAtRunTime(2);
+            ((SerializedAssetActivity) getActivity()).checkAndRequestPermissionAtRunTime(2);
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.CAMERA);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {

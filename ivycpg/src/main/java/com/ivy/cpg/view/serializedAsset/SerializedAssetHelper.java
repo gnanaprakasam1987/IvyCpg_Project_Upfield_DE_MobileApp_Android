@@ -75,6 +75,7 @@ public class SerializedAssetHelper {
     private Vector<AssetAddDetailBO> mAssetSpinner = null;
     private Vector<AssetAddDetailBO> mBrandSpinner = null;
     private Vector<SerializedAssetBO> mRemovableAssets = null;
+    private Vector<SerializedAssetBO> assetServiceList = null;
 
 
     private ArrayList<SerializedAssetBO> mAllAssetTrackingList = null;
@@ -557,7 +558,7 @@ public class SerializedAssetHelper {
                         } else {
                             assetBO.setSerialNo(Integer.toString(0));
                         }
-                        assetBO.setImageList(getImagesList(mcontext, assetID));
+                        assetBO.setImageList(getImagesList(mcontext, assetID,assetBO));
 
                     }
 
@@ -568,7 +569,7 @@ public class SerializedAssetHelper {
     }
 
 
-    private ArrayList<String> getImagesList(Context mContext, int assetId) {
+    private ArrayList<String> getImagesList(Context mContext, int assetId,SerializedAssetBO assetBO) {
         ArrayList<String> imageList = new ArrayList<>();
         try {
 
@@ -579,7 +580,7 @@ public class SerializedAssetHelper {
             String sql;
             Cursor c;
 
-            sql = "select ImageName from SerializedAssetImageDetails "
+            sql = "select ImageName,imgName from SerializedAssetImageDetails "
                     + " where AssetID = " + assetId
                     + " AND Upload = " + AppUtils.QT("N");
             c = db.selectSQL(sql);
@@ -587,6 +588,9 @@ public class SerializedAssetHelper {
             if (c != null) {
                 while (c.moveToNext()) {
                     imageList.add(c.getString(0));
+
+                    // Now max image is one, so setting directly in assetBO
+                    assetBO.setImgName(c.getString(1));
                 }
                 c.close();
             }
@@ -705,7 +709,7 @@ public class SerializedAssetHelper {
 
 
             String AssetDetailColumns = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate";
-            String AssetImageInfoColumns = "uid,AssetID,ImageName,serialNumber";
+            String AssetImageInfoColumns = "uid,AssetID,ImageName,serialNumber,imgName";
 
 
                     for (SerializedAssetBO assetBo : mAssetTrackingList) {
@@ -771,6 +775,8 @@ public class SerializedAssetHelper {
                                         assetImgInofValues.append(AppUtils.QT(imageName));
                                         assetImgInofValues.append(",");
                                         assetImgInofValues.append(AppUtils.QT(assetBo.getNFCTagId()));
+                                        assetImgInofValues.append(",");
+                                        assetImgInofValues.append(AppUtils.QT(assetBo.getImgName()));
 
                                         db.insertSQL(DataMembers.tbl_SerializedAssetImageDetail,
                                                 AssetImageInfoColumns,
@@ -928,7 +934,7 @@ public class SerializedAssetHelper {
         try {
 
             db.openDataBase();
-            String sb = "SELECT PM.productId,PM.PName FROM ProductMaster PM INNER JOIN SerializedAssetProductMapping PO ON PM.Pid = PO.Productid WHERE PO.AssetId =" + AppUtils.QT(brandPosm);
+            String sb = "SELECT PM.pid,PM.PName FROM ProductMaster PM INNER JOIN SerializedAssetProductMapping PO ON PM.Pid = PO.Productid WHERE PO.AssetId =" + AppUtils.QT(brandPosm);
 
             Cursor c = db.selectSQL(sb);
 
@@ -1069,7 +1075,7 @@ public class SerializedAssetHelper {
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid  from SerializedAssetMaster P  inner join SerializedAssetProductMapping SBD on P.AssetId=SBD.AssetId ");
             sb.append(" inner join SerializedAssetMapping SAM ON SAM.assetId=P.AssetId");
-            sb.append("(SAM.SerialNumber  in (select distinct SerialNumber from SerializedAssetTransfer AAD where Transfer_Type!='RTR_WH'");
+            sb.append(" where (SAM.SerialNumber  in (select distinct SerialNumber from SerializedAssetTransfer AAD where Transfer_Type!='RTR_WH'");
             sb.append(") or SAM.SerialNumber not in (select distinct SerialNumber from SerializedAssetTransfer AAD1");
             sb.append("))");
 
@@ -1091,7 +1097,7 @@ public class SerializedAssetHelper {
                     mRemovableAssets.add(assetBO);
                 }
             }
-            String sb1 = "select distinct  AssetId,P.AssetName,serialNumber,installdate,Productid  from SerializedAssetMaster P  inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId where Transfer_Type!='RTR_WH'  and retailerid=" +
+            String sb1 = "select distinct  P.AssetId,P.AssetName,serialNumber,installdate  from SerializedAssetMaster P  inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId where Transfer_Type!='RTR_WH'  and retailerid=" +
                     AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
             Cursor c1 = db.selectSQL(sb1);
@@ -1110,7 +1116,7 @@ public class SerializedAssetHelper {
                     assetBO.setNewInstallDate(c1.getString(3));
                     assetBO.setFlag("Y");
                     assetBO.setSBDId(" ");
-                    assetBO.setBrand(c1.getString(4));
+                    //assetBO.setBrand(c1.getString(4));
                     mRemovableAssets.add(assetBO);
                 }
             }
@@ -1181,7 +1187,7 @@ public class SerializedAssetHelper {
         try {
 
             db.openDataBase();
-            db.deleteSQL(DataMembers.tbl_AssetAddDelete, "serialNum ="
+            db.deleteSQL(DataMembers.tbl_SerializedAssetTransfer, "serialNumber ="
                     + AppUtils.QT(mSno), false);
 
             db.closeDB();
@@ -1229,14 +1235,169 @@ public class SerializedAssetHelper {
             String columns = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
 
-            String values = id + ","  + AppUtils.QT(assets.getSNO()) + ","
-                    + AppUtils.QT(assets.getNFCTagId()) + "," +AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))+""
+            String values = id + "," +AppUtils.QT(assets.getPOSM())+"," + AppUtils.QT(assets.getSNO()) + ","
+                    + AppUtils.QT(assets.getNFCTagId()) + "," +AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))+","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT("T") + ","  +
-                    AppUtils.QT(assets.getReasonId()) + "," + AppUtils.QT(assets.getRemarks()) + "," + AppUtils.QT(assets.getToRetailerId()+","+transferTo+","+movementType+",0");
+                    AppUtils.QT(assets.getReasonId()) + "," + AppUtils.QT(assets.getRemarks()) + "," + AppUtils.QT(assets.getToRetailerId())+","+transferTo+","+AppUtils.QT(movementType)+",0";
 
 
             db.insertSQL(DataMembers.tbl_SerializedAssetTransfer, columns,
                     values);
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
+
+    public void getAssetService(Context mContext, String moduleName) {
+
+        SerializedAssetBO assetBO;
+
+        assetServiceList = new Vector<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+
+            db.openDataBase();
+
+            mBusinessModel.productHelper.getRetailerlevel(moduleName);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid  from SerializedAssetMaster P  inner join SerializedAssetProductMapping SBD on P.AssetId=SBD.AssetId ");
+            sb.append(" inner join SerializedAssetMapping SAM ON SAM.assetId=P.AssetId");
+            sb.append(" where (SAM.SerialNumber  in (select distinct SerialNumber from SerializedAssetTransfer AAD where Transfer_Type!='RTR_WH'");
+            sb.append(") or SAM.SerialNumber not in (select distinct SerialNumber from SerializedAssetTransfer AAD1");
+            sb.append("))");
+
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    assetBO = new SerializedAssetBO();
+                    assetBO.setPOSM(c.getString(0));
+                    assetBO.setPOSMName(c.getString(1));
+                    if (c.getString(2) != null && !"null".equals(c.getString(2)) && !"".equals(c.getString(2))) {
+                        assetBO.setSNO(c.getString(2));
+
+
+                    } else {
+                        assetBO.setSNO("0");
+                    }
+                    assetBO.setNewInstallDate(" ");
+                    assetBO.setFlag("N");
+                    assetBO.setBrand(c.getString(3));
+                    assetServiceList.add(assetBO);
+                }
+            }
+            String sb1 = "select distinct  P.AssetId,P.AssetName,serialNumber,installdate  from SerializedAssetMaster P  inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId where Transfer_Type!='RTR_WH'  and retailerid=" +
+                    AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+
+            Cursor c1 = db.selectSQL(sb1);
+            if (c1.getCount() > 0) {
+                while (c1.moveToNext()) {
+                    assetBO = new SerializedAssetBO();
+                    assetBO.setPOSM(c1.getString(0));
+                    assetBO.setPOSMName(c1.getString(1));
+                    if ("null".equals(c1.getString(2)) || "".equals(c1.getString(2))) {
+
+                        assetBO.setSNO("0");
+                    } else {
+                        assetBO.setSNO(c1.getString(2));
+                    }
+
+                    assetBO.setNewInstallDate(c1.getString(3));
+                    assetBO.setFlag("Y");
+                    assetBO.setSBDId(" ");
+                    //assetBO.setBrand(c1.getString(6));
+                    assetServiceList.add(assetBO);
+                }
+            }
+
+
+            String query = "select distinct  P.AssetId,P.AssetName,serialNumber,reasonid  from SerializedAssetMaster P  inner  join SerializedAssetServiceRequest AAD on P.AssetId=AAD.AssetId Where retailerid=" +
+                    AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+
+
+            Cursor c2 = db.selectSQL(query);
+            if (c2.getCount() > 0) {
+                while (c2.moveToNext()) {
+                    int reasonId = c2.getInt(c2.getColumnIndex("reasonid"));
+                    String serialNum = c2.getString(c2.getColumnIndex("serialNumber"));
+                    int assetId = c2.getInt(c2.getColumnIndex("AssetId"));
+
+                    for (int i = 0; i < assetServiceList.size(); i++) {
+                        SerializedAssetBO assetTrackingBO = assetServiceList.get(i);
+                        if (assetTrackingBO.getPOSM().equalsIgnoreCase(String.valueOf(assetId)) && serialNum.equalsIgnoreCase(assetTrackingBO.getSNO())) {
+                            assetServiceList.get(i).setReason1ID(String.valueOf(reasonId));
+                            assetServiceList.get(i).setSelectedReason(true);
+                        }
+                    }
+                }
+            }
+            setAssetServiceList(assetServiceList);
+
+            c.close();
+            c1.close();
+            c2.close();
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
+    }
+
+    public void setAssetServiceList(Vector<SerializedAssetBO> assetServiceList) {
+        this.assetServiceList = assetServiceList;
+    }
+
+    public Vector<SerializedAssetBO> getAssetServiceList() {
+        return assetServiceList;
+    }
+
+    public void deleteServiceTable(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+
+            db.openDataBase();
+            db.deleteSQL("SerializedAssetServiceRequest", "retailerid=" + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
+        } catch (Exception e) {
+            db.closeDB();
+            e.printStackTrace();
+        }
+        db.closeDB();
+    }
+
+    public void saveAssetServiceDetails(Context mContext, String assetId, String serialNo, String mReasonID, String moduleName) {
+
+        if (mUniqueSerialNo == null)
+            mUniqueSerialNo = new HashMap<>();
+
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        try {
+
+            db.openDataBase();
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+            String addAssetColumns = "Uid,date,AssetId,serialNumber,reasonid,retailerid";
+
+            String assetAddAndDeleteValues = id + ","
+                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                    + AppUtils.QT(assetId) + "," + AppUtils.QT(serialNo) + ","
+                    + AppUtils.QT(mReasonID) + ","
+                    + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+
+            db.insertSQL(DataMembers.tbl_SerializedAssetServiceRequest, addAssetColumns,
+                    assetAddAndDeleteValues);
+
+            //add serial no for uniqueness
+            mUniqueSerialNo.put(serialNo, serialNo);
 
             db.closeDB();
 
