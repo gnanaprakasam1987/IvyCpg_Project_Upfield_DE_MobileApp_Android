@@ -65,7 +65,7 @@ public class TotalAchivedFragment extends Fragment {
             for (SKUWiseTargetBO skuWiseTargetBO : skuList)
                 total_ach += skuWiseTargetBO.getAchieved();
         } else {
-            for (DashBoardBO dash : DashBoardHelper.getInstance(getActivity()).getDashListViewList()) {
+            for (DashBoardBO dash : DashBoardHelper.getInstance(getActivity()).getDashChartData()) {
                 total_ach += SDUtil.convertToDouble(dash.getKpiIncentive());
             }
         }

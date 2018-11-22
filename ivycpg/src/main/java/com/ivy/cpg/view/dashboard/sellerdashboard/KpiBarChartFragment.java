@@ -1,6 +1,5 @@
 package com.ivy.cpg.view.dashboard.sellerdashboard;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -45,7 +44,7 @@ public class KpiBarChartFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        dashBoardList = DashBoardHelper.getInstance(getActivity()).getDashListViewList();
+        dashBoardList = DashBoardHelper.getInstance(getActivity()).getDashChartData();
 
         mbarChart = view.findViewById(R.id.bar_chart);
         mbarChart.getAxisLeft().setDrawGridLines(false);

@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -46,7 +45,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.google.android.gms.common.stats.StatsUtils;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
@@ -455,20 +453,20 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         if (selectedInterval.equalsIgnoreCase(WEEK)) {
                             if (!mDashboardList.get(position).getMonthName().equals("")) {
                                 //Weekly chart Specific Change
-                                dashBoardHelper.getDashListViewList().clear();
-                                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                                dashBoardHelper.getDashChartData().clear();
+                                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashboardMasterData()) {
                                     if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(position).getCode())) {
-                                        dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                                        dashBoardHelper.getDashChartData().add(dashBoardBO);
                                     }
                                 }
                             }
                         }
                         //P3M chart Specific Change
                         if (selectedInterval.equals(P3M)) {
-                            dashBoardHelper.getDashListViewList().clear();
-                            for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                            dashBoardHelper.getDashChartData().clear();
+                            for (DashBoardBO dashBoardBO : dashBoardHelper.getDashboardMasterData()) {
                                 if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(position).getCode())) {
-                                    dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                                    dashBoardHelper.getDashChartData().add(dashBoardBO);
                                 }
                             }
                         }
@@ -1012,7 +1010,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 }
 
                 dashboardPresenter.gridListDataLoad(beatPosition);
-                mDashboardList = dashBoardHelper.getDashListViewList();
+                mDashboardList = dashBoardHelper.getDashChartData();
                 dashBoardListViewAdapter = new DashBoardListViewAdapter(mDashboardList);
                 dashBoardList.setAdapter(dashBoardListViewAdapter);
                 if (show_trend_chart) {
@@ -1062,7 +1060,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private void updateMonth(String monthName) {
         mDashboardList = new ArrayList<>();
 
-        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashboardMasterData()) {
             if (dashBoardBO.getMonthName().equalsIgnoreCase(monthName)) {
                 mDashboardList.add(dashBoardBO);
             }
@@ -1071,10 +1069,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         if (show_trend_chart) {
             //P3M chart Specific Change
             if (selectedInterval.equals(P3M)) {
-                dashBoardHelper.getDashListViewList().clear();
-                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                dashBoardHelper.getDashChartData().clear();
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashboardMasterData()) {
                     if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(0).getCode())) {
-                        dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                        dashBoardHelper.getDashChartData().add(dashBoardBO);
                     }
                 }
             }
@@ -1091,7 +1089,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private void updateWeek(String weekName) {
         mDashboardList = new ArrayList<>();
 
-        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashboardMasterData()) {
             if (dashBoardBO.getMonthName().equalsIgnoreCase(weekName) || weekName.equals("")) {
                 mDashboardList.add(dashBoardBO);
             }
@@ -1102,10 +1100,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
             //Weekly chart Specific Change
             if (!weekName.equals("")) {
-                dashBoardHelper.getDashListViewList().clear();
-                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+                dashBoardHelper.getDashChartData().clear();
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashboardMasterData()) {
                     if (dashBoardBO.getCode().equalsIgnoreCase(mDashboardList.get(0).getCode())) {
-                        dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                        dashBoardHelper.getDashChartData().add(dashBoardBO);
                     }
                 }
             }
@@ -1123,7 +1121,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private void updateRoute(String routeName) {
         mDashboardList = new ArrayList<>();
 
-        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashboardMasterData()) {
             if (dashBoardBO.getMonthName().equalsIgnoreCase(routeName)) {
                 mDashboardList.add(dashBoardBO);
             }
@@ -1132,10 +1130,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
 
-            dashBoardHelper.getDashListViewList().clear();
-            for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartDataList()) {
+            dashBoardHelper.getDashChartData().clear();
+            for (DashBoardBO dashBoardBO : dashBoardHelper.getDashboardMasterData()) {
                 if (dashBoardBO.getMonthName().equalsIgnoreCase(routeName)) {
-                    dashBoardHelper.getDashListViewList().add(dashBoardBO);
+                    dashBoardHelper.getDashChartData().add(dashBoardBO);
                 }
             }
 
@@ -1150,7 +1148,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     }
 
     private void updateAll() {
-        mDashboardList = dashBoardHelper.getDashListViewList();
+        mDashboardList = dashBoardHelper.getDashChartData();
         dashBoardList.setAdapter(new DashBoardListViewAdapter(mDashboardList));
         if (show_trend_chart) {
             checkandaddScreens();
@@ -1212,7 +1210,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
     private void loadListChart() {
         dashBoardHelper.loadKpiDashBoard(mFilterUser + "", selectedInterval);
         dashboardPresenter.gridListDataLoad(beatPosition);
-        mDashboardList = dashBoardHelper.getDashListViewList();
+        mDashboardList = dashBoardHelper.getDashChartData();
         dashBoardListViewAdapter = new DashBoardListViewAdapter(mDashboardList);
         dashBoardList.setAdapter(dashBoardListViewAdapter);
         if (show_trend_chart) {

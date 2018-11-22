@@ -218,6 +218,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
+    public boolean shouldShowKPIBarChart() {
+        return getConfigurationMasterHelper().SHOW_KPIBARCHART_DASH;
+    }
+
+    @Override
     public boolean shouldShowP3MDash() {
         return getConfigurationMasterHelper().SHOW_P3M_DASH;
     }

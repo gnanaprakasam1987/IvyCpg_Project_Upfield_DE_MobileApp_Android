@@ -58,8 +58,8 @@ public class DashBoardHelper {
         this.incentiveList = incentiveList;
     }
 
-    private List<DashBoardBO> dashChartDataList;
-    private ArrayList<DashBoardBO> dashListViewList;
+    private List<DashBoardBO> dashMasterData;
+    private ArrayList<DashBoardBO> dashChartData;
     private ArrayList<DashBoardBO> p3mChartList;
     private List<CharSequence> beatList;
 
@@ -102,8 +102,8 @@ public class DashBoardHelper {
 
     private DashBoardHelper(Context context) {
         this.mContext = context;
-        dashChartDataList = new ArrayList<>();
-        dashListViewList = new ArrayList<>();
+        dashMasterData = new ArrayList<>();
+        dashChartData = new ArrayList<>();
         dashBoardReportList = new Vector<>();
         p3mChartList = new ArrayList<>();
         monthList = new Vector<>();
@@ -377,7 +377,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
             Set<CharSequence> tempBeatSet = new LinkedHashSet<>();
             try {
                 if (bmodel.labelsMasterHelper
@@ -436,7 +436,7 @@ public class DashBoardHelper {
                     }
                     sbo.setFlex1(c.getInt(11));
 
-                    getDashChartDataList().add(sbo);
+                    getDashboardMasterData().add(sbo);
                 }
             }
 
@@ -486,7 +486,7 @@ public class DashBoardHelper {
                     }
                     sbo.setFlex1(c.getInt(11));
                     sbo.setIncentive(c.getDouble(12));
-                    getDashChartDataList().add(sbo);
+                    getDashboardMasterData().add(sbo);
                 }
                 c.close();
             }
@@ -531,7 +531,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
 
             String monthText = "";
             if (bmodel.configurationMasterHelper.IS_KPI_CALENDAR) {
@@ -583,7 +583,7 @@ public class DashBoardHelper {
                             sbo.setMonthName(MONTH_NAME[value - 1]);
                     }
 
-                    getDashChartDataList().add(sbo);
+                    getDashboardMasterData().add(sbo);
                 }
                 c.close();
             }
@@ -606,7 +606,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
 
 
             String sql = "SELECT SLM.ListName,RKD.Target,RKD.Achievement,"
@@ -649,7 +649,7 @@ public class DashBoardHelper {
                     sbo.setSubDataCount(c.getInt(9));
                     sbo.setMonthName(c.getString(10));
                     sbo.setCode(c.getString(c.getColumnIndex("Code")));
-                    getDashChartDataList().add(sbo);
+                    getDashboardMasterData().add(sbo);
                 }
                 c.close();
             }
@@ -1023,7 +1023,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
 
 
             String sql = "select listname,listid,listcode from StandardListMaster where listtype= 'TARGET_PARAMETERS' and listcode in ('AC' ,'CM' ,'COV' ,'JPA' ,'TV', 'VC')";
@@ -1258,7 +1258,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
             //mParamAchieved = 0;
 
             String sql = "SELECT SLM.ListName,SKD.Target,ifnull(SKD.Achievement,0),"
@@ -1310,7 +1310,7 @@ public class DashBoardHelper {
                     if (value > 0 && value <= 12)
                         sbo.setMonthName(MONTH_NAME[value - 1]);
 //                    if (!c.getString(10).equals("INV")) {
-                    getDashChartDataList().add(sbo);
+                    getDashboardMasterData().add(sbo);
 //                    } else {
 //                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
 //                    }
@@ -1336,7 +1336,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
             //mParamAchieved = 0;
 
             String sql = "SELECT SLM.ListName,SKD.Target,ifnull(SKD.Achievement,0),"
@@ -1380,7 +1380,7 @@ public class DashBoardHelper {
                     sbo.setCode(c.getString(10));
                     sbo.setKpiFlex(c.getString(c.getColumnIndex("kpiFlex1")));
                     sbo.setMonthName(c.getString(11));
-                    getDashChartDataList().add(sbo);
+                    getDashboardMasterData().add(sbo);
                 }
                 c.close();
             }
@@ -1403,7 +1403,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
             //mParamAchieved = 0;
 
             String monthText = "";
@@ -1461,7 +1461,7 @@ public class DashBoardHelper {
                             sbo.setMonthName(MONTH_NAME[value - 1]);
                     }
 //                    if (!c.getString(9).equals("INV")) {
-                    getDashChartDataList().add(sbo);
+                    getDashboardMasterData().add(sbo);
 //                    } else {
 //                        mParamAchieved = Double.parseDouble(sbo.getKpiAcheived());
 //                    }
@@ -2034,10 +2034,10 @@ public class DashBoardHelper {
 
     public void getGridData(int routeId) {
         try {
-            getDashListViewList().clear();
-            for (DashBoardBO dshObj : getDashChartDataList()) {
+            getDashChartData().clear();
+            for (DashBoardBO dshObj : getDashboardMasterData()) {
                 if (dshObj.getRouteID() == routeId) {
-                    getDashListViewList().add(dshObj);
+                    getDashChartData().add(dshObj);
                 }
             }
         } catch (Exception e) {
@@ -2047,10 +2047,10 @@ public class DashBoardHelper {
 
     public void getGridData(String beatDesc) {
         try {
-            getDashListViewList().clear();
-            for (DashBoardBO dshObj : getDashChartDataList()) {
+            getDashChartData().clear();
+            for (DashBoardBO dshObj : getDashboardMasterData()) {
                 if (dshObj.getBeatDescription().equalsIgnoreCase(beatDesc)) {
-                    getDashListViewList().add(dshObj);
+                    getDashChartData().add(dshObj);
                 }
             }
         } catch (Exception e) {
@@ -2065,7 +2065,7 @@ public class DashBoardHelper {
         try {
             jsonArr = new JSONArray();
             jsonObj = new JSONObject();
-            for (DashBoardBO semichart : getDashListViewList()) {
+            for (DashBoardBO semichart : getDashChartData()) {
                 JSONObject tempJson = new JSONObject();
                 tempJson.accumulate("chartText", semichart.getText());
                 tempJson.accumulate("chartTargetVal",
@@ -2088,8 +2088,8 @@ public class DashBoardHelper {
         return wkJson.get().toString();
     }
 
-    public List<DashBoardBO> getDashChartDataList() {
-        return dashChartDataList;
+    public List<DashBoardBO> getDashboardMasterData() {
+        return dashMasterData;
     }
 
     public Vector<DashBoardBO> getDashBoardReportList() {
@@ -2100,10 +2100,10 @@ public class DashBoardHelper {
         this.dashBoardReportList = dashBoardReportList;
     }
 
-    public ArrayList<DashBoardBO> getDashListViewList() {
-        if (dashListViewList == null)
+    public ArrayList<DashBoardBO> getDashChartData() {
+        if (dashChartData == null)
             return new ArrayList<>();
-        return dashListViewList;
+        return dashChartData;
     }
 
     public List<CharSequence> getBeatList() {
@@ -2115,58 +2115,6 @@ public class DashBoardHelper {
         return "'" + data + "'";
     }
 
-    public Vector<DashBoardBO> downloadDSRMTD() {
-        Vector<DashBoardBO> dsrmtdlist = new Vector<>();
-        Vector<DashBoardBO> templist = new Vector<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-        db.openDataBase();
-        Cursor c;
-        DashBoardBO dashbo;
-        c = db.selectSQL("select text,ach,tgt,ap3m,code from DashboardMaster where type='MONTH'");
-        if (c != null) {
-            while (c.moveToNext()) {
-                dashbo = new DashBoardBO();
-                dashbo.setText(c.getString(0));
-                dashbo.setCode(c.getString(4));
-
-                dashbo.setTarget(c.getDouble(2));
-
-                dashbo.setAp3m(c.getDouble(3));
-
-                if (dashbo.getCode() != null
-                        && dashbo.getCode().equalsIgnoreCase("DSR_PC"))
-                    dashbo.setAcheived(c.getDouble(1)
-                            + getProductiveCallsForTheDay());
-                else if (dashbo.getCode() != null
-                        && dashbo.getCode().equalsIgnoreCase("DSR_CALL"))
-                    dashbo.setAcheived(c.getDouble(1)
-                            + getVisitedCallsForTheDay());
-                else if (dashbo.getCode() != null
-                        && dashbo.getCode().equalsIgnoreCase("SV"))
-                    dashbo.setAcheived(c.getDouble(1) + bmodel.getAcheived());
-                else
-                    dashbo.setAcheived(c.getDouble(1));
-                dsrmtdlist.add(dashbo);
-            }
-        }
-        for (DashBoardBO bo : dsrmtdlist) {
-            if (bo.getCode().equalsIgnoreCase("SV")
-                    || bo.getCode().equalsIgnoreCase("DSR_CALL")
-                    || bo.getCode().equalsIgnoreCase("DSR_PC")
-                    || bo.getCode().equalsIgnoreCase("DSR_GOLDSTORE")
-                    || bo.getCode().equalsIgnoreCase("DSR_DIST")
-                    || bo.getCode().equalsIgnoreCase("DSR_MERCH")
-                    || bo.getCode().equalsIgnoreCase("DSR_GOLDPOINTS")
-                    || bo.getCode().equalsIgnoreCase("TLS")
-                    || bo.getCode().equalsIgnoreCase("DSR_ACTSTORES")
-                    || bo.getCode().equalsIgnoreCase("SD"))
-                templist.add(bo);
-        }
-        return templist;
-
-
-    }
 
     public void findMinMaxProductLevel(String retailerid) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -2450,7 +2398,7 @@ public class DashBoardHelper {
                             }
                         }
                     if (flag == 0) {
-                        for (DashBoardBO dashBoardBO : getDashListViewList()) {
+                        for (DashBoardBO dashBoardBO : getDashChartData()) {
                             if (dashBoardBO.getPId() == parentid && dashBoardBO.getType().equalsIgnoreCase("DAY")) {
                                 if (dashBoardBO.getCode().equals("VOL")) {
                                     dashBoardBO.setAcheived(c.getDouble(2));
@@ -2623,7 +2571,7 @@ public class DashBoardHelper {
                 + tblName);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
-                for (DashBoardBO dashBoardBO : getDashListViewList()) {
+                for (DashBoardBO dashBoardBO : getDashChartData()) {
                     if (dashBoardBO.getCode().equals("SV") && dashBoardBO.getType().equalsIgnoreCase("DAY")) {
                         dashBoardBO.setAcheived(c.getDouble(0));
 
@@ -2709,7 +2657,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
 
             String sql = new String(
                     "select KPIId from SellerKPI userids"
@@ -2912,7 +2860,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            getDashChartDataList().clear();
+            getDashboardMasterData().clear();
 
             String sql = new String(
                     "SELECT SLM.ListName,SUM(SKD.Target),SUM(SKD.Achievement),"
@@ -2962,7 +2910,7 @@ public class DashBoardHelper {
                         sbo.setSubDataCount(getSKUCount(sbo.getKpiTypeLovID()));
                     else
                         sbo.setSubDataCount(0);
-                    getDashChartDataList().add(sbo);
+                    getDashboardMasterData().add(sbo);
                     sbo = null;
                 }
             }

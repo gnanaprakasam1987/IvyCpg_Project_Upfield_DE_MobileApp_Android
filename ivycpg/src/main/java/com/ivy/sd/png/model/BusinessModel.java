@@ -1303,37 +1303,6 @@ public class BusinessModel extends Application {
     }
 
 
-    public double getAcheived() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        double f = 0;
-        try {
-            Cursor c = null;
-            if (this.configurationMasterHelper.IS_INVOICE)
-                c = db.selectSQL("SELECT sum(invNetAmount) FROM InvoiceMaster");
-                // c =
-                // db.selectSQL("select  sum(i.invNetAmount) from InvoiceMaster i inner join retailermaster r on "
-                // + " i.retailerid=r.retailerid   where r.istoday=1");
-
-            else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader");
-            // c =
-            // db.selectSQL("select  sum(o.OrderValue) from OrderHeader o inner join retailermaster r on "
-            // + " o.retailerid=r.retailerid   where r.istoday=1");
-
-            if (c != null) {
-                if (c.moveToNext()) {
-                    f = c.getDouble(0);
-
-                }
-                c.close();
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        db.closeDB();
-        return f;
-    }
 
 
     //Anand Asir V
@@ -2811,67 +2780,6 @@ public class BusinessModel extends Application {
         return orderIdList;
     }
 
-    public List<TempSchemeBO> loadOrderDetail(String retailerId, int callType,
-                                              String invoiceNo) {
-        DBUtil db = null;
-        List<TempSchemeBO> list = null;
-        try {
-            String OrderHeaderId = "";
-            list = new ArrayList<TempSchemeBO>();
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            // Order Header
-            String sql = null;
-            if (callType == 0) {
-                sql = "select OrderID from "
-                        + DataMembers.tbl_orderHeader
-                        + " where upload='N'AND (is_splitted_order = 0 OR is_processed = 0) and RetailerID="
-                        + QT(retailerId) + " and invoiceStatus=0";
-                Cursor orderHeaderCursor = db.selectSQL(sql);
-                if (orderHeaderCursor.getCount() > 0) {
-                    while (orderHeaderCursor.moveToNext()) {
-                        OrderHeaderId = orderHeaderCursor.getString(0);
-                    }
-                }
-                orderHeaderCursor.close();
-            } else {
-                sql = "select orderid from InvoiceMaster where InvoiceNo = "
-                        + QT(invoiceNo);
-
-                Cursor cursor = db.selectSQL(sql);
-
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        OrderHeaderId = cursor.getString(0);
-                    }
-                    cursor.close();
-                }
-            }
-
-            sql = "select sdPer, sdAmt, schPrice, schID, ProductID from OrderDetail where OrderID = '"
-                    + OrderHeaderId + "'";
-            Cursor orderDetailCursor = db.selectSQL(sql);
-            if (orderDetailCursor.getCount() > 0) {
-                while (orderDetailCursor.moveToNext()) {
-                    TempSchemeBO bo = new TempSchemeBO();
-                    bo.setSchemePercentage(orderDetailCursor.getDouble(0));
-                    bo.setSchemeAmount(orderDetailCursor.getDouble(1));
-                    bo.setSchemePrice(orderDetailCursor.getDouble(2));
-                    bo.setSchemeID(orderDetailCursor.getString(3));
-                    bo.setProductID(orderDetailCursor.getString(4));
-                    list.add(bo);
-                }
-            }
-            orderDetailCursor.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return list;
-    }
-
     public boolean isOrderTaken() {
         boolean flag = false;
         try {
@@ -3725,17 +3633,13 @@ public class BusinessModel extends Application {
         SharedPreferences pref = this.getSharedPreferences("autoupdate",
                 MODE_PRIVATE);
         String key = pref.getString("isUpdateExist", "False");
-        if (key.equals("False"))
-            return false;
-        else
-            return true;
+        return !key.equals("False");
     }
 
     public String getUpdateURL() {
         SharedPreferences pref = this.getSharedPreferences("autoupdate",
                 MODE_PRIVATE);
-        String key = pref.getString("URL", "");
-        return key;
+        return pref.getString("URL", "");
     }
 
 
@@ -4248,9 +4152,8 @@ public class BusinessModel extends Application {
         SharedPreferences pref = this.getSharedPreferences("ProductFilter",
                 MODE_PRIVATE);
 
-        String filterType = pref.getString("FilterType", getResources()
+        return pref.getString("FilterType", getResources()
                 .getString(R.string.product_name));
-        return filterType;
 
     }
 

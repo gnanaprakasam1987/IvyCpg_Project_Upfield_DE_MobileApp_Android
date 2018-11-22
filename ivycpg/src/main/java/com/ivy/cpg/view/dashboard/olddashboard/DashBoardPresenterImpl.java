@@ -50,7 +50,7 @@ public class DashBoardPresenterImpl implements DashboardContractor.DashboardPres
 
     @Override
     public void updateProductiveAndPlanedCall() {
-        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartData()) {
             if (dashBoardBO.getType().equalsIgnoreCase(DAY_TYPE)) {
                 if (dashBoardBO.getCode().equals(JOURNEY_PLAN_CALL)) {
                     final int totalcalls = dashBoardHelper.getTotalCallsForTheDay();
@@ -105,12 +105,12 @@ public class DashBoardPresenterImpl implements DashboardContractor.DashboardPres
 
     @Override
     public void computeDashboardList(String type, String subFilter) {
-        if (dashBoardHelper.getDashListViewList() != null) {
+        if (dashBoardHelper.getDashChartData() != null) {
             List<DashBoardBO> dashBoardList;
             dashBoardList = new ArrayList<>();
             if (type.equalsIgnoreCase(MONTH_TYPE)) {
 
-                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartData()) {
                     if (dashBoardBO.getType().equals(MONTH_TYPE)) {
                         if (dashBoardBO.getMonthName() != null) {
                             if (dashBoardBO.getMonthName().equalsIgnoreCase(subFilter)) {
@@ -123,7 +123,7 @@ public class DashBoardPresenterImpl implements DashboardContractor.DashboardPres
 
                 }
             } else if (type.equalsIgnoreCase(YEAR_TYPE)) {
-                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartData()) {
 
                     if (dashBoardBO.getType().equalsIgnoreCase(YEAR_TYPE)) {
                         dashBoardList.add(dashBoardBO);
@@ -132,12 +132,12 @@ public class DashBoardPresenterImpl implements DashboardContractor.DashboardPres
                 }
 
             } else if (type.equals(ALL_TYPE)) {
-                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartData()) {
                     dashBoardList.add(dashBoardBO);
                 }
 
             } else if (type.equals(DAY_TYPE)) {
-                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartData()) {
 
                     if (dashBoardBO.getType().equalsIgnoreCase(DAY_TYPE)) {
                         dashBoardList.add(dashBoardBO);
@@ -150,7 +150,7 @@ public class DashBoardPresenterImpl implements DashboardContractor.DashboardPres
                 int startingMonth = getMonthCount(monthLimit[0]);
                 int endingMonth = getMonthCount(monthLimit[1]);
 
-                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+                for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartData()) {
                     if (dashBoardBO.getType().equals(QUARTER_TYPE)) {
                         if (dashBoardBO.getMonthName() != null) {
                             if (getMonthCount(dashBoardBO.getMonthName()) >= startingMonth && getMonthCount(dashBoardBO.getMonthName()) <= endingMonth) {

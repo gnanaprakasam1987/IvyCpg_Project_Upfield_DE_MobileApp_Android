@@ -39,7 +39,10 @@ import com.ivy.ui.dashboard.DashboardClickListener;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.adapter.DashboardListAdapter;
+import com.ivy.ui.dashboard.adapter.FragmentPagerAdapter;
+import com.ivy.ui.dashboard.chart.kpi.KPIBarChartFragment;
 import com.ivy.ui.dashboard.chart.p3m.P3MChartFragment;
+import com.ivy.ui.dashboard.chart.smp.SMPChartFragment;
 import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardModule;
 import com.ivy.utils.FontUtils;
@@ -120,8 +123,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     private String type;
 
     private String mSelectedDistributorId = "";
-
-    private String mFilterUser;
 
     private DashboardListAdapter dashboardListAdapter;
 
@@ -336,9 +337,9 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             h.setSelected(true);
             userArray.add(h);
             count++;
-            mFilterUser += QT(users.get(i).getUserid() + "");
+            mSelectedUser += QT(users.get(i).getUserid() + "");
             if (count != users.size())
-                mFilterUser += ",";
+                mSelectedUser += ",";
         }
 
         userMultiSpinner.setItems(userArray, -1, new SpinnerListener() {
@@ -346,12 +347,12 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             public void onItemsSelected(List<KeyPairBoolData> items) {
                 Commons.print("Multi" + items.size());
                 int count = 0;
-                mFilterUser = "";
+                mSelectedUser = "";
                 for (int i = 0; i < items.size(); i++) {
                     count++;
-                    mFilterUser += QT(items.get(i).getId() + "");
+                    mSelectedUser += QT(items.get(i).getId() + "");
                     if (count != items.size())
-                        mFilterUser += ",";
+                        mSelectedUser += ",";
                 }
                 loadMultiSelectData();
             }
@@ -389,6 +390,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     }
 
+
     public class MyStubView {
         @BindView(R.id.dashSpinner)
         Spinner dashSpinner;
@@ -400,7 +402,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private void loadMultiSelectData() {
 
-        presenter.fetchKPIDashboardData(mFilterUser, mSelectedDistributorId);
+        presenter.fetchKPIDashboardData(mSelectedUser, mSelectedDistributorId);
         if (presenter.shouldShowTrendChart()) {
             pager.setVisibility(View.VISIBLE);
             circleIndicatorView.setViewPager(pager);
@@ -418,7 +420,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             presenter.fetchSellerDashList(SellerDashboardConstants.DashBoardType.RETAILER);
 
     }
-
 
 
     private void hidePager() {
@@ -618,9 +619,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), SellerDashboardFragment.this);
             dashboardRecyclerView.setAdapter(dashboardListAdapter);
-
-            //TODO Handle P3M chart
-
+            
+            if(presenter.shouldShowTrendChart()){
+                generatePagerFragments();
+            }
         }
 
         @Override
@@ -672,26 +674,52 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         }
     };
 
-    private void generatePagerFragments(){
+    private void generatePagerFragments() {
 
         fragments = new ArrayList<>();
 
-        if(presenter.isSMPBasedDash()){
+        if (presenter.isSMPBasedDash()) {
             if (!selectedInterval.matches("WEEK|ROUTE")) {
-                if(presenter.shouldShowP3MDash()){
-                    P3MChartFragment p3MChartFragment = new P3MChartFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("dashChartList",null);
-                    bundle.putInt("paramLovId",0);
-
-                    fragments.add(p3MChartFragment);
+                if (presenter.shouldShowP3MDash()) {
+                    presenter.fetchP3mTrendChartData(mSelectedUser);
                 }
+                if (presenter.shouldShowSMPDash()) {
+                    SMPChartFragment smpChartFragment = new SMPChartFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("dashboardData", dashboardListData.get(0));
+                    smpChartFragment.setArguments(bundle);
+                    fragments.add(smpChartFragment);
 
-
+                }
             }
         }
 
+        if (presenter.shouldShowKPIBarChart()) {
+            KPIBarChartFragment kpiBarChartFragment = new KPIBarChartFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("dashChartList", dashboardListData);
+            bundle.putString("selectedInterval", selectedInterval);
+            kpiBarChartFragment.setArguments(bundle);
+            fragments.add(kpiBarChartFragment);
+        }
+
+        FragmentPagerAdapter viewPagerAdapter = new FragmentPagerAdapter(getActivity().getSupportFragmentManager(), fragments);
+
+        pager.setAdapter(viewPagerAdapter);
+        circleIndicatorView.setViewPager(pager);
     }
 
+    @Override
+    public void createP3MChartFragment(ArrayList<DashBoardBO> dashBoardBOS) {
+        P3MChartFragment p3MChartFragment = new P3MChartFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("dashChartList", dashBoardBOS);
+        bundle.putInt("paramLovId", dashBoardBOS.size() > 0 ? dashBoardBOS.get(0).getKpiTypeLovID() : 0);
+        p3MChartFragment.setArguments(bundle);
+        fragments.add(0, p3MChartFragment);
+
+        if (pager.getAdapter() != null)
+            pager.getAdapter().notifyDataSetChanged();
+    }
 
 }

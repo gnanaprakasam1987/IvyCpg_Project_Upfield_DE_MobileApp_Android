@@ -32,6 +32,8 @@ public interface SellerDashboardContract {
         void setWeekSpinner(ArrayList<String> weekList, int currentWeek);
 
         void setupRouteSpinner(ArrayList<BeatMasterBO> beatMasterBOS);
+
+        void createP3MChartFragment(ArrayList<DashBoardBO> dashBoardBOS);
     }
 
 
@@ -78,6 +80,8 @@ public interface SellerDashboardContract {
         boolean shouldShowSMPDash();
 
         boolean shouldShowInvoiceDash();
+
+        boolean shouldShowKPIBarChart();
 
         void fetchP3MSellerDashboardData();
 
