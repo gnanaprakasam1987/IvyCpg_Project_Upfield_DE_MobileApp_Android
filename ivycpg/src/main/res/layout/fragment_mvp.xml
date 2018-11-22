@@ -57,7 +57,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/WHITE"
+        android:background="@color/white"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:visibility="gone">
@@ -122,7 +122,7 @@
                             android:gravity="center"
                             android:text="@string/rank"
                             android:textColor="?attr/colorAccent"
-                            android:textSize="@dimen/font_medium" />
+                            android:textSize="@dimen/font_small" />
 
                         <TextView
                             android:id="@+id/txtRank"
@@ -132,7 +132,7 @@
                             android:layout_marginStart="@dimen/dimen_4dp"
                             android:gravity="center"
                             android:text="13"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/highlight_small"
                             android:layout_marginLeft="@dimen/dimen_4dp" />
                     </LinearLayout>
@@ -143,7 +143,7 @@
                     android:layout_width="1dp"
                     android:layout_height="@dimen/dimens_30dp"
                     android:layout_gravity="center"
-                    android:background="@color/WHITE"
+                    android:background="@color/white"
                     android:gravity="center"
                     android:padding="@dimen/dimens_6dp" />
 
@@ -170,7 +170,7 @@
                             android:gravity="center"
                             android:text="@string/points"
                             android:textColor="?attr/colorAccent"
-                            android:textSize="@dimen/font_medium" />
+                            android:textSize="@dimen/font_small" />
 
                         <TextView
                             android:id="@+id/txtPoints"
@@ -180,7 +180,7 @@
                             android:layout_marginStart="@dimen/dimen_4dp"
                             android:gravity="center"
                             android:text="34"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/highlight_small"
                             android:layout_marginLeft="@dimen/dimen_4dp" />
                     </LinearLayout>
@@ -226,7 +226,7 @@
                                 android:layout_alignParentStart="true"
                                 android:layout_margin="@dimen/dimen_10dp"
                                 android:text="Badges"
-                                android:textColor="@color/Black"
+                                android:textColor="@color/half_Black"
                                 android:textSize="18sp"
                                 android:layout_alignParentLeft="true" />
 
@@ -247,7 +247,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/GRAY" />
+                            android:background="@color/light_gray" />
 
                         <HorizontalScrollView
                             android:id="@+id/scroll_horizontal"
@@ -332,7 +332,7 @@
                                 android:layout_alignParentStart="true"
                                 android:layout_margin="@dimen/dimen_10dp"
                                 android:text="Peer"
-                                android:textColor="@color/Black"
+                                android:textColor="@color/half_Black"
                                 android:textSize="18sp"
                                 android:layout_alignParentLeft="true" />
                         </LinearLayout>
@@ -340,7 +340,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/GRAY" />
+                            android:background="@color/light_gray" />
 
                         <LinearLayout
                             android:id="@+id/ll_peer"

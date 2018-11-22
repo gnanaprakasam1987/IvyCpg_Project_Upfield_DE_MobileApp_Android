@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/id"
                 android:tag="unload_history_id"
-                android:textColor="@color/history_label_color"
+                android:textColor="@color/gray_text"
                 android:textSize="@dimen/text_size_secondary" />
 
             <TextView
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/total_qty"
                 android:tag="unload_history_sa_qty"
-                android:textColor="@color/history_label_color"
+                android:textColor="@color/gray_text"
                 android:textSize="@dimen/text_size_secondary" />
 
             <TextView
@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/zero"
-                android:textColor="@color/history_date_color"
+                android:textColor="@color/FullBlack"
                 android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
 
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/ns"
                 android:tag="unload_history_ns_qty"
-                android:textColor="@color/history_label_color"
+                android:textColor="@color/gray_text"
                 android:textSize="@dimen/text_size_secondary" />
 
             <TextView
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/zero"
-                android:textColor="@color/history_date_color"
+                android:textColor="@color/FullBlack"
                 android:textSize="@dimen/text_size_primary" />
         </LinearLayout>
 
@@ -114,7 +114,7 @@
                 android:layout_marginRight="@dimen/profile_header_txt_layout_marginbottom"
                 android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
                 android:background="@drawable/ic_double_right_arrow"
-                android:backgroundTint="@color/history_invbtn_color"
+                android:backgroundTint="@color/half_Black"
                 android:gravity="center"
                 android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
                 android:textColor="@color/toolbar_title"

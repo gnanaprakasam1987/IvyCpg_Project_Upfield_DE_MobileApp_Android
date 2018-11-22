@@ -44,7 +44,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
-import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.jointcall.JoinCallActivity;
 import com.ivy.cpg.view.subd.SubDSelectionDialog;
 import com.ivy.lib.Utils;
@@ -78,9 +77,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import co.chatsdk.core.session.ChatSDK;
-import co.chatsdk.core.session.InterfaceManager;
-
 public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
 
     private static final String CODE_PRODUCTIVE = "Filt_01";
@@ -112,6 +108,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private Map<String, String> mRetTgtAchv;
     private boolean hasOrderScreen;
     private String mSelecteRetailerType = "ALL";
+    RetailerSelectionAdapter mSchedule;
     private RetailerSelectionAdapter.ViewHolder mSelectedRetailer;
     private AutoCompleteTextView mBrandAutoCompleteTV;
     private MapViewListener mapViewListener;
@@ -324,6 +321,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                         if (constraint != null) {
                             suggestions.clear();
                             for (BeatMasterBO bmBO : tempItems) {
+                                if(constraint.toString().equalsIgnoreCase("all")) constraint = "";
                                 if (bmBO.toString().toLowerCase().contains(constraint.toString().toLowerCase())) {
                                     suggestions.add(bmBO);
                                 }
@@ -724,6 +722,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         else
             tv_target1.setText(getTotalVisitActual());
 
+        if(mSchedule != null)
+            mSchedule.notifyDataSetChanged();
 
     }
 
@@ -909,7 +909,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         if (!hasOrderScreen)
             setRetailerDoneforNoOrderMenu(retailer);
-        RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
+        mSchedule = new RetailerSelectionAdapter(
                 retailer);
         mSchedule.notifyDataSetChanged();
 
@@ -1001,7 +1001,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         if (!hasOrderScreen)
             setRetailerDoneforNoOrderMenu(retailer);
-        RetailerSelectionAdapter mSchedule = new RetailerSelectionAdapter(
+        mSchedule = new RetailerSelectionAdapter(
                 new ArrayList<>(retailer));
         String strCount = "" + mSchedule.getCount();
         tv_storeVisit.setText(strCount);
@@ -1397,33 +1397,33 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
                             && ("N").equals(retailerObj.isInvoiceDone())) {
                         holder.line_order_without_invoice
-                                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
+                                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Orange));
                     } else {
                         holder.line_order_without_invoice
-                                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
+                                .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                     }
                 } else if (bmodel.PRD_FOR_SKT && retailerObj.isProductive().equalsIgnoreCase("Y")) { // If ProductiveStockCheck is ON and then check for Productive is done or not. This value is updated while saving the stockcheck
-                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                 } else if (!hasOrderScreen && "Y".equals(retailerObj.getIsVisited())) {
                     holder.line_order_without_invoice
-                            .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
+                            .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                 } else if (("Y").equals(retailerObj.getIsVisited()) || retailerObj.isHasNoVisitReason()) {
-                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Orange));
                 } else if (("Y").equals(retailerObj.getIsDeadStore())) {
-                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Burgundy));
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_red));
                 } else {
-                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.light_gray));
                 }
 
                 if (("Y").equals(retailerObj.getIsDeadStore())) {
-                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_name));
+                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.half_Black));
                     if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
-                        holder.tv_labelTgt1.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
-                        holder.tv_labelTgt2.setTextColor(ContextCompat.getColor(getActivity(), R.color.dead_store_score));
+                        holder.tv_labelTgt1.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
+                        holder.tv_labelTgt2.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
                     }
                 } else {
 
-                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.store_title));
+                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
                     if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
                         holder.tv_labelTgt1.setTextColor(color);
                         holder.tv_labelTgt2.setTextColor(color);
@@ -1435,20 +1435,20 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 if (retailerObj.getLastVisitStatus() != null) {
                     switch (retailerObj.getLastVisitStatus()) {
                         case "P":
-                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.font_green));
+                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                             break;
                         case "N":
-                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_orange));
+                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Orange));
                             break;
                         default:
-                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+                            holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.light_gray));
                             break;
                     }
                 } else {
-                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.light_gray));
                 }
 
-                holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.store_title));
+                holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
                 if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
                     holder.tv_labelTgt1.setTextColor(color);
                     holder.tv_labelTgt2.setTextColor(color);
@@ -1460,7 +1460,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 if (("Y").equals(retailerObj.getIsNew())) {
                     holder.outletNew.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     holder.outletNew.setVisibility(View.VISIBLE);
-                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.new_grey));
+                    holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.light_gray));
                 } else {
                     holder.outletNew.setVisibility(View.GONE);
                 }

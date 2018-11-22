@@ -72,7 +72,7 @@
 
         <TextView
             android:id="@+id/photocapturetitle"
-            style="?textTitleStyle"
+            style="?attr/dialogTitleStyle"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
 
@@ -187,8 +187,8 @@
                         android:padding="@dimen/spin_linlay_margin"
 
                         android:singleLine="false"
-                        android:textColor="@color/Black"
-                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColor="@color/half_Black"
+                        android:textColorHighlight="@color/gray_text"
 
                         android:textColorHint="@color/list_item_secondary_text_color"
 
@@ -319,8 +319,8 @@
                         android:hint="@string/product_name"
                         android:inputType="text"
                         android:singleLine="true"
-                        android:textColor="@color/Black"
-                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColor="@color/half_Black"
+                        android:textColorHighlight="@color/gray_text"
                         android:textColorHint="@color/list_item_secondary_text_color"
                         android:textSize="@dimen/text_size_primary"></EditText>
                 </LinearLayout>
@@ -348,8 +348,8 @@
                         android:hint="@string/ABVC"
                         android:inputType="numberDecimal"
                         android:singleLine="true"
-                        android:textColor="@color/Black"
-                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColor="@color/half_Black"
+                        android:textColorHighlight="@color/gray_text"
                         android:textColorHint="@color/list_item_secondary_text_color"
                         android:textSize="@dimen/text_size_primary" />
 
@@ -369,8 +369,8 @@
                         android:hint="@string/lot_number"
                         android:inputType="number"
                         android:singleLine="true"
-                        android:textColor="@color/Black"
-                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColor="@color/half_Black"
+                        android:textColorHighlight="@color/gray_text"
                         android:textColorHint="@color/list_item_secondary_text_color"
                         android:textSize="@dimen/text_size_primary" />
 
@@ -390,8 +390,8 @@
                         android:hint="@string/seq_no"
                         android:inputType="number"
                         android:singleLine="true"
-                        android:textColor="@color/Black"
-                        android:textColorHighlight="@color/GRAY_TEXT"
+                        android:textColor="@color/half_Black"
+                        android:textColorHighlight="@color/gray_text"
                         android:textColorHint="@color/list_item_secondary_text_color"
 
                         android:textSize="@dimen/text_size_primary" />

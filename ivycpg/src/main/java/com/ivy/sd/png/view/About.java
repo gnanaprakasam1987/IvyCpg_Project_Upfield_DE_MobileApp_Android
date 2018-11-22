@@ -36,11 +36,7 @@ public class About extends AppCompatActivity {
             } else {
                 super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
             }
-            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
-                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
-            } else {
-                setFontStyle(bmodel.configurationMasterHelper.fontSize);
-            }
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -99,15 +95,4 @@ public class About extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void setFontStyle(String font) {
-        if (font.equalsIgnoreCase("Small")) {
-            getTheme().applyStyle(R.style.FontStyle_Small, true);
-        } else if (font.equalsIgnoreCase("Medium")) {
-            getTheme().applyStyle(R.style.FontStyle_Medium, true);
-        } else if (font.equalsIgnoreCase("Large")) {
-            getTheme().applyStyle(R.style.FontStyle_Large, true);
-        } else {
-            getTheme().applyStyle(R.style.FontStyle_Small, true);
-        }
-    }
 }

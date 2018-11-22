@@ -898,9 +898,9 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     && (mProductsForAdapter.get(groupPosition).getSchemeProducts() != null
                     && mProductsForAdapter.get(groupPosition).getSchemeProducts().size() > 0)) {
 
-                if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mProductsForAdapter.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
+                //if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mProductsForAdapter.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
                     return mProductsForAdapter.get(groupPosition).getSchemeProducts().size();
-                }
+                //}
             }
 
             return 0;

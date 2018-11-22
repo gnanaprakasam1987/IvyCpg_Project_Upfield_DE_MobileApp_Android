@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/TransparentBlack"
+        android:background="@color/light_gray"
         android:gravity="center">
 
         <TextView

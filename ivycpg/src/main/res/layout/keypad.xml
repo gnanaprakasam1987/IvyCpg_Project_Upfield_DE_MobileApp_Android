@@ -10,7 +10,7 @@
         android:id="@+id/keypad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/list_menu_left_end"
+        android:background="@color/light_gray"
         android:gravity="center"
         android:orientation="horizontal">
 

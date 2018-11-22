@@ -236,8 +236,8 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
         /* Code for changing the textColor and hint color for the search view */
         SearchView.SearchAutoComplete searchAutoComplete = mSearchRetailer.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchAutoComplete.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.WHITE, null));
-        searchAutoComplete.setTextColor(ResourcesCompat.getColor(getResources(), R.color.WHITE, null));
+        searchAutoComplete.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.white, null));
+        searchAutoComplete.setTextColor(ResourcesCompat.getColor(getResources(), R.color.white, null));
 
         ImageView closeButton = mSearchRetailer.findViewById(R.id.search_close_btn);
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -955,12 +955,12 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                     holder.isValid = true;
 
                 } else {
-                    holder.TVDate.setTextColor(getResources().getColor(R.color.new_grey));
+                    holder.TVDate.setTextColor(getResources().getColor(R.color.light_gray));
                     holder.isValid = false;
                 }
                 try {
                     if (dateFormatGeneral.parse(mItems1.get(position)).before(new Date())) {
-                        holder.TVDate.setTextColor(getResources().getColor(R.color.plano_list_header));
+                        holder.TVDate.setTextColor(getResources().getColor(R.color.FullBlack));
                         holder.TVDate.setTypeface(null, Typeface.NORMAL);
                     }
                 } catch (ParseException e) {
@@ -993,7 +993,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
             }
 
             if ((hoverDate.equals(mItems1.get(position)))) {
-                holder.ll_date.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.plano_footer_line, null));
+                holder.ll_date.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.divider_view_color, null));
             } else {
                 holder.ll_date.setBackgroundColor(Color.WHITE);
             }

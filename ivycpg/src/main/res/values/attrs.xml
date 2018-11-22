@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <declare-styleable name="FontStyle">
-        <attr name="font_small" format="dimension" />
-        <attr name="font_medium" format="dimension" />
-        <attr name="font_large" format="dimension" />
-        <attr name="font_xlarge" format="dimension" />
-    </declare-styleable>
     <declare-styleable name="MyTextView">
         <attr name="textFieldStyle" format="reference" />
-        <attr name="textTitleStyle" format="reference" />
-        <attr name="filterStyle" format="reference" />
+        <attr name="dialogTitleStyle" format="reference" />
         <attr name="listcolor" format="color" />
         <attr name="listcolor_alt" format="color" />
         <attr name="primarycolor" format="color" />
@@ -20,7 +13,6 @@
         <attr name="textColor" format="color" />
         <attr name="weekBackground" format="color" />
         <attr name="selectWeekBackground" format="color" />
-        <attr name="buttonBackground" format="color" />
     </declare-styleable>
 
     <declare-styleable name="MaterialSpinner">
@@ -76,7 +68,6 @@
         <attr name="customListItemSecondary" format="reference" />
         <attr name="customListItemValue" format="reference" />
         <attr name="customListTitleBlack" format="reference" />
-        <attr name="customdialogLabel" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="customLayout">
@@ -88,6 +79,7 @@
         <attr name="homescreenbackground" format="reference"/>
         <attr name="mtdDashboardBackground" format="reference" />
         <attr name="dashboardSpinnerSelector" format="reference" />
+        <attr name="customListTitleBackground" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="cardViewLayout">

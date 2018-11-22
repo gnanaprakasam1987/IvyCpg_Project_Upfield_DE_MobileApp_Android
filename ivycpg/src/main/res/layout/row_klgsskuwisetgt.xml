@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="5dp"
     card_view:cardPreventCornerOverlap="true"
@@ -33,7 +33,7 @@
                 android:paddingLeft="@dimen/whats_on_item_padding"
                 android:paddingStart="@dimen/whats_on_item_padding"
                 android:text="Value"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/factor_title_size"
                 android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
             android:layout_height="0.5dp"
             android:layout_marginEnd="@dimen/margin_10px"
             android:layout_marginStart="@dimen/margin_10px"
-            android:background="@color/GRAY" />
+            android:background="@color/light_gray" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -93,7 +93,7 @@
                             android:paddingStart="5dp"
                             android:tag="target_day"
                             android:text="@string/target"
-                            android:textColor="@color/btn_round_green"
+                            android:textColor="?attr/accentcolor"
                             android:textSize="@dimen/footer_label_size"
                             android:textStyle="normal" />
                     </LinearLayout>
@@ -114,7 +114,7 @@
                             android:paddingLeft="5dp"
                             android:paddingStart="5dp"
                             android:text="0"
-                            android:textColor="@color/GRAY_TEXT"
+                            android:textColor="@color/gray_text"
                             android:textSize="@dimen/value_text_size"
                             android:textStyle="normal" />
                     </LinearLayout>
@@ -126,7 +126,7 @@
                     android:layout_height="@dimen/divder_margin"
                     android:layout_marginEnd="@dimen/target_top_margin"
                     android:layout_marginStart="@dimen/target_top_margin"
-                    android:background="@color/GRAY" />
+                    android:background="@color/light_gray" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -180,7 +180,7 @@
                             android:paddingLeft="5dp"
                             android:paddingStart="5dp"
                             android:text="0"
-                            android:textColor="@color/GRAY_TEXT"
+                            android:textColor="@color/gray_text"
                             android:textSize="@dimen/value_text_size"
                             android:textStyle="normal" />
                     </LinearLayout>
@@ -192,7 +192,7 @@
                     android:layout_height="@dimen/divder_margin"
                     android:layout_marginEnd="@dimen/target_top_margin"
                     android:layout_marginStart="@dimen/target_top_margin"
-                    android:background="@color/GRAY" />
+                    android:background="@color/light_gray" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -225,7 +225,7 @@
                             android:paddingStart="5dp"
                             android:tag="sales_day"
                             android:text="@string/index"
-                            android:textColor="@color/new_orange"
+                            android:textColor="@color/Orange"
                             android:textSize="@dimen/footer_label_size"
                             android:textStyle="normal" />
                     </LinearLayout>
@@ -246,7 +246,7 @@
                             android:paddingLeft="5dp"
                             android:paddingStart="5dp"
                             android:text="0"
-                            android:textColor="@color/GRAY_TEXT"
+                            android:textColor="@color/gray_text"
                             android:textSize="@dimen/value_text_size"
                             android:textStyle="normal" />
                     </LinearLayout>

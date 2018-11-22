@@ -1301,7 +1301,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                             holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex).setAvailability(1);
 
-                            holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(SubDStockCheckActivity.this, R.color.GREEN)));
+                            holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(SubDStockCheckActivity.this, R.color.green_productivity)));
                             holder.imageButton_availability.setChecked(true);
 
                         } else if (holder.productObj.getLocations()
@@ -1719,7 +1719,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             if (holder.productObj.getLocations()
                     .get(mSelectedLocationIndex).getAvailability() == 1) {
                 holder.imageButton_availability.setChecked(true);
-                holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(SubDStockCheckActivity.this, R.color.GREEN)));
+                holder.imageButton_availability.setSupportButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(SubDStockCheckActivity.this, R.color.green_productivity)));
 
             } else if (holder.productObj.getLocations()
                     .get(mSelectedLocationIndex).getAvailability() == 0) {
@@ -3897,7 +3897,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                         holder.btnFilter.setTextColor(ContextCompat.getColor(SubDStockCheckActivity.this, R.color.white));
                     } else {
                         holder.btnFilter.setBackgroundResource(R.drawable.button_round_corner_grey);
-                        holder.btnFilter.setTextColor(ContextCompat.getColor(SubDStockCheckActivity.this, R.color.Black));
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(SubDStockCheckActivity.this, R.color.half_Black));
                     }
                 }
             } catch (Exception e) {

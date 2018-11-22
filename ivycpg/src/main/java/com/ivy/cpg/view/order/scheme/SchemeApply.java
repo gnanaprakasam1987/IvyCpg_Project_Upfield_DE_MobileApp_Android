@@ -50,6 +50,7 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 
@@ -117,9 +118,9 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         }
 
 
-        btnNext.setOnClickListener(new OnClickListener() {
+        btnNext.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
 
                 if (isSchemeAplied(schemeHelper.getAppliedSchemeList())) {
                     schemeHelper.clearOffInvoiceSchemeList();

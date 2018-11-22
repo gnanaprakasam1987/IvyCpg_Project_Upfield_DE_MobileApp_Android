@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:overlapAnchor="false"
             app:ms_arrowColor="?attr/primarycolor"
-            app:ms_baseColor="@color/GRAY" />
+            app:ms_baseColor="@color/light_gray" />
 
     </LinearLayout>
 

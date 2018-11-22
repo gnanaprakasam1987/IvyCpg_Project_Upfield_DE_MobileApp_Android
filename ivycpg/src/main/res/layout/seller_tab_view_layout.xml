@@ -61,7 +61,7 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:gravity="center"
                     android:text="Filter"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>
@@ -92,7 +92,7 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:gravity="center"
                     android:text="Sort  "
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>

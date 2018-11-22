@@ -63,7 +63,7 @@
             android:adjustViewBounds="true"
             android:text="@string/close"
             android:textAllCaps="false"
-            android:textColor="@color/Black" />
+            android:textColor="@color/half_Black" />
 
         <Button
             android:id="@+id/btn_ok"

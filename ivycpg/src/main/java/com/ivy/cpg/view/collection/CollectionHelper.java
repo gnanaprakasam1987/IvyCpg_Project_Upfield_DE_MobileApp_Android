@@ -1,9 +1,8 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.collection;
 
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.view.collection.NoCollectionReasonBo;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BankMasterBO;
@@ -138,7 +137,7 @@ public class CollectionHelper {
                 paymentBO = new PaymentBO();
                 paymentBO.setCashMode(c.getString(0));
                 paymentBO.setListName(c.getString(1));
-                final boolean isCreditBalanceCheck = bmodel.collectionHelper.isCreditBalancebalance(paymentBO.getCashMode());
+                final boolean isCreditBalanceCheck = isCreditBalancebalance(paymentBO.getCashMode());
                 paymentBO.setCreditBalancePayment(isCreditBalanceCheck);
                 mPaymentBOByMode.put(paymentBO.getCashMode(), paymentBO);
 
@@ -311,7 +310,7 @@ public class CollectionHelper {
             String groupID = AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + bmodel.userMasterHelper.getUserMasterBO().getUserid());
             String groupDate = SDUtil.now(SDUtil.DATE_TIME);
             double calculateCredit = 0;
-            for (PaymentBO paymentBO : bmodel.collectionHelper.getPaymentList()) {
+            for (PaymentBO paymentBO : getPaymentList()) {
                 if (paymentBO.getAmount() > 0) {
                     if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE
                             && bmodel.retailerMasterBO.getCredit_balance() != -1 && paymentBO.isCreditBalancePayment()) { // update
@@ -366,7 +365,7 @@ public class CollectionHelper {
                         invoiceHeaderBO.setInvoiceNo(bmodel.invoiceNumber);
                         invoiceHeaderBO.setInvoiceAmount(paymentBO.getInvoiceAmount());
                         invoiceHeaderBO.setBalance(paymentBO.getInvoiceAmount());
-                        final List<CreditNoteListBO> creditNoteList = bmodel.collectionHelper.getCreditNoteList();
+                        final List<CreditNoteListBO> creditNoteList = getCreditNoteList();
                         for (CreditNoteListBO creditNoteListBO : creditNoteList) {
                             if (creditNoteListBO.getRetailerId().equals(
                                     bmodel.getRetailerMasterBO().getRetailerID())
@@ -544,7 +543,7 @@ public class CollectionHelper {
         return paymentData;
     }
 
-    protected ArrayList<String> getBillNumber(String groupid) {
+    public ArrayList<String> getBillNumber(String groupid) {
         ArrayList<String> billNumberList = new ArrayList<>();
         DBUtil db;
         try {
@@ -970,14 +969,14 @@ public class CollectionHelper {
                 seqNo = bmodel.downloadSequenceNo("COL");
                 groupID = AppUtils.QT(seqNo);
             }
-            bmodel.collectionHelper.collectionGroupId = groupID;
+            collectionGroupId = groupID;
 
             String groupDate = SDUtil.now(SDUtil.DATE_TIME);
             // insert cash,creditnote,mobile payment,coupon
             boolean isCreditNotePaymentAvailable = false;
 
             for (InvoiceHeaderBO invoiceHeaderBO : invoiceList) {
-                bmodel.collectionHelper.collectionDate = invoiceHeaderBO.getInvoiceDate().replace("/", "");
+                collectionDate = invoiceHeaderBO.getInvoiceDate().replace("/", "");
                 for (PaymentBO paymentBO : paymentList) {
 
                     if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE
@@ -1094,7 +1093,7 @@ public class CollectionHelper {
 
                     final double discountpercentage = getDiscountSlabPercent(count + 1);
                     if (discountpercentage > 0)
-                        totalDiscount = bmodel.collectionHelper.saveSlabWiseDiscount(payID, collectedAmount, discountpercentage, db);
+                        totalDiscount = saveSlabWiseDiscount(payID, collectedAmount, discountpercentage, db);
                 }
                 String chequeNumber = "";
                 if (!paymentBO.getCashMode().equals(StandardListMasterConstants.CASH))
@@ -1129,7 +1128,7 @@ public class CollectionHelper {
                 db.insertSQL(DataMembers.tbl_Payment, columns, values);
             } else if (StandardListMasterConstants.CREDIT_NOTE.equals(paymentBO.getCashMode())) {
 
-                final List<CreditNoteListBO> creditNoteList = bmodel.collectionHelper.getCreditNoteList();
+                final List<CreditNoteListBO> creditNoteList = getCreditNoteList();
                 for (CreditNoteListBO creditNoteListBO : creditNoteList) {
                     if (creditNoteListBO.getRetailerId().equals(
                             bmodel.getRetailerMasterBO().getRetailerID())
@@ -1220,7 +1219,7 @@ public class CollectionHelper {
             if (!isDisNotApplyForCreditNote) {
                 final double discountpercentage = getDiscountSlabPercent(count + 1);
                 if (discountpercentage > 0)
-                    totalDiscount = bmodel.collectionHelper.saveSlabWiseDiscount(payID, collectedAmount, discountpercentage, db);
+                    totalDiscount = saveSlabWiseDiscount(payID, collectedAmount, discountpercentage, db);
             }
         }
 
@@ -1262,7 +1261,7 @@ public class CollectionHelper {
     }
 
     private void updateCreditNote(DBUtil db) {
-        final List<CreditNoteListBO> creditNoteList = bmodel.collectionHelper.getCreditNoteList();
+        final List<CreditNoteListBO> creditNoteList = getCreditNoteList();
         for (CreditNoteListBO creditNoteListBO : creditNoteList) {
             if (creditNoteListBO.getRetailerId().equals(
                     bmodel.getRetailerMasterBO().getRetailerID())
@@ -1640,7 +1639,7 @@ public class CollectionHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            final boolean isCreditBalanceCheck = bmodel.collectionHelper.isCreditBalancebalance(paymentBO.getCashMode());
+            final boolean isCreditBalanceCheck = isCreditBalancebalance(paymentBO.getCashMode());
 
             int listid;
             if (isCreditBalanceCheck) {
@@ -1872,7 +1871,7 @@ public class CollectionHelper {
         return false;
     }
 
-    public ArrayList<NoCollectionReasonBo> loadInvoiceList(String id,Context context) {
+    public ArrayList<NoCollectionReasonBo> loadInvoiceList(String id, Context context) {
 
         ArrayList<NoCollectionReasonBo> mInvioceList = new ArrayList<>();
         try {
@@ -1910,16 +1909,16 @@ public class CollectionHelper {
         return mInvioceList;
     }
 
-    public boolean checkInvoiceWithReason(String retailId,Context context){
+    public boolean checkInvoiceWithReason(String retailId, Context context) {
         boolean isReasonGiven = true;
 
         for (NoCollectionReasonBo noCollectionReasonBo :
-                bmodel.collectionHelper.loadInvoiceList(retailId,context)){
+                loadInvoiceList(retailId, context)) {
 
             if ((noCollectionReasonBo.getNoCollectionReasonId() == null
                     || noCollectionReasonBo.getNoCollectionReasonId().equals("0") ||
                     noCollectionReasonBo.getNoCollectionReasonId().isEmpty())
-                    && noCollectionReasonBo.getPaidAmount() == 0){
+                    && noCollectionReasonBo.getPaidAmount() == 0) {
 
                 isReasonGiven = false;
                 break;

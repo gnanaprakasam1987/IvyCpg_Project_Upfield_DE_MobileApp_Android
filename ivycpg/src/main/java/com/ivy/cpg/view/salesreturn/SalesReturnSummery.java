@@ -39,6 +39,7 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,9 +106,9 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ;
 
-        mBtnSave.setOnClickListener(new View.OnClickListener() {
+        mBtnSave.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
                 onNextButtonClick();
             }
         });
@@ -779,7 +780,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             if (totalBalanceQty > 0) {
                 ProductMasterBO productMasterBO = new ProductMasterBO(product);
                 productMasterBO.setOrderedPcsQty(totalBalanceQty);
-                productMasterBO.setNetValue(totalBalanceAmount);
+                productMasterBO.setNetValue(SDUtil.formatAsPerCalculationConfig(totalBalanceAmount));
                 mPrintList.add(productMasterBO);
             }
 

@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@color/blue_btn_selected_border"
+        android:background="@color/toolbar_title"
         android:orientation="horizontal" >
 
         <TextView

@@ -216,9 +216,9 @@ public class LogReportFragment extends IvyBaseFragment {
             holder.btnStatus.setText(position + 1 + "");
 
             if (holder.logReportBO.isInterval())
-                holder.btnStatus.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Burgundy));
+                holder.btnStatus.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.dark_red));
             else
-                holder.btnStatus.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.ink_blue));
+                holder.btnStatus.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.highlighter));
 
             return convertView;
         }

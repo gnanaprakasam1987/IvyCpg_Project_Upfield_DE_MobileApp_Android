@@ -99,11 +99,11 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                 "/"+sellerListBos.get(holder.getAdapterPosition()).getCovered());
 
         int sellerProductive = 0;
-        if (sellerListBos.get(holder.getAdapterPosition()).getCovered()!=0) {
+        if (sellerListBos.get(holder.getAdapterPosition()).getTarget()!=0) {
             sellerProductive = (int)((float)sellerListBos.get(holder.getAdapterPosition()).getCovered() / (float)sellerListBos.get(holder.getAdapterPosition()).getTarget() * 100);
         }
 
-        holder.performancePercent.setText(sellerProductive+"%");
+        holder.performancePercent.setText(sellerProductive>100?"100%":sellerProductive+"%");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             holder.progressBar.setProgress(sellerProductive,true);
@@ -136,7 +136,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                             .setText("Last visit at " + convertTime(sellerListBos.get(holder.getAdapterPosition()).getInTime()))
                             .setTextSize(R.dimen._11sdp)
                             .setBackgroundColor(ContextCompat.getColor(context, R.color.tootl_tip_bg))
-                            .setTextColor(ContextCompat.getColor(context, R.color.WHITE))
+                            .setTextColor(ContextCompat.getColor(context, R.color.white))
                             .setPadding(10f);
                     builder.show();
                 }

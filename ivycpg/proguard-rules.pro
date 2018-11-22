@@ -79,4 +79,13 @@
 -keepattributes Signature
 
 -keepclassmembers class com.ivy.cpg.view.supervisor.mvp.models.** {*;}
--keepclassmembers class com.ivy.cpg.view.supervisor.mvp.models.** {*;}
+
+
+#Added for Chat-Sdk
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+
+# If you do not use SQLCipher:
+-dontwarn org.greenrobot.greendao.database.**

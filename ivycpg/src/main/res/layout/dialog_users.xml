@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/tv_title"
-        style="?attr/textTitleStyle"
+        style="?attr/dialogTitleStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -24,7 +24,7 @@
         android:id="@+id/vw"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/my_location_color" />
+        android:background="@color/light_gray" />
 
     <Button
         android:id="@+id/btn_close"

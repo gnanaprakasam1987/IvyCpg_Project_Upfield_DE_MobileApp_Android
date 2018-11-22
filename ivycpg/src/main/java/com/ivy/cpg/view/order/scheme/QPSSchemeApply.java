@@ -46,6 +46,7 @@ import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,9 +124,9 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         }
         applyHeaderLabels();
 
-        btnNext.setOnClickListener(new OnClickListener() {
+        btnNext.setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onSingleClick(View view) {
                 ArrayList<String> addedProductIDList = new ArrayList<>();
                 for (QPSListBO qpsBO : mSchemeDoneList) {
                     Vector<SchemeProductBO> schemeProducts = qpsBO.getSchemeList();

@@ -6,7 +6,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context="com.ivy.sd.png.view.CollectionScreen">
+    tools:context="com.ivy.cpg.view.collection.CollectionScreen">
 
     <RelativeLayout
         android:id="@+id/tolllayout"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
 
             android:layout_margin="@dimen/list_margin"
-            card_view:cardBackgroundColor="@color/WHITE"
+            card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="0dp"
             card_view:cardElevation="5dp"
             card_view:cardPreventCornerOverlap="true"
@@ -47,7 +47,7 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/WHITE"
+                    android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="15dp">
 
@@ -71,7 +71,7 @@
                         android:gravity="center"
                         android:padding="2dp"
                         android:text="123"
-                        android:textSize="@dimen/font_medium" />
+                        android:textSize="@dimen/font_small" />
 
                 </LinearLayout>
 
@@ -81,7 +81,7 @@
                     android:layout_marginEnd="@dimen/store_margin_top"
                     android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
-                    android:background="@color/GRAY"
+                    android:background="@color/light_gray"
                     android:orientation="horizontal"
 
                     >
@@ -90,7 +90,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/ret_list_div"
-                        android:background="@color/light_grey"
+                        android:background="@color/divider_view_color"
                         android:orientation="horizontal"
                         android:padding="@dimen/plano_list_top_margin">
 
@@ -136,7 +136,7 @@
                             <TextView
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/GRAY" />
+                                android:background="@color/light_gray" />
 
                         </LinearLayout>
 
@@ -250,7 +250,7 @@
                     android:layout_marginEnd="@dimen/values_editextWidth"
                     android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
-                    android:background="@color/light_grey" />
+                    android:background="@color/divider_view_color" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -258,7 +258,7 @@
                     android:layout_marginEnd="@dimen/store_margin_top"
                     android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/dialog_list_item_left_margin"
-                    android:background="@color/GRAY"
+                    android:background="@color/light_gray"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -266,7 +266,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/ret_list_div"
-                        android:background="@color/light_grey"
+                        android:background="@color/divider_view_color"
                         android:orientation="horizontal"
                         android:padding="@dimen/store_margin_top">
 
@@ -312,7 +312,7 @@
                             <TextView
                                 android:layout_width="1dp"
                                 android:layout_height="match_parent"
-                                android:background="@color/GRAY" />
+                                android:background="@color/light_gray" />
 
                         </LinearLayout>
 
@@ -428,7 +428,7 @@
                     android:layout_marginEnd="@dimen/values_editextWidth"
                     android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
-                    android:background="@color/light_grey" />
+                    android:background="@color/divider_view_color" />
 
                 <RelativeLayout
                     android:id="@+id/distancelayout"
@@ -480,7 +480,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/footer"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         android:orientation="horizontal">
 
         <LinearLayout

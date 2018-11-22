@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="5dp"
     card_view:cardPreventCornerOverlap="true"
@@ -32,7 +32,7 @@
                 android:layout_weight="4"
                 android:paddingLeft="@dimen/whats_on_item_padding"
                 android:text="Value"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/factor_title_size"
                 android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
             android:layout_height="0.5dp"
             android:layout_marginLeft="@dimen/margin_10px"
             android:layout_marginRight="@dimen/margin_10px"
-            android:background="@color/GRAY"></View>
+            android:background="@color/light_gray"></View>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -110,7 +110,7 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="5dp"
                             android:text="0"
-                            android:textColor="@color/GRAY_TEXT"
+                            android:textColor="@color/gray_text"
                             android:textSize="@dimen/value_text_size"
                             android:textStyle="normal" />
                     </LinearLayout>
@@ -123,7 +123,7 @@
                     android:layout_marginLeft="@dimen/target_top_margin"
                     android:visibility="gone"
                     android:layout_marginRight="@dimen/target_top_margin"
-                    android:background="@color/GRAY" />
+                    android:background="@color/light_gray" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -176,7 +176,7 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="5dp"
                             android:text="0"
-                            android:textColor="@color/GRAY_TEXT"
+                            android:textColor="@color/gray_text"
                             android:textSize="@dimen/value_text_size"
                             android:textStyle="normal" />
                     </LinearLayout>
@@ -199,7 +199,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
                     android:text="0%"
-                    android:textColor="@color/Black"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/percent_value_size"
                     android:textStyle="bold" />
 

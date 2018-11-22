@@ -48,6 +48,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -59,7 +60,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.CollectionScreen;
+import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.sd.png.view.EmailDialog;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -262,7 +263,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     }
                     startActivity(i);
                 } else if (isFromCollection) {
-                    bmodel.collectionHelper.downloadCollectionMethods();
+                    CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             SDUtil.now(SDUtil.DATE_GLOBAL),
                             SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
@@ -484,9 +485,9 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 //Attachment
                 DataSource source;
                 if (bmodel.configurationMasterHelper.IS_ATTACH_PDF) {
-                   // LayoutInflater inflater = (LayoutInflater) CommonPrintPreviewActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-                   // RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
-                   // root.setDrawingCacheEnabled(true);
+                    // LayoutInflater inflater = (LayoutInflater) CommonPrintPreviewActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                    // RelativeLayout root = (RelativeLayout) inflater.inflate(R.layout.activity_common_print_preview, null); //RelativeLayout is root view of my UI(xml) file.
+                    // root.setDrawingCacheEnabled(true);
                     screen = getBitmapFromView(CommonPrintPreviewActivity.this.getWindow().findViewById(R.id.root_print));
                     createPdf(StandardListMasterConstants.PRINT_FILE_INVOICE + bmodel.invoiceNumber);
                    /* File newFile = new File(Environment.getExternalStorageDirectory().getPath() + "/IvyInvoice/"
@@ -1160,6 +1161,21 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         return mMAcAddress;
     }
 
+    public boolean isPrintFileExsist() {
+        String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                + "/" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + DataMembers.PRINTFILE + "/";
+        File directory = new File(path);
+        File[] contents = directory.listFiles();
+        if (contents == null) {
+            return false;
+        } else if (contents.length == 0) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
     private void showAlert() {
 
         if (isUpdatePrintCount)
@@ -1181,7 +1197,11 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     R.string.printed_successfully);
         } else {
             updateStatus("Printer error.");
-            msg = getResources().getString(R.string.error_connecting_printer);
+            if (!isPrintFileExsist())
+                msg = getString(R.string.printFile_missing_error);
+            else
+                msg = getResources().getString(R.string.error_connecting_printer);
+
         }
         if (commonDialog != null && commonDialog.isShowing()) {
             commonDialog.dismiss();
@@ -1230,6 +1250,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         commonDialog.show();
     }
 
+
     private void moveBack() {
         if (isFromOrder) {
             bmodel.productHelper.clearOrderTable();
@@ -1253,7 +1274,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             }
             startActivity(i);
         } else if (isFromCollection) {
-            bmodel.collectionHelper.downloadCollectionMethods();
+            CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                     SDUtil.now(SDUtil.DATE_GLOBAL),
                     SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");

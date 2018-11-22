@@ -76,7 +76,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
         if (position % 2 == 0)
             holder.view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
         else
-            holder.view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.history_list_bg));
+            holder.view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
 
     }
 

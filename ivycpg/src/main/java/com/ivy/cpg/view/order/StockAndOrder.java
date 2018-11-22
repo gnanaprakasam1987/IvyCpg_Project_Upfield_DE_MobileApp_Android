@@ -121,6 +121,7 @@ import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
 import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -375,13 +376,59 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mBtnGuidedSelling_prev.setOnClickListener(this);
 
         mBtn_Search.setOnClickListener(this);
-        mBtnNext.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
 
         mBtnNext.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        mBtnNext.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
 
+                if (bmodel.configurationMasterHelper.IS_ENABLE_LICENSE_VALIDATION) {
+                    boolean isDrugLicenseExpired = false;
+                    LinkedList<ProductMasterBO> mOrderedProductList = new LinkedList<>();
+                    for (int j = 0; j < bmodel.productHelper.getProductMaster().size(); ++j) {
+                        ProductMasterBO product = bmodel.productHelper.getProductMaster().get(j);
+                        if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 ||
+                                product.getOrderedOuterQty() > 0) {
+                            mOrderedProductList.add(product);
+                        }
+                    }
+                    if (bmodel.productHelper.isDrugOrder(mOrderedProductList) && bmodel.productHelper.isDLDateExpired()) {
+                        isDrugLicenseExpired = true;
+                    }
+                    if (isDrugLicenseExpired) {
+                        if (!bmodel.configurationMasterHelper.IS_SOFT_LICENSE_VALIDATION) {
+                            bmodel.showAlert(getResources().getString(R.string.drug_license_expired), 0);
+                            return;
+                        } else {
+                            Toast.makeText(StockAndOrder.this, getResources().getString(R.string.drug_license_expired), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                if (bmodel.configurationMasterHelper.IS_SR_VALIDATE_BY_RETAILER_TYPE) {
+                    updatesalesReturnValue();
+                    if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
+                        if (!orderHelper.returnReplacementAmountValidation(true, true, StockAndOrder.this)) {
+                            onnext();
+                        } else {
+                            Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_not_matching_replacing_product_price), Toast.LENGTH_SHORT).show();
+                        }
+                    } else if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CREDIT")) {
+                        if (orderHelper.returnReplacementAmountValidation(false, true, StockAndOrder.this)) {
+                            onnext();
+                        } else {
+                            Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_less_than_replacing_product_price), Toast.LENGTH_SHORT).show();
+                        }
+                    } else
+                        onnext();
+                } else
+                    onnext();
+
+
+            }
+        });
         ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.totalValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -3206,12 +3253,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                         if (!"".equals(qty)) {
                             if (bmodel.validDecimalValue(qty, 8, 2)) {
-                                holder.productObj.setSrp(SDUtil
-                                        .convertToFloat(qty));
-                                holder.productObj.setCsrp(holder.productObj.getCaseSize() * SDUtil
-                                        .convertToFloat(qty));
-                                holder.productObj.setOsrp(holder.productObj.getOutersize() * SDUtil
-                                        .convertToFloat(qty));
+
+                                holder.productObj.setSrp(SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+
+                                float csrp=holder.productObj.getCaseSize() * SDUtil.convertToFloat(qty);
+                                holder.productObj.setCsrp(SDUtil.convertToFloat(SDUtil.format(csrp,bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+
+                                float osrp=holder.productObj.getOutersize() * SDUtil.convertToFloat(qty);
+                                holder.productObj.setOsrp(SDUtil.convertToFloat(SDUtil.format(osrp,bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
                             } else {
                                 holder.srpEdit.setText(qty.length() > 1 ? qty
                                         .substring(0, qty.length() - 1) : "0");
@@ -4112,50 +4161,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 Commons.printException(e);
             }
             loadProductList();
-
-        } else if (vw == mBtnNext) {
-
-            if (bmodel.configurationMasterHelper.IS_ENABLE_LICENSE_VALIDATION) {
-                boolean isDrugLicenseExpired = false;
-                LinkedList<ProductMasterBO> mOrderedProductList = new LinkedList<>();
-                for (int j = 0; j < bmodel.productHelper.getProductMaster().size(); ++j) {
-                    ProductMasterBO product = bmodel.productHelper.getProductMaster().get(j);
-                    if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 ||
-                            product.getOrderedOuterQty() > 0) {
-                        mOrderedProductList.add(product);
-                    }
-                }
-                if (bmodel.productHelper.isDrugOrder(mOrderedProductList) && bmodel.productHelper.isDLDateExpired()) {
-                    isDrugLicenseExpired = true;
-                }
-                if (isDrugLicenseExpired) {
-                    if (!bmodel.configurationMasterHelper.IS_SOFT_LICENSE_VALIDATION) {
-                        bmodel.showAlert(getResources().getString(R.string.drug_license_expired), 0);
-                        return;
-                    } else {
-                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.drug_license_expired), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-            if (bmodel.configurationMasterHelper.IS_SR_VALIDATE_BY_RETAILER_TYPE) {
-                updatesalesReturnValue();
-                if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CASH")) {
-                    if (!orderHelper.returnReplacementAmountValidation(true, true, this)) {
-                        onnext();
-                    } else {
-                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_not_matching_replacing_product_price), Toast.LENGTH_SHORT).show();
-                    }
-                } else if (bmodel.retailerMasterBO.getRpTypeCode() != null && bmodel.retailerMasterBO.getRpTypeCode().equals("CREDIT")) {
-                    if (orderHelper.returnReplacementAmountValidation(false, true, this)) {
-                        onnext();
-                    } else {
-                        Toast.makeText(StockAndOrder.this, getResources().getString(R.string.return_products_price_less_than_replacing_product_price), Toast.LENGTH_SHORT).show();
-                    }
-                } else
-                    onnext();
-            } else
-                onnext();
-
 
         } else if (vw == mBtnGuidedSelling_next) {
             boolean isAllDone = true;
@@ -6515,7 +6520,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.white));
                     } else {
                         holder.btnFilter.setBackgroundResource(R.drawable.button_round_corner_grey);
-                        holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.Black));
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(StockAndOrder.this, R.color.half_Black));
                     }
                 }
             } catch (Exception e) {

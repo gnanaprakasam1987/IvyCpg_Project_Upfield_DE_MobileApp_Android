@@ -136,7 +136,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
             if (position % 2 == 0)
                 holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             else
-                holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
+                holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
 
             holder.invoice_Id.setText(projectObj.getInvoiceId());
             holder.order_Id.setText(projectObj.getOrderid());
@@ -155,7 +155,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 holder.del_rep_code_val.setTextColor(ContextCompat.getColor(getActivity(), R.color.RED));
             } else {
                 holder.del_rep_code_val.setText(getResources().getString(R.string.close));
-                holder.del_rep_code_val.setTextColor(ContextCompat.getColor(getActivity(), R.color.GREEN));
+                holder.del_rep_code_val.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
             }
             Vector<OrderHistoryBO> historyDetailList = null;
             if (bmodel.profilehelper.getChild_invoiceHistoryList() != null && bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {

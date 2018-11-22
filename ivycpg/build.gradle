@@ -35,9 +35,9 @@ static def fetchRevisionNumber() {
 }
 
 def majorVersion = 2
-def minorVersion = 134
+def minorVersion = 135
 def patchVersion = 0
-def verCode = 1340
+def verCode = 1350
 def revNumber = fetchRevisionNumber()
 
 android {

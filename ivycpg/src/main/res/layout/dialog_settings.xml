@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/WHITE">
+    android:background="@color/white">
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/profile_history_20dp"
         android:layout_marginEnd="@dimen/profile_history_20dp"
-        android:background="@color/GRAY" />
+        android:background="@color/light_gray" />
 
     <View
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         android:src="@drawable/downloadsuccess"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/profile_history_20dp"
-        android:background="@color/GRAY"
+        android:background="@color/light_gray"
         android:id="@+id/reason_view" />
 
     <LinearLayout

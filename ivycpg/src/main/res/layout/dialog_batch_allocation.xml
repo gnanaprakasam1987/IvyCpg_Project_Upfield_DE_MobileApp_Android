@@ -142,7 +142,7 @@
                             android:layout_width="@dimen/dimen_1dp"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/list_margin"
-                            android:background="@color/GRAY"
+                            android:background="@color/light_gray"
                             android:layout_marginRight="@dimen/list_margin" />
 
                         <LinearLayout
@@ -181,7 +181,7 @@
                             android:layout_width="@dimen/dimen_1dp"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/list_margin"
-                            android:background="@color/GRAY"
+                            android:background="@color/light_gray"
                             android:layout_marginRight="@dimen/list_margin" />
 
                         <LinearLayout
@@ -260,7 +260,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/list_margin"
-                card_view:cardBackgroundColor="@color/WHITE"
+                card_view:cardBackgroundColor="@color/white"
                 card_view:cardCornerRadius="0dp"
                 card_view:cardElevation="5dp"
                 card_view:cardPreventCornerOverlap="true"

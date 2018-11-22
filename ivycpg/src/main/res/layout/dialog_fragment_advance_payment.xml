@@ -41,7 +41,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dimens_6dp"
             android:elevation="@dimen/dimens_8dp"
-            app:cardBackgroundColor="@color/WHITE"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/dimens_10dp">
 
             <LinearLayout
@@ -160,7 +160,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/cheque_date"
-                                android:textColor="@color/Black"
+                                android:textColor="@color/half_Black"
                                 android:textSize="@dimen/text_size_caption"
                                 android:textStyle="bold" />
 
@@ -199,7 +199,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="@string/cheque_no"
-                                    android:textColor="@color/Black"
+                                    android:textColor="@color/half_Black"
                                     android:textSize="@dimen/text_size_caption"
                                     android:textStyle="bold" />
 
@@ -246,7 +246,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:text="@string/bank_name"
-                                android:textColor="@color/Black"
+                                android:textColor="@color/half_Black"
                                 android:textSize="@dimen/text_size_caption"
                                 android:textStyle="bold"
                                 android:layout_marginLeft="5dp" />
@@ -273,7 +273,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:text="@string/branch_area"
-                                android:textColor="@color/Black"
+                                android:textColor="@color/half_Black"
                                 android:textSize="@dimen/text_size_caption"
                                 android:textStyle="bold"
                                 android:layout_marginLeft="5dp" />
@@ -307,7 +307,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="@string/bank_name"
-                                    android:textColor="@color/Black"
+                                    android:textColor="@color/half_Black"
                                     android:textSize="@dimen/text_size_caption"
                                     android:textStyle="bold" />
 
@@ -333,7 +333,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="@string/branch_area"
-                                    android:textColor="@color/Black"
+                                    android:textColor="@color/half_Black"
                                     android:textSize="@dimen/text_size_caption"
                                     android:textStyle="bold" />
 
@@ -380,7 +380,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_1dp"
-            android:background="@color/GRAY" />
+            android:background="@color/light_gray" />
 
         <Button
             android:id="@+id/btnsubmit"

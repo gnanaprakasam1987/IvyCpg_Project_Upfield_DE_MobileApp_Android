@@ -104,6 +104,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     private RecyclerView plano_recycler;
     ActionBar actionBar;
 
+    public enum PlanogramCheck {
+        NOTCOMPLETED,
+        ADHERENCEFAILED,
+        COMPLETED
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -339,13 +345,17 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public void onClick(View v) {
 
         if (v.getId() == R.id.saveButton) {
-            if (checkDataForSave())
-                nextButtonClick();
-            else {
+            String result = checkDataForSave();
+            if (result.equals(PlanogramCheck.NOTCOMPLETED.toString())) {
+                mBModel.showAlert(
+                        getResources().getString(
+                                R.string.fill_photo_and_adherence), 0);
+            } else if (result.equals(PlanogramCheck.ADHERENCEFAILED.toString())) {
                 mBModel.showAlert(
                         getResources().getString(
                                 R.string.please_fill_adherence), 0);
-            }
+            } else
+                nextButtonClick();
         }
     }
 
@@ -771,12 +781,17 @@ public class PlanoGramFragment extends IvyBaseFragment implements
      * 1 - no image found
      * 2 - Success
      */
-    private boolean checkDataForSave() {
+    private String checkDataForSave() {
+        int cnt = 0;
         for (final PlanoGramBO planoGramBO : mPlanoGramList) {
-            if (planoGramBO.getAdherence() != null)
-                return true;
+            if (planoGramBO.getPlanoGramCameraImgList().size() > 0) {
+                cnt++;
+                if (planoGramBO.getAdherence() == null) {
+                    return PlanogramCheck.ADHERENCEFAILED.toString();
+                }
+            }
         }
-        return false;
+        return (cnt == 0) ? PlanogramCheck.NOTCOMPLETED.toString() : PlanogramCheck.COMPLETED.toString();
     }
 
     /**
@@ -977,7 +992,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     if (isChecked) {
                         holder.rdNo.setChecked(false);
                         holder.rdYes.setButtonDrawable(R.drawable.ic_tick_enable);
-                        holder.rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_green));
+                        holder.rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                         holder.rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                         holder.rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
                         holder.planoObj.setAdherence("1");
@@ -1195,7 +1210,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     rdYes.setChecked(true);
                     rdNo.setChecked(false);
                     rdYes.setButtonDrawable(R.drawable.ic_tick_enable);
-                    rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_green));
+                    rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                     rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
                     adherence_reason.setVisibility(View.INVISIBLE);

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/qpsSchemeHeaderLayout"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="2dp"
     card_view:cardElevation="4dp"
     card_view:cardPreventCornerOverlap="true"

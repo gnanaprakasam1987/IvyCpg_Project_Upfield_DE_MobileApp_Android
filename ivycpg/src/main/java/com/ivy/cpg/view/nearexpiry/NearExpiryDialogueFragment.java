@@ -83,7 +83,6 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
     private String datec5;
     private String datec6;
     private String mOrderTitle = " ";
-    private TextView tvtitle;
 
     NearExpiryTrackingHelper mNearExpiryHelper;
 
@@ -138,9 +137,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
         }
 
         if (getView() != null) {
-            tvtitle = (TextView) getView().findViewById(R.id.nearexpirybutton);
-            tvtitle.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            TextView skuName = (TextView) getView().findViewById(R.id.tvskuname);
+            TextView skuName = getView().findViewById(R.id.tvskuname);
             skuName.setTypeface(mBModel.configurationMasterHelper.getProductNameFont());
             skuName.setText(mSKUBO.getProductName());
         }
@@ -433,21 +430,14 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 LayoutInflater inflater = LayoutInflater.from(getActivity()
                         .getBaseContext());
                 row = inflater.inflate(R.layout.dialog_enter_expiry, parent, false);
-                date1 = (Button) row.findViewById(R.id.datePicker1);
-                date1.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                date1 = row.findViewById(R.id.datePicker1);
 
-                CA1 = (EditText) row.findViewById(R.id.ca1);
-                PC1 = (EditText) row.findViewById(R.id.pc1);
-                OU1 = (EditText) row.findViewById(R.id.ou1);
-                CA1.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC1.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU1.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                TextView tv_piece = (TextView) row.findViewById(R.id.tv_piece);
-                TextView tv_case = (TextView) row.findViewById(R.id.tv_case);
-                TextView tv_outer = (TextView) row.findViewById(R.id.tv_outer);
-                tv_piece.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                CA1 = row.findViewById(R.id.ca1);
+                PC1 = row.findViewById(R.id.pc1);
+                OU1 = row.findViewById(R.id.ou1);
+                TextView tv_piece = row.findViewById(R.id.tv_piece);
+                TextView tv_case = row.findViewById(R.id.tv_case);
+                TextView tv_outer = row.findViewById(R.id.tv_outer);
 
                 date1.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
@@ -469,20 +459,13 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(0).getNearexpOU());
 
-                date2 = (Button) row.findViewById(R.id.datePicker2);
-                date2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                CA2 = (EditText) row.findViewById(R.id.ca2);
-                PC2 = (EditText) row.findViewById(R.id.pc2);
-                OU2 = (EditText) row.findViewById(R.id.ou2);
-                CA2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                TextView tv_piece2 = (TextView) row.findViewById(R.id.tv_piece2);
-                TextView tv_case2 = (TextView) row.findViewById(R.id.tv_case2);
-                TextView tv_outer2 = (TextView) row.findViewById(R.id.tv_outer2);
-                tv_piece2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer2.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                date2 = row.findViewById(R.id.datePicker2);
+                CA2 = row.findViewById(R.id.ca2);
+                PC2 = row.findViewById(R.id.pc2);
+                OU2 = row.findViewById(R.id.ou2);
+                TextView tv_piece2 = row.findViewById(R.id.tv_piece2);
+                TextView tv_case2 = row.findViewById(R.id.tv_case2);
+                TextView tv_outer2 = row.findViewById(R.id.tv_outer2);
 
                 date2.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
@@ -503,20 +486,13 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(1).getNearexpOU());
 
-                date3 = (Button) row.findViewById(R.id.datePicker3);
-                date3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                CA3 = (EditText) row.findViewById(R.id.ca3);
-                PC3 = (EditText) row.findViewById(R.id.pc3);
-                OU3 = (EditText) row.findViewById(R.id.ou3);
-                CA3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                TextView tv_piece3 = (TextView) row.findViewById(R.id.tv_piece3);
-                TextView tv_case3 = (TextView) row.findViewById(R.id.tv_case3);
-                TextView tv_outer3 = (TextView) row.findViewById(R.id.tv_outer3);
-                tv_piece3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer3.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                date3 = row.findViewById(R.id.datePicker3);
+                CA3 = row.findViewById(R.id.ca3);
+                PC3 = row.findViewById(R.id.pc3);
+                OU3 = row.findViewById(R.id.ou3);
+                TextView tv_piece3 = row.findViewById(R.id.tv_piece3);
+                TextView tv_case3 = row.findViewById(R.id.tv_case3);
+                TextView tv_outer3 = row.findViewById(R.id.tv_outer3);
 
                 date3.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
@@ -537,20 +513,13 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(2).getNearexpOU());
 
-                date4 = (Button) row.findViewById(R.id.datePicker4);
-                date4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                CA4 = (EditText) row.findViewById(R.id.ca4);
-                PC4 = (EditText) row.findViewById(R.id.pc4);
-                OU4 = (EditText) row.findViewById(R.id.ou4);
-                CA4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                TextView tv_piece4 = (TextView) row.findViewById(R.id.tv_piece4);
-                TextView tv_case4 = (TextView) row.findViewById(R.id.tv_case4);
-                TextView tv_outer4 = (TextView) row.findViewById(R.id.tv_outer4);
-                tv_piece4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer4.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                date4 = row.findViewById(R.id.datePicker4);
+                CA4 = row.findViewById(R.id.ca4);
+                PC4 = row.findViewById(R.id.pc4);
+                OU4 = row.findViewById(R.id.ou4);
+                TextView tv_piece4 = row.findViewById(R.id.tv_piece4);
+                TextView tv_case4 = row.findViewById(R.id.tv_case4);
+                TextView tv_outer4 = row.findViewById(R.id.tv_outer4);
 
                 date4.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
@@ -571,20 +540,13 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(3).getNearexpOU());
 
-                date5 = (Button) row.findViewById(R.id.datePicker5);
-                date5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                CA5 = (EditText) row.findViewById(R.id.ca5);
-                PC5 = (EditText) row.findViewById(R.id.pc5);
-                OU5 = (EditText) row.findViewById(R.id.ou5);
-                CA5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                TextView tv_piece5 = (TextView) row.findViewById(R.id.tv_piece5);
-                TextView tv_case5 = (TextView) row.findViewById(R.id.tv_case5);
-                TextView tv_outer5 = (TextView) row.findViewById(R.id.tv_outer5);
-                tv_piece5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer5.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                date5 = row.findViewById(R.id.datePicker5);
+                CA5 = row.findViewById(R.id.ca5);
+                PC5 = row.findViewById(R.id.pc5);
+                OU5 = row.findViewById(R.id.ou5);
+                TextView tv_piece5 = row.findViewById(R.id.tv_piece5);
+                TextView tv_case5 = row.findViewById(R.id.tv_case5);
+                TextView tv_outer5 = row.findViewById(R.id.tv_outer5);
 
                 date5.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
@@ -604,20 +566,14 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(4).getNearexpOU());
 
-                date6 = (Button) row.findViewById(R.id.datePicker6);
-                date6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                CA6 = (EditText) row.findViewById(R.id.ca6);
-                PC6 = (EditText) row.findViewById(R.id.pc6);
-                OU6 = (EditText) row.findViewById(R.id.ou6);
-                CA6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                PC6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                OU6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                TextView tv_piece6 = (TextView) row.findViewById(R.id.tv_piece6);
-                TextView tv_case6 = (TextView) row.findViewById(R.id.tv_case6);
-                TextView tv_outer6 = (TextView) row.findViewById(R.id.tv_outer6);
-                tv_piece6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_case6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                tv_outer6.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                date6 = row.findViewById(R.id.datePicker6);
+                CA6 = row.findViewById(R.id.ca6);
+                PC6 = row.findViewById(R.id.pc6);
+                OU6 = row.findViewById(R.id.ou6);
+
+                TextView tv_piece6 = row.findViewById(R.id.tv_piece6);
+                TextView tv_case6 = row.findViewById(R.id.tv_case6);
+                TextView tv_outer6 = row.findViewById(R.id.tv_outer6);
 
                 date6.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
@@ -638,19 +594,12 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         .getNearexpiryDate().get(5).getNearexpOU());
 
                 if (!mBModel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    PC1.setVisibility(View.GONE);
-                    PC2.setVisibility(View.GONE);
-                    PC3.setVisibility(View.GONE);
-                    PC4.setVisibility(View.GONE);
-                    PC5.setVisibility(View.GONE);
-                    PC6.setVisibility(View.GONE);
-                    tv_piece.setVisibility(View.GONE);
-                    tv_piece2.setVisibility(View.GONE);
-                    tv_piece3.setVisibility(View.GONE);
-                    tv_piece4.setVisibility(View.GONE);
-                    tv_piece5.setVisibility(View.GONE);
-                    tv_piece6.setVisibility(View.GONE);
-
+                    row.findViewById(R.id.ll_piece).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_piece2).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_piece3).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_piece4).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_piece5).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_piece6).setVisibility(View.GONE);
                 } else {
                     if (mBModel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.tv_piece).getTag()) != null) {
@@ -686,19 +635,12 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
 
                 if (!mBModel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    OU1.setVisibility(View.GONE);
-                    OU2.setVisibility(View.GONE);
-                    OU3.setVisibility(View.GONE);
-                    OU4.setVisibility(View.GONE);
-                    OU5.setVisibility(View.GONE);
-                    OU6.setVisibility(View.GONE);
-                    tv_outer.setVisibility(View.GONE);
-                    tv_outer2.setVisibility(View.GONE);
-                    tv_outer3.setVisibility(View.GONE);
-                    tv_outer4.setVisibility(View.GONE);
-                    tv_outer5.setVisibility(View.GONE);
-                    tv_outer6.setVisibility(View.GONE);
-
+                    row.findViewById(R.id.ll_outer).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_outer2).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_outer3).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_outer4).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_outer5).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_outer6).setVisibility(View.GONE);
                 } else {
                     if (!" ".equals(mOrderTitle)) {
                         if (mBModel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -737,18 +679,12 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
 
                 if (!mBModel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                    CA1.setVisibility(View.GONE);
-                    CA2.setVisibility(View.GONE);
-                    CA3.setVisibility(View.GONE);
-                    CA4.setVisibility(View.GONE);
-                    CA5.setVisibility(View.GONE);
-                    CA6.setVisibility(View.GONE);
-                    tv_case.setVisibility(View.GONE);
-                    tv_case2.setVisibility(View.GONE);
-                    tv_case3.setVisibility(View.GONE);
-                    tv_case4.setVisibility(View.GONE);
-                    tv_case5.setVisibility(View.GONE);
-                    tv_case6.setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_case).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_case2).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_case3).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_case4).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_case5).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_case6).setVisibility(View.GONE);
 
                 } else {
                     if (!" ".equals(mOrderTitle)) {
@@ -817,10 +753,6 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                 }
 
-                String strTitle = mBModel.mSelectedActivityName
-                        + mNearExpiryHelper.mSelectedLocationName + "("
-                        + mOrderTitle + ")";
-                tvtitle.setText(strTitle);
 
                 date1.setOnClickListener(new OnClickListener() {
                     @SuppressLint("NewApi")

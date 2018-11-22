@@ -30,7 +30,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.CollectionReportDialog;
+import com.ivy.cpg.view.reports.collectionreport.CollectionReportDialog;
 
 import java.util.List;
 
@@ -549,7 +549,7 @@ public class CollectionReportFragment extends Fragment {
             if (groupPosition % 2 == 0) {
                 row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             } else {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.history_list_bg));
+                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             }
             return row;
         }

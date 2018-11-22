@@ -33,7 +33,7 @@
                     android:id="@+id/content_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/WHITE">
+                    android:background="@color/white">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                                 android:paddingEnd="@dimen/list_padding_left_n_right"
                                 android:paddingStart="@dimen/list_padding_left_n_right"
                                 android:text="@string/sale"
-                                android:textColor="@color/store_status_text_color"
+                                android:textColor="@color/list_item_text_primary_color"
                                 android:textSize="@dimen/font_small" />
 
                             <View
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/content_card"
                     android:layout_marginTop="@dimen/dimen_6dp"
-                    android:background="@color/WHITE">
+                    android:background="@color/white">
 
                     <LinearLayout
                         android:id="@+id/layoutCloseCall"
@@ -122,7 +122,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
-                                    android:textColor="@color/kpi_value_text_color"
+                                    android:textColor="@color/list_item_secondary_text_color"
                                     android:textSize="@dimen/highlight_small" />
 
                             </LinearLayout>
@@ -172,7 +172,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="0.0.0"
-                android:textColor="@color/call_duration_value_text_color"
+                android:textColor="@color/list_header_text_color"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -223,8 +223,8 @@
                 android:cursorVisible="false"
                 android:gravity="center_vertical"
                 android:hint="@string/remark_hint"
-                android:textColor="@color/call_duration_value_text_color"
-                android:textColorHint="@color/call_duration_value_hint_color"
+                android:textColor="@color/list_header_text_color"
+                android:textColorHint="@color/light_gray"
                 android:textSize="@dimen/text_size_secondary"
                 android:visibility="gone"
                 tools:text="f sfsdf sdfsdf sd" />
@@ -237,7 +237,7 @@
                 android:background="@drawable/edittext_bottom_coloraccent_border"
                 android:cursorVisible="false"
                 android:gravity="center_vertical"
-                android:textColor="@color/call_duration_value_text_color"
+                android:textColor="@color/list_header_text_color"
                 android:textSize="@dimen/text_size_secondary"
                 android:visibility="gone"
                 tools:text="f sfsdf sdfsdf sd" />

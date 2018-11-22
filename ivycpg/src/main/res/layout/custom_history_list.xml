@@ -126,7 +126,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -179,7 +179,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -390,7 +390,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=""
-                        android:textColor="@color/font_green"
+                        android:textColor="@color/green_productivity"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -454,7 +454,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -508,7 +508,7 @@
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=" "
-                        android:textColor="@color/history_date_color"
+                        android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
@@ -974,7 +974,7 @@
                 android:layout_width="@dimen/profile_history_25dp"
                 android:layout_height="@dimen/profile_history_25dp"
                 android:background="@drawable/ic_double_right_arrow"
-                android:backgroundTint="@color/history_invbtn_color"
+                android:backgroundTint="@color/half_Black"
                 android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
                 android:layout_gravity="center"
                 android:textColor="@color/toolbar_title"

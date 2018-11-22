@@ -101,7 +101,7 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/profile_history_20dp"
                     android:layout_marginEnd="@dimen/profile_history_20dp"
-                    android:background="@color/GRAY"
+                    android:background="@color/light_gray"
                     android:src="@drawable/downloadsuccess" />
             </LinearLayout>
 
@@ -140,7 +140,7 @@
             android:layout_height="1dp"
             android:layout_above="@+id/reason_btns"
             android:layout_gravity="center"
-            android:background="@color/GRAY"
+            android:background="@color/light_gray"
             android:src="@drawable/downloadsuccess" />
 
         <LinearLayout

@@ -2331,6 +2331,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                                 + (productBO.getOrderedOuterQty() * productBO
                                 .getOsrp());
 
+                        lineValue=SDUtil.formatAsPerCalculationConfig(lineValue);
 
                         // Set the calculated values in productBO **/
                         productBO.setNetValue(lineValue);
@@ -4317,7 +4318,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                         holder.btnFilter.setTextColor(ContextCompat.getColor(SubDStockOrderActivity.this, R.color.white));
                     } else {
                         holder.btnFilter.setBackgroundResource(R.drawable.button_round_corner_grey);
-                        holder.btnFilter.setTextColor(ContextCompat.getColor(SubDStockOrderActivity.this, R.color.Black));
+                        holder.btnFilter.setTextColor(ContextCompat.getColor(SubDStockOrderActivity.this, R.color.half_Black));
                     }
                 }
             } catch (Exception e) {

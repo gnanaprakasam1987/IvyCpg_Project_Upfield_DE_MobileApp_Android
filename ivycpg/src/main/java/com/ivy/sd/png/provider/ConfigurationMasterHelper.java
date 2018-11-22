@@ -27,10 +27,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-
 public class ConfigurationMasterHelper {
 
     /**
@@ -1390,7 +1386,6 @@ public class ConfigurationMasterHelper {
     public boolean IS_ATTACH_PDF;
 
     public int MVPTheme = 0;
-    public String fontSize = "";
 
     private static final String CODE_DOC_REF = "DOCREF";
     public boolean IS_DOC_SIGN;
@@ -5582,8 +5577,6 @@ public class ConfigurationMasterHelper {
                         MVPTheme = R.style.MVPTheme_Orange;
                     else if (c.getString(0).equalsIgnoreCase("green"))
                         MVPTheme = R.style.MVPTheme_Green;
-                    else if (c.getString(0).equalsIgnoreCase("pink"))
-                        MVPTheme = R.style.MVPTheme_Pink;
                     else if (c.getString(0).equalsIgnoreCase("nblue"))
                         MVPTheme = R.style.MVPTheme_NBlue;
 
@@ -5783,31 +5776,6 @@ public class ConfigurationMasterHelper {
         }
         return IS_DISTRIBUTOR_AVAILABLE;
 
-    }
-
-    public String getFontSize() {
-        fontSize = "Small";
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
-
-        try {
-            db.createDataBase();
-            db.openDataBase();
-
-            String query = "select RField from HhtModuleMaster where hhtcode='THEME02' and flag=1 and  ForSwitchSeller = 0";
-            Cursor c = db.selectSQL(query);
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    fontSize = c.getString(0);
-
-                }
-            }
-            c.close();
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return fontSize;
     }
 
     public boolean downloadConfigForLoadLastVisit() {

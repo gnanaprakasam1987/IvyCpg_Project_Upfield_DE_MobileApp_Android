@@ -25,8 +25,8 @@
             android:paddingRight="@dimen/padding_rb"
             android:paddingStart="@dimen/padding_l"
             android:paddingTop="@dimen/padding_rb"
-            android:textColor="@color/WHITE"
-            android:textSize="@dimen/font_medium"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small"
             tools:text="dfg dfgdf" />
 
         <LinearLayout
@@ -50,7 +50,7 @@
                 android:paddingRight="@dimen/padding_rb"
                 android:paddingLeft="@dimen/padding_rb"
                 android:paddingStart="@dimen/padding_rb"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_small"
                 android:visibility="visible"
                 tools:text="SIH" />
@@ -66,7 +66,7 @@
                 android:paddingRight="@dimen/padding_rb"
                 android:paddingLeft="@dimen/padding_rb"
                 android:paddingStart="@dimen/padding_rb"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_small"
                 android:visibility="visible"
                 tools:text="SO" />
@@ -82,7 +82,7 @@
                 android:paddingRight="@dimen/padding_rb"
                 android:paddingLeft="@dimen/padding_rb"
                 android:paddingStart="@dimen/padding_rb"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_small"
                 android:visibility="visible"
                 android:tag="psq"
@@ -99,7 +99,7 @@
                 android:paddingRight="@dimen/padding_rb"
                 android:paddingLeft="@dimen/padding_rb"
                 android:paddingStart="@dimen/padding_rb"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_small"
                 tools:text="Value : 0" />
         </LinearLayout>
@@ -133,7 +133,7 @@
                         android:padding="@dimen/padding_rb"
                         android:tag="item_case"
                         android:text="@string/item_case"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -144,7 +144,7 @@
                         android:gravity="center_vertical|right"
                         android:maxLength="5"
                         android:padding="@dimen/padding_rb"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/highlight_small"
                         tools:text="99999999" />
 
@@ -166,7 +166,7 @@
                         android:padding="@dimen/padding_rb"
                         android:tag="item_outer"
                         android:text="@string/item_outer"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -177,7 +177,7 @@
                         android:gravity="center_vertical|right"
                         android:maxLength="5"
                         android:padding="@dimen/padding_rb"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/highlight_small"
                         tools:text="99999999" />
 
@@ -199,7 +199,7 @@
                         android:padding="@dimen/padding_rb"
                         android:tag="item_piece"
                         android:text="@string/item_piece"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -210,7 +210,7 @@
                         android:gravity="center_vertical|right"
                         android:maxLength="5"
                         android:padding="@dimen/padding_rb"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/highlight_small"
                         tools:text="99999999" />
 
@@ -247,7 +247,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="1"
             android:text="1"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
 
@@ -259,7 +259,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="2"
             android:text="2"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
 
@@ -272,7 +272,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="3"
             android:text="3"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
     </LinearLayout>
@@ -291,7 +291,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="4"
             android:text="4"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
 
@@ -304,7 +304,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="5"
             android:text="5"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
 
@@ -317,7 +317,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="6"
             android:text="6"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
     </LinearLayout>
@@ -336,7 +336,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="7"
             android:text="7"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
 
@@ -349,7 +349,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="8"
             android:text="8"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
 
@@ -362,7 +362,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="9"
             android:text="9"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
     </LinearLayout>
@@ -376,7 +376,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/WHITE"
+            android:background="@color/white"
             android:clickable="false" />
 
         <Button
@@ -387,7 +387,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:tag="0"
             android:text="0"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif" />
 
@@ -399,7 +399,7 @@
             android:background="@drawable/ripple_effect_keyboard"
             android:clickable="false"
             android:tag="."
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/highlight_normal"
             android:typeface="serif"
             android:visibility="visible"
@@ -418,7 +418,7 @@
                 android:background="@drawable/ripple_effect_keyboard"
                 android:tag="."
                 android:text="."
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/no_btn_ts"
                 android:typeface="serif"
                 android:visibility="visible"/>
@@ -427,7 +427,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@color/WHITE"
+                android:background="@color/white"
                 android:clickable="false"
                 />
         </LinearLayout>-->
@@ -446,7 +446,7 @@
             android:layout_weight="1"
             android:background="@drawable/ripple_effect_keyboard"
             android:text="@string/cancel"
-            android:textColor="@color/Black" />
+            android:textColor="@color/half_Black" />
 
         <Button
             android:id="@+id/ok"
@@ -457,7 +457,7 @@
             android:layout_weight="1"
             android:background="@drawable/ripple_effect_keyboard"
             android:text="@string/ok"
-            android:textColor="@color/Black" />
+            android:textColor="@color/half_Black" />
 
     </LinearLayout>
 

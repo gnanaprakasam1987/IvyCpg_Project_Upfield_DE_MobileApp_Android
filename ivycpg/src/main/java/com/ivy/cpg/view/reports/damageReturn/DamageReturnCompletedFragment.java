@@ -150,7 +150,7 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
                     holder.status.setTextColor(getResources().getColor(R.color.select_week_color_green));
                 }else{
                     holder.status.setText("Rejected");
-                    holder.status.setTextColor(getResources().getColor(R.color.pink_week_background));
+                    holder.status.setTextColor(getResources().getColor(R.color.Orange));
                 }
             }
 

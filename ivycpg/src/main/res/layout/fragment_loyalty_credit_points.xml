@@ -4,7 +4,7 @@
     android:id="@+id/loyalty_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/WHITE"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -32,7 +32,7 @@
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
                     android:text="0"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/font_small" />
 
                 <TextView
@@ -42,7 +42,7 @@
                     android:gravity="center"
                     android:paddingBottom="8dp"
                     android:text="Given Points"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/text_size_primary" />
 
             </LinearLayout>
@@ -59,7 +59,7 @@
                     android:layout_height="@dimen/tv_osamt_height"
                     android:gravity="center"
                     android:text="0"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/font_small" />
 
                 <TextView
@@ -69,7 +69,7 @@
                     android:gravity="center"
                     android:paddingBottom="8dp"
                     android:text="Selected Points"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/text_size_primary" />
 
             </LinearLayout>

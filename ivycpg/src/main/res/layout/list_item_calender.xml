@@ -7,7 +7,7 @@
 
     android:gravity="center"
     android:layout_gravity="center"
-    android:background="@color/WHITE"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -27,7 +27,7 @@
             android:padding="@dimen/dimen_5dp"
             android:text="@string/app_name"
             android:textStyle="bold"
-            android:textColor="@color/blue_btn_txt"
+            android:textColor="@color/highlighter"
             android:textSize="@dimen/text_size_primary" />
 
         <ImageView

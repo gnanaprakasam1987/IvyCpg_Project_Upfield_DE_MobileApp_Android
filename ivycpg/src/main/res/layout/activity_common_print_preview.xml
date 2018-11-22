@@ -70,7 +70,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:background="@color/WHITE"
+                        android:background="@color/white"
                         android:layout_gravity="center_horizontal"
                         >
 
@@ -79,7 +79,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:background="@color/WHITE" />
+                            android:background="@color/white" />
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                                 android:id="@+id/preView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@color/WHITE"
+                                android:background="@color/white"
                                 android:text="Print Preview"
                                 android:textColor="@android:color/black"
                                 android:typeface="normal"
@@ -100,7 +100,7 @@
                             android:layout_width="@dimen/dimen_60dp"
                             android:layout_height="@dimen/dimen_60dp"
                             android:layout_gravity="end"
-                            android:background="@color/WHITE"
+                            android:background="@color/white"
                             />
                     </LinearLayout>
                 </ScrollView>

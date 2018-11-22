@@ -58,12 +58,6 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             } else {
                 super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
             }
-            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
-                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
-            } else {
-                setFontStyle(bmodel.configurationMasterHelper.fontSize);
-            }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,9 +110,10 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
 
         if (item.getItemId() == android.R.id.home) {
-            startActivity(new Intent(this, HomeScreenActivity.class));
+            //  startActivity(new Intent(this, HomeScreenActivity.class));
             finish();
-            return true;
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            // return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -192,18 +187,6 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-    }
-
-    public void setFontStyle(String font) {
-        if (font.equalsIgnoreCase("Small")) {
-            getTheme().applyStyle(R.style.FontStyle_Small, true);
-        } else if (font.equalsIgnoreCase("Medium")) {
-            getTheme().applyStyle(R.style.FontStyle_Medium, true);
-        } else if (font.equalsIgnoreCase("Large")) {
-            getTheme().applyStyle(R.style.FontStyle_Large, true);
-        } else {
-            getTheme().applyStyle(R.style.FontStyle_Small, true);
-        }
     }
 
     @Override

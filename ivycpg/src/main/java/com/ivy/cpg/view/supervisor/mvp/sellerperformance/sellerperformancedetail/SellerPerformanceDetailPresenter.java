@@ -400,7 +400,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                     retailerMasterBo.setSkipped(false);
                     retailerMasterBo.setVisited(true);
 
-                    long totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
+                    double totalOrderValue = retailerMasterBo.getTotalOrderValue() + documentSnapshotBo.getOrderValue();
                     retailerMasterBo.setTotalOrderValue(totalOrderValue);
 
                     retailerMasterBo.setOrderValue(documentSnapshotBo.getOrderValue());

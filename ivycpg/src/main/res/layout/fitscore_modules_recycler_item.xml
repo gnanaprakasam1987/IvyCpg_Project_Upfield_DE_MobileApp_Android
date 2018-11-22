@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/round_light"
         tools:text="Save sdg f sdtrsd ftsddg dfgd "
-        android:textColor="@color/WHITE"
+        android:textColor="@color/white"
         android:textStyle="normal"
         android:layout_marginStart="5dp"
         android:paddingStart="15dp"

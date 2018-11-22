@@ -690,12 +690,13 @@
 
 
     <dimen name="actionbar_title_text_size">24sp</dimen>
+    <dimen name="actionbar_subtitle_text_size">22sp</dimen>
     <dimen name="text_size_primary">16sp</dimen>
     <dimen name="text_size_secondary">14sp</dimen>
     <dimen name="text_size_caption">14sp</dimen>
 
     <!-- List header text size -->
-    <dimen name="list_header_text_size">16sp</dimen>
+    <dimen name="list_header_text_size">15sp</dimen>
     <dimen name="list_header_secondary_text_size">14sp</dimen>
 
     <!-- Button text size -->
@@ -715,8 +716,7 @@
 
 
 
-    <dimen name="font_small">18sp</dimen>
-    <dimen name="font_medium">20sp</dimen>
+    <dimen name="font_small">19sp</dimen>
     <dimen name="font_large">22sp</dimen>
 
 
@@ -749,7 +749,7 @@
 
     <!-- subbu to check -->
     <dimen name="activity_name_text_size">24sp</dimen>
-    <dimen name="sub_activity_name_text_size">18sp</dimen>
+    <dimen name="sub_activity_name_text_size">20sp</dimen>
 
     <dimen name="activation_edittext_text_size">18sp</dimen>
     <dimen name="survey_answer_left">35dp</dimen>

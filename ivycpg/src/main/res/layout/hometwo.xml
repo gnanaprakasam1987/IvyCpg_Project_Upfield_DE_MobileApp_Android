@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -63,54 +64,61 @@
                     android:background="@android:color/transparent"
                     android:orientation="horizontal">
 
+
                     <LinearLayout
                         android:id="@+id/img_layout"
                         android:layout_width="@dimen/profile_header_img"
                         android:layout_height="@dimen/profile_header_img"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/profile_header_img_marginleft"
                         android:layout_marginLeft="@dimen/profile_header_img_marginleft"
+                        android:layout_marginStart="@dimen/profile_header_img_marginleft"
                         android:background="@drawable/circle_blockbg"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        >
+                        android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="29dp"
+                            android:layout_width="@dimen/profile_header_img_width"
                             android:layout_height="@dimen/profile_header_img_height"
                             android:layout_gravity="center"
-                            android:background="@drawable/store" />
-                    </LinearLayout>
+                            android:contentDescription="@null"
+                            android:src="@drawable/store" />
 
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/main.linearlayout.title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/profile_header_txt_layout_marginleft"
                         android:layout_marginLeft="@dimen/profile_header_txt_layout_marginleft"
+                        android:layout_marginStart="@dimen/profile_header_txt_layout_marginleft"
+                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:orientation="vertical"
-                        >
+                        android:paddingStart="@dimen/profile_header_txt_layout_marginleft"
+                        android:paddingLeft="@dimen/profile_header_txt_layout_marginleft">
 
                         <TextView
                             android:id="@+id/retailer_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Apollo Healthcare"
+                            android:lineSpacingExtra="@dimen/profile_header_store_text_line_spcing"
+                            android:text="@string/retailer_name"
+                            android:fontFamily="@font/roboto_regular"
                             android:textColor="@android:color/white"
-                            android:textSize="@dimen/highlight_small"
-                            android:gravity="bottom"/>
+                            android:textSize="@dimen/actionbar_title_text_size" />
 
                         <TextView
                             android:id="@+id/retailer_code"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:text="Ghatkopar (w)"
+                            android:layout_marginTop="@dimen/profile_margin_top_minus"
+                            android:fontFamily="@font/roboto_regular"
+                            android:lineSpacingExtra="@dimen/profile_header_second_txt_line_spacing"
                             android:textColor="@android:color/white"
-                            android:textSize="@dimen/font_small"
-                            android:layout_marginTop="@dimen/profile_margin_top_minus"/>
+                            android:text="@string/outlet_code"
+                            android:textSize="@dimen/actionbar_subtitle_text_size"
+                             />
+
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
@@ -147,7 +155,9 @@
                     android:tag="store_activities"
                     android:text="@string/store_activities"
                     android:textColor="#000000"
-                    android:textSize="@dimen/font_medium" />
+                    android:fontFamily="@font/roboto_regular"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/font_small" />
 
                 <View
                     android:layout_width="1dp"
@@ -163,14 +173,16 @@
                     android:layout_marginStart="@dimen/activity_margin2"
                     android:layout_marginLeft="@dimen/activity_margin2"
                     android:textColor="#000000"
-                    android:textSize="@dimen/font_large" />
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/font_small" />
 
                 <TextView
                     android:id="@+id/activity_total_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:textSize="@dimen/font_medium" />
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/font_small" />
 
             </LinearLayout>
 
@@ -222,7 +234,6 @@
         <Button
             android:id="@+id/btn_call_analysis"
             style="?attr/roundedCustomButtonSmall"
-            android:onClick="CallAnalysisClick"
             android:tag="call_analysis"
             android:text="@string/close_call"
             android:textAllCaps="false"

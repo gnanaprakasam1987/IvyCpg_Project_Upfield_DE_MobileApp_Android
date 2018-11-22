@@ -137,7 +137,7 @@ public class TaxHelper implements TaxInterface {
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.append("select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0) from  productmaster A ");
+            sb.append("select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0),SLM.flex1 from  productmaster A ");
             sb.append("inner JOIN ProductTaxMaster PTM on  PTM.pid = A.pid ");
             sb.append("inner JOIN TaxMaster TM on  PTM.groupid = TM.groupid ");
             sb.append("INNER JOIN StandardListMaster SLM ON SLM.Listid = TM.TaxType ");
@@ -166,6 +166,8 @@ public class TaxHelper implements TaxInterface {
                     taxBo.setApplyRange(c.getInt(7));
                     taxBo.setGroupId(c.getInt(8));
                     taxBo.setParentType(c.getString(9));
+                    taxBo.setTaxDesc2(c.getString(10));
+
                     if (!productid.equals(taxBo.getPid() + "")) {
                         if (!productid.equals("")) {
 
@@ -288,45 +290,57 @@ public class TaxHelper implements TaxInterface {
     }
 
     @Override
-    public HashMap<String, Double> prepareProductTaxForPrint(Context context, String orderId) {
+    public HashMap<String, Double> prepareProductTaxForPrint(Context context, String orderId, boolean isFromInvoice) {
         DBUtil db = null;
         HashMap<String,Double> mTaxesApplied=new HashMap<>();
         try {
+            String tableName="OrderTaxDetails";
+            if(isFromInvoice)
+                tableName="InvoiceTaxDetails";
+
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from OrderTaxDetails IT" +
-                    " where orderid="+orderId+"  order by taxType,taxRate,taxName desc");
+            sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from "+tableName+" IT" +
+                    " where orderid="+mBusinessModel.QT(orderId)+"  order by taxType,taxRate,taxName desc");
             Cursor c = db.selectSQL(sb.toString());
             String lastTaxType="",lastTaxRate="",lastTaxName="";
             double totalTaxByType=0,totalTaxableAmountByType=0;
-            while (c.moveToNext()){
+            ArrayList<String> uniqueTaxTypeWithRate=new ArrayList<>();
+            if(c.getCount()>0) {
+                while (c.moveToNext()) {
 
-                String taxType=c.getString(0);
-                String taxRate=c.getString(1);
-                String taxName = c.getString(2);
-                double taxAmount=c.getDouble(4);
-                double taxableAmount=mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
+                    String taxType = c.getString(0);
+                    String taxRate = c.getString(1);
+                    String taxName = c.getString(2);
+                    double taxAmount = c.getDouble(4);
+                    double taxableAmount = mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
 
-                if(!lastTaxType.equals("")&&!lastTaxType.equals(taxType)&&!lastTaxRate.equals(taxRate)){
+                    if (!lastTaxType.equals("") && (!lastTaxType.equals(taxType) || !lastTaxRate.equals(taxRate))) {
 
-                    mTaxesApplied.put(lastTaxName +" "+ lastTaxRate+"% "+context.getResources().getString(R.string.tax_on)+" "+totalTaxableAmountByType,totalTaxByType);
+                        if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
+                            mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + SDUtil.format(totalTaxableAmountByType, mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0), totalTaxByType);
+                            uniqueTaxTypeWithRate.add(lastTaxType + lastTaxRate);
+                        }
 
-                    totalTaxByType=taxAmount;
-                    totalTaxableAmountByType=taxableAmount;
+                        totalTaxByType = taxAmount;
+                        totalTaxableAmountByType = taxableAmount;
+
+                    } else {
+                        totalTaxByType += taxAmount;
+                        totalTaxableAmountByType += taxableAmount;
+                    }
+
+                    //
+                    lastTaxName = taxName;
+                    lastTaxRate = taxRate;
+                    lastTaxType = taxType;
 
                 }
-                else {
-                    totalTaxByType+=taxAmount;
-                    totalTaxableAmountByType+=taxableAmount;
+                if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
+                    mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + SDUtil.format(totalTaxableAmountByType, mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0), totalTaxByType);
                 }
-
-                //
-                lastTaxName=taxName;
-                lastTaxRate=taxRate;
-                lastTaxType=taxType;
-
             }
         }
         catch (Exception ex){

@@ -43,7 +43,7 @@
                     style="@style/datePickerButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableTint="@color/BLUE"
+                    android:drawableTint="@color/highlighter"
                     android:gravity="center"
                     android:maxLines="1"
                     android:text="@string/dummy_txt"
@@ -145,7 +145,7 @@
                         android:padding="@dimen/list_item_padding"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_info_new"
-                        android:tint="@color/BLUE"
+                        android:tint="@color/highlighter"
                         android:visibility="gone" />
                 </LinearLayout>
 

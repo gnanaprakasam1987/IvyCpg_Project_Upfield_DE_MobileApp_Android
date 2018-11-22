@@ -35,7 +35,7 @@
                     app:tabIndicatorColor="@android:color/white"
                     app:tabMaxWidth="0dp"
                     app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/WHITE"
+                    app:tabSelectedTextColor="@color/white"
                     app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                     app:tabTextColor="#94B5D8">
 
