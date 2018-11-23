@@ -44,15 +44,11 @@ public class SerializedAssetHelper {
     private static final String ASSET_REMARK = "ARR";
     private static final String ASSET_CONDITION = "CD";
     private static final String CODE_ASSET_SERVICE = "SAT11";
-    public boolean SHOW_ASSET_TARGET;
-    public boolean SHOW_ASSET_QTY;
     public boolean SHOW_ASSET_REASON;
     public boolean SHOW_ASSET_PHOTO;
     public boolean SHOW_ASSET_CONDITION;
     public boolean SHOW_ASSET_INSTALL_DATE;
     public boolean SHOW_ASSET_SERVICE_DATE;
-    public boolean SHOW_COMPETITOR_QTY;
-    public boolean SHOW_ASSET_GRP;
     public boolean SHOW_ASSET_EXECUTED;
     public boolean SHOW_ASSET_BARCODE;
     public boolean SHOW_ADD_NEW_ASSET;
@@ -81,7 +77,6 @@ public class SerializedAssetHelper {
     private ArrayList<SerializedAssetBO> mAllAssetTrackingList = null;
     //
 
-    private static final String MERCH = "MERCH";
     private static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
 
 
@@ -143,15 +138,11 @@ public class SerializedAssetHelper {
      */
     private void downloadConfigs(Context mContext) {
         try {
-            SHOW_ASSET_TARGET = false;
-            SHOW_ASSET_QTY = false;
             SHOW_ASSET_REASON = false;
             SHOW_ASSET_PHOTO = false;
             SHOW_ASSET_CONDITION = false;
             SHOW_ASSET_INSTALL_DATE = false;
             SHOW_ASSET_SERVICE_DATE = false;
-            SHOW_COMPETITOR_QTY = false;
-            SHOW_ASSET_GRP = false;
             SHOW_ASSET_EXECUTED = false;
             SHOW_ASSET_BARCODE = false;
             SHOW_ADD_NEW_ASSET = false;
@@ -227,12 +218,7 @@ public class SerializedAssetHelper {
      */
     private void updateColumnConfig(String temp) {
         switch (temp) {
-            case "TGT":
-                SHOW_ASSET_TARGET = true;
-                break;
-            case "QTY":
-                SHOW_ASSET_QTY = true;
-                break;
+
             case "REASON":
                 SHOW_ASSET_REASON = true;
                 break;
@@ -247,12 +233,6 @@ public class SerializedAssetHelper {
                 break;
             case "ASD":
                 SHOW_ASSET_SERVICE_DATE = true;
-                break;
-            case "COMPQTY":
-                SHOW_COMPETITOR_QTY = true;
-                break;
-            case "GRP":
-                SHOW_ASSET_GRP = true;
                 break;
             case "EXECUTED":
                 SHOW_ASSET_EXECUTED = true;

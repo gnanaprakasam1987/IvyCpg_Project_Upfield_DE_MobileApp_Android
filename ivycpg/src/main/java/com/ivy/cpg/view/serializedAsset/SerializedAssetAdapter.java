@@ -175,16 +175,12 @@ public class SerializedAssetAdapter extends BaseAdapter {
             holder.serialNoTV =  row
                     .findViewById(R.id.tv_serialNo);
             //holder.serialNoTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.grpTV =  row.findViewById(R.id.tv_grp);
-            //holder.grpTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.execQtyLL =  row.findViewById(R.id.ll_exec_qty);
             holder.execQtyRB =  row.findViewById(R.id.radio_exec_qty);
 
             holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
             holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
 
-            if (!assetTrackingHelper.SHOW_ASSET_QTY)
-                holder.availQtyLL.setVisibility(View.GONE);
 
             if (assetTrackingHelper.SHOW_ASSET_EXECUTED)
                 holder.execQtyLL.setVisibility(View.VISIBLE);
@@ -444,7 +440,6 @@ public class SerializedAssetAdapter extends BaseAdapter {
                                 SDUtil.now(SDUtil.DATE_GLOBAL),
                                 outPutDateFormat) : holder.assetBO
                         .getServiceDate());
-        holder.grpTV.setText(holder.assetBO.getGroupLevelName());
 
         if (holder.assetBO.getAvailQty() > 0) {
 
@@ -513,9 +508,6 @@ public class SerializedAssetAdapter extends BaseAdapter {
             holder.photoBTN.setVisibility(View.GONE);
         }
 
-        if (!assetTrackingHelper.SHOW_ASSET_GRP) {
-            holder.grpTV.setVisibility(View.GONE);
-        }
 
         if (!assetTrackingHelper.SHOW_ASSET_EXECUTED) {
             holder.execQtyLL.setVisibility(View.GONE);
