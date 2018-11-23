@@ -19,7 +19,7 @@ public class AssetTrackingBO {
     private String mSNO, mReasonId = "0", mRemarks = "", mToRetailerId;
     private String mPOSMName;
     private String mFlag;
-    private String mSBDId;
+    private String mMappingID;
     private String groupLevelName;
     private String mNFCTagId;
     private int groupLevelId;
@@ -53,7 +53,7 @@ public class AssetTrackingBO {
         this.mInstallDate = assetTrackingBO.getInstallDate();
         this.mNewInstallDate = assetTrackingBO.getNewInstallDate();
         this.mPOSM = assetTrackingBO.getPOSM();
-        this.mSBDId = assetTrackingBO.getSBDId();
+        this.mMappingID = assetTrackingBO.getmMappingID();
         this.mServiceDate = assetTrackingBO.getServiceDate();
         this.mPOSMName = assetTrackingBO.getPOSMName();
         this.mFlag = assetTrackingBO.getFlag();
@@ -112,12 +112,12 @@ public class AssetTrackingBO {
         this.groupLevelName = groupLevelName;
     }
 
-    public String getSBDId() {
-        return mSBDId;
+    public String getmMappingID() {
+        return mMappingID;
     }
 
-    public void setSBDId(String mSBDId) {
-        this.mSBDId = mSBDId;
+    public void setmMappingID(String mSBDId) {
+        this.mMappingID = mSBDId;
     }
 
     public String getPOSMName() {
