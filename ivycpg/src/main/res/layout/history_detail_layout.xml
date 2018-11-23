@@ -46,7 +46,7 @@
 
                         <TextView
                             android:id="@+id/tvbrand"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -63,7 +63,7 @@
 
                             <TextView
                                 android:id="@+id/tvorder"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="1"
@@ -77,7 +77,7 @@
 
                                 <TextView
                                     android:id="@+id/tvpiece"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -86,7 +86,7 @@
 
                                 <TextView
                                     android:id="@+id/tvcase"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -95,7 +95,7 @@
 
                                 <TextView
                                     android:id="@+id/tvouter"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"

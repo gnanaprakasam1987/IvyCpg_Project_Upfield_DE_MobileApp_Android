@@ -34,7 +34,7 @@
 
                 <TextView
                     android:id="@+id/tv_usr_name"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.9"
@@ -63,7 +63,7 @@
 
             <TextView
                 android:id="@+id/tv_visit_time"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_15sdp"
                 android:layout_below="@+id/name_layout"

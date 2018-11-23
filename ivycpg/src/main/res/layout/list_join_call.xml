@@ -24,7 +24,7 @@
 
             <TextView
                 android:id="@+id/tv_join_user_type"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spinner_layout_bg_height"
                 android:layout_marginLeft="@dimen/dimen_10dp"

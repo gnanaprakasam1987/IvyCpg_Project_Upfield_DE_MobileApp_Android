@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/tv_retailer_name"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/list_margin"
@@ -36,7 +36,7 @@
 
             <TextView
                 android:id="@+id/tv_sequence"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
@@ -52,14 +52,14 @@
 
             <TextView
                 android:id="@+id/tv_location"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1" />
 
             <TextView
                 android:id="@+id/tv_address"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1" />
@@ -91,7 +91,7 @@
 
                 <TextView
                     android:id="@+id/lbl_time_in"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/time_in" />
@@ -99,7 +99,7 @@
 
                 <TextView
                     android:id="@+id/tv_time_in"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -117,7 +117,7 @@
 
                 <TextView
                     android:id="@+id/lbl_time_out"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/time_out" />
@@ -125,7 +125,7 @@
 
                 <TextView
                     android:id="@+id/tv_time_out"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -143,7 +143,7 @@
 
                 <TextView
                     android:id="@+id/lbl_duration"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/duration" />
@@ -151,7 +151,7 @@
 
                 <TextView
                     android:id="@+id/tv_duration"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -169,7 +169,7 @@
 
                 <TextView
                     android:id="@+id/lbl_order_value"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/order_value" />
@@ -177,7 +177,7 @@
 
                 <TextView
                     android:id="@+id/tv_order_value"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -197,7 +197,7 @@
 
                 <TextView
                     android:id="@+id/lbl_seller_volume"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Seller Volume" />
@@ -205,7 +205,7 @@
 
                 <TextView
                     android:id="@+id/tv_seller_volume"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"

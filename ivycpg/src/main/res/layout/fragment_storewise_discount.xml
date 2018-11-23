@@ -41,7 +41,7 @@
 
             <TextView
                 android:id="@+id/tv_min_range"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center_vertical"
@@ -50,7 +50,7 @@
 
             <TextView
                 android:id="@+id/tv_max_range"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center_vertical"

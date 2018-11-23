@@ -24,7 +24,7 @@
 
             <TextView
                 android:id="@+id/stock_and_order_listview_productname"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -72,7 +72,7 @@
 
             <TextView
                 android:id="@+id/stock_and_order_listview_productcode"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
@@ -88,7 +88,7 @@
 
             <TextView
                 android:id="@+id/stock_and_order_listview_productbarcode"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
@@ -123,7 +123,7 @@
 
                 <TextView
                     android:id="@+id/allocationTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:maxLines="1"
@@ -131,7 +131,7 @@
                     android:text="@string/allocation" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -141,7 +141,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_allocation"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -160,7 +160,7 @@
 
                 <TextView
                     android:id="@+id/srpTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:maxLines="1"
@@ -168,7 +168,7 @@
                     android:text="@string/srp" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -178,7 +178,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_srp"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -187,7 +187,7 @@
 
             <TextView
                 android:id="@+id/stock_and_order_listview_ppq"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_5px"
@@ -198,7 +198,7 @@
 
             <TextView
                 android:id="@+id/stock_and_order_listview_mrp"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_5px"
@@ -208,7 +208,7 @@
 
             <TextView
                 android:id="@+id/stock_and_order_listview_msq"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_5px"
@@ -220,7 +220,7 @@
 
             <TextView
                 android:id="@+id/stock_and_order_listview_psq"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_5px"
@@ -241,7 +241,7 @@
 
                 <TextView
                     android:id="@+id/moqTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -249,7 +249,7 @@
                     android:text="@string/moq" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_1dp"
@@ -259,7 +259,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_moq"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -276,7 +276,7 @@
 
                 <TextView
                     android:id="@+id/wsihTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -284,7 +284,7 @@
                     android:text="@string/dist_inv" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -294,7 +294,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_wsih"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -311,7 +311,7 @@
 
                 <TextView
                     android:id="@+id/sihCaseTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -319,7 +319,7 @@
                     android:text="@string/sih_case" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -329,7 +329,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_sih_case"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -346,7 +346,7 @@
 
                 <TextView
                     android:id="@+id/sihOuterTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -354,7 +354,7 @@
                     android:text="@string/sih_outer" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -364,7 +364,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_sih_outer"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -381,7 +381,7 @@
 
                 <TextView
                     android:id="@+id/sihTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -389,7 +389,7 @@
                     android:text="@string/sih" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -399,7 +399,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_sih"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -416,7 +416,7 @@
 
                 <TextView
                     android:id="@+id/io_oc_Title"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -424,7 +424,7 @@
                     android:text="@string/io" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -434,7 +434,7 @@
 
                 <TextView
                     android:id="@+id/indicativeOrder_oc"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -451,7 +451,7 @@
 
                 <TextView
                     android:id="@+id/co_oc_Title"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -459,7 +459,7 @@
                     android:text="@string/co" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -469,7 +469,7 @@
 
                 <TextView
                     android:id="@+id/cleanedOrder_oc"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -486,7 +486,7 @@
 
                 <TextView
                     android:id="@+id/soCaseTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -494,7 +494,7 @@
                     android:text="@string/so_case" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -504,7 +504,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_socs"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -521,7 +521,7 @@
 
                 <TextView
                     android:id="@+id/soTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -529,7 +529,7 @@
                     android:text="@string/so" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -539,7 +539,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_so"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -556,7 +556,7 @@
 
                 <TextView
                     android:id="@+id/rep_caseTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -564,7 +564,7 @@
                     android:text="@string/rep_case" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -574,7 +574,7 @@
 
                 <TextView
                     android:id="@+id/rep_case"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -591,7 +591,7 @@
 
                 <TextView
                     android:id="@+id/rep_outerTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -599,7 +599,7 @@
                     android:text="@string/rep_outer" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -609,7 +609,7 @@
 
                 <TextView
                     android:id="@+id/rep_outer"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -626,7 +626,7 @@
 
                 <TextView
                     android:id="@+id/rep_pcsTitle"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -634,7 +634,7 @@
                     android:text="@string/rep_pcs" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -644,7 +644,7 @@
 
                 <TextView
                     android:id="@+id/rep_pcs"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -661,7 +661,7 @@
 
                 <TextView
                     android:id="@+id/text_stock_title"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -669,7 +669,7 @@
                     android:text="@string/stock" />
 
                 <TextView
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_1dp"
@@ -679,7 +679,7 @@
 
                 <TextView
                     android:id="@+id/text_stock"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -721,7 +721,7 @@
 
                     <TextView
                         android:id="@+id/shelfPcsCB"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="avail_title"
@@ -746,7 +746,7 @@
 
                     <TextView
                         android:id="@+id/shelfCaseTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="shelf_case"
@@ -770,7 +770,7 @@
 
                     <TextView
                         android:id="@+id/shelfOuterTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="shelf_outer"
@@ -794,7 +794,7 @@
 
                     <TextView
                         android:id="@+id/shelfPcsTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="shelf_piece"
@@ -818,7 +818,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -842,7 +842,7 @@
 
                     <TextView
                         android:id="@+id/uomTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="uom_qty"
@@ -867,7 +867,7 @@
 
                     <TextView
                         android:id="@+id/caseTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="item_case"
@@ -892,7 +892,7 @@
 
                     <TextView
                         android:id="@+id/outercaseTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="item_outer"
@@ -917,7 +917,7 @@
 
                     <TextView
                         android:id="@+id/pcsTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="item_piece"
@@ -944,7 +944,7 @@
 
                     <TextView
                         android:id="@+id/focTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="item_foc"
@@ -970,7 +970,7 @@
 
                     <TextView
                         android:id="@+id/srpeditTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="srp"
@@ -996,7 +996,7 @@
 
                     <TextView
                         android:id="@+id/stkRtTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="sales_return"
@@ -1040,7 +1040,7 @@
 
                     <TextView
                         android:id="@+id/totalTitle"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="totaltitle"
@@ -1049,7 +1049,7 @@
 
                     <TextView
                         android:id="@+id/stock_and_order_listview_total"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"
@@ -1068,7 +1068,7 @@
 
                     <TextView
                         android:id="@+id/weight"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="weighttitle"
@@ -1077,7 +1077,7 @@
 
                     <TextView
                         android:id="@+id/stock_and_order_listview_weight"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"

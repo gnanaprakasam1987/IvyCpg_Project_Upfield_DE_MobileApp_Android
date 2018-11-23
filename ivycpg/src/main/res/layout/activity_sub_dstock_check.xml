@@ -201,7 +201,7 @@
 
                             <TextView
                                 android:id="@+id/productBarcodetitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_barcode"
                                 android:layout_height="match_parent"
                                 android:gravity="start|center"
@@ -210,7 +210,7 @@
 
                             <TextView
                                 android:id="@+id/productnametitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                                 android:layout_height="match_parent"
                                 android:gravity="start|center"
@@ -218,7 +218,7 @@
 
                             <TextView
                                 android:id="@+id/icoTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_small"
                                 android:layout_height="wrap_content"
                                 android:tag="ico"
@@ -226,14 +226,14 @@
 
                             <TextView
                                 android:id="@+id/shelfPcsCB"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_small"
                                 android:layout_height="wrap_content"
                                 android:text="@string/avail" />
 
                             <TextView
                                 android:id="@+id/shelfCaseTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                                 android:layout_height="wrap_content"
                                 android:tag="shelf_case"
@@ -241,7 +241,7 @@
 
                             <TextView
                                 android:id="@+id/shelfOuterTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                                 android:layout_height="wrap_content"
                                 android:tag="shelf_outer"
@@ -249,7 +249,7 @@
 
                             <TextView
                                 android:id="@+id/shelfPcsTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                                 android:layout_height="wrap_content"
                                 android:tag="shelf_piece"
@@ -257,7 +257,7 @@
 
                             <TextView
                                 android:id="@+id/io_oc_Title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                                 android:layout_height="wrap_content"
                                 android:tag="io_case"
@@ -265,7 +265,7 @@
 
                             <TextView
                                 android:id="@+id/co_oc_Title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                                 android:layout_height="wrap_content"
                                 android:tag="co_case"
@@ -273,7 +273,7 @@
 
                             <TextView
                                 android:id="@+id/soCaseTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_small"
                                 android:layout_height="wrap_content"
                                 android:tag="so_case"
@@ -282,7 +282,7 @@
 
                             <TextView
                                 android:id="@+id/soTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_small"
                                 android:layout_height="wrap_content"
                                 android:tag="so_piece"
@@ -291,7 +291,7 @@
 
                             <TextView
                                 android:id="@+id/caseTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                                 android:layout_height="wrap_content"
                                 android:tag="item_case"
@@ -299,7 +299,7 @@
 
                             <TextView
                                 android:id="@+id/outercaseTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                                 android:layout_height="wrap_content"
                                 android:tag="item_outer"
@@ -307,7 +307,7 @@
 
                             <TextView
                                 android:id="@+id/pcsTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                                 android:layout_height="wrap_content"
                                 android:tag="item_piece"
@@ -315,7 +315,7 @@
 
                             <TextView
                                 android:id="@+id/wsihTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/list_item_width_medium"
                                 android:layout_height="wrap_content"
                                 android:tag="dist_inv"
@@ -323,7 +323,7 @@
 
                             <TextView
                                 android:id="@+id/sihCaseTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/list_item_width_medium"
                                 android:layout_height="wrap_content"
                                 android:tag="sih_case"
@@ -331,7 +331,7 @@
 
                             <TextView
                                 android:id="@+id/sihOuterTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/list_item_width_medium"
                                 android:layout_height="wrap_content"
                                 android:tag="sih_outer"
@@ -339,7 +339,7 @@
 
                             <TextView
                                 android:id="@+id/sihTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/list_item_width_medium"
                                 android:layout_height="wrap_content"
                                 android:tag="sih_piece"
@@ -347,7 +347,7 @@
 
                             <TextView
                                 android:id="@+id/rep_caseTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/list_item_width_medium"
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_case"
@@ -355,7 +355,7 @@
 
                             <TextView
                                 android:id="@+id/rep_outerTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/list_item_width_medium"
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_outer"
@@ -363,7 +363,7 @@
 
                             <TextView
                                 android:id="@+id/rep_pcsTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/list_item_width_medium"
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_piece"
@@ -371,7 +371,7 @@
 
                             <TextView
                                 android:id="@+id/srpTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/meter_value_width_large"
                                 android:layout_height="wrap_content"
                                 android:tag="srp"
@@ -379,7 +379,7 @@
 
                             <TextView
                                 android:id="@+id/totalTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/meter_value_width_large"
                                 android:layout_height="wrap_content"
                                 android:tag="totaltitle"
@@ -387,7 +387,7 @@
 
                             <TextView
                                 android:id="@+id/weight"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/meter_value_width_large"
                                 android:layout_height="wrap_content"
                                 android:tag="weighttitle"

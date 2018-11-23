@@ -23,7 +23,7 @@
 
             <TextView
                 android:id="@+id/labelSNO"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -38,7 +38,7 @@
 
             <TextView
                 android:id="@+id/labelOutletCode"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -53,7 +53,7 @@
 
             <TextView
                 android:id="@+id/labelOutletName"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -68,7 +68,7 @@
 
             <TextView
                 android:id="@+id/labelSubChannel"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -83,7 +83,7 @@
 
             <TextView
                 android:id="@+id/labelContractID"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -98,7 +98,7 @@
 
             <TextView
                 android:id="@+id/labelTradeType"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -113,7 +113,7 @@
 
             <TextView
                 android:id="@+id/labelStartDate"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -128,7 +128,7 @@
 
             <TextView
                 android:id="@+id/labelEndDate"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -143,7 +143,7 @@
 
             <TextView
                 android:id="@+id/labelNoOfDays"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

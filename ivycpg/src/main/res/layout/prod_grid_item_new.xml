@@ -38,7 +38,7 @@
 
             <TextView
                 android:id="@+id/type_loc_txt"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
@@ -54,7 +54,7 @@
 
             <TextView
                 android:id="@+id/loc_txt"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="hihi"

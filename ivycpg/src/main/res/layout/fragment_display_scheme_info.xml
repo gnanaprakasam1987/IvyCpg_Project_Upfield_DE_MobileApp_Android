@@ -25,7 +25,7 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dimen_5dp">
                 <TextView
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:id="@+id/text_scheme_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                     android:layout_weight=".4" />
 
                 <TextView
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:id="@+id/text_display_period"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                     android:layout_weight=".4" />
 
                 <TextView
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:id="@+id/text_booking_period"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                     android:layout_weight=".4" />
 
                 <TextView
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:id="@+id/text_qualifiers"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:id="@+id/text_product_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

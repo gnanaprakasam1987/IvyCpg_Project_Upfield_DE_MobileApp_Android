@@ -31,7 +31,7 @@
 
                 <TextView
                     android:id="@+id/tvTitle"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/card_margin"
@@ -70,7 +70,7 @@
 
                 <TextView
                     android:id="@+id/tvTitleFirstName"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/card_margin"
@@ -97,7 +97,7 @@
 
                 <TextView
                     android:id="@+id/tvTitleLastName"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/card_margin"
@@ -133,7 +133,7 @@
 
                 <TextView
                     android:id="@+id/tvTitlePrimary"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
@@ -153,7 +153,7 @@
 
                 <TextView
                     android:id="@+id/tvTitlePhno"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/card_margin"
@@ -181,7 +181,7 @@
 
                 <TextView
                     android:id="@+id/tvTitleEmail"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:maxLength="20"

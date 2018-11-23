@@ -28,7 +28,7 @@
                     android:background="@color/list_title_bg_color">
 
                     <TextView
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/price_product_name"
                         android:layout_height="match_parent"
                         android:text="@string/product_name" />
@@ -40,7 +40,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/loading_stock" />
@@ -52,7 +52,7 @@
 
                             <TextView
                                 android:id="@+id/loading_stock_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
@@ -60,7 +60,7 @@
 
                             <TextView
                                 android:id="@+id/loading_stock_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
@@ -68,7 +68,7 @@
 
                             <TextView
                                 android:id="@+id/loading_stock_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
@@ -86,7 +86,7 @@
 
                         <TextView
                             android:id="@+id/tv_return"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/returnqty" />
@@ -98,7 +98,7 @@
 
                             <TextView
                                 android:id="@+id/tv_return_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
@@ -106,7 +106,7 @@
 
                             <TextView
                                 android:id="@+id/tv_return_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
@@ -114,7 +114,7 @@
 
                             <TextView
                                 android:id="@+id/tv_return_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
@@ -129,7 +129,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/sold_stock" />
@@ -141,7 +141,7 @@
 
                             <TextView
                                 android:id="@+id/tv_sold_stock_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
@@ -149,7 +149,7 @@
 
                             <TextView
                                 android:id="@+id/tv_sold_stock_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
@@ -157,7 +157,7 @@
 
                             <TextView
                                 android:id="@+id/tv_sold_stock_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
@@ -174,7 +174,7 @@
 
                         <TextView
                             android:id="@+id/tv_free_issued"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/free_issued" />
@@ -186,7 +186,7 @@
 
                             <TextView
                                 android:id="@+id/tv_free_issued_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
@@ -194,7 +194,7 @@
 
                             <TextView
                                 android:id="@+id/tv_free_issued_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
@@ -202,7 +202,7 @@
 
                             <TextView
                                 android:id="@+id/tv_free_issued_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
@@ -219,7 +219,7 @@
 
                         <TextView
                             android:id="@+id/tv_replacement"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/replacement" />
@@ -231,7 +231,7 @@
 
                             <TextView
                                 android:id="@+id/tv_replacement_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
@@ -239,7 +239,7 @@
 
                             <TextView
                                 android:id="@+id/tv_replacement_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
@@ -247,7 +247,7 @@
 
                             <TextView
                                 android:id="@+id/tv_replacement_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
@@ -264,7 +264,7 @@
                         android:visibility="gone">
 
                         <TextView
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/ul" />
@@ -276,7 +276,7 @@
 
                             <TextView
                                 android:id="@+id/tv_unload_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_case"
@@ -284,7 +284,7 @@
 
                             <TextView
                                 android:id="@+id/tv_unload_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_outer"
@@ -292,7 +292,7 @@
 
                             <TextView
                                 android:id="@+id/tv_unload_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_piece"
@@ -307,7 +307,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/sih" />
@@ -319,7 +319,7 @@
 
                             <TextView
                                 android:id="@+id/tv_sih_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
@@ -327,7 +327,7 @@
 
                             <TextView
                                 android:id="@+id/tv_sih_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
@@ -335,7 +335,7 @@
 
                             <TextView
                                 android:id="@+id/tv_sih_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
@@ -352,7 +352,7 @@
 
                         <TextView
                             android:id="@+id/tv_empty"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/empty" />
@@ -364,7 +364,7 @@
 
                             <TextView
                                 android:id="@+id/tv_empty_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="CS"
@@ -372,7 +372,7 @@
 
                             <TextView
                                 android:id="@+id/tv_empty_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="OU"
@@ -380,7 +380,7 @@
 
                             <TextView
                                 android:id="@+id/tv_empty_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="PC"
@@ -396,7 +396,7 @@
                         android:visibility="gone">
 
                         <TextView
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/screen_title_height"
                             android:text="@string/ns" />
@@ -408,7 +408,7 @@
 
                             <TextView
                                 android:id="@+id/tv_nonsalable_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_case"
@@ -416,7 +416,7 @@
 
                             <TextView
                                 android:id="@+id/tv_nonsalable_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_outer"
@@ -424,7 +424,7 @@
 
                             <TextView
                                 android:id="@+id/tv_nonsalable_pc_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/price_value"
                                 android:layout_height="wrap_content"
                                 android:text="@string/item_piece"
@@ -452,7 +452,7 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/dimens_80dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/footer_bg"
+            android:background="@color/footer_bg_color"
             android:gravity="center|end"
             android:layout_alignParentEnd="@dimen/dimens_2dp"
             android:visibility="gone"
