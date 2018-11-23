@@ -698,6 +698,26 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rl_oos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
+
+                    <Button
+                        android:layout_height="@dimen/total_title_size"
+                        android:layout_width="60dp"
+                        android:background="@drawable/rounded_corner_red"
+                        android:textSize="@dimen/text_size_caption"
+                        android:gravity="center"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textColor="@color/white"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/oos"/>
+
+                </RelativeLayout>
+
             </LinearLayout>
 
 

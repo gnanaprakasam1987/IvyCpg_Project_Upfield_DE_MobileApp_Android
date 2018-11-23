@@ -73,7 +73,7 @@ public class DayReportAdapter extends BaseAdapter {
             } else {
                 holder.value.setText(menuNumber);
             }
-
+            holder.value1.setText("");
         }
         holder.value.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
         holder.name.setTypeface(mBusinessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));

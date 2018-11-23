@@ -94,6 +94,11 @@
     <string name="printFile_missing_error">Print file is not available</string>
 
     <string name="select_future_date">Select future date</string>
+    <string name="driver_name">Driver Name</string>
+    <string name="delivery_doc_no">Del Doc No</string>
+    <string name="customer_po_no">Cust PO No</string>
+    <string name="free_qty">Free Qty</string>
+    <string name="oos">OOS</string>
 
     <string name ="enter_serial_no">Please Enter Serial No</string>
 

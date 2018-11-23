@@ -62,7 +62,9 @@ public class PriceTrackingHelper {
 
     public void prepareAdapters() {
         mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(context.getResources().getString(R.string.all));
         mSearchTypeArray.add(context.getResources().getString(R.string.product_name));
+        mSearchTypeArray.add(context.getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(context.getResources().getString(
                 R.string.order_dialog_barcode));
     }

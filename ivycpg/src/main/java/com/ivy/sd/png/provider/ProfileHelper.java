@@ -240,7 +240,8 @@ public class ProfileHelper {
             Cursor c = db
                     .selectSQL("SELECT Distinct POH.Retailerid,RetailerCode,POH.refid,orderdate,ordervalue,lpc,Flag,POH.PaidAmount," +
                             "IFNULL(DeliveryStatus,''),rm.ListName,PM.pid, PM.pname,POD.uomid, POD.qty,PM.piece_uomid,PM.duomid,PM.dOuomid,POH.orderid," +
-                            "IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,''),(ordervalue-(ifnull(POH.PaidAmount,0))) as balAmount" +
+                            "IM .RField1,IM.RField2,IM.RField3,IM.RField4,IFNULL(POH.volume,''),(ordervalue-(ifnull(POH.PaidAmount,0))) as balAmount," +
+                            "POH.PONumber,POH.DeliveryDate,POH.RField1,POH.RField2,POD.FreeQty,POD.Value" +
                             " FROM P4OrderHistoryMaster POH left join P4OrderHistoryDetail POD ON POD.refid=POH.refid" +
                             " left join ProductMaster PM ON PM.pid=POD.productid" +
                             " left join StandardListMaster rm on POH.reasonid =  rm.ListId" +
@@ -305,6 +306,12 @@ public class ProfileHelper {
                         orderHistory.setRF4(c.getString(21));
                         orderHistory.setVolume(c.getString(22));
                         orderHistory.setBalanceAmount(c.getDouble(23));
+                        orderHistory.setPoNumber(c.getString(24));
+                        orderHistory.setDelDate(c.getString(25));
+                        orderHistory.setDriverName(c.getString(26));
+                        orderHistory.setDelDocNum(c.getString(27));
+                        orderHistory.setFreeQty(c.getInt(28));
+                        orderHistory.setValue(c.getDouble(29));
                         historyList.add(orderHistory);
                     }
 

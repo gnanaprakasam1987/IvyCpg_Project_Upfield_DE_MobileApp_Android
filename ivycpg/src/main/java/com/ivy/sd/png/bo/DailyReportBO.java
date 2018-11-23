@@ -21,6 +21,11 @@ public class DailyReportBO {
 	private String klgsEffCoverage;
 	private String klgsTotLines;
 	private String klgsTotValue;
+	private String averageTimeSpent;
+	private String deviatedCalls;
+	private String sosCount;
+	private String priceCheckCount;
+	private String planogramCount;
 
 
 	public String getEffCoverage() {
@@ -174,5 +179,45 @@ public class DailyReportBO {
 
 	public void setKlgsTotValue(String klgsTotValue) {
 		this.klgsTotValue = klgsTotValue;
+	}
+
+	public String getAverageTimeSpent() {
+		return averageTimeSpent;
+	}
+
+	public void setAverageTimeSpent(String averageTimeSpent) {
+		this.averageTimeSpent = averageTimeSpent;
+	}
+
+	public String getDeviatedCalls() {
+		return deviatedCalls;
+	}
+
+	public void setDeviatedCalls(String deviatedCalls) {
+		this.deviatedCalls = deviatedCalls;
+	}
+
+	public String getSosCount() {
+		return sosCount;
+	}
+
+	public void setSosCount(String sosCount) {
+		this.sosCount = sosCount;
+	}
+
+	public String getPriceCheckCount() {
+		return priceCheckCount;
+	}
+
+	public void setPriceCheckCount(String priceCheckCount) {
+		this.priceCheckCount = priceCheckCount;
+	}
+
+	public String getPlanogramCount() {
+		return planogramCount;
+	}
+
+	public void setPlanogramCount(String planogramCount) {
+		this.planogramCount = planogramCount;
 	}
 }
