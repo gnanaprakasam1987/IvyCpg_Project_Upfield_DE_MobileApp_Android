@@ -195,7 +195,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
                 android:layout_marginStart="@dimen/dimen_8dp"
-                android:background="@color/GRAY" />
+                android:background="@color/light_gray" />
 
             <LinearLayout
                 android:id="@+id/ll_prev_price_ca"
@@ -311,7 +311,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
                 android:layout_marginStart="@dimen/dimen_8dp"
-                android:background="@color/GRAY" />
+                android:background="@color/light_gray" />
 
             <LinearLayout
                 android:id="@+id/ll_prev_mrp_ca"

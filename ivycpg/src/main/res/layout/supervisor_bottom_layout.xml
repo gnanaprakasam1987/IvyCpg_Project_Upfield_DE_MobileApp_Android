@@ -188,7 +188,7 @@
                         android:gravity="center"
                         android:padding="@dimen/_5sdp"
                         android:text="0"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/_18sdp" />
 
                     <TextView
@@ -202,7 +202,7 @@
                         android:paddingBottom="@dimen/_5sdp"
                         android:paddingTop="@dimen/_5sdp"
                         android:text="Current Order Value"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/_11sdp" />
 
 
@@ -225,7 +225,7 @@
                 android:layout_weight="1"
                 android:background="@color/white"
                 android:gravity="center"
-                app:cardBackgroundColor="@color/WHITE"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_4sdp"
                 app:cardElevation="@dimen/_1sdp"
                 app:cardPreventCornerOverlap="false"
@@ -253,7 +253,7 @@
                         android:gravity="center"
                         android:padding="@dimen/_5sdp"
                         android:text="0"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/_18sdp" />
 
                     <TextView
@@ -267,7 +267,7 @@
                         android:paddingBottom="@dimen/_5sdp"
                         android:paddingTop="@dimen/_5sdp"
                         android:text="Total Outlets"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/_11sdp" />
 
 
@@ -290,7 +290,7 @@
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:gravity="center"
-                    app:cardBackgroundColor="@color/WHITE"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/_4sdp"
                     app:cardElevation="@dimen/_1sdp"
                     app:cardPreventCornerOverlap="false"
@@ -319,7 +319,7 @@
                             android:gravity="center"
                             android:padding="@dimen/_5sdp"
                             android:text="0"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/_18sdp" />
 
                         <TextView
@@ -333,7 +333,7 @@
                             android:paddingBottom="@dimen/_5sdp"
                             android:paddingTop="@dimen/_5sdp"
                             android:text="Covered outlets"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/_11sdp" />
 
 
@@ -346,7 +346,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:gravity="center"
-                    app:cardBackgroundColor="@color/WHITE"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/_4sdp"
                     app:cardElevation="@dimen/_1sdp"
                     app:cardPreventCornerOverlap="false"
@@ -375,7 +375,7 @@
                             android:gravity="center"
                             android:padding="@dimen/_5sdp"
                             android:text="0"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/_18sdp" />
 
                         <TextView
@@ -389,7 +389,7 @@
                             android:paddingBottom="@dimen/_5sdp"
                             android:paddingTop="@dimen/_5sdp"
                             android:text="Unbilled Outlets"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/_11sdp" />
 
 
@@ -412,7 +412,7 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:background="@color/white"
             android:gravity="center"
-            app:cardBackgroundColor="@color/WHITE"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/_2sdp"
             app:cardElevation="@dimen/_1sdp"
             app:cardPreventCornerOverlap="false"

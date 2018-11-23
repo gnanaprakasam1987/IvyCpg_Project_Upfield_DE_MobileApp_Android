@@ -165,7 +165,7 @@
                                     android:inputType="text"
                                     android:maxLines="1"
                                     android:text=""
-                                    android:textColor="@color/GRAY_TEXT"
+                                    android:textColor="@color/gray_text"
                                     android:textSize="@dimen/text_size_secondary" />
 
                                 <Button

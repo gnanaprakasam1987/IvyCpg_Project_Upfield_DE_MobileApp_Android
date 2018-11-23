@@ -12,7 +12,7 @@
         android:layout_above="@+id/ll_footer"
         android:layout_alignParentTop="true"
         android:layout_margin="@dimen/list_margin"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="0dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="true"

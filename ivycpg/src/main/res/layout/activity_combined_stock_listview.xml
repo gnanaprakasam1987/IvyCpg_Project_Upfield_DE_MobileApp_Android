@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/orderScreenListRow"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingStart="@dimen/list_padding_left_n_right"
-    android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
+    android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,12 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/profile_history_25dp"
-            android:layout_marginLeft="@dimen/brand_text_margin"
-            android:layout_marginRight="@dimen/profile_history_25dp"
-            android:layout_marginStart="@dimen/brand_text_margin"
-            android:layout_toLeftOf="@+id/ivAvailable"
             android:layout_toStartOf="@+id/ivAvailable"
+            android:layout_toLeftOf="@+id/ivAvailable"
             android:orientation="vertical">
 
             <TextView
@@ -37,24 +33,21 @@
 
             <TextView
                 android:id="@+id/tvProductCode"
-                style="?attr/customListItemSecondary"
+                style="@style/SecondaryTextAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dimen_4dp"
                 android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_marginLeft="@dimen/dimens_4dp"
-                android:layout_marginStart="@dimen/dimens_4dp"
-                android:layout_marginTop="@dimen/dimens_4dp"
                 android:maxLines="1"
-                android:text="@string/prod_code" />
+                android:text="@string/prod_code"
+                android:layout_marginEnd="@dimen/dimen_4dp" />
 
             <TextView
                 android:id="@+id/tvbarcode"
-                style="?attr/customListItemSecondary"
+                style="@style/SecondaryTextAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_marginLeft="@dimen/dimens_4dp"
-                android:layout_marginTop="@dimen/dimens_4dp"
                 android:layout_toEndOf="@+id/tvProductCode"
                 android:layout_toRightOf="@+id/tvProductCode"
                 android:maxLines="1"
@@ -69,15 +62,15 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_right_arrow"
-            android:tint="@color/GRAY" />
+            android:tint="@color/light_gray" />
 
         <ImageView
             android:id="@+id/ivAvailable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/ivArrow"
             android:layout_toStartOf="@+id/ivArrow"
+            android:layout_toLeftOf="@+id/ivArrow"
             android:src="@drawable/ic_tick_enable" />
 
 

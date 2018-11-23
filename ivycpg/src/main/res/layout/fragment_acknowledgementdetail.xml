@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:layout_marginEnd="@dimen/dimen_6dp"
         android:layout_marginStart="@dimen/dimen_6dp"
-        card_view:cardBackgroundColor="@color/WHITE"
+        card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="0dp"
         card_view:cardElevation="5dp"
         card_view:cardPreventCornerOverlap="true"
@@ -37,7 +37,7 @@
                 android:paddingStart="@dimen/whats_on_item_padding"
                 android:gravity="center"
                 android:text="@string/call_details"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/factor_title_size"
                 android:textStyle="bold"
                 android:paddingLeft="@dimen/whats_on_item_padding" />

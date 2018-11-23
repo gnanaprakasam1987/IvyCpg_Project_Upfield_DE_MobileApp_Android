@@ -263,7 +263,7 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
                                 android.R.color.holo_red_light));
 
                         v.setBackgroundColor(getResources().getColor(
-                                R.color.WHITE));
+                                R.color.white));
 
                         mSelectedDropPos = holder.pos;
                         startDrag(v, holder.taskAssignBO);

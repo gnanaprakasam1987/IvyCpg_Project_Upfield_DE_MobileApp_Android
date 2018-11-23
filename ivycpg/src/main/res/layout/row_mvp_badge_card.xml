@@ -21,7 +21,7 @@
             android:gravity="center"
             android:padding="7dp"
             android:text="@string/self"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/font_small" />
 
         <RelativeLayout
@@ -65,7 +65,7 @@
             android:gravity="center"
             android:padding="7dp"
             android:text="@string/self"
-            android:textColor="@color/Black"
+            android:textColor="@color/half_Black"
             android:textSize="@dimen/font_small" />
 
     </LinearLayout>

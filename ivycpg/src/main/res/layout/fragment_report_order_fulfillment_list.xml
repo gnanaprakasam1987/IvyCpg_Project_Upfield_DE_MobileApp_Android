@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:tag="order_fulfill_orderid"
             android:text="@string/order_id"
-            android:textColor="@color/history_label_color"
+            android:textColor="@color/gray_text"
             android:textSize="@dimen/text_size_secondary" />
 
         <TextView
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:tag="order_fulfill_retailer"
             android:text="@string/retailer"
-            android:textColor="@color/history_label_color"
+            android:textColor="@color/gray_text"
             android:textSize="@dimen/text_size_secondary" />
 
         <TextView
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zero"
-            android:textColor="@color/history_date_color"
+            android:textColor="@color/FullBlack"
             android:textSize="@dimen/text_size_primary" />
     </LinearLayout>
 
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:tag="order_fulfill_status"
             android:text="@string/status"
-            android:textColor="@color/history_label_color"
+            android:textColor="@color/gray_text"
             android:textSize="@dimen/text_size_secondary" />
 
         <TextView
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zero"
-            android:textColor="@color/history_date_color"
+            android:textColor="@color/FullBlack"
             android:textSize="@dimen/text_size_primary" />
     </LinearLayout>
 
@@ -108,7 +108,7 @@
             android:layout_marginEnd="@dimen/profile_header_txt_layout_marginbottom"
             android:layout_marginRight="@dimen/profile_header_txt_layout_marginbottom"
             android:background="@drawable/ic_double_right_arrow"
-            android:backgroundTint="@color/history_invbtn_color"
+            android:backgroundTint="@color/half_Black"
             android:gravity="center"
             android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
             android:textColor="@color/toolbar_title"

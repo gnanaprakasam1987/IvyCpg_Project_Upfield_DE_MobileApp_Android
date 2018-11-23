@@ -3,7 +3,7 @@
     android:id="@+id/parentLayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/WHITE">
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/childLayout"
@@ -23,7 +23,7 @@
             android:layout_weight="1"
             android:gravity="center|start"
             android:text="Ret1"
-            android:textColor="@color/kpi_value_text_color"
+            android:textColor="@color/list_item_secondary_text_color"
             android:textIsSelectable="false"
             android:textSize="@dimen/text_size_primary"
             android:layout_marginLeft="@dimen/dimens_16dp" />

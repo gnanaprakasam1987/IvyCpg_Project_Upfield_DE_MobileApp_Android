@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/loginbox_header"
                 android:layout_alignParentTop="true"
-                android:background="@color/WHITE">
+                android:background="@color/white">
 
                 <ImageView
                     android:id="@+id/iv_setting"
@@ -148,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_2dp"
                     android:text="@string/version"
-                    android:textColor="@color/version_name_text_color"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/version_text_size" />
 
                 <TextView
@@ -156,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/copy_right"
-                    android:textColor="@color/version_name_text_color"
+                    android:textColor="@color/half_Black"
                     android:textSize="@dimen/version_text_size" />
             </LinearLayout>
 

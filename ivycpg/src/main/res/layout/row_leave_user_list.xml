@@ -32,8 +32,8 @@
                 android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="wewewewe"
-                android:textColor="@color/Black"
-                android:textSize="@dimen/font_medium"
+                android:textColor="@color/half_Black"
+                android:textSize="@dimen/font_small"
                 android:textStyle="bold"
                 android:layout_marginLeft="@dimen/dimen_10dp" />
 
@@ -65,7 +65,7 @@
                 android:textSize="@dimen/text_size_caption" />
             <!--android:layout_height="@dimen/dimens_16dp"-->
             <!--android:layout_height="match_parent"-->
-            <!--android:textColor="@color/Black"-->
+            <!--android:textColor="@color/half_Black"-->
             <!--android:textSize="@dimen/medium_text_Size"-->
 
             <TextView

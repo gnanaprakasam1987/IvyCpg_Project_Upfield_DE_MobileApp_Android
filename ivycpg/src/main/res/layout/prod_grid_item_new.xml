@@ -48,7 +48,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginStart="@dimen/dimen_5dp"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 tools:text="est weter" />
 
@@ -63,7 +63,7 @@
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginStart="@dimen/dimen_5dp"
                 android:textStyle="normal"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 tools:text="ser fser es" />
         </LinearLayout>
         <RelativeLayout

@@ -3,7 +3,7 @@
     android:id="@+id/parentLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/WHITE"
+    android:background="@color/white"
     android:orientation="vertical"
     android:padding="@dimen/dimens_6dp">
 
@@ -37,7 +37,7 @@
                 android:layout_height="@dimen/stock_screen_txtview_height"
                 android:layout_gravity="center"
                 android:maxLines="1"
-                android:textColor="@color/store_title"
+                android:textColor="@color/FullBlack"
                 android:textSize="@dimen/text_size_primary" />
 
             <TextView
@@ -47,7 +47,7 @@
                 android:layout_marginStart="0dp"
                 android:maxLines="1"
                 android:text="Ref No"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_secondary"
                 android:layout_marginLeft="0dp" />
 
@@ -69,7 +69,7 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/dimens_10dp"
-                android:textColor="@color/store_title"
+                android:textColor="@color/FullBlack"
                 android:textSize="@dimen/text_size_primary"
                 android:paddingRight="@dimen/dimens_10dp" />
 
@@ -79,7 +79,7 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:text="TotalValue"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_secondary" />
         </LinearLayout>
 
@@ -100,7 +100,7 @@
                 android:gravity="center|start"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/dimens_10dp"
-                android:textColor="@color/store_title"
+                android:textColor="@color/FullBlack"
                 android:textSize="@dimen/text_size_primary"
                 android:paddingRight="@dimen/dimens_10dp" />
 
@@ -111,7 +111,7 @@
                 android:gravity="center|start"
                 android:maxLines="1"
                 android:text="Balance "
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_secondary" />
         </LinearLayout>
 

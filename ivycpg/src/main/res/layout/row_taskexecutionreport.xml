@@ -18,7 +18,7 @@
         android:gravity="start|center"
         android:layout_gravity="center"
         android:maxLines="2"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:layout_marginLeft="@dimen/target_top_margin" />
 
     <LinearLayout

@@ -545,7 +545,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
             if (mOutOfStockProducts != null && mOutOfStockProducts.contains(holder.productBO.getProductID()))
                 holder.productNameTV.setTextColor(ContextCompat.getColor(DeliveryManagementDetail.this, R.color.RED));
             else
-                holder.productNameTV.setTextColor(ContextCompat.getColor(DeliveryManagementDetail.this, R.color.Black));
+                holder.productNameTV.setTextColor(ContextCompat.getColor(DeliveryManagementDetail.this, R.color.half_Black));
 
             if (position % 2 == 0) {
                 convertView.setBackgroundColor(getResources().getColor(R.color.list_even_item_bg));
@@ -908,11 +908,6 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 setTheme(bmodel.configurationMasterHelper.getMVPTheme());
             } else {
                 setTheme(bmodel.configurationMasterHelper.MVPTheme);
-            }
-            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
-                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
-            } else {
-                setFontStyle(bmodel.configurationMasterHelper.fontSize);
             }
         }
 

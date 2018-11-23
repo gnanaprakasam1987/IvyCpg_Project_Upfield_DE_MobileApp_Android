@@ -30,7 +30,7 @@
                 app:tabIndicatorColor="@android:color/white"
                 app:tabMaxWidth="0dp"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/WHITE"
+                app:tabSelectedTextColor="@color/white"
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                 app:tabTextColor="#94B5D8">
 
@@ -265,7 +265,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/TextViewListItemPrimary"
-                    android:textColor="@color/WHITE"
+                    android:textColor="@color/white"
                     android:text="Filter"
                     android:gravity="center"
                     android:layout_marginLeft="@dimen/_5sdp"

@@ -339,7 +339,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
                 holder.tvStatus.setTextColor(getResources().getColor(R.color.dark_red));
             } else if ("S".equalsIgnoreCase(holder.nonFieldBO.getStatus())) {
                 holder.tvStatus.setText(ACCEPTED);
-                holder.tvStatus.setTextColor(getResources().getColor(R.color.btn_round_green));
+                holder.tvStatus.setTextColor(getResources().getColor(R.color.green_productivity));
             } else if ("D".equalsIgnoreCase(holder.nonFieldBO.getStatus())) {
                 holder.tvStatus.setText(REJECTED);
                 holder.tvStatus.setTextColor(getResources().getColor(R.color.date_picker_text_color));
@@ -357,7 +357,7 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
             if (position % 2 == 1) {
                 row.setBackgroundColor(getResources().getColor(R.color.white));
             } else {
-                row.setBackgroundColor(getResources().getColor(R.color.white_smoke_color));
+                row.setBackgroundColor(getResources().getColor(R.color.divider_view_color));
             }
 
             if (holder.nonFieldBO.getMonthName().length() > 1) {

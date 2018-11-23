@@ -30,7 +30,7 @@
                 android:contentDescription="@null"
                 android:padding="@dimen/dimen_10dp"
                 android:src="@drawable/ic_arrow_back_white_24dp"
-                android:tint="@color/WHITE" />
+                android:tint="@color/white" />
 
             <TextView
                 android:id="@+id/tv_rsd_count"
@@ -41,7 +41,7 @@
                 android:gravity="center"
                 android:text="@string/retailer"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_medium"
+                android:textSize="@dimen/font_small"
                 android:textStyle="bold" />
 
             <android.support.v7.widget.SearchView
@@ -81,7 +81,7 @@
                 style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/GRAY"
+                android:background="@color/light_gray"
                 android:gravity="center"
                 android:text="Non Filed Activity"
                 android:textColor="@color/white"
@@ -105,7 +105,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1.4"
-        android:background="@color/WHITE"
+        android:background="@color/white"
         android:orientation="vertical">
 
 
@@ -142,7 +142,7 @@
                         android:contentDescription="@null"
                         android:padding="@dimen/dimen_5dp"
                         android:src="@drawable/ic_chevron_left_black_24dp"
-                        android:tint="@color/WHITE" />
+                        android:tint="@color/white" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -162,7 +162,7 @@
                             android:gravity="center"
                             android:text="@string/text_current_month"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -176,7 +176,7 @@
                         android:contentDescription="@null"
                         android:padding="@dimen/dimen_5dp"
                         android:src="@drawable/ic_chevron_right_black_24dp"
-                        android:tint="@color/WHITE" />
+                        android:tint="@color/white" />
 
                 </LinearLayout>
 
@@ -197,7 +197,7 @@
                         android:gravity="center"
                         android:text="@string/mon"
                         android:textAllCaps="true"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -209,7 +209,7 @@
                         android:gravity="center"
                         android:text="@string/tue"
                         android:textAllCaps="true"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -221,7 +221,7 @@
                         android:gravity="center"
                         android:text="@string/wed"
                         android:textAllCaps="true"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -233,7 +233,7 @@
                         android:gravity="center"
                         android:text="@string/thu"
                         android:textAllCaps="true"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -245,7 +245,7 @@
                         android:gravity="center"
                         android:text="@string/fri"
                         android:textAllCaps="true"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -257,7 +257,7 @@
                         android:gravity="center"
                         android:text="@string/sat"
                         android:textAllCaps="true"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small" />
 
                     <TextView
@@ -269,7 +269,7 @@
                         android:gravity="center"
                         android:text="@string/sun"
                         android:textAllCaps="true"
-                        android:textColor="@color/Black"
+                        android:textColor="@color/half_Black"
                         android:textSize="@dimen/font_small" />
                 </LinearLayout>
 
@@ -279,7 +279,7 @@
                     android:layout_height="0dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:background="@color/GRAY"
+                    android:background="@color/light_gray"
                     android:gravity="center"
                     android:horizontalSpacing="@dimen/dimen_1dp"
                     android:numColumns="7"
@@ -316,7 +316,7 @@
                         android:padding="@dimen/dimen_5dp"
                         android:text="@string/Monday"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -334,7 +334,7 @@
                             android:gravity="center"
                             android:text="@string/text_current_month"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/WHITE"
+                            android:textColor="@color/white"
                             android:textStyle="bold" />
 
 
@@ -354,7 +354,7 @@
                         android:padding="@dimen/dimen_5dp"
                         android:text="@string/monthView"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:textColor="@color/WHITE"
+                        android:textColor="@color/white"
                         android:textStyle="bold" />
 
 
@@ -363,13 +363,13 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:background="@color/GRAY" />
+                    android:background="@color/light_gray" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="@color/WHITE"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/dimen_2dp"
                     app:cardElevation="@dimen/dimen_2dp">
 
@@ -384,7 +384,7 @@
                             android:layout_alignParentTop="true"
                             android:background="@color/white"
                             android:cacheColorHint="@android:color/transparent"
-                            android:divider="@color/GRAY"
+                            android:divider="@color/light_gray"
                             android:dividerHeight="1dp"
                             android:padding="2dp" />
 

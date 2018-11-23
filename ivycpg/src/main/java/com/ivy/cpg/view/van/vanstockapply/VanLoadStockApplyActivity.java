@@ -202,7 +202,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             if (position % 2 == 0)
                 holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             else
-                holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.history_list_bg));
+                holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
 
 
             int proTotLine = bmodel.stockreportmasterhelper.getNoProductsCount(projObj.getUid());

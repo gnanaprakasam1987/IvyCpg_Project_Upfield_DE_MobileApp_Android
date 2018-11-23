@@ -19,7 +19,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/WHITE"
+            android:background="@color/white"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -104,7 +104,7 @@
                     android:id="@+id/listview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@color/WHITE"
+                    android:divider="@color/white"
                     android:dividerHeight="0dp"
                     android:paddingTop="@dimen/dimen_5dp" />
 
@@ -129,7 +129,7 @@
                         android:id="@+id/radiogroup"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:background="@color/Black"
+                        android:background="@color/half_Black"
                         android:orientation="horizontal">
 
                         <RadioButton
@@ -141,7 +141,7 @@
                             android:gravity="center"
 
                             android:text="@string/single"
-                            android:textColor="@color/Black" />
+                            android:textColor="@color/half_Black" />
 
                         <RadioButton
                             android:id="@+id/rb_multiple"
@@ -152,7 +152,7 @@
                             android:background="@drawable/background_item"
                             android:gravity="center"
                             android:text="@string/multiple"
-                            android:textColor="@color/Black"
+                            android:textColor="@color/half_Black"
                             android:layout_marginLeft="@dimen/dimen_2dp" />
                     </RadioGroup>
                 </LinearLayout>
@@ -193,7 +193,7 @@
                                 android:layout_height="40dp"
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
-                                android:popupBackground="@color/GRAY"
+                                android:popupBackground="@color/light_gray"
                                 android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
@@ -223,7 +223,7 @@
                                 android:layout_height="40dp"
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
-                                android:popupBackground="@color/GRAY"
+                                android:popupBackground="@color/light_gray"
                                 android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
@@ -253,7 +253,7 @@
                                 android:layout_height="40dp"
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
-                                android:popupBackground="@color/GRAY"
+                                android:popupBackground="@color/light_gray"
                                 android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
@@ -283,7 +283,7 @@
                                 android:layout_height="40dp"
                                 android:layout_marginStart="5dp"
                                 android:gravity="center"
-                                android:popupBackground="@color/GRAY"
+                                android:popupBackground="@color/light_gray"
                                 android:layout_marginLeft="5dp" />
                         </LinearLayout>
 
@@ -317,7 +317,7 @@
                                 android:maxLines="3"
                                 android:scrollbars="vertical"
                                 android:text=""
-                                android:textColor="@color/Black"
+                                android:textColor="@color/half_Black"
                                 android:layout_marginLeft="5dp" />
                         </LinearLayout>
 

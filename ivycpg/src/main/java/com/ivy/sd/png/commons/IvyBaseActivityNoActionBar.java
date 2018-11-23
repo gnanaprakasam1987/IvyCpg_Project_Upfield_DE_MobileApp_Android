@@ -61,11 +61,6 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
                 BaseActivity.mCurrentTheme=bmodel.configurationMasterHelper.MVPTheme;
                 super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
             }
-            if (bmodel.configurationMasterHelper.fontSize.equals("")) {
-                setFontStyle(bmodel.configurationMasterHelper.getFontSize());
-            } else {
-                setFontStyle(bmodel.configurationMasterHelper.fontSize);
-            }
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -236,17 +231,6 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         }
     }
 
-    public void setFontStyle(String font) {
-        if (font.equalsIgnoreCase("Small")) {
-            getTheme().applyStyle(R.style.FontStyle_Small, true);
-        } else if (font.equalsIgnoreCase("Medium")) {
-            getTheme().applyStyle(R.style.FontStyle_Medium, true);
-        } else if (font.equalsIgnoreCase("Large")) {
-            getTheme().applyStyle(R.style.FontStyle_Large, true);
-        } else {
-            getTheme().applyStyle(R.style.FontStyle_Small, true);
-        }
-    }
 
     public void customProgressDialog(AlertDialog.Builder builder, String message) {
 

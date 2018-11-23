@@ -27,7 +27,7 @@
                 android:gravity="start"
                 android:paddingStart="3dp"
                 android:text="@string/invoice_no"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption"
                 android:paddingLeft="3dp" />
 
@@ -47,7 +47,7 @@
             android:layout_width="@dimen/dimens_1dp"
             android:layout_height="@dimen/dimens_22dp"
             android:layout_gravity="center"
-            android:background="@color/new_grey"
+            android:background="@color/light_gray"
             android:gravity="center"
             android:padding="@dimen/dimens_4dp" />
 
@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lot_number"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption" />
 
             <TextView
@@ -78,7 +78,7 @@
             android:layout_width="@dimen/dimens_1dp"
             android:layout_height="@dimen/dimens_22dp"
             android:layout_gravity="center"
-            android:background="@color/new_grey"
+            android:background="@color/light_gray"
             android:gravity="center"
             android:padding="@dimen/dimens_4dp" />
 
@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/srp"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption" />
 
             <TextView
@@ -129,7 +129,7 @@
                 android:gravity="start"
                 android:paddingStart="3dp"
                 android:text="@string/quantity"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption"
                 android:paddingLeft="3dp" />
 
@@ -149,7 +149,7 @@
             android:layout_width="@dimen/dimens_1dp"
             android:layout_height="@dimen/dimens_22dp"
             android:layout_gravity="center"
-            android:background="@color/new_grey"
+            android:background="@color/light_gray"
             android:gravity="center"
             android:padding="@dimen/dimens_4dp" />
 
@@ -165,7 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/total_amount"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption" />
 
             <TextView
@@ -181,7 +181,7 @@
             android:layout_width="@dimen/dimens_1dp"
             android:layout_height="@dimen/dimens_22dp"
             android:layout_gravity="center"
-            android:background="@color/new_grey"
+            android:background="@color/light_gray"
             android:gravity="center"
             android:padding="@dimen/dimens_4dp" />
 
@@ -197,7 +197,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/reason"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textSize="@dimen/text_size_caption" />
 
             <TextView
@@ -218,7 +218,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/dimen_12dp"
         android:layout_marginTop="@dimen/dimen_12dp"
-        android:background="@color/new_grey"
+        android:background="@color/light_gray"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/dimens_4dp"

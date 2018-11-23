@@ -13,9 +13,9 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/dimen_10dp"
         android:layout_marginTop="@dimen/dimen_10dp"
-        android:backgroundTintMode="@color/user_name"
+        android:backgroundTintMode="@color/white"
         android:src="@drawable/icon_settings"
-        android:tint="@color/user_name"
+        android:tint="@color/white"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/dimen_10dp" />
 

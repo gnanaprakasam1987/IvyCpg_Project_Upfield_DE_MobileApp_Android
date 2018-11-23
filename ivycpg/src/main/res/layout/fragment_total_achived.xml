@@ -13,7 +13,7 @@
         android:layout_marginTop="@dimen/dash_margin"
         android:gravity="center"
         android:text="@string/incentivetext"
-        android:textColor="@color/WHITE"
+        android:textColor="@color/white"
         android:textSize="@dimen/percent_value_size"
         android:tag="total_incentive"
         android:textStyle="bold" />
@@ -24,6 +24,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Total Achieved"
-        android:textColor="@color/WHITE"
+        android:textColor="@color/white"
         android:textSize="@dimen/total_title_size" />
 </LinearLayout>

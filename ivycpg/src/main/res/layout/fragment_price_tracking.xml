@@ -89,7 +89,7 @@
                                 android:inputType="text"
                                 android:maxLines="1"
                                 android:text=""
-                                android:textColor="@color/GRAY_TEXT"
+                                android:textColor="@color/gray_text"
                                 android:textSize="@dimen/text_size_secondary" />
 
                             <Button
@@ -219,7 +219,7 @@
                         android:layout_above="@+id/ll_keypad"
                         android:layout_below="@+id/ll_header"
                         android:cacheColorHint="@null"
-                        android:divider="@color/GRAY"
+                        android:divider="@color/light_gray"
                         android:dividerHeight="0.5dp"
                         android:fitsSystemWindows="true"
                         android:scrollbarAlwaysDrawHorizontalTrack="true"

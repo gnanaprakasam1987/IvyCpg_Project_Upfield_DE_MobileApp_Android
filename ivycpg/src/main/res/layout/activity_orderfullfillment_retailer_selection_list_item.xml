@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="5dp"
     card_view:cardPreventCornerOverlap="true"
@@ -20,7 +20,7 @@
         android:paddingStart="20dp"
         android:singleLine="true"
         android:text="sdfsdf"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         android:textSize="@dimen/font_small"
         android:paddingLeft="20dp" />
 

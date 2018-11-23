@@ -98,7 +98,7 @@ public class VanUnloadHistoryActivity extends IvyBaseActivityNoActionBar {
             if (position % 2 == 0)
                 holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(VanUnloadHistoryActivity.this, R.color.white));
             else
-                holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(VanUnloadHistoryActivity.this, R.color.history_list_bg));
+                holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(VanUnloadHistoryActivity.this, R.color.white));
 
             holder.invNoTv.setText(historyBo.getTransactionId());
             holder.totSalableQtyTv.setText(String.valueOf(historyBo.getMaxQty()));

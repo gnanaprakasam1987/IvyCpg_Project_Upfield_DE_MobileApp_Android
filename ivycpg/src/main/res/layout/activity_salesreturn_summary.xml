@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@string/zero"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_small" />
 
         </LinearLayout>
@@ -137,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@string/zero"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_small" />
 
         </LinearLayout>

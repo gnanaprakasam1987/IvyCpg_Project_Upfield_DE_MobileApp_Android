@@ -18,6 +18,6 @@
         android:divider="@null"
         android:fitsSystemWindows="true"
         android:scrollbars="none"
-        android:listSelector="@color/GRAY_TEXT" />
+        android:listSelector="@color/gray_text" />
 
 </LinearLayout>

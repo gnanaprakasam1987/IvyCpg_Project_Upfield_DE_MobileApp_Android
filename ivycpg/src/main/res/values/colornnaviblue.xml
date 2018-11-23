@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- N BLUE THEME -->
+
+    <color name="colorPrimaryNBlue">#283593</color>
+    <color name="colorPrimaryDarkNBlue">#00136f</color>
+    <color name="textColorPrimaryNBlue">#3f51b5</color>
+    <color name="colorAccentNBlue">#94b4e8</color>
+    <color name="textColorSecondaryNBlue">#4da6ff</color>
+
+    <color name="footerBackgroundColor">#283593</color>
+
+    <color name="colorNBlueripple_focused">#6680ff</color>
+    <color name="colorNBlueripple_pressed">#ccd5ff</color>
+    <color name="colorNBlueripple_selected">#99aaff</color>
+
+    <color name="blue_bg1">#004d99</color>
+    <color name="blue_bg2">#0059b3</color>
+    <color name="blue_bg3">#0066cc</color>
+
+    <color name="nblue_week_background">#103e6f</color>
+    <color name="select_week_color_nblue">#93c1f2</color>
+
+    <!--List item Header background color-->
+    <color name="list_title_bg_color_nblue">#283593</color>
+
+</resources>

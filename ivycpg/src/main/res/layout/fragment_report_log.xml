@@ -49,7 +49,7 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:text="00:00"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_small"
                 android:textStyle="bold"
                 android:layout_marginRight="@dimen/dimen_10dp" />

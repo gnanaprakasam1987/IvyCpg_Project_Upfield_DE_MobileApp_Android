@@ -84,6 +84,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.LabelsKey;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,7 +100,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SynchronizationFragment extends IvyBaseFragment
-        implements View.OnClickListener, SwitchUserDialog.onSwitchUser, SyncContractor.SyncView {
+        implements SwitchUserDialog.onSwitchUser, SyncContractor.SyncView {
 
 
     private static BusinessModel bmodel;
@@ -404,12 +405,149 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         sync = view.findViewById(R.id.startsync);
         sync.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        sync.setOnClickListener(this);
+        sync.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                bmodel = (BusinessModel) getActivity().getApplicationContext();
+                bmodel.setContext(getActivity());
+
+                if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.sessionout_loginagain),
+                            Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
+
+                if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
+
+
+                    isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+
+                    if (isValidUser)
+                        if (dayCloseCheckBox.isChecked()) {
+                            showAlertOkCancel(
+                                    getResources()
+                                            .getString(
+                                                    R.string.do_u_want_to_close_the_day),
+                                    0);
+
+                        } else {
+                            presenter.validateAndUpload(false);
+
+                        }
+                } else {
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.password_does_not_match), 0);
+                }
+            }
+        });
 
 
         download = view.findViewById(R.id.download);
         download.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        download.setOnClickListener(this);
+        download.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                bmodel = (BusinessModel) getActivity().getApplicationContext();
+                bmodel.setContext(getActivity());
+
+                if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.sessionout_loginagain),
+                            Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
+
+                isSwitchUser = false;
+                if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
+                    bmodel.userMasterHelper.downloadJoinCallusers();
+                if (bmodel.outletTimeStampHelper
+                        .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
+                                .getJoinCallUserList())) {
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.logout_joint_user), 0);
+                    return;
+                }
+                if (bmodel.isOnline()) {
+                    if (bmodel.synchronizationHelper.checkDataForSync()) {
+
+                        try {
+                            if (bmodel.labelsMasterHelper
+                                    .applyLabels(LabelsKey.PRESS_START_SYNC) != null)
+                                bmodel.showAlert(bmodel.labelsMasterHelper
+                                        .applyLabels(LabelsKey.PRESS_START_SYNC), 0);
+                            else
+                                bmodel.showAlert(
+                                        getResources().getString(
+                                                R.string.press_start_sync), 0);
+
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                        }
+
+                    } else if (bmodel.synchronizationHelper
+                            .countImageFiles() > 0) {
+                        bmodel.showAlert(
+                                getResources().getString(
+                                        R.string.pls_upload_images_before_download), 0);
+                    } else if (!UploadHelper.getInstance(getContext()).isAttendanceCompleted(getContext())) {
+                        showAttendanceNotCompletedToast();
+                    } else {
+                        if (!selectedRetailerDownloadCheckBox.isChecked()) {
+                            if (bmodel.configurationMasterHelper.SHOW_DOWNLOAD_ALERT)
+                                showAlertForDownload();
+                            else {
+
+                                if (!bmodel.isAutoUpdateAvailable()) {
+                                    isValidUser = !aws || bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+
+                                    if (isValidUser) {
+
+                                        if (!isClicked) {
+                                            isClicked = true;
+                                            new CheckNewVersionTask()
+                                                    .execute(0);
+                                        }
+
+                                    } else {
+                                        bmodel.showAlert(
+                                                getResources().getString(
+                                                        R.string.password_does_not_match),
+                                                0);
+                                    }
+                                } else {
+                                    showAlertOk(
+                                            getResources().getString(
+                                                    R.string.update_available),
+                                            DataMembers.NOTIFY_AUTOUPDATE_FOUND);
+                                }
+
+                            }
+                        } else {
+                            isValidUser = !aws || bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                            if (isValidUser) {
+
+                                Intent i = new Intent(getActivity(), RetailerSelectionActivity.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                            } else {
+                                bmodel.showAlert(
+                                        getResources().getString(
+                                                R.string.password_does_not_match),
+                                        0);
+                            }
+
+                        }
+                    }
+                } else {
+                    bmodel.showAlert(
+                            getResources()
+                                    .getString(R.string.no_network_connection), 0);
+                }
+            }
+        });
 
 
         backDateSelection = view.findViewById(R.id.downloaddate);
@@ -435,8 +573,8 @@ public class SynchronizationFragment extends IvyBaseFragment
         });
 
         Button close = view.findViewById(R.id.syncButtonBack);
-        close.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        close.setOnClickListener(new OnSingleClickListener() {
+            public void onSingleClick(View v) {
                 startActivity(new Intent(getActivity(), HomeScreenActivity.class));
                 getActivity().finish();
             }
@@ -529,7 +667,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     private void syncStatus(int btn_count) {
         TypedArray type_arr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         int text_color = type_arr.getColor(R.styleable.MyTextView_textColor, 0);
-        int background_color = type_arr.getColor(R.styleable.MyTextView_buttonBackground, 0);
+        int background_color = type_arr.getColor(R.styleable.MyTextView_accentcolor, 0);
         if (!aws || txtPassword.getText().toString().length() > 0) {
             if (btn_count == 1) {
                 if ((bmodel.synchronizationHelper.checkDataForSync() || withPhotosCheckBox.isChecked() || dayCloseCheckBox.isChecked()
@@ -960,138 +1098,6 @@ public class SynchronizationFragment extends IvyBaseFragment
             }
         }
     };
-
-    @Override
-    public void onClick(View v) {
-
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
-            getActivity().finish();
-        }
-
-        if (v.getId() == R.id.startsync) {
-
-            if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
-
-
-                isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
-
-                if (isValidUser)
-                    if (dayCloseCheckBox.isChecked()) {
-                        showAlertOkCancel(
-                                getResources()
-                                        .getString(
-                                                R.string.do_u_want_to_close_the_day),
-                                0);
-
-                    } else {
-                        presenter.validateAndUpload(false);
-
-                    }
-            } else {
-                bmodel.showAlert(
-                        getResources().getString(
-                                R.string.password_does_not_match), 0);
-            }
-
-
-        } else if (v.getId() == R.id.download) {
-            isSwitchUser = false;
-            if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
-                bmodel.userMasterHelper.downloadJoinCallusers();
-            if (bmodel.outletTimeStampHelper
-                    .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
-                            .getJoinCallUserList())) {
-                bmodel.showAlert(
-                        getResources().getString(
-                                R.string.logout_joint_user), 0);
-                return;
-            }
-            if (bmodel.isOnline()) {
-                if (bmodel.synchronizationHelper.checkDataForSync()) {
-
-                    try {
-                        if (bmodel.labelsMasterHelper
-                                .applyLabels(LabelsKey.PRESS_START_SYNC) != null)
-                            bmodel.showAlert(bmodel.labelsMasterHelper
-                                    .applyLabels(LabelsKey.PRESS_START_SYNC), 0);
-                        else
-                            bmodel.showAlert(
-                                    getResources().getString(
-                                            R.string.press_start_sync), 0);
-
-                    } catch (Exception e) {
-                        Commons.printException(e);
-                    }
-
-                } else if (bmodel.synchronizationHelper
-                        .countImageFiles() > 0) {
-                    bmodel.showAlert(
-                            getResources().getString(
-                                    R.string.pls_upload_images_before_download), 0);
-                } else if (!UploadHelper.getInstance(getContext()).isAttendanceCompleted(getContext())) {
-                    showAttendanceNotCompletedToast();
-                } else {
-                    if (!selectedRetailerDownloadCheckBox.isChecked()) {
-                        if (bmodel.configurationMasterHelper.SHOW_DOWNLOAD_ALERT)
-                            showAlertForDownload();
-                        else {
-
-                            if (!bmodel.isAutoUpdateAvailable()) {
-                                isValidUser = !aws || bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString());
-
-                                if (isValidUser) {
-
-                                    if (!isClicked) {
-                                        isClicked = true;
-                                        new CheckNewVersionTask()
-                                                .execute(0);
-                                    }
-
-                                } else {
-                                    bmodel.showAlert(
-                                            getResources().getString(
-                                                    R.string.password_does_not_match),
-                                            0);
-                                }
-                            } else {
-                                showAlertOk(
-                                        getResources().getString(
-                                                R.string.update_available),
-                                        DataMembers.NOTIFY_AUTOUPDATE_FOUND);
-                            }
-
-                        }
-                    } else {
-                        isValidUser = !aws || bmodel.synchronizationHelper.validateUser(txtUserName.getText().toString(), txtPassword.getText().toString());
-                        if (isValidUser) {
-
-                            Intent i = new Intent(getActivity(), RetailerSelectionActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(i);
-                        } else {
-                            bmodel.showAlert(
-                                    getResources().getString(
-                                            R.string.password_does_not_match),
-                                    0);
-                        }
-
-                    }
-                }
-            } else {
-                bmodel.showAlert(
-                        getResources()
-                                .getString(R.string.no_network_connection), 0);
-            }
-        }
-
-    }
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -1774,7 +1780,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                 ArrayList<String> urlList = bmodel.synchronizationHelper.getUrlList();
                 if (urlList != null && urlList.size() > 0) {
                     Activity activity = getActivity();
-                    if(activity != null && isAdded()) {
+                    if (activity != null && isAdded()) {
                         SharedPreferences.Editor editor = PreferenceManager
                                 .getDefaultSharedPreferences(getActivity())
                                 .edit();

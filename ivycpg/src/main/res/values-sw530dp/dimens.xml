@@ -667,8 +667,7 @@
 
 
 
-    <dimen name="font_small">14.4sp</dimen>
-    <dimen name="font_medium">16sp</dimen>
+    <dimen name="font_small">15sp</dimen>
     <dimen name="font_large">17.6sp</dimen>
 
     <dimen name="menu_name_text_size">18.4sp</dimen>

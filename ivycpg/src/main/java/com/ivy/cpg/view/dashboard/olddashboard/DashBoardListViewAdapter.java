@@ -117,7 +117,7 @@ public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardList
                     .getText().toString());
             str.setSpan(new UnderlineSpan(), 0, str.length(),
                     Spanned.SPAN_PARAGRAPH);
-            str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.Black)), 0,
+            str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.half_Black)), 0,
                     str.length(), 0);
             holder.tvSkuWise.setText(str);
         } else {

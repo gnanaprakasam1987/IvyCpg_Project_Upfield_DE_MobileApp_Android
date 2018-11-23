@@ -16,7 +16,7 @@
         android:layout_weight="0.35"
         android:gravity="start|center_vertical"
         android:text=""
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         />
 
     <TextView
@@ -28,7 +28,7 @@
         android:layout_weight="0.15"
         android:gravity="start|center_vertical"
         android:text=""
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         />
 
     <TextView
@@ -40,7 +40,7 @@
         android:layout_weight="0.15"
         android:gravity="end|center_vertical"
         android:text="0"
-        android:textColor="@color/Black"
+        android:textColor="@color/half_Black"
         />
 
 

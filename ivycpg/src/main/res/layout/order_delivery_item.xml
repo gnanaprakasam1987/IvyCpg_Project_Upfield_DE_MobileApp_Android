@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    card_view:cardBackgroundColor="@color/WHITE"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="5dp"
     card_view:cardPreventCornerOverlap="true"
@@ -188,7 +188,7 @@
                 android:layout_marginStart="@dimen/dimen_5dp"
                 android:layout_marginTop="@dimen/activity_margin1"
                 android:text="@string/edit"
-                android:textColor="@color/Black"
+                android:textColor="@color/half_Black"
                 android:textAllCaps="false"
                 android:layout_toLeftOf="@+id/accept_btn"/>
 

@@ -7,12 +7,12 @@
 
     <TextView
         android:id="@+id/title"
-        style="?attr/textTitleStyle"
+        style="?attr/dialogTitleStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/nfc_ready"
-        android:textColor="@color/Black" />
+        android:textColor="@color/half_Black" />
     <!--android:layout_width="300dp"-->
     <!--android:layout_height="20dp"-->
     <ImageView
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/nfc_instruction"
-        android:textColor="@color/Black" />
+        android:textColor="@color/half_Black" />
 
     <TextView
         android:id="@+id/hyperlink"
@@ -37,7 +37,7 @@
         android:autoLink="none"
         android:paddingStart="@dimen/dimen_8dp"
         android:text="sample"
-        android:textColorLink="@color/BLUE"
+        android:textColorLink="@color/highlighter"
         android:textSize="@dimen/font_small"
         android:paddingLeft="@dimen/dimen_8dp" />
 
@@ -64,7 +64,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/my_location_color" />
+        android:background="@color/light_gray" />
 
     <LinearLayout
         android:id="@+id/bottom_layout"

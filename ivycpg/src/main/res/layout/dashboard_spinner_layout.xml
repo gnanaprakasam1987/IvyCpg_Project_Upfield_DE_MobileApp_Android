@@ -8,5 +8,5 @@
     android:gravity="center"
     android:maxLines="1"
     android:textSize="@dimen/spinner_normal"
-    android:textColor="@color/WHITE"
+    android:textColor="@color/white"
     android:drawableRight="@android:drawable/arrow_down_float" />

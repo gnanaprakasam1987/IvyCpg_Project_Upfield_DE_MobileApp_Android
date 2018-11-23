@@ -992,7 +992,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     if (isChecked) {
                         holder.rdNo.setChecked(false);
                         holder.rdYes.setButtonDrawable(R.drawable.ic_tick_enable);
-                        holder.rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_green));
+                        holder.rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                         holder.rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                         holder.rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
                         holder.planoObj.setAdherence("1");
@@ -1210,7 +1210,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     rdYes.setChecked(true);
                     rdNo.setChecked(false);
                     rdYes.setButtonDrawable(R.drawable.ic_tick_enable);
-                    rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_green));
+                    rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                     rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
                     adherence_reason.setVisibility(View.INVISIBLE);
