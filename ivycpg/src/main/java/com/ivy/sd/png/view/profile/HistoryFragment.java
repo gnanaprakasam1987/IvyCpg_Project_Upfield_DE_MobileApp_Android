@@ -207,7 +207,6 @@ public class HistoryFragment extends IvyBaseFragment {
             private TextView del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val, due_date_val;
             private LinearLayout tot_val_layout, tot_vol_layout, del_status_layout, start_date_layout, due_date_layout, paid_amt_layout, bal_amt_layout;
             private LinearLayout driver_name_layout, del_docno_layout, cust_pono_layout, delivery_date_layout;
-            private TextView deliveryStatus_val;
             private TextView driver_name_val, del_docno_val, cust_pono_val, delivery_date_val;
             private TextView deliveryStatus_val;
 
@@ -245,10 +244,7 @@ public class HistoryFragment extends IvyBaseFragment {
                 bal_amt_layout = itemView.findViewById(R.id.bal_amt_layout);
                 balAmtVal = itemView.findViewById(R.id.bal_amt_val);
 
-                del_date_layout = (LinearLayout) itemView.findViewById(R.id.del_date_layout);
-                invoice_date_layout = (LinearLayout) itemView.findViewById(R.id.invoice_date_layout);
-                invoice_qty_layout = (LinearLayout) itemView.findViewById(R.id.invoice_qty_layout);
-                del_rep_code_layout = (LinearLayout) itemView.findViewById(R.id.del_rep_code_layout);
+
                 tot_val_layout = (LinearLayout) itemView.findViewById(R.id.tot_val_layout);
                 tot_vol_layout = (LinearLayout) itemView.findViewById(R.id.tot_vol_layout);
                 del_status_layout = (LinearLayout) itemView.findViewById(R.id.del_status_layout);
@@ -287,7 +283,6 @@ public class HistoryFragment extends IvyBaseFragment {
                 }*/
 
 
-                itemView.setOnClickListener(new View.OnClickListener() {
                 itemView.setOnClickListener(new OnSingleClickListener() {
                     @Override
                     public void onSingleClick(View v) {
@@ -351,27 +346,6 @@ public class HistoryFragment extends IvyBaseFragment {
                     Commons.printException(ex);
                 }
 
-                //typeface for value text font
-                due_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                orderId.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                orderDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                totLines.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                totVal.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                totVol.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                invViewBtn.setTypeface(FontUtils.getFontBalooHai(getActivity(),FontUtils.FontType.THIN));
-
-                del_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                invoice_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                invoice_qty_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                del_rep_code_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                deliveryStatus_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                paidAmtVal.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                balAmtVal.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-
-                driver_name_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                del_docno_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                cust_pono_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                delivery_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
                 if (bmodel.configurationMasterHelper.SHOW_HST_DELDATE) {

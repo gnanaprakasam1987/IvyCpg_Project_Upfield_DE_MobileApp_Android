@@ -21,7 +21,6 @@
 
         <TextView
             android:id="@+id/brandname"
-            style="?attr/customListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -43,7 +42,6 @@
                 android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
                         android:id="@+id/pieces_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -79,7 +77,6 @@
                 android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
                         android:id="@+id/cases_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -115,7 +112,6 @@
                 android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
                         android:id="@+id/outer_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -150,7 +146,6 @@
                 android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
                         android:id="@+id/freeQty_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -186,7 +181,6 @@
                 android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
                         android:id="@+id/value_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
