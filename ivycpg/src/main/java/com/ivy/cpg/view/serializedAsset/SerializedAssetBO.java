@@ -1,8 +1,8 @@
-package com.ivy.sd.png.bo.asset;
+package com.ivy.cpg.view.serializedAsset;
 
 import java.util.ArrayList;
 
-public class AssetTrackingBO {
+public class SerializedAssetBO {
     private int assetID;
     private int Target;
     private int audit = 2;
@@ -19,7 +19,7 @@ public class AssetTrackingBO {
     private String mSNO, mReasonId = "0", mRemarks = "", mToRetailerId;
     private String mPOSMName;
     private String mFlag;
-    private String mMappingID;
+    private String mSBDId;
     private String groupLevelName;
     private String mNFCTagId;
     private int groupLevelId;
@@ -34,42 +34,46 @@ public class AssetTrackingBO {
     private ArrayList<String> imageList;
 
 
-    public AssetTrackingBO() {
+
+    private int referenceId=0;
+
+
+    public SerializedAssetBO() {
 
     }
 
-    public AssetTrackingBO(AssetTrackingBO assetTrackingBO) {
-        this.assetID = assetTrackingBO.getAssetID();
-        this.Target = assetTrackingBO.getTarget();
-        this.AssetName = assetTrackingBO.getAssetName();
-        this.audit = assetTrackingBO.getAudit();
-        this.availQty = assetTrackingBO.getAvailQty();
-        this.scanComplete = assetTrackingBO.getScanComplete();
-        this.competitorQty = assetTrackingBO.getCompetitorQty();
-        this.conditionID = assetTrackingBO.getConditionID();
-        this.imageName = assetTrackingBO.getImageName();
-        this.imgName = assetTrackingBO.getImgName();
-        this.mBrand = assetTrackingBO.getBrand();
-        this.mInstallDate = assetTrackingBO.getInstallDate();
-        this.mNewInstallDate = assetTrackingBO.getNewInstallDate();
-        this.mPOSM = assetTrackingBO.getPOSM();
-        this.mMappingID = assetTrackingBO.getmMappingID();
-        this.mServiceDate = assetTrackingBO.getServiceDate();
-        this.mPOSMName = assetTrackingBO.getPOSMName();
-        this.mFlag = assetTrackingBO.getFlag();
-        this.mProductId = assetTrackingBO.getProductId();
-        this.mSNO = assetTrackingBO.getSNO();
-        this.reason1ID = assetTrackingBO.getReason1ID();
-        this.reasonDesc = assetTrackingBO.getReasonDesc();
-        this.groupLevelId = assetTrackingBO.getGroupLevelId();
-        this.groupLevelName = assetTrackingBO.getGroupLevelName();
-        this.executorQty = assetTrackingBO.getExecutorQty();
-        this.SerialNo = assetTrackingBO.getSerialNo();
-        this.mNFCTagId = assetTrackingBO.getNFCTagId();
-        this.targetLocId = assetTrackingBO.getTargetLocId();
-        this.locationName = assetTrackingBO.getLocationName();
-        this.imageList = assetTrackingBO.getImageList();
-        this.isSelectedReason = assetTrackingBO.isSelectedReason();
+    public SerializedAssetBO(SerializedAssetBO serializedAssetBO) {
+        this.assetID = serializedAssetBO.getAssetID();
+        this.Target = serializedAssetBO.getTarget();
+        this.AssetName = serializedAssetBO.getAssetName();
+        this.audit = serializedAssetBO.getAudit();
+        this.availQty = serializedAssetBO.getAvailQty();
+        this.scanComplete = serializedAssetBO.getScanComplete();
+        this.competitorQty = serializedAssetBO.getCompetitorQty();
+        this.conditionID = serializedAssetBO.getConditionID();
+        this.imageName = serializedAssetBO.getImageName();
+        this.imgName = serializedAssetBO.getImgName();
+        this.mBrand = serializedAssetBO.getBrand();
+        this.mInstallDate = serializedAssetBO.getInstallDate();
+        this.mNewInstallDate = serializedAssetBO.getNewInstallDate();
+        this.mPOSM = serializedAssetBO.getPOSM();
+        this.mSBDId = serializedAssetBO.getSBDId();
+        this.mServiceDate = serializedAssetBO.getServiceDate();
+        this.mPOSMName = serializedAssetBO.getPOSMName();
+        this.mFlag = serializedAssetBO.getFlag();
+        this.mProductId = serializedAssetBO.getProductId();
+        this.mSNO = serializedAssetBO.getSNO();
+        this.reason1ID = serializedAssetBO.getReason1ID();
+        this.reasonDesc = serializedAssetBO.getReasonDesc();
+        this.groupLevelId = serializedAssetBO.getGroupLevelId();
+        this.groupLevelName = serializedAssetBO.getGroupLevelName();
+        this.executorQty = serializedAssetBO.getExecutorQty();
+        this.SerialNo = serializedAssetBO.getSerialNo();
+        this.mNFCTagId = serializedAssetBO.getNFCTagId();
+        this.targetLocId = serializedAssetBO.getTargetLocId();
+        this.locationName = serializedAssetBO.getLocationName();
+        this.imageList = serializedAssetBO.getImageList();
+        this.isSelectedReason = serializedAssetBO.isSelectedReason();
     }
 
     public int getExecutorQty() {
@@ -112,12 +116,12 @@ public class AssetTrackingBO {
         this.groupLevelName = groupLevelName;
     }
 
-    public String getmMappingID() {
-        return mMappingID;
+    public String getSBDId() {
+        return mSBDId;
     }
 
-    public void setmMappingID(String mSBDId) {
-        this.mMappingID = mSBDId;
+    public void setSBDId(String mSBDId) {
+        this.mSBDId = mSBDId;
     }
 
     public String getPOSMName() {
@@ -412,4 +416,11 @@ public class AssetTrackingBO {
 
     private boolean isSelectedReason = false;
 
+    public int getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(int referenceId) {
+        this.referenceId = referenceId;
+    }
 }

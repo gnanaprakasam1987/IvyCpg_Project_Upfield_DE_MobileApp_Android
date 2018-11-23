@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.asset;
+package com.ivy.cpg.view.serializedAsset;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -26,21 +26,22 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
+public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
 
-    private ArrayList<AssetTrackingBO> mList;
+    private ArrayList<SerializedAssetBO> mList;
     private BusinessModel bModel;
     private String mModuleName = "";
     private ListView mListView;
     protected Button btnDelete;
     protected ArrayList<ReasonMaster> mAssetReasonList;
     protected ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter;
-    AssetTrackingHelper assetTrackingHelper;
+    SerializedAssetHelper assetTrackingHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
         setContentView(R.layout.remove_asset_dailog);
         bModel = (BusinessModel) getApplicationContext();
         bModel.setContext(this);
-        assetTrackingHelper = AssetTrackingHelper.getInstance(this);
+        assetTrackingHelper = SerializedAssetHelper.getInstance(this);
 
 
         mListView = (ListView) findViewById(R.id.lv_assetlist);
@@ -67,10 +68,10 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
                     if (isAssetSelectedWithReason()) {
                         mDialog();
                     } else {
-                        Toast.makeText(AssetPosmRemoveActivity.this, getString(R.string.select_reason), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RemoveSerializedAssetActivity.this, getString(R.string.select_reason), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(AssetPosmRemoveActivity.this, getResources().getString(R.string.nothing_selected_to_remove), Toast.LENGTH_LONG).show();
+                    Toast.makeText(RemoveSerializedAssetActivity.this, getResources().getString(R.string.nothing_selected_to_remove), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -94,7 +95,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
      */
     private boolean isAssetSelectedToDelete() {
 
-        for (AssetTrackingBO bo : mList) {
+        for (SerializedAssetBO bo : mList) {
             if (bo.isSelectedToRemove()) {
                 return true;
             }
@@ -110,7 +111,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
     private boolean isAssetSelectedWithReason() {
 
 
-        for (AssetTrackingBO bo : mList) {
+        for (SerializedAssetBO bo : mList) {
             if (bo.isSelectedToRemove() && bo.getReason1ID().equalsIgnoreCase("0"))
                 return false;
 
@@ -135,17 +136,17 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
      */
     private void updateList() {
 
-        Vector<AssetTrackingBO> items;
-        assetTrackingHelper.lodAddRemoveAssets(getApplicationContext(), mModuleName);
+        Vector<SerializedAssetBO> items;
+        assetTrackingHelper.loadRemovableAssets(getApplicationContext(), mModuleName);
 
-        items = assetTrackingHelper.getAddRemoveAssets();
+        items = assetTrackingHelper.getRemovableAssets();
         if (items == null) {
             return;
         }
         int siz = items.size();
         mList = new ArrayList<>();
         for (int i = 0; i < siz; ++i) {
-            AssetTrackingBO ret = items.elementAt(i);
+            SerializedAssetBO ret = items.elementAt(i);
             mList.add(ret);
         }
 
@@ -153,7 +154,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
         bModel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_REMOVE");
         mAssetReasonList.add(new ReasonMaster("0", "--Select Reason--"));
         mAssetReasonList.addAll(bModel.reasonHelper.getAssetReasonsBasedOnType());
-        mAssetReasonSpinAdapter = new ArrayAdapter<>(AssetPosmRemoveActivity.this,
+        mAssetReasonSpinAdapter = new ArrayAdapter<>(RemoveSerializedAssetActivity.this,
                 R.layout.spinner_bluetext_layout, mAssetReasonList);
         mAssetReasonSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -162,15 +163,15 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 
     }
 
-    private class MyAdapter extends ArrayAdapter<AssetTrackingBO> {
-        private final ArrayList<AssetTrackingBO> items;
+    private class MyAdapter extends ArrayAdapter<SerializedAssetBO> {
+        private final ArrayList<SerializedAssetBO> items;
 
-        public MyAdapter(ArrayList<AssetTrackingBO> items) {
-            super(AssetPosmRemoveActivity.this, R.layout.row_asset_dailog, items);
+        public MyAdapter(ArrayList<SerializedAssetBO> items) {
+            super(RemoveSerializedAssetActivity.this, R.layout.row_asset_dailog, items);
             this.items = items;
         }
 
-        public AssetTrackingBO getItem(int position) {
+        public SerializedAssetBO getItem(int position) {
             return items.get(position);
         }
 
@@ -186,7 +187,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
         public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
 
             final ViewHolder holder;
-            AssetTrackingBO product = items.get(position);
+            SerializedAssetBO product = items.get(position);
             View row = convertView;
             if (row == null) {
                 LayoutInflater inflater = getLayoutInflater();
@@ -249,7 +250,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
                     + ":" + holder.productObj.getSNO();
             holder.tvSNO.setText(mSno);
 
-            TypedArray mTypedArray = AssetPosmRemoveActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+            TypedArray mTypedArray = RemoveSerializedAssetActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             final int color = mTypedArray.getColor(R.styleable.MyTextView_accentcolor, 0);
             final int secondary_color = mTypedArray.getColor(R.styleable.MyTextView_textColorPrimary, 0);
             if ("Y".equals(holder.productObj.getFlag())) {
@@ -264,7 +265,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
 
     class ViewHolder {
 
-        AssetTrackingBO productObj;
+        SerializedAssetBO productObj;
         TextView tvAssetName;
         TextView tvSNO;
         TextView tvInstall;
@@ -315,29 +316,29 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
         try {
             Iterator itr = mList.iterator();
             while (itr.hasNext()) {
-                AssetTrackingBO assetTrackingBO = (AssetTrackingBO) itr.next();
+                SerializedAssetBO assetTrackingBO = (SerializedAssetBO) itr.next();
                 if (assetTrackingBO.isSelectedToRemove()) {
 
                     if ("N".equals(assetTrackingBO.getFlag())) {
                         mPOSMIdDialog = assetTrackingBO.getPOSM();
                         mSNODialog = assetTrackingBO.getSNO();
-                        mSBDId = assetTrackingBO.getmMappingID();
+                        mSBDId = assetTrackingBO.getSBDId();
                         mBrandId = assetTrackingBO.getBrand();
                         if (!assetTrackingBO.getReason1ID().equalsIgnoreCase("0")) {
                             mReasonID = assetTrackingBO.getReason1ID();
                             assetTrackingHelper
-                                    .saveAddAndDeleteDetails(getApplicationContext(), mPOSMIdDialog,
-                                            mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName);
+                                    .deleteAsset(getApplicationContext(), mPOSMIdDialog,
+                                            mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName,assetTrackingBO.getNFCTagId(),assetTrackingBO.getReferenceId());
 
                             itr.remove();
                         }
 
                     } else {
                         assetTrackingHelper
-                                .deletePosmDetails(getApplicationContext(), assetTrackingBO.getSNO());
+                                .deleteAssetTransaction(getApplicationContext(), assetTrackingBO.getSNO());
                         itr.remove();
                     }
-                    //bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                    bModel.saveModuleCompletion(HomeScreenTwo.MENU_SERIALIZED_ASSET);
                 }
             }
 

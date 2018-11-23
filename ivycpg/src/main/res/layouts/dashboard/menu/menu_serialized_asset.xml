@@ -41,12 +41,7 @@
         android:title="Survey"
         android:visible="false"
         ivydist:showAsAction="never" />
-    <item
-        android:id="@+id/menu_loc_filter"
-        android:icon="@drawable/ic_action_location_place"
-        android:orderInCategory="102"
-        android:title="Location Filter"
-        ivydist:showAsAction="always" />
+
     <item
         android:id="@+id/menu_fivefilter"
         android:icon="@drawable/icon_menu_filter"
@@ -74,7 +69,7 @@
         android:id="@+id/menu_reason"
         android:icon="@drawable/icon_review_plan"
         android:orderInCategory="101"
-        android:title="@string/reason"
+        android:title="Reason"
         android:visible="false"
         ivydist:showAsAction="never" />
 
