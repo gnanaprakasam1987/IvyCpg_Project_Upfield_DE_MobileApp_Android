@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -46,14 +47,13 @@
 
                     <TextView
                         android:id="@+id/order_id_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="invoice_history_label"
-                        android:text="@string/inv_no"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/inv_no" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -69,13 +69,12 @@
 
                     <TextView
                         android:id="@+id/order_id_val"
+                        style="@style/TextViewListItemValuesHighLight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text="Dummy Text"
-                        android:textColor="?attr/primarycolor"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="@string/invoice_number" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -102,13 +101,12 @@
 
                     <TextView
                         android:id="@+id/date_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/invoice_date"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/invoice_date" />
 
                 </LinearLayout>
 
@@ -125,13 +123,12 @@
 
                     <TextView
                         android:id="@+id/date_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -158,13 +155,12 @@
 
                     <TextView
                         android:id="@+id/tot_val_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/invoiceamt"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/invoiceamt" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -179,14 +175,12 @@
 
                     <TextView
                         android:id="@+id/tot_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=""
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
-
+                        android:text="" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -211,13 +205,12 @@
 
                     <TextView
                         android:id="@+id/tot_lines_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/tot_line"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/tot_line" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -232,13 +225,12 @@
 
                     <TextView
                         android:id="@+id/tota_lines_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -254,6 +246,7 @@
 
                 <TextView
                     android:id="@+id/tot_volume_txt"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
@@ -262,13 +255,12 @@
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="start|top"
-                    android:text="@string/total_vol"
-                    android:textColor="@color/gray_text"
-                    android:textSize="@dimen/text_size_secondary" />
+                    android:text="@string/total_vol" />
 
 
                 <TextView
                     android:id="@+id/tota_Volume_val"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|bottom"
@@ -276,9 +268,7 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="bottom|start"
-                    android:text=" "
-                    android:textColor="@color/FullBlack"
-                    android:textSize="@dimen/text_size_primary" />
+                    android:text="" />
 
             </LinearLayout>
         </LinearLayout>
@@ -312,14 +302,13 @@
 
                     <TextView
                         android:id="@+id/ord_id_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="order_history_label"
-                        android:text="@string/order_number"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/order_number" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -335,12 +324,11 @@
 
                     <TextView
                         android:id="@+id/ord_id_val"
+                        style="@style/TextViewListItemValuesHighLight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
-                        android:gravity="bottom|start"
-                        android:textColor="?attr/primarycolor"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:gravity="bottom|start" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -366,14 +354,12 @@
 
                     <TextView
                         android:id="@+id/invoice_qty_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/overdue"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
-                    <!--android:tag="RField3"-->
+                        android:text="@string/overdue" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -388,13 +374,12 @@
 
                     <TextView
                         android:id="@+id/invoice_qty_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=""
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -420,14 +405,12 @@
 
                     <TextView
                         android:id="@+id/del_date_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/due_date"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
-                    <!--android:tag="RField1"-->
+                        android:text="@string/due_date" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -442,13 +425,12 @@
 
                     <TextView
                         android:id="@+id/del_date_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -474,14 +456,12 @@
 
                     <TextView
                         android:id="@+id/invoice_date_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/os_amt"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
-                    <!--android:tag="RField2"-->
+                        android:text="@string/os_amt" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -496,13 +476,12 @@
 
                     <TextView
                         android:id="@+id/invoice_date_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -529,14 +508,12 @@
 
                     <TextView
                         android:id="@+id/del_rep_code_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/status"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
-                    <!--android:tag="RField4"-->
+                        android:text="@string/status" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -551,13 +528,12 @@
 
                     <TextView
                         android:id="@+id/del_rep_code_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=""
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -583,14 +559,12 @@
 
                     <TextView
                         android:id="@+id/margin_price_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/margin_price"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
-                    <!--android:tag="RField4"-->
+                        android:text="@string/margin_price" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -605,13 +579,12 @@
 
                     <TextView
                         android:id="@+id/margin_price_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=""
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -637,14 +610,12 @@
 
                     <TextView
                         android:id="@+id/margin_per_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/margin_per"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
-                    <!--android:tag="RField4"-->
+                        android:text="@string/margin_per" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -659,13 +630,12 @@
 
                     <TextView
                         android:id="@+id/margin_per_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=""
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -695,7 +665,8 @@
             android:gravity="center"
             android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
             android:textColor="@color/toolbar_title"
-            android:textSize="@dimen/text_size_caption" />
+            android:textSize="@dimen/text_size_caption"
+            tools:ignore="UnusedAttribute" />
 
     </LinearLayout>
 

@@ -479,15 +479,6 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
         }
 
-        if (assetTrackingHelper.ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK) {
-            if (holder.assetBO.getNFCTagId().isEmpty())
-                holder.availQtyRB.setEnabled(true);
-            else
-                holder.availQtyRB.setEnabled(false);
-        } else {
-            holder.availQtyRB.setEnabled(true);
-        }
-
 
         if (!assetTrackingHelper.SHOW_ASSET_REASON) {
             holder.reason1Spin.setVisibility(View.GONE);
@@ -533,22 +524,31 @@ public class SerializedAssetAdapter extends BaseAdapter {
             holder.execQtyRB.setChecked(false);
         }
 
-        if (assetTrackingHelper.SHOW_ASSET_BARCODE) {
-            if (holder.assetBO.getScanComplete() == 1) {
-                holder.availQtyRB.setChecked(true);
-                holder.availQtyRB.setEnabled(false);
-            } else  if (holder.assetBO.getAvailQty() == 1) {
+
+
+        if (assetTrackingHelper.ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK) {
+            holder.availQtyRB.setEnabled(false);
+
+            if (assetTrackingHelper.SHOW_ASSET_BARCODE
+                    &&(holder.assetBO.getScanComplete() == 1)) {
                 holder.availQtyRB.setChecked(true);
             }
-            else {
-                holder.availQtyRB.setChecked(false);
+            else if (holder.assetBO.getAvailQty() == 1){
+                holder.availQtyRB.setChecked(true);
+            }
+
+            if((assetTrackingHelper.SHOW_ASSET_BARCODE&&holder.assetBO.getSerialNo().equals(""))
+                    ||holder.assetBO.getNFCTagId().isEmpty()){
                 holder.availQtyRB.setEnabled(true);
             }
-        } else {
-            if (holder.assetBO.getAvailQty() == 1) {
+
+
+        }
+        else {
+            holder.availQtyRB.setEnabled(true);
+
+             if(holder.assetBO.getAvailQty() == 1){
                 holder.availQtyRB.setChecked(true);
-            } else {
-                holder.availQtyRB.setChecked(false);
             }
         }
 

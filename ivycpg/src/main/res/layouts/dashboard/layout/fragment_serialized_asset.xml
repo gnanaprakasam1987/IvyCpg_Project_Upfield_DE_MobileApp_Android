@@ -30,7 +30,7 @@
 
                 <TextView
                     android:id="@+id/audit"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/audit_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -39,7 +39,7 @@
 
                 <TextView
                     android:id="@+id/tv_header_asset_name"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="5.5"
@@ -49,7 +49,7 @@
 
                 <TextView
                     android:id="@+id/tv_isAvail"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
@@ -58,7 +58,7 @@
 
                 <TextView
                     android:id="@+id/tv_is_executed"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
@@ -67,7 +67,7 @@
 
                 <TextView
                     android:id="@+id/tv_is_photo"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"

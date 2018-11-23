@@ -56,13 +56,13 @@
 
                 <TextView
                     android:id="@+id/chk_title"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/order_stock_list_item_width_small"
                     android:layout_height="40dp"
                     android:text="" />
 
                 <TextView
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                     android:layout_height="40dp"
                     android:text="@string/product_name"
@@ -71,7 +71,7 @@
 
                 <TextView
                     android:id="@+id/tv_oo"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                     android:layout_height="40dp"
                     android:tag="@string/item_outer"
@@ -79,7 +79,7 @@
 
                 <TextView
                     android:id="@+id/tv_oc"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                     android:layout_height="40dp"
                     android:tag="@string/item_case"
@@ -87,7 +87,7 @@
 
                 <TextView
                     android:id="@+id/tv_op"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                     android:layout_height="40dp"
                     android:tag="@string/item_piece"
@@ -95,7 +95,7 @@
 
                 <TextView
                     android:id="@+id/sihTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:layout_height="40dp"
                     android:text="@string/sih" />
@@ -139,7 +139,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
+        android:background="@color/footer_bg_color"
         android:orientation="horizontal"
         android:padding="@dimen/footer_padding">
 

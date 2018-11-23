@@ -24,7 +24,7 @@
 
         <TextView
             android:id="@+id/tv_lt_assetname"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/tv_lt_sno"
-            style="?attr/customListItemSecondary"
+            style="@style/TextViewCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_lt_assetname"

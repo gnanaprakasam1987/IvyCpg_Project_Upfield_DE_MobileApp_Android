@@ -22,14 +22,16 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <!--screen background -->
-        <item name="android:windowBackground">@color/screen_bg_color</item>
-
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/half_Black</item>
 
+        <!--screen background -->
+        <item name="android:windowBackground">@color/screen_bg_color</item>
+
+
         <!--Customize all Labels based on Theme -->
         <item name="textFieldStyle">@style/TextViewLabel</item>
+        <item name="textColor">@color/white</item>
 
         <!--Customize Title of Dialogs like Discount,Initiative,..etc -->
         <item name="dialogTitleStyle">@style/DialogTitleTextStyle</item>
@@ -40,7 +42,7 @@
         <item name="accentcolor">@color/colorAccent</item>
         <item name="textColorPrimary">@color/list_item_text_primary_color</item>
         <item name="textColorSecondary">@color/list_item_secondary_text_color</item>
-        <item name="textColor">@color/white</item>
+
 
         <!--Deviation screen week selection  -->
         <item name="weekBackground">@color/blue_week_background</item>
@@ -72,18 +74,17 @@
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
 
         <!--Footer background style-->
-        <item name="customLayoutBackground">@color/FullBlack</item>
-        <item name="customListTitleBackground">@color/list_title_bg_color</item>
+        <item name="customFooterBackgroundColor">@color/footer_bg_color</item>
+        <!--Header background style-->
+        <item name="customListTitleBackgroundColor">@color/list_title_bg_color</item>
         <!--UOM selection in order taking - JNJ -->
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
 
         <!--Custom List Title - TextViews Style-->
-        <item name="customListTitle">@style/TextViewListTitle</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+        <item name="listHeaderTitleTextColor">@color/list_header_text_color</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color</item>
+        <item name="captionTextColor">@color/caption_text_color</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color</item>
 
 
         <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
@@ -95,6 +96,8 @@
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <!--CustomTextViews-->
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
+
+        <item name="highLightColor">@color/highlighter</item>
 
 
     </style>
@@ -228,17 +231,16 @@ negative button and neutral button -->
             @style/ButtonNormalRoundCornerTransparent
         </item>
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-        <!-- Custom Buttons -->
-        <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitle</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+
+        <!--Custom List Title - TextViews Style-->
+        <item name="listHeaderTitleTextColor">@color/list_header_text_color_nblue</item>
+        <item name="captionTextColor">@color/caption_text_color_nblue</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_nblue</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color_nblue</item>
 
 
-        <item name="customLayoutBackground">@color/footerBackgroundColor</item>
-        <item name="customListTitleBackground">@color/list_title_bg_color_nblue</item>
+        <item name="customFooterBackgroundColor">@color/footer_bg_color_nblue</item>
+        <item name="customListTitleBackgroundColor">@color/list_title_bg_color_nblue</item>
         <item name="roundedCustomDashboardButton">@drawable/dot_circle_nblue</item>
 
 
@@ -250,10 +252,12 @@ negative button and neutral button -->
         <item name="dashboardSpinnerBackground">@drawable/curved_blue_bg</item>
         <item name="homescreenbackground">@drawable/burger_menu_nblue_bg</item>
         <item name="mtdDashboardBackground">@drawable/curved_nblue_bg</item>
-        <item name="dashboardSpinnerSelector">@color/footerBackgroundColor</item>
+        <item name="dashboardSpinnerSelector">@color/footer_bg_color_nblue</item>
 
         <!--CustomTextViews-->
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
+
+        <item name="highLightColor">@color/highlighter_nblue</item>
     </style>
 
 
@@ -332,15 +336,14 @@ negative button and neutral button -->
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
         <!-- Custom Buttons -->
         <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitle</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+        <item name="listHeaderTitleTextColor">@color/list_header_text_color_red</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_red</item>
+        <item name="captionTextColor">@color/caption_text_color_red</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color_red</item>
 
 
-        <item name="customLayoutBackground">@color/FullBlack</item>
-        <item name="customListTitleBackground">@color/list_title_bg_color_red</item>
+        <item name="customFooterBackgroundColor">@color/footer_bg_color_red</item>
+        <item name="customListTitleBackgroundColor">@color/list_title_bg_color_red</item>
         <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
 
 
@@ -352,8 +355,9 @@ negative button and neutral button -->
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <!--CustomTextViews-->
-
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
+
+        <item name="highLightColor">@color/highlighter_red</item>
 
     </style>
 
@@ -429,17 +433,16 @@ negative button and neutral button -->
             @style/ButtonNormalRoundCornerTransparent
         </item>
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-        <!-- Custom Buttons -->
-        <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitle</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+
+        <!--Custom List Title - TextViews Style-->
+        <item name="listHeaderTitleTextColor">@color/list_header_text_color_orange</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_orange</item>
+        <item name="captionTextColor">@color/caption_text_color_orange</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color_orange</item>
 
 
-        <item name="customLayoutBackground">@color/FullBlack</item>
-        <item name="customListTitleBackground">@color/list_title_bg_color_orange</item>
+        <item name="customFooterBackgroundColor">@color/footer_bg_color_orange</item>
+        <item name="customListTitleBackgroundColor">@color/list_title_bg_color_orange</item>
         <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
 
 
@@ -453,6 +456,8 @@ negative button and neutral button -->
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <!--CustomTextViews-->
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
+
+        <item name="highLightColor">@color/highlighter_orange</item>
     </style>
 
     <style name="MyButtonOrange" parent="Base.Widget.AppCompat.Button">
@@ -528,17 +533,16 @@ negative button and neutral button -->
             @style/ButtonNormalRoundCornerTransparent
         </item>
         <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-        <!-- Custom Buttons -->
-        <!--CustomTextViews-->
-        <item name="customListTitle">@style/TextViewListTitle</item>
-        <item name="customListTitleSecondary">@style/TextViewListTitleSecondary</item>
-        <item name="customListItemPrimary">@style/TextViewListItemPrimary</item>
-        <item name="customListItemSecondary">@style/TextViewListItemSecondary</item>
-        <item name="customListItemValue">@style/TextViewListItemValues</item>
+
+        <!--Custom List Title - TextViews Style-->
+        <item name="listHeaderTitleTextColor">@color/list_header_text_color_green</item>
+        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_green</item>
+        <item name="captionTextColor">@color/caption_text_color_green</item>
+        <item name="listItemValueTextColor">@color/list_item_values_text_color_green</item>
 
 
-        <item name="customLayoutBackground">@color/FullBlack</item>
-        <item name="customListTitleBackground">@color/list_title_bg_color_green</item>
+        <item name="customFooterBackgroundColor">@color/footer_bg_color_green</item>
+        <item name="customListTitleBackgroundColor">@color/list_title_bg_color_green</item>
         <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
 
 
@@ -550,7 +554,7 @@ negative button and neutral button -->
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
-        <!--CustomTextViews-->
+        <item name="highLightColor">@color/highlighter_green</item>
 
     </style>
 
@@ -634,12 +638,35 @@ negative button and neutral button -->
 
     <!-- Custom TextView Styles -->
 
+    <!-- Activity Name Text Styles -->
+    <style name="ActivityNameStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/activity_name_text_size</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+    <!-- Sub Activity Name Text Styles -->
+    <style name="SubActivityNameStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/sub_activity_name_text_size</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Header Text Style-->
+    <style name="HeadingStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+
     <!-- List View Header Text Style-->
     <style name="TextViewListTitle" parent="@android:style/Widget.TextView">
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/list_header_text_size</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textColor">@color/list_header_text_color</item>
+        <item name="android:textColor">?attr/listHeaderTitleTextColor</item>
     </style>
 
     <style name="TextViewListTitleSecondary" parent="TextViewListTitle">
@@ -649,34 +676,58 @@ negative button and neutral button -->
     <!-- List Item View Text Style-->
     <style name="TextViewListItemPrimary" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
-        <item name="android:textColor">@color/FullBlack</item>
+        <item name="android:textColor">?attr/listItemPrimaryTextColor</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <!-- List Item Secondary View Text Style-->
     <style name="TextViewListItemSecondary" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/text_size_caption</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textColor">@color/date_picker_text_color</item>
-    </style>
-
-    <style name="SecondaryTextAppearance">
         <item name="android:textSize">@dimen/text_size_secondary</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textColor">?attr/primarycolor</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+    <style name="TextViewListItemSecondaryHighlight" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">?attr/highLightColor</item>
+    </style>
+
+
+    <!-- List Item Caption View Text Style-->
+    <style name="TextViewCaption" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_caption</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">?attr/captionTextColor</item>
+    </style>
+
+    <!-- Footer View Text Style-->
+    <style name="TextViewFooterLabel" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/footer_label_size</item>
+        <item name="android:textColor">?attr/accentcolor</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <style name="TextViewFooterValue" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/footer_label_value</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
 
     <!-- List Item Value View Text Style-->
     <style name="TextViewListItemValues" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">@dimen/text_size_secondary</item>
-        <item name="android:textColor">@color/list_item_values_text_color</item>
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:textColor">?attr/listItemValueTextColor</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
-
-    <!-- Custom TextView -->
+    <style name="TextViewListItemValuesHighLight" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:textColor">?attr/highLightColor</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
 
 
     <!-- checkbox used only asset-->
@@ -721,7 +772,7 @@ negative button and neutral button -->
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
         <item name="android:textSize">@dimen/text_size_primary</item>
-        <item name="android:textColorHighlight">@color/colorAccent</item>
+        <item name="android:textColorHighlight">?attr/accentcolor</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 

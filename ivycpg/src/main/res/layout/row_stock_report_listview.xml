@@ -16,14 +16,14 @@
         <TextView
             android:id="@+id/productname"
             android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/profile_history_25dp"
             android:gravity="start|center"
             android:text="@string/product_name" />
         <TextView
             android:id="@+id/product_code"
-            style="?attr/customListItemSecondary"
+            style="@style/TextViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/productname"
@@ -33,7 +33,7 @@
             android:text="@string/prod_code" />
         <TextView
             android:id="@+id/batchid"
-            style="?attr/customListItemSecondary"
+            style="@style/TextViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/productname"
@@ -46,7 +46,7 @@
 
     <TextView
         android:id="@+id/caseqty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:gravity="center"
         android:text="@string/zero" />
 
@@ -69,7 +69,7 @@
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/zero" />
@@ -79,7 +79,7 @@
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
          android:layout_weight="1"
         android:gravity="center"
         android:text="@string/zero" />

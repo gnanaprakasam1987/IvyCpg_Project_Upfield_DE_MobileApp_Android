@@ -42,7 +42,7 @@
 
             <TextView
                 android:id="@+id/tvFirstName"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
@@ -52,7 +52,7 @@
 
             <TextView
                 android:id="@+id/tvTitle"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
@@ -62,7 +62,7 @@
 
             <TextView
                 android:id="@+id/tvContactNo"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
@@ -72,7 +72,7 @@
 
             <TextView
                 android:id="@+id/tvEmail"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
