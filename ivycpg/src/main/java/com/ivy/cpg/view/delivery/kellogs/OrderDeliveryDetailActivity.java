@@ -34,6 +34,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
 
@@ -57,7 +58,6 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private boolean isPrintClicked;
     private String orderId;
     private double totalReturnValue,totalOrderValue;
-    private boolean isClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,24 +142,16 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
 
         orderId = getIntent().getExtras().getString("OrderId");
 
-        findViewById(R.id.accept_btn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.accept_btn).setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
-                if(!isClicked) {
-                    orderDeliveryPresenter.saveOrderDeliveryDetail(
-                            isEdit, orderId, getIntent().getExtras().getString("menuCode"), totalOrderValue, totalReturnValue
+            public void onSingleClick(View view) {
+                orderDeliveryPresenter.saveOrderDeliveryDetail(
+                        isEdit, orderId, getIntent().getExtras().getString("menuCode"), totalOrderValue, totalReturnValue
 
 
-                    );
-                    isClicked = true;
-                }
+                );
             }
         });
-    }
-
-    @Override
-    public void cancelClick() {
-        isClicked = false;
     }
 
     @Override
@@ -167,7 +159,6 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         super.onResume();
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        isClicked = false;
         //session out if user id becomes 0
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
