@@ -29,7 +29,6 @@
         <item name="android:windowBackground">@color/screen_bg_color</item>
 
 
-
         <!--Customize all Labels based on Theme -->
         <item name="textFieldStyle">@style/TextViewLabel</item>
         <item name="textColor">@color/white</item>
@@ -639,6 +638,29 @@ negative button and neutral button -->
 
     <!-- Custom TextView Styles -->
 
+    <!-- Activity Name Text Styles -->
+    <style name="ActivityNameStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/activity_name_text_size</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+    <!-- Sub Activity Name Text Styles -->
+    <style name="SubActivityNameStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/sub_activity_name_text_size</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Header Text Style-->
+    <style name="HeadingStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+
     <!-- List View Header Text Style-->
     <style name="TextViewListTitle" parent="@android:style/Widget.TextView">
         <item name="android:gravity">center</item>
@@ -701,8 +723,11 @@ negative button and neutral button -->
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
-
-    <!-- Custom TextView -->
+    <style name="TextViewListItemValuesHighLight" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:textColor">?attr/highLightColor</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
 
 
     <!-- checkbox used only asset-->

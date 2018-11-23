@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_screen_padding"
-    android:paddingTop="@dimen/activity_screen_padding">
+    android:paddingTop="@dimen/activity_screen_padding"
+    android:paddingBottom="@dimen/activity_screen_padding">
 
     <RelativeLayout
         style="@style/ActivityListClickEffect"
@@ -18,12 +18,12 @@
             android:layout_width="@dimen/activity_list_height"
             android:layout_height="@dimen/activity_list_height"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/activity_margin3"
+            android:layout_marginLeft="@dimen/activity_margin3"
             android:background="@drawable/activity_icon_bg_normal"
-            android:gravity="center"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="@dimen/activity_margin3">
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/list_item_icon_iv"
@@ -37,29 +37,27 @@
             android:layout_width="@dimen/activity_list_icon_size"
             android:layout_height="@dimen/activity_list_icon_size"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
             android:autoMirrored="true"
             android:rotationY="@integer/locale_mirror_flip"
-            android:src="@drawable/activity_icon_next"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp" />
+            android:src="@drawable/activity_icon_next" />
 
         <TextView
             android:id="@+id/activityName"
+            style="@style/ActivityNameStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/activity_margin3"
             android:layout_marginStart="@dimen/activity_margin3"
-            android:layout_toEndOf="@id/icon_ll"
+            android:layout_marginEnd="@dimen/activity_margin3"
             android:layout_toStartOf="@id/img_arrow"
-            android:textColor="#000000"
-            android:text="@string/outlet_code"
-            android:textSize="@dimen/activity_name_text_size"
-            android:fontFamily="@font/roboto_light"
+            android:layout_toLeftOf="@id/img_arrow"
+            android:layout_toEndOf="@id/icon_ll"
             android:layout_toRightOf="@id/icon_ll"
-            android:layout_toLeftOf="@id/img_arrow" />
+            android:text="@string/outlet_code" />
 
     </RelativeLayout>
 
