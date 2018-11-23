@@ -43,7 +43,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
                         android:id="@+id/order_id_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -96,7 +95,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
                         android:id="@+id/date_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="match_parent"
@@ -149,7 +147,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
                         android:id="@+id/due_date_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="match_parent"
@@ -202,7 +199,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/tot_lines_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -254,7 +251,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/tot_val_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -307,7 +304,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/tot_vol_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -360,7 +357,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/del_status_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -424,7 +421,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/del_date_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="match_parent"
@@ -477,7 +474,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/invoice_date_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -531,7 +528,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/invoice_qty_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -585,7 +582,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/del_rep_code_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -638,7 +635,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/paid_amt_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -688,7 +685,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/bal_amt_txt"
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
@@ -749,7 +746,7 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/driver_name_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -803,7 +800,7 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/del_docno_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -857,7 +854,7 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/cust_pono_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -911,7 +908,7 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        style="?attr/customListItemSecondary"
+
                         android:id="@+id/delivery_date_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
