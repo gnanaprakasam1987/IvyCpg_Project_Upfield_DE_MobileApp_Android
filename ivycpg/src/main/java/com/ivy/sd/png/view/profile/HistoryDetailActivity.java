@@ -216,9 +216,7 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
                     Commons.printException(e);
                 }
             }
-            if (!bmodel.configurationMasterHelper.SHOW_HST_DET_FREE_QTY) {
-                holder.ll_freeQty.setVisibility(View.GONE);
-            } else {
+
                 try {
                     holder.ll_freeQty.setVisibility(View.VISIBLE);
                     if (bmodel.labelsMasterHelper.applyLabels(holder.freeQty_label.getTag()) != null)
@@ -228,10 +226,7 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
-            if (!bmodel.configurationMasterHelper.SHOW_HST_DET_VALUE) {
-                holder.ll_value.setVisibility(View.GONE);
-            } else {
+
                 try {
                     holder.ll_value.setVisibility(View.VISIBLE);
                     if (bmodel.labelsMasterHelper.applyLabels(holder.value_label.getTag()) != null)
@@ -241,7 +236,6 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
-            }
 
             return row;
         }

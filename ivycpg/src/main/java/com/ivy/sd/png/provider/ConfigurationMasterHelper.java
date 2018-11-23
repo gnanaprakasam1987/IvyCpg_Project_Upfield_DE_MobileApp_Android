@@ -599,8 +599,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_HST_DRIVER_NAME;
     public boolean SHOW_HST_PO_NUM;
     public boolean SHOW_HST_DOC_NO;
-    public boolean SHOW_HST_DET_FREE_QTY;
-    public boolean SHOW_HST_DET_VALUE;
 
     public boolean SHOW_INV_HST_ORDERID;
     public boolean SHOW_INV_HST_INVOICEDATE;
@@ -3862,8 +3860,6 @@ public class ConfigurationMasterHelper {
             SHOW_D3 = false;
             SHOW_DA = false;
             SHOW_DISCOUNTED_PRICE = false;
-            SHOW_HST_DET_FREE_QTY = false;
-            SHOW_HST_DET_VALUE = false;
 
             SHOW_INDEX_DASH = false;
             SHOW_TARGET_DASH = false;
@@ -4025,10 +4021,6 @@ public class ConfigurationMasterHelper {
                         SHOW_STK_ORD_SRP_EDT = true;
                     else if (temp.equals("STKQTY"))
                         SHOW_STK_QTY_IN_ORDER = true;
-                    else if (temp.equals("FREEQTY"))
-                        SHOW_HST_DET_FREE_QTY = true;
-                    else if (temp.equals("VALUE"))
-                        SHOW_HST_DET_VALUE = true;
                 }
             }
 
