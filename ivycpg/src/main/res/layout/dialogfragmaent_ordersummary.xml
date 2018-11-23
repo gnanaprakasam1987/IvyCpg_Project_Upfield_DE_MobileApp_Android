@@ -66,7 +66,7 @@
 
                 <TextView
                     android:id="@+id/txt_pname"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/order_stock_list_product_name_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -76,7 +76,7 @@
 
                 <TextView
                     android:id="@+id/txt_qty"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -86,7 +86,7 @@
 
                 <TextView
                     android:id="@+id/txt_mrp"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -96,7 +96,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_price_off"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -107,7 +107,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_disc1"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -118,7 +118,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_disc2"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -129,7 +129,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_disc3"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -140,7 +140,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_disc4"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -151,7 +151,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_disc5"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -162,7 +162,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_cash_discount"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -173,7 +173,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_tax"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -184,7 +184,7 @@
 
                 <TextView
                     android:id="@+id/txt_line_value"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/meter_value_width_large"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -214,7 +214,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
+        android:background="@color/footer_bg_color"
         android:orientation="horizontal">
 
         <LinearLayout

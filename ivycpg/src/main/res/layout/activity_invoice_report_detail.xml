@@ -42,8 +42,8 @@
                     android:layout_height="@dimen/screen_title_height"
                     android:background="@color/black_bg1"
                     android:orientation="horizontal"
-                    android:padding="@dimen/dimen_5dp"
-                    android:weightSum="10">
+                    android:weightSum="10"
+                    android:padding="@dimen/dimen_5dp">
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -53,26 +53,27 @@
 
                         <TextView
                             android:id="@+id/outna"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
-                            android:text="@string/product_name" />
+                            android:text="@string/product_name"
+                            />
                     </RelativeLayout>
 
                     <TextView
                         android:id="@+id/cqty"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="2"
                         android:tag="item_case"
-                        android:text="@string/item_case" />
+                        android:text="@string/item_case"
+                        android:layout_weight="2"/>
 
                     <TextView
                         android:id="@+id/outid"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -82,7 +83,7 @@
 
                     <TextView
                         android:id="@+id/outercqty"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -92,23 +93,12 @@
 
                     <TextView
                         android:id="@+id/lpc"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:text="@string/value" />
-
-                    <!--<TextView-->
-                    <!--android:id="@+id/weighttitle"-->
-                    <!--style="?attr/customListTitle"-->
-                    <!--android:layout_width="@dimen/list_item_width_large"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:tag="weighttitle"-->
-                    <!--android:text="@string/weight"-->
-                    <!--android:textColor="@color/white"-->
-                    <!--android:textSize="@dimen/text_size_secondary" />-->
+                        android:text="@string/value"
+                        android:layout_weight="2"/>
                 </LinearLayout>
 
                 <ListView

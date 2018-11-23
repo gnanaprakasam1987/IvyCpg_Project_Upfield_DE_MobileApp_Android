@@ -31,7 +31,7 @@
 
                 <TextView
                     android:id="@+id/text_title"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="@dimen/dimen_0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"

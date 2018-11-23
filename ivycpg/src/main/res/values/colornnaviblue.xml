@@ -9,8 +9,6 @@
     <color name="colorAccentNBlue">#94b4e8</color>
     <color name="textColorSecondaryNBlue">#4da6ff</color>
 
-    <color name="footerBackgroundColor">#283593</color>
-
     <color name="colorNBlueripple_focused">#6680ff</color>
     <color name="colorNBlueripple_pressed">#ccd5ff</color>
     <color name="colorNBlueripple_selected">#99aaff</color>
@@ -24,5 +22,22 @@
 
     <!--List item Header background color-->
     <color name="list_title_bg_color_nblue">#283593</color>
+
+    <color name="highlighter_nblue">#3f51b5</color>
+
+    <!--Footer background color-->
+    <color name="footer_bg_color_nblue">#283593</color>
+
+    <!--List item Header Title Text color-->
+    <color name="list_header_text_color_nblue">#ffffff</color>
+
+    <!--List item Primary Text color-->
+    <color name="list_item_primary_text_color_nblue">@color/FullBlack</color>
+
+    <!--Caption Text color-->
+    <color name="caption_text_color_nblue">#cc262626</color>
+
+    <!--List item Value Text color-->
+    <color name="list_item_values_text_color_nblue">#262626</color>
 
 </resources>

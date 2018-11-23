@@ -27,7 +27,7 @@
 
             <TextView
                 android:id="@+id/idValueTv"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="start|center_vertical"
@@ -63,7 +63,7 @@
 
             <TextView
                 android:id="@+id/transactionValue"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="start"
@@ -75,7 +75,7 @@
 
             <TextView
                 android:id="@+id/lineCountValue"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

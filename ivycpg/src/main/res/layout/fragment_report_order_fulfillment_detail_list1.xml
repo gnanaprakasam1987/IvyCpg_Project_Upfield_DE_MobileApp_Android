@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/txtProductName"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/skuwise_right_margin"
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/txtOrderedCases"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/skuwise_right_margin"
@@ -43,7 +43,7 @@
 
         <TextView
             android:id="@+id/txtOrderedPieces"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/skuwise_right_margin"
@@ -57,7 +57,7 @@
 
         <TextView
             android:id="@+id/txtFulfilledCases"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -70,7 +70,7 @@
 
         <TextView
             android:id="@+id/txtFulfilledPieces"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/skuwise_right_margin"

@@ -22,7 +22,7 @@
 
                 <TextView
                     android:id="@+id/tv_brandname"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_product_name_width_tiny"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -30,7 +30,7 @@
 
                 <TextView
                     android:id="@+id/tv_productive_call"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -38,7 +38,7 @@
 
                 <TextView
                     android:id="@+id/tv_value_per_day"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -46,7 +46,7 @@
 
                 <TextView
                     android:id="@+id/tv_lines"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -54,7 +54,7 @@
 
                 <TextView
                     android:id="@+id/tv_target_achievement"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_product_name_width_tiny"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -92,35 +92,35 @@
 
                 <TextView
                     android:id="@+id/tv_total"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_product_name_width_tiny"
                     android:layout_height="wrap_content"
                     android:text="@string/total" />
 
                 <TextView
                     android:id="@+id/tv_productive_call_total"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width"
                     android:layout_height="wrap_content"
                     android:gravity="center" />
 
                 <TextView
                     android:id="@+id/tv_value_per_day_total"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_double"
                     android:layout_height="wrap_content"
                     android:gravity="center" />
 
                 <TextView
                     android:id="@+id/tv_lines_total"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width"
                     android:layout_height="wrap_content"
                     android:gravity="center" />
 
                 <TextView
                     android:id="@+id/tv_target_achievement_total"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_product_name_width_tiny"
                     android:layout_height="wrap_content"
                     android:gravity="center" />

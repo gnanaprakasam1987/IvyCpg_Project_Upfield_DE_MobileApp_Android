@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/tv_sales_parameter"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/tv_factor"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -43,7 +43,7 @@
 
         <TextView
             android:id="@+id/tv_achper"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -56,7 +56,7 @@
 
         <TextView
             android:id="@+id/tv_max_opportunity"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

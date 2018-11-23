@@ -104,4 +104,5 @@
 
     <string name="enter_nfc_number">Enter NFC NO</string>
 
+    <string name="avg_value">Average Value</string>
 </resources>

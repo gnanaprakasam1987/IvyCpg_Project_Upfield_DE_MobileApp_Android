@@ -116,7 +116,7 @@
 
                             <TextView
                                 android:id="@+id/pcsTitle"
-                                style="?attr/customListItemSecondary"
+                                style="@style/TextViewCaption"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:maxLines="1"
@@ -126,7 +126,7 @@
 
                             <TextView
                                 android:id="@+id/tv_pcs_qty"
-                                style="?attr/customListItemPrimary"
+                                style="@style/TextViewListItemPrimary"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:maxLines="1"
@@ -155,7 +155,7 @@
 
                             <TextView
                                 android:id="@+id/caseTitle"
-                                style="?attr/customListItemSecondary"
+                                style="@style/TextViewCaption"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:maxLines="1"
@@ -165,7 +165,7 @@
 
                             <TextView
                                 android:id="@+id/tv_case_qty"
-                                style="?attr/customListItemPrimary"
+                                style="@style/TextViewListItemPrimary"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:maxLines="1"
@@ -194,7 +194,7 @@
 
                             <TextView
                                 android:id="@+id/outercaseTitle"
-                                style="?attr/customListItemSecondary"
+                                style="@style/TextViewCaption"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:maxLines="1"
@@ -204,7 +204,7 @@
 
                             <TextView
                                 android:id="@+id/tv_outer_qty"
-                                style="?attr/customListItemPrimary"
+                                style="@style/TextViewListItemPrimary"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:maxLines="1"
@@ -228,7 +228,7 @@
 
                         <TextView
                             android:id="@+id/totalTitle"
-                            style="?attr/customListItemSecondary"
+                            style="@style/TextViewCaption"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="end"
@@ -239,7 +239,7 @@
 
                         <TextView
                             android:id="@+id/totalValue"
-                            style="?attr/customListItemPrimary"
+                            style="@style/TextViewListItemPrimary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="end"

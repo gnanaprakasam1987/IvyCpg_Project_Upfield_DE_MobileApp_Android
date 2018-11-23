@@ -15,7 +15,7 @@
     android:layout_weight="2">
     <TextView
         android:id="@+id/productName"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/target_top_margin"
@@ -41,7 +41,7 @@
     android:layout_weight="1">
     <TextView
         android:id="@+id/total"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"

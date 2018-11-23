@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/tv_factor"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.40"
@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/tv_target"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/tv_achived"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -52,7 +52,7 @@
 
         <TextView
             android:id="@+id/tv_achper"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.60"
@@ -64,7 +64,7 @@
 
         <TextView
             android:id="@+id/tv_payout_earned"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -76,7 +76,7 @@
 
         <TextView
             android:id="@+id/tv_max_possible"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/closePRODNAME"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_product_name_width_medium"
         android:layout_height="match_parent"
         android:layout_marginStart="3dp"

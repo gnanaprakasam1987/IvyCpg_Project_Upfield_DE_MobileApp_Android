@@ -151,7 +151,7 @@
 
                             <TextView
                                 android:id="@+id/productNameTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="@dimen/list_margin"
@@ -162,7 +162,7 @@
 
                             <TextView
                                 android:id="@+id/shelfCaseTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.3"
@@ -172,7 +172,7 @@
 
                             <TextView
                                 android:id="@+id/shelfOuterTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.3"
@@ -182,7 +182,7 @@
 
                             <TextView
                                 android:id="@+id/shelfPcsTitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1.3"
