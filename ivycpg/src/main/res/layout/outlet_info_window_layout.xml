@@ -36,7 +36,7 @@
 
                 <TextView
                     android:id="@+id/tv_store_name"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_2sdp"
@@ -48,7 +48,7 @@
 
                 <TextView
                     android:id="@+id/tv_address"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_2sdp"
@@ -67,7 +67,7 @@
 
                 <TextView
                     android:id="@+id/tv_status_text"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -107,7 +107,7 @@
 
                 <TextView
                     android:id="@+id/tv_assigned_txt"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_2sdp"
@@ -119,7 +119,7 @@
 
                 <TextView
                     android:id="@+id/tv_seller_name"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_2sdp"
@@ -139,7 +139,7 @@
 
                 <TextView
                     android:id="@+id/tv_order_val_txt"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_2sdp"
@@ -151,7 +151,7 @@
 
                 <TextView
                     android:id="@+id/tv_order_value"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_2sdp"

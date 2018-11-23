@@ -24,7 +24,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
+        android:background="@color/footer_bg_color"
         android:orientation="horizontal">
 
 
@@ -110,7 +110,7 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -122,7 +122,7 @@
 
                 <TextView
                     android:id="@+id/textView2"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -132,7 +132,7 @@
 
                 <TextView
                     android:id="@+id/textView3"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"

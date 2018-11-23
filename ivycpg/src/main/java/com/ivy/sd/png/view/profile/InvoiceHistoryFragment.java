@@ -16,9 +16,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.FontUtils;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.Vector;
 
@@ -56,10 +55,6 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
         mavgOrderLines = view.findViewById(R.id.avg_lines_val);
         mavgOrderValue = view.findViewById(R.id.history_avg_val);
 
-        havgOrderLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        hOrderValueTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        mavgOrderLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        mavgOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
 
         invoiceHistoryList.setHasFixedSize(false);
         invoiceHistoryList.setNestedScrollingEnabled(false);
@@ -81,7 +76,6 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 bmodel.profilehelper.getP4AvgInvoiceLines() + "");
         mavgOrderValue.setText(
                 bmodel.formatValue(bmodel.profilehelper.getP4AvgInvoiceValue()) + "");
-
 
 
         bmodel.profilehelper.downloadInvoiceHistory();
@@ -177,12 +171,11 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            private final TextView del_date_txt, invoice_date_txt, invoice_qty_txt, del_rep_code_txt;
+
             private LinearLayout listBgLayout, invViewLayout;
-            private TextView invoice_Id_label, dateTxt, totLinesTxt, totValTxt, totalVolumeTxt, marginPriceTxt, marginPerTxt;
             private TextView invoice_Id, invDate, totLines, totVal, totalVolume, marginPrice, marginPer;
-            private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
-            private TextView order_Id, order_Id_label;
+            private TextView del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val;
+            private TextView order_Id;
 
 
             public ViewHolder(View itemView) {
@@ -190,22 +183,12 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
 
                 invViewLayout = itemView.findViewById(R.id.inv_view_layout);
                 listBgLayout = itemView.findViewById(R.id.list_background);
-                invoice_Id_label = itemView.findViewById(R.id.order_id_txt);
-                order_Id_label = itemView.findViewById(R.id.ord_id_txt);
-                dateTxt = itemView.findViewById(R.id.date_txt);
-                totLinesTxt = itemView.findViewById(R.id.tot_lines_txt);
-                totValTxt = itemView.findViewById(R.id.tot_val_txt);
-                totalVolumeTxt = itemView.findViewById(R.id.tot_volume_txt);
-                marginPriceTxt = itemView.findViewById(R.id.margin_price_txt);
-                marginPerTxt = itemView.findViewById(R.id.margin_per_txt);
-
 
                 order_Id = itemView.findViewById(R.id.ord_id_val);
                 invoice_Id = itemView.findViewById(R.id.order_id_val);
                 invDate = itemView.findViewById(R.id.date_val);
                 totLines = itemView.findViewById(R.id.tota_lines_val);
                 totVal = itemView.findViewById(R.id.tot_val);
-                invViewBtn = itemView.findViewById(R.id.inv_view_btn);
                 totalVolume = itemView.findViewById(R.id.tota_Volume_val);
                 marginPrice = itemView.findViewById(R.id.margin_price_val);
                 marginPer = itemView.findViewById(R.id.margin_per_val);
@@ -215,16 +198,12 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 invoice_qty_val = itemView.findViewById(R.id.invoice_qty_val);
                 del_rep_code_val = itemView.findViewById(R.id.del_rep_code_val);
 
-                del_date_txt = itemView.findViewById(R.id.del_date_txt);
-                invoice_date_txt = itemView.findViewById(R.id.invoice_date_txt);
-                invoice_qty_txt = itemView.findViewById(R.id.invoice_qty_txt);
-                del_rep_code_txt = itemView.findViewById(R.id.del_rep_code_txt);
 
                 if (bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
                     itemView.setClickable(true);
-                    itemView.setOnClickListener(new View.OnClickListener() {
+                    itemView.setOnClickListener(new OnSingleClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onSingleClick(View v) {
                             Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
                             intent.putExtra("selected_list_id", getLayoutPosition());
                             intent.putExtra("from", "InvoiceHistory");
@@ -255,36 +234,6 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 } catch (Exception ex) {
                     Commons.printException(ex);
                 }
-
-                //typeface for label text
-                invoice_Id_label.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                order_Id_label.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                dateTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                totLinesTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                totValTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                totalVolumeTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                del_date_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                invoice_date_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                invoice_qty_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                del_rep_code_txt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                marginPriceTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                marginPerTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-
-
-                //typeface for value text font
-                invoice_Id.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                order_Id.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                invDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                totLines.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                totVal.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                invViewBtn.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                totalVolume.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                del_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                invoice_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                invoice_qty_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                del_rep_code_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                marginPrice.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                marginPer.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
                 if (!bmodel.configurationMasterHelper.SHOW_INV_HST_ORDERID) {
                     itemView.findViewById(R.id.order_id_layout).setVisibility(View.GONE);

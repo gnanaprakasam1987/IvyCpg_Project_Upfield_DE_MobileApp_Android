@@ -32,7 +32,7 @@
 
                 <TextView
                     android:id="@+id/order_delivery_listview_orderid"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_4dp"
@@ -44,7 +44,7 @@
 
                 <TextView
                     android:id="@+id/order_delivery_listview_id_heading"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
@@ -63,7 +63,7 @@
 
                 <TextView
                     android:id="@+id/order_delivery_listview_ordervalue"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_4dp"
@@ -75,7 +75,7 @@
 
                 <TextView
                     android:id="@+id/order_delivery_listview_value_heading"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
@@ -95,7 +95,7 @@
 
                 <TextView
                     android:id="@+id/order_delivery_listview_orderdate"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_4dp"
@@ -106,7 +106,7 @@
 
                 <TextView
                     android:id="@+id/order_delivery_listview_date_heading"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
@@ -125,7 +125,7 @@
 
                 <TextView
                     android:id="@+id/order_delivery_listview_orderlines"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_4dp"
@@ -137,7 +137,7 @@
 
                 <TextView
                     android:id="@+id/order_delivery_listview_line_head"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
@@ -166,7 +166,7 @@
 
             <TextView
                 android:id="@+id/invoice_generated_text"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

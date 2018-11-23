@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/profile_str_name"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/profile_31dp"
@@ -31,7 +31,7 @@
 
             <TextView
                 android:id="@+id/profile_retailer_code"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
@@ -41,7 +41,7 @@
 
             <TextView
                 android:id="@+id/profile_add_onetwo"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -53,7 +53,7 @@
 
             <TextView
                 android:id="@+id/profile_add_three"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/profile_minus5dp"
@@ -64,7 +64,7 @@
 
             <TextView
                 android:id="@+id/profile_csp"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
@@ -81,7 +81,7 @@
 
                 <TextView
                     android:id="@+id/profile_retailer_cno"
-                    style="?attr/customListItemValue"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -109,7 +109,7 @@
             <!--android:visibility="visible">-->
 
             <!--<TextView-->
-            <!--style="?attr/customListItemValue"-->
+            <!--style="@style/TextViewListItemValues"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="match_parent"-->
             <!--android:layout_alignBottom="@+id/call_btnimg"-->
@@ -175,7 +175,7 @@
                 android:padding="@dimen/dimen_5dp">
 
                 <TextView
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/dimen_20dp"

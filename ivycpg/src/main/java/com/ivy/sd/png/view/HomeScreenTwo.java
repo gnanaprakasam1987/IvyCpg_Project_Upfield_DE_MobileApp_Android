@@ -89,6 +89,8 @@ import com.ivy.cpg.view.retailercontract.RetailerContractActivity;
 import com.ivy.cpg.view.retailercontract.RetailerContractHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnActivity;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.serializedAsset.SerializedAssetActivity;
+import com.ivy.cpg.view.serializedAsset.SerializedAssetHelper;
 import com.ivy.cpg.view.sf.SODActivity;
 import com.ivy.cpg.view.sf.SODAssetActivity;
 import com.ivy.cpg.view.sf.SODAssetHelper;
@@ -187,6 +189,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_DISPLAY_SCH_TRACK = "MENU_DISPLAY_SCH_TRACK";
     public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
     public static final String MENU_SALES_RET_DELIVERY = "MENU_SALES_RET_DELIVERY";
+    public static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
     private final int SALES_TYPES = 2;// show preVan seller dialog
@@ -576,6 +579,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         menuIcons.put(MENU_QUALITY, R.drawable.activity_icon_survey);
         menuIcons.put(MENU_PERSUATION, R.drawable.activity_icon_survey);
         menuIcons.put(MENU_ASSET, R.drawable.activity_icon_presentation);
+        menuIcons.put(MENU_SERIALIZED_ASSET, R.drawable.activity_icon_presentation);
         menuIcons.put(MENU_POSM, R.drawable.activity_icon_presentation);
         menuIcons.put(MENU_STORECHECK, R.drawable.activity_icon_order_taking);
         menuIcons.put(MENU_PRESENTATION, R.drawable.activity_icon_presentation);
@@ -1212,7 +1216,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
-                } else if (menuDB.get(i).getConfigCode().equals(MENU_POSM)) {
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_SERIALIZED_ASSET)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
+                }else if (menuDB.get(i).getConfigCode().equals(MENU_POSM)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
@@ -2652,6 +2665,53 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
 
+                    isClick = false;
+                }
+            }
+        }else if (menu.getConfigCode().equals(MENU_SERIALIZED_ASSET) && hasLink == 1) {
+            if (!isClick) {
+                isClick = true;
+                if (isPreviousDone(menu)
+                        || bmodel.configurationMasterHelper.IS_JUMP) {
+
+                    SerializedAssetHelper assetTrackingHelper = SerializedAssetHelper.getInstance(this);
+                    assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), MENU_SERIALIZED_ASSET);
+
+                    if (assetTrackingHelper.getAssetTrackingList().size() > 0 ||
+                            assetTrackingHelper.SHOW_ADD_NEW_ASSET) {
+
+                        assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
+
+                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
+
+                        bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+
+                        Intent in = new Intent(HomeScreenTwo.this,
+                                SerializedAssetActivity.class);
+                        in.putExtra("CurrentActivityCode", menu.getConfigCode());
+                        if (isFromChild)
+                            in.putExtra("isFromChild", isFromChild);
+                        startActivity(in);
+                        finish();
+
+                    } else {
+
+                        dataNotMapped();
+                        isCreated = false;
+                        isClick = false;
+                        menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
+                        if (!menuCode.equals(menu.getConfigCode()))
+                            menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
+                    }
+                } else {
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.please_complete_previous_activity),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
                     isClick = false;
                 }
             }

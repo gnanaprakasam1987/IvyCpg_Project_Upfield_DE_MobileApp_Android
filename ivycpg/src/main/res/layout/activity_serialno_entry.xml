@@ -32,14 +32,14 @@
 
             <TextView
 
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="225dp"
                 android:layout_height="wrap_content"
                 android:text="FromNo" />
 
             <TextView
 
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="225dp"
                 android:layout_height="wrap_content"
 
@@ -47,7 +47,7 @@
 
             <TextView
 
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:text="ScannedQty" />

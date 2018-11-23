@@ -17,8 +17,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.view.OnSingleClickListener;
 import com.ivy.utils.FontUtils;
 
 import java.text.ParseException;
@@ -60,16 +60,11 @@ public class HistoryFragment extends IvyBaseFragment {
     }
 
     private void initializeViews() {
-        orderHistoryList = (RecyclerView) view.findViewById(R.id.history_recyclerview);
-        havgOrderLinesTxt = (TextView) view.findViewById(R.id.avg_line_txt);
-        hOrderValueTxt = (TextView) view.findViewById(R.id.avg_val_txt);
-        mavgOrderLines = (TextView) view.findViewById(R.id.avg_lines_val);
-        mavgOrderValue = (TextView) view.findViewById(R.id.history_avg_val);
-
-        havgOrderLinesTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        hOrderValueTxt.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        mavgOrderLines.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
-        mavgOrderValue.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        orderHistoryList = view.findViewById(R.id.history_recyclerview);
+        havgOrderLinesTxt = view.findViewById(R.id.avg_line_txt);
+        hOrderValueTxt = view.findViewById(R.id.avg_val_txt);
+        mavgOrderLines = view.findViewById(R.id.avg_lines_val);
+        mavgOrderValue = view.findViewById(R.id.history_avg_val);
 
         orderHistoryList.setHasFixedSize(false);
         orderHistoryList.setNestedScrollingEnabled(false);
@@ -209,33 +204,46 @@ public class HistoryFragment extends IvyBaseFragment {
             private final LinearLayout del_date_layout, invoice_date_layout, invoice_qty_layout, del_rep_code_layout;
             private LinearLayout listBgLayout, invViewLayout;
             private TextView orderId, orderDate, totLines, totVal, totVol, paidAmtVal, balAmtVal;
-            private TextView invViewBtn, del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val, due_date_val;
+            private TextView del_date_val, invoice_date_val, invoice_qty_val, del_rep_code_val, due_date_val;
             private LinearLayout tot_val_layout, tot_vol_layout, del_status_layout, start_date_layout, due_date_layout, paid_amt_layout, bal_amt_layout;
             private LinearLayout driver_name_layout, del_docno_layout, cust_pono_layout, delivery_date_layout;
             private TextView deliveryStatus_val;
             private TextView driver_name_val, del_docno_val, cust_pono_val, delivery_date_val;
+            private TextView deliveryStatus_val;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                invViewLayout = (LinearLayout) itemView.findViewById(R.id.inv_view_layout);
-                due_date_layout = (LinearLayout) itemView.findViewById(R.id.due_date_layout);
-                listBgLayout = (LinearLayout) itemView.findViewById(R.id.list_background);
+                invViewLayout = itemView.findViewById(R.id.inv_view_layout);
+                due_date_layout = itemView.findViewById(R.id.due_date_layout);
+                listBgLayout = itemView.findViewById(R.id.list_background);
 
 
-                orderId = (TextView) itemView.findViewById(R.id.order_id_val);
-                orderDate = (TextView) itemView.findViewById(R.id.date_val);
-                totLines = (TextView) itemView.findViewById(R.id.tota_lines_val);
-                totVal = (TextView) itemView.findViewById(R.id.tot_val);
-                totVol = (TextView) itemView.findViewById(R.id.tot_vol);
-                invViewBtn = (TextView) itemView.findViewById(R.id.inv_view_btn);
+                orderId = itemView.findViewById(R.id.order_id_val);
+                orderDate = itemView.findViewById(R.id.date_val);
+                totLines = itemView.findViewById(R.id.tota_lines_val);
+                totVal = itemView.findViewById(R.id.tot_val);
+                totVol = itemView.findViewById(R.id.tot_vol);
 
-                del_date_val = (TextView) itemView.findViewById(R.id.del_date_val);
-                invoice_date_val = (TextView) itemView.findViewById(R.id.invoice_date_val);
-                invoice_qty_val = (TextView) itemView.findViewById(R.id.invoice_qty_val);
-                del_rep_code_val = (TextView) itemView.findViewById(R.id.del_rep_code_val);
-                due_date_val = (TextView) itemView.findViewById(R.id.due_date_val);
+                del_date_val = itemView.findViewById(R.id.del_date_val);
+                invoice_date_val = itemView.findViewById(R.id.invoice_date_val);
+                invoice_qty_val = itemView.findViewById(R.id.invoice_qty_val);
+                del_rep_code_val = itemView.findViewById(R.id.del_rep_code_val);
+                due_date_val = itemView.findViewById(R.id.due_date_val);
 
+                del_date_layout = itemView.findViewById(R.id.del_date_layout);
+                invoice_date_layout = itemView.findViewById(R.id.invoice_date_layout);
+                invoice_qty_layout = itemView.findViewById(R.id.invoice_qty_layout);
+                del_rep_code_layout = itemView.findViewById(R.id.del_rep_code_layout);
+                tot_val_layout = itemView.findViewById(R.id.tot_val_layout);
+                tot_vol_layout = itemView.findViewById(R.id.tot_vol_layout);
+                del_status_layout = itemView.findViewById(R.id.del_status_layout);
+                start_date_layout = itemView.findViewById(R.id.date_layout);
+                deliveryStatus_val = itemView.findViewById(R.id.deliveryStatusValue);
+                paid_amt_layout = itemView.findViewById(R.id.paid_amt_layout);
+                paidAmtVal = itemView.findViewById(R.id.paid_amt_val);
+                bal_amt_layout = itemView.findViewById(R.id.bal_amt_layout);
+                balAmtVal = itemView.findViewById(R.id.bal_amt_val);
 
                 del_date_layout = (LinearLayout) itemView.findViewById(R.id.del_date_layout);
                 invoice_date_layout = (LinearLayout) itemView.findViewById(R.id.invoice_date_layout);
@@ -280,8 +288,9 @@ public class HistoryFragment extends IvyBaseFragment {
 
 
                 itemView.setOnClickListener(new View.OnClickListener() {
+                itemView.setOnClickListener(new OnSingleClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onSingleClick(View v) {
                         if (bmodel.configurationMasterHelper.SHOW_HST_INVDET) {
                             Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
                             intent.putExtra("selected_list_id", getLayoutPosition());
@@ -363,6 +372,7 @@ public class HistoryFragment extends IvyBaseFragment {
                 del_docno_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 cust_pono_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 delivery_date_val.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+
 
                 if (bmodel.configurationMasterHelper.SHOW_HST_DELDATE) {
                     del_date_layout.setVisibility(View.VISIBLE);

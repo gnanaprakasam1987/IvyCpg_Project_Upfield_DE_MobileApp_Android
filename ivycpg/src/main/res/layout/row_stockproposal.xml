@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/closePRODNAME"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center"
@@ -33,7 +33,7 @@
 
             <TextView
                 android:id="@+id/proposalQty"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -53,7 +53,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_sih_case"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/closePRODNAME"
@@ -67,7 +67,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_sih_outer"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/closePRODNAME"
@@ -79,7 +79,7 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_sih"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/closePRODNAME"
@@ -92,7 +92,7 @@
 
             <TextView
                 android:id="@+id/stock_and_order_listview_distinv"
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/closePRODNAME"
@@ -139,7 +139,7 @@
 
     <TextView
         android:id="@+id/unitprice"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

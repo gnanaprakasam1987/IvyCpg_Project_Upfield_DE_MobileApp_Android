@@ -58,7 +58,7 @@
 
                 <TextView
                     android:id="@+id/tvDate"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
@@ -99,7 +99,7 @@
 
                     <TextView
                         android:id="@+id/tvinvamt"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/inv_amt" />
@@ -107,7 +107,7 @@
 
                     <TextView
                         android:id="@+id/tvinvamtValue"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"
@@ -125,7 +125,7 @@
 
                     <TextView
                         android:id="@+id/tvpaidamt"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/amount_paid" />
@@ -133,7 +133,7 @@
 
                     <TextView
                         android:id="@+id/tvpaidamtValue"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"
@@ -151,7 +151,7 @@
 
                     <TextView
                         android:id="@+id/tvbalamt"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/balance" />
@@ -159,7 +159,7 @@
 
                     <TextView
                         android:id="@+id/tvbalamtValue"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"

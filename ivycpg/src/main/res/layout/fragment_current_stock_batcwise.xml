@@ -137,7 +137,7 @@
 
                         <TextView
                             android:id="@+id/text_product_name"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="@dimen/dimen_0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="5"
@@ -152,7 +152,7 @@
 
                             <TextView
                                 android:id="@+id/sih_cs_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/dimen_0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -162,7 +162,7 @@
 
                             <TextView
                                 android:id="@+id/sih_ou_title"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/dimen_0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -172,7 +172,7 @@
 
                             <TextView
                                 android:id="@+id/sihtitle"
-                                style="?attr/customListTitle"
+                                style="@style/TextViewListTitle"
                                 android:layout_width="@dimen/dimen_0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -200,7 +200,7 @@
             android:id="@+id/layout_sih"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/footer_bg"
+            android:background="@color/footer_bg_color"
             android:layout_alignParentBottom="true">
 
             <LinearLayout

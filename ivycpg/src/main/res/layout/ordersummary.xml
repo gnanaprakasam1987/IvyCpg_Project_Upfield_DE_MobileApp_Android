@@ -37,7 +37,7 @@
 
     <TextView
         android:id="@+id/tvCreditNote"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/footer"
@@ -60,7 +60,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="@dimen/footer_height"
-            android:background="?customLayoutBackground"
+            android:background="?attr/customFooterBackgroundColor"
             android:orientation="horizontal"
             android:padding="@dimen/footer_padding">
 

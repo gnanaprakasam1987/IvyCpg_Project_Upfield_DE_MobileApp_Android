@@ -25,7 +25,7 @@
 
             <TextView
                 android:id="@+id/tv_invoiceno_title"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -88,7 +88,7 @@
 
                 <TextView
                     android:id="@+id/invoice_date"
-                    style="?attr/customListItemValue"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -119,7 +119,7 @@
 
                 <TextView
                     android:id="@+id/invoice_value"
-                    style="?attr/customListItemValue"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -150,7 +150,7 @@
 
                 <TextView
                     android:id="@+id/lpc"
-                    style="?attr/customListItemValue"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

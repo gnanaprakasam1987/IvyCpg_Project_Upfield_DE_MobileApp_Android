@@ -119,7 +119,7 @@
 
                             <TextView
                                 android:id="@+id/tv_planned_text"
-                                style="?attr/customListItemPrimary"
+                                style="@style/TextViewListItemPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -148,7 +148,7 @@
 
                             <TextView
                                 android:id="@+id/tv_covered_text"
-                                style="?attr/customListItemPrimary"
+                                style="@style/TextViewListItemPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -177,7 +177,7 @@
 
                             <TextView
                                 android:id="@+id/tv_unbilled_text"
-                                style="?attr/customListItemPrimary"
+                                style="@style/TextViewListItemPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -207,7 +207,7 @@
 
                             <TextView
                                 android:id="@+id/tv_skipped_text"
-                                style="?attr/customListItemPrimary"
+                                style="@style/TextViewListItemPrimary"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"

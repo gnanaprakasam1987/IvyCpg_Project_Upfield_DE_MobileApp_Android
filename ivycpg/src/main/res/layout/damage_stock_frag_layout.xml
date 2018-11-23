@@ -63,7 +63,7 @@
                 >
 
                 <TextView
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
@@ -77,7 +77,7 @@
 
                 <TextView
                     android:id="@+id/caseTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:layout_weight="1"
                     android:layout_gravity="center"
@@ -89,7 +89,7 @@
 
                 <TextView
                     android:id="@+id/outerTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_weight="1"
                     android:layout_gravity="center"
                     android:gravity="center"
@@ -100,7 +100,7 @@
 
                 <TextView
                     android:id="@+id/pcsTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -112,7 +112,7 @@
 
                 <TextView
                     android:id="@+id/reasonTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:layout_weight="1"
                     android:layout_gravity="center"
