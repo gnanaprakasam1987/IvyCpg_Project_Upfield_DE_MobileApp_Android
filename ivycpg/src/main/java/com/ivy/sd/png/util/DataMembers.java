@@ -81,6 +81,7 @@ public class DataMembers {
     public static final String FIT_PROMO = "FIT_PROMO";
     public static final String FIT_ASSET = "FIT_ASSET";
     public static final String FIT_POSM = "FIT_POSM";
+    public static final String FIT_SERIALIZED_ASSET = "FIT_SERIALIZED_ASSET";
 
     public static final String MENU_STOCK = "MENU_STOCK";
     public static final String MENU_PRICE = "MENU_PRICE";
@@ -255,6 +256,21 @@ public class DataMembers {
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
     private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks,toRetailerId";
+
+    public static final String tbl_SerializedAssetHeader = "SerializedAssetHeader";
+    public static final String tbl_SerializedAssetHeader_cols = "uid,DateTime,RetailerId,remarks";
+
+    public static final String tbl_SerializedAssetDetail = "SerializedAssetDetail";
+    public static final String tbl_SerializedAssetDetail_cols = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate";
+
+    public static final String tbl_SerializedAssetImageDetail = "SerializedAssetImageDetails";
+    public static final String tbl_SerializedAssetImageDetail_cols = "uid,AssetID,ImageName,serialNumber";
+
+    public static final String tbl_SerializedAssetServiceRequest = "SerializedAssetServiceRequest";
+    public static final String tbl_SerializedAssetServiceRequest_cols = "Uid,date,AssetId,serialNumber,reasonid,retailerid";
+
+    public static final String tbl_SerializedAssetTransfer = "SerializedAssetTransfer";
+    private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
     public static final String tbl_HhtModuleMaster = "HhtModuleMaster";
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
@@ -811,6 +827,12 @@ public class DataMembers {
         uploadColumn.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumn.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
         uploadColumn.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
+
+        uploadColumn.put(tbl_SerializedAssetHeader, tbl_SerializedAssetHeader_cols);
+        uploadColumn.put(tbl_SerializedAssetDetail, tbl_SerializedAssetDetail_cols);
+        uploadColumn.put(tbl_SerializedAssetImageDetail, tbl_SerializedAssetImageDetail_cols);
+        uploadColumn.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
+        uploadColumn.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -945,6 +967,12 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
+
+        uploadColumnWithRetailer.put(tbl_SerializedAssetHeader, tbl_SerializedAssetHeader_cols);
+        uploadColumnWithRetailer.put(tbl_SerializedAssetDetail, tbl_SerializedAssetDetail_cols);
+        uploadColumnWithRetailer.put(tbl_SerializedAssetImageDetail, tbl_SerializedAssetImageDetail_cols);
+        uploadColumnWithRetailer.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
+        uploadColumnWithRetailer.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();
