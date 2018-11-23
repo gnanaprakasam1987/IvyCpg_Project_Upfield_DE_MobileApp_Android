@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,7 +15,9 @@
         android:paddingStart="@dimen/dimen_5dp"
         android:paddingLeft="@dimen/dimen_5dp"
         android:paddingTop="@dimen/dimen_5dp"
-        android:paddingBottom="@dimen/dimen_5dp">
+
+        android:paddingBottom="@dimen/dimen_5dp"
+        tools:ignore="RtlSymmetry">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -123,7 +126,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" " />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -174,7 +177,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" " />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -226,7 +229,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" " />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -450,7 +453,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" " />
+                        android:text="" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -627,12 +630,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/profile_history_10dp">
 
                     <TextView
 
@@ -640,28 +644,29 @@
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/amount_paid" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/paid_amt_val"
                         style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
-                        android:text=" " />
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -670,19 +675,20 @@
                 android:id="@+id/bal_amt_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/profile_history_10dp">
 
                     <TextView
 
@@ -690,28 +696,29 @@
                         style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
                         android:text="@string/balance" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/profile_history_10dp">
 
                     <TextView
                         android:id="@+id/bal_amt_val"
                         style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
-                        android:text=" " />
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -773,7 +780,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
+                        android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
@@ -827,7 +834,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
+                        android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
@@ -972,7 +979,8 @@
                 android:backgroundTint="@color/half_Black"
                 android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
                 android:textColor="@color/toolbar_title"
-                android:textSize="@dimen/text_size_caption" />
+                android:textSize="@dimen/text_size_caption"
+                tools:ignore="UnusedAttribute" />
 
         </LinearLayout>
     </LinearLayout>
