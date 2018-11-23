@@ -632,7 +632,7 @@ public class OrderDeliveryHelper {
 
                         String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty," +
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +
-                                "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode,NetAmount";
+                                "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode,NetAmount,TaxAmount";
 
                         String sb = (AppUtils.QT(invoiceId) + ",") +
                                 AppUtils.QT(productBo.getProductID()) + "," +
@@ -657,7 +657,8 @@ public class OrderDeliveryHelper {
                                 "," + priceOffValue + "," + productBo.getPriceOffId() +
                                 "," + productBo.getWeight() +
                                 "," + AppUtils.QT(productBo.getHsnCode())+
-                                "," + line_total_price;
+                                "," + line_total_price +
+                                "," + productBo.getTaxApplyvalue();
 
                         db.insertSQL(DataMembers.tbl_InvoiceDetails, columns, sb);
 
@@ -712,6 +713,17 @@ public class OrderDeliveryHelper {
                 db.executeQ(invoiceDiscountQry);
 
                 db.updateSQL("update SchemeFreeProductDetail set upload='N',InvoiceID = " + AppUtils.QT(invoiceId) + " where orderId = " + AppUtils.QT(orderId));
+
+                for (ProductMasterBO productBo : getOrderedProductMasterBOS()) {
+                    Cursor c = db.selectSQL("select ifnull(sum(taxValue),0) from OrderTaxDetails where OrderID=" + AppUtils.QT(orderId) + " and pid = '" + productBo.getProductID() + "'");
+                    if (c != null) {
+                        if (c.moveToNext()) {
+                            db.updateSQL("Update InvoiceDetails set TaxAmount = '" + c.getString(0) + "' where ProductID = '" +
+                                    productBo.getProductID() + "' and invoiceID = " + AppUtils.QT(invoiceId));
+                        }
+                        c.close();
+                    }
+                }
             }
 
             if (businessModel.configurationMasterHelper.SHOW_TAX) {
