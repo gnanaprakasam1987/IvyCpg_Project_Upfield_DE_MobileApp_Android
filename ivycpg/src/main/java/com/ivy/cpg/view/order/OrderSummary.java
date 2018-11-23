@@ -39,6 +39,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -2605,6 +2606,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 holder.rep_cs = row.findViewById(R.id.rep_case);
                 holder.rep_ou = row.findViewById(R.id.rep_outer);
                 holder.rep_pcs = row.findViewById(R.id.rep_pcs);
+                holder.rl_oos = row.findViewById(R.id.rl_oos);
 
                 holder.text_productName.setMaxLines(bModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.text_productName.setTypeface(bModel.configurationMasterHelper.getProductNameFont());
@@ -2891,6 +2893,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             holder.cbSeparateBill.setChecked(holder.productBO.isSeparateBill());
 
+            if (bModel.configurationMasterHelper.IS_SHOW_OOS && holder.productBO.getWSIH() == 0)
+                holder.rl_oos.setVisibility(View.VISIBLE);
+            else
+                holder.rl_oos.setVisibility(View.GONE);
+
             return row;
         }
 
@@ -2924,6 +2931,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         private TextView rep_cs;
         private TextView rep_ou;
         private TextView salesReturn;
+        private RelativeLayout rl_oos;
     }
 
 

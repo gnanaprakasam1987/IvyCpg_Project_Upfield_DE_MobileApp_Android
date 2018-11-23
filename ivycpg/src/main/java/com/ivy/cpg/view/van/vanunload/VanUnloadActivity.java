@@ -133,6 +133,13 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
         supportInvalidateOptionsMenu();
         updateBrandText("Brand", -1);
 
+        mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(getResources().getString(R.string.all));
+        mSearchTypeArray.add(getResources().getString(R.string.product_name));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
+        mSearchTypeArray.add(getResources().getString(
+                R.string.order_dialog_barcode));
+
 
     }
 
@@ -342,7 +349,8 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
             for (int i = 0; i < siz; ++i) {
                 LoadManagementBO ret = items.elementAt(i);
                 if (ret.getSih() > 0) {
-                    if ("BarCode".equals(mSelectedFilter)) {
+                    if (getResources().getString(
+                            R.string.order_dialog_barcode).equals(mSelectedFilter)) {
                         if (ret.getBarcode() != null && ret.getBarcode()
                                 .toLowerCase()
                                 .contains(
@@ -350,12 +358,14 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
                                                 .toLowerCase()))
                             mylist.add(ret);
 
-                    } else if ("GCAS Code".equals(mSelectedFilter)) {
-                        if (ret.getRField1() != null && ret.getRField1()
+                    } else if (getResources().getString(R.string.prod_code).equals(mSelectedFilter)) {
+                        if ((ret.getRField1() != null && ret.getRField1()
                                 .toLowerCase()
                                 .contains(
                                         mEdt_searchproductName.getText().toString()
-                                                .toLowerCase()))
+                                                .toLowerCase())) || (ret.getProductCode() != null
+                                && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase())))
                             mylist.add(ret);
 
                     } else if (getResources().getString(
@@ -366,6 +376,27 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
                                         mEdt_searchproductName.getText().toString()
                                                 .toLowerCase()))
                             mylist.add(ret);
+                    } else {
+                        if (ret.getBarcode() != null && ret.getBarcode()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()))
+                            mylist.add(ret);
+                        else if ((ret.getRField1() != null && ret.getRField1()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase())) || (ret.getProductCode() != null
+                                && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase())))
+                            mylist.add(ret);
+                        else if (ret.getProductshortname() != null && ret.getProductshortname()
+                                    .toLowerCase()
+                                    .contains(
+                                            mEdt_searchproductName.getText().toString()
+                                                    .toLowerCase()))
+                                mylist.add(ret);
                     }
                 }
             }

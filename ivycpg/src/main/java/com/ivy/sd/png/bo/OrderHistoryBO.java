@@ -28,9 +28,15 @@ public class OrderHistoryBO {
     private String overDueDays;
     private double outStandingAmt;
     private String volume;
+    private String poNumber;
+    private String delDate;
+    private String driverName;
+    private String delDocNum;
 
     private double marginValue;
     private double maginPerc;
+    private double value;
+    private int freeQty;
 
     public String getNoorderReason() {
         return noorderReason;
@@ -267,5 +273,53 @@ public class OrderHistoryBO {
 
     public void setMaginPerc(double maginPerc) {
         this.maginPerc = maginPerc;
+    }
+
+    public String getPoNumber() {
+        return poNumber;
+    }
+
+    public void setPoNumber(String poNumber) {
+        this.poNumber = poNumber;
+    }
+
+    public String getDelDate() {
+        return delDate;
+    }
+
+    public void setDelDate(String delDate) {
+        this.delDate = delDate;
+    }
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
+    }
+
+    public String getDelDocNum() {
+        return delDocNum;
+    }
+
+    public void setDelDocNum(String delDocNum) {
+        this.delDocNum = delDocNum;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public int getFreeQty() {
+        return freeQty;
+    }
+
+    public void setFreeQty(int freeQty) {
+        this.freeQty = freeQty;
     }
 }

@@ -249,6 +249,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         expandlvwplist.setCacheColorHint(0);
 
         mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(getResources().getString(R.string.all));
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
         mSearchTypeArray.add(getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(getResources().getString(
@@ -685,12 +686,14 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                         Commons.print("siz Barcode : : : " + mEdt_searchproductName.getText().toString().toLowerCase());
                     }
                 } else if (mSelectedFilter.equals(getResources().getString(
-                        R.string.order_gcas))) {
+                        R.string.prod_code))) {
                     if (ret.getRField1() != null && ret.getRField1()
                             .toLowerCase()
                             .contains(
                                     mEdt_searchproductName.getText().toString()
-                                            .toLowerCase())) {
+                                            .toLowerCase()) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                            .toLowerCase()))) {
                         if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                             mylist.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
@@ -701,6 +704,37 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
                         R.string.product_name))) {
                     Commons.print("siz product_name : : : " + mEdt_searchproductName.getText().toString().toLowerCase());
                     if (ret.getProductShortName() != null && ret.getProductShortName()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase())) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
+                    }
+                } else {
+                    if (ret.getBarCode() != null && ret.getBarCode()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase())) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
+                    } else if (ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText().toString()
+                                            .toLowerCase()) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                            .toLowerCase()))) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
+                    } else if (ret.getProductShortName() != null && ret.getProductShortName()
                             .toLowerCase()
                             .contains(
                                     mEdt_searchproductName.getText().toString()

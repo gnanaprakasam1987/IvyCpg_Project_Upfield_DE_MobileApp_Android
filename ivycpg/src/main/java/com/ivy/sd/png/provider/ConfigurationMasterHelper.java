@@ -596,6 +596,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_HST_DUETDATE;
     public boolean SHOW_HST_PAID_AMOUNT;
     public boolean SHOW_HST_BAL_AMOUNT;
+    public boolean SHOW_HST_DRIVER_NAME;
+    public boolean SHOW_HST_PO_NUM;
+    public boolean SHOW_HST_DOC_NO;
 
     public boolean SHOW_INV_HST_ORDERID;
     public boolean SHOW_INV_HST_INVOICEDATE;
@@ -1482,11 +1485,18 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
     //132 --- task 45
-    // private static final String CODE_SHOW_ORDER_ATTACH_FILE = "ORDB76";
     public boolean IS_SHOW_ORDER_ATTACH_FILE;
 
     private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
     public boolean IS_SHOW_ALL_SKU_ON_EDIT;
+
+    //Provision to highlight 0 qty of warehouse stock in ordered products
+    private static final String CODE_SHOW_OOS = "ORDB76";
+    public boolean IS_SHOW_OOS;
+
+    //Provision to load stock check whether from last visit or closed stock
+    private static final String CODE_STK_CHECK_LAST_VISIT = "ORDB77";
+    public boolean IS_LOAD_STK_CHECK_LAST_VISIT;
 
     private static final String CODE_KPI_CALENDAR = "KPI_CALENDER";
     public boolean IS_KPI_CALENDAR;
@@ -2664,6 +2674,8 @@ public class ConfigurationMasterHelper {
         this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
+        this.IS_SHOW_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_OOS) : false;
+        this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
     }
 
     private boolean isInOutModule() {
@@ -3525,6 +3537,9 @@ public class ConfigurationMasterHelper {
             SHOW_HST_DUETDATE = false;
             SHOW_HST_PAID_AMOUNT = false;
             SHOW_HST_BAL_AMOUNT = false;
+            SHOW_HST_DRIVER_NAME = false;
+            SHOW_HST_PO_NUM = false;
+            SHOW_HST_DOC_NO = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3580,6 +3595,15 @@ public class ConfigurationMasterHelper {
                             break;
                         case "BAMT":
                             SHOW_HST_BAL_AMOUNT = true;
+                            break;
+                        case "PONUM":
+                            SHOW_HST_PO_NUM = true;
+                            break;
+                        case "DRIVER":
+                            SHOW_HST_DRIVER_NAME = true;
+                            break;
+                        case "DOCNO":
+                            SHOW_HST_DOC_NO = true;
                             break;
                     }
 

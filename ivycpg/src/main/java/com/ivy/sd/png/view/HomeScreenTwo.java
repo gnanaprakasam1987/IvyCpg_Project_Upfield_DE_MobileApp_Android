@@ -1636,7 +1636,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if ((!bmodel.configurationMasterHelper.IS_ENABLE_LAST_VISIT_HISTORY || !isDataAvailableforLastVisitHistory) &&
                                 bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN) {
                             // load last visit data
-                            bmodel.loadLastVisitStockCheckedProducts(bmodel.getRetailerMasterBO().getRetailerID());
+                            bmodel.loadLastVisitStockCheckedProducts(bmodel.getRetailerMasterBO().getRetailerID(), "MENU_STOCK");
                         }
 
 
@@ -1770,8 +1770,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                             if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
                                 if (bmodel.hasAlreadyStockChecked(bmodel
-                                        .getRetailerMasterBO().getRetailerID())) {
+                                        .getRetailerMasterBO().getRetailerID()) && !bmodel.configurationMasterHelper.IS_LOAD_STK_CHECK_LAST_VISIT) {
                                     bmodel.loadStockCheckedProducts(bmodel
+                                            .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
+                                } else if (bmodel.configurationMasterHelper.IS_LOAD_STK_CHECK_LAST_VISIT) {
+                                    clearStockCheck();
+                                    bmodel.loadLastVisitStockCheckedProducts(bmodel
                                             .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
                                 }
                             }
@@ -1928,8 +1932,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
         } else if (menu.getConfigCode().equals(MENU_STK_ORD)
                 || menu.getConfigCode().equals(MENU_CATALOG_ORDER) && hasLink == 1) {
+
             new StockAndOrderTask(menu, this).execute();
-           // moveToStockAndOrder(menu);
+            // moveToStockAndOrder(menu);
+
         } else if (menu.getConfigCode().equals(MENU_CLOSING) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
@@ -3801,7 +3807,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         /** Load the stock check if opened in edit mode. **/
                         bmodel.setEditStockCheck(false);
                         if (bmodel.hasAlreadyStockChecked(bmodel
-                                .getRetailerMasterBO().getRetailerID())) {
+                                .getRetailerMasterBO().getRetailerID()) && !bmodel.configurationMasterHelper.IS_LOAD_STK_CHECK_LAST_VISIT) {
 
                             bmodel.setEditStockCheck(true);
                             bmodel.loadStockCheckedProducts(bmodel
@@ -3823,6 +3829,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                     }
                                 }
                             }
+                        } else if (bmodel.configurationMasterHelper.IS_LOAD_STK_CHECK_LAST_VISIT) {
+                            clearStockCheck();
+                            bmodel.loadLastVisitStockCheckedProducts(bmodel
+                                    .getRetailerMasterBO().getRetailerID(), menu.getConfigCode());
                         }
                         bmodel.productHelper.setProductImageUrl();
                         bmodel.setEdit(false);
@@ -5195,6 +5205,22 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 loadstockorderscreen(menu.getConfigCode());
             }else if(integer != null && integer==3){
                 loadOrderSummaryScreen(menu.getConfigCode());
+            }
+        }
+    }
+
+    //Clear ProductMasterBO to load the data in lastvisitstockcheck
+    private void clearStockCheck(){
+        int siz = bmodel.productHelper.getProductMaster().size();
+        if (siz == 0)
+            return;
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product = bmodel.productHelper.getProductMaster().get(i);
+            int siz1 = product.getLocations().size();
+            for (int j = 0; j < siz1; j++) {
+                product.getLocations().get(j).setShelfPiece(-1);
+                product.getLocations().get(j).setShelfCase(-1);
+                product.getLocations().get(j).setShelfOuter(-1);
             }
         }
     }

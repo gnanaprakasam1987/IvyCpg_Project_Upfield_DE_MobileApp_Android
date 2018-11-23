@@ -358,8 +358,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mSearchTypeArray = new ArrayList<String>();
+        mSearchTypeArray.add(getResources().getString(R.string.all));
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
-        mSearchTypeArray.add(getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
 
@@ -695,12 +696,13 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     }
 
                 } else if (mSelectedFilter.equals(getResources().getString(
-                        R.string.order_gcas))) {
-                    if (ret.getRField1() != null && ret.getRField1()
+                        R.string.prod_code))) {
+                    if ((ret.getRField1() != null && ret.getRField1()
                             .toLowerCase()
                             .contains(
                                     searchedtext
-                                            .toLowerCase()) && ret.getIsSaleable() == 1) {
+                                            .toLowerCase()) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(search_txt.getText().toString()
+                            .toLowerCase()))) && ret.getIsSaleable() == 1) {
                         if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                             mylist.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
@@ -719,6 +721,41 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             mylist.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
                             mylist.add(ret);
+                } else {
+                    if (ret.getBarCode() != null
+                            && (ret.getBarCode().toLowerCase()
+                            .contains(searchedtext.toLowerCase())
+                            || ret.getCasebarcode().toLowerCase().
+                            contains(searchedtext.toLowerCase())
+                            || ret.getOuterbarcode().toLowerCase().
+                            contains(searchedtext.toLowerCase())) && ret.getIsSaleable() == 1) {
+
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
+
+
+                    } else if ((ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    searchedtext
+                                            .toLowerCase()) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(search_txt.getText().toString()
+                            .toLowerCase()))) && ret.getIsSaleable() == 1) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
+                    } else if (ret.getProductShortName() != null && ret.getProductShortName()
+                            .toLowerCase()
+                            .contains(
+                                    searchedtext
+                                            .toLowerCase()) && ret.getIsSaleable() == 1) {
+                        if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                            mylist.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            mylist.add(ret);
+                    }
                 }
             }
 

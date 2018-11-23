@@ -14,8 +14,10 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
 
@@ -401,6 +403,68 @@ public class DayReportHelper {
             }
             c.close();
         }
+
+        sb = new StringBuffer();
+        sb.append("select timein,timeout from OutletTimestamp where VisitDate=");
+        sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db.selectSQL(sb.toString());
+        if (c != null) {
+            long timespent = 0;
+            while (c.moveToNext()) {
+                Date timein = DateUtil.convertStringToDateObject(c.getString(0), "yyyy/MM/dd HH:mm:ss");
+                Date timeout = DateUtil.convertStringToDateObject(c.getString(1), "yyyy/MM/dd HH:mm:ss");
+                if (timein != null && timeout != null)
+                timespent += timeout.getTime() - timein.getTime();
+            }
+            dailyRep.setAverageTimeSpent(String.valueOf(timespent/1000));
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(distinct RM.RetailerID) from RetailerMaster RM ");
+        sb.append("INNER JOIN RetailerBeatMapping RBM ON RBM.RetailerID = RM.RetailerID ");
+        sb.append("where RBM.isdeviated='Y'");
+        c = db.selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+                dailyRep.setDeviatedCalls(c.getString(0));
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(distinct retailerid) from SOS_Tracking_Header where Date=");
+        sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db.selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+                dailyRep.setSosCount(c.getString(0));
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(distinct retailerid) from PriceCheckHeader where Date=");
+        sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db.selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+                dailyRep.setPriceCheckCount(c.getString(0));
+            }
+            c.close();
+        }
+
+        sb = new StringBuffer();
+        sb.append("select count(distinct retailerid) from PlanogramHeader where Date=");
+        sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        c = db.selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+                dailyRep.setPlanogramCount(c.getString(0));
+            }
+            c.close();
+        }
+
 
         db.closeDB();
     }
