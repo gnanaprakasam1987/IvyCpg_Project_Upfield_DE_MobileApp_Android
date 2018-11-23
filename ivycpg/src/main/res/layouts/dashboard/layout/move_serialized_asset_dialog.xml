@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/asset_name"
                     android:id="@+id/input_movement_assetName"
-                    android:textColor="@color/DependentBlack"
+                    android:textColor="@color/FullBlack"
                     android:layout_marginStart="@dimen/dimen_10dp"
                     android:layout_marginEnd="@dimen/dimen_10dp"
                     android:textSize="@dimen/dimens_18dp"/>
