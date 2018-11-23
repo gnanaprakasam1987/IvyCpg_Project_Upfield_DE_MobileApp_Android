@@ -58,11 +58,11 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
         tvcase = (TextView) findViewById(R.id.tvcase);
         tvouter = (TextView) findViewById(R.id.tvouter);
 
-        ((TextView) findViewById(R.id.tvbrand)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tvorder)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tvouter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tvpiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tvcase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvbrand)).setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvorder)).setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
+        tvouter.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
+        tvpiece.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
+        tvcase.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
 
         ListView lv = (ListView) findViewById(R.id.list);
         lv.setCacheColorHint(0);
@@ -125,19 +125,19 @@ public class HistoryDetailActivity extends IvyBaseActivityNoActionBar {
                 holder.brandname = (TextView) row
                         .findViewById(R.id.brandname);
                 //holder.brandname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.BOLD));
-                holder.brandname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
+                holder.brandname.setTypeface(FontUtils.getProductNameFont(HistoryDetailActivity.this));
 
                 holder.piecevalue = (TextView) row
                         .findViewById(R.id.piecevalue);
-                holder.piecevalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.piecevalue.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
 
                 holder.casevalue = (TextView) row
                         .findViewById(R.id.casevalue);
-                holder.casevalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.casevalue.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
 
                 holder.outervalue = (TextView) row
                         .findViewById(R.id.outervalue);
-                holder.outervalue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.outervalue.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));
 
                 holder.freeQty = row.findViewById(R.id.freeQty_val);
                 holder.freeQty.setTypeface(FontUtils.getFontRoboto(HistoryDetailActivity.this, FontUtils.FontType.MEDIUM));

@@ -42,49 +42,32 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         style="?attr/customListItemSecondary"
                         android:id="@+id/pieces_txt"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|top"
+                        android:layout_marginBottom="@dimen/profile_history_10dp"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_history_10dp"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
+                        android:layout_gravity="start|center"
                         android:gravity="start|top"
                         android:text="@string/pieces_label" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         android:id="@+id/piecevalue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|bottom"
+                        android:layout_gravity="start|center"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_margin_top_minus"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
                         android:gravity="bottom|start"
                         android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -95,49 +78,32 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         style="?attr/customListItemSecondary"
                         android:id="@+id/cases_txt"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|top"
+                        android:layout_marginBottom="@dimen/profile_history_10dp"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_history_10dp"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
+                        android:layout_gravity="start|center"
                         android:gravity="start|top"
                         android:text="@string/cases_label" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         android:id="@+id/casevalue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|bottom"
+                        android:layout_gravity="start|center"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_margin_top_minus"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
                         android:gravity="bottom|start"
                         android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -148,49 +114,32 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         style="?attr/customListItemSecondary"
                         android:id="@+id/outer_txt"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|top"
+                        android:layout_marginBottom="@dimen/profile_history_10dp"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_history_10dp"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
+                        android:layout_gravity="start|center"
                         android:gravity="start|top"
                         android:text="@string/outer_label" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         android:id="@+id/outervalue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|bottom"
+                        android:layout_gravity="start|center"
                         android:gravity="bottom|start"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_margin_top_minus"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
                         android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
-                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/freeQty_layout"
@@ -200,50 +149,33 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         style="?attr/customListItemSecondary"
                         android:id="@+id/freeQty_txt"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|top"
+                        android:layout_gravity="start|center"
+                        android:layout_marginBottom="@dimen/profile_history_10dp"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_history_10dp"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
                         android:gravity="start|top"
                         android:tag="item_free"
                         android:text="@string/free_qty" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         android:id="@+id/freeQty_val"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|bottom"
+                        android:layout_gravity="start|center"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_margin_top_minus"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
                         android:gravity="bottom|start"
                         android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
-                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/value_layout"
@@ -253,50 +185,33 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         style="?attr/customListItemSecondary"
                         android:id="@+id/value_txt"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|top"
+                        android:layout_marginBottom="@dimen/profile_history_10dp"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_history_10dp"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
+                        android:layout_gravity="start|center"
                         android:gravity="start|top"
                         android:tag="item_value"
                         android:text="@string/value" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginStart="@dimen/profile_history_10dp"
-                    android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
-
                     <TextView
                         android:id="@+id/value_val"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|bottom"
+                        android:layout_gravity="start|center"
+                        android:layout_marginStart="@dimen/profile_history_10dp"
+                        android:layout_marginTop="@dimen/profile_margin_top_minus"
+                        android:layout_marginLeft="@dimen/profile_history_10dp"
                         android:gravity="bottom|start"
                         android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
-                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
