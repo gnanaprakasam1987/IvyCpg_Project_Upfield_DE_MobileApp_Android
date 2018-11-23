@@ -30,7 +30,7 @@
 
                 <TextView
                     android:id="@+id/orderno"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -39,7 +39,7 @@
 
                 <TextView
                     android:id="@+id/fullfilled"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -49,7 +49,7 @@
 
                 <TextView
                     android:id="@+id/rejected"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -59,7 +59,7 @@
 
                 <TextView
                     android:id="@+id/partiallyfullfikked"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -107,7 +107,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/footer_height"
                 android:layout_alignParentBottom="true"
-                android:background="@color/footer_bg"
+                android:background="@color/footer_bg_color"
                 android:orientation="horizontal"
                 android:padding="@dimen/footer_padding">
 

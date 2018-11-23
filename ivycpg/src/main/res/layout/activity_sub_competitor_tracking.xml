@@ -36,7 +36,7 @@
 
                     <TextView
                         android:id="@+id/tvTitleTrackingList"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
@@ -46,7 +46,7 @@
 
                     <TextView
                         android:id="@+id/tvTitleAvaialabilty"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -57,7 +57,7 @@
 
                     <TextView
                         android:id="@+id/tvTitleQty"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
@@ -68,7 +68,7 @@
 
                     <TextView
                         android:id="@+id/tvTitlePhoto"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"

@@ -88,7 +88,7 @@
 
                         <TextView
                             android:id="@+id/productBarcodetitle"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -98,7 +98,7 @@
 
                         <TextView
                             android:id="@id/tvProductNameTitle"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -107,7 +107,7 @@
 
                         <TextView
                             android:id="@+id/caseTitle"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -116,7 +116,7 @@
 
                         <TextView
                             android:id="@+id/outercaseTitle"
-                            style="?attr/customListTitle"
+                            style="@style/TextViewListTitle"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"

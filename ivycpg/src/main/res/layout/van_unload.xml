@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/productName"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center"
@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/stock_and_order_listview_batchno"
-            style="?attr/customListItemSecondary"
+            style="@style/TextViewCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -39,7 +39,7 @@
 
     <TextView
         android:id="@+id/stock_and_order_listview_sih"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -81,7 +81,7 @@
 
     <TextView
         android:id="@+id/tv_nonsalable_pc"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

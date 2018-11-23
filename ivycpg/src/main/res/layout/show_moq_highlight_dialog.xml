@@ -63,7 +63,7 @@
 
                 <TextView
                     android:id="@+id/text_productName_title"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/list_margin"
@@ -73,7 +73,7 @@
 
                 <TextView
                     android:id="@+id/text_piece_title"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"

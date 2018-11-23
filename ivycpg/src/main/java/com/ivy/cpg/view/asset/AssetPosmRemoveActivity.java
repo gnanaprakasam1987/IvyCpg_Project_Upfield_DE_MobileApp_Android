@@ -26,7 +26,6 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -322,7 +321,7 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
                     if ("N".equals(assetTrackingBO.getFlag())) {
                         mPOSMIdDialog = assetTrackingBO.getPOSM();
                         mSNODialog = assetTrackingBO.getSNO();
-                        mSBDId = assetTrackingBO.getSBDId();
+                        mSBDId = assetTrackingBO.getmMappingID();
                         mBrandId = assetTrackingBO.getBrand();
                         if (!assetTrackingBO.getReason1ID().equalsIgnoreCase("0")) {
                             mReasonID = assetTrackingBO.getReason1ID();

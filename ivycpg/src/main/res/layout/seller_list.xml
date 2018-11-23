@@ -29,7 +29,7 @@
                 android:layout_weight="2"/>
             <TextView
                 android:id="@+id/tv_user_all"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
                 android:gravity="start|center"

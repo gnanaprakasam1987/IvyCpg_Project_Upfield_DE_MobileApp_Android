@@ -61,7 +61,7 @@
 
                     <TextView
                         android:id="@+id/tv_user_name"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_2sdp"
@@ -73,7 +73,7 @@
 
                     <TextView
                         android:id="@+id/tv_start_time"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_2sdp"
@@ -85,7 +85,7 @@
 
                     <TextView
                         android:id="@+id/tv_address"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_2sdp"
@@ -106,7 +106,7 @@
 
                         <TextView
                             android:id="@+id/tv_target_outlet"
-                            style="?attr/customListItemSecondary"
+                            style="@style/TextViewCaption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
@@ -121,7 +121,7 @@
 
                         <TextView
                             android:id="@+id/tv_outlet_covered"
-                            style="?attr/customListItemSecondary"
+                            style="@style/TextViewCaption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
@@ -175,7 +175,7 @@
 
                     <TextView
                         android:id="@+id/tv_message"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
@@ -213,7 +213,7 @@
 
                     <TextView
                         android:id="@+id/tv_route"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"

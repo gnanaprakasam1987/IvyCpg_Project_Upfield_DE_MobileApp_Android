@@ -60,16 +60,11 @@ public class HistoryFragment extends IvyBaseFragment {
     }
 
     private void initializeViews() {
-        orderHistoryList = (RecyclerView) view.findViewById(R.id.history_recyclerview);
-        havgOrderLinesTxt = (TextView) view.findViewById(R.id.avg_line_txt);
-        hOrderValueTxt = (TextView) view.findViewById(R.id.avg_val_txt);
-        mavgOrderLines = (TextView) view.findViewById(R.id.avg_lines_val);
-        mavgOrderValue = (TextView) view.findViewById(R.id.history_avg_val);
-
-        havgOrderLinesTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        hOrderValueTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        mavgOrderLines.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        mavgOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        orderHistoryList = view.findViewById(R.id.history_recyclerview);
+        havgOrderLinesTxt = view.findViewById(R.id.avg_line_txt);
+        hOrderValueTxt = view.findViewById(R.id.avg_val_txt);
+        mavgOrderLines = view.findViewById(R.id.avg_lines_val);
+        mavgOrderValue = view.findViewById(R.id.history_avg_val);
 
         orderHistoryList.setHasFixedSize(false);
         orderHistoryList.setNestedScrollingEnabled(false);

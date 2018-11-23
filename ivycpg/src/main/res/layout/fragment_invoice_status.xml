@@ -27,7 +27,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
+        android:background="@color/footer_bg_color"
         android:orientation="horizontal"
         android:padding="@dimen/footer_padding">
 

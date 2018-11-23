@@ -45,7 +45,7 @@
         android:weightSum="1">
 
         <TextView
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/titleDate"
@@ -54,7 +54,7 @@
             android:textSize="@dimen/text_size_primary" />
 
         <TextView
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/titleReason"

@@ -61,7 +61,7 @@
                 android:padding="1dp">
 
                 <TextView
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
                     android:text="@string/batch_no"
@@ -69,7 +69,7 @@
 
                 <TextView
                     android:id="@+id/caseTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width"
                     android:layout_height="wrap_content"
                     android:tag="vanload_case"
@@ -78,7 +78,7 @@
 
                 <TextView
                     android:id="@+id/outercaseTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width"
                     android:layout_height="wrap_content"
                     android:tag="vanload_outer"
@@ -87,7 +87,7 @@
 
                 <TextView
                     android:id="@+id/pcsTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width"
                     android:layout_height="wrap_content"
                     android:tag="vanload_piece"

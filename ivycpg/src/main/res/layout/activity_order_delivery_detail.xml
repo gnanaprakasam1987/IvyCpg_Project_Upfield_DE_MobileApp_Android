@@ -41,7 +41,7 @@
 
             <TextView
                 android:id="@+id/ord_value_title"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -54,7 +54,7 @@
 
             <TextView
                 android:id="@+id/ord_value"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -75,7 +75,7 @@
 
             <TextView
                 android:id="@+id/discount_value_title"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -88,7 +88,7 @@
 
             <TextView
                 android:id="@+id/discount_value"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -109,7 +109,7 @@
 
             <TextView
                 android:id="@+id/tax_value_title"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -122,7 +122,7 @@
 
             <TextView
                 android:id="@+id/tax_value"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -144,7 +144,7 @@
 
             <TextView
                 android:id="@+id/order_value_title"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -157,7 +157,7 @@
 
             <TextView
                 android:id="@+id/order_value"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="3dp"
@@ -184,7 +184,7 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg"
+        android:background="@color/footer_bg_color"
         android:orientation="horizontal"
         android:padding="@dimen/footer_padding">
         <Button
@@ -224,7 +224,7 @@
 
                 <TextView
                     android:id="@+id/prod_name"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="3dp"
@@ -238,7 +238,7 @@
 
                 <TextView
                     android:id="@+id/piece_qty"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -249,7 +249,7 @@
 
                 <TextView
                     android:id="@+id/case_qty"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -260,7 +260,7 @@
 
                 <TextView
                     android:id="@+id/outer_qty"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -271,7 +271,7 @@
 
                 <TextView
                     android:id="@+id/sales_return_qty"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -282,7 +282,7 @@
 
                 <TextView
                     android:id="@+id/sales_replace_qty"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -294,7 +294,7 @@
 
                 <TextView
                     android:id="@+id/sih_qty"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -336,7 +336,7 @@
 
             <TextView
                 android:id="@+id/discount_title"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="3dp"
@@ -349,7 +349,7 @@
 
             <TextView
                 android:id="@+id/discount_val"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -371,7 +371,7 @@
 
             <TextView
                 android:id="@+id/tax_title"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -384,7 +384,7 @@
 
             <TextView
                 android:id="@+id/tax_val"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp"
@@ -406,7 +406,7 @@
 
             <TextView
                 android:id="@+id/order_title"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="3dp"
@@ -419,7 +419,7 @@
 
             <TextView
                 android:id="@+id/order_val"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="3dp"

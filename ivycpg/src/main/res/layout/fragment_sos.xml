@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/audit"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -35,7 +35,7 @@
 
             <TextView
                 android:id="@+id/levelName"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
@@ -46,7 +46,7 @@
 
             <TextView
                 android:id="@+id/hTotal"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
@@ -63,7 +63,7 @@
 
                 <TextView
                     android:id="@+id/hlength"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tag="item_slength"
@@ -71,7 +71,7 @@
 
                 <TextView
                     android:id="@+id/hlengthacttar"
-                    style="?attr/customListTitleSecondary"
+                    style="@style/TextViewListTitleSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/act_tar" />
@@ -86,7 +86,7 @@
 
                 <TextView
                     android:id="@+id/hpercent"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:tag="item_spercent"
@@ -94,7 +94,7 @@
 
                 <TextView
                     android:id="@+id/hpercentacttar"
-                    style="?attr/customListTitleSecondary"
+                    style="@style/TextViewListTitleSecondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/act_tar" />
@@ -103,7 +103,7 @@
 
             <TextView
                 android:id="@+id/hGap"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -132,7 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/footer_bg"
+            android:background="@color/footer_bg_color"
             android:gravity="center|end"
             android:orientation="horizontal">
 

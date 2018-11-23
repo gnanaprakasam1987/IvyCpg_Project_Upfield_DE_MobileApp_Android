@@ -41,7 +41,7 @@
 
                     <TextView
                         android:id="@+id/tv_outlet_name"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dimen_2dp"

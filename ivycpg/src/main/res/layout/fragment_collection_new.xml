@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:elevation="@dimen/dimens_6dp"
-        app:cardBackgroundColor="?attr/customLayoutBackground"
+        app:cardBackgroundColor="?attr/customFooterBackgroundColor"
 
         app:cardCornerRadius="@dimen/dimens_4dp">
 

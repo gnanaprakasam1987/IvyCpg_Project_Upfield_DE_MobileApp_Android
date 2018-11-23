@@ -40,7 +40,7 @@
 
             <TextView
                 android:id="@+id/tv_asset_name"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -49,14 +49,14 @@
 
             <TextView
                 android:id="@+id/tv_grp"
-                style="@style/SecondaryTextAppearance"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start" />
 
             <TextView
                 android:id="@+id/tv_serialNo"
-                style="@style/SecondaryTextAppearance"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -123,7 +123,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/installed_on" />
@@ -149,7 +149,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/serviced_on" />
@@ -174,7 +174,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                android:layout_gravity="start"
@@ -202,7 +202,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="?attr/customListItemSecondary"
+                style="@style/TextViewCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimens_6dp"

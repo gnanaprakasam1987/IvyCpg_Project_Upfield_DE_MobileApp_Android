@@ -110,7 +110,7 @@
                     android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                     android:id="@+id/prod_label"
                     android:layout_height="match_parent"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:layout_marginStart="@dimen/skuwise_right_margin"
@@ -121,7 +121,7 @@
 
                 <TextView
                     android:id="@+id/batchidTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -133,7 +133,7 @@
 
                 <TextView
                     android:id="@+id/caseTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:layout_weight="1"
                     android:textStyle="bold"
@@ -145,7 +145,7 @@
 
                 <TextView
                     android:id="@+id/outerTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:textStyle="bold"
                     android:layout_weight="1"
@@ -157,7 +157,7 @@
 
                 <TextView
                     android:id="@+id/pcsTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:textStyle="bold"
                     android:layout_weight="1"
@@ -169,7 +169,7 @@
 
                 <TextView
                     android:id="@+id/totaltitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_medium"
                     android:textStyle="bold"
                     android:layout_gravity="center"

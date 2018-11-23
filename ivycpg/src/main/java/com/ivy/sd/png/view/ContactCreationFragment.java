@@ -51,7 +51,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ArrayList<ConfigureBO> contactConfig;
 
-    private static String CODE_CONTACTNAME = "COlNTACTNAME";
+    private static String CODE_CONTACTNAME = "CONTACTNAME";
     private static String CODE_CONTACTNUMBER = "CONTACTNUMBER";
     private static String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
     private static String CODE_CONTACTMAIL = "CONTACTMAIL";
@@ -150,6 +150,12 @@ public class ContactCreationFragment extends IvyBaseFragment {
         return new DisposableObserver<ArrayList<ConfigureBO>>() {
             @Override
             public void onNext(ArrayList<ConfigureBO> configureBOS) {
+                if (!isProfileEdit) {
+                    CODE_CONTACTNAME = "N" + CODE_CONTACTNAME;
+                    CODE_CONTACTNUMBER = "N" + CODE_CONTACTNUMBER;
+                    CODE_CONTACTPRIMARY = "N" + CODE_CONTACTPRIMARY;
+                    CODE_CONTACTMAIL = "N" + CODE_CONTACTMAIL;
+                }
                 contactConfig = configureBOS;
                 populateData();
                 if (contactConfig.size() == 0)

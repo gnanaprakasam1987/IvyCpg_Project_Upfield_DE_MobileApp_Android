@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/groupname"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/survey_group_margin_left"
@@ -68,7 +68,7 @@
 
                     <TextView
                         android:id="@+id/questionno"
-                        style="?attr/customListItemValue"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
@@ -81,7 +81,7 @@
 
                     <TextView
                         android:id="@+id/questionTV"
-                        style="?attr/customListItemValue"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="1dp"

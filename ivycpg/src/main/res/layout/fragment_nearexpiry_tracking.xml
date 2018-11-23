@@ -40,7 +40,7 @@
 
                                 <TextView
                                     android:id="@+id/sku"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:gravity="start"
@@ -50,7 +50,7 @@
 
                                  <TextView
                                     android:id="@+id/audit"
-                                    style="?attr/customListTitle"
+                                     style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
@@ -61,7 +61,7 @@
 
                                 <TextView
                                     android:id="@+id/opencalendar"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:text="@string/opencalendar"

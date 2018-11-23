@@ -110,7 +110,7 @@
 
             <TextView
                 android:id="@+id/productBarcodetitle"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/order_stock_list_barcode"
                 android:layout_height="match_parent"
                 android:gravity="start|center"
@@ -119,7 +119,7 @@
 
             <TextView
                 android:id="@+id/productnametitle"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                 android:layout_height="match_parent"
                 android:gravity="start|center"
@@ -127,7 +127,7 @@
 
             <TextView
                 android:id="@+id/caseTitle"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                 android:layout_height="wrap_content"
                 android:tag="item_case"
@@ -135,7 +135,7 @@
 
             <TextView
                 android:id="@+id/outercaseTitle"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                 android:layout_height="wrap_content"
                 android:tag="item_outer"
@@ -143,7 +143,7 @@
 
             <TextView
                 android:id="@+id/pcsTitle"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/order_stock_list_item_width_xlarge"
                 android:layout_height="wrap_content"
                 android:tag="item_piece"
@@ -151,7 +151,7 @@
 
             <TextView
                 android:id="@+id/srpTitle"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/meter_value_width_large"
                 android:layout_height="wrap_content"
                 android:tag="srp"
@@ -159,7 +159,7 @@
 
             <TextView
                 android:id="@+id/totalTitle"
-                style="?attr/customListTitle"
+                style="@style/TextViewListTitle"
                 android:layout_width="@dimen/meter_value_width_large"
                 android:layout_height="wrap_content"
                 android:tag="totaltitle"
@@ -196,7 +196,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="@dimen/footer_height"
-            android:background="@color/footer_bg"
+            android:background="@color/footer_bg_color"
             android:orientation="horizontal"
             android:padding="@dimen/footer_padding">
 
