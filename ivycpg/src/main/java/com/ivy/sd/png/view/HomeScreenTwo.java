@@ -4086,6 +4086,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
+                                        isClick = false;
                                         isCreated = false;
                                     }
                                 });

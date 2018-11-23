@@ -26,6 +26,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
@@ -41,7 +42,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
     final String Str_ACCEPT = "ACCEPT";
     final String Str_VIEW = "VIEW";
     final String Str_EDIT = "EDIT";
-    private boolean isClicked = false, isClickedAccept = false, isClickedEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +83,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         super.onResume();
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        isClicked = false;
-        isClickedAccept = false;
-        isClickedEdit = false;
         //session out if user id becomes 0
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
@@ -153,57 +150,48 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                     , ConfigurationMasterHelper.outDateFormat));
             holder.orderLine.setText(String.valueOf(orderHeaders.get(position).getLinesPerCall()));
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onSingleClick(View view) {
 
-                    if (!isClicked) {
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
+                    if (orderHeaders.get(position).getInvoiceStatus() != 1) {
                         new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
-                        if (orderHeaders.get(position).getInvoiceStatus() != 1) {
-                            new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_VIEW, orderHeaders.get(position).getInvoiceStatus()).execute();
-                        } else {
-                            Toast.makeText(
-                                    OrderDeliveryActivity.this,
-                                    "Already invoice has been generated",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                        isClicked = true;
+                    } else {
+                        Toast.makeText(
+                                OrderDeliveryActivity.this,
+                                getString(R.string.invoice_generated_already),
+                                Toast.LENGTH_SHORT).show();
                     }
 
                 }
             });
 
-            holder.orderEdit.setOnClickListener(new View.OnClickListener() {
+            holder.orderEdit.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View view) {
-                    if (!isClickedEdit) {
-                        if (orderHeaders.get(position).getInvoiceStatus() == 1) {
-                            Toast.makeText(
-                                    OrderDeliveryActivity.this,
-                                    "Already invoice has been generated",
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        isClickedEdit = true;
-                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_EDIT, orderHeaders.get(position).getInvoiceStatus()).execute();
+                public void onSingleClick(View view) {
+                    if (orderHeaders.get(position).getInvoiceStatus() == 1) {
+                        Toast.makeText(
+                                OrderDeliveryActivity.this,
+                                getString(R.string.invoice_generated_already),
+                                Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_EDIT, orderHeaders.get(position).getInvoiceStatus()).execute();
                 }
             });
 
-            holder.orderAccept.setOnClickListener(new View.OnClickListener() {
+            holder.orderAccept.setOnClickListener(new OnSingleClickListener() {
                 @Override
-                public void onClick(View view) {
-                    if (!isClickedAccept) {
-                        if (orderHeaders.get(position).getInvoiceStatus() == 1) {
-                            Toast.makeText(
-                                    OrderDeliveryActivity.this,
-                                    "Already invoice has been generated",
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        isClickedAccept = true;
-                        new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_ACCEPT, orderHeaders.get(position).getInvoiceStatus()).execute();
+                public void onSingleClick(View view) {
+                    if (orderHeaders.get(position).getInvoiceStatus() == 1) {
+                        Toast.makeText(
+                                OrderDeliveryActivity.this,
+                                getString(R.string.invoice_generated_already),
+                                Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                    new downloadOrderDeliveryDetail(orderHeaders.get(position).getOrderid(), Str_ACCEPT, orderHeaders.get(position).getInvoiceStatus()).execute();
                 }
             });
 
@@ -259,7 +247,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                             OrderDeliveryActivity.this,
                             getResources().getString(R.string.no_ordered_products_found),
                             Toast.LENGTH_SHORT).show();
-                    isClickedAccept = false;
                 } else if (orderDeliveryHelper.isSIHAvailable(false)) {
 
                     CommonDialog dialog = new CommonDialog(getApplicationContext(), OrderDeliveryActivity.this, "", getResources().getString(R.string.order_delivery_approve), false,
@@ -304,7 +291,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                     }, new CommonDialog.negativeOnClickListener() {
                         @Override
                         public void onNegativeButtonClick() {
-                            isClickedAccept = false;
                         }
                     });
                     dialog.show();
@@ -314,7 +300,6 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                             OrderDeliveryActivity.this,
                             getResources().getString(R.string.ordered_value_exceeds_sih_value_please_edit_the_order),
                             Toast.LENGTH_SHORT).show();
-                    isClickedAccept = false;
                 }
             }
 
