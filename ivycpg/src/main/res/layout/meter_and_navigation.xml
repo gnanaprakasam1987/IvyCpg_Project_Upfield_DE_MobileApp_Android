@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@string/zero"
-                android:textColor="@color/WHITE"
+                android:textColor="@color/white"
                 android:textSize="@dimen/footer_label_value" />
 
         </LinearLayout>

@@ -205,7 +205,7 @@
             android:layout_toRightOf="@+id/TextView52"
             android:adjustViewBounds="true"
             android:text="@string/total_weight"
-            android:textColor="@color/GREEN"
+            android:textColor="@color/green_productivity"
             android:tag="stk_ord_weigh"
             android:textSize="@dimen/text_size_caption" />
 
