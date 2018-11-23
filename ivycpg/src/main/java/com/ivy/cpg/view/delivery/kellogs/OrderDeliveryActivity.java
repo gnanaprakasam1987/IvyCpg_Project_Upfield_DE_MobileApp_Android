@@ -160,7 +160,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                     } else {
                         Toast.makeText(
                                 OrderDeliveryActivity.this,
-                                "Already invoice has been generated",
+                                getString(R.string.invoice_generated_already),
                                 Toast.LENGTH_SHORT).show();
                     }
 
@@ -173,7 +173,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                     if (orderHeaders.get(position).getInvoiceStatus() == 1) {
                         Toast.makeText(
                                 OrderDeliveryActivity.this,
-                                "Already invoice has been generated",
+                                getString(R.string.invoice_generated_already),
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -187,7 +187,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
                     if (orderHeaders.get(position).getInvoiceStatus() == 1) {
                         Toast.makeText(
                                 OrderDeliveryActivity.this,
-                                "Already invoice has been generated",
+                                getString(R.string.invoice_generated_already),
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
