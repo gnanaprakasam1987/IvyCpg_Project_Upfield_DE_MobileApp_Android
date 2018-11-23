@@ -283,6 +283,9 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
 
+    implementation "org.greenrobot:eventbus:$rootProject.evenyBusVersion"
+
+
     //Chat-Sdk
     implementation 'co.chatsdk.chatsdk:chat-sdk-core:4.1.26'
     implementation 'co.chatsdk.chatsdk:chat-sdk-ui:4.1.26'
