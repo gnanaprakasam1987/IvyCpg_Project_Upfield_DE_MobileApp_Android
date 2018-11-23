@@ -227,9 +227,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             view.findViewById(R.id.tv_is_photo).setVisibility(View.GONE);
         }
 
-        if (!assetTrackingHelper.SHOW_ASSET_QTY && view != null) {
-            view.findViewById(R.id.tv_isAvail).setVisibility(View.GONE);
-        } else {
+
             try {
                 if (view != null) {
                     if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
@@ -245,7 +243,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
-        }
+
 
         try {
             if (view != null) {
