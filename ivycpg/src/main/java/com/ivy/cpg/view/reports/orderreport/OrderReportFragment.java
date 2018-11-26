@@ -35,6 +35,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -155,9 +156,9 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         TextView text_totalValueTitle = view.findViewById(R.id.totalvaluetitle);
         TextView lab_dist_pre_post = view.findViewById(R.id.lab_dist_pre_post);
 
-        text_LPC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        text_totalValueTitle.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        lab_dist_pre_post.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        text_LPC.setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
+        text_totalValueTitle.setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
+        lab_dist_pre_post.setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
 
         //list = businessModel.reportHelper.downloadOrderreport();
 
@@ -212,7 +213,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
             view.findViewById(R.id.lab_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.txt_dist_pre_post).setVisibility(View.GONE);
             view.findViewById(R.id.dist).setVisibility(View.GONE);
-            ((TextView) view.findViewById(R.id.outna)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) view.findViewById(R.id.outna)).setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
         }
 
         if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
@@ -225,7 +226,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                             .setText(businessModel.labelsMasterHelper
                                     .applyLabels(getActivity().findViewById(R.id.weighttitle)
                                             .getTag()));
-                ((TextView) view.findViewById(R.id.weighttitle)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.weighttitle)).setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
             } catch (Exception e) {
                 Commons.printException(e);
             }
@@ -248,7 +249,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                     R.id.outna).getTag()) != null)
                 ((TextView) view.findViewById(R.id.outna))
                         .setText(businessModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.outna).getTag()));
-            ((TextView) view.findViewById(R.id.outna)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) view.findViewById(R.id.outna)).setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -260,7 +261,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                 ((TextView) view.findViewById(R.id.lpc))
                         .setText(businessModel.labelsMasterHelper.applyLabels(view
                                 .findViewById(R.id.lpc).getTag()));
-            ((TextView) view.findViewById(R.id.lpc)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) view.findViewById(R.id.lpc)).setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -274,7 +275,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                                 .applyLabels(view.findViewById(
                                         R.id.outid)
                                         .getTag()));
-            ((TextView) view.findViewById(R.id.outid)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            ((TextView) view.findViewById(R.id.outid)).setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -314,7 +315,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                     ((TextView) view.findViewById(R.id.lbl_totweigh))
                             .setText(businessModel.labelsMasterHelper.applyLabels(view
                                     .findViewById(R.id.lbl_totweigh).getTag()));
-                ((TextView) view.findViewById(R.id.lbl_totweigh)).setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                ((TextView) view.findViewById(R.id.lbl_totweigh)).setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
 
             } catch (Exception e) {
                 Commons.printException(e);

@@ -85,6 +85,7 @@ import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.sd.print.SettingsHelper;
+import com.ivy.utils.FontUtils;
 import com.tremol.zfplibj.ZFPLib;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
@@ -324,27 +325,28 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         text_totweigh = findViewById(R.id.tvTotWeigh);
 
         //typefaces
-        ((TextView) findViewById(R.id.tv_deliveryDate)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lpcLabel)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.totalValuelbl)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.title_totalqty)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lblbill1)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lblbill2)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lblbill1Line)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lblweigh)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_deliveryDate)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lpcLabel)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.totalValuelbl)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.title_totalqty)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblbill1)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblbill2)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblbill1Line)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblbill2Line)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.lblweigh)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
 
-        button_deliveryDate.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        text_LPC.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        text_totalOrderValue.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        textbill1.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        textbill2.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        linesBill1.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        linesBill2.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        text_totalOrderedQuantity.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        text_totweigh.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        button_order.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        button_invoice.setTypeface(bModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        text_creditNote.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+        button_deliveryDate.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        text_LPC.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        text_totalOrderValue.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        textbill1.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        textbill2.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        linesBill1.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        linesBill2.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        text_totalOrderedQuantity.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        text_totweigh.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+        button_order.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+        button_invoice.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+        text_creditNote.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
 
         button_deliveryDate.setOnClickListener(this);
         button_order.setOnClickListener(this);
@@ -2262,8 +2264,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 holder.rep_ou = row.findViewById(R.id.rep_outer);
                 holder.rep_pcs = row.findViewById(R.id.rep_pcs);
 
-                holder.text_productName.setTypeface(bModel.configurationMasterHelper.getProductNameFont());
-                holder.text_total.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.text_productName.setTypeface(FontUtils.getProductNameFont(OrderSummary.this));
+                holder.text_total.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
 
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
@@ -2274,8 +2276,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     if (bModel.configurationMasterHelper.SHOW_STOCK_SC) {
                         (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
-                        ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                        holder.shelfCaseQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
+                        holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         try {
                             if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfCaseTitle).getTag()) != null)
@@ -2291,8 +2293,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                     if (bModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
-                        ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                        holder.shelfOuterQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
+                        holder.shelfOuterQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         try {
                             if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfOuterTitle).getTag()) != null)
@@ -2309,8 +2311,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     if (bModel.configurationMasterHelper.SHOW_STOCK_SP) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
-                        ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                        holder.shelfPieceQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
+                        holder.shelfPieceQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         try {
                             if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfPcsTitle).getTag()) != null)
@@ -2328,8 +2330,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_CASE) {
                     (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.caseQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
+                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
@@ -2346,8 +2348,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_PCS) {
                     (row.findViewById(R.id.llPiece)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.pcsQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
+                    holder.pcsQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
@@ -2362,8 +2364,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_OUTER_CASE) {
                     (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.outerQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
+                    holder.outerQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
@@ -2378,8 +2380,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                     (row.findViewById(R.id.llShelfWeight)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.weighttitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.caseQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.weighttitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
+                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.weighttitle).getTag()) != null)
@@ -2394,8 +2396,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                     (row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                    holder.tw_srp.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
+                    holder.tw_srp.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.srpTitle).getTag()) != null)
@@ -2412,8 +2414,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        holder.salesReturn.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                        holder.salesReturn.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.stkRtTitle))
                                     .setText(bModel.labelsMasterHelper
@@ -2426,8 +2428,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
                     (row.findViewById(R.id.llRepCase)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.rep_cs.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.rep_cs.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_caseTitle).getTag()) != null)
@@ -2443,8 +2445,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_REPLACED_QTY_OU)
                     (row.findViewById(R.id.llRepOu)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.rep_ou.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.rep_ou.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_outerTitle).getTag()) != null)
@@ -2460,8 +2462,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
                     (row.findViewById(R.id.llRepPc)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.rep_pcs.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.rep_pcs.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_pcsTitle).getTag()) != null)
@@ -2478,8 +2480,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_FOC) {
                     (row.findViewById(R.id.llfoc)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.foc.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.foc.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.focTitle).getTag()) != null)
@@ -2609,17 +2611,17 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 holder.rl_oos = row.findViewById(R.id.rl_oos);
 
                 holder.text_productName.setMaxLines(bModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                holder.text_productName.setTypeface(bModel.configurationMasterHelper.getProductNameFont());
+                holder.text_productName.setTypeface(FontUtils.getProductNameFont(OrderSummary.this));
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                holder.text_total.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.text_total.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
 
                 if (!"MENU_ORDER".equals(screenCode) && bModel.configurationMasterHelper.SHOW_STOCK_IN_SUMMARY) {
 
 
                     if (bModel.configurationMasterHelper.SHOW_STOCK_SC) {
                         (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
-                        ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        holder.shelfCaseQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                        holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         try {
                             if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfCaseTitle).getTag()) != null)
@@ -2635,8 +2637,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     }
                     if (bModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
-                        ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        holder.shelfOuterQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                        holder.shelfOuterQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         try {
                             if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfOuterTitle).getTag()) != null)
@@ -2653,8 +2655,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     if (bModel.configurationMasterHelper.SHOW_STOCK_SP) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
-                        ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        holder.shelfPieceQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                        ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                        holder.shelfPieceQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         try {
                             if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                     R.id.shelfPcsTitle).getTag()) != null)
@@ -2685,8 +2687,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_CASE) {
                     (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.caseQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
@@ -2703,8 +2705,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_PCS) {
                     (row.findViewById(R.id.llPiece)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.pcsQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.pcsQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
@@ -2719,8 +2721,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_OUTER_CASE) {
                     (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.outerQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.outerQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
@@ -2735,8 +2737,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
                     (row.findViewById(R.id.llShelfWeight)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.weighttitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.caseQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.weighttitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.weighttitle).getTag()) != null)
@@ -2752,8 +2754,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     (row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                        holder.salesReturn.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                        holder.salesReturn.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.stkRtTitle))
                                     .setText(bModel.labelsMasterHelper
@@ -2766,8 +2768,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
                     (row.findViewById(R.id.llRepCase)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.rep_cs.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_caseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.rep_cs.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_caseTitle).getTag()) != null)
@@ -2783,8 +2785,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_REPLACED_QTY_OU)
                     (row.findViewById(R.id.llRepOu)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.rep_ou.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_outerTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.rep_ou.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_outerTitle).getTag()) != null)
@@ -2800,8 +2802,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
                     (row.findViewById(R.id.llRepPc)).setVisibility(View.GONE);
                 else {
-                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.rep_pcs.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                    ((TextView) row.findViewById(R.id.rep_pcsTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.rep_pcs.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.rep_pcsTitle).getTag()) != null)
@@ -2817,8 +2819,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                     (row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.tw_srp.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.tw_srp.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.srpTitle).getTag()) != null)
@@ -2838,8 +2840,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!bModel.configurationMasterHelper.SHOW_FOC) {
                     (row.findViewById(R.id.llfoc)).setVisibility(View.GONE);
                 } else {
-                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                    holder.foc.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
+                    holder.foc.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                     try {
                         if (bModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.focTitle).getTag()) != null)
