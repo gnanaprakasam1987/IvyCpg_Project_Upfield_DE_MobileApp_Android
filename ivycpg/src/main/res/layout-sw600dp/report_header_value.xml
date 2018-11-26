@@ -200,6 +200,51 @@
                 android:textSize="@dimen/login_edittext_text_size" />
         </LinearLayout>
 
+        <View
+            android:id="@+id/view3"
+            android:layout_width="1dp"
+            android:layout_height="@dimen/ret_card_image"
+            android:layout_marginLeft="@dimen/margin_height"
+            android:layout_marginStart="@dimen/margin_height"
+            android:layout_marginTop="@dimen/icons_top_margin"
+            android:layout_toRightOf="@+id/container_volume"
+            android:background="@android:color/darker_gray"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_totweight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/store_margin_top"
+            android:layout_marginStart="@dimen/store_margin_top"
+            android:layout_toRightOf="@+id/view3"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/lbl_totweigh"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:text="@string/total_weight"
+                android:textSize="@dimen/text_size_secondary"
+                android:textStyle="bold"
+                android:textColor="?attr/accentcolor"/>
+
+            <TextView
+                android:id="@+id/txt_totalWeight"
+                style="?textFieldStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:adjustViewBounds="true"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="@dimen/login_edittext_text_size" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/btn_export"
             style="?attr/roundedCustomButtonSmall"

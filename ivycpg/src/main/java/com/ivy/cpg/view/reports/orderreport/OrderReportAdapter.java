@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -198,7 +199,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         holder.text_LPC.setText(holder.reportBO.getLPC());
         holder.tvwDist.setText(holder.reportBO.getDist());
         holder.tvOrderNo.setText(holder.reportBO.getOrderID());
-        holder.tvWeight.setText(String.valueOf(holder.reportBO.getWeight()));
+        holder.tvWeight.setText(Utils.formatAsTwoDecimal((double)holder.reportBO.getWeight()));
 
 
         try {

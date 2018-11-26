@@ -1344,6 +1344,7 @@ public class ConfigurationMasterHelper {
 
     public String CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER = "RTPRTY06";
     public boolean IS_PIRAMAL_COLOR_CODE_FOR_RETAILER;
+    public int COLOR_ICON = 0;
 
     private static final String CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS = "FUN56";
     public boolean IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS;
@@ -1429,6 +1430,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_UPLOAD_ATTENDANCE = "UPLOADATTENDANCE";
     public boolean IS_UPLOAD_ATTENDANCE;
+
+    private static final String CODE_REMARK_ATTENDANCE = "ATTREMARK";
+    public boolean IS_ATTENDANCE_REMARK;
 
     private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
@@ -2487,6 +2491,8 @@ public class ConfigurationMasterHelper {
         }
         this.IS_PRODUCT_DISPLAY_FOR_PIRAMAL = hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) : false;
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
+        this.COLOR_ICON = hashMapHHTModuleOrder.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleOrder.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : 0;
+
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
         this.IS_TOP_ORDER_FILTER = hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) : false;
@@ -2592,6 +2598,7 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_UPLOAD_ATTENDANCE = hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) != null ? hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) : false;
+        this.IS_ATTENDANCE_REMARK = hashMapHHTModuleConfig.get(CODE_REMARK_ATTENDANCE) != null ? hashMapHHTModuleConfig.get(CODE_REMARK_ATTENDANCE) : false;
 
         this.SHOW_DISTRIBUTOR_PROFILE = hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) : false;
         if (hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null
