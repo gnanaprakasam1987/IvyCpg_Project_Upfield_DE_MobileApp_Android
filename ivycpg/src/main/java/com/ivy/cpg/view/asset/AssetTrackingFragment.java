@@ -431,8 +431,8 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if(adapter.isEmpty()){
-                save();
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                mDrawerLayout.closeDrawers();
             } else {
                 try {
                     Iterator it = mBModel.getPhotosTakeninCurrentAssetTracking().entrySet().iterator();
@@ -455,8 +455,8 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
-                    mDrawerLayout.closeDrawers();
+                if (adapter.isEmpty()) {
+                    save();
                 } else {
                     assetPresenter.updateTimeStamp();
                     startActivity(new Intent(getActivity(),

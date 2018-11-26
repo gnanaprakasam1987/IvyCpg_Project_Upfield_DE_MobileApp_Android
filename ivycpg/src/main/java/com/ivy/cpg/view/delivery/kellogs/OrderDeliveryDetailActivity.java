@@ -33,6 +33,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
 
@@ -57,7 +58,6 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     private String orderId;
     private String referenceId = "";
     private double totalReturnValue,totalOrderValue;
-    private boolean isClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,22 +143,13 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         orderId = getIntent().getExtras().getString("OrderId");
         referenceId = getIntent().getExtras().getString("RefId");
 
-        findViewById(R.id.accept_btn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.accept_btn).setOnClickListener(new OnSingleClickListener() {
             @Override
-            public void onClick(View view) {
-                if(!isClicked) {
-
-                    orderDeliveryPresenter.saveOrderDeliveryDetail(
+            public void onSingleClick(View view) {
+                orderDeliveryPresenter.saveOrderDeliveryDetail(
                         isEdit,orderId,getIntent().getExtras().getString("menuCode"),totalOrderValue,totalReturnValue,referenceId);
-
-                    isClicked = true;
-                } }
+            }
         });
-    }
-
-    @Override
-    public void cancelClick() {
-        isClicked = false;
     }
 
     @Override
@@ -166,7 +157,6 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
         super.onResume();
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        isClicked = false;
         //session out if user id becomes 0
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(this,
