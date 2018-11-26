@@ -739,6 +739,18 @@ public class OrderDeliveryHelper {
                         " select orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct," + invoiceId + " from OrderTaxDetails where OrderId = " + AppUtils.QT(orderId);
 
                 db.executeQ(invoiceTaxDetail);
+
+                for (ProductMasterBO productBo : getOrderedProductMasterBOS()) {
+                    Cursor c = db.selectSQL("select ifnull(sum(taxValue),0) from OrderTaxDetails where OrderID=" + AppUtils.QT(orderId) + " and pid = '" + productBo.getProductID() + "'");
+                    if (c != null) {
+                        if (c.moveToNext()) {
+                            db.updateSQL("Update InvoiceDetails set TaxAmount = '" + c.getString(0) + "' where ProductID = '" +
+                                    productBo.getProductID() + "' and invoiceID = " + AppUtils.QT(invoiceId));
+                        }
+                        c.close();
+                    }
+                }
+
             }
 
             if (isEdit && businessModel.configurationMasterHelper.SHOW_TAX) {

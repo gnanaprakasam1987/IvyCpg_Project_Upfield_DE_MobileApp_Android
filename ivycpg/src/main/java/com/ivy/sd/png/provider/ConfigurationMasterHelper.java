@@ -3669,10 +3669,13 @@ public class ConfigurationMasterHelper {
                             break;
                         case "VOL":
                             SHOW_INV_HST_VOLUME = true;
+                            break;
                         case "MGNPRC":
                             SHOW_INV_HST_MARGIN_PRICE = true;
+                            break;
                         case "MGNPER":
                             SHOW_INV_HST_MARGIN_PER = true;
+                            break;
 
                     }
 

@@ -111,7 +111,6 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     context,
                     context.getResources().getString(R.string.no_ordered_products_found),
                     Toast.LENGTH_SHORT).show();
-            orderDeliveryView.cancelClick();
         } else if (orderDeliveryHelper.isSIHAvailable(isEdit)) {
 
             //Removed as per JIRA Changes
@@ -138,7 +137,6 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
             }, new CommonDialog.negativeOnClickListener() {
                 @Override
                 public void onNegativeButtonClick() {
-                    orderDeliveryView.cancelClick();
                 }
             });
             dialog.show();
@@ -150,7 +148,6 @@ public class OrderDeliveryPresenterImpl implements OrderDeliveryContractor.Order
                     Toast.LENGTH_SHORT).show();
 
             orderDeliveryView.updateSaveStatus(false);
-            orderDeliveryView.cancelClick();
         }
     }
 

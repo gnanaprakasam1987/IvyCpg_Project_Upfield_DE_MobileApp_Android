@@ -57,6 +57,7 @@ import com.ivy.utils.FontUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -65,13 +66,12 @@ import co.chatsdk.core.types.AccountDetails;
 
 public class SellersMapHomeFragment extends IvyBaseFragment implements
         OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnInfoWindowClickListener,SellerMapHomeContract.SellerMapHomeView {
+        GoogleMap.OnInfoWindowClickListener, SellerMapHomeContract.SellerMapHomeView {
 
     private GoogleMap mMap;
     private BottomSheetBehavior bottomSheetBehavior;
-    private TickerView totalSeller,tvOrderValue,tvUnbilledOutlet
-            ,tvTotalOutlet,tvCoveredOutlet,absentSeller,marketSeller;
-    private TextView  tvSellerProductivePercent;
+    private TickerView totalSeller, tvOrderValue, tvUnbilledOutlet, tvTotalOutlet, tvCoveredOutlet, absentSeller, marketSeller;
+    private TextView tvSellerProductivePercent;
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup mymarkerview;
     private TextView tvMapInfoUserName;
@@ -82,7 +82,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
     private ArrayList<SellerBo> inMarketSellerArrayList = new ArrayList<>();
     private DatePickerDialog picker;
-    private String selectedDate="";
+    private String selectedDate = "";
     private int loginUserId;
 
 
@@ -122,7 +122,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         selectedDate = SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN);
 
         sellerMapHomePresenter = new SellerMapHomePresenter();
-        sellerMapHomePresenter.setView(this,getContext());
+        sellerMapHomePresenter.setView(this, getContext());
         sellerMapHomePresenter.setSelectedDate(selectedDate);
 
         loginUserId = sellerMapHomePresenter.getLoginUserId();
@@ -160,25 +160,25 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         view.findViewById(R.id.seller_view_btn).setOnClickListener(this);
 
         //Bottom sheet layout Typeface
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
-        ((TextView) view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
-        ((TextView) view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
-        ((TextView) view.findViewById(R.id.tv_txt_order_value)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.LIGHT));
-        ((TextView) view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.LIGHT));
-        ((TextView) view.findViewById(R.id.tv_inmarket_seller)).setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_seller)).setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_covered_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_unbilled_outlet)).setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_order_value)).setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.REGULAR));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_market_seller)).setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.tv_txt_ttl_absent_seller)).setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.LIGHT));
+        ((TextView) view.findViewById(R.id.tv_inmarket_seller)).setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.LIGHT));
 
-        totalSeller.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
-        absentSeller.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
-        marketSeller.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
-        tvCoveredOutlet.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
-        tvUnbilledOutlet.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
-        tvTotalOutlet.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
-        tvOrderValue.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
-        tvSellerProductivePercent.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+        totalSeller.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
+        absentSeller.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
+        marketSeller.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
+        tvCoveredOutlet.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
+        tvUnbilledOutlet.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
+        tvTotalOutlet.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
+        tvOrderValue.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
+        tvSellerProductivePercent.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
 
-        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.REGULAR));
+        tvMapInfoUserName.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.REGULAR));
 
 
         mapWrapperLayout = view.findViewById(R.id.map_wrap_layout);
@@ -192,7 +192,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        if(sellerListRecyclerView.getVisibility() == View.VISIBLE) {
+                        if (sellerListRecyclerView.getVisibility() == View.VISIBLE) {
                             bottomSheetBehavior.setHideable(true);
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                         }
@@ -223,10 +223,10 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 Bundle values = new Bundle();
                 values.putInt("TabPos", 0);
                 values.putString("Screen", "Seller");
-                values.putParcelableArrayList("SellerList",sellerMapHomePresenter.getAllSellerList());
-                values.putInt("Sellerid",loginUserId);
-                values.putString("Date",selectedDate);
-                intent.putExtra("SellerInfo",values);
+                values.putParcelableArrayList("SellerList", sellerMapHomePresenter.getAllSellerList());
+                values.putInt("Sellerid", loginUserId);
+                values.putString("Date", selectedDate);
+                intent.putExtra("SellerInfo", values);
 
                 startActivity(intent);
             }
@@ -238,8 +238,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
                 intent.putExtra("TabPos", 0);
                 intent.putExtra("Screen", "Outlet");
-                intent.putExtra("Sellerid",loginUserId);
-                intent.putExtra("Date",selectedDate);
+                intent.putExtra("Sellerid", loginUserId);
+                intent.putExtra("Date", selectedDate);
                 startActivity(intent);
             }
         });
@@ -250,8 +250,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
                 intent.putExtra("TabPos", 1);
                 intent.putExtra("Screen", "Outlet");
-                intent.putExtra("Sellerid",loginUserId);
-                intent.putExtra("Date",selectedDate);
+                intent.putExtra("Sellerid", loginUserId);
+                intent.putExtra("Date", selectedDate);
                 startActivity(intent);
             }
         });
@@ -262,8 +262,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), OutletMapListActivity.class);
                 intent.putExtra("TabPos", 2);
                 intent.putExtra("Screen", "Outlet");
-                intent.putExtra("Sellerid",loginUserId);
-                intent.putExtra("Date",selectedDate);
+                intent.putExtra("Sellerid", loginUserId);
+                intent.putExtra("Date", selectedDate);
                 startActivity(intent);
             }
         });
@@ -273,8 +273,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), SellerPerformanceListActivity.class);
                 intent.putExtra("Screen", "Seller Performance");
-                intent.putExtra("Sellerid",loginUserId);
-                intent.putExtra("Date",selectedDate);
+                intent.putExtra("Sellerid", loginUserId);
+                intent.putExtra("Date", selectedDate);
                 startActivity(intent);
             }
         });
@@ -295,7 +295,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 false);
         sellerListRecyclerView.setLayoutManager(layout);
 
-        inMarketSellerAdapter = new InMarketSellerAdapter(getContext().getApplicationContext(), inMarketSellerArrayList,sellerMapHomePresenter);
+        inMarketSellerAdapter = new InMarketSellerAdapter(getContext().getApplicationContext(), inMarketSellerArrayList, sellerMapHomePresenter);
         sellerListRecyclerView.setAdapter(inMarketSellerAdapter);
 
         sellerListRecyclerView.setHasFixedSize(true);
@@ -344,7 +344,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.supervisor_home_map_info_x);
                 double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.supervisor_home_map_info_y));
 
-                inMarketSellerArrayList.get(newPosition).getMarker().setInfoWindowAnchor((float)x, (float)y);
+                inMarketSellerArrayList.get(newPosition).getMarker().setInfoWindowAnchor((float) x, (float) y);
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(inMarketSellerArrayList.get(newPosition).getMarker().getPosition()));
                 inMarketSellerArrayList.get(newPosition).getMarker().showInfoWindow();
@@ -425,22 +425,20 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                     HomeScreenActivity.class));
             getActivity().finish();
             return true;
-        }
-        else if(item.getItemId() == R.id.menu_dashboard){
-            if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN ||
+        } else if (item.getItemId() == R.id.menu_dashboard) {
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN ||
                     bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             else {
-                if(sellerListRecyclerView.getVisibility() == View.GONE)
+                if (sellerListRecyclerView.getVisibility() == View.GONE)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                else{
+                else {
                     bottomSheetBehavior.setHideable(true);
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
 
             }
-        }
-        else if(item.getItemId() == R.id.menu_date){
+        } else if (item.getItemId() == R.id.menu_date) {
             showDatePicker();
         }
 
@@ -455,7 +453,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     @Override
     public void onInfoWindowClick(Marker marker) {
 
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.setHideable(true);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
@@ -463,7 +461,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             bottomSheetBehavior.setHideable(true);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
@@ -473,13 +471,13 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         sellerListRecyclerView.setVisibility(View.VISIBLE);
 
         int pagerPos = 0;
-        int count=0;
-        for(SellerBo detailsBo : inMarketSellerArrayList){
-            if(detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())){
+        int count = 0;
+        for (SellerBo detailsBo : inMarketSellerArrayList) {
+            if (detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())) {
                 pagerPos = count;
                 break;
             }
-            count = count+1;
+            count = count + 1;
         }
 
         sellerListRecyclerView.scrollToPosition(pagerPos);
@@ -495,7 +493,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(getContext().getApplicationContext(), "Enable location permission from App Settings", Toast.LENGTH_SHORT).show();
 
-        }else{
+        } else {
             mMap.setMyLocationEnabled(false);
         }
 
@@ -514,13 +512,12 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
                 sellerListRecyclerView.setVisibility(View.GONE);
 
-                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                     bottomSheetBehavior.setHideable(true);
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                }
-                else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN)
+                } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
             }
@@ -528,7 +525,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
         sellerMapHomePresenter.getSellerListAWS(SDUtil.now(SDUtil.DATE_GLOBAL));
 
-        sellerMapHomePresenter.loginToFirebase(getContext().getApplicationContext(),loginUserId);
+        sellerMapHomePresenter.loginToFirebase(getContext().getApplicationContext(), loginUserId);
     }
 
     @Override
@@ -545,7 +542,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     }
 
     @Override
-    public void createMarker(SellerBo sellerBo,MarkerOptions markerOptions) {
+    public void createMarker(SellerBo sellerBo, MarkerOptions markerOptions) {
 
         Marker marker = mMap.addMarker(markerOptions);
 
@@ -555,7 +552,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
     @Override
     public void updateMaker(LatLng destinationLatLng, Marker marker) {
 
-        sellerMapHomePresenter.animateSellerMarker(destinationLatLng,marker);
+        sellerMapHomePresenter.animateSellerMarker(destinationLatLng, marker);
     }
 
     @Override
@@ -620,7 +617,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         if (productivityPercent > 100)
             productivityPercent = 100;
 
-        tvSellerProductivePercent.setText(productivityPercent+"%");
+        tvSellerProductivePercent.setText(productivityPercent + "%");
         progressBar.setProgress(productivityPercent);
     }
 
@@ -630,12 +627,12 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         this.selectedDate = selectedDate;
         sellerMapHomePresenter.setSelectedDate(selectedDate);
 
-        sellerMapHomePresenter.sellerAttendanceInfoListener(loginUserId,selectedDate);
+        sellerMapHomePresenter.sellerAttendanceInfoListener(loginUserId, selectedDate);
 
-        sellerMapHomePresenter.sellerActivityInfoListener(loginUserId,selectedDate);
+        sellerMapHomePresenter.sellerActivityInfoListener(loginUserId, selectedDate);
 
         if (sellerMapHomePresenter.isRealtimeLocation())
-            sellerMapHomePresenter.realtimeLocationInfoListener(loginUserId,selectedDate);
+            sellerMapHomePresenter.realtimeLocationInfoListener(loginUserId, selectedDate);
 
     }
 
@@ -664,7 +661,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         return (int) (dp * scale + 0.5f);
     }
 
-    private void showDatePicker(){
+    private void showDatePicker() {
 
         String[] splitDate = sellerMapHomePresenter.convertPlaneDateToGlobal(selectedDate).split("/");
 
@@ -676,8 +673,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         Calendar cal = Calendar.getInstance();
         cal.set(day, month, year);
 
-        picker = new DatePickerDialog(getContext(),R.style.SellerDatePickerStyle,mDateSetListener,day,month,year);
-
+        picker = new DatePickerDialog(getContext(), R.style.SellerDatePickerStyle, mDateSetListener, day, month, year);
+        picker.getDatePicker().setMaxDate(new Date().getTime());
         picker.updateDate(year, month - 1, day);
 
         picker.show();
@@ -693,12 +690,12 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             String convertedDate = sdf.format(dateConversion.getTime());
 
             Toast.makeText(getContext(),
-                    "Selected Date "+convertedDate,
+                    "Selected Date " + convertedDate,
                     Toast.LENGTH_SHORT).show();
             picker.hide();
 
 
-            if(!sellerMapHomePresenter.isSameDateSelected(convertedDate)) {
+            if (!sellerMapHomePresenter.isSameDateSelected(convertedDate)) {
 
                 if (mMap != null)
                     mMap.clear();
@@ -723,7 +720,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 if (!sellerMapHomePresenter.checkSelectedDateExist(convertedDate))
                     sellerMapHomePresenter.downloadSupRetailerMaster(convertedDate);
                 else {
-                    SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(),convertedDate);
+                    SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(), convertedDate);
                     sellerMapHomePresenter.getSellerListAWS(convertedDate);
                     updateSellerInfoByDate(sellerMapHomePresenter.convertGlobalDateToPlane(convertedDate));
                 }
