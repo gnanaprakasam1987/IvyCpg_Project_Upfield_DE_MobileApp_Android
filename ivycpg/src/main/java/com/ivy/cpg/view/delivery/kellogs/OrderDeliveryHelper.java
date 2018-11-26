@@ -654,7 +654,7 @@ public class OrderDeliveryHelper {
 
                         String columns = "invoiceId,productid,qty,rate,uomdesc,retailerid,uomid,msqqty,uomCount,caseQty,pcsQty," +
                                 "d1,d2,d3,DA,totalamount,outerQty,dOuomQty,dOuomid,batchid,upload,CasePrice,OuterPrice," +
-                                "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode,NetAmount,TaxAmount";
+                                "PcsUOMId,priceoffvalue,PriceOffId,weight,HsnCode,NetAmount";
 
                         String sb = (AppUtils.QT(invoiceId) + ",") +
                                 AppUtils.QT(productBo.getProductID()) + "," +
@@ -679,8 +679,7 @@ public class OrderDeliveryHelper {
                                 "," + priceOffValue + "," + productBo.getPriceOffId() +
                                 "," + productBo.getWeight() +
                                 "," + AppUtils.QT(productBo.getHsnCode()) +
-                                "," + line_total_price +
-                                "," + productBo.getTaxApplyvalue();
+                                "," + line_total_price;
 
                         db.insertSQL(DataMembers.tbl_InvoiceDetails, columns, sb);
 
