@@ -77,9 +77,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_weight="1"
                         android:tag="item_piece"
-                        android:text="@string/item_piece"
-                        android:layout_weight="1"/>
+                        android:text="@string/item_piece" />
 
                     <TextView
                         android:id="@+id/outercqty"
@@ -87,9 +87,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_weight="1"
                         android:tag="item_outer"
-                        android:text="@string/item_outer"
-                        android:layout_weight="1"/>
+                        android:text="@string/item_outer" />
 
                     <TextView
                         android:id="@+id/lpc"
@@ -130,9 +130,9 @@
         android:id="@+id/titleRow"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/resetbox_header_height"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:background="@color/black_bg1"
         android:gravity="center_vertical">
 
@@ -142,8 +142,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/viewpger_padding"
-            android:layout_marginEnd="@dimen/viewpger_padding"
             android:layout_marginTop="@dimen/viewpger_padding"
+            android:layout_marginEnd="@dimen/viewpger_padding"
             android:adjustViewBounds="true"
             android:text="@string/total_value"
             android:textColor="@color/green_productivity"
@@ -162,25 +162,17 @@
             android:textColor="@color/white"
             android:textSize="@dimen/login_edittext_text_size" />
 
-        <View
-            android:id="@+id/view0"
-            android:layout_width="1dp"
-            android:layout_height="@dimen/ret_card_image"
-            android:layout_marginStart="@dimen/margin_height"
-            android:layout_marginTop="@dimen/store_margin_top"
-            android:layout_toEndOf="@+id/label_totalValue"
-            android:background="@android:color/darker_gray"
-            android:visibility="gone" />
 
         <TextView
             android:id="@+id/TextView52"
             style="?textFieldStyle"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/viewpger_padding"
-            android:layout_marginEnd="@dimen/viewpger_padding"
             android:layout_marginTop="@dimen/viewpger_padding"
-            android:layout_toEndOf="@+id/view0"
+            android:layout_marginEnd="@dimen/viewpger_padding"
+            android:layout_toEndOf="@+id/label_totalValue"
+            android:layout_toRightOf="@+id/label_totalValue"
             android:adjustViewBounds="true"
             android:text="@string/tot_qty"
             android:textColor="@color/green_productivity"
@@ -194,7 +186,39 @@
             android:layout_below="@+id/TextView52"
             android:layout_marginStart="@dimen/viewpger_padding"
             android:layout_marginEnd="@dimen/viewpger_padding"
-            android:layout_toEndOf="@+id/view0"
+            android:layout_toEndOf="@+id/label_totalValue"
+            android:layout_toRightOf="@+id/label_totalValue"
+            android:adjustViewBounds="true"
+            android:text="@string/zero"
+            android:textColor="@color/white"
+            android:textSize="@dimen/login_edittext_text_size" />
+
+        <TextView
+            android:id="@+id/lbl_totWgt"
+            style="?textFieldStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/viewpger_padding"
+            android:layout_marginTop="@dimen/viewpger_padding"
+            android:layout_marginEnd="@dimen/viewpger_padding"
+            android:layout_toEndOf="@+id/TextView52"
+            android:layout_toRightOf="@+id/TextView52"
+            android:adjustViewBounds="true"
+            android:text="@string/total_weight"
+            android:textColor="@color/green_productivity"
+            android:tag="stk_ord_weigh"
+            android:textSize="@dimen/text_size_caption" />
+
+        <TextView
+            android:id="@+id/txt_totwgt"
+            style="?textFieldStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lbl_totWgt"
+            android:layout_marginStart="@dimen/viewpger_padding"
+            android:layout_marginEnd="@dimen/viewpger_padding"
+            android:layout_toEndOf="@+id/TextView52"
+            android:layout_toRightOf="@+id/TextView52"
             android:adjustViewBounds="true"
             android:text="@string/zero"
             android:textColor="@color/white"

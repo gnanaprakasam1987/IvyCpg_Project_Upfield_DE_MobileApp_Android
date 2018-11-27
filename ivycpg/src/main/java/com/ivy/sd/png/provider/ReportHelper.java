@@ -1881,7 +1881,7 @@ public class ReportHelper {
                 productMasterBO.setOrderedOuterQty(c.getInt(4));
                 productMasterBO.setTotalamount(c.getDouble(5));
                 productMasterBO.setBatchNo(c.getString(6));
-                productMasterBO.setWeight(c.getInt(7));
+                productMasterBO.setWeight(c.getFloat(7));
                 productMasterBO.setTotalQty(c.getInt(8));
                 productMasterBO.setProductCode(c.getString(9));
                 reportList.add(productMasterBO);

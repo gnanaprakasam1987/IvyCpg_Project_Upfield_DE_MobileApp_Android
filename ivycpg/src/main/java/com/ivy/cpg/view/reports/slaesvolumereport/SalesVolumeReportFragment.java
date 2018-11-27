@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -84,15 +85,6 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
 
-        /*((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(
-                bmodel.mSelectedActivityName);
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setIcon(
-                R.drawable.icon_sbd);
-        ((ActionBarActivity) getActivity()).getSupportActionBar()
-                .setDisplayHomeAsUpEnabled(true);*/
-
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
                 mDrawerLayout, /* DrawerLayout object */
                 R.string.ok, /* "open drawer" description for accessibility */
@@ -100,11 +92,8 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
         ) {
             public void onDrawerClosed(View view) {
 
-                /*((ActionBarActivity) getActivity()).getSupportActionBar()
-                        .setTitle(bmodel.mSelectedActivityName);*/
                 getActivity().supportInvalidateOptionsMenu();
-                // invalidateOptionsMenu(); // creates call to
-                // onPrepareOptionsMenu()
+
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -121,10 +110,13 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
         mSelectedFilterMap.put("Brand", "All");
 
-        lvwplist = (ListView) view.findViewById(R.id.lvwplistorddet);
+        if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+            view.findViewById(R.id.total_weight).setVisibility(View.GONE);
+
+        lvwplist = view.findViewById(R.id.lvwplistorddet);
         lvwplist.setCacheColorHint(0);
 
-        SalesVolumeReportHelper reportHelper = new SalesVolumeReportHelper(getActivity());
+        SalesVolumeReportHelper reportHelper = SalesVolumeReportHelper.getInstance(getActivity());
         reportHelper.downloadProductReportsWithFiveLevelFilter();
         mylist = reportHelper.getOrderedProductMaster();
 
@@ -180,32 +172,6 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
     private void fiveFilterClickedFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
-
-            /*android.support.v4.app.FragmentManager fm = getActivity()
-                    .getSupportFragmentManager();
-            FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
-            FragmentTransaction ft = fm
-                    .beginTransaction();
-            if (frag != null)
-                ft.detach(frag);
-            Bundle bundle = new Bundle();
-            bundle.putString("filterName", "Brand");
-            bundle.putString("filterHeader", bmodel.reportHelper.getSellerReportChildLevelBO().get(0).getProductLevel());
-            bundle.putString("isFrom", "Survey");
-            bundle.putSerializable("serilizeContent",
-                    bmodel.reportHelper.getSellerReportChildLevelBO());
-
-            bundle.putBoolean("isFormBrand", false);
-
-
-            // set Fragmentclass Arguments
-            FilterFragment fragobj = new FilterFragment(mSelectedFilterMap);
-            fragobj.setBrandDialogInterface(this);
-            fragobj.setArguments(bundle);
-            ft.add(R.id.right_drawer, fragobj, "filter");
-            ft.commit();*/
-
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
@@ -271,10 +237,14 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
                 row = inflater
                         .inflate(R.layout.row_sales_volume_report, parent, false);
                 holder = new ViewHolder();
-                holder.PRDNAME = (TextView) row.findViewById(R.id.prd_nameTv);
+                holder.PRDNAME = row.findViewById(R.id.prd_nameTv);
 
-                holder.pdt_total_qty = (TextView) row.findViewById(R.id.pdt_total_qty);
-                holder.pdt_total_value = (TextView) row.findViewById(R.id.pdt_total_value);
+                holder.pdt_total_qty = row.findViewById(R.id.pdt_total_qty);
+                holder.pdt_total_value = row.findViewById(R.id.pdt_total_value);
+                holder.pdt_total_weight = row.findViewById(R.id.pdt_total_weight);
+
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+                    holder.pdt_total_weight.setVisibility(View.GONE);
 
 
                 row.setTag(holder);
@@ -287,6 +257,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
             holder.PRDNAME.setText(holder.productMasterBO.getProductShortName());
             holder.pdt_total_qty.setText(holder.productMasterBO.getTotalQty() + "");
             holder.pdt_total_value.setText(SDUtil.getWithoutExponential(holder.productMasterBO.getTotalamount()) + "");
+            holder.pdt_total_weight.setText(Utils.formatAsTwoDecimal((double) holder.productMasterBO.getTotalWeight()*holder.productMasterBO.getTotalQty()));
 
             return (row);
         }
@@ -294,7 +265,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
 
     class ViewHolder {
         SalesVolumeBo productMasterBO;
-        TextView PRDNAME, pdt_total_qty, pdt_total_value;
+        TextView PRDNAME, pdt_total_qty, pdt_total_value, pdt_total_weight;
 
     }
 

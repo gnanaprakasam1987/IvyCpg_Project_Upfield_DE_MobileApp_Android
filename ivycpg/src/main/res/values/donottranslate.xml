@@ -104,7 +104,11 @@
 
     <string name="fill_photo_and_adherence">Please take photo and fill adherence</string>
 
+    <string name="total_weight">Total Weight</string>
+
+
     <string name="enter_nfc_number">Enter NFC NO</string>
 
     <string name="avg_value">Average Value</string>
+    <string name="invoice_generated_already">"Invoice has been generated already"</string>
 </resources>

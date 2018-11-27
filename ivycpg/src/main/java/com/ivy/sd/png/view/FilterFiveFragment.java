@@ -215,12 +215,12 @@ public class FilterFiveFragment<E> extends Fragment {
                         filterProductLevels.addAll(mSFHelper.getSequenceValues());
                         break;
                     case "SVR":
-                        filterProductsByLevelId.putAll(new SalesVolumeReportHelper(getActivity()).getMfilterlevelBo());
-                        filterProductLevels.addAll(new SalesVolumeReportHelper(getActivity()).getSequencevalues());
+                        filterProductsByLevelId.putAll(SalesVolumeReportHelper.getInstance(getActivity()).getMfilterlevelBo());
+                        filterProductLevels.addAll(SalesVolumeReportHelper.getInstance(getActivity()).getSequencevalues());
+                        break;
                     case "SR":
                         filterProductsByLevelId.putAll(SalesReturnHelper.getInstance(getActivity()).getFilterProductsByLevelId());
                         filterProductLevels.addAll(SalesReturnHelper.getInstance(getActivity()).getFilterProductLevels());
-
                         break;
                     default:
                         filterProductsByLevelId.putAll(bmodel.productHelper.getRetailerModuleFilterProductsByLevelId());
