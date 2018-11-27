@@ -16,6 +16,7 @@ public class SalesVolumeBo {
     private String brandname;
     private double totalamount;
     private String parentHierarchy;
+    private float totalWeight;
 
 
     public String getProductID() {
@@ -104,5 +105,13 @@ public class SalesVolumeBo {
 
     public void setParentHierarchy(String parentHierarchy) {
         this.parentHierarchy = parentHierarchy;
+    }
+
+    public float getTotalWeight() {
+        return totalWeight;
+    }
+
+    public void setTotalWeight(float totalWeight) {
+        this.totalWeight = totalWeight;
     }
 }

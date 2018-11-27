@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -47,7 +48,7 @@ import java.util.Vector;
 public class InvoiceReportFragment extends IvyBaseFragment implements
         OnClickListener, OnItemClickListener {
 
-    private TextView totalOrderValue, mAveragePrePost;
+    private TextView totalOrderValue, mAveragePrePost, totalWeight;
     private ListView listView;
 
     private BusinessModel businessModel;
@@ -60,6 +61,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
     private String mInvoiceId = "";
     private boolean isClicked;
     private OrderHelper orderHelper;
+    private float mTotalWeight;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,16 +83,19 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             getActivity().finish();
         }
 
-        totalOrderValue = (TextView) view.findViewById(R.id.text_total);
-        TextView text_averageLines = (TextView) view.findViewById(R.id.text_averageLines);
-        mAveragePrePost = (TextView) view.findViewById(R.id.txt_dist_pre_post);
-        TextView text_totalQuantity = (TextView) view.findViewById(R.id.text_totalQuantity);
-        TextView label_totalValue = (TextView) view.findViewById(R.id.label_totalValue);
-        TextView lbl_total_qty = (TextView) view.findViewById(R.id.lbl_total_qty);
-        TextView lbl_avg_lines = (TextView) view.findViewById(R.id.lbl_avg_lines);
+        totalOrderValue = view.findViewById(R.id.text_total);
+        totalWeight = view.findViewById(R.id.text_totwgt);
+        TextView text_averageLines = view.findViewById(R.id.text_averageLines);
+        mAveragePrePost = view.findViewById(R.id.txt_dist_pre_post);
+        TextView text_totalQuantity = view.findViewById(R.id.text_totalQuantity);
+        TextView label_totalValue = view.findViewById(R.id.label_totalValue);
+        TextView lbl_total_qty = view.findViewById(R.id.lbl_total_qty);
+        TextView lbl_avg_lines = view.findViewById(R.id.lbl_avg_lines);
+        TextView lbl_tot_wgt = view.findViewById(R.id.lbl_tot_wgt);
         label_totalValue.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_total_qty.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         lbl_avg_lines.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        lbl_tot_wgt.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
         listView = (ListView) view.findViewById(R.id.list);
@@ -164,7 +169,22 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             view.findViewById(R.id.view00).setVisibility(View.GONE);
         }
 
+        if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+            view.findViewById(R.id.view1).setVisibility(View.GONE);
+            view.findViewById(R.id.lbl_tot_wgt).setVisibility(View.GONE);
+            totalWeight.setVisibility(View.GONE);
+        } else {
+            try {
+                if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.lbl_tot_wgt).getTag()) != null)
+                    ((TextView) view.findViewById(R.id.lbl_tot_wgt))
+                            .setText(businessModel.labelsMasterHelper.applyLabels(view
+                                    .findViewById(R.id.lbl_tot_wgt).getTag()));
 
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+        }
         return view;
     }
 
@@ -201,6 +221,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
     private void updateOrderGrid() {
         double mTotalValue = 0;
+        mTotalWeight = 0;
 
         int pre = 0, post = 0;
 
@@ -223,6 +244,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         for (InvoiceReportBO ret : list) {
 
             mTotalValue = mTotalValue + SDUtil.convertToDouble(ret.getInvoiceAmount() + "");
+            mTotalWeight = mTotalWeight + ret.getTotalWeight();
         }
         if (businessModel.configurationMasterHelper.IS_DIST_PRE_POST_ORDER) {
             // Calculate the total order value.
@@ -256,6 +278,9 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         }
         // Format and set on the label
         totalOrderValue.setText(businessModel.formatValue(mTotalValue));
+        if (businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+            totalWeight.setText(Utils.formatAsTwoDecimal((double) mTotalWeight));
+        }
 
         // Load list view.
         MyAdapter mSchedule = new MyAdapter(list);
@@ -303,8 +328,6 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             public void onNegativeButtonClick() {
             }
         });
-
-
 
 
     }
@@ -464,7 +487,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
                     businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
-                    GenericObjectPair<Vector<ProductMasterBO>,Map<String, ProductMasterBO>> genericObjectPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
+                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
                     if (genericObjectPair != null) {
                         businessModel.productHelper.setProductMaster(genericObjectPair.object1);
                         businessModel.productHelper.setProductMasterById(genericObjectPair.object2);
@@ -530,6 +553,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             Intent intent = new Intent();
             intent.putExtra("TotalAmount", mTotalAmount);
             intent.putExtra("lineinvoice", mInvoiceId);
+            intent.putExtra("TotalWeight", mTotalWeight);
             intent.setClass(getActivity(), InvoiceReportDetail.class);
             startActivityForResult(intent, 0);
 

@@ -258,9 +258,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private final String mStockCode = "STK";
     private final String mOrderCode = "ORD";
     private int totalAllQty = 0;
+    private float totalWeight = 0;
 
     private boolean isFilter = true;// only for guided selling. Default value is true, so it will ot affect normal flow
     private TextView totalQtyTV;
+    private TextView totalWeightTV;
 
     private String title;
     private String totalOrdCount;
@@ -436,6 +438,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         ((TextView) findViewById(R.id.lcp)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
         ((TextView) findViewById(R.id.distText)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
         ((TextView) findViewById(R.id.distValue)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.title_totalweigh)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
+        ((TextView) findViewById(R.id.tv_totalweigh)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
 
         if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
             findViewById(R.id.ll_lpc).setVisibility(View.GONE);
@@ -443,6 +447,20 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         if (bmodel.configurationMasterHelper.HIDE_ORDER_DIST) {
             findViewById(R.id.ll_dist).setVisibility(View.GONE);
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT) {
+            findViewById(R.id.ll_totweight).setVisibility(View.VISIBLE);
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(
+                        R.id.title_totalweigh).getTag()) != null)
+                    ((TextView) findViewById(R.id.title_totalweigh))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(findViewById(
+                                            R.id.title_totalweigh).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
         }
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
@@ -537,6 +555,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         lpcText = (TextView) findViewById(R.id.lcp);
         distValue = (TextView) findViewById(R.id.distValue);
         totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
+        totalWeightTV = (TextView) findViewById(R.id.tv_totalweigh);
         rvFilterList = (RecyclerView) findViewById(R.id.rvFilter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         rvFilterList.setLayoutManager(mLayoutManager);
@@ -1917,7 +1936,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             bmodel.setEditStockCheck(true);
                         }
 
-                        StockCheckHelper.getInstance(StockAndOrder.this).loadCmbStkChkConfiguration(StockAndOrder.this,bmodel.retailerMasterBO.getSubchannelid());
+                        StockCheckHelper.getInstance(StockAndOrder.this).loadCmbStkChkConfiguration(StockAndOrder.this, bmodel.retailerMasterBO.getSubchannelid());
 
                         Intent intent = new Intent(StockAndOrder.this,
                                 CombinedStockDetailActivity.class);
@@ -2017,11 +2036,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
                                 holder.imageButton_availability.setChecked(false);
 
-                           // if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                // if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
                                 holder.shelfPcsQty.setText("");
-                           // if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                // if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
                                 holder.shelfCaseQty.setText("");
-                            //if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                //if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
                                 holder.shelfouter.setText("");
 
                             }
@@ -3255,13 +3274,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (!"".equals(qty)) {
                             if (bmodel.validDecimalValue(qty, 8, 2)) {
 
-                                holder.productObj.setSrp(SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                                holder.productObj.setSrp(SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 
-                                float csrp=holder.productObj.getCaseSize() * SDUtil.convertToFloat(qty);
-                                holder.productObj.setCsrp(SDUtil.convertToFloat(SDUtil.format(csrp,bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                                float csrp = holder.productObj.getCaseSize() * SDUtil.convertToFloat(qty);
+                                holder.productObj.setCsrp(SDUtil.convertToFloat(SDUtil.format(csrp, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 
-                                float osrp=holder.productObj.getOutersize() * SDUtil.convertToFloat(qty);
-                                holder.productObj.setOsrp(SDUtil.convertToFloat(SDUtil.format(osrp,bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                                float osrp = holder.productObj.getOutersize() * SDUtil.convertToFloat(qty);
+                                holder.productObj.setOsrp(SDUtil.convertToFloat(SDUtil.format(osrp, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
                             } else {
                                 holder.srpEdit.setText(qty.length() > 1 ? qty
                                         .substring(0, qty.length() - 1) : "0");
@@ -3945,7 +3964,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         } else if (SOLogic == 2) {
             so = productObj.getIco();
-        }else{
+        } else {
             so = productObj.getIco();
         }
 
@@ -4074,6 +4093,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     totalvalue = totalvalue + temp;
 
                     totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
+                    totalWeight = totalWeight + ((ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())) * ret.getWeight());
                     orderedList.add(ret);
                 }
             }
@@ -4086,6 +4106,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         @Override
         protected void onPreExecute() {
             totalAllQty = 0;
+            totalWeight = 0;
             lpccount = 0;
             totalvalue = 0;
             items = productList;
@@ -4097,6 +4118,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             String strFormatValue = bmodel.formatValue(totalvalue) + "";
             totalValueText.setText(strFormatValue);
             totalQtyTV.setText("" + totalAllQty);
+            totalWeightTV.setText(Utils.formatAsTwoDecimal((double) (totalWeight)));
             distValue.setText(sbdAchievement + "/" + bmodel.getRetailerMasterBO()
                     .getSbdDistributionTarget());
         }
@@ -4693,7 +4715,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
                 // Save closing stock
-                stockCheckHelper.saveClosingStock(getApplicationContext(),true);
+                stockCheckHelper.saveClosingStock(getApplicationContext(), true);
 
                 bmodel.saveModuleCompletion(OrderedFlag);
 
@@ -5641,7 +5663,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .downloadFiveLevelFilterNonProducts("MENU_SURVEY");*/
             bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY"));
             bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
-                    bmodel.productHelper.getRetailerModuleSequenceValues(),false));
+                    bmodel.productHelper.getRetailerModuleSequenceValues(), false));
             bmodel.mSelectedActivityName = "Survey";
             startActivity(new Intent(this, SurveyActivityNew.class));
             return true;

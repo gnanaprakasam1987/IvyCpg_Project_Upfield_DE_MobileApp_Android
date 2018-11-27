@@ -65,7 +65,6 @@
                 android:gravity="center"
                 android:padding="@dimen/dimen_2dp"
                 android:singleLine="true"
-                android:tag="sih"
                 android:text="" />
         </RelativeLayout>
     </LinearLayout>
