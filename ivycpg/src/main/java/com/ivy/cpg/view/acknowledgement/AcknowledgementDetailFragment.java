@@ -1,9 +1,10 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.acknowledgement;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -23,11 +24,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.JointCallAcknowledgementBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,16 +45,16 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
     private ArrayList<JointCallAcknowledgementBO> joinCallAcknowledgementList;
     RecyclerView dashBoardList;
     DashBoardListViewAdapter dashBoardListViewAdapter;
-    private ActionBar actionBar;
     private boolean isChecked = false;
     TextView txtUser;
 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_acknowledgementdetail, container, false);
 
+        if (getActivity() != null)
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -64,7 +65,6 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
             screenTitle = getActivity().getIntent().getStringExtra("screentitle");
         }
         setHasOptionsMenu(true);
-//        setUpActionBar();
         return view;
     }
 
@@ -72,17 +72,18 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
     public void onStart() {
         super.onStart();
 
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = null;
+        if (getActivity() != null)
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setElevation(0);
             setScreenTitle(screenTitle);
         }
-        txtUser = (TextView) view.findViewById(R.id.txtUser);
+        txtUser = view.findViewById(R.id.txtUser);
 
-        //chkAll = (CheckBox) view.findViewById(R.id.img_checkAll);
-        dashBoardList = (RecyclerView) view.findViewById(R.id.acknowledgementDetailLV);
+        dashBoardList = view.findViewById(R.id.acknowledgementDetailLV);
         dashBoardList.setHasFixedSize(false);
         dashBoardList.setNestedScrollingEnabled(false);
         dashBoardList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -97,12 +98,13 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
     public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardListViewAdapter.ViewHolder> {
         private final List<JointCallAcknowledgementBO> dashboardList;
 
-        public DashBoardListViewAdapter(List<JointCallAcknowledgementBO> dashboardList) {
+        private DashBoardListViewAdapter(List<JointCallAcknowledgementBO> dashboardList) {
             this.dashboardList = dashboardList;
         }
 
+        @NonNull
         @Override
-        public DashBoardListViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public DashBoardListViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.row_acknowledgement_detail, parent, false);
@@ -111,23 +113,20 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
 
 
         @Override
-        public void onBindViewHolder(final DashBoardListViewAdapter.ViewHolder holder, int position) {
-            final JointCallAcknowledgementBO dashboardData = dashboardList.get(position);
+        public void onBindViewHolder(@NonNull final DashBoardListViewAdapter.ViewHolder holder, int position) {
 
             holder.invoiceHeaderBO = joinCallAcknowledgementList.get(position);
             txtUser.setText(holder.invoiceHeaderBO.getUsername());
-            //holder.txtUserName.setText(holder.invoiceHeaderBO.getUsername());
             holder.txtDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.invoiceHeaderBO.getDate(),
                     ConfigurationMasterHelper.outDateFormat));
             holder.txtBeat.setText(holder.invoiceHeaderBO.getBeat());
             holder.txtValue.setText(holder.invoiceHeaderBO.getValue());
             holder.txtRetailer.setText(holder.invoiceHeaderBO.getRetailer());
             //typefaces
-            //holder.txtUserName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.txtDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.txtBeat.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.txtValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.txtRetailer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.txtDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+            holder.txtBeat.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+            holder.txtValue.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+            holder.txtRetailer.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
             holder.imgInvSelected.setChecked(holder.invoiceHeaderBO.getUpload().equals("N"));
 
@@ -169,7 +168,6 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            //TextView txtUserName;
             TextView txtDate;
             TextView txtBeat;
             TextView txtRetailer;
@@ -180,45 +178,25 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
 
             public ViewHolder(View row) {
                 super(row);
-                //txtUserName = (TextView) row.findViewById(R.id.txtUserName);
-                txtDate = (TextView) row.findViewById(R.id.txtDate);
-                txtBeat = (TextView) row.findViewById(R.id.txtBeat);
-                txtRetailer = (TextView) row.findViewById(R.id.txtRetailer);
-                txtValue = (TextView) row.findViewById(R.id.txtValue);
-                chkLayout = (LinearLayout) row.findViewById(R.id.chkLayout);
-                //holder.imgInvSelected = (ImageView) row.findViewById(R.id.img_check);
-                imgInvSelected = (CheckBox) row.findViewById(R.id.img_check);
+                txtDate = row.findViewById(R.id.txtDate);
+                txtBeat = row.findViewById(R.id.txtBeat);
+                txtRetailer = row.findViewById(R.id.txtRetailer);
+                txtValue = row.findViewById(R.id.txtValue);
+                chkLayout = row.findViewById(R.id.chkLayout);
+                imgInvSelected = row.findViewById(R.id.img_check);
             }
         }
     }
 
-    private void setUpActionBar() {
-        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (bmodel.getMenuName("MENU_DASH").endsWith(""))
-            bmodel.configurationMasterHelper.downloadMainMenu();
-        if (getArguments().getString("screentitle") == null)
-            actionBar.setTitle(bmodel.getMenuName("MENU_DASH"));
-        else
-            actionBar.setTitle(getArguments().getString("screentitle"));
-        actionBar.setIcon(R.drawable.icon_visit);
-
-        //if (!BusinessModel.dashHomeStatic)
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (getActivity() != null)
         getActivity().getMenuInflater().inflate(R.menu.menu_acknowledgement, menu);
         super.onCreateOptionsMenu(menu, inflater);
-
-//        chkAll = (CheckBox) menu.findItem(R.id.chkall).getActionView();
-//        chkAll.setChecked(false);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        //menu.findItem(R.id.search).setVisible(false);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -230,6 +208,7 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
                     AcknowledgementActivity.class);
             intent.putExtra("screentitle", screenTitle);
             startActivity(intent);
+            if (getActivity() != null)
             getActivity().finish();
             return true;
         } else if (i == R.id.menu_save) {
@@ -283,6 +262,7 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
                         AcknowledgementActivity.class);
                 intent.putExtra("screentitle", screenTitle);
                 startActivity(intent);
+                if (getActivity() != null)
                 getActivity().finish();
             }
         }

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.initiative;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,11 +21,15 @@ import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.InitiativeHeaderBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.BatchAllocation;
+import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.Vector;
@@ -40,18 +43,13 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
     private Button initiativeButton[];
     private boolean isClicked=false;
     private String screenCode = "MENU_STK_ORD";
-    private Toolbar toolbar;
-    private Button btn_next;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        // WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.initiative);
 
-        main = (LinearLayout) findViewById(R.id.initiativeLayout);
+        main = findViewById(R.id.initiativeLayout);
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -62,24 +60,25 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
             }
         }
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null)
             setSupportActionBar(toolbar);
 
-        // Set title to toolbar
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        setScreenTitle(getResources().getString(R.string.initiative));
-        getSupportActionBar().setIcon(null);
-        // Used to on / off the back arrow icon
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Used to remove the app logo actionbar icon and set title as home
-        // (title support click)
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        // Used to hide the app logo icon from actionbar
-        // getSupportActionBar().setDisplayUseLogoEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setIcon(null);
+            // Used to on / off the back arrow icon
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            // Used to remove the app logo actionbar icon and set title as home
+            // (title support click)
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
-        btn_next = (Button) findViewById(R.id.btn_next);
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        // Set title to toolbar
+        setScreenTitle(getResources().getString(R.string.initiative));
+
+        Button btn_next = findViewById(R.id.btn_next);
+        if (bmodel.getAppDataProvider().getUser().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
@@ -95,13 +94,11 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
                         i.putExtra("ScreenCode", screenCode);
                         i.putExtra("FromInit", "Initiative");
                         startActivity(i);
-//                    finish();
                     } else {
                         Intent i = new Intent(InitiativeActivity.this,
                                 OrderSummary.class);
                         i.putExtra("ScreenCode", screenCode);
                         startActivity(i);
-//                    finish();
                     }
                     overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
                     finish();
@@ -114,31 +111,28 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
                 .getInitiativeHeaderBOVector();
 
         if (initiativeHeaderBOVector.size() == 0) {
-            ((ScrollView) findViewById(R.id.initiativeLayout_lay)).setVisibility(View.GONE);
+            (findViewById(R.id.initiativeLayout_lay)).setVisibility(View.GONE);
             Toast.makeText(this,
                     getResources().getString(R.string.no_initiative_available),
                     Toast.LENGTH_SHORT).show();
-            return;
         }
 
     }
 
     @Override
     protected void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
         isClicked = false;
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (bmodel.getAppDataProvider().getUser().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
@@ -152,8 +146,8 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
         // set isUpdateAchievement to false to stop updation on each and every
         // time
         bmodel.initiativeHelper.loadInitiativeStatus(false, bmodel
-                .getRetailerMasterBO().getRetailerID(), false, false, bmodel
-                .getRetailerMasterBO().getSubchannelid());
+                .getAppDataProvider().getRetailMaster().getRetailerID(), false, false, bmodel
+                .getAppDataProvider().getRetailMaster().getSubchannelid());
 
         initiativeButton = new Button[initiativeHeaderBOVector.size()];
 
@@ -171,24 +165,24 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
             LayoutInflater inflater = getLayoutInflater();
             View view = inflater
                     .inflate(R.layout.row_initiative_hit_miss, null);
-            initiativeButton[j] = (Button) view.findViewById(R.id.text);
-            ImageView i = (ImageView) view.findViewById(R.id.icon);
+            initiativeButton[j] = view.findViewById(R.id.text);
+            ImageView i = view.findViewById(R.id.icon);
             initiativeButton[j].setText(sbd.getDescription());
             initiativeButton[j].setTag(sbd);
             initiativeButton[j].setOnClickListener(this);
-            initiativeButton[j].setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            initiativeButton[j].setTypeface(FontUtils.getFontRoboto(InitiativeActivity.this, FontUtils.FontType.MEDIUM));
             if (sbd.isDone() && sbd.isDistributed()) {
-                i.setBackgroundDrawable(getResources().getDrawable(
+                i.setBackground(getResources().getDrawable(
                         R.drawable.ok_tick));
                 initiativeButton[j].setText(sbd.getDescription());
                 initiativeButton[j].setTextColor(Color.BLACK);
             } else if (sbd.isDistributed() && !sbd.isDone()) {
-                i.setBackgroundDrawable(getResources().getDrawable(
+                i.setBackground(getResources().getDrawable(
                         R.drawable.icon_alert));
                 initiativeButton[j].setText(sbd.getDescription());
                 initiativeButton[j].setTextColor(Color.BLACK);
             } else {
-                i.setBackgroundDrawable(getResources().getDrawable(
+                i.setBackground(getResources().getDrawable(
                         R.drawable.not_cross));
                 initiativeButton[j].setText(sbd.getDescription());
                 initiativeButton[j].setTextColor(Color.RED);
@@ -206,8 +200,7 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 0:
-                if (resultCode == RESULT_CANCELED) {
-                } else if (resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Intent returnIntent = new Intent();
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
@@ -257,25 +250,21 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
             try {
                 ((ViewGroup) view).removeAllViews();
             } catch (Exception e) {
-                // TODO: handle exception
+                Commons.printException(e);
             }
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
         SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         int i1 = item.getItemId();
-        if (i1 == android.R.id.home) {// Intent returnIntent = new Intent();
-            // setResult(RESULT_CANCELED, returnIntent);
-            // finish();
+        if (i1 == android.R.id.home) {
             if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
                 Intent init = new Intent(InitiativeActivity.this,
                         OrderDiscount.class);
                 init.putExtra("ScreenCode", screenCode);
                 startActivity(init);
-//                finish();
             } else if (schemeHelper.IS_SCHEME_ON
                     && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
                 Intent intent = new Intent(InitiativeActivity.this,
