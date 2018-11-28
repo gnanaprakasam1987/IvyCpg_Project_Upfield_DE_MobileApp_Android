@@ -18,6 +18,10 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.event.MessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,6 +53,19 @@ public class P3MChartFragment extends BaseFragment  {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
     protected void getMessageFromAliens() {
         if (getArguments() != null) {
             dashBoardBOArrayList = (ArrayList<DashBoardBO>) getArguments().getSerializable("dashChartList");
@@ -61,6 +78,12 @@ public class P3MChartFragment extends BaseFragment  {
             if (s.getKpiTypeLovID() != paramLovId)
                 i.remove();
         }
+    }
+
+    @Subscribe
+    public void onMessageEvent(MessageEvent event) {
+        dashBoardBOArrayList.clear();
+        dashBoardBOArrayList.addAll(event.getEventDataList());
     }
 
     @Override
@@ -105,20 +128,15 @@ public class P3MChartFragment extends BaseFragment  {
     }
 
     private void setData(){
-
+        mChart.clear();
+        mChart.clearValues();
         if (dashBoardBOArrayList.isEmpty()) {
-            mChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
-                @Override
-                public String getFormattedValue(float value, AxisBase axis) {
-                    return dashBoardBOArrayList.get((int) value).getMonthName();
-                }
-            });
+            mChart.getXAxis().setValueFormatter((value, axis) -> dashBoardBOArrayList.get((int) value).getMonthName());
 
             mChart.getAxisLeft().setValueFormatter(new PercentFormatter());
         }
 
         ArrayList<Entry> achivedValues = new ArrayList<Entry>();
-
         for (int i = 0; i < dashBoardBOArrayList.size(); i++) {
             try {
                 achivedValues.add(new Entry(i, SDUtil.convertToFloat("" + dashBoardBOArrayList.get(i).getConvAcheivedPercentage()), dashBoardBOArrayList.get(i).getText()));

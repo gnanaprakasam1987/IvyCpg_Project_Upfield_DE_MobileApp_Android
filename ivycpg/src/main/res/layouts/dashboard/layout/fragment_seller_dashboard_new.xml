@@ -161,13 +161,13 @@
                     android:overlapAnchor="false"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/routeSpinnerStub"
+                    app:layout_constraintEnd_toStartOf="@+id/routeSpinner"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/monthSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
-                    android:id="@+id/routeSpinnerStub"
+                    android:id="@+id/routeSpinner"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="?mtdDashboardBackground"
@@ -185,7 +185,7 @@
                     android:id="@+id/dashSpinnerGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="dashSpinner,weekSpinner,routeSpinnerStub,userSpinner,resultsHeaderTxt,monthSpinner,distributorSpinner" />
+                    app:constraint_referenced_ids="dashSpinner,weekSpinner,routeSpinner,userSpinner,resultsHeaderTxt,monthSpinner,distributorSpinner" />
 
             </android.support.constraint.ConstraintLayout>
 

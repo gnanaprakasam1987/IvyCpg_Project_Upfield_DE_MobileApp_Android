@@ -89,8 +89,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @BindView(R.id.multiSelectStub)
     ViewStub multiSelectStub;
 
- /*   @BindView(R.id.routeSpinner)
-    ViewStub routeSpinnerStub;*/
+    @BindView(R.id.routeSpinner)
+    Spinner routeSpinner;
 
     @BindView(R.id.viewpager)
     ViewPager pager;
@@ -371,34 +371,14 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     @Override
     public void setupRouteSpinner(ArrayList<BeatMasterBO> beatMasterBOS) {
-
-        ViewStub routeSpinnerStub = dashSpinnerLayout.findViewById(R.id.routeSpinnerStub);
-
-        routeSpinnerStub.setVisibility(View.VISIBLE);
-
-
-        View spinnerStub = routeSpinnerStub.inflate();
-
-        // Spinner routeSpinner = (Spinner) routeSpinnerStub.inflate();
-        MyStubView routeSpinner = new MyStubView(spinnerStub);
-
+        routeSpinner.setVisibility(View.VISIBLE);
         ArrayAdapter<BeatMasterBO> routeAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, beatMasterBOS);
         routeAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-        routeSpinner.dashSpinner.setAdapter(routeAdapter);
-
-        routeSpinner.dashSpinner.setOnItemSelectedListener(routeSpinnerSelectedListener);
+        routeSpinner.setAdapter(routeAdapter);
+        routeSpinner.setOnItemSelectedListener(routeSpinnerSelectedListener);
 
     }
 
-
-    public class MyStubView {
-        @BindView(R.id.dashSpinner)
-        Spinner dashSpinner;
-
-        MyStubView(View view) {
-            ButterKnife.bind(this, view);
-        }
-    }
 
     private void loadMultiSelectData() {
 
@@ -583,6 +563,14 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     @Override
     public void onFactorNameClick(int position) {
+
+        if(presenter.shouldShowTrendChart()){
+
+            if(selectedInterval.equalsIgnoreCase(WEEK) &&  presenter.shouldShowKPIBarChart()){
+
+            }
+
+        }
 
     }
 
