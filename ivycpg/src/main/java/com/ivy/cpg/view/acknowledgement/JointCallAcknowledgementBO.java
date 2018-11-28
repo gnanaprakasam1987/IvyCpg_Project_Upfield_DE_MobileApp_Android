@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.acknowledgement;
 
 /**
  * Created by anandasir.v on 9/7/2017.

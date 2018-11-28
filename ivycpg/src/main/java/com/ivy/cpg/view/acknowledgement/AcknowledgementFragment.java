@@ -1,8 +1,8 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.acknowledgement;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -20,10 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.JointCallAcknowledgementCountBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,6 @@ public class AcknowledgementFragment extends IvyBaseFragment {
     BusinessModel bmodel;
     View view;
     FragmentManager fm;
-    boolean isFromHomeScreenTwo = false;
-    private ArrayList<JointCallAcknowledgementCountBO> joinCallAcknowledgementCountList;
     RecyclerView dashBoardList;
     DashBoardListViewAdapter dashBoardListViewAdapter;
     String screenTitle = "";
@@ -45,9 +43,10 @@ public class AcknowledgementFragment extends IvyBaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_acknowledgement, container, false);
 
+        if (getActivity() != null)
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
@@ -57,7 +56,6 @@ public class AcknowledgementFragment extends IvyBaseFragment {
             screenTitle = getActivity().getIntent().getExtras().getString("screentitle");
         }
         setHasOptionsMenu(true);
-//        setUpActionBar();
         return view;
     }
 
@@ -65,7 +63,9 @@ public class AcknowledgementFragment extends IvyBaseFragment {
     public void onStart() {
         super.onStart();
 
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = null;
+        if (getActivity() != null)
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
@@ -73,12 +73,12 @@ public class AcknowledgementFragment extends IvyBaseFragment {
             setScreenTitle(screenTitle);
         }
 
-        dashBoardList = (RecyclerView) view.findViewById(R.id.acknowledgementLV);
+        dashBoardList = view.findViewById(R.id.acknowledgementLV);
         dashBoardList.setHasFixedSize(false);
         dashBoardList.setNestedScrollingEnabled(false);
         dashBoardList.setLayoutManager(new LinearLayoutManager(getActivity()));
         bmodel.acknowledgeHelper.loadJointCallAcknowledgementCount();
-        joinCallAcknowledgementCountList = bmodel.acknowledgeHelper.getAcknowledgementCountList();
+        ArrayList<JointCallAcknowledgementCountBO> joinCallAcknowledgementCountList = bmodel.acknowledgeHelper.getAcknowledgementCountList();
 
         dashBoardListViewAdapter = new DashBoardListViewAdapter(joinCallAcknowledgementCountList);
         dashBoardList.setAdapter(dashBoardListViewAdapter);
@@ -87,12 +87,13 @@ public class AcknowledgementFragment extends IvyBaseFragment {
     public class DashBoardListViewAdapter extends RecyclerView.Adapter<DashBoardListViewAdapter.ViewHolder> {
         private final List<JointCallAcknowledgementCountBO> dashboardList;
 
-        public DashBoardListViewAdapter(List<JointCallAcknowledgementCountBO> dashboardList) {
+        private DashBoardListViewAdapter(List<JointCallAcknowledgementCountBO> dashboardList) {
             this.dashboardList = dashboardList;
         }
 
+        @NonNull
         @Override
-        public DashBoardListViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public DashBoardListViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.row_acknowledgementcount, parent, false);
@@ -101,13 +102,13 @@ public class AcknowledgementFragment extends IvyBaseFragment {
 
 
         @Override
-        public void onBindViewHolder(final DashBoardListViewAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final DashBoardListViewAdapter.ViewHolder holder, int position) {
             final JointCallAcknowledgementCountBO dashboardData = dashboardList.get(position);
 
             holder.dashboardDataObj = dashboardData;
             //typefaces
-            holder.txtUser.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            holder.txtUserCount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.txtUser.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+            holder.txtUserCount.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
             holder.txtUser.setText(dashboardData.getUserName());
             holder.txtUserCount.setText(dashboardData.getCount());
@@ -119,6 +120,7 @@ public class AcknowledgementFragment extends IvyBaseFragment {
                     i.putExtra("screentitle", screenTitle);
                     i.putExtra("UserID", holder.dashboardDataObj.getUserID());
                     startActivity(i);
+                    if (getActivity() != null)
                     getActivity().finish();
                 }
             });
@@ -129,6 +131,7 @@ public class AcknowledgementFragment extends IvyBaseFragment {
                     i.putExtra("screentitle", screenTitle);
                     i.putExtra("UserID", holder.dashboardDataObj.getUserID());
                     startActivity(i);
+                    if (getActivity() != null)
                     getActivity().finish();
                 }
             });
@@ -155,44 +158,16 @@ public class AcknowledgementFragment extends IvyBaseFragment {
 
             public ViewHolder(View row) {
                 super(row);
-                txtUser = (TextView) row
+                txtUser = row
                         .findViewById(R.id.txtUser);
-                txtUserCount = (TextView) row
+                txtUserCount = row
                         .findViewById(R.id.txtUserCount);
-                icon_ll = (LinearLayout) row
+                icon_ll = row
                         .findViewById(R.id.icon_ll);
-                lnr = (LinearLayout) row
+                lnr = row
                         .findViewById(R.id.lnr);
             }
         }
-    }
-
-    private void setUpActionBar() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
-        }
-
-//screen title set based previous screen
-        if (!isFromHomeScreenTwo) {
-            if (bmodel.getMenuName("MENU_DASH").endsWith(""))
-                bmodel.configurationMasterHelper.downloadMainMenu();
-            if (getArguments().getString("screentitle") == null)
-                setScreenTitle(bmodel.getMenuName("MENU_DASH"));
-            else
-                setScreenTitle(getArguments().getString("screentitle"));
-        } else {
-            if (getArguments().getString("screentitle").toString().isEmpty()) {
-                bmodel.configurationMasterHelper
-                        .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
-                setScreenTitle(bmodel.getMenuName("MENU_RTR_KPI"));
-            } else
-                setScreenTitle(getActivity().getIntent().getStringExtra("screentitle"));
-        }
-        //if (!BusinessModel.dashHomeStatic)
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -207,6 +182,7 @@ public class AcknowledgementFragment extends IvyBaseFragment {
         if (i == android.R.id.home) {
             startActivity(new Intent(getActivity(),
                     HomeScreenActivity.class));
+            if (getActivity() != null)
             getActivity().finish();
             return true;
         }

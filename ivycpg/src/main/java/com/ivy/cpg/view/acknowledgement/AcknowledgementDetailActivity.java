@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.acknowledgement;
 
 /**
  * Created by anandasir.v on 9/8/2017.
@@ -9,25 +9,19 @@ import android.support.v7.widget.Toolbar;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.model.BusinessModel;
 
-public class AcknowledgementActivity extends IvyBaseActivityNoActionBar {
-
-    private Toolbar toolbar;
-    BusinessModel bmodel;
+public class AcknowledgementDetailActivity extends IvyBaseActivityNoActionBar {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_acknowledgement);
+        setContentView(R.layout.activity_acknowledgementdetail);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
 
-        bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
