@@ -86,7 +86,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
                     String tempMoved=mMovedList.get(i);
                     for(int j=0;j<mAssetTrackingList.size();j++)
                     {
-                        if(tempMoved.equalsIgnoreCase(String.valueOf(mAssetTrackingList.get(j).getAssetID())))
+                        if(tempMoved.equalsIgnoreCase(String.valueOf(mAssetTrackingList.get(j).getAssetID())+mAssetTrackingList.get(j).getSerialNo()))
                         {
                             toRemovePos.add(j);
                         }
@@ -100,10 +100,9 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
                         assetTrackingList.add(mAssetTrackingList.get(i));
                     }
                 }
-                if(assetTrackingList.size()>0)
-                {
-                    mAssetTrackingList=assetTrackingList;
-                }
+
+                mAssetTrackingList=assetTrackingList;
+
             }
             if(mAssetTrackingList.size()>0) {
                 recyclerAdapter = new RecyclerAdapter(mAssetTrackingList);
