@@ -982,10 +982,10 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                     monthSpinner.setSelection(0);
                 } else if (selectedInterval.equals(WEEK)) {
                     dashBoardHelper.getSellerKpiWeekList();
-                    final ArrayList<String> monthNameList = dashBoardHelper.getWeekList();
-                    if (monthNameList != null && monthNameList.size() > 0) {
+                    final ArrayList<String> weekList = dashBoardHelper.getWeekList();
+                    if (weekList != null && weekList.size() > 0) {
                         weekSpinner.setVisibility(View.VISIBLE);
-                        ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthNameList);
+                        ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
                         monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
                         weekSpinner.setAdapter(monthdapter);
                         weekSpinner.setOnItemSelectedListener(this);

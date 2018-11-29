@@ -46,6 +46,9 @@ import com.ivy.ui.dashboard.chart.smp.SMPChartFragment;
 import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardModule;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.event.DashBoardEventData;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +56,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
 
 import static com.ivy.ui.dashboard.SellerDashboardConstants.DAY;
@@ -65,6 +67,7 @@ import static com.ivy.utils.AppUtils.isNullOrEmpty;
 
 public class SellerDashboardFragment extends BaseFragment implements SellerDashboardContract.SellerDashboardView, DashboardClickListener {
 
+    public static final String DASHBOARD = "DASHBOARD";
     @Inject
     SellerDashboardContract.SellerDashboardPresenter<SellerDashboardContract.SellerDashboardView> presenter;
 
@@ -127,6 +130,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     private DashboardListAdapter dashboardListAdapter;
 
     private ArrayList<DashBoardBO> dashboardListData;
+
+    private ArrayList<DashBoardBO> kpiChartData;
 
     private String mSelectedUser = "0";
 
@@ -516,7 +521,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             monthSpinnerStub.setVisibility(View.GONE);
 
-            if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser == String.valueOf(presenter.getCurrentUser().getUserid())) {
+            if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser.equals(String.valueOf(presenter.getCurrentUser().getUserid()))) {
                 presenter.computeDayAchievements();
                 dashboardListAdapter.notifyDataSetChanged();
             } else if (selectedInterval.equals(P3M))
@@ -550,28 +555,54 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @Override
     public void setWeekSpinner(ArrayList<String> weekList, int currentWeek) {
         weekSpinnerStub.setVisibility(View.VISIBLE);
-        Spinner weekSpinner = (Spinner) weekSpinnerStub;
-        ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
-        monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
-        weekSpinner.setAdapter(monthdapter);
+        Spinner weekSpinner = weekSpinnerStub;
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
+        monthAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
+        weekSpinner.setAdapter(monthAdapter);
         weekSpinner.setOnItemSelectedListener(weekSelectedListener);
         weekSpinner.setSelection(currentWeek);
 
-        //TODO handle P3M Chart
+
 
     }
 
     @Override
     public void onFactorNameClick(int position) {
+        updateChartData(dashboardListData.get(position));
+    }
 
+    private void updateChartData(DashBoardBO currentItem){
+        updateChartData(currentItem,false);
+    }
+
+    private void updateChartData(DashBoardBO currentItem, boolean isFromWeekSpinner) {
         if(presenter.shouldShowTrendChart()){
 
-            if(selectedInterval.equalsIgnoreCase(WEEK) &&  presenter.shouldShowKPIBarChart()){
+            DashBoardEventData dashBoardEventData = new DashBoardEventData();
 
+            if((((selectedInterval.equalsIgnoreCase(WEEK)||isFromWeekSpinner) && !currentItem.getMonthName().equals(""))
+                    || selectedInterval.equals(P3M)) &&  presenter.shouldShowKPIBarChart()){
+                kpiChartData.clear();
+                for (DashBoardBO dashBoardBO : presenter.getDashboardListData()) {
+                    if (dashBoardBO.getCode().equalsIgnoreCase(currentItem.getCode())) {
+                        kpiChartData.add(dashBoardBO);
+                    }
+                }
+                dashBoardEventData.setEventDataList(kpiChartData);
+                dashBoardEventData.setSource(DASHBOARD);
             }
 
-        }
+            if (presenter.shouldShowSMPDash())
+                dashBoardEventData.setSmpDashBoardData(currentItem);
 
+
+
+            if(presenter.shouldShowP3MDash())
+                dashBoardEventData.setKpiLovId(currentItem.getKpiTypeLovID());
+
+            EventBus.getDefault().post(dashBoardEventData);
+
+        }
     }
 
     @Override
@@ -583,6 +614,14 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
+            String weekName = adapterView.getSelectedItem().toString();
+            for (DashBoardBO dashBoardBO : presenter.getDashboardListData()) {
+                if (dashBoardBO.getMonthName().equalsIgnoreCase(weekName) || weekName.equals("")) {
+                    dashboardListData.add(dashBoardBO);
+                }
+            }
+
+            updateChartData(dashboardListData.get(0),true);
         }
 
         @Override
@@ -609,7 +648,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             dashboardRecyclerView.setAdapter(dashboardListAdapter);
             
             if(presenter.shouldShowTrendChart()){
+
                 generatePagerFragments();
+
+                updateChartData(dashboardListData.get(0));
+
             }
         }
 
@@ -683,6 +726,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         }
 
         if (presenter.shouldShowKPIBarChart()) {
+            kpiChartData = new ArrayList<>();
             KPIBarChartFragment kpiBarChartFragment = new KPIBarChartFragment();
             Bundle bundle = new Bundle();
             bundle.putSerializable("dashChartList", dashboardListData);

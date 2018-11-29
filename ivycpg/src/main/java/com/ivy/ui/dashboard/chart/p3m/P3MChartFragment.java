@@ -4,13 +4,11 @@ import android.graphics.Color;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.DefaultFillFormatter;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
@@ -18,7 +16,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
-import com.ivy.utils.event.MessageEvent;
+import com.ivy.utils.event.DashBoardEventData;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import butterknife.BindView;
+
+import static com.ivy.ui.dashboard.view.SellerDashboardFragment.DASHBOARD;
 
 public class P3MChartFragment extends BaseFragment  {
 
@@ -72,6 +72,10 @@ public class P3MChartFragment extends BaseFragment  {
             paramLovId = getArguments().getInt("paramLovId");
         }
 
+        filterData();
+    }
+
+    private void filterData() {
         Iterator<DashBoardBO> i = dashBoardBOArrayList.iterator();
         while (i.hasNext()) {
             DashBoardBO s = i.next(); // must be called before you can call i.remove()
@@ -81,9 +85,13 @@ public class P3MChartFragment extends BaseFragment  {
     }
 
     @Subscribe
-    public void onMessageEvent(MessageEvent event) {
-        dashBoardBOArrayList.clear();
-        dashBoardBOArrayList.addAll(event.getEventDataList());
+    public void onMessageEvent(DashBoardEventData event) {
+        if(event.getSource().equalsIgnoreCase(DASHBOARD))
+            paramLovId = event.getKpiLovId();
+
+        filterData();
+        setData();
+
     }
 
     @Override
