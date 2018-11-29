@@ -54,7 +54,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     protected Button BTCancel, BTSave;
     protected ArrayList<ReasonMaster> mAssetReasonList;
     protected ArrayList<RetailerMasterBO> retailerMasterBOs;
-    protected String serialNo,reasonId,retailerId,assetName,brand,retailerName;
+    protected String serialNo,reasonId,toRetailerId="0",assetName,brand,retailerName;
     protected Integer retailerSelected=-1,assetId,referenceId;
     private final SerializedAssetBO assetBo = new SerializedAssetBO();
     SerializedAssetHelper assetTrackingHelper;
@@ -154,11 +154,14 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         retailerMasterBOs.add(0, retailer);
 
         ArrayList<String> mRetailerNameList = new ArrayList<>();
+        ArrayList<String> mRetailerIdList = new ArrayList<>();
         for (int i = 0; i < retailerMasterBOs.size(); i++) {
-            mRetailerNameList.add(retailerMasterBOs.get(i).getMovRetailerName());
+            if(!retailerMasterBOs.get(i).getMovRetailerId().equals(mBModel.getRetailerMasterBO().getRetailerID())) {
+                mRetailerNameList.add(retailerMasterBOs.get(i).getMovRetailerName());
+                mRetailerIdList.add(retailerMasterBOs.get(i).getMovRetailerId());
+            }
         }
-        if(mRetailerNameList.contains(retailerName))
-            mRetailerNameList.remove(mRetailerNameList.indexOf(retailerName));
+
 
         ArrayAdapter<String> mRetailerSpinAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_bluetext_layout, mRetailerNameList);
         mRetailerSpinAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -168,6 +171,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 retailerSelected=position;
+                toRetailerId=mRetailerIdList.get(position);
 
                 if(position>0)
                     movementType="RTR_RTR";
@@ -206,7 +210,6 @@ public class SerializedAssetMovementDialog extends DialogFragment {
                 SDUtil.now(SDUtil.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         String remarks=ETDesc.getText().toString().trim();
-        retailerId=retailerMasterBOs.get(retailerSelected).getMovRetailerId();
 
         assetBo.setPOSM(String.valueOf(assetId));
         assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(brand));
@@ -214,7 +217,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         assetBo.setSNO(serialNo);
         assetBo.setReasonId(reasonId);
         assetBo.setRemarks(remarks);
-        assetBo.setToRetailerId(retailerId);
+        assetBo.setToRetailerId(toRetailerId);
         assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }

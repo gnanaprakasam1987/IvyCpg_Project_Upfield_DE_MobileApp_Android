@@ -536,6 +536,9 @@ public class SerializedAssetAdapter extends BaseAdapter {
             else if (holder.assetBO.getAvailQty() == 1){
                 holder.availQtyRB.setChecked(true);
             }
+            else {
+                holder.availQtyRB.setChecked(false);
+            }
 
             if((assetTrackingHelper.SHOW_ASSET_BARCODE&&holder.assetBO.getSerialNo().equals(""))
                     ||holder.assetBO.getNFCTagId().isEmpty()){
@@ -550,6 +553,9 @@ public class SerializedAssetAdapter extends BaseAdapter {
              if(holder.assetBO.getAvailQty() == 1){
                 holder.availQtyRB.setChecked(true);
             }
+            else {
+                 holder.availQtyRB.setChecked(false);
+             }
         }
 
 
