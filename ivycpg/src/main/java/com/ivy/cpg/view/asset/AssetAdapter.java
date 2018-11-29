@@ -545,15 +545,21 @@ public class AssetAdapter extends BaseAdapter {
                 holder.availQtyRB.setChecked(true);
             } else if (holder.assetBO.getAvailQty() == 1) {
                 holder.availQtyRB.setChecked(true);
+            } else {
+                holder.availQtyRB.setChecked(false);
             }
             if ((assetTrackingHelper.SHOW_ASSET_BARCODE && holder.assetBO.getSerialNo().equals(""))
                     || (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && holder.assetBO.getNFCTagId().isEmpty())) {
                 holder.availQtyRB.setEnabled(true);
+            } else {
+                holder.availQtyRB.setEnabled(false);
             }
         } else {
             holder.availQtyRB.setEnabled(true);
             if (holder.assetBO.getAvailQty() == 1) {
                 holder.availQtyRB.setChecked(true);
+            } else {
+                holder.availQtyRB.setChecked(false);
             }
         }
 
