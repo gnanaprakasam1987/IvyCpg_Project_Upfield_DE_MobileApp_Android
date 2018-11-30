@@ -563,7 +563,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         weekSpinner.setSelection(currentWeek);
 
 
-
     }
 
     @Override
@@ -571,17 +570,17 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         updateChartData(dashboardListData.get(position));
     }
 
-    private void updateChartData(DashBoardBO currentItem){
-        updateChartData(currentItem,false);
+    private void updateChartData(DashBoardBO currentItem) {
+        updateChartData(currentItem, false);
     }
 
     private void updateChartData(DashBoardBO currentItem, boolean isFromWeekSpinner) {
-        if(presenter.shouldShowTrendChart()){
+        if (presenter.shouldShowTrendChart()) {
 
             DashBoardEventData dashBoardEventData = new DashBoardEventData();
 
-            if((((selectedInterval.equalsIgnoreCase(WEEK)||isFromWeekSpinner) && !currentItem.getMonthName().equals(""))
-                    || selectedInterval.equals(P3M)) &&  presenter.shouldShowKPIBarChart()){
+            if ((((selectedInterval.equalsIgnoreCase(WEEK) || isFromWeekSpinner) && !currentItem.getMonthName().equals(""))
+                    || selectedInterval.equals(P3M)) && presenter.shouldShowKPIBarChart()) {
                 kpiChartData.clear();
                 for (DashBoardBO dashBoardBO : presenter.getDashboardListData()) {
                     if (dashBoardBO.getCode().equalsIgnoreCase(currentItem.getCode())) {
@@ -596,8 +595,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 dashBoardEventData.setSmpDashBoardData(currentItem);
 
 
-
-            if(presenter.shouldShowP3MDash())
+            if (presenter.shouldShowP3MDash())
                 dashBoardEventData.setKpiLovId(currentItem.getKpiTypeLovID());
 
             EventBus.getDefault().post(dashBoardEventData);
@@ -621,7 +619,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 }
             }
 
-            updateChartData(dashboardListData.get(0),true);
+            if (!isFragmentsAdded)
+                generatePagerFragments();
+            else
+                updateChartData(dashboardListData.get(0), true);
         }
 
         @Override
@@ -646,12 +647,13 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), SellerDashboardFragment.this);
             dashboardRecyclerView.setAdapter(dashboardListAdapter);
-            
-            if(presenter.shouldShowTrendChart()){
 
-                generatePagerFragments();
+            if (presenter.shouldShowTrendChart()) {
 
-                updateChartData(dashboardListData.get(0));
+                if (!isFragmentsAdded)
+                    generatePagerFragments();
+                else
+                    updateChartData(dashboardListData.get(0));
 
             }
         }
@@ -705,40 +707,46 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         }
     };
 
+    private boolean isFragmentsAdded = false;
+
     private void generatePagerFragments() {
 
-        fragments = new ArrayList<>();
+        if (!isFragmentsAdded) {
 
-        if (presenter.isSMPBasedDash()) {
-            if (!selectedInterval.matches("WEEK|ROUTE")) {
-                if (presenter.shouldShowP3MDash()) {
-                    presenter.fetchP3mTrendChartData(mSelectedUser);
-                }
-                if (presenter.shouldShowSMPDash()) {
-                    SMPChartFragment smpChartFragment = new SMPChartFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("dashboardData", dashboardListData.get(0));
-                    smpChartFragment.setArguments(bundle);
-                    fragments.add(smpChartFragment);
+            fragments = new ArrayList<>();
 
+            if (presenter.isSMPBasedDash()) {
+                if (!selectedInterval.matches("WEEK|ROUTE")) {
+                    if (presenter.shouldShowP3MDash()) {
+                        presenter.fetchP3mTrendChartData(mSelectedUser);
+                    }
+                    if (presenter.shouldShowSMPDash()) {
+                        SMPChartFragment smpChartFragment = new SMPChartFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("dashboardData", dashboardListData.get(0));
+                        smpChartFragment.setArguments(bundle);
+                        fragments.add(smpChartFragment);
+
+                    }
                 }
             }
+
+            if (presenter.shouldShowKPIBarChart()) {
+                kpiChartData = new ArrayList<>();
+                KPIBarChartFragment kpiBarChartFragment = new KPIBarChartFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("dashChartList", dashboardListData);
+                bundle.putString("selectedInterval", selectedInterval);
+                kpiBarChartFragment.setArguments(bundle);
+                fragments.add(kpiBarChartFragment);
+            }
+
+            FragmentPagerAdapter viewPagerAdapter = new FragmentPagerAdapter(getActivity().getSupportFragmentManager(), fragments);
+
+            pager.setAdapter(viewPagerAdapter);
+            circleIndicatorView.setViewPager(pager);
+            isFragmentsAdded = true;
         }
-
-        if (presenter.shouldShowKPIBarChart()) {
-            kpiChartData = new ArrayList<>();
-            KPIBarChartFragment kpiBarChartFragment = new KPIBarChartFragment();
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("dashChartList", dashboardListData);
-            bundle.putString("selectedInterval", selectedInterval);
-            kpiBarChartFragment.setArguments(bundle);
-            fragments.add(kpiBarChartFragment);
-        }
-
-        FragmentPagerAdapter viewPagerAdapter = new FragmentPagerAdapter(getActivity().getSupportFragmentManager(), fragments);
-
-        pager.setAdapter(viewPagerAdapter);
-        circleIndicatorView.setViewPager(pager);
     }
 
     @Override
