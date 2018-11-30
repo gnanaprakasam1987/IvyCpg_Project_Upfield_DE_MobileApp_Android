@@ -76,6 +76,7 @@ import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
+import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
@@ -199,10 +200,7 @@ import co.chatsdk.core.session.Configuration;
 import co.chatsdk.firebase.FirebaseNetworkAdapter;
 import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
 import co.chatsdk.firebase.push.FirebasePushModule;
-import co.chatsdk.ui.manager.BaseInterfaceAdapter;
 
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_FIREBASE_STORAGE_URL;
-import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.CHAT_SERVER_KEY;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 
 public class BusinessModel extends Application {
