@@ -62,6 +62,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_VALIDATE_TRADE_COVERAGE = "RTRS29";
     public static final String CODE_SUBD_RETIALER_SELECTION = "RTRS30";
     public static final String CODE_SIMPLE_RETAIER_ROW = "RTRS31";
+    public static final String CODE_RETAILER_CONTACT_NAME = "RTRS32";
     public static final String CODE_CONTRACT_TYPE = "PROFILE17";
     public static final String CODE_CONTRACT_EXPIRYDATE = "PROFILE18";
     public static final String CODE_VISIT_FREQUENCY = "PROFILE19";
@@ -930,11 +931,12 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_DATE_ROUTE;
     public boolean SHOW_BEAT_ROUTE;
     public boolean SHOW_WEEK_ROUTE;
-    public boolean SHOW_RETAILER_LOCATION;//RTRS26
+    public boolean SHOW_RFIELD4;//RTRS26
     public boolean SHOW_MISSED_RETAILER;//RTRS28
     public boolean VALIDATE_TRADE_COVERAGE;//RTRS29
     public boolean SUBD_RETAILER_SELECTION;//RTRS30
     public boolean IS_SIMPLE_RETIALER;//RTRS31
+    public boolean SHOW_RETIALER_CONTACTS;//RTRS32
     public boolean SHOW_CONTRACT_TYPE;
     public boolean SHOW_CONTRACT_EXPIRYDATE;
     public boolean SHOW_VISIT_FREQUENCY;
@@ -2187,7 +2189,8 @@ public class ConfigurationMasterHelper {
         this.VALIDATE_TRADE_COVERAGE = hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) : false;
         this.SUBD_RETAILER_SELECTION = hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) : false;
         this.IS_SIMPLE_RETIALER = hashMapHHTModuleConfig.get(CODE_SIMPLE_RETAIER_ROW) != null ? hashMapHHTModuleConfig.get(CODE_SIMPLE_RETAIER_ROW) : false;
-        this.SHOW_RETAILER_LOCATION = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
+        this.SHOW_RETIALER_CONTACTS = hashMapHHTModuleConfig.get(CODE_RETAILER_CONTACT_NAME) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_CONTACT_NAME) : false;
+        this.SHOW_RFIELD4 = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
         this.SHOW_PROFILE_LOC2 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) : false;
         this.SHOW_CONTRACT_TYPE = hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) : false;
         this.SHOW_CONTRACT_EXPIRYDATE = hashMapHHTModuleConfig.get(CODE_CONTRACT_EXPIRYDATE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_EXPIRYDATE) : false;

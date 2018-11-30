@@ -1216,8 +1216,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_SERIALIZED_ASSET)) {
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_SERIALIZED_ASSET)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
@@ -1225,7 +1224,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (getPreviousMenuBO(menuDB.get(i)).isDone())
                             menuDB.get(i).setDone(true);
                     }
-                }else if (menuDB.get(i).getConfigCode().equals(MENU_POSM)) {
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_POSM)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
@@ -2667,7 +2666,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     isClick = false;
                 }
             }
-        }else if (menu.getConfigCode().equals(MENU_SERIALIZED_ASSET) && hasLink == 1) {
+        } else if (menu.getConfigCode().equals(MENU_SERIALIZED_ASSET) && hasLink == 1) {
             if (!isClick) {
                 isClick = true;
                 if (isPreviousDone(menu)
@@ -2771,7 +2770,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 bmodel.productHelper.downloadInStoreLocations();
                 mNearExpiryHelper.loadSKUTracking(getApplicationContext(), false);
-
+                mNearExpiryHelper.loadNearExpiryConfig(getApplicationContext());
                 if (bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN && !mNearExpiryHelper.hasAlreadySKUTrackingDone(getApplicationContext())) {
                     mNearExpiryHelper.loadLastVisitSKUTracking(getApplicationContext());
                 }
@@ -5215,7 +5214,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     }
 
     //Clear ProductMasterBO to load the data in lastvisitstockcheck
-    private void clearStockCheck(){
+    private void clearStockCheck() {
         int siz = bmodel.productHelper.getProductMaster().size();
         if (siz == 0)
             return;

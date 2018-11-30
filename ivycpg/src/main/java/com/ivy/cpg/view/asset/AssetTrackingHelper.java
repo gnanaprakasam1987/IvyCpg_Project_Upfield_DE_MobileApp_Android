@@ -2301,6 +2301,7 @@ public class AssetTrackingHelper {
         String posmIDs = "";
         ArrayList<String> mappingsetId = new ArrayList<>();
         ArrayList<String> attrmappingsetId = new ArrayList<>();
+        ArrayList<String> tempmappingsetId = new ArrayList<>(); // used for checking attr mapped
 
 
         String attrQuery = "Select distinct Id,MappingSetId from POSMCriteriaAttributesMappingV2 PCA"
@@ -2327,13 +2328,20 @@ public class AssetTrackingHelper {
             while (c.moveToNext()) {
 
                 if (c.getInt(2) == 0 && c.getInt(3) == 0 && c.getInt(4) == 0 && c.getInt(5) == 0) {
-                    if (attrmappingsetId.contains(c.getInt(0) + "" + c.getInt(1)))
-                        mappingsetId.add(c.getInt(0) + "" + c.getInt(1));
+                    tempmappingsetId.add(c.getInt(0) + "" + c.getInt(1));
                 } else {
                     mappingsetId.add(c.getInt(0) + "" + c.getInt(1));
                 }
             }
         }
+
+        //to remove mappingID if it doesnt match through retailer Attributes
+        for (String attrmappingID : tempmappingsetId)
+            if (attrmappingsetId.contains(attrmappingID))//matched add
+                mappingsetId.add(attrmappingID);
+            else // not matched need to remove that mappingId if it is present in list (AND logic)
+                mappingsetId.remove(attrmappingID);
+
 
         String posmGroupQuery = "Select Id,MappingSetId,PosmId from POSMGroupCriteriaMappingV2";
 
@@ -2349,6 +2357,8 @@ public class AssetTrackingHelper {
             }
             posmIDs = sb.deleteCharAt(sb.length() - 1).toString();
         }
+
+        c.close();
 
         return posmIDs;
 
