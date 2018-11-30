@@ -144,7 +144,7 @@ public class P3MChartFragment extends BaseFragment  {
             mChart.getAxisLeft().setValueFormatter(new PercentFormatter());
         }
 
-        ArrayList<Entry> achivedValues = new ArrayList<Entry>();
+        ArrayList<Entry> achivedValues = new ArrayList<>();
         for (int i = 0; i < dashBoardBOArrayList.size(); i++) {
             try {
                 achivedValues.add(new Entry(i, SDUtil.convertToFloat("" + dashBoardBOArrayList.get(i).getConvAcheivedPercentage()), dashBoardBOArrayList.get(i).getText()));
