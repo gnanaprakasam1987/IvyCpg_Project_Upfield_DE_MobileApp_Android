@@ -84,10 +84,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     Spinner dashSpinner;
 
     @BindView(R.id.monthSpinner)
-    Spinner monthSpinnerStub;
+    Spinner monthSpinner;
 
     @BindView(R.id.weekSpinner)
-    Spinner weekSpinnerStub;
+    Spinner weekSpinner;
 
     @BindView(R.id.multiSelectStub)
     ViewStub multiSelectStub;
@@ -490,7 +490,14 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), SellerDashboardFragment.this);
             dashboardRecyclerView.setAdapter(dashboardListAdapter);
 
-            //TODO Handle p3m chart
+            if (presenter.shouldShowTrendChart()) {
+
+                if (!isFragmentsAdded)
+                    generatePagerFragments();
+                else
+                    updateChartData(dashboardListData.get(0));
+
+            }
         }
 
         @Override
@@ -519,7 +526,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             } else
                 presenter.fetchRetailerDashboard(selectedInterval);
 
-            monthSpinnerStub.setVisibility(View.GONE);
+            monthSpinner.setVisibility(View.GONE);
 
             if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser.equals(String.valueOf(presenter.getCurrentUser().getUserid()))) {
                 presenter.computeDayAchievements();
@@ -529,7 +536,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             else if (selectedInterval.equals(WEEK))
                 presenter.fetchWeeks();
             else {
-                weekSpinnerStub.setVisibility(View.GONE);
+                weekSpinner.setVisibility(View.GONE);
                 dashboardListAdapter.notifyDataSetChanged();
             }
         }
@@ -542,9 +549,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     @Override
     public void setUpMonthSpinner(ArrayList<String> monthList) {
-        monthSpinnerStub.setVisibility(View.VISIBLE);
-        weekSpinnerStub.setVisibility(View.GONE);
-        Spinner monthSpinner = (Spinner) monthSpinnerStub;
+        monthSpinner.setVisibility(View.VISIBLE);
+        weekSpinner.setVisibility(View.GONE);
         ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthList);
         monthdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
         monthSpinner.setAdapter(monthdapter);
@@ -554,15 +560,12 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     @Override
     public void setWeekSpinner(ArrayList<String> weekList, int currentWeek) {
-        weekSpinnerStub.setVisibility(View.VISIBLE);
-        Spinner weekSpinner = weekSpinnerStub;
+        weekSpinner.setVisibility(View.VISIBLE);
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
         monthAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
         weekSpinner.setAdapter(monthAdapter);
         weekSpinner.setOnItemSelectedListener(weekSelectedListener);
         weekSpinner.setSelection(currentWeek);
-
-
     }
 
     @Override
@@ -619,10 +622,12 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 }
             }
 
-            if (!isFragmentsAdded)
-                generatePagerFragments();
-            else
-                updateChartData(dashboardListData.get(0), true);
+            if (presenter.shouldShowTrendChart()) {
+                if (!isFragmentsAdded)
+                    generatePagerFragments();
+                else
+                    updateChartData(dashboardListData.get(0), true);
+            }
         }
 
         @Override
@@ -678,8 +683,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             }
 
             if (presenter.shouldShowTrendChart()) {
-                //TODO Add chart fragments
-                presenter.fetchP3MSellerDashboardData();
+                if (!isFragmentsAdded)
+                    generatePagerFragments();
+                else
+                    updateChartData(dashboardListData.get(0));
+
             }
 
         }
