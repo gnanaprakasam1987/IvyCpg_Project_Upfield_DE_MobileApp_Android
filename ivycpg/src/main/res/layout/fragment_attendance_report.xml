@@ -32,21 +32,21 @@
 
                 <TextView
                     android:id="@+id/dateTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_large"
                     android:layout_height="wrap_content"
                     android:text="@string/date" />
 
                 <TextView
                     android:id="@+id/dayTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_large"
                     android:layout_height="wrap_content"
                     android:text="@string/day" />
 
                 <TextView
                     android:id="@+id/attendanceTitle"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="@dimen/list_item_width_large"
                     android:layout_height="wrap_content"
                     android:text="@string/attend" />

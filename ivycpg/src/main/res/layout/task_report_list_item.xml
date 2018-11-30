@@ -39,7 +39,7 @@
 
                     <TextView
                         android:id="@+id/tv_outlet_name"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dimen_2dp"
@@ -51,7 +51,7 @@
 
                     <TextView
                         android:id="@+id/tv_task_name"
-                        style="?attr/customListItemPrimary"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dimen_2dp"
@@ -62,7 +62,7 @@
 
                     <TextView
                         android:id="@+id/tv_task_Desc"
-                        style="?attr/customListItemSecondary"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dimen_2dp"
@@ -96,7 +96,7 @@
 
                 <TextView
                     android:id="@+id/tv_task_created_by"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -109,7 +109,7 @@
 
                 <TextView
                     android:id="@+id/tv_task_date"
-                    style="?attr/customListItemSecondary"
+                    style="@style/TextViewCaption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:maxLines="1"

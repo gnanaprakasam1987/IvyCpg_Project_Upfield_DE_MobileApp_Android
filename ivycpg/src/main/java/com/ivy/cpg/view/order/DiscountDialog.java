@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.InitiativeHeaderBO;
+import com.ivy.cpg.view.initiative.InitiativeHeaderBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;

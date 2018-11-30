@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.backupseller;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -33,6 +34,8 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.utils.NetworkUtils;
 
 import java.util.ArrayList;
 
@@ -51,8 +54,10 @@ public class BackUpSellerFragment extends IvyBaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        if (getActivity() != null) {
+            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel.setContext(getActivity());
+        }
     }
 
     @Override
@@ -62,13 +67,15 @@ public class BackUpSellerFragment extends IvyBaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_backupseller, container, false);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        if (getActivity() != null) {
+            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel.setContext(getActivity());
+        }
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
@@ -79,7 +86,7 @@ public class BackUpSellerFragment extends IvyBaseFragment {
 
         //Set Screen Title
         try {
-            if (getArguments().getString("screentitle") == null)
+            if (bmodel != null && getArguments() != null && getArguments().getString("screentitle") == null)
                 setScreenTitle(bmodel.getMenuName("MENU_BACKUP_SELLER"));
             else
                 setScreenTitle(getArguments().getString("screentitle"));
@@ -135,10 +142,11 @@ public class BackUpSellerFragment extends IvyBaseFragment {
     public void onStart() {
         super.onStart();
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (bmodel.getAppDataProvider().getUser().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
+            if (getActivity() != null)
             getActivity().finish();
         }
     }
@@ -146,10 +154,12 @@ public class BackUpSellerFragment extends IvyBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        if (getActivity() != null) {
+            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel.setContext(getActivity());
+        }
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (bmodel.getAppDataProvider().getUser().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
@@ -196,6 +206,7 @@ public class BackUpSellerFragment extends IvyBaseFragment {
         if (i1 == android.R.id.home) {
             startActivity(new Intent(getActivity(),
                     HomeScreenActivity.class));
+            if (getActivity() != null)
             getActivity().finish();
             return true;
         }
@@ -215,32 +226,42 @@ public class BackUpSellerFragment extends IvyBaseFragment {
                     break;
                 case 1:
                     alertDialog.dismiss();
-                    bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert(getResources().getString(
-                            R.string.seller_already_assigned), 0);
+                    if (getActivity() != null) {
+                        bmodel = (BusinessModel) getActivity().getApplicationContext();
+                        bmodel.showAlert(getResources().getString(
+                                R.string.seller_already_assigned), 0);
+                    }
                     break;
                 case 2:
                     alertDialog.dismiss();
-                    bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert(getResources().getString(
-                            R.string.backup_seller_already_assigned), 0);
+                    if (getActivity() != null) {
+                        bmodel = (BusinessModel) getActivity().getApplicationContext();
+                        bmodel.showAlert(getResources().getString(
+                                R.string.backup_seller_already_assigned), 0);
+                    }
                     break;
                 case 3:
                     alertDialog.dismiss();
-                    bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert(getResources().getString(
-                            R.string.user_already_assigned), 0);
+                    if (getActivity() != null) {
+                        bmodel = (BusinessModel) getActivity().getApplicationContext();
+                        bmodel.showAlert(getResources().getString(
+                                R.string.user_already_assigned), 0);
+                    }
                     break;
                 case DataMembers.NOTIFY_NO_INTERNET:
-                    bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert(getResources().getString(
-                            R.string.please_connect_to_internet), 0);
+                    if (getActivity() != null) {
+                        bmodel = (BusinessModel) getActivity().getApplicationContext();
+                        bmodel.showAlert(getResources().getString(
+                                R.string.please_connect_to_internet), 0);
+                    }
                     break;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
                     alertDialog.dismiss();
-                    bmodel = (BusinessModel) getActivity().getApplicationContext();
-                    bmodel.showAlert(getResources().getString(
-                            R.string.error_e10), 0);
+                    if (getActivity() != null) {
+                        bmodel = (BusinessModel) getActivity().getApplicationContext();
+                        bmodel.showAlert(getResources().getString(
+                                R.string.error_e10), 0);
+                    }
                     break;
                 default:
                     break;
@@ -268,7 +289,7 @@ public class BackUpSellerFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(String... params) {
 
-            if (bmodel.isOnline()) {
+            if (NetworkUtils.isNetworkConnected(getActivity())) {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
                 String rid = mUploadHelper.uploadBackupSeller(backupSellerId, getHandler());
 
@@ -314,15 +335,16 @@ public class BackUpSellerFragment extends IvyBaseFragment {
             this.data = data;
         }
 
+        @NonNull
         @Override
-        public RecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(
                     parent.getContext()).inflate(R.layout.list_item_backupseller, parent, false);
             return new RecyclerAdapter.MyViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final RecyclerAdapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final RecyclerAdapter.MyViewHolder holder, int position) {
             holder.userMasterBO = data.get(position);
             holder.tv_username.setText(holder.userMasterBO.getUserName());
             holder.radioButton.setChecked(holder.userMasterBO.isBackup());
@@ -365,7 +387,6 @@ public class BackUpSellerFragment extends IvyBaseFragment {
 
                         startActivity(new Intent(getActivity(),
                                 HomeScreenActivity.class));
-                        //getActivity().finish();
                     }
 
                 });

@@ -113,7 +113,7 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.TempSchemeBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.provider.AcknowledgementHelper;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
@@ -124,7 +124,7 @@ import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.EmptyReturnHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
-import com.ivy.sd.png.provider.InitiativeHelper;
+import com.ivy.cpg.view.initiative.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
@@ -149,7 +149,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.TimerCount;
-import com.ivy.sd.png.view.AcknowledgementActivity;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -2863,7 +2863,7 @@ public class BusinessModel extends Application {
     }
 
 
-    public void loadLastVisitStockCheckedProducts(String retailerId) {
+    public void loadLastVisitStockCheckedProducts(String retailerId, String menucode) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -2899,7 +2899,7 @@ public class BusinessModel extends Application {
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, "MENU_STOCK", availability);
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, menucode, availability);
 
                 }
                 orderDetailCursor.close();
@@ -7495,6 +7495,10 @@ public class BusinessModel extends Application {
 
     public void setPhotosTakeninCurrentAssetTracking(HashMap<String, String> photosTakeninCurrentAssetTracking) {
         this.photosTakeninCurrentAssetTracking = photosTakeninCurrentAssetTracking;
+    }
+
+    public AppDataProvider getAppDataProvider() {
+        return appDataProvider;
     }
 }
 

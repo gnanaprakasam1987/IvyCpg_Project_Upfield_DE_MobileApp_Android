@@ -42,7 +42,7 @@ def revNumber = 3047 //fetchRevisionNumber()
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.ivy.sd.png.asean.view"
@@ -65,6 +65,7 @@ android {
         abortOnError true
         // if true, only report errors
         ignoreWarnings true
+
     }
     signingConfigs {
         release {

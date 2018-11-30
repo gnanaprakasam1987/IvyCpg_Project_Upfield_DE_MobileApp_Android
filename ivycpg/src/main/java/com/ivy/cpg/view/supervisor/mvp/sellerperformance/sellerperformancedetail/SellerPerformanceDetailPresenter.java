@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.data.Entry;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -639,9 +638,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                     sellerPerformanceView.initializeMethods();
                 }
 
-                Toast.makeText(context, masterName+" Download Successfull", Toast.LENGTH_SHORT).show();
-            }else
-                Toast.makeText(context, masterName+" Download Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, masterName+" Download Successfull", Toast.LENGTH_SHORT).show();
+            }//else
+                //Toast.makeText(context, masterName+" Download Failed", Toast.LENGTH_SHORT).show();
         }
 
     }

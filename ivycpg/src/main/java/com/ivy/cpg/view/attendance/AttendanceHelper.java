@@ -12,6 +12,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -253,7 +254,7 @@ public class AttendanceHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT uid , date , intime , outtime , remarks , rowid,reasonid from AttendanceTimeDetails where date ="
+                    .selectSQL("SELECT uid , date , intime , outtime , ifnull(remarks,'') , rowid,reasonid from AttendanceTimeDetails where date ="
                             + bmodel.QT((SDUtil.now(SDUtil.DATE_GLOBAL))) + " or outtime IS NULL and userid=" + userid);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -295,12 +296,13 @@ public class AttendanceHelper {
 
                 String inTime = nonFieldTwoBo.getInTime() != null ? nonFieldTwoBo.getInTime() : " ";
 
-                String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,upload";
-                String value = bmodel.QT(nonFieldTwoBo.getId()) + ","
-                        + bmodel.QT(nonFieldTwoBo.getFromDate()) + ","
-                        + bmodel.QT(inTime) + ","
+                String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,Remarks,upload";
+                String value = AppUtils.QT(nonFieldTwoBo.getId()) + ","
+                        + AppUtils.QT(nonFieldTwoBo.getFromDate()) + ","
+                        + AppUtils.QT(inTime) + ","
                         + nonFieldTwoBo.getReason() + "," + userid + ","
-                        + bmodel.QT(LocationUtil.latitude + "") + "," + bmodel.QT(LocationUtil.longitude + "") + "," + bmodel.getCounterId() + "," + bmodel.QT("N");
+                        + AppUtils.QT(LocationUtil.latitude + "") + "," + AppUtils.QT(LocationUtil.longitude + "") + ","
+                        + bmodel.getCounterId() + "," + AppUtils.QT(nonFieldTwoBo.getRemarks()) + "," + AppUtils.QT("N");
 
                 db.insertSQL("AttendanceTimeDetails", columns, value);
 

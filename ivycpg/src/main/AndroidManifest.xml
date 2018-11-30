@@ -181,7 +181,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.InitiativeActivity"
+            android:name="com.ivy.cpg.view.initiative.InitiativeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.attendance.AttendanceActivity"
@@ -473,6 +473,9 @@
             android:name="com.ivy.cpg.view.asset.AssetPosmRemoveActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.ivy.cpg.view.serializedAsset.RemoveSerializedAssetActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.ivy.cpg.view.van.damagestock.DamageStockFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -638,10 +641,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.AcknowledgementActivity"
+            android:name="com.ivy.cpg.view.acknowledgement.AcknowledgementActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.AcknowledgementDetailActivity"
+            android:name="com.ivy.cpg.view.acknowledgement.AcknowledgementDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.asset.AssetMovementActivity"
@@ -714,7 +717,7 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.ivy.sd.png.view.BackUpSellerActivity"
+            android:name="com.ivy.cpg.view.backupseller.BackUpSellerActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.delivery.kellogs.OrderDeliveryActivity"
@@ -826,6 +829,17 @@
 
         <activity android:name="com.ivy.cpg.view.supervisor.chat.StartChatActivity"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetMovementActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetServiceActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

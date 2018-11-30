@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/tv_prod_lbl"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="7"
@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/tv_availability"
-            style="?attr/customListTitle"
+            style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
@@ -68,7 +68,7 @@
             android:id="@+id/footer"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/footer_height"
-            android:background="@color/footer_bg"
+            android:background="@color/footer_bg_color"
             android:gravity="end"
             android:orientation="horizontal"
             android:padding="@dimen/footer_padding">

@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?customLayoutBackground"
+        android:background="?attr/customFooterBackgroundColor"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -81,8 +81,8 @@
                 android:id="@+id/title_totalqty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/total_qty"
                 android:tag="stk_ord_qty"
+                android:text="@string/total_qty"
                 android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/footer_label_size" />
 
@@ -98,13 +98,43 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_dist"
+            android:id="@+id/ll_totweight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/target_top_margin"
             android:layout_toEndOf="@+id/ll_totqty"
             android:orientation="vertical"
+            android:visibility="gone"
             android:layout_toRightOf="@+id/ll_totqty">
+
+            <TextView
+                android:id="@+id/title_totalweigh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="stk_ord_weigh"
+                android:text="@string/total_weight"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/footer_label_size" />
+
+            <TextView
+                android:id="@+id/tv_totalweigh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/zero"
+                android:textColor="@color/white"
+                android:textSize="@dimen/footer_label_value" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_dist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/target_top_margin"
+            android:layout_toEndOf="@+id/ll_totweight"
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/ll_totweight">
 
             <TextView
                 android:id="@+id/distText"

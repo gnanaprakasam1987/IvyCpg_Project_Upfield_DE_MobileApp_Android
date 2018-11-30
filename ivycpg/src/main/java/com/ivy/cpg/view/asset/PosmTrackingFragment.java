@@ -180,6 +180,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         }
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
 
+        view.findViewById(R.id.tv_store_loc).setVisibility(View.GONE);
+
         btnSave = view.findViewById(R.id.btn_save);
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
@@ -349,6 +351,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             if (mBModel.productHelper.getInStoreLocation().size() <= 1)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
         }
+        menu.findItem(R.id.menu_assetservice).setVisible(false);
+        menu.findItem(R.id.menu_assetScan).setVisible(false);
         //Move Asset is removed in Posm
         menu.removeItem(R.id.menu_move);
 
@@ -1131,6 +1135,12 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 holder.photoCount.setText("" + holder.assetBO.getImageList().size());
             }
 
+            if (holder.assetBO.getExecutorQty() == 1) {
+                holder.execQtyCheckBox.setChecked(true);
+            } else {
+                holder.execQtyCheckBox.setChecked(false);
+            }
+
             return row;
         }
     }
@@ -1622,6 +1632,12 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         myList = new ArrayList<>();
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
         mBrandButton = mFilterText;
+        if (mFilterText.equals("")) {
+            mBrandButton = BRAND;
+        }
+
+
+
         if (mAssetTrackingList == null) {
             mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);

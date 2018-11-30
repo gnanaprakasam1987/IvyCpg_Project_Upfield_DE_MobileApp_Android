@@ -274,7 +274,14 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 }
                 break;
             case "MENU_ASSET":
-                if (bmodel.getSaleReturnNote() != null) {
+                if (bmodel.getAssetRemark() != null) {
+                    remarks.setText(bmodel.getAssetRemark());
+                } else {
+                    remarks.setText("");
+                }
+                break;
+            case "MENU_SERIALIZED_ASSET":
+                if (bmodel.getAssetRemark() != null) {
                     remarks.setText(bmodel.getAssetRemark());
                 } else {
                     remarks.setText("");
@@ -349,6 +356,9 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                     bmodel.setSaleReturnNote(remarks.getText().toString());
                     break;
                 case "MENU_ASSET":
+                    bmodel.setAssetRemark(remarks.getText().toString());
+                    break;
+                case "MENU_SERIALIZED_ASSET":
                     bmodel.setAssetRemark(remarks.getText().toString());
                     break;
                 case "MENU_PROMO":

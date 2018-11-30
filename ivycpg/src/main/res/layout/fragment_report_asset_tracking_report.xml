@@ -30,18 +30,12 @@
                 android:paddingEnd="@dimen/dimen_5dp"
                 android:weightSum="2">
 
-                <!--<TextView-->
-                <!--style="?attr/customListTitle"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="0.5"-->
-                <!--android:text="Choose Store : " />-->
 
                 <Spinner
                     android:id="@+id/spinnerStore"
                     android:layout_width="@dimen/dimens_180dp"
                     android:layout_height="@dimen/reason_spinner_height"
-                    android:background="@color/footer_bg"
+                    android:background="@color/footer_bg_color"
                     android:gravity="center"
                     android:overlapAnchor="false" />
 
@@ -50,7 +44,7 @@
                     android:layout_width="@dimen/dimens_180dp"
                     android:layout_height="@dimen/reason_spinner_height"
                     android:layout_marginStart="10dp"
-                    android:background="@color/footer_bg"
+                    android:background="@color/footer_bg_color"
                     android:gravity="center"
                     android:overlapAnchor="false"
                     android:layout_marginLeft="10dp" />
@@ -66,7 +60,7 @@
                 android:weightSum="2" android:visibility="gone">
 
                 <TextView
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/skuwise_right_margin"
@@ -79,7 +73,7 @@
 
                 <TextView
                     android:id="@+id/loading_stock_cs_title"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
@@ -88,7 +82,7 @@
 
                 <TextView
                     android:id="@+id/loading_stock_ou_title"
-                    style="?attr/customListTitle"
+                    style="@style/TextViewListTitle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
@@ -117,7 +111,7 @@
             android:layout_height="@dimen/dimens_80dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="@dimen/dimens_2dp"
-            android:background="@color/footer_bg"
+            android:background="@color/footer_bg_color"
             android:gravity="center|end"
             android:visibility="gone"
             android:layout_alignParentRight="@dimen/dimens_2dp">

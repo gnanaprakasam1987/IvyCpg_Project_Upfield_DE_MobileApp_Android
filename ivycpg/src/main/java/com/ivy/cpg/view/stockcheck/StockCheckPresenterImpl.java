@@ -468,8 +468,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     public void prepareAdapters() {
 
         mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(context.getResources().getString(R.string.all));
         mSearchTypeArray.add(context.getResources().getString(R.string.product_name));
-        mSearchTypeArray.add(context.getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(context.getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(context.getResources().getString(
                 R.string.order_dialog_barcode));
 
@@ -634,11 +635,11 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             stockList.add(ret);
                     }
                 } else if (mSelectedFilter.equals(context.getResources().getString(
-                        R.string.order_gcas))) {
-                    if (ret.getRField1() != null && ret.getRField1()
+                        R.string.prod_code))) {
+                    if (((ret.getRField1() != null && ret.getRField1()
                             .toLowerCase()
-                            .contains(
-                                    s.toLowerCase()) && (loadBothSalable
+                            .contains(s.toLowerCase())) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(s.toLowerCase()))) && (loadBothSalable
                             ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
                             : ret.getIsSaleable() == 1)) {
                         if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
@@ -658,6 +659,42 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                             stockList.add(ret);
                         else if (applyProductAndSpecialFilter(ret))
                             stockList.add(ret);
+                } else {
+                    if (ret.getBarCode() != null
+                            && (ret.getBarCode().toLowerCase()
+                            .contains(s.toLowerCase())
+                            || ret.getCasebarcode().toLowerCase().
+                            contains(s.toLowerCase())
+                            || ret.getOuterbarcode().toLowerCase().
+                            contains(s.toLowerCase())) && (loadBothSalable
+                            ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                            : ret.getIsSaleable() == 1)) {
+
+                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
+                            stockList.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            stockList.add(ret);
+                    } else if (((ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(s.toLowerCase())) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(s.toLowerCase()))) && (loadBothSalable
+                            ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                            : ret.getIsSaleable() == 1)) {
+                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
+                            stockList.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            stockList.add(ret);
+                    } else if (ret.getProductShortName() != null && ret.getProductShortName()
+                            .toLowerCase()
+                            .contains(
+                                    s.toLowerCase()) && (loadBothSalable
+                            ? (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0)
+                            : ret.getIsSaleable() == 1)) {
+                        if (generalButton.equalsIgnoreCase(GENERAL))//No filters selected
+                            stockList.add(ret);
+                        else if (applyProductAndSpecialFilter(ret))
+                            stockList.add(ret);
+                    }
                 }
 
             }

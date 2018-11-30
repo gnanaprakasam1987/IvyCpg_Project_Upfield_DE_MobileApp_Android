@@ -35,6 +35,7 @@
 
     <TextView
         android:id="@+id/activityName"
+        style="@style/SubActivityNameStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -43,9 +44,6 @@
         android:layout_toStartOf="@id/img_arrow"
         android:layout_toLeftOf="@id/img_arrow"
         android:layout_toEndOf="@id/activity_icon1"
-        android:layout_toRightOf="@id/activity_icon1"
-        android:fontFamily="@font/roboto_light"
-        android:textColor="#FFFFFF"
-        android:textSize="@dimen/sub_activity_name_text_size" />
+        android:layout_toRightOf="@id/activity_icon1" />
 
 </RelativeLayout>

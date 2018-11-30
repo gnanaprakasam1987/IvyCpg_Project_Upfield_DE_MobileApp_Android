@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/prod_name"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="3dp"
@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/piece_qty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/case_qty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -41,7 +41,7 @@
 
     <TextView
         android:id="@+id/outer_qty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -51,7 +51,7 @@
 
     <TextView
         android:id="@+id/sales_return_qty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -61,7 +61,7 @@
 
     <TextView
         android:id="@+id/sales_replace_qty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -72,7 +72,7 @@
 
     <TextView
         android:id="@+id/sih_qty"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

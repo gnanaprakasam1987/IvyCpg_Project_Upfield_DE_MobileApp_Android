@@ -19,9 +19,17 @@ import java.util.Vector;
 public class SalesVolumeReportHelper {
 
     private Context mContext;
+    private static SalesVolumeReportHelper instance = null;
 
-    public SalesVolumeReportHelper(Context context) {
-        mContext = context;
+    private SalesVolumeReportHelper(Context context) {
+        this.mContext = context;
+    }
+
+    public static SalesVolumeReportHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new SalesVolumeReportHelper(context);
+        }
+        return instance;
     }
 
     public ArrayList<SalesVolumeBo> getOrderedProductMaster() {
@@ -29,8 +37,8 @@ public class SalesVolumeReportHelper {
     }
 
     private ArrayList<SalesVolumeBo> productMaster = new ArrayList<>();
-    ArrayList<Integer> parentIds = new ArrayList<>();
-    HashMap<Integer, String> parentIdsMap = new HashMap<>();
+    private ArrayList<Integer> parentIds = new ArrayList<>();
+    private HashMap<Integer, String> parentIdsMap = new HashMap<>();
 
     public void downloadProductReportsWithFiveLevelFilter() {
         try {
@@ -72,7 +80,7 @@ public class SalesVolumeReportHelper {
                     + ".psname,A"
                     + loopEnd
                     + ".isSalable," +
-                    "A1.pname as brandname,A1.parentid,sum(OD.NetAmount) from ProductMaster A1";
+                    "A1.pname as brandname,A1.parentid,sum(OD.NetAmount),A" + loopEnd + ".ParentHierarchy, sum(OD.weight) from ProductMaster A1";
 
             for (int i = 2; i <= loopEnd; i++)
                 sql = sql + " INNER JOIN ProductMaster A" + i + " ON A" + i
@@ -99,6 +107,8 @@ public class SalesVolumeReportHelper {
                     product.setBrandname(c.getString(6));
                     product.setcParentid(c.getInt(7));
                     product.setTotalamount(SDUtil.convertToDouble(c.getString(8)));
+                    product.setParentHierarchy(c.getString(9));
+                    product.setTotalWeight(SDUtil.convertToFloat(c.getString(10)));
 
                     productMaster.add(product);
                     parentIds.add(product.getParentid());
@@ -129,7 +139,7 @@ public class SalesVolumeReportHelper {
 
     private Vector<LevelBO> sequencevalues;
 
-    public void downloadSellerReportFilter() {
+    private void downloadSellerReportFilter() {
         int LevelID = 0;
         sequencevalues = new Vector<>();
         try {
@@ -141,7 +151,7 @@ public class SalesVolumeReportHelper {
             db.openDataBase();
 
             String sql = "select distinct PM.PID,PM.PName," +
-                    "PM.ParentId,PM.PLid,PL.LevelName from ProductMaster PM left join ProductLevel PL on PL.LevelId = PM.PLid where PM.PLid = (Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1 and and ForSwitchSeller = 0)";
+                    "PM.ParentId,PM.PLid,PL.LevelName from ProductMaster PM left join ProductLevel PL on PL.LevelId = PM.PLid where PM.PLid = (Select RField from HhtModuleMaster where hhtCode = 'RPT03' and flag = 1 and ForSwitchSeller = 0)";
 
             Cursor c = db.selectSQL(sql);
             Vector<LevelBO> levelBOVector = new Vector<>();

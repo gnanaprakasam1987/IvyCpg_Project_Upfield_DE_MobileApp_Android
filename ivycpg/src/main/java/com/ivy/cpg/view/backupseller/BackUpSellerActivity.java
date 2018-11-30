@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.backupseller;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -47,7 +47,7 @@ public class BackUpSellerActivity extends IvyBaseActivityNoActionBar {
     protected void onStart() {
         super.onStart();
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (bmodel.getAppDataProvider().getUser().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
@@ -61,7 +61,7 @@ public class BackUpSellerActivity extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (bmodel.getAppDataProvider().getUser().getUserid() == 0) {
             Toast.makeText(this,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
@@ -79,7 +79,7 @@ public class BackUpSellerActivity extends IvyBaseActivityNoActionBar {
     /**
      * this would clear all the resources used of the layout.
      *
-     * @param view
+     * @param view root view
      */
     private void unbindDrawables(View view) {
         if (view.getBackground() != null) {

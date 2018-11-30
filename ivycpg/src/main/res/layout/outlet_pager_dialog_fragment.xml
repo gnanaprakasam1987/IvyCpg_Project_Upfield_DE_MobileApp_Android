@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/tv_store_count"
-        style="?attr/customListItemPrimary"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"

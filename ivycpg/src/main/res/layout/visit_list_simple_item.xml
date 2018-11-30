@@ -45,7 +45,7 @@
 
                 <TextView
                     android:id="@+id/outletName_tv"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -55,7 +55,7 @@
 
                 <TextView
                     android:id="@+id/outletLocation_tv"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

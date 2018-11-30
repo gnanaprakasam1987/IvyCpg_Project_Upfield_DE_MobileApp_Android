@@ -1,54 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/orderScreenListRow"
-    android:layout_width="fill_parent"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="@dimen/list_padding_left_n_right">
-
-    <TextView
-        android:id="@+id/brandname"
-        style="?attr/customListItemPrimary"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:maxLines="2"
-        android:text="Horlicks" />
-
+    card_view:cardBackgroundColor="@android:color/transparent"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardPreventCornerOverlap="true"
+    card_view:cardElevation="0dp"
+    card_view:cardUseCompatPadding="true">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/orderScreenListRow"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="@dimen/list_padding_left_n_right">
 
         <TextView
-            android:id="@+id/piecevalue"
-            style="?attr/customListItemSecondary"
-            android:layout_width="0dp"
+            android:id="@+id/brandname"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Piece" />
+            android:maxLines="1"
+            android:text="@string/brand" />
 
-        <TextView
-            android:id="@+id/casevalue"
-            style="?attr/customListItemSecondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Case" />
 
-        <TextView
-            android:id="@+id/outervalue"
-            style="?attr/customListItemSecondary"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Outer" />
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/piece_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        style="@style/TextViewCaption"
+                        android:id="@+id/pieces_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:text="@string/pieces_label" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        android:id="@+id/piecevalue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text=""
+                        style="@style/TextViewListItemValues" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cases_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        style="@style/TextViewCaption"
+                        android:id="@+id/cases_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:text="@string/cases_label" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        android:id="@+id/casevalue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text=""
+                        style="@style/TextViewListItemValues" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/outer_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        style="@style/TextViewCaption"
+                        android:id="@+id/outer_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:text="@string/outer_label" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        android:id="@+id/outervalue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text=""
+                        style="@style/TextViewListItemValues"/>
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/freeQty_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        style="@style/TextViewCaption"
+                        android:id="@+id/freeQty_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:tag="item_free"
+                        android:text="@string/free_qty" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        android:id="@+id/freeQty_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text=""
+                        style="@style/TextViewListItemValues" />
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/value_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        style="@style/TextViewCaption"
+                        android:id="@+id/value_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:tag="item_value"
+                        android:text="@string/value" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        android:id="@+id/value_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text=""
+                        style="@style/TextViewListItemValues"/>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
-
-</LinearLayout>
+</android.support.v7.widget.CardView>

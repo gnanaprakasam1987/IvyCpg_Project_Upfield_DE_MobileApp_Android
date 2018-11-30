@@ -28,7 +28,7 @@
                     android:layout_height="@dimen/list_title_height">
 
                     <TextView
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/sr_list_view_width_large"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -37,7 +37,7 @@
 
                     <TextView
                         android:id="@+id/contractType"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/avail_barcode"
                         android:layout_height="wrap_content"
                         android:padding="3dp"
@@ -46,7 +46,7 @@
 
                     <TextView
                         android:id="@+id/mfgDateTitle"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/sr_list_view_width"
                         android:layout_height="wrap_content"
                         android:padding="3dp"
@@ -55,7 +55,7 @@
 
                     <TextView
                         android:id="@+id/expDateTitle"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/sr_list_view_width"
                         android:layout_height="wrap_content"
                         android:padding="3dp"
@@ -64,7 +64,7 @@
 
                     <TextView
                         android:id="@+id/audit"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/audit_width"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -72,7 +72,7 @@
 
                     <TextView
                         android:id="@+id/contractStatus"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/sr_list_view_width_large"
                         android:layout_height="wrap_content"
                         android:padding="3dp"

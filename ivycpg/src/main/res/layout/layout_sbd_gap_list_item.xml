@@ -8,7 +8,7 @@
 
             <TextView
                 android:id="@+id/text_productname"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -19,7 +19,7 @@
                 android:layout_marginLeft="@dimen/dimen_5dp"/>
             <TextView
                 android:id="@+id/text_quantity"
-                style="?attr/customListItemPrimary"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

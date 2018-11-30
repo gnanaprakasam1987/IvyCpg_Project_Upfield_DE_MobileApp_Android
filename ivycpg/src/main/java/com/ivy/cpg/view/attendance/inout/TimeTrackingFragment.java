@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -65,6 +66,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     private int mSelectedIdIndex = -1;
     private String childUserName = "";
     private AttendanceHelper attendanceHelper;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -219,6 +221,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         .findViewById(R.id.txt_reason);
                 holder.tvStatus = convertView
                         .findViewById(R.id.txt_status);
+                holder.tvRemarks = convertView
+                        .findViewById(R.id.txt_remarks);
 
                 //typefaces
                 holder.tvOutTime.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
@@ -231,6 +235,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 ((TextView) convertView.findViewById(R.id.txt_Tit_Reason)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.btOutTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
                 holder.btInTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+
+                if (!bmodel.configurationMasterHelper.IS_ATTENDANCE_REMARK)
+                    holder.tvRemarks.setVisibility(View.GONE);
 
                 convertView.setTag(holder);
 
@@ -310,6 +317,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
             holder.tvReason.setText(attendanceHelper
                     .getReasonName(holder.nonFieldTwoBO.getReason(), getActivity()));
 
+            holder.tvRemarks.setText(getActivity().getResources().getString(R.string.remark_hint) + ":" + holder.nonFieldTwoBO.getRemarks());
+
+
             return convertView;
         }
 
@@ -317,7 +327,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
     class ViewHolder {
         NonFieldTwoBo nonFieldTwoBO;
-        TextView tvOutTime, tvReason, tvInTime, tvStatus;
+        TextView tvOutTime, tvReason, tvInTime, tvStatus, tvRemarks;
         Button btInTime, btOutTime;
 
     }
@@ -349,10 +359,10 @@ public class TimeTrackingFragment extends IvyBaseFragment {
         } else if (i1 == R.id.menu_add) {
 
             if (attendanceHelper.previousInOutTimeCompleted()) {
-                dialog = new InOutReasonDialog(getActivity(), onmydailogresult);
+                dialog = new InOutReasonDialog(getActivity(), onmydailogresult, bmodel.configurationMasterHelper.IS_ATTENDANCE_REMARK);
                 dialog.setDialogResult(new InOutReasonDialog.OnMyDialogResult() {
 
-                    public void cancel(String reasonid) {
+                    public void cancel(String reasonid, String remarks) {
                         dialog.dismiss();
 
                         NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
@@ -361,7 +371,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
                         addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
                         addNonFieldTwoBo.setOutTime(null);
-                        addNonFieldTwoBo.setRemarks("");
+                        addNonFieldTwoBo.setRemarks(remarks);
                         addNonFieldTwoBo.setReason(reasonid);
 
                         if (startLocationService(addNonFieldTwoBo.getReason())) {
@@ -479,9 +489,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
         boolean success = false;
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
-                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
+                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId), getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
-            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendanceIn");
+            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH, null, "AttendanceIn");
             int statusCode = RealTimeLocationTracking.startLocationTracking(realTimeLocation, getContext());
             if (statusCode == LocationConstants.STATUS_SUCCESS)
                 success = true;
@@ -502,10 +512,10 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     private void stopLocationService(String reasonId) {
 
         if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
-                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
+                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId), getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
             RealTimeLocationTracking.stopLocationTracking(getContext());
-            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH,null,"AttendanceOut");
+            realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH, null, "AttendanceOut");
         }
 
         uploadAttendance("OUT", reasonId);
@@ -516,12 +526,12 @@ public class TimeTrackingFragment extends IvyBaseFragment {
      */
     private void uploadAttendance(String IN_OUT, String reasonId) {
         if (bmodel.configurationMasterHelper.IS_UPLOAD_ATTENDANCE
-                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId),getContext())) {
+                && AttendanceHelper.getInstance(getContext()).isWorkingStatus(Integer.parseInt(reasonId), getContext())) {
             RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
             if (IN_OUT.equalsIgnoreCase("IN")) {
-                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendanceIn");
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceIn");
             } else {
-                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH,null,"AttendanceOut");
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceOut");
             }
         }
     }

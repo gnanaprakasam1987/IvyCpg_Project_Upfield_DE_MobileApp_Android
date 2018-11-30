@@ -17,7 +17,7 @@
 
         <TextView
             android:id="@+id/menunametxt"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:gravity="center"
@@ -52,7 +52,7 @@
 
         <TextView
             android:id="@+id/menunametxt_two"
-            style="?attr/customListItemPrimary"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:gravity="center"

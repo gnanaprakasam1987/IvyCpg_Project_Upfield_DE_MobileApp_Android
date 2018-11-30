@@ -5,6 +5,7 @@ import android.content.Context;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -249,7 +250,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 con.setMenuNumber(mBusinessModel.formatValue(FB2value) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT18")) {
                 final float totalWeight = dashBoardHelper.getTotalWeight("");
-                con.setMenuNumber(mBusinessModel.formatValue(totalWeight) + "");
+                con.setMenuNumber(Utils.formatAsTwoDecimal((double) totalWeight));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT19")) {
                 con.setMenuNumber(mBusinessModel.formatValue((SDUtil.convertToDouble(outlet.getTotValues())) - SalesReturnHelper.getInstance(mContext).getTotalSalesReturnValue(mContext.getApplicationContext())));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT20")) {
@@ -332,6 +333,21 @@ public class DayReportPresenterImpl implements DayReportPresenter {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT35")) {
 
                 con.setMenuNumber(mBusinessModel.formatValue(mBusinessModel.fitscoreHelper.getFitScoreAverage()) + "");
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT36")) { //Total time spent on retailer vs Total calls
+
+                con.setMenuNumber(outlet.getAverageTimeSpent() + "/" + totalcalls);
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT37")) { //Total no of deviated calls
+
+                con.setMenuNumber(outlet.getDeviatedCalls());
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT38")) { //Sos completed vs Total calls
+
+                con.setMenuNumber(outlet.getSosCount() + "/" + totalcalls);
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT39")) { //Price Check completed vs Total calls
+
+                con.setMenuNumber(outlet.getPriceCheckCount() + "/" + totalcalls);
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT40")) { //Planogram completed vs Total calls
+
+                con.setMenuNumber(outlet.getPlanogramCount() + "/" + totalcalls);
             }
         }
 

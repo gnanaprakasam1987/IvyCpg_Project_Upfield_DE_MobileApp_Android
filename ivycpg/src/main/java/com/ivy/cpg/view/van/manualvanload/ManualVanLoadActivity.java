@@ -740,8 +740,9 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
     private void searchText() {
         mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(getResources().getString(R.string.all));
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
-        mSearchTypeArray.add(getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
         try {
@@ -827,23 +828,44 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             }
 
             if (ret.getIssalable() == 1) {
-                if ("BarCode".equals(mSelectedFilter)) {
+                if (getResources().getString(
+                        R.string.order_dialog_barcode).equals(mSelectedFilter)) {
                     if (ret.getBarcode() != null && ret.getBarcode()
                             .toLowerCase()
                             .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
                         list.add(ret);
 
-                } else if ("GCAS Code".equals(mSelectedFilter)) {
-                    if (ret.getRField1() != null && ret.getRField1()
+                } else if (getResources().getString(
+                        R.string.prod_code).equals(mSelectedFilter)) {
+                    if ((ret.getRField1() != null && ret.getRField1()
                             .toLowerCase()
                             .contains(
                                     mEdtSearchproductName.getText().toString()
-                                            .toLowerCase()))
+                                            .toLowerCase())) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(mEdtSearchproductName.getText().toString()
+                            .toLowerCase())))
                         list.add(ret);
 
                 } else if ((getResources().getString(
                         R.string.product_name).equals(mSelectedFilter))) {
                     if (ret.getProductshortname() != null && ret.getProductshortname()
+                            .toLowerCase()
+                            .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
+                        list.add(ret);
+                } else {
+                    if (ret.getBarcode() != null && ret.getBarcode()
+                            .toLowerCase()
+                            .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
+                        list.add(ret);
+                    else if ((ret.getRField1() != null && ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    mEdtSearchproductName.getText().toString()
+                                            .toLowerCase())) || (ret.getProductCode() != null
+                            && ret.getProductCode().toLowerCase().contains(mEdtSearchproductName.getText().toString()
+                            .toLowerCase())))
+                        list.add(ret);
+                    else if (ret.getProductshortname() != null && ret.getProductshortname()
                             .toLowerCase()
                             .contains(mEdtSearchproductName.getText().toString().toLowerCase()))
                         list.add(ret);

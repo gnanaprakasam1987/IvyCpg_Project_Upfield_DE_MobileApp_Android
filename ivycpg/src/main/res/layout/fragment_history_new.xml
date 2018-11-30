@@ -18,7 +18,6 @@
             android:id="@+id/history_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
             android:layout_weight="9" />
 
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -27,93 +26,89 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/profile_header_img_margin_lftrht"
             android:layout_weight="0.1"
-            card_view:cardBackgroundColor="?customLayoutBackground"
+            android:visibility="gone"
+            card_view:cardBackgroundColor="?attr/customFooterBackgroundColor"
             card_view:cardCornerRadius="4dp"
             card_view:cardElevation="3dp"
-            android:visibility="gone"
             card_view:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/profile_23dp"
-                android:orientation="horizontal"
-                android:layout_marginLeft="@dimen/profile_23dp">
+                android:layout_marginLeft="@dimen/profile_23dp"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/avg_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_dimention"
                     android:layout_marginTop="@dimen/profile_dimention"
+                    android:layout_marginBottom="@dimen/profile_dimention"
                     android:gravity="start|center"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/avg_line_txt"
+                        style="@style/TextViewFooterLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|start"
                         android:gravity="center|start"
-                        android:text="@string/average_lines"
-                        android:textColor="?attr/colorAccent"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/average_lines" />
 
                     <TextView
                         android:id="@+id/avg_lines_val"
+                        style="@style/TextViewFooterValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:gravity="center|start"
-                        android:text="10"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/font_large" />
+                        android:text="@string/zero" />
 
                 </LinearLayout>
 
                 <View
                     android:id="@id/divider"
-                    android:layout_width="2px"
-                    android:layout_height="50px"
+                    android:layout_width="2dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/profile_30dp"
-                    android:background="@color/FullBlack"
-                    android:layout_marginLeft="@dimen/profile_30dp" />
+                    android:layout_marginLeft="@dimen/profile_30dp"
+                    android:background="@color/FullBlack" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|start"
-                    android:layout_marginBottom="@dimen/profile_dimention"
                     android:layout_marginStart="@dimen/profile_header_img_marginleft"
+                    android:layout_marginLeft="@dimen/profile_header_img_marginleft"
                     android:layout_marginTop="@dimen/profile_dimention"
+                    android:layout_marginBottom="@dimen/profile_dimention"
                     android:gravity="center|start"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_header_img_marginleft">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/avg_val_txt"
+                        style="@style/TextViewFooterLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:layout_weight="1"
                         android:gravity="start|top"
                         android:tag="average_value_or_volume"
-                        android:text="Average Value"
-                        android:textColor="?attr/colorAccent"
-                        android:textSize="@dimen/text_size_caption" />
+                        android:text="@string/avg_value" />
 
                     <TextView
                         android:id="@+id/history_avg_val"
+                        style="@style/TextViewFooterValue"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="start"
                         android:layout_weight="1"
                         android:gravity="start"
-                        android:text="25000"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/font_large" />
+                        android:text="@string/zero_zero" />
                 </LinearLayout>
 
             </LinearLayout>

@@ -93,7 +93,7 @@
 
                                 <TextView
                                     android:id="@+id/tvSkuName"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="start|center"
@@ -106,7 +106,7 @@
 
                                 <TextView
                                     android:id="@+id/sihTitle"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="@dimen/list_item_width_medium"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
@@ -119,7 +119,7 @@
 
                                 <TextView
                                     android:id="@+id/itemcasetitle"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="@dimen/list_item_width_medium"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
@@ -132,7 +132,7 @@
 
                                 <TextView
                                     android:id="@+id/outeritemcasetitle"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="@dimen/list_item_width_medium"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
@@ -145,7 +145,7 @@
 
                                 <TextView
                                     android:id="@+id/itempiecetitle"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="@dimen/list_item_width_medium"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
@@ -159,7 +159,7 @@
 
                                 <TextView
                                     android:id="@+id/qtyTitle"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="@dimen/list_item_width_medium"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
@@ -172,7 +172,7 @@
 
                                 <TextView
                                     android:id="@+id/viewTitle"
-                                    style="?attr/customListTitle"
+                                    style="@style/TextViewListTitle"
                                     android:layout_width="@dimen/list_item_width_medium"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"

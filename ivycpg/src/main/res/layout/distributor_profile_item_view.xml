@@ -28,7 +28,7 @@
 
             <TextView
                 android:id="@+id/distributor_name"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -38,7 +38,7 @@
 
             <TextView
                 android:id="@+id/address_1"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -49,7 +49,7 @@
 
             <TextView
                 android:id="@+id/address_2"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -60,7 +60,7 @@
 
             <TextView
                 android:id="@+id/address_3"
-                style="?attr/customListItemValue"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -95,7 +95,7 @@
 
                 <TextView
                     android:id="@+id/contact_title"
-                    style="?attr/customListItemValue"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -107,7 +107,7 @@
 
                 <TextView
                     android:id="@+id/contact"
-                    style="?attr/customListItemValue"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -134,7 +134,7 @@
 
                 <TextView
                     android:id="@+id/email_title"
-                    style="?attr/customListItemValue"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -146,7 +146,7 @@
 
                 <TextView
                     android:id="@+id/email"
-                    style="?attr/customListItemValue"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"

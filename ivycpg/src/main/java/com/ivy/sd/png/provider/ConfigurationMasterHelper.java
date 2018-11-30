@@ -596,6 +596,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_HST_DUETDATE;
     public boolean SHOW_HST_PAID_AMOUNT;
     public boolean SHOW_HST_BAL_AMOUNT;
+    public boolean SHOW_HST_DRIVER_NAME;
+    public boolean SHOW_HST_PO_NUM;
+    public boolean SHOW_HST_DOC_NO;
 
     public boolean SHOW_INV_HST_ORDERID;
     public boolean SHOW_INV_HST_INVOICEDATE;
@@ -1341,6 +1344,7 @@ public class ConfigurationMasterHelper {
 
     public String CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER = "RTPRTY06";
     public boolean IS_PIRAMAL_COLOR_CODE_FOR_RETAILER;
+    public int COLOR_ICON = 0;
 
     private static final String CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS = "FUN56";
     public boolean IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS;
@@ -1427,6 +1431,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_UPLOAD_ATTENDANCE = "UPLOADATTENDANCE";
     public boolean IS_UPLOAD_ATTENDANCE;
 
+    private static final String CODE_REMARK_ATTENDANCE = "ATTREMARK";
+    public boolean IS_ATTENDANCE_REMARK;
+
     private static final String CODE_SHOW_DISTRIBUTOR_PROFILE = "PRO27";
     public boolean SHOW_DISTRIBUTOR_PROFILE;
     public int SHOW_DISTRIBUTOR_PROFILE_FROM;
@@ -1478,11 +1485,18 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
     //132 --- task 45
-    // private static final String CODE_SHOW_ORDER_ATTACH_FILE = "ORDB76";
     public boolean IS_SHOW_ORDER_ATTACH_FILE;
 
     private static final String CODE_SHOW_ALL_SKU_ON_EDIT = "ORDB75";
     public boolean IS_SHOW_ALL_SKU_ON_EDIT;
+
+    //Provision to highlight 0 qty of warehouse stock in ordered products
+    private static final String CODE_SHOW_OOS = "ORDB76";
+    public boolean IS_SHOW_OOS;
+
+    //Provision to load stock check whether from last visit or closed stock
+    private static final String CODE_STK_CHECK_LAST_VISIT = "ORDB77";
+    public boolean IS_LOAD_STK_CHECK_LAST_VISIT;
 
     private static final String CODE_KPI_CALENDAR = "KPI_CALENDER";
     public boolean IS_KPI_CALENDAR;
@@ -2477,6 +2491,8 @@ public class ConfigurationMasterHelper {
         }
         this.IS_PRODUCT_DISPLAY_FOR_PIRAMAL = hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) : false;
         this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
+        this.COLOR_ICON = hashMapHHTModuleOrder.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleOrder.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : 0;
+
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
         this.IS_TOP_ORDER_FILTER = hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_FILTER_TOP) : false;
@@ -2582,6 +2598,7 @@ public class ConfigurationMasterHelper {
         }
 
         this.IS_UPLOAD_ATTENDANCE = hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) != null ? hashMapHHTModuleConfig.get(CODE_UPLOAD_ATTENDANCE) : false;
+        this.IS_ATTENDANCE_REMARK = hashMapHHTModuleConfig.get(CODE_REMARK_ATTENDANCE) != null ? hashMapHHTModuleConfig.get(CODE_REMARK_ATTENDANCE) : false;
 
         this.SHOW_DISTRIBUTOR_PROFILE = hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) : false;
         if (hashMapHHTModuleConfig.get(CODE_SHOW_DISTRIBUTOR_PROFILE) != null
@@ -2657,6 +2674,8 @@ public class ConfigurationMasterHelper {
         this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
+        this.IS_SHOW_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_OOS) : false;
+        this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
     }
 
     private boolean isInOutModule() {
@@ -3520,6 +3539,9 @@ public class ConfigurationMasterHelper {
             SHOW_HST_DUETDATE = false;
             SHOW_HST_PAID_AMOUNT = false;
             SHOW_HST_BAL_AMOUNT = false;
+            SHOW_HST_DRIVER_NAME = false;
+            SHOW_HST_PO_NUM = false;
+            SHOW_HST_DOC_NO = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3575,6 +3597,15 @@ public class ConfigurationMasterHelper {
                             break;
                         case "BAMT":
                             SHOW_HST_BAL_AMOUNT = true;
+                            break;
+                        case "PONUM":
+                            SHOW_HST_PO_NUM = true;
+                            break;
+                        case "DRIVER":
+                            SHOW_HST_DRIVER_NAME = true;
+                            break;
+                        case "DOCNO":
+                            SHOW_HST_DOC_NO = true;
                             break;
                     }
 
@@ -3647,10 +3678,13 @@ public class ConfigurationMasterHelper {
                             break;
                         case "VOL":
                             SHOW_INV_HST_VOLUME = true;
+                            break;
                         case "MGNPRC":
                             SHOW_INV_HST_MARGIN_PRICE = true;
+                            break;
                         case "MGNPER":
                             SHOW_INV_HST_MARGIN_PER = true;
+                            break;
 
                     }
 

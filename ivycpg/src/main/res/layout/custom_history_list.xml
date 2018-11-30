@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,17 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_weight="9.5"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/dimen_5dp"
         android:paddingStart="@dimen/dimen_5dp"
+        android:paddingLeft="@dimen/dimen_5dp"
         android:paddingTop="@dimen/dimen_5dp"
-        android:paddingLeft="@dimen/dimen_5dp">
+
+        android:paddingBottom="@dimen/dimen_5dp"
+        tools:ignore="RtlSymmetry">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/profile_margin_top_minus"
-            android:gravity="center"
+            android:weightSum="8"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -29,31 +32,28 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/order_id_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="history_label_order_id"
-                        android:text="@string/id"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/id" />
 
                 </LinearLayout>
 
@@ -62,21 +62,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/order_id_val"
+                        style="@style/TextViewListItemValuesHighLight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text="Dummy Text"
-                        android:textColor="?attr/primarycolor"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="Dummy Text" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -93,24 +91,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/date_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:text="@string/date"
-                        android:tag="history_label_start_date"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:tag="history_label_start_date" />
 
                 </LinearLayout>
 
@@ -119,21 +114,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/date_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -150,23 +143,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/due_date_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/due_date"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/due_date" />
 
                 </LinearLayout>
 
@@ -175,21 +165,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/due_date_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -206,22 +194,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
+
                         android:id="@+id/tot_lines_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/tot_line"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/tot_line" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -229,20 +217,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tota_lines_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -259,22 +246,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
+
                         android:id="@+id/tot_val_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/total_value"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/total_value" />
 
                 </LinearLayout>
 
@@ -283,20 +270,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tot_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=""
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -313,22 +299,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
+
                         android:id="@+id/tot_vol_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/total_vol"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/total_vol" />
 
                 </LinearLayout>
 
@@ -337,20 +323,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tot_vol"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=""
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -367,22 +352,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
+
                         android:id="@+id/del_status_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:text="@string/status"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/status" />
 
                 </LinearLayout>
 
@@ -391,20 +376,20 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/deliveryStatusValue"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
                         android:text=""
-                        android:textColor="@color/green_productivity"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:textColor="@color/green_productivity" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -431,23 +416,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
+
                         android:id="@+id/del_date_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="RField1"
-                        android:text="@string/delivery_date_label"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/delivery_date_label" />
 
                 </LinearLayout>
 
@@ -456,21 +441,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/del_date_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
-
+                        android:text="" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -486,23 +469,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
+
                         android:id="@+id/invoice_date_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="RField2"
-                        android:text="@string/invoice_date"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/invoice_date" />
 
                 </LinearLayout>
 
@@ -511,20 +494,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/invoice_date_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=" "
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text=" " />
 
                 </LinearLayout>
             </LinearLayout>
@@ -541,23 +523,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
-                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
+
                         android:id="@+id/invoice_qty_txt"
+                        style="@style/TextViewCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
                         android:tag="RField3"
-                        android:text="@string/invoice_qty"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:text="@string/invoice_qty" />
 
                 </LinearLayout>
 
@@ -566,26 +548,193 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/profile_history_10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/invoice_qty_val"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
                         android:gravity="bottom|start"
-                        android:text=""
-                        android:textColor="@color/FullBlack"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:text="" />
 
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/del_rep_code_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:id="@+id/del_rep_code_txt"
+                        style="@style/TextViewCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:tag="RField4"
+                        android:text="@string/delivery_rep_code" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/del_rep_code_val"
+                        style="@style/TextViewListItemValues"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text="" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/paid_amt_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/profile_history_10dp">
+
+                    <TextView
+
+                        android:id="@+id/paid_amt_txt"
+                        style="@style/TextViewCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:text="@string/amount_paid" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/profile_history_10dp">
+
+                    <TextView
+                        android:id="@+id/paid_amt_val"
+                        style="@style/TextViewListItemValues"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text="" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bal_amt_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/profile_history_10dp">
+
+                    <TextView
+
+                        android:id="@+id/bal_amt_txt"
+                        style="@style/TextViewCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:text="@string/balance" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/profile_history_10dp">
+
+                    <TextView
+                        android:id="@+id/bal_amt_val"
+                        style="@style/TextViewListItemValues"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text="" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/profile_margin_top_minus"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <LinearLayout
+                android:id="@+id/driver_name_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -604,15 +753,14 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        android:id="@+id/del_rep_code_txt"
-                        android:layout_width="wrap_content"
+
+                        android:id="@+id/driver_name_txt"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
                         android:gravity="start|top"
-                        android:tag="RField4"
-                        android:text="@string/delivery_rep_code"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:tag="history_label_driver_name"
+                        android:text="@string/driver_name" />
 
                 </LinearLayout>
 
@@ -627,7 +775,7 @@
                     android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        android:id="@+id/del_rep_code_val"
+                        android:id="@+id/driver_name_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|bottom"
@@ -640,50 +788,53 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/paid_amt_layout"
+                android:id="@+id/del_docno_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        android:id="@+id/paid_amt_txt"
+
+                        android:id="@+id/del_docno_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
-                        android:text="@string/amount_paid"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:tag="history_label_del_doc_no"
+                        android:text="@string/delivery_doc_no" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        android:id="@+id/paid_amt_val"
+                        android:id="@+id/del_docno_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
-                        android:text=" "
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
@@ -691,56 +842,112 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/bal_amt_layout"
+                android:id="@+id/cust_pono_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
+                    android:layout_gravity="start|center"
                     android:layout_marginBottom="@dimen/profile_history_10dp"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_history_10dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        android:id="@+id/bal_amt_txt"
+
+                        android:id="@+id/cust_pono_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:gravity="left|top"
-                        android:text="@string/balance"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/text_size_secondary" />
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:tag="history_label_customer_po_no"
+                        android:text="@string/customer_po_no" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/profile_history_10dp"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
                     android:layout_marginTop="@dimen/profile_margin_top_minus"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
 
                     <TextView
-                        android:id="@+id/bal_amt_val"
+                        android:id="@+id/cust_pono_val"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:gravity="bottom|left"
-                        android:text=" "
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text=""
                         android:textColor="@color/FullBlack"
                         android:textSize="@dimen/text_size_primary" />
 
                 </LinearLayout>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/delivery_date_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginBottom="@dimen/profile_history_10dp"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_history_10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+
+                        android:id="@+id/delivery_date_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:gravity="start|top"
+                        android:tag="history_label_del_date"
+                        android:text="@string/delivery_date_label" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/profile_history_10dp"
+                    android:layout_marginTop="@dimen/profile_margin_top_minus"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/profile_history_10dp">
+
+                    <TextView
+                        android:id="@+id/delivery_date_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|bottom"
+                        android:gravity="bottom|start"
+                        android:text=""
+                        android:textColor="@color/FullBlack"
+                        android:textSize="@dimen/text_size_primary" />
+
+                </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
@@ -757,22 +964,23 @@
             android:id="@+id/inv_view_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dimen_2dp"
             android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/dimen_2dp"
+            android:layout_marginRight="@dimen/dimen_2dp"
             android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:layout_marginRight="@dimen/dimen_2dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/inv_view_btn"
                 android:layout_width="@dimen/profile_history_25dp"
                 android:layout_height="@dimen/profile_history_25dp"
+                android:layout_gravity="center"
                 android:background="@drawable/ic_double_right_arrow"
                 android:backgroundTint="@color/half_Black"
                 android:lineSpacingExtra="@dimen/profile_bistoyr_line_space"
-                android:layout_gravity="center"
                 android:textColor="@color/toolbar_title"
-                android:textSize="@dimen/text_size_caption" />
+                android:textSize="@dimen/text_size_caption"
+                tools:ignore="UnusedAttribute" />
 
         </LinearLayout>
     </LinearLayout>

@@ -151,7 +151,7 @@
 
                         <TextView
                             android:id="@+id/close_day_tv"
-                            style="?attr/customListItemPrimary"
+                            style="@style/TextViewListItemPrimary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
@@ -164,7 +164,7 @@
 
                         <TextView
                             android:id="@+id/closingDay"
-                            style="?attr/customListItemSecondary"
+                            style="@style/TextViewCaption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/close_day_tv"
@@ -204,7 +204,7 @@
 
                             <TextView
                                 android:id="@+id/status"
-                                style="?attr/customListItemPrimary"
+                                style="@style/TextViewListItemPrimary"
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:layout_gravity="center_vertical"
@@ -235,7 +235,7 @@
 
                 <TextView
                     android:id="@+id/alert_txt"
-                    style="?attr/customListItemPrimary"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/card_margin_lr"

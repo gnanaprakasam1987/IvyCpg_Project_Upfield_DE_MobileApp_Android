@@ -33,7 +33,7 @@
 
                     <TextView
                         android:id="@+id/audit"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/audit_width"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -42,7 +42,7 @@
 
                     <TextView
                         android:id="@+id/tv_header_asset_name"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="4.5"
@@ -52,7 +52,7 @@
 
                     <TextView
                         android:id="@+id/tv_header_target"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
@@ -62,7 +62,7 @@
 
                     <TextView
                         android:id="@+id/tv_header_qty"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
@@ -72,7 +72,7 @@
 
                     <TextView
                         android:id="@+id/tv_executed_qty"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="@dimen/dimen_0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
@@ -82,7 +82,7 @@
 
                     <TextView
                         android:id="@+id/tv_competitor_qty"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
@@ -92,7 +92,7 @@
 
                     <TextView
                         android:id="@+id/tv_store_loc"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -102,7 +102,7 @@
 
                     <TextView
                         android:id="@+id/tvphoto"
-                        style="?attr/customListTitle"
+                        style="@style/TextViewListTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.2"

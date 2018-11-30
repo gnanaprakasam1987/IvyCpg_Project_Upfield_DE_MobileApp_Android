@@ -270,7 +270,7 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_SKU_REPORT)) {
 
-            new SalesVolumeReportHelper(this).downloadProductReportsWithFiveLevelFilter();
+            SalesVolumeReportHelper.getInstance(this).downloadProductReportsWithFiveLevelFilter();
 
             SalesVolumeReportFragment salesVolumeReportFragment = new SalesVolumeReportFragment();
             salesVolumeReportFragment.setArguments(getIntent().getExtras());

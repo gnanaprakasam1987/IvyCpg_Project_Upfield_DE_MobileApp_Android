@@ -158,8 +158,9 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         });
 
         mSearchTypeArray = new ArrayList<>();
+        mSearchTypeArray.add(getResources().getString(R.string.all));
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
-        mSearchTypeArray.add(getResources().getString(R.string.order_gcas));
+        mSearchTypeArray.add(getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
 
@@ -531,7 +532,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         String mSelectedFilter = bmodel.getProductFilter();
         for (int i = 0; i < siz; ++i) {
             LoadManagementBO ret = mylist.get(i);
-            if ("BarCode".equals(mSelectedFilter)) {
+            if (getResources().getString(
+                    R.string.order_dialog_barcode).equals(mSelectedFilter)) {
                 if (ret.getSih() > 0) {
                     if (ret.getBarcode()
                             .toLowerCase()
@@ -541,13 +543,16 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                         temp.add(ret);
                 }
 
-            } else if ("GCAS Code".equals(mSelectedFilter)) {
+            } else if (getResources().getString(
+                    R.string.prod_code).equals(mSelectedFilter)) {
                 if (ret.getSih() > 0) {
                     if (ret.getRField1()
                             .toLowerCase()
                             .contains(
                                     mEdt_searchproductName.getText()
-                                            .toString().toLowerCase()))
+                                            .toString().toLowerCase()) || (ret.getProductCode() != null &&
+                            ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                            .toLowerCase())))
                         temp.add(ret);
                 }
 
@@ -555,6 +560,29 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                     R.string.product_name).equals(mSelectedFilter)) {
                 if (ret.getSih() > 0) {
                     if (ret.getProductshortname()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText()
+                                            .toString().toLowerCase()))
+                        temp.add(ret);
+                }
+            } else {
+                if (ret.getSih() > 0) {
+                    if (ret.getBarcode()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText()
+                                            .toString().toLowerCase()))
+                        temp.add(ret);
+                    else if (ret.getRField1()
+                            .toLowerCase()
+                            .contains(
+                                    mEdt_searchproductName.getText()
+                                            .toString().toLowerCase()) || (ret.getProductCode() != null &&
+                            ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                    .toLowerCase())))
+                        temp.add(ret);
+                    else if (ret.getProductshortname()
                             .toLowerCase()
                             .contains(
                                     mEdt_searchproductName.getText()
