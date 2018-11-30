@@ -49,7 +49,7 @@ import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.InitiativeActivity;
+import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.utils.view.OnSingleClickListener;

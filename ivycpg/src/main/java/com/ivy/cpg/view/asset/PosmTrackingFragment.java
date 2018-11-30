@@ -1135,6 +1135,12 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 holder.photoCount.setText("" + holder.assetBO.getImageList().size());
             }
 
+            if (holder.assetBO.getExecutorQty() == 1) {
+                holder.execQtyCheckBox.setChecked(true);
+            } else {
+                holder.execQtyCheckBox.setChecked(false);
+            }
+
             return row;
         }
     }
@@ -1626,6 +1632,12 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         myList = new ArrayList<>();
         mAssetTrackingList = mSelectedStandardListBO.getAssetTrackingList();
         mBrandButton = mFilterText;
+        if (mFilterText.equals("")) {
+            mBrandButton = BRAND;
+        }
+
+
+
         if (mAssetTrackingList == null) {
             mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);

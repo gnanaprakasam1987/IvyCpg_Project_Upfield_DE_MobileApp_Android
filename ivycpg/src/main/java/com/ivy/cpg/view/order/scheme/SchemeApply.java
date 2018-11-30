@@ -47,7 +47,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.InitiativeActivity;
+import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.utils.view.OnSingleClickListener;

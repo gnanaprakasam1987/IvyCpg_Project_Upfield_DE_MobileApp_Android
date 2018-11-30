@@ -1,13 +1,10 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.acknowledgement;
 
 import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.JointCallAcknowledgementBO;
-import com.ivy.sd.png.bo.JointCallAcknowledgementCountBO;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -22,14 +19,12 @@ import static com.ivy.lib.Utils.QT;
 public class AcknowledgementHelper {
 
     private final Context mContext;
-    private final BusinessModel bmodel;
     private static AcknowledgementHelper instance = null;
     private ArrayList<JointCallAcknowledgementBO> acknowledgementList;
     private ArrayList<JointCallAcknowledgementCountBO> acknowledgementCountList;
 
     private AcknowledgementHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
         acknowledgementList = new ArrayList<>();
     }
 
@@ -44,16 +39,8 @@ public class AcknowledgementHelper {
         return acknowledgementList;
     }
 
-    public void setAcknowledgementList(ArrayList<JointCallAcknowledgementBO> acknowledgementList) {
-        this.acknowledgementList = acknowledgementList;
-    }
-
     public ArrayList<JointCallAcknowledgementCountBO> getAcknowledgementCountList() {
         return acknowledgementCountList;
-    }
-
-    public void setAcknowledgementCountList(ArrayList<JointCallAcknowledgementCountBO> acknowledgementCountList) {
-        this.acknowledgementCountList = acknowledgementCountList;
     }
 
     /**

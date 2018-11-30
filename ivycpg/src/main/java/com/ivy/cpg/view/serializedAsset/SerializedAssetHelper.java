@@ -324,7 +324,7 @@ public class SerializedAssetHelper {
 
             String allMasterSb = sb.toString();
 
-            sb.append(" and Retailerid in(0,");
+            sb.append("Where Retailerid in(0,");
             sb.append(AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
 
             if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
@@ -1196,10 +1196,10 @@ public class SerializedAssetHelper {
                 DataMembers.DB_PATH);
         db.openDataBase();
         ArrayList<String> retailerMovedData = new ArrayList<>();
-        Cursor c = db.selectSQL("SELECT DISTINCT AssetId from " + DataMembers.tbl_SerializedAssetTransfer + " where RequestType='T'");
+        Cursor c = db.selectSQL("SELECT DISTINCT AssetId,serialNumber from " + DataMembers.tbl_SerializedAssetTransfer + " where RequestType='T'");
         if (c != null)
             while (c.moveToNext()) {
-                retailerMovedData.add(c.getString(0));
+                retailerMovedData.add(c.getString(0)+c.getString(1));
             }
         return retailerMovedData;
     }

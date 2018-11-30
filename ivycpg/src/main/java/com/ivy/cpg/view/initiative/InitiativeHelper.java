@@ -1,23 +1,16 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.initiative;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.database.SQLException;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.InitiativeDetailBO;
-import com.ivy.sd.png.bo.InitiativeHeaderBO;
-import com.ivy.sd.png.bo.InitiativeHolder;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.InitiativeActivity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 public class InitiativeHelper {
@@ -29,9 +22,8 @@ public class InitiativeHelper {
     private Context mContext;
     private Vector<InitiativeHeaderBO> initiativeHeaderBOVector;
     private BusinessModel bmodel;
-    private List<InitiativeHolder> initativeList;
 
-    protected InitiativeHelper(Context context) {
+    private InitiativeHelper(Context context) {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
     }
@@ -77,8 +69,9 @@ public class InitiativeHelper {
                     initHeader.setIsParent(c.getInt(5));
                     initiativeHeaderBOVector.add(initHeader);
                 }
+                c.close();
             }
-            c.close();
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -115,8 +108,9 @@ public class InitiativeHelper {
                     initHeader.setIsCombination(c.getInt(4));
                     initHeader.setIsParent(c.getInt(5));
                 }
+                c.close();
             }
-            c.close();
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -158,7 +152,7 @@ public class InitiativeHelper {
             updateInitiativeCoverageReport(retailerId, calculateBalance);
     }
 
-    public InitiativeHeaderBO checkInitiative(InitiativeHeaderBO initHeaderBO,
+    private InitiativeHeaderBO checkInitiative(InitiativeHeaderBO initHeaderBO,
                                               String retailerId, int subChannelId) {
 
         String type = initHeaderBO.getType(); // Value || Qty
@@ -212,14 +206,14 @@ public class InitiativeHelper {
 
                         if (type.equals(VALUE_TYPE)) {
 
-                            float val = (float) (productMasterBO
+                            float val = (productMasterBO
                                     .getOrderedPcsQty() * productMasterBO
                                     .getSrp())
                                     + (productMasterBO.getOrderedCaseQty() * productMasterBO
                                     .getCsrp())
                                     + (productMasterBO.getOrderedOuterQty() * productMasterBO
                                     .getOsrp());
-                            float init_val = (float) (productMasterBO
+                            float init_val = (productMasterBO
                                     .getInit_pieceqty() * productMasterBO
                                     .getSrp())
                                     + (productMasterBO.getInit_caseqty() * productMasterBO
@@ -300,12 +294,16 @@ public class InitiativeHelper {
                     .setDistributed(checkForAnyOnlyDist(initiativeDetailVector));
         }
 
-        if (keyword.equals("AND")) {
-            initHeaderBO.setDone(checkForAnd(initiativeDetailVector));
-        } else if (keyword.equals("ANY")) {
-            initHeaderBO.setDone(checkForAny(initiativeDetailVector));
-        } else if (keyword.equals("ONLY")) {
-            initHeaderBO.setDone(checkForOnly(initiativeDetailVector));
+        switch (keyword) {
+            case "AND":
+                initHeaderBO.setDone(checkForAnd(initiativeDetailVector));
+                break;
+            case "ANY":
+                initHeaderBO.setDone(checkForAny(initiativeDetailVector));
+                break;
+            case "ONLY":
+                initHeaderBO.setDone(checkForOnly(initiativeDetailVector));
+                break;
         }
 
         return initHeaderBO;
@@ -326,7 +324,7 @@ public class InitiativeHelper {
 
         if (bmodel.configurationMasterHelper.IS_CUMULATIVE_AND) {
 
-            float target = 0;
+            float target;
             boolean done = false;
             float acheived = 0;
             for (int i = 0; i < initiativeDetailVector.size(); i++) {
@@ -374,10 +372,7 @@ public class InitiativeHelper {
 
         Commons.print(target + " Target " + acheived + " Ache");
 
-        if (acheived >= target)
-            return true;
-        else
-            return false;
+        return acheived >= target;
 
     }
 
@@ -392,14 +387,7 @@ public class InitiativeHelper {
 
     private boolean checkForOnly(
             Vector<InitiativeDetailBO> initiativeDetailVector) {
-        if (initiativeDetailVector.size() > 0) {
-            if (initiativeDetailVector.get(0).isDone())
-                return true;
-            else
-                return false;
-        } else {
-            return false;
-        }
+        return initiativeDetailVector.size() > 0 && initiativeDetailVector.get(0).isDone();
     }
 
     public Vector<InitiativeDetailBO> downloadInitiativeDetail(
@@ -411,8 +399,8 @@ public class InitiativeHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String target = "";
-            String achievement = "";
+            String target;
+            String achievement;
             if (initId.getType().equals("QTY")) {
                 target = "A.DropQtyValue";
                 achievement = "ifnull(B.Value,0)";
@@ -421,7 +409,7 @@ public class InitiativeHelper {
                 achievement = "ifnull(B.Qty,0)";
             }
 
-            Cursor c = null;
+            Cursor c;
             if (initId.getIsParent() == 0) {
 
                 c = db.selectSQL("select A.InitId,A.ProductInitId, "
@@ -475,7 +463,7 @@ public class InitiativeHelper {
 
     public Vector<InitiativeDetailBO> downloadCombinationInitiativeDetail(
             String initId) {
-        Vector<InitiativeDetailBO> initiativeDetailBO = new Vector<InitiativeDetailBO>();
+        Vector<InitiativeDetailBO> initiativeDetailBO = new Vector<>();
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -490,7 +478,7 @@ public class InitiativeHelper {
                             + "on A.ProductInitId=B.ProductId and B.InitId ='"
                             + initId
                             + "' and B.retailerid="
-                            + bmodel.getRetailerMasterBO().getRetailerID()
+                            + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                             + " where A.initid in (SELECT ProductInitId FROM InitiativeDetailMaster where Initid='"
                             + initId + "')");
 
@@ -527,7 +515,7 @@ public class InitiativeHelper {
                 DataMembers.DB_PATH);
         db.createDataBase();
         db.openDataBase();
-        Cursor c = null;
+        Cursor c;
 
         if (bmodel.configurationMasterHelper.IS_INVOICE) {
             c = db.selectSQL("select productid,sum(pcsQty),sum( caseQty ),sum(outerQty) from invoicedetails where retailerid = "
@@ -562,7 +550,7 @@ public class InitiativeHelper {
             return;
 
         for (int i = 0; i < siz; ++i) {
-            product = (ProductMasterBO) bmodel.productHelper.getProductMaster()
+            product = bmodel.productHelper.getProductMaster()
                     .get(i);
             if (product.getProductID().equals(productid)) {
                 product.setLocalOrderPieceqty(pieceqty);
@@ -578,7 +566,7 @@ public class InitiativeHelper {
 
     public void updateInitAchievedPercentInRetailerMaster() {
         if (initiativeHeaderBOVector == null) {
-            downloadInitiativeHeader(bmodel.getRetailerMasterBO()
+            downloadInitiativeHeader(bmodel.getAppDataProvider().getRetailMaster()
                     .getSubchannelid());
         }
 
@@ -605,8 +593,8 @@ public class InitiativeHelper {
         }
 
         storeInitiativePrecentageInDB(SDUtil.roundIt(precent, 2) + "", acheived);
-        bmodel.getRetailerMasterBO().setInitiative_achieved(acheived);
-        bmodel.getRetailerMasterBO().setInitiativePercent(
+        bmodel.getAppDataProvider().getRetailMaster().setInitiative_achieved(acheived);
+        bmodel.getAppDataProvider().getRetailMaster().setInitiativePercent(
                 SDUtil.roundIt(precent, 2) + "");
 
     }
@@ -617,7 +605,7 @@ public class InitiativeHelper {
      *
      * @param percent
      */
-    public void storeInitiativePrecentageInDB(String percent, float achieved) {
+    private void storeInitiativePrecentageInDB(String percent, float achieved) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -627,7 +615,7 @@ public class InitiativeHelper {
                     + " set initiativepercent=" + QT(percent)
                     + " ,initiative_achieved=" + QT(achieved + "")
                     + " where retailerid="
-                    + QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                    + QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()));
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -639,7 +627,7 @@ public class InitiativeHelper {
         return "'" + data + "'";
     }
 
-    public void updateInitiativeCoverageReport(String retailerId,
+    private void updateInitiativeCoverageReport(String retailerId,
                                                boolean calculateBalance) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
@@ -677,7 +665,7 @@ public class InitiativeHelper {
                     queryString.append("INSERT INTO ")
                             .append("InitiativeCoverageReport")
                             .append(" ( InitId,RetailerId,isDone ) ")
-                            .append("SELECT ").append(colValues.toString());
+                            .append("SELECT ").append(colValues);
 
                     if (calculateBalance)
                         queryString2
@@ -685,14 +673,14 @@ public class InitiativeHelper {
                                 .append("InitiativeBalance")
                                 .append(" ( InitId,RetailerId,InitDesc,balance,balanceEdit ) ")
                                 .append("SELECT ")
-                                .append(colValues2.toString());
+                                .append(colValues2);
 
                 } else {
                     queryString.append(" UNION ALL SELECT ").append(
-                            colValues.toString());
+                            colValues);
                     if (calculateBalance)
                         queryString2.append(" UNION ALL SELECT ").append(
-                                colValues2.toString());
+                                colValues2);
                 }
 
             }
@@ -705,7 +693,7 @@ public class InitiativeHelper {
 
             db.closeDB();
         } catch (Exception e) {
-
+            Commons.printException(e);
         }
     }
 
@@ -736,7 +724,7 @@ public class InitiativeHelper {
         }
     }
 
-    public InitiativeHeaderBO checkInitiativeForCoverage(
+    private InitiativeHeaderBO checkInitiativeForCoverage(
             InitiativeHeaderBO initHeaderBO, String retailerId, int subChannelId) {
 
         String type = initHeaderBO.getType(); // Value || Qty
@@ -836,12 +824,16 @@ public class InitiativeHelper {
                     .setDistributed(checkForAnyOnlyDist(initiativeDetailVector));
         }
 
-        if (keyword.equals("AND")) {
-            initHeaderBO.setDone(checkForAnd(initiativeDetailVector));
-        } else if (keyword.equals("ANY")) {
-            initHeaderBO.setDone(checkForAny(initiativeDetailVector));
-        } else if (keyword.equals("ONLY")) {
-            initHeaderBO.setDone(checkForOnly(initiativeDetailVector));
+        switch (keyword) {
+            case "AND":
+                initHeaderBO.setDone(checkForAnd(initiativeDetailVector));
+                break;
+            case "ANY":
+                initHeaderBO.setDone(checkForAny(initiativeDetailVector));
+                break;
+            case "ONLY":
+                initHeaderBO.setDone(checkForOnly(initiativeDetailVector));
+                break;
         }
 
         return initHeaderBO;
@@ -875,125 +867,6 @@ public class InitiativeHelper {
 
     public Vector<InitiativeHeaderBO> getInitiativeHeaderBOVector() {
         return initiativeHeaderBOVector;
-    }
-
-	/*public void downloadInitiativeandInsertinRetailerInfoMaster() {
-        DBUtil db = null;
-		try {
-			db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
-			db.openDataBase();
-			db.deleteSQL("RetailerMasterInfo",null,true);
-
-			StringBuffer sb = new StringBuffer();
-
-			sb.append("select count(ChannelId) from SbdMerchandisingMaster");
-			sb.append(" WHERE TypeListId=(select ListId from StandardListMaster where ListCode='MERCH_INIT')");
-
-			Cursor c = db.selectSQL(sb.toString());
-			if (c != null) {
-				if (c.moveToNext()) {
-					sb = new StringBuffer();
-					if(c.getInt(0)>0){
-						sb.append("INSERT INTO RetailerMasterInfo (RetailerId,IS_SBDMerchTarget)");
-						sb.append(" SELECT DISTINCT R.RetailerID, IFNULL(A.sbdtgt,0) as tgt FROM RetailerMaster R");
-						sb.append(" LEFT JOIN ( select distinct ChannelId, count (sbdid) as sbdtgt from SbdMerchandisingMaster");
-						sb.append(" WHERE TypeListId=(select ListId from StandardListMaster where ListCode='MERCH_INIT')");
-						sb.append(" group by ChannelId) A ON A.ChannelId = R.ChannelId");
-					} else {
-						sb.append("INSERT INTO RetailerMasterInfo(RetailerId,IS_SBDMerchTarget)");
-						sb.append(" SELECT DISTINCT R.RetailerID, 0 as tgt FROM RetailerMaster R");
-					}
-				}
-				c.close();
-			}
-			db.executeQ(sb.toString());
-			db.closeDB();
-		} catch (Exception e) {
-
-			Commons.printException(e);
-		}
-	}*/
-    // Initative Report Fragment
-
-    /**
-     * Load the data needed for title view.
-     */
-    public void generateIntiativeView() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            initativeList = new ArrayList<InitiativeHolder>();
-            Cursor c = db
-                    .selectSQL("SELECT InitId, InitDesc, IsParent FROM InitiativeHeaderMaster  where isParent=1  ORDER BY InitDesc ASC");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    InitiativeHolder holder = new InitiativeHolder();
-                    holder.setInitiativeId(c.getInt(0));
-                    holder.setInitiativeDesc(c.getString(1));
-                    holder.setIsParent(c.getInt(2));
-                    initativeList.add(holder);
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (SQLException e) {
-            Commons.printException(e);
-        }
-    }
-
-    /**
-     * Calculates the total Initiative achieved today
-     */
-    public void downloadInitTotalValue() {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            Cursor c = null;
-            if (bmodel.configurationMasterHelper.IS_INVOICE) {
-                c = db.selectSQL("select CASE WHEN IHM.IsCombination = 0 AND IHM.IsParent = 0 THEN (SELECT DISTINCT(InitId) FROM InitiativeDetailMaster WHERE ProductInitId = IDM.InitId) "
-                        + "ELSE IDM.InitId END,sum(OH.qty*OH.rate) from InvoiceDetails OH inner join InitiativeDetailMaster IDM "
-                        + "on IDM.ProductInitId=OH.ProductID inner join InitiativeHeaderMaster  IHM on IHM.InitId = IDM.InitId "
-                        + "where  CASE WHEN IHM.IsCombination = 0 AND IHM.IsParent = 0 THEN "
-                        + "(SELECT DISTINCT(InitId) FROM InitiativeDetailMaster WHERE ProductInitId = IDM.InitID) ELSE IDM.InitId END "
-                        + "in (select InitId from InitiativeCoverageReport) group by IDM.InitId order by IDM.rowid");
-            } else {
-                c = db.selectSQL("select CASE WHEN IHM.IsCombination = 0 AND IHM.IsParent = 0 THEN (SELECT DISTINCT(InitId) FROM InitiativeDetailMaster WHERE ProductInitId = IDM.InitId) "
-                        + "ELSE IDM.InitId END,sum(OH.qty*OH.rate) from orderdetail OH inner join InitiativeDetailMaster IDM "
-                        + "on IDM.ProductInitId=OH.ProductID inner join InitiativeHeaderMaster  IHM on IHM.InitId = IDM.InitId "
-                        + "where  CASE WHEN IHM.IsCombination = 0 AND IHM.IsParent = 0 THEN "
-                        + "(SELECT DISTINCT(InitId) FROM InitiativeDetailMaster WHERE ProductInitId = IDM.InitID) ELSE IDM.InitId END "
-                        + "in (select InitId from InitiativeCoverageReport) group by IDM.InitId order by IDM.rowid");
-            }
-            if (c != null) {
-                while (c.moveToNext()) {
-
-                    for (int j = 0; j < bmodel.initiativeHelper
-                            .getInitativeList().size(); j++) {
-                        InitiativeHolder bo = bmodel.initiativeHelper
-                                .getInitativeList().get(j);
-                        if (c.getInt(0) == bo.getInitiativeId()) {
-                            bo.setTotalInitiative(c.getDouble(1));
-                            break;
-                        }
-                    }
-
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (SQLException e) {
-
-            Commons.printException(e);
-        }
-    }
-
-    public List<InitiativeHolder> getInitativeList() {
-        return initativeList;
     }
 
 }
