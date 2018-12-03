@@ -41,14 +41,15 @@ public class InitiativeDialog extends Dialog implements
 
     private BusinessModel bmodel;
     private Context context;
-    private TextView totalValueText, totalQty, productName;
+    private TextView productName;
     private ListView lvwplist;
     private ArrayList<ProductMasterBO> mylist;
     private EditText QUANTITY;
     private String append = "";
     private Vector<String> initiativeProductIds;
     private InitiativeActivity initAct;
-    Toolbar toolbar;
+    private TextView initQty, initValue;
+    private String strInitQty = "", strValue = "";
 
     public InitiativeDialog(Context context, InitiativeHeaderBO initHeaderBO,
                             InitiativeActivity init) {
@@ -78,13 +79,12 @@ public class InitiativeDialog extends Dialog implements
 
         bmodel = (BusinessModel) context.getApplicationContext();
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
         mScreenTitleTV.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
         mScreenTitleTV.setText(initHeaderBO.getDescription());
         toolbar.setTitle("");
         Button btn_done = findViewById(R.id.btn_done);
-        btn_done.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,12 +97,19 @@ public class InitiativeDialog extends Dialog implements
         //to hide the default keyboard enable
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         TextView txt_initValue = findViewById(R.id.txt_init_value);
-        TextView txt_init_value_suffix = findViewById(R.id.txt_init_value_suffix);
-        totalValueText = findViewById(R.id.totalValue);
-        totalQty = findViewById(R.id.totalQty);
 
-        TextView initvalue = findViewById(R.id.initValue);
-        TextView initQty = findViewById(R.id.initQty);
+        initValue = findViewById(R.id.initValue);
+        initQty = findViewById(R.id.initQty);
+
+        TextView initLabel = findViewById(R.id.widget63);
+        String strLabel = context.getResources().getString(R.string.init_qty) + "/" +
+                            context.getResources().getString(R.string.tot_qty);
+        initLabel.setText(strLabel);
+
+        TextView initValueLabel = findViewById(R.id.initvalue_title);
+        String strValueLabel = context.getResources().getString(R.string.init_value) + "/" +
+                                context.getResources().getString(R.string.total_value);
+        initValueLabel.setText(strValueLabel);
 
         productName = findViewById(R.id.productName2);
         productName.setOnTouchListener(new OnTouchListener() {
@@ -114,24 +121,6 @@ public class InitiativeDialog extends Dialog implements
                 return true;
             }
         });
-        initQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.THIN));
-        totalQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.THIN));
-        initvalue.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.THIN));
-        totalValueText.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.THIN));
-        txt_initValue.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.THIN));
-        txt_init_value_suffix.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.THIN));
-        ((TextView) findViewById(R.id.txt_init_value_lable)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.widget63)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.widget65)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.initvalue_title)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.totalVolume_title)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-        productName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.productnametitle)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.sihtitle)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.totaltitle)).setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
         Vector<InitiativeDetailBO> initiativeDetailBO;
 
         if (initHeaderBO.getIsCombination() == 1)
@@ -160,25 +149,23 @@ public class InitiativeDialog extends Dialog implements
         }
 
         // Following is used to shwo the Initial target of the Initaitive.
+        String strInitValue;
         if (initHeaderBO.getKeyword().equals("AND")
                 && bmodel.configurationMasterHelper.IS_CUMULATIVE_AND) {
             if (initHeaderBO.getType().equals("QTY")) {
-                txt_initValue.setText(String.valueOf((int) sumForAnd));
-                txt_init_value_suffix.setText(String.valueOf((int) totalSumForAnd));
+                strInitValue = String.valueOf((int) sumForAnd) + "/" + String.valueOf((int) totalSumForAnd);
             } else {
-                txt_initValue.setText(bmodel.formatValue(sumForAnd));
-                txt_init_value_suffix.setText((bmodel.formatValue(totalSumForAnd)));
+                strInitValue = bmodel.formatValue(sumForAnd) + "/" + bmodel.formatValue(totalSumForAnd);
             }
         } else {
             if (initHeaderBO.getType().equals("QTY")) {
-                txt_initValue.setText(String.valueOf((int) sumForAnd));
-                txt_init_value_suffix.setText(String.valueOf((int) initiativeDetailBO.get(0).getInitiativeValue()));
+                strInitValue = String.valueOf((int) sumForAnd) + "/" + String.valueOf((int) initiativeDetailBO.get(0).getInitiativeValue());
             } else {
-                txt_initValue.setText(bmodel.formatValue(sumForAnd));
-                txt_init_value_suffix.setText((bmodel.formatValue(initiativeDetailBO.get(0)
-                        .getInitiativeValue())));
+                strInitValue = bmodel.formatValue(sumForAnd) + "/" + bmodel.formatValue(initiativeDetailBO.get(0)
+                        .getInitiativeValue());
             }
         }
+        txt_initValue.setText(strInitValue);
         // End
 
         if (initHeaderBO.getType().equals(InitiativeHelper.VALUE_TYPE)) {
@@ -186,13 +173,12 @@ public class InitiativeDialog extends Dialog implements
                     && bmodel.configurationMasterHelper.IS_CUMULATIVE_AND) {
                 float k = (totalSumForAnd - sumForAnd) > 0 ? (totalSumForAnd - sumForAnd)
                         : 0;
-                initvalue.setText(bmodel.formatValue(k));
+                strValue = bmodel.formatValue(k);
             } else {
                 float k = (initiativeDetailBO.get(0)
                         .getInitiativeBalanceValue() - sumForAnd) > 0 ? (initiativeDetailBO
                         .get(0).getInitiativeBalanceValue() - sumForAnd) : 0;
-                initvalue.setText(bmodel.formatValue(k));
-
+                strValue = bmodel.formatValue(k);
             }
         } else if (initHeaderBO.getType()
                 .equals(InitiativeHelper.QUANTITY_TYPE)) {
@@ -200,11 +186,11 @@ public class InitiativeDialog extends Dialog implements
                     && bmodel.configurationMasterHelper.IS_CUMULATIVE_AND) {
                 float k = (totalSumForAnd - sumForAnd) > 0 ? (totalSumForAnd - sumForAnd)
                         : 0;
-                initQty.setText(String.valueOf(Math.round(k)));
+                strInitQty = String.valueOf(Math.round(k));
             } else {
                 float k = (initiativeDetailBO.get(0).getInitiativeValue() - sumForAnd) > 0 ? (initiativeDetailBO
                         .get(0).getInitiativeValue() - sumForAnd) : 0;
-                initQty.setText(String.valueOf(Math.round(k)));
+                strInitQty = String.valueOf(Math.round(k));
             }
 
         }
@@ -218,11 +204,11 @@ public class InitiativeDialog extends Dialog implements
             findViewById(R.id.initValue_LL).setVisibility(View.GONE);
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_INIT_FOOTER) {
+        if (bmodel.configurationMasterHelper.SHOW_INIT_FOOTER) {
             findViewById(R.id.initQty_LL).setVisibility(View.GONE);
-            findViewById(R.id.initvalue_title).setVisibility(View.GONE);
+            initValueLabel.setVisibility(View.GONE);
             findViewById(R.id.initValue_LL).setVisibility(View.VISIBLE);
-            initvalue.setVisibility(View.GONE);
+            initValue.setVisibility(View.GONE);
         }
 
         // On/Off order case and pcs
@@ -348,16 +334,6 @@ public class InitiativeDialog extends Dialog implements
                 holder.sih = row.findViewById(R.id.sih);
                 holder.outerQty = row
                         .findViewById(R.id.outerorderQTYinCase);
-                holder.psname.setTypeface(FontUtils.getProductNameFont(context));
-                holder.mrp.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-                holder.sih.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-                holder.total.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-                holder.caseqtyEditText.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-                holder.pieceqty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-                holder.p4qty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-                holder.msq.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-                holder.ou_type.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-                holder.outerQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
 
                 holder.pieceqty.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -762,8 +738,10 @@ public class InitiativeDialog extends Dialog implements
             }
         }
 
-        totalValueText.setText(bmodel.formatValue(total_value));
-        totalQty.setText(String.valueOf(count));
+        strValue = strValue + "/" + bmodel.formatValue(total_value);
+        initValue.setText(strValue);
+        strInitQty = strInitQty + "/" + String.valueOf(count);
+        initQty.setText(strInitQty);
     }
 
     public void eff() {
