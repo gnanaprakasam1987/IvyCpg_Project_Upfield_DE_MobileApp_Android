@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

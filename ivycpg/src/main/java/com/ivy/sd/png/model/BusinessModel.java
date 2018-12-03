@@ -286,7 +286,7 @@ public class BusinessModel extends Application {
     public String invoiceNumber;
     public String invoiceDate;
     //
-    public HashMap<String, PhotoCaptureProductBO> adhocGalleryDetails;
+
     private Vector<StandardListBO> slist;
     private List<IndicativeBO> indicativeRtrList = null;
     private OrderHeader orderHeaderBO;
@@ -2686,53 +2686,7 @@ public class BusinessModel extends Application {
     }
 
 
-    // Load all retailer in Gallery
-    public void loadAdhocPhotoCapturedDetails() {
 
-        adhocGalleryDetails = new HashMap<String, PhotoCaptureProductBO>();
-
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-
-
-        String sql = " select uid,sm.listname||\" - \"||PM.psname||\" - \"||lm.locname||\" - \"||uid as header from RoadActivityTransaction RA"
-                + " inner join  StandardListMaster sm on sm.listid=RA.typeid"
-                + " inner join productmaster pm on pm.pid=RA.pid"
-                + " inner join locationMAster lm on lm.locid=RA.locationid  where RA.upload= 'N'";
-
-
-        Cursor c = db.selectSQL(sql);
-
-        if (c != null) {
-            PhotoCaptureProductBO photoBO;
-            while (c.moveToNext()) {
-                photoBO = new PhotoCaptureProductBO();
-                photoBO.setRetailerName(c.getString(1));
-
-                String sql1 = "select imgname from RoadActivityTransactiondetail where uid="
-                        + QT(c.getString(0));
-
-                Cursor c1 = db.selectSQL(sql1);
-
-                if (c1 != null) {
-                    while (c1.moveToNext()) {
-                        String imageName = c1.getString(0).substring(c1.getString(0).lastIndexOf("/") + 1);
-
-                        Commons.print("Image NBame>>>>," + "" + imageName);
-                        adhocGalleryDetails
-                                .put(imageName,
-                                        photoBO);
-                    }
-                }
-
-
-            }
-        }
-
-
-        db.closeDB();
-    }
 
 
     //Applying currency value config or normal format(2)
@@ -3888,30 +3842,7 @@ public class BusinessModel extends Application {
 
     /* ******* Invoice Number To Print End ******* */
 
-    public boolean getAdhocTransCount(String imgName) {
-        boolean hasonlyOne = false;
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        Cursor c = db.selectSQL("select uid  from RoadActivityTransactiondetail where imgname = " + QT("RoadActivity" + "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
-                + "/" + userMasterHelper.getUserMasterBO().getUserid()
-                + "/" + imgName) + " and Upload = 'N'");
-        if (c != null) {
-            if (c.moveToNext() || c.getCount() == 1) {
-                Cursor c1 = db.selectSQL("select count(uid)  from RoadActivityTransactiondetail where uid = " + QT(c.getString(0)) + " and Upload = 'N'");
-                if (c1 != null) {
-                    if (c1.moveToNext()) {
-                        Commons.print("UID," + ">>" + c.getString(0) + " C1 Count" + "" + c1.getInt(0));
-                        if (c1.getInt(0) == 1)
-                            hasonlyOne = true;
-                    }
-                }
-                c1.close();
-            }
-            c.close();
-        }
-        db.closeDB();
-        return hasonlyOne;
-    }
+
 
 
     /* ******* Invoice Number To Print End ******* */

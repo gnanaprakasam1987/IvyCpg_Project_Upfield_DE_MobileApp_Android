@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.profile;
+package com.ivy.sd.png.view.profile.orderandinvoicehistory;
 
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -17,9 +17,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.text.ParseException;
@@ -30,7 +28,7 @@ import java.util.Vector;
 /**
  * Created by nivetha.s on 26-10-2015.
  */
-public class HistoryFragment extends IvyBaseFragment {
+public class OrderHistoryFragment extends IvyBaseFragment {
     private View view;
     private BusinessModel bmodel;
     private TypedArray typearr;
@@ -259,7 +257,7 @@ public class HistoryFragment extends IvyBaseFragment {
                 itemView.setOnClickListener(new OnSingleClickListener() {
                     @Override
                     public void onSingleClick(View v) {
-                        if (bmodel.configurationMasterHelper.SHOW_HST_INVDET) {
+                        if (bmodel.configurationMasterHelper.SHOW_ORDER_HISTORY_DETAILS) {
                             Intent intent = new Intent(getActivity(), HistoryDetailActivity.class);
                             intent.putExtra("selected_list_id", getLayoutPosition());
                             intent.putExtra("from", "OrderHistory");
@@ -366,7 +364,7 @@ public class HistoryFragment extends IvyBaseFragment {
                 } else {
                     due_date_layout.setVisibility(View.GONE);
                 }
-                if (bmodel.configurationMasterHelper.SHOW_HST_INVDET) {
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_HISTORY_DETAILS) {
                     invViewLayout.setVisibility(View.VISIBLE);
                 } else {
                     invViewLayout.setVisibility(View.GONE);

@@ -390,7 +390,7 @@
             android:name="com.ivy.cpg.view.photocapture.Gallery"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.AdhocGallery"
+            android:name="com.ivy.cpg.view.roadactivity.AdhocGallery"
             android:screenOrientation="portrait" />
 
         <activity
@@ -634,7 +634,7 @@
             android:name="com.ivy.sd.png.view.PlanningVisitActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.profile.HistoryDetailActivity"
+            android:name="com.ivy.sd.png.view.profile.orderandinvoicehistory.HistoryDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.survey.DragDropPictureActivity"

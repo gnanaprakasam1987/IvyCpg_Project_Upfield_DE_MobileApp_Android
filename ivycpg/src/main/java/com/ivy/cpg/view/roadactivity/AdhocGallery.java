@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.roadactivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,6 +30,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongClickListener {
@@ -42,9 +43,8 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
     private List<File> tFileList;
     private List<Bitmap> tBitMapList;
     private List<String> tImageNameList;
-    private Toolbar toolbar;
-
-    private boolean bool = false;
+    private HashMap<String, PhotoCaptureProductBO> adhocGalleryDetails;
+    private RoadActivityHelper roadActivityHelper;
 
     /**
      * Called when the activity is first created.
@@ -53,12 +53,16 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gallery);
+
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        bmodel.loadAdhocPhotoCapturedDetails();
-        if (bmodel.adhocGalleryDetails.size() > 0) {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        roadActivityHelper = RoadActivityHelper.getInstance(getApplicationContext());
+        adhocGalleryDetails = roadActivityHelper.loadAdhocPhotoCapturedDetails();
+
+        if (adhocGalleryDetails.size() > 0) {
             loadGrid();
         }
 
@@ -67,10 +71,7 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.gallery));
-//            // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//           // Used to remove the app logo actionbar icon and set title as home
-//          // (title support click)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
@@ -92,7 +93,7 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
                 for (int i = 0; i < files.length; i++) {
                     File file = files[i];
 
-                    if (file.getName().startsWith("RA") && bmodel.adhocGalleryDetails.containsKey(file.getName())) {
+                    if (file.getName().startsWith("RA") && adhocGalleryDetails.containsKey(file.getName())) {
 
                         BitmapFactory.Options options = new BitmapFactory.Options();
                         options.inSampleSize = 4;
@@ -106,7 +107,7 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
                 }
             }
 
-            GridView g = (GridView) findViewById(R.id.PhoneImageGrid);
+            GridView g = findViewById(R.id.PhoneImageGrid);
             g.setAdapter(new ImageAdapter());
         } catch (Exception e) {
             Commons.printException(e);
@@ -142,33 +143,28 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
             if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = mInflater.inflate(R.layout.adhocgalleryitem, null);
-                holder.imageview = (ImageView) convertView
+                holder.imageview = convertView
                         .findViewById(R.id.thumbImage);
-                holder.check = (Button) findViewById(R.id.itemCheckBox);
-                holder.retailerName = (TextView) convertView
+                holder.check = findViewById(R.id.itemCheckBox);
+                holder.retailerName = convertView
                         .findViewById(R.id.txt_retailerName);
-                holder.imageCount = (TextView) convertView
+                holder.imageCount = convertView
                         .findViewById(R.id.txt_imageCount);
 
                 holder.imageview
                         .setOnLongClickListener(new OnLongClickListener() {
 
                             public boolean onLongClick(View v) {
-                                // TODO Auto-generated method stub
 
                                 deleteFilePath = holder.filePath;
                                 deleteImageName = holder.ImageName;
 
-                                if (!bmodel.getAdhocTransCount(deleteImageName)) {
+                                if (!roadActivityHelper.getAdhocTransCount(deleteImageName)) {
                                     showDialog(0);
                                 } else {
                                     Toast.makeText(getApplicationContext(), "There Should Be one Image Per Combination", Toast.LENGTH_LONG)
                                             .show();
                                 }
-
-                                // holder.filePath.delete();
-                                // bmodel.DeleteImageItemFromPhotoCaptureTable(holder.ImageName);
-                                // loadGrid();
 
                                 return true;
                             }
@@ -183,7 +179,7 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
             holder.imageview.setImageBitmap(tBitMapList.get(position));
             holder.filePath = tFileList.get(position);
             holder.ImageName = tImageNameList.get(position);
-            holder.photoBO = bmodel.adhocGalleryDetails.get(tImageNameList
+            holder.photoBO = adhocGalleryDetails.get(tImageNameList
                     .get(position));
             if (holder.photoBO != null) {
 
@@ -237,17 +233,11 @@ public class AdhocGallery extends IvyBaseActivityNoActionBar implements OnLongCl
 
     @Override
     public void onBackPressed() {
-        // TODO Auto-generated method stub
-        // super.onBackPressed();
-
-        // finish();
-        // bmodel.loadActivity(gallery.this, DataMembers.actPhotocapture);
 
     }
 
     @Override
     public boolean onLongClick(View v) {
-        // TODO Auto-generated method stub
         return false;
     }
 

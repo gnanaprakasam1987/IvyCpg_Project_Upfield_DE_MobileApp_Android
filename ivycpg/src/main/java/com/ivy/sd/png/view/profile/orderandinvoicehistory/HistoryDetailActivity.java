@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.profile;
+package com.ivy.sd.png.view.profile.orderandinvoicehistory;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -16,7 +16,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
