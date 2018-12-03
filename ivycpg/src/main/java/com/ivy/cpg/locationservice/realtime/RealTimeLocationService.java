@@ -128,11 +128,12 @@ public class RealTimeLocationService extends Service {
 
                 //Notifies if GPS is Disabled
                 boolean isGpsEnabled = LocationServiceHelper.getInstance().notifyGPSStatus(getApplicationContext());
-                //Notifies if Mock Location is enabled
-                boolean isMockLocationEnabled = LocationServiceHelper.getInstance().notifyMockLocationStatus(getApplicationContext());
 
                 Location location = locationResult.getLastLocation();
                 if (location != null) {
+                    //Notifies if Mock Location is enabled
+                    boolean isMockLocationEnabled = LocationServiceHelper.getInstance().notifyMockLocationStatus(getApplicationContext(),location);
+
                     if(isBetterLocation(location,previousBestLocation)) {
                         LocationDetailBO locationDetailBO = new LocationDetailBO();
                         locationDetailBO.setLatitude(String.valueOf(location.getLatitude()));

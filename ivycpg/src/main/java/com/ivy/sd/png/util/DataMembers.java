@@ -14,7 +14,7 @@ public class DataMembers {
     public static final int IVY_APP_INTERNAL_EXCEPTION = 2001;
 
     // Image Download URL
-    public static String img_Down_URL;
+    public static String IMG_DOWN_URL;
 
     // For Cloud Image Upload Starts
     public static String S3_BUCKET_REGION = "s3-ap-southeast-1.amazonaws.com";// "Singapore";//
@@ -654,6 +654,12 @@ public class DataMembers {
     public static final String tbl_movement_tracking_history = "MovementTrackingHistory";
     public static final String tbl_movement_tracking_history_cols = "userid,latitude,longitude,date_time";
 
+    public static final String tbl_DigitalContent_Tracking_Header = "DigitalContentTrackingHeader";
+    public static final String tbl_DigitalContent_Tracking_Header_cols = "UId,DId,RetailerId,Date";
+
+    public static final String tbl_DigitalContent_Tracking_Detail = "DigitalContentTrackingDetail";
+    public static final String tbl_DigitalContent_Tracking_Detail_cols = "UId,StartTime,EndTime,PId,isFastForwarded";
+
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
@@ -833,6 +839,9 @@ public class DataMembers {
         uploadColumn.put(tbl_SerializedAssetImageDetail, tbl_SerializedAssetImageDetail_cols);
         uploadColumn.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
         uploadColumn.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
+
+        uploadColumn.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
+        uploadColumn.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -973,6 +982,9 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_SerializedAssetImageDetail, tbl_SerializedAssetImageDetail_cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
+
+        uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
+        uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

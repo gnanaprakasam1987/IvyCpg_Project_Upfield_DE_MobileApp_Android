@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.ivy.cpg.view.attendance.AttendanceActivity;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
+import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -325,6 +326,8 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                     // This call will help to intiatiate catalog image download services.
                     CatalogImageDownloadProvider.getInstance(businessModel).checkCatalogDownload();
 
+                    FileDownloadProvider.getInstance(businessModel).callFileDownload(getApplicationContext());
+
                     finish();
                     break;
                 case DataMembers.NOTIFY_NOT_USEREXIST:
@@ -486,6 +489,8 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:
                     dismissCurrentProgressDialog();
 
+                    FileDownloadProvider.getInstance(businessModel).callFileDownload(getApplicationContext());
+
                     if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
                         CatalogImageDownloadProvider.getInstance(businessModel).callCatalogImageDownload();
 
@@ -527,6 +532,8 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                         dismissCurrentProgressDialog();
                         showAlert(errorMessage, false);
                     }
+
+                    FileDownloadProvider.getInstance(businessModel).callFileDownload(getApplicationContext());
 
                     if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
                         CatalogImageDownloadProvider.getInstance(businessModel).callCatalogImageDownload();

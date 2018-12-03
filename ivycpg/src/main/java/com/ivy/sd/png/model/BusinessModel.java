@@ -83,6 +83,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
+import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
@@ -379,6 +380,9 @@ public class BusinessModel extends Application {
 
     private ArrayList<String> orderedBrands = new ArrayList<>();
     private ArrayList<String> totalFocusBrandList = new ArrayList<>();
+
+
+    private HashMap<Integer,DigitalContentModel> digitalContentLargeFileURLS;
 
     public BusinessModel() {
 
@@ -3548,7 +3552,7 @@ public class BusinessModel extends Application {
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
                 if (c != null) {
                     while (c.moveToNext()) {
-                        DataMembers.img_Down_URL = c.getString(0);
+                        DataMembers.IMG_DOWN_URL = c.getString(0);
                     }
                     c.close();
                 }
@@ -3557,7 +3561,7 @@ public class BusinessModel extends Application {
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
                 if (c != null) {
                     while (c.moveToNext()) {
-                        DataMembers.img_Down_URL = c.getString(0) + "/";
+                        DataMembers.IMG_DOWN_URL = c.getString(0) + "/";
                     }
                     c.close();
                 }
@@ -3574,7 +3578,10 @@ public class BusinessModel extends Application {
      */
     public boolean isDigitalContentAvailable() {
         getimageDownloadURL();
-        setDigitalContentURLS(new HashMap<String, String>());
+        setDigitalContentURLS(new HashMap<>());
+        setDigitalContentLargeFileURLS(new HashMap<>());
+        configurationMasterHelper.getDigitalContentSize();
+
         boolean isDigiContentAvail = false;
         try {
 
@@ -3588,19 +3595,38 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.PLANOGRAM);
 
                 }
                 c.close();
             }
 
-            c = db.selectSQL("SELECT DISTINCT ImageURL FROM DigitalContentMaster");
+            c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename FROM DigitalContentMaster");
             if (c != null) {
                 while (c.moveToNext()) {
-                    getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
-                            DataMembers.DIGITALCONTENT);
+
+                    if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1 &&
+                            configurationMasterHelper.DIGITAL_CONTENT_SIZE < c.getLong(1)) {
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(c.getString(1));
+                        digitalContentBO.setImageID(c.getInt(2));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.DIGITALCONTENT);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID(),digitalContentBO);
+
+                    }else {
+
+                        getDigitalContentURLS().put(
+                                DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                DataMembers.DIGITALCONTENT);
+
+                    }
+
                 }
                 c.close();
             }
@@ -3609,7 +3635,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.APP_DIGITAL_CONTENT);
                 }
                 c.close();
@@ -3619,7 +3645,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.MVP);
                 }
                 c.close();
@@ -3629,7 +3655,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while ((c.moveToNext())) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.LOYALTY_POINTS);
 
                 }
@@ -3640,7 +3666,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while ((c.moveToNext())) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.USER);
 
                 }
@@ -3652,7 +3678,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while ((c.moveToNext())) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.PROFILE);
 
                 }
@@ -3662,19 +3688,19 @@ public class BusinessModel extends Application {
             db.closeDB();
 
             getDigitalContentURLS().put(
-                    DataMembers.img_Down_URL + "PRINT/" + "order_print.xml",
+                    DataMembers.IMG_DOWN_URL + "PRINT/" + "order_print.xml",
                     DataMembers.PRINT);
             getDigitalContentURLS().put(
-                    DataMembers.img_Down_URL + "PRINT/" + "invoice_print.xml",
+                    DataMembers.IMG_DOWN_URL + "PRINT/" + "invoice_print.xml",
                     DataMembers.PRINT);
             getDigitalContentURLS().put(
-                    DataMembers.img_Down_URL + "PRINT/" + "credit_note_print.xml",
+                    DataMembers.IMG_DOWN_URL + "PRINT/" + "credit_note_print.xml",
                     DataMembers.PRINT);
             getDigitalContentURLS().put(
-                    DataMembers.img_Down_URL + "PRINT/" + "eod_print.xml",
+                    DataMembers.IMG_DOWN_URL + "PRINT/" + "eod_print.xml",
                     DataMembers.PRINT);
 
-            if (getDigitalContentURLS().size() > 0)
+            if (getDigitalContentURLS().size() > 0 || getDigitalContentLargeFileURLS().size() > 0)
                 isDigiContentAvail = true;
 
             return isDigiContentAvail;
@@ -7539,6 +7565,24 @@ public class BusinessModel extends Application {
 
     public void setPhotosTakeninCurrentAssetTracking(HashMap<String, String> photosTakeninCurrentAssetTracking) {
         this.photosTakeninCurrentAssetTracking = photosTakeninCurrentAssetTracking;
+    }
+
+    public ArrayList<DigitalContentModel> getDigitalContentLargeFileURLS() {
+        if (digitalContentLargeFileURLS == null)
+            return new ArrayList<>();
+        else
+            return new ArrayList<>(digitalContentLargeFileURLS.values());
+    }
+
+    public DigitalContentModel getDigitalContenLargeFileModel(int imageId) {
+        if (digitalContentLargeFileURLS.get(imageId) == null)
+            return null;
+        else
+            return digitalContentLargeFileURLS.get(imageId);
+    }
+
+    public void setDigitalContentLargeFileURLS(HashMap<Integer,DigitalContentModel> digitalContentLargeFileURLS) {
+        this.digitalContentLargeFileURLS = digitalContentLargeFileURLS;
     }
 
     public AppDataProvider getAppDataProvider() {

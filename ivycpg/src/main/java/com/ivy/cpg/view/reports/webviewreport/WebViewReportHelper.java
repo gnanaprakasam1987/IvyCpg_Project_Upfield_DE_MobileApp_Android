@@ -138,7 +138,7 @@ public class WebViewReportHelper {
                     .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
             if (c != null) {
                 while (c.moveToNext()) {
-                    DataMembers.img_Down_URL = c.getString(0);
+                    DataMembers.IMG_DOWN_URL = c.getString(0);
                 }
             }
 
@@ -147,14 +147,14 @@ public class WebViewReportHelper {
                     .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
             if (c != null) {
                 while (c.moveToNext()) {
-                    DataMembers.img_Down_URL = c.getString(0) + "/";
+                    DataMembers.IMG_DOWN_URL = c.getString(0) + "/";
                 }
             }
 
         }
 
         bModel.getDigitalContentURLS().put(
-                DataMembers.img_Down_URL + filePath,
+                DataMembers.IMG_DOWN_URL + filePath,
                 DataMembers.PRINTFILE);
 
         c.close();
