@@ -1194,7 +1194,7 @@
     <string name="bill2_line">Bill2 Line</string>
     <string name="notification_text">Realtime location tracking enabled. </string>
     <string name="status_time_mismatch">Start Time is Greater than end time</string>
-    <string name="status_location_accuracy">Change high location Accuracy</string>
+    <string name="status_location_accuracy">Change location Accuracy to High.</string>
     <string name="status_mock_location">Mock Location is Enabled</string>
     <string name="status_alarm_time_zero">Alarm time should not be zero</string>
     <string name="mandatory_fileds_empty">Mandatory fields empty!</string>

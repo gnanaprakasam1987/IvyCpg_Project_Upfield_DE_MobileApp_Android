@@ -1,7 +1,6 @@
 package com.ivy.cpg.view.reports.orderreport;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.utils.FontUtils;
@@ -256,7 +254,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         }
 
 
-        if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+        if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
             if (holder.reportBO.getIsVanSeller() == 1)
                 holder.tv_seller_type.setText("V");
             else

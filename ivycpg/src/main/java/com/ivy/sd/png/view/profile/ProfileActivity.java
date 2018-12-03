@@ -100,12 +100,12 @@ import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
-import com.ivy.sd.png.view.OTPPasswordDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.SBDGapFragment;
 import com.ivy.sd.png.view.SalesPerCategory;
 import com.ivy.cpg.view.task.TaskListFragment;
 import com.ivy.sd.png.view.UserDialogue;
+import com.ivy.sd.png.view.profile.otpValidation.OTPValidationDialog;
 
 import org.json.JSONObject;
 
@@ -151,11 +151,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private String mVisitMode = "";
     private String mNFCReasonId = "0";
     private String title;
-    private String temp = "";
-    private final String moduleName = "RT_";
-    private String photoPath = "";
+
+    // To save transaction
+    private String dateTimeStampForId = "";
+
     private String fnameStarts = "";
-    private String imageName = "";
+
     private String calledBy;
 
     private boolean isdrawRoute = false;
@@ -177,7 +178,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private RetailerMasterBO retailerObj;
 
     private LatLng retLatLng, curLatLng;
-    private OTPPasswordDialog otpPasswordDialog;
+    private OTPValidationDialog otpValidationDialog;
     private android.content.DialogInterface.OnDismissListener otpPasswordDismissListenerNew;
 
     private AppBarLayout appbar;
@@ -244,7 +245,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             @Override
             public void onDismiss(DialogInterface dialog) {
                 dialog.dismiss();
-                validationToProceed();
+                validationToStartVisit();
             }
         };
 
@@ -312,6 +313,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             mUserByRetailerID = bmodel.getUserByRetailerID();
             registerReceiver();
         }
+
+
 
 
     }
@@ -1521,7 +1524,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                int count = bmodel.synchronizationHelper.getImageCountFromPath(photoPath, fnameStarts);
+                int count = bmodel.synchronizationHelper.getImageCountFromPath(getPhotoPath(), fnameStarts);
                 Commons.print("ImageCount ," + count + "");
                 if (count < bmodel.configurationMasterHelper.RETAILER_PHOTO_COUNT) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1530,21 +1533,21 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
-                            imageName = moduleName + bmodel.getRetailerMasterBO().getRetailerID() + "_" + temp + "_" + (bmodel.synchronizationHelper.getImageCountFromPath(photoPath, fnameStarts) + 1) + "_img.jpg";
-                            callCamera();
+
+                            callCamera(getImageName());
 
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             //loadHomeScreenTwo(bmodel.getRetailerMasterBO());
-                            validationToProceed();
+                            validationToStartVisit();
                         }
                     });
                     builder.show();
                 } else {
                     //loadHomeScreenTwo(bmodel.getRetailerMasterBO());
-                    validationToProceed();
+                    validationToStartVisit();
                 }
             } else if (resultCode == 0) {
                 Toast.makeText(this, R.string.photo_mandatory, Toast.LENGTH_LONG).show();
@@ -1555,7 +1558,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 mVisitMode = data.getStringExtra("VisitMode");
                 mNFCReasonId = data.getStringExtra("NFCReasonId");
                 mNFCValidationPassed = true;
-                validationToProceed();
+                validationToStartVisit();
             }
         }
     }
@@ -1578,12 +1581,56 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
                 takePhotoForRetailer();
             } else
-                validationToProceed();
+                validationToStartVisit();
         }
     }
 
-    private void validationToProceed() {
+    private void validationToStartVisit() {
 
+        // Downloaded date vs Mobile Date validation.
+        if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") > 0)
+                && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            Toast.makeText(this,
+                    getResources().getString(R.string.next_day_coverage),
+                    Toast.LENGTH_SHORT).show();
+            return;
+
+        }
+
+        // ODA Meter start journey validation.
+        if (bmodel.configurationMasterHelper.SHOW_RETAILER_SELECTION_VALID) {
+            if (!bmodel.configurationMasterHelper.isOdaMeterOn()
+                    || !bmodel.startjourneyclicked) {
+                bmodel.showAlert(
+                        getResources()
+                                .getString(
+                                        R.string.odometerjourneynotstarted),
+                        0);
+                return;
+            }
+        }
+
+        // Force user to enable GPS and set location accuracy as High.
+        if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
+            if (!bmodel.locationUtil.isGPSProviderEnabled()) {
+
+                Integer resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+                if (resultCode == ConnectionResult.SUCCESS)
+                    bmodel.requestLocation(this);
+                else
+                    onCreateDialogNew(2);
+
+                return;
+            }
+
+            if (!LocationServiceHelper.getInstance().isLocationHighAccuracyEnabled(this)) {
+                onCreateDialogNew(3);
+                return;
+            }
+        }
+
+        //Allow user to wait for specific time if location capturing is mandatory.
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
                 && bmodel.configurationMasterHelper.IS_LOC_TIMER_ON) {
 
@@ -1608,22 +1655,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
 
-        if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
-            if (!bmodel.locationUtil.isGPSProviderEnabled()) {
-                Integer resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
-                if (resultCode == ConnectionResult.SUCCESS)
-                    bmodel.requestLocation(this);
-                else
-                    onCreateDialogNew(2);
-                return;
-            }
 
-            if (!LocationServiceHelper.getInstance().isLocationHighAccuracyEnabled(this)) {
-                onCreateDialogNew(3);
-                return;
-            }
-        }
-
+        // Restrict user to start visit if mock location provider is set.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             if (bmodel.isMockSettingsON()) {
                 showMocLocationAlert();
@@ -1637,18 +1670,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
 
-        if (bmodel.configurationMasterHelper.SHOW_RETAILER_SELECTION_VALID) {
-            if (!bmodel.configurationMasterHelper.isOdaMeterOn()
-                    || !bmodel.startjourneyclicked) {
-                bmodel.showAlert(
-                        getResources()
-                                .getString(
-                                        R.string.odometerjourneynotstarted),
-                        0);
-                return;
-            }
-        }
-
+        // Retailer sequence skip validation.
         if (bmodel.configurationMasterHelper.SHOW_RET_SKIP_VALIDATION
                 && !bmodel.retailerMasterBO.getIsDeviated().equalsIgnoreCase("Y")
                 && bmodel.getVisitretailerMaster().size() > 0) {
@@ -1656,12 +1678,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 return;
         }
 
+        // Retailer and User location validation using radius
         if (bmodel.configurationMasterHelper.SHOW_LOCATION_PASSWORD_DIALOG) {
-
             if (!checkUserIsNearByRetailer(bmodel.getRetailerMasterBO()))
                 return;
         }
 
+
+        // NFC Validation
         if (bmodel.configurationMasterHelper.SHOW_NFC_VALIDATION_FOR_RETAILER && !mNFCValidationPassed) {
             Intent intent = new Intent(this, NFCReadDialogActivity.class);
             intent.putExtra("nfcvalue", bmodel.getRetailerMasterBO().getNFCTagId().replaceAll(":", ""));
@@ -1669,15 +1693,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             return;
         }
 
+        // Diageo Project specific validation
         if (bmodel.configurationMasterHelper.SHOW_RETAILER_VISIT_CONFIRMATION && !mLocationConfirmationPassed) {
             confirmAtRetailerLocation();
             return;
         }
 
-       /* if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
-            takePhotoForRetailer();
-            return;
-        }*/
 
         if (bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE) {
 
@@ -1736,7 +1757,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             }
         }
 
+
+        // If all valiation are success.
         loadHomeScreenTwo(bmodel.getRetailerMasterBO());
+
     }
 
 
@@ -1760,14 +1784,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void loadHomeScreenTwo(RetailerMasterBO ret) {
 
         // Time count Starts for the retailer
-        if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") > 0)
-                && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.next_day_coverage),
-                    Toast.LENGTH_SHORT).show();
-
-        } else if (bmodel.configurationMasterHelper.IS_TEAMLEAD && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.IS_TEAMLEAD && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
             bmodel.setRetailerMasterBO(ret);
 
             ArrayList<UserMasterBO> mUserList = mUserByRetailerID.get(ret
@@ -1811,16 +1828,18 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             }
 
         } else {
+
             if (bmodel.timer == null) {
                 bmodel.timer = new TimerCount();
             }
             isClicked = true;
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
+
             downloadProductsAndPrice = new DownloadProductsAndPrice();
             if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
             downloadProductsAndPrice.execute();
-            // new DownloadProductsAndPrice().execute();
+
         }
     }
 
@@ -1923,21 +1942,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
     private void takePhotoForRetailer() {
-        temp = SDUtil.now(SDUtil.DATE_TIME_ID);
-        bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));
+        dateTimeStampForId = SDUtil.now(SDUtil.DATE_TIME_ID);
+        bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + dateTimeStampForId));
 
         if (bmodel.synchronizationHelper
                 .isExternalStorageAvailable()) {
-            photoPath = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                    + "/"
-                    + DataMembers.photoFolderName
-                    + "/";
-
-            fnameStarts = moduleName + bmodel.getRetailerMasterBO().getRetailerID() + "_" + temp;
-
-            imageName = moduleName + bmodel.getRetailerMasterBO().getRetailerID() + "_" + temp + "_" + (bmodel.synchronizationHelper.getImageCountFromPath(photoPath, fnameStarts) + 1) + "_img.jpg";
-
-            callCamera();
+            callCamera(getImageName());
         } else {
             Toast.makeText(this,
                     getResources().getString(R.string.external_storage_not_available),
@@ -1946,10 +1956,34 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
     }
 
-    private void callCamera() {
+
+    /**
+     * get photo path.
+     * @return path
+     */
+    private String getPhotoPath() {
+        return this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                        + "/"
+                        + DataMembers.photoFolderName
+                        + "/";
+    }
+
+    /**
+     * Generate photo capture path.
+     * photoPath and fnameSatarts should be global to access from save method.
+     * @return imagefileName
+     */
+    private String getImageName(){
+        fnameStarts = "RT_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + dateTimeStampForId;
+        return fnameStarts + "_"
+                + (bmodel.synchronizationHelper.getImageCountFromPath(getPhotoPath(), fnameStarts) + 1)
+                + "_img.jpg";
+    }
+
+    private void callCamera(String imageName) {
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra("quality", 40);
-        String mPath = photoPath + "/" + imageName;
+        String mPath = getPhotoPath() + "/" + imageName;
         intent.putExtra("path", mPath);
         startActivityForResult(intent, CAMERA_REQUEST_CODE);
     }
@@ -1966,7 +2000,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                             bmodel.configurationMasterHelper.ret_skip_flag == 1 ? getResources()
                                     .getString(R.string.enter_otp_skip_seq)
                                     : getResources().getString(
-                                    R.string.select_reason_skip_seq), 2);
+                                    R.string.select_reason_skip_seq), OTPValidationDialog.ValidationType.WALKING_SEQ);
                 } else {
                     Toast.makeText(
                             this,
@@ -1980,15 +2014,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         return true;
     }
 
-    private void callOTPDialog(RetailerMasterBO ret, String strTitle, int flag) {
-        if (otpPasswordDialog != null && otpPasswordDialog.isShowing()) {
-            otpPasswordDialog.cancel();
-            otpPasswordDialog = null;
+    private void callOTPDialog(RetailerMasterBO ret, String strTitle, OTPValidationDialog.ValidationType flag) {
+        if (otpValidationDialog != null && otpValidationDialog.isShowing()) {
+            otpValidationDialog.cancel();
+            otpValidationDialog = null;
         }
-        otpPasswordDialog = new OTPPasswordDialog(this, bmodel,
+        otpValidationDialog = new OTPValidationDialog(this, bmodel,
                 otpPasswordDismissListenerNew, ret, strTitle, flag);
-        otpPasswordDialog.setCancelable(false);
-        otpPasswordDialog.show();
+        otpValidationDialog.setCancelable(false);
+        otpValidationDialog.show();
     }
 
     private boolean getPreviousRetailerVisitedStatus(RetailerMasterBO retailerBO) {
@@ -2015,7 +2049,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         alertDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 mLocationConfirmationPassed = true;
-                validationToProceed();
+                validationToStartVisit();
             }
         });
 
@@ -2077,7 +2111,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     + getResources().getString(R.string.or_you_are) + " "
                     + distance + getResources().getString(R.string.mts_away);
 
-        callOTPDialog(ret, strTitle, 1);
+        callOTPDialog(ret, strTitle, OTPValidationDialog.ValidationType.LOCATION);
     }
 
 
@@ -2091,7 +2125,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             try {
                 if (!isCancelled()) {
 
-                    if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                         bmodel.getRetailerWiseSellerType();
                         bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
                     }
@@ -2196,15 +2230,15 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 String date = SDUtil.now(SDUtil.DATE_GLOBAL);
                 String time = SDUtil.now(SDUtil.TIME);
-                temp = SDUtil.now(SDUtil.DATE_TIME_ID);
+                dateTimeStampForId = SDUtil.now(SDUtil.DATE_TIME_ID);
 
                 bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
-                bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + temp));
+                bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + dateTimeStampForId));
 
 
                 boolean outletTimeStampSaved = bmodel.outletTimeStampHelper.saveTimeStamp(
                         SDUtil.now(SDUtil.DATE_GLOBAL), time
-                        , distance, photoPath, fnameStarts, mVisitMode, mNFCReasonId);
+                        , distance, getPhotoPath(), fnameStarts, mVisitMode, mNFCReasonId);
 
                 if (alertDialog != null && alertDialog.isShowing()) {
                     alertDialog.dismiss();
@@ -2444,7 +2478,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                             }
                             if (mLocationAlertDialog != null && mLocationAlertDialog.isShowing()) {
                                 mLocationAlertDialog.dismiss();
-                                validationToProceed();
+                                validationToStartVisit();
                             }
 
                             if (LocationUtil.latitude == 0 && LocationUtil.longitude == 0) {
@@ -2460,7 +2494,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                 }
                                 if (mLocationAlertDialog != null && mLocationAlertDialog.isShowing()) {
                                     mLocationAlertDialog.dismiss();
-                                    validationToProceed();
+                                    validationToStartVisit();
                                 }
                                 Toast.makeText(ProfileActivity.this, getResources().getString(R.string.location_captured), Toast.LENGTH_LONG).show();
 

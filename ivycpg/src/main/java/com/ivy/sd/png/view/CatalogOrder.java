@@ -799,7 +799,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private int checkStockValidation() {
         int flag;
 
-        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+        if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
             flag = bmodel.getRetailerMasterBO().getIsVansales() == 1 ? 1 : 0;
         } else {
             flag = bmodel.configurationMasterHelper.IS_INVOICE ? 1 : 0;
