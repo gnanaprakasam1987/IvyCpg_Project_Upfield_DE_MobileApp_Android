@@ -482,7 +482,7 @@ public class ProfileFragment extends IvyBaseFragment {
                                     bmodel.configurationMasterHelper.setAmazonS3Credentials();
                                     initializeTransferUtility();
                                     HashMap<String, String> hashMap = new HashMap<>();
-                                    hashMap.put(DataMembers.img_Down_URL + "" + retailerObj.getProfileImagePath(),
+                                    hashMap.put(DataMembers.IMG_DOWN_URL + "" + retailerObj.getProfileImagePath(),
                                             DataMembers.PROFILE);
                                     Thread downloaderThread = new DownloaderThreadNew(getActivity(),
                                             activityHandler, hashMap,

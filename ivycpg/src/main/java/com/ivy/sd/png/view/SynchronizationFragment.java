@@ -65,6 +65,9 @@ import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImagesDownlaod;
+import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
+import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
+import com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity;
 import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -813,6 +816,34 @@ public class SynchronizationFragment extends IvyBaseFragment
         if (!bmodel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT)
             menu.findItem(R.id.menu_sync_report).setVisible(false);
 
+        if (bmodel.getDigitalContentLargeFileURLS().size() > 0) {
+            ArrayList<DigitalContentModel> digitalContentSavedList = FileDownloadProvider.getInstance(getContext()).getDigitalContentList();
+            boolean isShowDownloadMenu = false;
+            if (digitalContentSavedList != null && digitalContentSavedList.size() > 0){
+                int incrementList = 0;
+                for (DigitalContentModel digitalContentModel : digitalContentSavedList){
+                    if (bmodel.getDigitalContenLargeFileModel(digitalContentModel.getImageID()) == null) {
+                        FileDownloadProvider.getInstance(getContext()).removeDigitalContentModel(digitalContentModel.getImageID());
+                    }else if (digitalContentModel.getStatus() != null
+                            && digitalContentModel.getStatus().equals(FileDownloadProvider.STATUS_ERROR)){
+                        menu.findItem(R.id.menu_file_download).setIcon(R.drawable.ic_action_file_download_error);
+                        isShowDownloadMenu = true;
+                        break;
+                    }else if (digitalContentModel.getStatus() != null
+                            && digitalContentModel.getStatus().equals(FileDownloadProvider.DONE)){
+                        if (incrementList == digitalContentSavedList.size() - 1){
+                            isShowDownloadMenu = false;
+                        }
+                        incrementList = incrementList + 1;
+                    }else
+                        isShowDownloadMenu = true;
+                }
+            }
+            if (isShowDownloadMenu)
+                menu.findItem(R.id.menu_file_download).setVisible(true);
+        }else
+            menu.findItem(R.id.menu_file_download).setVisible(false);
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -851,6 +882,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             } else {
                 bmodel.showAlert(getResources().getString(R.string.no_data_exists), 0);
             }
+        }
+        else if (i == R.id.menu_file_download){
+            startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
         }
         return true;
     }

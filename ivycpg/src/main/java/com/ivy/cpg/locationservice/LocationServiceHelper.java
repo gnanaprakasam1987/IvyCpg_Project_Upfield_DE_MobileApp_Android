@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -186,11 +187,18 @@ public class LocationServiceHelper {
     /*Notifies the user, if Mock Location is enabled send user to the settings
     *Also cancel the notification if permission enabled
     */
-    public boolean notifyMockLocationStatus(Context context) {
+    public boolean notifyMockLocationStatus(Context context, Location location) {
 
-        if (!LocationServiceHelper.getInstance().isMockSettingsON(context)) {
+        boolean isMock;
 
-            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && location != null)
+            isMock = !location.isFromMockProvider();
+        else
+            isMock = LocationServiceHelper.getInstance().isMockSettingsON(context);
+
+        if (!isMock) {
+
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "MOCK LOCATION")

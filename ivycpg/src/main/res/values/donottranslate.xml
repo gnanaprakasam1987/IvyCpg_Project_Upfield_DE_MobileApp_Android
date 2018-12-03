@@ -111,7 +111,13 @@
 
     <string name="avg_value">Average Value</string>
     <string name="invoice_generated_already">"Invoice has been generated already"</string>
-    <string name="init_value">Init Value</string>
+    <string name="file_format_not_support">File Format Not Supported</string>
 
+    <string name="file_download">File Download</string>
+    <string name="init_value">Init Value</string>
     <string name="total_outlet_count">Total Outlet Count</string>
+    <string name="download_progress">Download In Progress.</string>
+    <string name="resume_download">Resuming Download.</string>
+    <string name="files_downloaded">All Files Are Downloaded.</string>
+    <string name="unable_to_play">Unable To Play</string>
 </resources>
