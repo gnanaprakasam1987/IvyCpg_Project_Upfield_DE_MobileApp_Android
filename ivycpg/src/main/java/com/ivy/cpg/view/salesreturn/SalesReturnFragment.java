@@ -52,7 +52,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -111,11 +110,11 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
         view = inflater.inflate(R.layout.fragment_salesreturn_header, container,
                 false);
-        mDrawerLayout = (DrawerLayout) view.findViewById(
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
 
         //setting drawer width equal to scren width
-        drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -151,15 +150,14 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
 
-        viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
-        productName = (TextView) view.findViewById(R.id.productName);
-        productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        viewFlipper = view.findViewById(R.id.view_flipper);
+        productName = view.findViewById(R.id.productName);
 
-        mEdt_searchproductName = (EditText) view.findViewById(R.id.edt_searchproductName);
-        mBtn_Search = (Button) view.findViewById(R.id.btn_search);
-        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
-        mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
-        btn_next = (Button) view.findViewById(R.id.btn_save);
+        mEdt_searchproductName = view.findViewById(R.id.edt_searchproductName);
+        mBtn_Search = view.findViewById(R.id.btn_search);
+        mBtnFilterPopup = view.findViewById(R.id.btn_filter_popup);
+        mBtn_clear = view.findViewById(R.id.btn_clear);
+        btn_next = view.findViewById(R.id.btn_save);
 
 
         mBtn_Search.setOnClickListener(this);
@@ -167,15 +165,12 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         mBtn_clear.setOnClickListener(this);
         mBtn_clear.setOnEditorActionListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
-        lvwplist = (ListView) view.findViewById(R.id.list);
+        lvwplist = view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
-        totalValueText = (TextView) view.findViewById(R.id.totalValue);
-        lpcText = (TextView) view.findViewById(R.id.lcp);
+        totalValueText = view.findViewById(R.id.totalValue);
+        lpcText = view.findViewById(R.id.lcp);
 
-        lpcText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        totalValueText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        btn_next.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         btn_next.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View v) {
@@ -195,10 +190,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         }
         setScreenTitle(screenTitle);
 
-        pnametitle = (TextView) view.findViewById(R.id.tvProductNameTitle);
-        ((TextView) view.findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
+        pnametitle = view.findViewById(R.id.tvProductNameTitle);
         loadBothSalable = salesReturnHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU;
 
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
@@ -289,6 +281,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         if (vw == mBtn_Search) {
             viewFlipper.showNext();
         } else if (vw == mBtn_clear) {
+            viewFlipper.showPrevious();
             if (mEdt_searchproductName.getText().length() > 0) {
                 mEdt_searchproductName.setText("");
                 strBarCodeSearch = "ALL";
@@ -504,14 +497,11 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
                 holder = new ViewHolder();
 
-                holder.psname = (TextView) row.findViewById(R.id.productName);
-                holder.productCode = (TextView) row.findViewById(R.id.sales_return_barcode);
+                holder.psname = row.findViewById(R.id.productName);
+                holder.productCode = row.findViewById(R.id.sales_return_prod_code);
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                holder.total = (TextView) row.findViewById(R.id.total);
+                holder.total = row.findViewById(R.id.total);
 
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.productCode.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.total.setPaintFlags(holder.total.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
                 if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
@@ -524,12 +514,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
 
 
                         if (viewFlipper.getDisplayedChild() != 0) {
-                           /* viewFlipper.setInAnimation(
-                                    SalesReturnFragment.this,
-                                    R.anim.in_from_left);
-                            viewFlipper.setOutAnimation(
-                                    SalesReturnFragment.this,
-                                    R.anim.out_to_left);*/
                             viewFlipper.showPrevious();
                         }
                     }
@@ -569,11 +553,6 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
             String strTotal = Integer.toString(total);
             holder.total.setText(strTotal);
-            if (position % 2 == 0) {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_even_item_bg));
-            } else {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_odd_item_bg));
-            }
             return row;
         }
     }
