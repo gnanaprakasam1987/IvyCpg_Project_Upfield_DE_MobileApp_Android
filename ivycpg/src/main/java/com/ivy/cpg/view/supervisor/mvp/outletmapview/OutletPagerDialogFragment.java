@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -41,7 +42,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
     ArrayList<RetailerBo> visitedRetailers = new ArrayList<>();
 
 
-    public OutletPagerDialogFragment(int retailerId, OutletMapViewPresenter outletMapViewPresenter){
+    public OutletPagerDialogFragment(int retailerId, OutletMapViewPresenter outletMapViewPresenter) {
         this.retailerId = retailerId;
         this.outletMapViewPresenter = outletMapViewPresenter;
     }
@@ -61,7 +62,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
         scrollToPosition(retailerId);
 
-        tvStoreCount.setText("Total Stores - "+visitedRetailers.size());
+        tvStoreCount.setText("Total Stores - " + visitedRetailers.size());
 
         rootView.findViewById(R.id.close_img).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,15 +74,15 @@ public class OutletPagerDialogFragment extends DialogFragment {
         return rootView;
     }
 
-    private void scrollToPosition(int retailerId){
+    private void scrollToPosition(int retailerId) {
         int pagerPos = 0;
-        int count=0;
-        for(RetailerBo retailerBo : visitedRetailers){
-            if(retailerBo.getRetailerId() == retailerId){
+        int count = 0;
+        for (RetailerBo retailerBo : visitedRetailers) {
+            if (retailerBo.getRetailerId() == retailerId) {
                 pagerPos = count;
                 break;
             }
-            count = count+1;
+            count = count + 1;
         }
 
         visitedRetailerRecycleView.scrollToPosition(pagerPos);
@@ -90,15 +91,16 @@ public class OutletPagerDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(getDialog().getWindow()!=null)
+        if (getDialog().getWindow() != null)
             getDialog().getWindow()
-                .setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                    .setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
     }
+
     protected void initViews(View rootView) {
         tvStoreCount = rootView.findViewById(R.id.tv_store_count);
 
-        tvStoreCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,getContext().getApplicationContext()));
+        tvStoreCount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, getContext().getApplicationContext()));
 
         visitedRetailerRecycleView = rootView.findViewById(R.id.viewpager);
 //        visitedRetailerRecycleView.setVisibility(View.GONE);
@@ -106,7 +108,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 false);
         visitedRetailerRecycleView.setLayoutManager(layout);
 
-        outletListAdapter = new OutletListAdapter(getContext().getApplicationContext(),visitedRetailers);
+        outletListAdapter = new OutletListAdapter(getContext().getApplicationContext(), visitedRetailers);
         visitedRetailerRecycleView.setAdapter(outletListAdapter);
 
         ScrollingPagerIndicator recyclerIndicator = rootView.findViewById(R.id.scroll_indicator);
@@ -194,17 +196,18 @@ public class OutletPagerDialogFragment extends DialogFragment {
         private Context context;
         private ArrayList<RetailerBo> visitedRetailers;
 
-        OutletListAdapter(Context context, ArrayList<RetailerBo> visitedRetailers){
+        OutletListAdapter(Context context, ArrayList<RetailerBo> visitedRetailers) {
             this.context = context;
             this.visitedRetailers = visitedRetailers;
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView tvStoreName,tvStoreAddress,tvVisitStatus,tvOrderValue,tvOrderValueText;
+            private TextView tvStoreName, tvStoreAddress, tvVisitStatus, tvOrderValue, tvOrderValueText;
             private RecyclerView retailerVisitedRVP;
             private View visitedStatusView;
-            private ImageView retailImage,noImage;
+            private ImageView retailImage, noImage;
+            private LinearLayout orderValueContainer;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -218,18 +221,19 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 retailerVisitedRVP = view.findViewById(R.id.visited_retailer_items);
                 retailImage = view.findViewById(R.id.outlet_image);
                 noImage = view.findViewById(R.id.outlet_no_image);
+                orderValueContainer = view.findViewById(R.id.container_orderValue);
 
 
-                ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                ((TextView)view.findViewById(R.id.tv_outtime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                ((TextView)view.findViewById(R.id.tv_duration_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                ((TextView)view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                ((TextView) view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                ((TextView) view.findViewById(R.id.tv_outtime_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                ((TextView) view.findViewById(R.id.tv_duration_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                ((TextView) view.findViewById(R.id.tv_order_val_txt)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
 
-                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
-                tvStoreAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvVisitStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
-                tvOrderValueText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
+                tvStoreName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+                tvStoreAddress.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvVisitStatus.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
+                tvOrderValueText.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
 
                 LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,
                         false);
@@ -248,7 +252,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
-
+            holder.orderValueContainer.setVisibility(View.GONE);
             holder.tvStoreName.setText(visitedRetailers.get(position).getRetailerName());
             holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getTotalOrderValue()));
             holder.tvStoreAddress.setText(visitedRetailers.get(position).getAddress());
@@ -257,19 +261,19 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
             int outletDefaultDrawable = R.drawable.unbilled_bg_gradient;
 
-            if(retailerVisitedDetail != null && retailerVisitedDetail.size() > 0) {
+            if (retailerVisitedDetail != null && retailerVisitedDetail.size() > 0) {
                 VisitedOutletInfoAdapter visitedOutletInfoAdapter =
                         new VisitedOutletInfoAdapter(context, retailerVisitedDetail);
                 holder.retailerVisitedRVP.setAdapter(visitedOutletInfoAdapter);
 
-                if (!visitedRetailers.get(position).getIsOrdered()){
+                if (!visitedRetailers.get(position).getIsOrdered()) {
                     holder.tvVisitStatus.setText("UnBilled");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
                         holder.visitedStatusView.setBackground(ContextCompat.getDrawable(context, R.drawable.unbilled_bg_gradient));
                     else
                         holder.visitedStatusView.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.unbilled_bg_gradient));
 
-                }else {
+                } else {
                     holder.tvVisitStatus.setText("Covered");
 
                     outletDefaultDrawable = R.drawable.covered_outlet_bg_gradient;
@@ -283,7 +287,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
 
             setProfileImage(holder.retailImage,
                     visitedRetailers.get(position).getImgPath(),
-                    visitedRetailers.get(position).getRetailerId(),outletDefaultDrawable,holder.noImage);
+                    visitedRetailers.get(position).getRetailerId(), outletDefaultDrawable, holder.noImage);
         }
 
         @Override
@@ -302,14 +306,14 @@ public class OutletPagerDialogFragment extends DialogFragment {
         private Context context;
         private ArrayList<RetailerBo> visitedRetailers;
 
-        VisitedOutletInfoAdapter(Context context, ArrayList<RetailerBo> visitedRetailers){
+        VisitedOutletInfoAdapter(Context context, ArrayList<RetailerBo> visitedRetailers) {
             this.context = context;
             this.visitedRetailers = visitedRetailers;
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            TextView tvInTime,tvOutTime,tvDuration,tvOrderValue;
+            TextView tvInTime, tvOutTime, tvDuration, tvOrderValue;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -319,10 +323,10 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 tvDuration = view.findViewById(R.id.tv_duration_val);
                 tvOrderValue = view.findViewById(R.id.tv_order_value);
 
-                tvInTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvOutTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR,context));
-                tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,context));
+                tvInTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvOutTime.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvDuration.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.REGULAR, context));
+                tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, context));
 
             }
         }
@@ -358,7 +362,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
         }
     }
 
-    private void setProfileImage(ImageView userView, String imagePath, int userId,int outletDefaultDrawable,ImageView noImage) {
+    private void setProfileImage(ImageView userView, String imagePath, int userId, int outletDefaultDrawable, ImageView noImage) {
         try {
             if (imagePath != null && !"".equals(imagePath)) {
                 String[] imgPaths = imagePath.split("/");
@@ -392,11 +396,11 @@ public class OutletPagerDialogFragment extends DialogFragment {
                     userView
                             .setImageResource(outletDefaultDrawable);
                 }
-            }else {
+            } else {
                 userView
                         .setImageResource(outletDefaultDrawable);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }

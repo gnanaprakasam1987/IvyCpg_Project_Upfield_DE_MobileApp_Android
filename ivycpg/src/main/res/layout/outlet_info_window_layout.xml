@@ -131,6 +131,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/container_orderValue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_5sdp"
