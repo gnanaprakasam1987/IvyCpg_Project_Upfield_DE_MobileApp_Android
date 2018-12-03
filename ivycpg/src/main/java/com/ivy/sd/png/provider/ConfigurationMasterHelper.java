@@ -20,6 +20,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -1527,6 +1528,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_GLOBAL_NO_ORDER_REASON;
     private static final String CODE_MENU_FIREBASE_CHAT = "CHAT02";
     public boolean IS_FIREBASE_CHAT_ENABLED;
+
+    private static final String CODE_CHECK_DIGITAL_SIZE = "SYNC11";
+    public long DIGITAL_CONTENT_SIZE = -1;
 
 
     private ConfigurationMasterHelper(Context context) {
@@ -6189,6 +6193,26 @@ public class ConfigurationMasterHelper {
         }
 
         return title;
+    }
+
+    public void getDigitalContentSize(){
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + AppUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.DIGITAL_CONTENT_SIZE = c.getLong(0);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        }catch (Exception e){
+            Commons.printException(e);
+        }
     }
 
 }

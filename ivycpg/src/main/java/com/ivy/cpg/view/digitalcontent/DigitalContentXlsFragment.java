@@ -256,7 +256,7 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
                     public void onClick(View v) {
                         Commons.print("onclick" + ((VHItem) holder).filename);
 
-                        openExcel(((VHItem) holder).filename);
+                        openExcel(((VHItem) holder).filename,product);
 
                     }
                 });
@@ -306,7 +306,7 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
      *
      * @param name Excel Name
      */
-    private void openExcel(String name) {
+    private void openExcel(String name,DigitalContentBO digitalContentBO) {
         Uri path;
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
@@ -328,6 +328,14 @@ public class DigitalContentXlsFragment extends IvyBaseFragment {
 
             try {
                 startActivity(intent);
+
+                String vStart_Time = "" + SDUtil.now(SDUtil.DATE) + " " + SDUtil.now(SDUtil.TIME);
+
+                DigitalContentHelper.getInstance(getContext()).
+                        saveDigitalContentDetails(getContext(),String.valueOf(digitalContentBO.getImageID()),
+                                String.valueOf(digitalContentBO.getProductID()),
+                                vStart_Time,"",false);
+
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(
                         getActivity(),
