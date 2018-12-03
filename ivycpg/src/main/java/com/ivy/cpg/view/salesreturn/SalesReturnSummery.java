@@ -1,13 +1,14 @@
 package com.ivy.cpg.view.salesreturn;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -18,13 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -38,7 +38,6 @@ import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
-import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
@@ -54,8 +53,6 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
     private ListView lvwplist;
     private SalesReturnHelper salesReturnHelper;
-    private Toolbar toolbar;
-    private Button mBtnSave;
     private String PHOTO_PATH = "";
     private ArrayAdapter<String> mInvoiceListAdapter;
     private int mSelectedIndex;
@@ -67,11 +64,11 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         setContentView(R.layout.activity_salesreturn_summary);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        /** Initilize the ActionBar and set title to it **/
+        //Initilize the ActionBar and set title to it
         if (getSupportActionBar() != null)
             setScreenTitle("Sales Return Summary");
         // Used to on / off the back arrow icon
@@ -87,24 +84,17 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
         PHOTO_PATH = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName;
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
-        lvwplist = (ListView) findViewById(R.id.list);
+        lvwplist = findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
 
-        TextView totalValue = (TextView) findViewById(R.id.totalValue);
+        TextView totalValue = findViewById(R.id.totalValue);
         totalValue.setText(bmodel.formatValue(salesReturnHelper.getReturnValue()));
-        TextView lineValue = (TextView) findViewById(R.id.lcpValue);
+        TextView lineValue = findViewById(R.id.lcpValue);
         String strLpcValue = salesReturnHelper.getLpcValue() + "";
         lineValue.setText(strLpcValue);
 
-        mBtnSave = (Button) findViewById(R.id.btn_save);
-
-        lineValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        totalValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        mBtnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ;
+        Button mBtnSave = findViewById(R.id.btn_save);
 
         mBtnSave.setOnClickListener(new OnSingleClickListener() {
             @Override
@@ -147,19 +137,17 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 }
             }
         }
-        MyAdapter mSchedule = new MyAdapter(list,this);
+        MyAdapter mSchedule = new MyAdapter(list);
         lvwplist.setAdapter(mSchedule);
     }
 
     class MyAdapter extends ArrayAdapter<SalesReturnReasonBO> {
         final ArrayList<SalesReturnReasonBO> items;
-        private Context mContext;
 
-        MyAdapter(ArrayList<SalesReturnReasonBO> items,Context context) {
+        MyAdapter(ArrayList<SalesReturnReasonBO> items) {
             super(SalesReturnSummery.this, R.layout.row_salesreturn_summery,
                     items);
             this.items = items;
-            this.mContext =context;
         }
 
         public SalesReturnReasonBO getItem(int position) {
@@ -174,7 +162,8 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             return items.size();
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             SalesReturnReasonBO product1 = items.get(position);
             View row = convertView;
@@ -184,59 +173,28 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                         parent, false);
                 holder = new ViewHolder();
 
-                holder.caseQty = (TextView) row
+                holder.caseQty = row
                         .findViewById(R.id.productqtyCases);
-                holder.pieceQty = (TextView) row
+                holder.pieceQty = row
                         .findViewById(R.id.productqtyPieces);
-                holder.outerQty = (TextView) row
+                holder.outerQty = row
                         .findViewById(R.id.outerproductqtyCases);
-                holder.srPieceQty = (TextView) row.findViewById(R.id.srQtyPcs);
-                holder.srCaseQty = (TextView) row.findViewById(R.id.srQtyCases);
-                holder.srOuterQty = (TextView) row.findViewById(R.id.srQtyouter);
+                holder.srPieceQty = row.findViewById(R.id.srQtyPcs);
+                holder.srCaseQty = row.findViewById(R.id.srQtyCases);
+                holder.srOuterQty = row.findViewById(R.id.srQtyouter);
 
-                holder.psname = (TextView) row.findViewById(R.id.productName);
-                holder.tvReason = (TextView) row.findViewById(R.id.tv_reason);
+                holder.psname = row.findViewById(R.id.productName);
+                holder.tvReason = row.findViewById(R.id.tv_reason);
 
-                holder.mfgDate = (TextView) row.findViewById(R.id.mfgDate);
-                holder.expDate = (TextView) row.findViewById(R.id.expDate);
-                holder.oldMrp = (TextView) row.findViewById(R.id.oldMrp);
-                holder.invoiceno = (TextView) row.findViewById(R.id.invoiceno);
-                holder.srpedit = (TextView) row.findViewById(R.id.srpedit);
-                holder.lotnumber = (TextView) row.findViewById(R.id.lotnumber);
-
-                //typefaces
-                holder.psname.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.tvReason.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.mfgDate.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.oldMrp.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.expDate.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.invoiceno.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.srpedit.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.lotnumber.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.caseQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.pieceQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.outerQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.srPieceQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.srCaseQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-                holder.srOuterQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-
-                ((TextView) row.findViewById(R.id.tv_prodname_title)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.reasonTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.mfgDateTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.expDateTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.invoicenoTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.lotnumberTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.oldMrpTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.srpeditTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.srPcsTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.srCaseTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.srOutercaseTitle)).setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+                holder.mfgDate = row.findViewById(R.id.mfgDate);
+                holder.expDate = row.findViewById(R.id.expDate);
+                holder.oldMrp = row.findViewById(R.id.oldMrp);
+                holder.invoiceno = row.findViewById(R.id.invoiceno);
+                holder.srpedit = row.findViewById(R.id.srpedit);
+                holder.lotnumber = row.findViewById(R.id.lotnumber);
 
                 if (!salesReturnHelper.SHOW_SALES_RET_CASE) {
-                    ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
                 } else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -250,7 +208,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SALES_RET_PCS) {
-                    ((LinearLayout) row.findViewById(R.id.ll_pc)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_pc)).setVisibility(View.GONE);
                 } else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -264,9 +222,9 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SALES_RET_OUTER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
                 if (!salesReturnHelper.SHOW_STOCK_REPLACE_PCS)
-                    ((LinearLayout) row.findViewById(R.id.ll_srpc)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_srpc)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -280,7 +238,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_STOCK_REPLACE_CASE)
-                    ((LinearLayout) row.findViewById(R.id.ll_srcase)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_srcase)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -294,7 +252,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_STOCK_REPLACE_OUTER)
-                    ((LinearLayout) row.findViewById(R.id.ll_sroo)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_sroo)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -308,7 +266,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SAL_RET_OLD_MRP) {
-                    ((LinearLayout) row.findViewById(R.id.ll_oldmrp)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_oldmrp)).setVisibility(View.GONE);
                 } else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -322,7 +280,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SAL_RET_MFG_DATE) {
-                    ((LinearLayout) row.findViewById(R.id.ll_mfd)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_mfd)).setVisibility(View.GONE);
                 } else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -336,7 +294,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SAL_RET_EXP_DATE) {
-                    ((LinearLayout) row.findViewById(R.id.ll_expd)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_expd)).setVisibility(View.GONE);
                 } else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -350,7 +308,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SRP_EDIT && !salesReturnHelper.SHOW_SAL_RET_SRP) {
-                    ((LinearLayout) row.findViewById(R.id.ll_srpEdit)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_srpEdit)).setVisibility(View.GONE);
                 } else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -364,7 +322,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_LOTNUMBER) {
-                    ((LinearLayout) row.findViewById(R.id.ll_lotno)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_lotno)).setVisibility(View.GONE);
                 } else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -378,7 +336,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SR_INVOICE_NUMBER) {
-                    ((LinearLayout) row.findViewById(R.id.ll_invoiceno)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_invoiceno)).setVisibility(View.GONE);
                 } else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -529,8 +487,6 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        String msg = "";
-        String delivery_date_txt = "";
         switch (id) {
             case 8:
                 AlertDialog.Builder builder7 = new AlertDialog.Builder(SalesReturnSummery.this)
@@ -593,7 +549,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                                         DataMembers.actHomeScreenTwo);*/
 
                                 //  DataMembers.actHomeScreenTwo);
-                                Intent  myIntent = new Intent(SalesReturnSummery.this, HomeScreenTwo.class);
+                                Intent myIntent = new Intent(SalesReturnSummery.this, HomeScreenTwo.class);
                                 startActivityForResult(myIntent, 0);
                                 finish();
                             }
@@ -653,6 +609,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class SaveAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
@@ -683,7 +640,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             try {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
-                salesReturnHelper.saveSalesReturn(getApplicationContext(), "", "", false,false);
+                salesReturnHelper.saveSalesReturn(getApplicationContext(), "", "", false, false);
                 salesReturnHelper.clearSalesReturnTable(false);
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -722,7 +679,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                     if ("1".equalsIgnoreCase(bmodel.getRetailerMasterBO().getRField4())) {
                         bmodel.productHelper.updateDistributorDetails();
                     }
-                    bmodel.mCommonPrintHelper.xmlRead("credit_note", false, mPrintList, keyValues, null,null,null);
+                    bmodel.mCommonPrintHelper.xmlRead("credit_note", false, mPrintList, keyValues, null, null, null);
                     Intent i = new Intent(SalesReturnSummery.this, CommonPrintPreviewActivity.class);
                     i.putExtra("IsFromOrder", true);
                     i.putExtra("isHomeBtnEnable", true);

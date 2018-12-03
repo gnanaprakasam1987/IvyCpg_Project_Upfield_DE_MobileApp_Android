@@ -21,7 +21,7 @@ public class SalesReturnActivity extends IvyBaseActivityNoActionBar implements B
 
         setContentView(R.layout.activity_sales_return);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

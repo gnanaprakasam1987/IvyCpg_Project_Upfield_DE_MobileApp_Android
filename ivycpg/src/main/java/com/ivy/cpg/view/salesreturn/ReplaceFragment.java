@@ -1,8 +1,11 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.salesreturn;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -19,15 +22,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
-import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.CustomKeyBoard;
 
 import java.util.Iterator;
 
@@ -52,7 +53,7 @@ public class ReplaceFragment extends IvyBaseFragment {
     private String moduleFrom;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_replace,
@@ -62,8 +63,8 @@ public class ReplaceFragment extends IvyBaseFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 getActivity().INPUT_METHOD_SERVICE);
 
@@ -78,35 +79,30 @@ public class ReplaceFragment extends IvyBaseFragment {
 
         salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
 
-        initializeViews();
+        initializeViews(view);
+        setNumberPadlistener(view);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
         process();
-
-        setNumberPadlistener();
     }
 
-    private void initializeViews() {
+    private void initializeViews(View view) {
         mSelectedET = null;
-        ((View) view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        btnSave = (Button) view.findViewById(R.id.btn_save);
-        tvReturnQty = (TextView) view.findViewById(R.id.tvReturnQty);
+        (view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        btnSave = view.findViewById(R.id.btn_save);
+        tvReturnQty = view.findViewById(R.id.tvReturnQty);
 
-        etRepPiece = (EditText) view.findViewById(R.id.et_rep_pcValue);
-        etRepCase = (EditText) view.findViewById(R.id.et_rep_csValue);
-        etRepOuter = (EditText) view.findViewById(R.id.et_rep_ouValue);
-
-        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.tvTitleReturnQty)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) view.findViewById(R.id.tvTitlerep)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.srpcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.srcaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.sroutercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tvReturnQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        etRepPiece.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        etRepCase.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        etRepOuter.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        etRepPiece = view.findViewById(R.id.et_rep_pcValue);
+        etRepCase = view.findViewById(R.id.et_rep_csValue);
+        etRepOuter = view.findViewById(R.id.et_rep_ouValue);
 
     }
 
+    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     private void process() {
         if (Pid != null) {
             if (getArguments().getString("from").equals("ORDER"))
@@ -244,10 +240,10 @@ public class ReplaceFragment extends IvyBaseFragment {
                                             String.format(getResources().getString(R.string.total_items), totalReturnQty),
                                             Toast.LENGTH_SHORT).show();
 
-                                /**
-                                 * Delete the last entered number and reset
-                                 * the qty
-                                 **/
+                                /*
+                                  Delete the last entered number and reset
+                                  the qty
+                                 */
                                 qty = qty.length() > 1 ? qty.substring(0,
                                         qty.length() - 1) : "0";
 
@@ -308,10 +304,10 @@ public class ReplaceFragment extends IvyBaseFragment {
                                             String.format(getResources().getString(R.string.total_items), totalReturnQty),
                                             Toast.LENGTH_SHORT).show();
 
-                                /**
-                                 * Delete the last entered number and reset
-                                 * the qty
-                                 **/
+                                /*
+                                  Delete the last entered number and reset
+                                  the qty
+                                 */
                                 qty = qty.length() > 1 ? qty.substring(0,
                                         qty.length() - 1) : "0";
 
@@ -446,8 +442,8 @@ public class ReplaceFragment extends IvyBaseFragment {
                         etRepOuter.requestFocus();
                         if (etRepOuter.getText().length() > 0)
                             etRepOuter.setSelection(etRepOuter.getText().length());
-                                    inputManager.hideSoftInputFromWindow(
-                                            mSelectedET.getWindowToken(), 0);
+                        inputManager.hideSoftInputFromWindow(
+                                mSelectedET.getWindowToken(), 0);
                         return true;
                     }
                 });
@@ -525,7 +521,7 @@ public class ReplaceFragment extends IvyBaseFragment {
     }
 
 
-    private void setNumberPadlistener() {
+    private void setNumberPadlistener(View view) {
         view.findViewById(R.id.calczero)
                 .setOnClickListener(mNumperPadListener);
         view.findViewById(R.id.calcone)

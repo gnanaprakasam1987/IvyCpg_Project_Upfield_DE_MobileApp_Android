@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/orderScreenListRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingStart="@dimen/list_padding_left_n_right"
-    android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
+    android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom">
 
 
     <LinearLayout
@@ -26,7 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:maxLines="2" />
+                android:maxLines="2"
+                android:text="@string/product_name" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,31 +38,34 @@
 
                 <TextView
                     android:id="@+id/barcode"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemSecondaryHighlight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="@string/barcode" />
 
                 <TextView
                     android:id="@+id/prdcode_tv"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemSecondaryHighlight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_2dp"
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="@string/prod_code" />
 
                 <TextView
                     android:id="@+id/tv_srp"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemSecondaryHighlight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:maxLines="1"
+                    android:text="@string/srp"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -80,6 +85,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_PriceCompliance"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <CheckBox
+                android:id="@+id/compliance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="0dp"
@@ -120,20 +141,6 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_PriceCompliance"
-            android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:visibility="gone">
-
-            <CheckBox
-                android:id="@+id/compliance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </RelativeLayout>
 
 
     </LinearLayout>
@@ -145,41 +152,40 @@
 
         <Spinner
             android:id="@+id/reason"
-            android:layout_width="@dimen/spinner_width"
-            android:layout_height="52dp"
-            android:layout_alignParentLeft="true"
+            android:layout_width="@dimen/list_item_date_picker_width"
+            android:layout_height="@dimen/list_item_date_picker_height"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/view_dotted_line"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="@dimen/list_item_inter_margin"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:overlapAnchor="false"
             android:prompt="@string/reason"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="UnusedAttribute" />
 
         <Spinner
             android:id="@+id/reason_pc"
-            android:layout_width="@dimen/spinner_width"
-            android:layout_height="52dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/view_dotted_line"
+            android:layout_width="@dimen/list_item_date_picker_width"
+            android:layout_height="@dimen/list_item_date_picker_height"
+           android:layout_toRightOf="@+id/reason"
             android:layout_centerVertical="true"
             android:layout_marginTop="@dimen/list_item_inter_margin"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:overlapAnchor="false"
             android:prompt="@string/reason"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="UnusedAttribute"
+            android:layout_toEndOf="@+id/reason" />
 
         <LinearLayout
             android:id="@+id/ll_prev_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/view_dotted_line">
+            android:layout_alignParentRight="true">
 
             <TextView
                 android:id="@+id/prev_price_label"
@@ -187,14 +193,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="start|center"
+                android:textAlignment="textStart"
                 android:text="@string/last_price" />
 
             <View
                 android:layout_width="@dimen/dimen_1dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:layout_marginStart="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:background="@color/light_gray" />
 
             <LinearLayout
@@ -203,6 +210,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dimen_8dp"
                 android:layout_marginRight="@dimen/dimen_8dp"
+                android:gravity="center"
                 android:visibility="gone">
 
 
@@ -215,17 +223,17 @@
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:text="@string/ca" />
 
                 <TextView
                     android:id="@+id/prev_ca"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="@dimen/last_price_values_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="@string/zero"
-                    android:textStyle="bold" />
+                    android:text="@string/zero" />
             </LinearLayout>
 
             <LinearLayout
@@ -245,17 +253,18 @@
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:text="@string/ou" />
 
                 <TextView
                     android:id="@+id/prev_oo"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="@dimen/last_price_values_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/zero"
-                    android:textStyle="bold" />
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -275,17 +284,18 @@
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:text="@string/pc" />
 
                 <TextView
                     android:id="@+id/prev_pc"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="@dimen/last_price_values_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/zero"
-                    android:textStyle="bold" />
+                    />
             </LinearLayout>
         </LinearLayout>
 
@@ -293,9 +303,9 @@
             android:id="@+id/ll_prev_mrp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_prev_price"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/ll_prev_price">
+            android:layout_alignParentRight="true">
 
             <TextView
                 android:id="@+id/prev_mrp_label"
@@ -303,14 +313,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:gravity="start|center"
+                android:textAlignment="textStart"
                 android:text="@string/last_mrp" />
 
             <View
                 android:layout_width="@dimen/dimen_1dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:layout_marginStart="@dimen/dimen_8dp"
+                android:layout_marginEnd="@dimen/dimen_8dp"
                 android:background="@color/light_gray" />
 
             <LinearLayout
@@ -329,18 +340,19 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:layout_marginRight="@dimen/dimen_4dp"
+                    android:visibility="gone"
                     android:gravity="center"
                     android:text="@string/ca" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_ca"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="@dimen/last_price_values_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/zero"
-                    android:textStyle="bold" />
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -360,17 +372,18 @@
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:text="@string/ou" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_oo"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="@dimen/last_price_values_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/zero"
-                    android:textStyle="bold" />
+                     />
             </LinearLayout>
 
             <LinearLayout
@@ -390,17 +403,18 @@
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:layout_marginRight="@dimen/dimen_4dp"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:text="@string/pc" />
 
                 <TextView
                     android:id="@+id/tv_prev_mrp_pc"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="@dimen/last_price_values_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/zero"
-                    android:textStyle="bold" />
+                    />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

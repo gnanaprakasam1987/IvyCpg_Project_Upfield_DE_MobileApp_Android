@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,26 +39,23 @@
 
                     <TextView
                         android:id="@+id/tvTitleReturnQty"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/HeadingStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="@string/text_return_qty"
-                        android:textSize="@dimen/font_small"
-                        android:textStyle="bold"
                         android:layout_alignParentLeft="true" />
 
                     <TextView
                         android:id="@+id/tvReturnQty"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/HeadingStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:textStyle="normal"
                         android:text="@string/zero"
-                        android:textSize="@dimen/font_small"
-                        android:textStyle="bold"
                         android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
@@ -76,15 +74,15 @@
 
                     <TextView
                         android:id="@+id/tvTitlerep"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:text="@string/enter_return_qty"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_size_primary"
-                        android:layout_alignParentLeft="true" />
+                        android:textStyle="normal"
+                        android:layout_alignParentLeft="true"
+                        tools:ignore="ObsoleteLayoutParam" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -106,14 +104,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_piece"
-                                android:text="@string/rep_pcs"
-                                android:textSize="@dimen/card_margin" />
+                                android:text="@string/rep_pcs" />
 
                             <EditText
                                 android:id="@+id/et_rep_pcValue"
                                 style="@style/EditText_ListItem"
                                 android:layout_width="@dimen/discount_editbox_width"
-                                android:layout_height="wrap_content"
+                                android:layout_height="0dp"
                                 android:layout_weight="1"
                                 android:gravity="start"
                                 android:text="@string/zero" />
@@ -135,13 +132,13 @@
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_case"
                                 android:text="@string/rep_case"
-                                android:textSize="@dimen/card_margin" />
+                                />
 
                             <EditText
                                 android:id="@+id/et_rep_csValue"
                                 style="@style/EditText_ListItem"
                                 android:layout_width="@dimen/discount_editbox_width"
-                                android:layout_height="wrap_content"
+                                android:layout_height="0dp"
                                 android:layout_weight="1"
                                 android:gravity="start"
                                 android:text="@string/zero" />
@@ -162,14 +159,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_outer"
-                                android:text="@string/rep_outer"
-                                android:textSize="@dimen/card_margin" />
+                                android:text="@string/rep_outer" />
 
                             <EditText
                                 android:id="@+id/et_rep_ouValue"
                                 style="@style/EditText_ListItem"
                                 android:layout_width="@dimen/discount_editbox_width"
-                                android:layout_height="wrap_content"
+                                android:layout_height="0dp"
                                 android:layout_weight="1"
                                 android:gravity="start"
                                 android:text="@string/zero" />
@@ -183,17 +179,17 @@
         <include
             android:id="@+id/keypad"
             layout="@layout/keypad"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/footer"
             android:layout_marginBottom="@dimen/target_top_margin" />
 
         <LinearLayout
             android:id="@+id/footer"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/footer_bg_color"
+            android:background="?attr/customFooterBackgroundColor"
             android:orientation="vertical">
 
             <TextView
@@ -203,7 +199,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/footer_height"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <Button
