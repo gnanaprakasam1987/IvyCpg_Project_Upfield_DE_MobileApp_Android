@@ -12,7 +12,6 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -73,7 +72,7 @@ public class CatalogImageDownloadProvider {
                 // Create location file path to store the downloaded file
                 File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
                 // Prepare download URL path.
-                String downloadURL = DataMembers.img_Down_URL + "Product/" + CatalogDownloadConstants.FILE_NAME;
+                String downloadURL = DataMembers.IMG_DOWN_URL + "Product/" + CatalogDownloadConstants.FILE_NAME;
 
                 // Initiate the download
                 TransferObserver observer = transferUtility.download(DataMembers.S3_BUCKET, downloadURL, file);

@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/menu_gps_available"
-        IvyDist:showAsAction="ifRoom"
+        IvyDist:showAsAction="always"
         android:icon="@drawable/greenball"
         android:title="Online"
         android:orderInCategory="1011"/>
@@ -34,5 +34,13 @@
         android:icon="@drawable/ic_people_white_36px"
         android:title="@string/switch_user"
         android:orderInCategory="1014"/>
+
+    <item
+        android:id="@+id/menu_file_download"
+        IvyDist:showAsAction="always"
+        android:icon="@drawable/ic_action_file_download"
+        android:title="@string/file_download"
+        android:orderInCategory="1016"
+        android:visible="false"/>
 
 </menu>

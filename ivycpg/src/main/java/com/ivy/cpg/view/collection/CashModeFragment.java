@@ -147,7 +147,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                         .setInputType(InputType.TYPE_NULL);
                 mCollectAmtET.onTouchEvent(event);
                 mCollectAmtET.setInputType(inType);
-                mCollectAmtET.selectAll();
+                //mCollectAmtET.selectAll();
                 mCollectAmtET.requestFocus();
                 inputManager.hideSoftInputFromWindow(
                         mCollectAmtET
