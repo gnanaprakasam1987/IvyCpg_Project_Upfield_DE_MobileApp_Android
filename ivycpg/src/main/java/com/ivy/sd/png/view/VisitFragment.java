@@ -198,7 +198,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         LinearLayout switchBtnLty = view.findViewById(R.id.ll_view);
 
         //update IsOrderWithoutInvoice flag only if seller is van seller or seller dialog is enabled.
-        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG || bmodel.configurationMasterHelper.IS_INVOICE)
+        if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED || bmodel.configurationMasterHelper.IS_INVOICE)
             bmodel.updateIsOrderWithoutInvoice();
 
         hasOrderScreen = hasOrderScreenEnabled();
@@ -750,7 +750,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_INDICATIVE) && bmodel.getRetailerMaster().get(i).getIndicateFlag() != 1) {
                         continue;
                     } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_NON_PRODUCTIVE)) {
-                        if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                        if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                                 && ("Y").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
                             continue;
                         } else if (!bmodel.configurationMasterHelper.IS_INVOICE && ("Y").equals(bmodel.getRetailerMaster().get(i).isOrdered())) {
@@ -762,7 +762,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                             continue;
 
-                        } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                        } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                                 && ("N").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
                             continue;
 
@@ -815,7 +815,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_INDICATIVE) && bmodel.getRetailerMaster().get(i).getIndicateFlag() != 1) {
                         continue;
                     } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_NON_PRODUCTIVE)) {
-                        if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                        if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                                 && ("Y").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
                             continue;
                         } else if (!bmodel.configurationMasterHelper.IS_INVOICE && ("Y").equals(bmodel.getRetailerMaster().get(i).isOrdered())) {
@@ -827,7 +827,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                             continue;
 
-                        } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                        } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                                 && ("N").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
                             continue;
 
@@ -937,7 +937,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_INDICATIVE) && bmodel.getRetailerMaster().get(i).getIndicateFlag() != 1) {
                     continue;
                 } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_NON_PRODUCTIVE)) {
-                    if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                    if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                             && ("Y").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
                         continue;
                     } else if (!bmodel.configurationMasterHelper.IS_INVOICE && ("Y").equals(bmodel.getRetailerMaster().get(i).isOrdered())) {
@@ -949,7 +949,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                         continue;
 
-                    } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                    } else if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                             && ("N").equals(bmodel.getRetailerMaster().get(i).isInvoiceDone())) {
                         continue;
 
@@ -1394,7 +1394,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             if (!calledBy.equals(MENU_PLANNING)) {
                 // bmodel.loadProductiveCallsConfig();
                 if (("Y").equals(retailerObj.isOrdered()) && (!bmodel.PRD_FOR_SKT)) {   // If ProductiveStockCheck is OFF
-                    if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                    if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                             && ("N").equals(retailerObj.isInvoiceDone())) {
                         holder.line_order_without_invoice
                                 .setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.Orange));

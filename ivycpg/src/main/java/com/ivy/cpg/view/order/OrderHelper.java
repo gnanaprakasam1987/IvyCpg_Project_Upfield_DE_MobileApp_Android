@@ -156,7 +156,7 @@ public class OrderHelper {
             isVanSales = 1;
             int indicativeFlag = 0;
 
-            if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 if (!businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     isVanSales = 0;
                     if (businessModel.configurationMasterHelper.IS_INDICATIVE_ORDER)
@@ -565,7 +565,7 @@ public class OrderHelper {
                 isVanSales = 1;
                 int indicativeFlag = 0;
 
-                if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                     if (!businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         isVanSales = 0;
                         if (businessModel.configurationMasterHelper.IS_INDICATIVE_ORDER)
@@ -937,7 +937,7 @@ public class OrderHelper {
                     }
 
                     SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
-                    if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                    if (!businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                             || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         schemeHelper.insertSchemeDetails(uid, db);
                     }
@@ -1227,7 +1227,7 @@ public class OrderHelper {
             if (!businessModel.configurationMasterHelper.SHOW_SUPPLIER_SELECTION)
                 sb.append(" and sid=" + businessModel.retailerMasterBO.getDistributorId());
 
-            if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 sb.append(" and is_vansales="
                         + businessModel.retailerMasterBO.getIsVansales());
             }
@@ -1309,7 +1309,7 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is deleted
                 sb.append(" and OrderID=" + AppUtils.QT(selectedOrderId));
             }
-            if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 sb.append(" and is_vansales="
                         + businessModel.retailerMasterBO.getIsVansales());
             }
@@ -1421,7 +1421,7 @@ public class OrderHelper {
 
             }
 
-            if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 sb.append(" and is_vansales="
                         + businessModel.retailerMasterBO.getIsVansales());
             }
@@ -1912,7 +1912,7 @@ public class OrderHelper {
             }
 
             /* update free products sih starts */
-            if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+            if (!businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                     || businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
 
                 db.updateSQL("update SchemeDetail set Invoiceid="
@@ -3355,7 +3355,7 @@ public class OrderHelper {
         if (businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
             sb.append(" and OrderID=" + AppUtils.QT(selectedOrderId));
         }
-        if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+        if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
             sb.append(" and is_vansales=" + isVanSales);
         }
         sb.append(" and orderid not in(select orderid from OrderDeliveryDetail)");
@@ -3373,7 +3373,7 @@ public class OrderHelper {
                 if (businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) {//if existing order is updated
                     sb.append(" and OrderID=" + AppUtils.QT(selectedOrderId));
                 }
-                if (businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                     sb.append(" and is_vansales=" + isVanSales);
                 }
                 orderDetailCursor = db.selectSQL(sb.toString());

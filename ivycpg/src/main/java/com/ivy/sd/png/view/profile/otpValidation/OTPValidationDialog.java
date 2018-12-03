@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.profile.otpValidation;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,45 +31,68 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 
-public class OTPPasswordDialog extends Dialog implements OnClickListener {
-    private Button ok, cancel;
-    private EditText password;
+public class OTPValidationDialog extends Dialog implements OnClickListener {
+
     private BusinessModel bmodel;
-    //private ProgressDialog pd;
-    private AlertDialog.Builder builder;
-    private AlertDialog alertDialog;
-    private OnDismissListener otpPasswordDismissListener;
-    private RetailerMasterBO mRetailerBO;
-    private FragmentActivity activityCtxt;
-    private TextView messageTv, titleBar, contactnoTxtView;
-    private int flag = 0;
+
+    private EditText password;
+    private TextView messageTv;
     private Spinner reason;
     private ArrayAdapter<SpinnerBO> reasonAdapter;
-    private TextView messagetv;
 
-    public OTPPasswordDialog(FragmentActivity activity, BusinessModel bmodel,
-                             OnDismissListener otpPasswordDismissListener,
-                             RetailerMasterBO retailerBO, String strTitle, int flag) {
+    private AlertDialog alertDialog;
+    private OnDismissListener otpPasswordDismissListener;
+
+    private RetailerMasterBO mRetailerBO;
+    private FragmentActivity activityCtxt;
+
+    private OTPValidationHelper otpValidationHelper;
+
+    private ValidationType flag;
+
+    public enum ValidationType {
+
+        LOCATION(1),
+        WALKING_SEQ(2);
+
+        private int value;
+
+        ValidationType(int value) {
+            this.value = value;
+        }
+    }
+
+
+    public OTPValidationDialog(FragmentActivity activity, BusinessModel bmodel,
+                               OnDismissListener otpPasswordDismissListener,
+                               RetailerMasterBO retailerBO, String strTitle, ValidationType flag) {
         super(activity);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.otp_password_dialog);
-        titleBar = (TextView) findViewById(R.id.titleBar);
+
+        TextView titleBar = findViewById(R.id.titleBar);
         titleBar.setText(strTitle);
+
         this.otpPasswordDismissListener = otpPasswordDismissListener;
+        otpValidationHelper = new OTPValidationHelper(activity.getApplicationContext());
+
         activityCtxt = activity;
         this.bmodel = bmodel;
         this.flag = flag;
         mRetailerBO = retailerBO;
-        password = (EditText) findViewById(R.id.passwordEditText);
-        messageTv = (TextView) findViewById(R.id.messageTv);
-        reason = (Spinner) findViewById(R.id.reason);
-        contactnoTxtView = (TextView) findViewById(R.id.contactnoTxtView);
+
+        password = findViewById(R.id.passwordEditText);
+        messageTv = findViewById(R.id.messageTv);
+        reason = findViewById(R.id.reason);
+
+        TextView contactnoTxtView = findViewById(R.id.contactnoTxtView);
         contactnoTxtView
                 .setText(activityCtxt.getResources().getString(
                         R.string.admin_contact_no)
                         + bmodel.userMasterHelper.getUserMasterBO()
                         .getAdminContactNo());
+
         DisplayMetrics outMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
         contactnoTxtView.setWidth(outMetrics.widthPixels);
@@ -79,9 +102,10 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
         contactnoTxtView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         messageTv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
-        builder = new AlertDialog.Builder(activityCtxt);
+        //private ProgressDialog pd;
+        AlertDialog.Builder builder = new AlertDialog.Builder(activityCtxt);
 
-        if ((flag == 2) && bmodel.configurationMasterHelper.ret_skip_flag == 2) {
+        if ((flag == ValidationType.WALKING_SEQ) && bmodel.configurationMasterHelper.ret_skip_flag == 2) {
             reason.setVisibility(View.VISIBLE);
             reasonAdapter = new ArrayAdapter<SpinnerBO>(activityCtxt,
                     R.layout.spinner_bluetext_layout);
@@ -91,25 +115,18 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
             reasonAdapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
             reason.setAdapter(reasonAdapter);
-            //  pd.setTitle(activityCtxt.getResources().getString(
-            //   R.string.saving));
 
         } else {
             password.setVisibility(View.VISIBLE);
-            //  pd.setTitle(activityCtxt.getResources().getString(
-            //   R.string.checking_password));
         }
+
         password.setRawInputType(Configuration.KEYBOARD_12KEY);
-        ok = (Button) findViewById(R.id.btn_ok);
-        cancel = (Button) findViewById(R.id.btn_cancel);
+
+        Button ok = findViewById(R.id.btn_ok);
+        Button cancel = findViewById(R.id.btn_cancel);
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
 
-		/*pd.setMessage(activityCtxt.getResources().getString(
-                R.string.loading_data));
-		
-		pd.setIndeterminate(true);
-		pd.setCancelable(false);*/
 
         customProgressDialog(builder);
         alertDialog = builder.create();
@@ -120,7 +137,7 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.btn_ok) {
-            if ((flag == 2) && bmodel.configurationMasterHelper.ret_skip_flag == 2)
+            if ((flag == ValidationType.WALKING_SEQ) && bmodel.configurationMasterHelper.ret_skip_flag == 2)
                 // to do
                 if (((SpinnerBO) reason.getSelectedItem()).getId() != 0) {
                     new CheckOTPPassword().execute();
@@ -208,32 +225,39 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
                 pd.dismiss();*/
             if (alertDialog != null)
                 alertDialog.dismiss();
-            if (result.equals("1")) {
-                if (flag == 1)
-                    mRetailerBO.setOtpActivatedDate(SDUtil
-                            .now(SDUtil.DATE_GLOBAL));
-                else if (bmodel.configurationMasterHelper.ret_skip_flag == 2
-                        || flag == 2) {
-                    mRetailerBO.setSkipActivatedDate(SDUtil
-                            .now(SDUtil.DATE_GLOBAL));
-                    mRetailerBO.setSkip(true);
-                }
-                bmodel.saveOTPActivatedDate(mRetailerBO.getRetailerID(), flag);
-                doDismiss();
-            } else if (result.equals("-1")) {
-                messageTv.setText(activityCtxt.getResources().getString(
-                        R.string.otp_expired));
-            } else if (result.equals("-2")) {
-                messageTv.setText(activityCtxt.getResources().getString(
-                        R.string.invalid_otp));
-            } else if (result.equals("-3")) {
-                messageTv.setText(activityCtxt.getResources().getString(
-                        R.string.activated_already));
-            } else if (result.equals("-4")) {
-                messageTv.setText(activityCtxt.getResources().getString(
-                        R.string.activation_error_try_again));
-            } else if (result.equals("-5")) {
-                messageTv.setText("Session Expired ");
+            switch (result) {
+                case "1":
+                    if (flag == ValidationType.LOCATION)
+                        mRetailerBO.setOtpActivatedDate(SDUtil
+                                .now(SDUtil.DATE_GLOBAL));
+                    else if (bmodel.configurationMasterHelper.ret_skip_flag == 2
+                            || flag == ValidationType.WALKING_SEQ) {
+                        mRetailerBO.setSkipActivatedDate(SDUtil
+                                .now(SDUtil.DATE_GLOBAL));
+                        mRetailerBO.setSkip(true);
+                    }
+                    otpValidationHelper.saveOTPActivatedDate(mRetailerBO.getRetailerID(), flag.value);
+                    doDismiss();
+                    break;
+                case "-1":
+                    messageTv.setText(activityCtxt.getResources().getString(
+                            R.string.otp_expired));
+                    break;
+                case "-2":
+                    messageTv.setText(activityCtxt.getResources().getString(
+                            R.string.invalid_otp));
+                    break;
+                case "-3":
+                    messageTv.setText(activityCtxt.getResources().getString(
+                            R.string.activated_already));
+                    break;
+                case "-4":
+                    messageTv.setText(activityCtxt.getResources().getString(
+                            R.string.activation_error_try_again));
+                    break;
+                case "-5":
+                    messageTv.setText("Session Expired ");
+                    break;
             }
             doCancel();
         }
@@ -244,7 +268,7 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
             try {
                 if (bmodel.configurationMasterHelper.ret_skip_flag == 2)
                     return saveReason();
-                else if (flag == 1) // For Retailer GPS OTP
+                else if (1 == ValidationType.LOCATION.value) // For Retailer GPS OTP
                     return bmodel
                             .checkOTP(
                                     mRetailerBO.getRetailerID(),
@@ -252,7 +276,7 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
                                     bmodel.getStandardListIdAndType(
                                             StandardListMasterConstants.SLM_RET_GPS_CODE,
                                             StandardListMasterConstants.OTP_LIST_CODE));
-                else if (flag == 2) // For Retailer Skip OTP
+                else if (ValidationType.WALKING_SEQ.value == 2) // For Retailer Skip OTP
                     return bmodel
                             .checkOTP(
                                     mRetailerBO.getRetailerID(),
@@ -329,11 +353,11 @@ public class OTPPasswordDialog extends Dialog implements OnClickListener {
         try {
             LayoutInflater inflater = (LayoutInflater) activityCtxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                    (ViewGroup) activityCtxt.findViewById(R.id.layout_root));
+                    activityCtxt.findViewById(R.id.layout_root));
 
-            TextView title = (TextView) layout.findViewById(R.id.title);
+            TextView title = layout.findViewById(R.id.title);
             title.setText(DataMembers.SD);
-            messagetv = (TextView) layout.findViewById(R.id.text);
+            TextView messagetv = layout.findViewById(R.id.text);
             messagetv.setText(getOwnerActivity().getResources().getString(R.string.loading));
 
             builder.setView(layout);

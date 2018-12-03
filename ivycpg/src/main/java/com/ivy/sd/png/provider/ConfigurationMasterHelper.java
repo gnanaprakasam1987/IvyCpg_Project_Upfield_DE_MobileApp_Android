@@ -311,7 +311,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NEAREXPIRY_IN_STOCKCHECK = "ORDB46";
     private static final String CODE_VANLOAD_LABELS = "VANLOAD01";
     private static final String CODE_SHOW_COLLECTION_BEFOREINVOICE = "COLL10";
-    private static final String CODE_CAPTURE_LOCATION = "FUN14";
+    private static final String CODE_CAPTURE_LOCATION = "FUN14"; // Global GPS config
     private static final String CODE_SHOW_DGTC = "FUN16";
     private static final String CODE_INVOICE_SEQUENCE_NUMBER = "ORDB48";
     private static final String CODE_SHOW_STOCK_IN_SUMMARY = "ORDB49";
@@ -637,7 +637,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_SECONDARY_CONTACT_NUMBER; //
     public boolean IS_DIST_PRE_POST_ORDER;
     public boolean IS_DB_BACKUP;
-    public boolean SHOW_GPS_ENABLE_DIALOG;
+    public boolean SHOW_GPS_ENABLE_DIALOG; // GPSENABLE
 
 
     public boolean SHOW_INIT_FOOTER;
@@ -791,7 +791,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_MULTIPLE_JOINCALL; // JOINTCALL01
     public boolean IS_ALLOW_SURVEY_WITHOUT_JOINTCALL; // JOINTCALL02
     public boolean IS_SIH_VALIDATION = false; // ORDB42
-    public boolean IS_SHOW_SELLER_DIALOG;// PREVAN01
+    public boolean HAS_SELLER_TYPE_SELECTION_ENABLED;// PREVAN01
     public boolean IS_SWITCH_SELLER_CONFIG_LEVEL;// PREVAN02
     public int switchConfigLevel = 0;
     public boolean IS_VALIDATE_CREDIT_DAYS;// CREDITDAY01
@@ -827,7 +827,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_NEAREXPIRY_IN_STOCKCHECK;
     public boolean SHOW_VANLOAD_LABELS;
     public boolean SHOW_COLLECTION_BEFORE_INVOICE;
-    public boolean SHOW_CAPTURED_LOCATION;
+    public boolean SHOW_CAPTURED_LOCATION; // FUN14 -> Global GPS config.
     public boolean SHOW_DGTC;
     public boolean SHOW_INVOICE_SEQUENCE_NO;
     public boolean SHOW_SR_SEQUENCE_NO;
@@ -900,6 +900,7 @@ public class ConfigurationMasterHelper {
     public int DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
     public int MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
     public int MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
+
     private static final String CODE_LOCATION_TIMER_PERIOD = "LOCTIMER";
     public int LOCATION_TIMER_PERIOD = 20;
     public boolean IS_LOC_TIMER_ON;
@@ -2131,7 +2132,7 @@ public class ConfigurationMasterHelper {
         this.HIDE_STOCK_APPLY_BUTTON = hashMapHHTModuleConfig.get(CODE_HIDE_STOCK_APPLY_BUTTON) != null ? hashMapHHTModuleConfig.get(CODE_HIDE_STOCK_APPLY_BUTTON) : false;
         this.SHOW_PRODUCTRETURN = hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_RETRUN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PRODUCT_RETRUN) : false;
         this.SHOW_GROUPPRODUCTRETURN = hashMapHHTModuleConfig.get(CODE_SHOW_GROUPPRODUCT_RETRUN) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_GROUPPRODUCT_RETRUN) : false;
-        this.IS_SHOW_SELLER_DIALOG = hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) : false;
+        this.HAS_SELLER_TYPE_SELECTION_ENABLED = hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SELLER_DIALOG) : false;
 
         this.IS_SWITCH_SELLER_CONFIG_LEVEL = hashMapHHTModuleConfig.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_CHNAGE_SELLER_CONFIG_LEVEL) : false;
         if (IS_SWITCH_SELLER_CONFIG_LEVEL) {
@@ -2310,10 +2311,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_TAX_MASTER = hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_TAX_APPLY) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_TAX_APPLY) != null) {
-            if (hashMapHHTModuleOrder.get(CODE_TAX_APPLY) != null && hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == 1)
-                this.IS_EXCLUDE_TAX = false;
-            else
-                this.IS_EXCLUDE_TAX = true;
+            this.IS_EXCLUDE_TAX = hashMapHHTModuleOrder.get(CODE_TAX_APPLY) == null || hashMapHHTModuleOrder.get(CODE_TAX_APPLY) != 1;
         }
 
         this.discountType = hashMapHHTModuleOrder.get(CODE_DISCOUNT_EDITVIEW) != null ? hashMapHHTModuleOrder.get(CODE_DISCOUNT_EDITVIEW) : 0;
@@ -2512,10 +2510,7 @@ public class ConfigurationMasterHelper {
         this.IS_UPPERCASE_LETTER = hashMapHHTModuleConfig.get(CODE_UPPERCASE_LETTER) != null ? hashMapHHTModuleConfig.get(CODE_UPPERCASE_LETTER) : false;
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
-            if (hashMapHHTModuleOrder.get(CODE_SHOW_VALUE_ORDER) == 1)
-                this.SHOW_HISTORY_DETAIL = true;
-            else
-                this.SHOW_HISTORY_DETAIL = false;
+            this.SHOW_HISTORY_DETAIL = hashMapHHTModuleOrder.get(CODE_SHOW_VALUE_ORDER) == 1;
         }
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) != null) {
@@ -4556,7 +4551,6 @@ public class ConfigurationMasterHelper {
         SHOW_STOCK_VAN_UNLOAD = false;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
-        ;
         try {
             db.openDataBase();
             if (IS_EOD_COLUMNS_AVALIABLE) {
@@ -4795,7 +4789,6 @@ public class ConfigurationMasterHelper {
 
     public void setAmazonS3Credentials() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        ;
         try {
             db.openDataBase();
             String sql = "Select ListCode,ListName from StandardListMaster where ListType='Amazon_Configuration'";
@@ -5113,22 +5106,16 @@ public class ConfigurationMasterHelper {
                     DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String sql = "select hht.flag,o.isended,o.isstarted from HhtMenuMaster hht  left join Odameter o where hht.HHTCode='MENU_ODAMETER' and hht.lang= "
+            String sql = "select hht.flag,o.isended,o.isstarted from HhtMenuMaster hht  " +
+                    "left join Odameter o where hht.HHTCode='MENU_ODAMETER' and hht.lang= "
                     + bmodel.QT(language);
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
                     if (c.getInt(0) == 1)
                         flag = true;
-                    if (c.getInt(1) == 1)
-                        bmodel.endjourneyclicked = true;
-                    else
-                        bmodel.endjourneyclicked = false;
-
-                    if (c.getInt(2) == 1) {
-                        bmodel.startjourneyclicked = true;
-                    } else
-                        bmodel.startjourneyclicked = false;
+                    bmodel.endjourneyclicked = c.getInt(1) == 1;
+                    bmodel.startjourneyclicked = c.getInt(2) == 1;
                 }
                 c.close();
             }
@@ -5430,11 +5417,7 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     int value = c.getInt(0);
-                    if (value == 1) {
-                        IS_SALES_RETURN_VALIDATE = true;
-                    } else {
-                        IS_SALES_RETURN_VALIDATE = false;
-                    }
+                    IS_SALES_RETURN_VALIDATE = value == 1;
                 }
             }
         } catch (Exception e) {
@@ -5455,11 +5438,7 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     int value = c.getInt(0);
-                    if (value == 1) {
-                        IS_SALES_RETURN_SIGN = true;
-                    } else {
-                        IS_SALES_RETURN_SIGN = false;
-                    }
+                    IS_SALES_RETURN_SIGN = value == 1;
                 }
             }
         } catch (Exception e) {
@@ -5532,11 +5511,7 @@ public class ConfigurationMasterHelper {
                         && con.getValue() != null)
                     this.PSWD_EXPIRY = SDUtil.convertToInt(con.getValue());
                 else if (CODE_SAME_LOGIN.equals(con.getRuleKey())) {
-                    if (SDUtil.convertToInt(con.getValue()) == 1) {
-                        IS_SAME_LOGIN = true;
-                    } else {
-                        IS_SAME_LOGIN = false;
-                    }
+                    IS_SAME_LOGIN = SDUtil.convertToInt(con.getValue()) == 1;
                 } else if (CODE_PSWD_CHARACTERS.equals(con.getRuleKey())) {
                     if (con.getValue() != null) {
                         String codeSplit[] = con.getValue().split(",");
@@ -5695,15 +5670,12 @@ public class ConfigurationMasterHelper {
 
     public boolean checkLocationConfiguration() {
 
-        if (checkLocationInNewRetailerAndProfile()
+        return checkLocationInNewRetailerAndProfile()
                 || bmodel.configurationMasterHelper.IS_MAP
                 || bmodel.configurationMasterHelper.SHOW_LOCATION_PASSWORD_DIALOG
                 || bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION
-                || bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
-            return true;
-        }
+                || bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION;
 
-        return false;
     }
 
     private boolean checkLocationInNewRetailerAndProfile() {
@@ -5897,15 +5869,12 @@ public class ConfigurationMasterHelper {
     }
 
     public boolean isLastVisitTransactionDownloadConfigEnabled() {
-        if (bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN
+        return bmodel.configurationMasterHelper.IS_STOCK_CHECK_RETAIN_LAST_VISIT_TRAN
                 || bmodel.configurationMasterHelper.IS_NEAR_EXPIRY_RETAIN_LAST_VISIT_TRAN
                 || bmodel.configurationMasterHelper.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN
                 || bmodel.configurationMasterHelper.IS_SURVEY_RETAIN_LAST_VISIT_TRAN
                 || bmodel.configurationMasterHelper.IS_SOS_RETAIN_LAST_VISIT_TRAN
-                || bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
-            return true;
-        }
-        return false;
+                || bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN;
     }
 
     public void loadOrderReasonDialog() {
@@ -5982,7 +5951,7 @@ public class ConfigurationMasterHelper {
                     .getGenFilter();
             for (int i = 0; i < genfilter.size(); i++) {
                 if (genfilter.get(i).getHasLink() == 1) {
-                    if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (!bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                         defaultfilter = genfilter.get(i).getConfigCode();
                         break;
                     } else {

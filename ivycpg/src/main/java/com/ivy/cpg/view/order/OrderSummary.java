@@ -473,7 +473,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bModel.configurationMasterHelper.IS_INVOICE_AS_MOD)
                 button_invoice.setVisibility(View.GONE);
 
-            if (bModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && !bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
+            if (bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && !bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                 button_invoice.setVisibility(View.GONE);
             }
 
@@ -483,7 +483,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (orderHelper.isQuickCall)
                 button_invoice.setVisibility(View.GONE);
 
-            if (bModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 if (bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                     findViewById(R.id.layoutDelivery).setVisibility(View.GONE);
                 }
@@ -773,7 +773,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (bModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION &&
                     bModel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase(CREDIT_TYPE) &&
-                    ((bModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bModel.getRetailerMasterBO().getIsVansales() == 1)
+                    ((bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bModel.getRetailerMasterBO().getIsVansales() == 1)
                             || bModel.configurationMasterHelper.IS_INVOICE)) {
 
                 double remReturnValue = orderHelper.getRemaingReturnAmt();
@@ -1374,7 +1374,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             case DIALOG_ORDER_SAVED: {
 
                 delivery_date_txt = button_deliveryDate.getText().toString();
-                if (bModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                if (bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                     if (bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         delivery_date_txt = "";
                     }
@@ -1428,7 +1428,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             case DIALOG_ORDER_SAVED_WITH_PRINT_OPTION: {
 
                 delivery_date_txt = button_deliveryDate.getText().toString();
-                if (bModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                if (bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                     if (bModel.configurationMasterHelper.IS_SIH_VALIDATION) {
                         delivery_date_txt = "";
                     }

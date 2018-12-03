@@ -756,7 +756,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             menu.findItem(R.id.menu_photo).setVisible(false);
         if (!bmodel.configurationMasterHelper.IS_TASK)
             menu.findItem(R.id.menu_reminder).setVisible(false);
-        if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
+        if (!bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED)
             menu.findItem(R.id.menu_sales_selection).setVisible(false);
         if (!bmodel.configurationMasterHelper.SHOW_SUPPLIER_SELECTION || bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE)
             menu.findItem(R.id.menu_supplier_selection).setVisible(false);

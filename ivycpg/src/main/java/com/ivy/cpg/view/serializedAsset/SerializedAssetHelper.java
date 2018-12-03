@@ -1257,6 +1257,8 @@ public class SerializedAssetHelper {
             sb.append(" where (SAM.SerialNumber  in (select distinct SerialNumber from SerializedAssetTransfer AAD where Transfer_Type!='RTR_WH'");
             sb.append(") or SAM.SerialNumber not in (select distinct SerialNumber from SerializedAssetTransfer AAD1");
             sb.append("))");
+            sb.append(" and Retailerid in(0,");
+            sb.append(AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
 
 
             Cursor c = db.selectSQL(sb.toString());

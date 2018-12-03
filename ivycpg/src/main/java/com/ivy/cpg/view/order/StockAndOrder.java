@@ -5203,7 +5203,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private int checkStockValidation() {
         int flag;
 
-        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+        if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
             flag = bmodel.getRetailerMasterBO().getIsVansales() == 1 ? 1 : 0;
         } else {
             flag = bmodel.configurationMasterHelper.IS_INVOICE ? 1 : 0;
@@ -5457,7 +5457,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .getGenFilter();
             for (int i = 0; i < genfilter.size(); i++) {
                 if (genfilter.get(i).getHasLink() == 1) {
-                    if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (!bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                         defaultfilter = genfilter.get(i).getConfigCode();
                         break;
                     } else {

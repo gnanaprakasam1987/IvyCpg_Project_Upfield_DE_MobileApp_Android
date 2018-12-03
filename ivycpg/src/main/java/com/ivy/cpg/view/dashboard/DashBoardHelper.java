@@ -3891,7 +3891,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = null;
-            if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
 
                 if (bmodel.beatMasterHealper.getTodayBeatMasterBO() == null
                         || bmodel.beatMasterHealper.getTodayBeatMasterBO().getBeatId() == 0) {
@@ -4020,7 +4020,7 @@ public class DashBoardHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
             Cursor c = null;
-            if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 // c =
                 // db.selectSQL("SELECT distinct(Retailerid) FROM InvoiceMaster");
 
