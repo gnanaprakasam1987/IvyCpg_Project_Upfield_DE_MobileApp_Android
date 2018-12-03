@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/orderPRODNAME"
             android:layout_toEndOf="@+id/mrp"
+            android:layout_toRightOf="@+id/mrp"
             android:padding="2dp"
             android:text="@string/ou"
             android:visibility="gone" />
