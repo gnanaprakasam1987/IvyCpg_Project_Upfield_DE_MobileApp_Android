@@ -118,7 +118,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             Vector<ConfigureBO> genfilter = getGeneralFilter();
             for (int i = 0; i < genfilter.size(); i++) {
                 if (genfilter.get(i).getHasLink() == 1) {
-                    if (!businessModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (!businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                         defaultFilter = genfilter.get(i).getConfigCode();
                         break;
                     } else {

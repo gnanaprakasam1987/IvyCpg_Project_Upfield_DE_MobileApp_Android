@@ -3375,7 +3375,7 @@ public class SchemeDetailsMasterHelper {
                     + bModel.QT(retailerID));
             sb.append(" and invoicestatus=0 and upload='N'");
 
-            if (bModel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 sb.append(" and is_vansales="
                         + bModel.getRetailerMasterBO().getIsVansales());
             }

@@ -1083,7 +1083,7 @@ public class BusinessModel extends Application {
             StringBuffer sb = new StringBuffer();
             sb.append("select orderid from " + DataMembers.tbl_orderHeader
                     + " where invoicestatus = 0 and upload!='X' and OFlag = 1 ");
-            if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 sb.append(" and is_vansales=1");
             }
             Cursor c = db.selectSQL(sb.toString());
@@ -1113,7 +1113,7 @@ public class BusinessModel extends Application {
 
             sql = "select retailerid,invoicestatus from " + DataMembers.tbl_orderHeader;
 
-            if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 sql += " where is_vansales=1 and upload != 'X'";
             }
             Cursor c = db.selectSQL(sql);
@@ -4736,31 +4736,7 @@ public class BusinessModel extends Application {
         return downloadReponse;
     }
 
-    public void saveOTPActivatedDate(String mRetailerId, int mType) {
-        try {
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-            String query = "";
-
-            if (mType == 1)
-                query = "UPDATE RetailerMaster SET StoreOTPActivated = '"
-                        + SDUtil.now(SDUtil.DATE_GLOBAL)
-                        + "'  WHERE RetailerID = '" + mRetailerId + "'";
-            else if (mType == 2)
-                query = "UPDATE RetailerMaster SET SkipOTPActivated = '"
-                        + SDUtil.now(SDUtil.DATE_GLOBAL)
-                        + "'  WHERE RetailerID = '" + mRetailerId + "'";
-
-            if (!query.equals(""))
-                db.updateSQL(query);
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("", e);
-        }
-    }
 
     /**
      * @See {@link  com.ivy.utils.AppUtils;}
@@ -5003,7 +4979,7 @@ public class BusinessModel extends Application {
     public int getTotalLines() {
         try {
             boolean isVansales;
-            if (configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 if (getRetailerMasterBO().getIsVansales() == 1) {
                     isVansales = true;
                 } else {

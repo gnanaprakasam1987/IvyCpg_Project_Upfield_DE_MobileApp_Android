@@ -50,7 +50,6 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
@@ -197,7 +196,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     .getGenFilter();
             for (int i = 0; i < genfilter.size(); i++) {
                 if (genfilter.get(i).getHasLink() == 1) {
-                    if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (!bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                         defaultfilter = genfilter.get(i).getConfigCode();
                         break;
                     } else {

@@ -1773,8 +1773,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                 if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                         || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0 && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
-                        || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0) ||
+                        && ret.getSIH() > 0 && bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED)
+                        || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0) ||
                         (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && ret.getSIH() > 0)) {
                     if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                         if (mSelectedFilter.equals(getResources().getString(
@@ -1972,8 +1972,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0 && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG)
-                            || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)
+                            && ret.getSIH() > 0 && bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED)
+                            || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && ret.getSIH() > 0)) {
 
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
@@ -2101,7 +2101,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     .getGenFilter();
             for (int i = 0; i < genfilter.size(); i++) {
                 if (genfilter.get(i).getHasLink() == 1) {
-                    if (!bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (!bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                         defaultfilter = genfilter.get(i).getConfigCode();
                         break;
                     } else {
@@ -2650,7 +2650,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
                             && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
+                            || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
                             (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
 
                         if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
@@ -2675,7 +2675,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                                 || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
                                 && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
+                                || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
                                 (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
 
 
@@ -2700,7 +2700,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             && bmodel.getRetailerMasterBO().getIsVansales() == 1
                             && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                            || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                             && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             && bmodel.configurationMasterHelper.IS_INVOICE
@@ -2728,7 +2728,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             && bmodel.getRetailerMasterBO().getIsVansales() == 1
                             && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                            || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                             && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
                             || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
                             && bmodel.configurationMasterHelper.IS_INVOICE
