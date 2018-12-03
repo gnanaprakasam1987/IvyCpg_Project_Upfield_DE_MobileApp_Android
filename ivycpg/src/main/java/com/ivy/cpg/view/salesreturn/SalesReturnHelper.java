@@ -1022,7 +1022,7 @@ public class SalesReturnHelper {
         DBUtil db = null;
         try {
             boolean isVansales;
-            if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 if (bmodel.getRetailerMasterBO().getIsVansales() == 1) {
                     isVansales = true;
                 } else {
@@ -1350,7 +1350,7 @@ public class SalesReturnHelper {
             //Credit note will be generated from SalesReturn Module too
             boolean checkType = false;
             if (((module.equals("ORDER") && code.equals(CREDIT_TYPE)) &&
-                    ((bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG && bmodel.getRetailerMasterBO().getIsVansales() == 1) || bmodel.configurationMasterHelper.IS_INVOICE))
+                    ((bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 1) || bmodel.configurationMasterHelper.IS_INVOICE))
                     ) {
                 // from order module
                 checkType = true;

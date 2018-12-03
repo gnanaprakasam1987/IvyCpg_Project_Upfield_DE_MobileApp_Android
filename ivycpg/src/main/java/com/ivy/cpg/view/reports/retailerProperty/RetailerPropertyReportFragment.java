@@ -76,7 +76,7 @@ public class RetailerPropertyReportFragment extends IvyBaseFragment {
             } else if (retailer_type == CODE_INDICATIVE && bmodel.getRetailerMaster().get(i).getIndicateFlag() == 1) {
                 mylist.add(bmodel.getRetailerMaster().get(i));
             } else if (retailer_type == CODE_NON_PRODUCTIVE) {
-                if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                         && bmodel.getRetailerMaster().get(i).isInvoiceDone().equals("Y")) {
                     mylist.add(bmodel.getRetailerMaster().get(i));
                 } else if (!bmodel.configurationMasterHelper.IS_INVOICE && bmodel.getRetailerMaster().get(i).isOrdered().equals("Y")) {
@@ -86,7 +86,7 @@ public class RetailerPropertyReportFragment extends IvyBaseFragment {
             } else if (retailer_type == CODE_PRODUCTIVE) {
                 if (bmodel.getRetailerMaster().get(i).isOrdered().equals("Y")) {
                     mylist.add(bmodel.getRetailerMaster().get(i));
-                } else if (bmodel.configurationMasterHelper.IS_INVOICE && bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG
+                } else if (bmodel.configurationMasterHelper.IS_INVOICE && bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
                         && bmodel.getRetailerMaster().get(i).isInvoiceDone().equals("Y")) {
                     mylist.add(bmodel.getRetailerMaster().get(i));
                 }

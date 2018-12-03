@@ -60,7 +60,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
@@ -127,7 +126,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         btnSave.setOnClickListener(this);
 
         //setting drawer width equal to scren width
-        drawer = (FrameLayout) view.findViewById(R.id.right_drawer);
+        drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -161,17 +160,11 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 if (getActionBar() != null) {
                     setScreenTitle(businessModel.mSelectedActivityName);
                 }
-
-                getActivity().supportInvalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-
-                /*if (getActionBar() != null) {
-                    setScreenTitle(getResources().getString(R.string.filter));
-                }*/
-
-                getActivity().supportInvalidateOptionsMenu();
+                getActivity().invalidateOptionsMenu();
             }
         };
 
@@ -179,27 +172,23 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
         priceTrackingHelper.prepareAdapters();
 
-        viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
+        viewFlipper = view.findViewById(R.id.view_flipper);
 
-        mEdt_searchProductName = (EditText) view.findViewById(
+        mEdt_searchProductName = view.findViewById(
                 R.id.edt_searchproductName);
-        mEdt_searchProductName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mBtn_Search = (Button) view.findViewById(R.id.btn_search);
+        mBtn_Search = view.findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
-        mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
+        mBtn_clear = view.findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
-        mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup = view.findViewById(R.id.btn_filter_popup);
         mBtnFilterPopup.setOnClickListener(this);
 
-        tvProdName = (TextView) view.findViewById(R.id.sku);
-        tvProdName.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvProdName = view.findViewById(R.id.sku);
 
-        tvIsChanged = (TextView) view.findViewById(R.id.changed);
-        tvCompliance = (TextView) view.findViewById(R.id.compliance);
-        // TextView tvReason = (TextView) view.findViewById(R.id.reason);
+        tvIsChanged = view.findViewById(R.id.changed);
+        tvCompliance = view.findViewById(R.id.compliance);
 
-        tvCurPriceText = (TextView) view.findViewById(R.id.curtext);
-        tvCurPriceText.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        tvCurPriceText = view.findViewById(R.id.curtext);
         mEdt_searchProductName.setOnEditorActionListener(this);
 
         mEdt_searchProductName.addTextChangedListener(new TextWatcher() {
@@ -225,21 +214,14 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             }
         });
 
-        tvIsChanged.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tvCompliance.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        // tvReason.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        ll_curPrice = (LinearLayout) view.findViewById(R.id.ll_cur_price);
+        ll_curPrice = view.findViewById(R.id.ll_cur_price);
 
-        tvCa = (TextView) view.findViewById(R.id.ca_price);
-        tvPc = (TextView) view.findViewById(R.id.pc_price);
-        tvOo = (TextView) view.findViewById(R.id.oo_price);
+        tvCa = view.findViewById(R.id.ca_price);
+        tvPc = view.findViewById(R.id.pc_price);
+        tvOo = view.findViewById(R.id.oo_price);
 
-        tvCa.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tvPc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tvOo.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-        lv = (ListView) view.findViewById(R.id.list);
+        lv = view.findViewById(R.id.list);
         lv.setCacheColorHint(0);
         onLoadModule();
     }
@@ -1025,96 +1007,80 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 row = inflater.inflate(
                         R.layout.row_price_tracking, parent, false);
 
-                holder.mBarCode = (TextView) row
+                holder.mBarCode = row
                         .findViewById(R.id.barcode);
-                holder.mBarCode.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.mSKU = (TextView) row.findViewById(R.id.sku);
-                holder.mSKU.setTypeface(businessModel.configurationMasterHelper.getProductNameFont());
+                holder.mSKU = row.findViewById(R.id.sku);
                 holder.mSKU.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                holder.mSrp = (TextView) row.findViewById(R.id.tv_srp);
-                holder.mSrp.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.mSrp = row.findViewById(R.id.tv_srp);
 
-                holder.rl_PriceChanged = (RelativeLayout) row
+                holder.rl_PriceChanged = row
                         .findViewById(R.id.rl_PriceChanged);
 
-                holder.mChanged = (CheckBox) row
+                holder.mChanged = row
                         .findViewById(R.id.changed);
 
-                holder.mPrev_CA = (TextView) row
+                holder.mPrev_CA = row
                         .findViewById(R.id.prev_ca);
-                holder.mPrev_CA.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.mPrev_PC = (TextView) row
+                holder.mPrev_PC = row
                         .findViewById(R.id.prev_pc);
-                holder.mPrev_PC.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.mPrev_OO = (TextView) row
+                holder.mPrev_OO = row
                         .findViewById(R.id.prev_oo);
-                holder.mPrev_OO.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                holder.mPrev_CA_label = (TextView) row
+                holder.mPrev_CA_label = row
                         .findViewById(R.id.prev_ca_label);
-                holder.mPrev_CA_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.mPrev_PC_label = (TextView) row
+                holder.mPrev_PC_label = row
                         .findViewById(R.id.prev_pc_label);
-                holder.mPrev_PC_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.mPrev_OO_label = (TextView) row
+                holder.mPrev_OO_label = row
                         .findViewById(R.id.prev_oo_label);
-                holder.mPrev_OO_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-                holder.mCaPrice = (EditText) row
+                holder.mCaPrice = row
                         .findViewById(R.id.caprice);
                 holder.mCaPrice
                         .setInputType(InputType.TYPE_NULL);
 
-                holder.mPcPrice = (EditText) row
+                holder.mPcPrice = row
                         .findViewById(R.id.pcprice);
                 holder.mPcPrice
                         .setInputType(InputType.TYPE_NULL);
 
-                holder.mOoPrice = (EditText) row
+                holder.mOoPrice = row
                         .findViewById(R.id.ooprice);
                 holder.mOoPrice
                         .setInputType(InputType.TYPE_NULL);
 
-                holder.rl_PriceCompliance = (RelativeLayout) row
+                holder.rl_PriceCompliance = row
                         .findViewById(R.id.rl_PriceCompliance);
 
-                holder.mCompliance = (CheckBox) row
+                holder.mCompliance = row
                         .findViewById(R.id.compliance);
 
-                holder.mReason = (Spinner) row
+                holder.mReason = row
                         .findViewById(R.id.reason);
-                holder.mReason_price_change = (Spinner) row
+                holder.mReason_price_change = row
                         .findViewById(R.id.reason_pc);
 
-                holder.mProductCodeTV = (TextView) row
+                holder.mProductCodeTV = row
                         .findViewById(R.id.prdcode_tv);
-                holder.mProductCodeTV.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-                holder.tv_prev_mrp_pc = (TextView) row.findViewById(R.id.tv_prev_mrp_pc);
-                holder.tv_prev_mrp_pc.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_prev_mrp_ca = (TextView) row.findViewById(R.id.tv_prev_mrp_ca);
-                holder.tv_prev_mrp_ca.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_prev_mrp_ou = (TextView) row.findViewById(R.id.tv_prev_mrp_oo);
-                holder.tv_prev_mrp_ou.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.tv_prev_mrp_pc = row.findViewById(R.id.tv_prev_mrp_pc);
+                holder.tv_prev_mrp_ca = row.findViewById(R.id.tv_prev_mrp_ca);
+                holder.tv_prev_mrp_ou = row.findViewById(R.id.tv_prev_mrp_oo);
 
-                holder.tv_prev_mrp_ca_label = (TextView) row.findViewById(R.id.prev_mrp_ca_label);
-                holder.tv_prev_mrp_ca_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_prev_mrp_ou_label = (TextView) row.findViewById(R.id.prev_mrp_oo_label);
-                holder.tv_prev_mrp_ou_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.tv_prev_mrp_pc_label = (TextView) row.findViewById(R.id.prev_mrp_pc_label);
-                holder.tv_prev_mrp_pc_label.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tv_prev_mrp_ca_label = row.findViewById(R.id.prev_mrp_ca_label);
+                holder.tv_prev_mrp_ou_label = row.findViewById(R.id.prev_mrp_oo_label);
+                holder.tv_prev_mrp_pc_label = row.findViewById(R.id.prev_mrp_pc_label);
 
 
-                holder.rl_prev_price = (RelativeLayout) row.findViewById(R.id.rl_prev_price_n_mrp_layout);
-                holder.ll_prev_case = (LinearLayout) row.findViewById(R.id.ll_prev_price_ca);
-                holder.ll_prev_pc = (LinearLayout) row.findViewById(R.id.ll_prev_price_pc);
-                holder.ll_prev_oo = (LinearLayout) row.findViewById(R.id.ll_prev_price_oo);
-                holder.ll_prev_price_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_price);
-                holder.ll_prev_mrp_main_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_mrp);
-                holder.ll_prev_mrp_pc_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_mrp_pc);
-                holder.ll_prev_mrp_ca_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_mrp_ca);
-                holder.ll_prev_mrp_oo_Lty = (LinearLayout) row.findViewById(R.id.ll_prev_mrp_oo);
+                holder.rl_prev_price = row.findViewById(R.id.rl_prev_price_n_mrp_layout);
+                holder.ll_prev_case = row.findViewById(R.id.ll_prev_price_ca);
+                holder.ll_prev_pc = row.findViewById(R.id.ll_prev_price_pc);
+                holder.ll_prev_oo = row.findViewById(R.id.ll_prev_price_oo);
+                holder.ll_prev_price_Lty = row.findViewById(R.id.ll_prev_price);
+                holder.ll_prev_mrp_main_Lty = row.findViewById(R.id.ll_prev_mrp);
+                holder.ll_prev_mrp_pc_Lty = row.findViewById(R.id.ll_prev_mrp_pc);
+                holder.ll_prev_mrp_ca_Lty = row.findViewById(R.id.ll_prev_mrp_ca);
+                holder.ll_prev_mrp_oo_Lty = row.findViewById(R.id.ll_prev_mrp_oo);
 
                 if (priceTrackingHelper.SHOW_PREV_MRP_IN_PRICE) {
                     if (priceTrackingHelper.SHOW_PRICE_PC)

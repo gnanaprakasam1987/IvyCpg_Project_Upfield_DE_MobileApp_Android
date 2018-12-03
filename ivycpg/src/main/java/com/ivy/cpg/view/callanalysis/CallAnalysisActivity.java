@@ -454,7 +454,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     .getMonthly_acheived());
 
             double day_act;
-            if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+            if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 if (bmodel.getRetailerMasterBO().getIsVansales() == 1)
                     day_act = bmodel.getInvoiceAmount();
                 else
@@ -1259,7 +1259,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     private void closeCallDone() {
 
 
-        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+        if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
             bmodel.configurationMasterHelper.IS_SIH_VALIDATION = true;
         }
 
@@ -1381,7 +1381,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
         }
         resetRemarksBO();
-        if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+        if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
             resetSellerConfiguration();
         }
 

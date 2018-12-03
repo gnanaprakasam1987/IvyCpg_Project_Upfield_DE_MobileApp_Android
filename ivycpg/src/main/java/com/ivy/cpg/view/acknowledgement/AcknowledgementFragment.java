@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -113,7 +114,7 @@ public class AcknowledgementFragment extends IvyBaseFragment {
             holder.txtUser.setText(dashboardData.getUserName());
             holder.txtUserCount.setText(dashboardData.getCount());
             //for P3M trend Chart loading
-            holder.icon_ll.setOnClickListener(new View.OnClickListener() {
+            holder.detIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(getActivity(), AcknowledgementDetailActivity.class);
@@ -152,7 +153,7 @@ public class AcknowledgementFragment extends IvyBaseFragment {
 
             TextView txtUser;
             TextView txtUserCount;
-            LinearLayout icon_ll;
+            ImageView detIcon;
             LinearLayout lnr;
             JointCallAcknowledgementCountBO dashboardDataObj;
 
@@ -162,8 +163,8 @@ public class AcknowledgementFragment extends IvyBaseFragment {
                         .findViewById(R.id.txtUser);
                 txtUserCount = row
                         .findViewById(R.id.txtUserCount);
-                icon_ll = row
-                        .findViewById(R.id.icon_ll);
+                detIcon = row
+                        .findViewById(R.id.btn_inandout);
                 lnr = row
                         .findViewById(R.id.lnr);
             }

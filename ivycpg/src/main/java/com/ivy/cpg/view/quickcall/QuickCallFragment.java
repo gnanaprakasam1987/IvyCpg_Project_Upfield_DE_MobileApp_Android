@@ -183,7 +183,7 @@ public class QuickCallFragment extends IvyBaseFragment {
                     else
                         bmodel.productHelper.taxHelper = TaxHelper.getInstance(getActivity());
 
-                    if (bmodel.configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                         bmodel.getRetailerWiseSellerType();
                         bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
                     }

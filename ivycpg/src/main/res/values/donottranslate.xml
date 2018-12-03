@@ -111,4 +111,5 @@
 
     <string name="avg_value">Average Value</string>
     <string name="invoice_generated_already">"Invoice has been generated already"</string>
+    <string name="init_value">Init Value</string>
 </resources>

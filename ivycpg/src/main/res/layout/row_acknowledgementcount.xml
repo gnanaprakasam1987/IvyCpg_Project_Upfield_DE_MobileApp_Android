@@ -11,80 +11,65 @@
     card_view:cardUseCompatPadding="true"
     card_view:contentPadding="0dp">
 
-    <LinearLayout
-        android:id="@+id/lnr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/target_top_margin"
-        android:orientation="vertical">
-
         <LinearLayout
+            android:id="@+id/lnr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_8dp"
-            android:layout_marginTop="@dimen/dimen_8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
+                style="@style/TextViewListItemPrimary"
                 android:id="@+id/txtUser"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="6"
                 android:paddingStart="@dimen/whats_on_item_padding"
-                android:text="Value"
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/factor_title_size"
-                android:textStyle="bold"
+                android:paddingEnd="@dimen/whats_on_item_padding"
+                android:paddingRight="@dimen/whats_on_item_padding"
+                android:text="@string/value"
                 android:paddingLeft="@dimen/whats_on_item_padding" />
 
             <TextView
+                style="@style/TextViewCaption"
                 android:id="@+id/incentive_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center|end"
+                android:paddingLeft="@dimen/recycler_margin"
+                android:paddingStart="@dimen/recycler_margin"
                 android:paddingEnd="@dimen/recycler_margin"
                 android:tag="incentive_day"
                 android:text="Total Calls"
                 android:textColor="@color/half_Black"
-                android:textSize="@dimen/footer_label_size"
-                android:textStyle="normal"
                 android:paddingRight="@dimen/recycler_margin" />
 
             <TextView
+                style="@style/TextViewListItemValuesHighLight"
                 android:id="@+id/txtUserCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:gravity="center|start"
                 android:paddingStart="@dimen/recycler_margin"
+                android:paddingRight="@dimen/recycler_margin"
+                android:paddingEnd="@dimen/recycler_margin"
                 android:text="50"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/incentive_value_size"
-                android:textStyle="bold"
                 android:paddingLeft="@dimen/recycler_margin" />
-
-            <LinearLayout
-                android:id="@+id/icon_ll"
-                android:layout_width="@dimen/activity_list_height"
-                android:layout_height="@dimen/activity_list_height"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dimens_16dp"
-                android:gravity="center"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="@dimen/dimens_16dp">
 
                 <ImageView
                     android:id="@+id/btn_inandout"
                     android:layout_width="@dimen/sub_activity_list_icon_circle"
                     android:layout_height="@dimen/sub_activity_list_icon_circle"
+                    android:layout_marginLeft="@dimen/dimens_16dp"
+                    android:layout_marginRight="@dimen/dimens_8dp"
+                    android:layout_marginEnd="@dimen/dimens_8dp"
+                    android:layout_marginStart="@dimen/dimens_16dp"
                     android:src="@drawable/activity_icon_next" />
-
-            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
 </android.support.v7.widget.CardView>

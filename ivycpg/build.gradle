@@ -109,7 +109,7 @@ android {
             buildConfigField("boolean", "ACTIVATION", "true")
 
             buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
-            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
+            buildConfigField("String", "FB_STORAGE_URL", "\"gs://ivycpg-1138.appspot.com\"")
 
             minifyEnabled true
             shrinkResources true
@@ -121,7 +121,7 @@ android {
             buildConfigField("boolean", "ACTIVATION", "true")
 
             buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
-            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
+            buildConfigField("String", "FB_STORAGE_URL", "\"gs://ivycpg-1138.appspot.com\"")
 
             minifyEnabled true
             shrinkResources true

@@ -2002,7 +2002,7 @@ public class ProductHelper {
                     product.setTextColor(getFilterColor("Filt22"));
                 else
                     product.setTextColor(mContext.getResources().getColor(
-                            android.R.color.black));
+                            R.color.list_item_primary_text_color));
 
                 if (bmodel.configurationMasterHelper.SHOW_HIGHLIGHT_FOR_OOS
                         && product.getWSIH() == 0)
@@ -5131,7 +5131,7 @@ public class ProductHelper {
                         tagBo.setTextColor(getFilterColor("Filt23"));
                     } else {
                         if (tagBo.getOwn() == 0)
-                            tagBo.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
+                            tagBo.setTextColor(ContextCompat.getColor(mContext, R.color.list_item_primary_text_color));
                     }
                 }
         } catch (Exception e) {
