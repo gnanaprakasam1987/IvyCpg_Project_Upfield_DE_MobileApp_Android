@@ -4,9 +4,9 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dimen_6dp"
     android:paddingLeft="@dimen/card_margin"
-    android:paddingRight="@dimen/card_margin">
+    android:paddingRight="@dimen/card_margin"
+    android:paddingBottom="@dimen/dimen_6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
-                android:text="cjashcjk"
+                android:text="@string/skuname"
                 android:textColor="@color/black_bg1" />
 
         </LinearLayout>
@@ -57,7 +57,7 @@
 
             <TextView
                 android:id="@+id/tv_reason"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -83,7 +83,7 @@
 
             <TextView
                 android:id="@+id/mfgDate"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -109,7 +109,7 @@
 
             <TextView
                 android:id="@+id/expDate"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -140,7 +140,7 @@
 
             <TextView
                 android:id="@+id/invoiceno"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -166,7 +166,7 @@
 
             <TextView
                 android:id="@+id/lotnumber"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -192,7 +192,7 @@
 
             <TextView
                 android:id="@+id/oldMrp"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -218,7 +218,7 @@
 
             <TextView
                 android:id="@+id/srpedit"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -250,7 +250,7 @@
 
             <TextView
                 android:id="@+id/productqtyPieces"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -276,7 +276,7 @@
 
             <TextView
                 android:id="@+id/productqtyCases"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -302,7 +302,7 @@
 
             <TextView
                 android:id="@+id/outerproductqtyCases"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -328,7 +328,7 @@
 
             <TextView
                 android:id="@+id/srQtyPcs"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -354,7 +354,7 @@
 
             <TextView
                 android:id="@+id/srQtyCases"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
@@ -380,7 +380,7 @@
 
             <TextView
                 android:id="@+id/srQtyouter"
-                style="@style/TextViewListItemPrimary"
+                style="@style/TextViewListItemValues"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start|center_vertical"
