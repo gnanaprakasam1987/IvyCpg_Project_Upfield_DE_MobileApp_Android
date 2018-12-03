@@ -9,6 +9,7 @@ public class NearExpiryDateBO {
 	private String nearexpOU = "0";
 	private String date = "0";
 	private int dateID=0;
+	private String batchNo ="";
 	
 	
 	
@@ -21,7 +22,8 @@ public class NearExpiryDateBO {
 		this.nearexpPC=dateObj.nearexpPC;
 		this.nearexpCA=dateObj.nearexpCA;
 		this.nearexpOU=dateObj.nearexpOU;
-		
+		this.batchNo=dateObj.batchNo;
+
 	}
 
 	// Near Expiry
@@ -62,4 +64,11 @@ public class NearExpiryDateBO {
 		this.dateID = dateID;
 	}
 
+	public String getBatchNo() {
+		return batchNo;
+	}
+
+	public void setBatchNo(String batchNo) {
+		this.batchNo = batchNo;
+	}
 }

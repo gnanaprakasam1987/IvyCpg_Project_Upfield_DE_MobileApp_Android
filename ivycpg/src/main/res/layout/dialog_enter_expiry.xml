@@ -10,6 +10,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/dialog_list_item_left_margin"
         android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+        android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
+        android:layout_marginRight="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -33,8 +35,9 @@
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"
+                android:ellipsize="middle"
                 android:gravity="center|start"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/startdate" />
         </LinearLayout>
 
@@ -123,6 +126,35 @@
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_batchno1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextViewCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:gravity="center"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/batch_no" />
+
+            <EditText
+                android:id="@+id/batchno1"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="25"
+                android:text=""
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <View
@@ -138,6 +170,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/dialog_list_item_left_margin"
         android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+        android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
+        android:layout_marginRight="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -161,8 +195,9 @@
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"
+                android:ellipsize="middle"
                 android:gravity="center|start"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/startdate" />
         </LinearLayout>
 
@@ -251,6 +286,35 @@
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_batchno2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextViewCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:gravity="center"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/batch_no" />
+
+            <EditText
+                android:id="@+id/batchno2"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="25"
+                android:text=""
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <View
@@ -266,6 +330,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/dialog_list_item_left_margin"
         android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+        android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
+        android:layout_marginRight="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -289,8 +355,9 @@
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"
+                android:ellipsize="middle"
                 android:gravity="center|start"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/startdate" />
         </LinearLayout>
 
@@ -378,6 +445,35 @@
                 android:text="@string/zero"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_batchno3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextViewCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:gravity="center"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/batch_no" />
+
+            <EditText
+                android:id="@+id/batchno3"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="25"
+                android:text=""
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
@@ -393,6 +489,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/dialog_list_item_left_margin"
         android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+        android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
+        android:layout_marginRight="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -416,8 +514,9 @@
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"
+                android:ellipsize="middle"
                 android:gravity="center|start"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/startdate" />
         </LinearLayout>
 
@@ -506,6 +605,35 @@
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_batchno4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextViewCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:gravity="center"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/batch_no" />
+
+            <EditText
+                android:id="@+id/batchno4"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="25"
+                android:text=""
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <View
@@ -521,6 +649,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/dialog_list_item_left_margin"
         android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+        android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
+        android:layout_marginRight="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -544,8 +674,9 @@
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"
+                android:ellipsize="middle"
                 android:gravity="center|start"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/startdate" />
         </LinearLayout>
 
@@ -633,6 +764,35 @@
                 android:text="@string/zero"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_batchno5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextViewCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:gravity="center"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/batch_no" />
+
+            <EditText
+                android:id="@+id/batchno5"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="25"
+                android:text=""
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
@@ -648,6 +808,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/dialog_list_item_left_margin"
         android:layout_marginLeft="@dimen/dialog_list_item_left_margin"
+        android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
+        android:layout_marginRight="@dimen/dialog_list_item_left_margin"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -671,8 +833,9 @@
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"
+                android:ellipsize="middle"
                 android:gravity="center|start"
-                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/startdate" />
         </LinearLayout>
 
@@ -758,6 +921,35 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textSize="@dimen/font_small" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_batchno6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextViewCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:gravity="center"
+                android:padding="2dp"
+                android:tag="item_piece"
+                android:text="@string/batch_no" />
+
+            <EditText
+                android:id="@+id/batchno6"
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="25"
+                android:text=""
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
     </LinearLayout>
