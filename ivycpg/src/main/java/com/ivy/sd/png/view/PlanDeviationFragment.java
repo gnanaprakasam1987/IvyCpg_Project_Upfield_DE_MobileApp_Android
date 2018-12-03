@@ -279,6 +279,7 @@ public class PlanDeviationFragment extends IvyBaseFragment {
 
             if (holder.cbReason.isChecked() && holder.cbReason.getText().toString().equals("Others")) {
                 holder.edt_other_remarks.setVisibility(View.VISIBLE);
+                holder.edt_other_remarks.setCursorVisible(true);
             } else {
                 hideKeyboard();
                 remarks = "";

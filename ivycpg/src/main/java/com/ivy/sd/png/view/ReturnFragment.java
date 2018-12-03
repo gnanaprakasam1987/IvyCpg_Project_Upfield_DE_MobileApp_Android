@@ -511,9 +511,9 @@ public class ReturnFragment extends IvyBaseFragment {
                 if (!salesReturnHelper.SHOW_SAL_RET_EXP_DATE)
                     (row.findViewById(R.id.ll_exp)).setVisibility(View.GONE);
 
-                if (!salesReturnHelper.SHOW_LOTNUMBER || !salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
+                if (!salesReturnHelper.SHOW_LOTNUMBER && !salesReturnHelper.SHOW_LOTNUMBER_MANDATORY)
                     (row.findViewById(R.id.ll_lot_no)).setVisibility(View.GONE);
-                if (!salesReturnHelper.SHOW_SR_INVOICE_NUMBER || !salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
+                if (!salesReturnHelper.SHOW_SR_INVOICE_NUMBER   && !salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
                     (row.findViewById(R.id.ll_invoie_no)).setVisibility(View.GONE);
 
                 if (salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY)
