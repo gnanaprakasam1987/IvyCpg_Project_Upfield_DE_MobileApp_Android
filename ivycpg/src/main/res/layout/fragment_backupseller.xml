@@ -16,16 +16,8 @@
 
         </android.support.v7.widget.RecyclerView>
 
-        <LinearLayout
-            android:id="@+id/save_ll"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true">
-
             <View
+                android:layout_above="@id/btn_submit"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_divider_height"
                 android:background="@color/divider_view_color" />
@@ -36,9 +28,10 @@
                 android:layout_marginBottom="@dimen/activity_margin1"
                 android:layout_marginTop="@dimen/activity_margin1"
                 android:text="@string/submit"
+                android:layout_gravity="bottom"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:textAllCaps="false"/>
-
-        </LinearLayout>
 
     </RelativeLayout>
 

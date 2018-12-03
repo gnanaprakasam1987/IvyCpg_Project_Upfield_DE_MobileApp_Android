@@ -33,53 +33,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-
                     android:visibility="visible">
 
                     <TextView
+                        style="@style/TextViewFooterLabel"
                         android:id="@+id/txt_init_value_lable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
                         android:padding="2dp"
-                        android:text="@string/initiative_target"
-                        android:textColor="?attr/accentcolor"
-                        android:textSize="@dimen/footer_label_size" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:text="@string/initiative_target" />
 
                         <TextView
+                            style="@style/TextViewFooterValue"
                             android:id="@+id/txt_init_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_margin="2dp"
-                            android:text="0"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/highlight_small" />
+                            android:text="0" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="/"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/highlight_small" />
-
-                        <TextView
-                            android:id="@+id/txt_init_value_suffix"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_margin="2dp"
-                            android:singleLine="true"
-                            android:text="0"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/footer_label_value"/>
-                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -88,76 +61,27 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="2dp">
-
                         <TextView
+                            style="@style/TextViewFooterLabel"
                             android:id="@+id/widget63"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="2dp"
+                            android:padding="2dp"
                             android:singleLine="true"
                             android:text="@string/init_qty"
-                            android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/footer_label_size"/>
+                            android:textColor="?attr/accentcolor"/>
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:text="/"
-                            android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/footer_label_size" />
-
-                        <TextView
-                            android:id="@+id/widget65"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:singleLine="true"
-                            android:text="@string/tot_qty"
-                            android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/footer_label_size"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
+                            style="@style/TextViewFooterValue"
                             android:id="@+id/initQty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_margin="2dp"
                             android:singleLine="true"
-                            android:text="0"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/highlight_small"/>
+                            android:text="0"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="/"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/highlight_small" />
-
-                        <TextView
-                            android:id="@+id/totalQty"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_margin="2dp"
-                            android:singleLine="true"
-                            android:text="0"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/footer_label_value"/>
-                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -166,76 +90,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="2dp">
-
                         <TextView
+                            style="@style/TextViewFooterLabel"
                             android:id="@+id/initvalue_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="2dp"
+                            android:padding="2dp"
                             android:singleLine="true"
-                            android:text="@string/value"
-                            android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/footer_label_size"/>
+                            android:text="@string/value"/>
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:text="/"
-                            android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/footer_label_size" />
-
-                        <TextView
-                            android:id="@+id/totalVolume_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"
-                            android:singleLine="true"
-                            android:text="@string/value"
-                            android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/footer_label_size"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
+                            style="@style/TextViewFooterValue"
                             android:id="@+id/initValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
                             android:layout_margin="2dp"
                             android:singleLine="true"
-                            android:text="0"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/highlight_small"/>
+                            android:text="0"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="/"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/highlight_small" />
-
-                        <TextView
-                            android:id="@+id/totalValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_margin="2dp"
-                            android:singleLine="true"
-                            android:text="0"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/footer_label_value"/>
-                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
@@ -272,19 +146,14 @@
                 android:id="@+id/productName2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_span="3"
                 android:gravity="start"
                 android:padding="4dp"
                 android:singleLine="true"
                 android:text=""
                 android:textColor="@color/highlighter"
+                android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/font_small"/>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal">
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
@@ -292,7 +161,7 @@
                 android:scrollbars="none">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -383,7 +252,6 @@
                         android:scrollbarAlwaysDrawVerticalTrack="true"/>
                 </LinearLayout>
             </HorizontalScrollView>
-        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
