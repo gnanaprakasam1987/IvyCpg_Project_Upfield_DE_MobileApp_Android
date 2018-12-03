@@ -29,6 +29,8 @@ public class NearExpiryTrackingHelper {
 
     public String mSelectedActivityName = "";
 
+    public boolean SHOW_BATCH_NO;
+
 
     private NearExpiryTrackingHelper(Context context) {
         this.mBModel = (BusinessModel) context.getApplicationContext();
@@ -43,6 +45,30 @@ public class NearExpiryTrackingHelper {
 
     public void clear() {
         instance = null;
+    }
+
+    public void loadNearExpiryConfig(Context context) {
+        SHOW_BATCH_NO = false;
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+            String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='NEXP02' and Flag=1 and ForSwitchSeller = 0";
+            Cursor c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    SHOW_BATCH_NO = true;
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+
     }
 
     public void loadLastVisitSKUTracking(Context mContext) {
@@ -77,7 +103,6 @@ public class NearExpiryTrackingHelper {
                         lastPid = pid;
                         k = 0;
                     }
-
 
 
                     setSKUTrackingDetails(pid, locationId,
@@ -260,7 +285,7 @@ public class NearExpiryTrackingHelper {
             String refId = "0";
 
             String headerColumns = "Tid, RetailerId, Date, TimeZone, RefId";
-            String detailColumns = "Tid, PId,LocId, UOMId, UOMQty,expdate,retailerid,audit";
+            String detailColumns = "Tid, PId,LocId, UOMId, UOMQty,expdate,retailerid,audit,batchNumber";
 
 
             String values;
@@ -334,7 +359,9 @@ public class NearExpiryTrackingHelper {
                                     .getRetailerID()
                                     + ","
                                     + skubo.getLocations()
-                                    .get(j).getAudit();
+                                    .get(j).getAudit()
+                                    + ","
+                                    + QT(skubo.getLocations().get(j).getNearexpiryDate().get(k).getBatchNo());
 
                             db.insertSQL(mTrackingDetail,
                                     detailColumns, values);
@@ -371,7 +398,9 @@ public class NearExpiryTrackingHelper {
                                     .getRetailerID()
                                     + ","
                                     + skubo.getLocations()
-                                    .get(j).getAudit();
+                                    .get(j).getAudit()
+                                    + ","
+                                    + QT(skubo.getLocations().get(j).getNearexpiryDate().get(k).getBatchNo());
 
                             db.insertSQL(mTrackingDetail,
                                     detailColumns, values);
@@ -408,7 +437,9 @@ public class NearExpiryTrackingHelper {
                                     .getRetailerID()
                                     + ","
                                     + skubo.getLocations()
-                                    .get(j).getAudit();
+                                    .get(j).getAudit()
+                                    + ","
+                                    + QT(skubo.getLocations().get(j).getNearexpiryDate().get(k).getBatchNo());
                             db.insertSQL(mTrackingDetail,
                                     detailColumns, values);
                             isData = true;

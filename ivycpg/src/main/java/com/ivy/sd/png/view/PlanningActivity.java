@@ -164,7 +164,7 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
 
 
         allTab = tabLayout.newTab();
-        allTab.setText(getResources().getString(R.string.all));
+        allTab.setText(getResources().getString(R.string.total_outlet_count));
         allTab.setTag("all");
 
         TabLayout.Tab nearByTab = tabLayout.newTab();
