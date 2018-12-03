@@ -18,18 +18,24 @@ import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.event.DashBoardEventData;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 
+import static com.ivy.ui.dashboard.view.SellerDashboardFragment.DASHBOARD;
+
 public class SMPChartFragment extends BaseFragment {
 
     @BindView(R.id.chart1)
     PieChart mChart;
-    
+
     private DashBoardBO dashBoardBO;
-    
+
     private boolean isSemiCircleChartRequired;
 
     @Override
@@ -49,18 +55,42 @@ public class SMPChartFragment extends BaseFragment {
 
     @Override
     protected void getMessageFromAliens() {
-        
-        if(getArguments()!=null){
-            dashBoardBO= (DashBoardBO) getArguments().getSerializable("dashboardData");
+
+        if (getArguments() != null) {
+            dashBoardBO = (DashBoardBO) getArguments().getSerializable("dashboardData");
         }
 
+    }
+
+
+    @Subscribe
+    public void onMessageEvent(DashBoardEventData event) {
+        if (event.getSource().equalsIgnoreCase(DASHBOARD))
+            dashBoardBO = event.getSmpDashBoardData();
+
+        setData();
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
     protected void setUpViews() {
 
         if (dashBoardBO != null && dashBoardBO.getKpiAcheived() != null && dashBoardBO.getKpiTarget() != null) {
-            isSemiCircleChartRequired=(dashBoardBO.getFlex1() == 0);
+            isSemiCircleChartRequired = (dashBoardBO.getFlex1() == 0);
 
             mChart.setUsePercentValues(true);
             mChart.getDescription().setEnabled(false);
@@ -101,7 +131,7 @@ public class SMPChartFragment extends BaseFragment {
             mChart.setRotationAngle(180f);
             // entry label styling
             mChart.setEntryLabelColor(Color.WHITE);
-            mChart.setEntryLabelTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.MEDIUM));
+            mChart.setEntryLabelTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             mChart.setEntryLabelTextSize(0f);
             setData();
         }
@@ -111,6 +141,8 @@ public class SMPChartFragment extends BaseFragment {
 
     private void setData() {
         if (dashBoardBO.getKpiTarget() != null && !dashBoardBO.getKpiTarget().equals("0")) {
+            mChart.clear();
+            mChart.clearValues();
             ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
             float temp_ach = SDUtil.convertToFloat(dashBoardBO.getKpiAcheived()) - SDUtil.convertToFloat(dashBoardBO.getKpiTarget());
             if (temp_ach > 0) {
@@ -161,7 +193,7 @@ public class SMPChartFragment extends BaseFragment {
             data.setValueFormatter(new PercentFormatter());
             data.setValueTextSize(12f);
             data.setValueTextColor(Color.BLACK);
-            data.setValueTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.MEDIUM));
+            data.setValueTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             mChart.setData(data);
             mChart.invalidate();
         }
