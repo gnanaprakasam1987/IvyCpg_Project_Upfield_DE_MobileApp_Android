@@ -20,8 +20,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.ReplaceFragment;
-import com.ivy.sd.png.view.ReturnFragment;
 
 import java.util.ArrayList;
 

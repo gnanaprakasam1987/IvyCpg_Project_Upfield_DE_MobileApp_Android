@@ -1,6 +1,7 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.salesreturn;
 
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.InputType;
@@ -25,14 +27,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
-import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -67,25 +66,23 @@ public class ReturnFragment extends IvyBaseFragment {
     private MyAdapter adapter;
     private ArrayAdapter<StandardListBO> categorySpinnerAdapter;
     private View view;
-    static Button dateBtn;
+    private static Button dateBtn;
     private int holderPosition, holderTop;
     private ProgressDialog alertDialog;
     private ArrayList<StandardListBO> categoryList;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_return,
                 container, false);
-
-
         return view;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 getActivity().INPUT_METHOD_SERVICE);
 
@@ -101,9 +98,15 @@ public class ReturnFragment extends IvyBaseFragment {
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
 
         initializeViews();
+        setNumberPadlistener();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
         process();
 
-        setNumberPadlistener();
     }
 
     private void initializeViews() {
@@ -112,10 +115,6 @@ public class ReturnFragment extends IvyBaseFragment {
         tvAddreason = view.findViewById(R.id.tvAddreason);
         returnList = view.findViewById(R.id.list);
         returnList.setCacheColorHint(0);
-
-        btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.MEDIUM));
-        tvAddreason.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
     }
 
     private void process() {
@@ -279,7 +278,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_reason) + "!", Toast.LENGTH_SHORT).show();
                     return false;
                 } else if ((salesReturnHelper.SHOW_SR_INVOICE_NUMBER_MANDATORY && (sb.getInvoiceno().equals("") || sb.getInvoiceno().equals("0"))) ||
-                        (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && (sb.getLotNumber().equals("")|| sb.getLotNumber().equals("0")))) {//inv n lot num validation done based on their conifguration
+                        (salesReturnHelper.SHOW_LOTNUMBER_MANDATORY && (sb.getLotNumber().equals("") || sb.getLotNumber().equals("0")))) {//inv n lot num validation done based on their conifguration
                     Toast.makeText(getActivity(), "Mandatory fields empty!", Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -356,7 +355,9 @@ public class ReturnFragment extends IvyBaseFragment {
             return items.size();
         }
 
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
+        @NonNull
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             SalesReturnReasonBO salesReturnReasonBO = items.get(position);
             View row = convertView;
@@ -367,40 +368,19 @@ public class ReturnFragment extends IvyBaseFragment {
 
                 holder = new ViewHolder();
 
-                holder.reasonSpinner = (Spinner) row.findViewById(R.id.reasonSpinner);
-                holder.categorySpinner = (Spinner) row.findViewById(R.id.categorySpinner);
+                holder.reasonSpinner = row.findViewById(R.id.reasonSpinner);
+                holder.categorySpinner = row.findViewById(R.id.categorySpinner);
 
-                holder.caseQty = (EditText) row.findViewById(R.id.productqtyCases);
-                holder.pieceQty = (EditText) row.findViewById(R.id.productqtyPieces);
-                holder.outerQty = (EditText) row.findViewById(R.id.outerproductqtyCases);
-                holder.mfgDate = (Button) row.findViewById(R.id.mfgDate);
-                holder.expDate = (Button) row.findViewById(R.id.expDate);
-                holder.oldMrp = (EditText) row.findViewById(R.id.oldMrp);
-                holder.invoiceno = (AutoCompleteTextView) row.findViewById(R.id.invoiceno);
-                holder.srpedit = (EditText) row.findViewById(R.id.srpedit);
-                holder.lotNumber = (EditText) row.findViewById(R.id.lotnumber);
-                holder.ivClose = (ImageView) row.findViewById(R.id.ivClose);
-
-                //typefaces
-                holder.caseQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.pieceQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.oldMrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.invoiceno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.srpedit.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.lotNumber.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.mfgDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.expDate.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_invoiceno_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_lotno_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_oldmrp_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_srpEdit_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_piece_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_case_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_outer_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_mfd_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ((TextView) row.findViewById(R.id.tv_exp_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
+                holder.caseQty = row.findViewById(R.id.productqtyCases);
+                holder.pieceQty = row.findViewById(R.id.productqtyPieces);
+                holder.outerQty = row.findViewById(R.id.outerproductqtyCases);
+                holder.mfgDate = row.findViewById(R.id.mfgDate);
+                holder.expDate = row.findViewById(R.id.expDate);
+                holder.oldMrp = row.findViewById(R.id.oldMrp);
+                holder.invoiceno = row.findViewById(R.id.invoiceno);
+                holder.srpedit = row.findViewById(R.id.srpedit);
+                holder.lotNumber = row.findViewById(R.id.lotnumber);
+                holder.ivClose = row.findViewById(R.id.ivClose);
 
                 holder.spinnerAdapter = new ArrayAdapter<>(getActivity(),
                         R.layout.spinner_bluetext_layout);
@@ -448,7 +428,7 @@ public class ReturnFragment extends IvyBaseFragment {
                 }
 
                 if (!salesReturnHelper.SHOW_SALES_RET_CASE)
-                    ((LinearLayout) row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_case)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -463,7 +443,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SALES_RET_PCS)
-                    ((LinearLayout) row.findViewById(R.id.ll_piece)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_piece)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -478,7 +458,7 @@ public class ReturnFragment extends IvyBaseFragment {
                     }
                 }
                 if (!salesReturnHelper.SHOW_SALES_RET_OUTER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_outer)).setVisibility(View.GONE);
                 else {
 
                     try {
@@ -495,7 +475,7 @@ public class ReturnFragment extends IvyBaseFragment {
                 }
 
                 if (!salesReturnHelper.SHOW_SAL_RET_OLD_MRP)
-                    ((LinearLayout) row.findViewById(R.id.ll_oldmrp)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.ll_oldmrp)).setVisibility(View.GONE);
                 if (!salesReturnHelper.SHOW_SRP_EDIT && !salesReturnHelper.SHOW_SAL_RET_SRP)
                     (row.findViewById(R.id.ll_srpedit)).setVisibility(View.GONE);
                 else if (salesReturnHelper.SHOW_SRP_EDIT && !salesReturnHelper.SHOW_SAL_RET_SRP) {

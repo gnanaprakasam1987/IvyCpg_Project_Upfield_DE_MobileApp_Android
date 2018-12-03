@@ -5,17 +5,16 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
     android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
     android:paddingEnd="@dimen/list_padding_left_n_right"
-    android:paddingTop="@dimen/list_item_padding_top_nd_bottom">
+    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:weightSum="10">
+        android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -40,135 +39,115 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_marginRight="@dimen/dimen_2dp"
+                android:ellipsize="marquee"
                 android:gravity="start|center"
                 android:singleLine="true"
-                android:ellipsize="marquee"
                 android:text="@string/product_name" />
 
             <TextView
                 android:id="@+id/stock_and_order_listview_produtCode"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_below="@+id/stock_and_order_listview_productname"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimens_4dp"
                 android:maxLines="1"
                 android:text="@string/prod_code"
-                android:visibility="visible"
-                android:layout_alignParentLeft="true"
-                android:layout_marginRight="@dimen/dimens_4dp" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/stock_and_order_listview_productbarcode"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/stock_and_order_listview_produtCode"
-                android:layout_toEndOf="@+id/stock_and_order_listview_produtCode"
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimens_4dp"
+                android:layout_toEndOf="@+id/stock_and_order_listview_produtCode"
+                android:layout_toRightOf="@+id/stock_and_order_listview_produtCode"
                 android:maxLines="1"
                 android:text="@string/barcode"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimens_4dp" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/stock_and_order_listview_ppq"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
                 android:layout_toEndOf="@+id/stock_and_order_listview_productbarcode"
+                android:layout_toRightOf="@+id/stock_and_order_listview_productbarcode"
                 android:maxLines="1"
                 android:text="@string/ou"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/dimen_2dp"
-                android:layout_toRightOf="@+id/stock_and_order_listview_productbarcode" />
+                android:visibility="gone" />
 
 
             <TextView
                 android:id="@+id/stock_and_order_listview_psq"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:layout_toEndOf="@+id/stock_and_order_listview_ppq"
+                android:layout_toRightOf="@+id/stock_and_order_listview_ppq"
                 android:maxLines="1"
                 android:text="@string/psq"
-                android:visibility="gone"
-                android:layout_toRightOf="@+id/stock_and_order_listview_ppq" />
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
-            android:gravity="center"
-            android:orientation="horizontal">
-        <LinearLayout
             android:id="@+id/ll_stock_and_order_listview_cb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center">
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/btn_availability"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-
-                />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/layout_shelf"
+        <EditText
+            android:id="@+id/stock_and_order_listview_sc_qty"
+            style="@style/EditText_ListItem"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3">
+            android:layout_marginEnd="@dimen/dimen_2dp"
+            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_weight="1" />
 
-            <EditText
-                android:id="@+id/stock_and_order_listview_sc_qty"
-                style="@style/EditText_ListItem"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_weight="1"
-                android:layout_marginRight="@dimen/dimen_2dp" />
+        <EditText
+            android:id="@+id/stock_and_order_listview_shelfouter_qty"
+            style="@style/EditText_ListItem"
+            android:layout_width="0dp"
+            android:layout_marginEnd="@dimen/dimen_2dp"
+            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_weight="1" />
 
-            <EditText
-                android:id="@+id/stock_and_order_listview_shelfouter_qty"
-                style="@style/EditText_ListItem"
-                android:layout_width="0dp"
-                android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_weight="1"
-                android:layout_marginRight="@dimen/dimen_2dp" />
-
-            <EditText
-                android:id="@+id/stock_and_order_listview_sp_qty"
-                style="@style/EditText_ListItem"
-                android:layout_width="0dp"
-                android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_weight="1"
-                android:maxLength="5"
-                android:layout_marginRight="@dimen/dimen_2dp" />
-
-        </LinearLayout>
+        <EditText
+            android:id="@+id/stock_and_order_listview_sp_qty"
+            style="@style/EditText_ListItem"
+            android:layout_width="0dp"
+            android:layout_marginEnd="@dimen/dimen_2dp"
+            android:layout_marginRight="@dimen/dimen_2dp"
+            android:layout_weight="1"
+            android:maxLength="5" />
 
         <EditText
             android:id="@+id/stock_check_listview_fc_qty"
             style="@style/EditText_ListItem"
             android:layout_width="0dp"
             android:layout_marginEnd="@dimen/dimen_2dp"
+            android:layout_marginRight="@dimen/dimen_2dp"
             android:layout_weight="1"
             android:maxLength="4"
-            android:text="@string/zero"
-            android:layout_marginRight="@dimen/dimen_2dp" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/stock_check_listview_total"
@@ -176,12 +155,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:text="@string/zero" />
-        </LinearLayout>
-
-
     </LinearLayout>
 
     <LinearLayout
@@ -194,11 +170,11 @@
 
         <Spinner
             android:id="@+id/reason"
-            android:background="@android:color/transparent"
-            android:overlapAnchor="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center" />
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:overlapAnchor="false" />
 
     </LinearLayout>
 
