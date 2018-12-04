@@ -48,6 +48,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.sync.LastSyncTimeHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -60,6 +61,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
@@ -209,6 +211,20 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             setpUpSpinner(categories);
 
         }
+
+
+        try {
+            LastSyncTimeHelper lastSyncTimeHelper = new LastSyncTimeHelper(getActivity());
+            TextView last_sync = view.findViewById(R.id.text_last_sync);
+            String download = getResources().getString(R.string.last_download_on) +" "+
+                    DateUtil.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastDownloadDate(),
+                            ConfigurationMasterHelper.outDateFormat)
+                    + " " + lastSyncTimeHelper.getLastDownloadTime();
+            last_sync.setText(download);
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
 
 
         if (bmodel.configurationMasterHelper.IS_SMP_BASED_DASH) {

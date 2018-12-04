@@ -97,7 +97,6 @@
             android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingListenerService"
             android:enabled="true"
             android:exported="false" />
-
         <service android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingUploadService" />
         <service android:name="com.ivy.cpg.locationservice.realtime.RealtimeLocationUploadIntentService" />
 
@@ -147,7 +146,7 @@
 
         <receiver
             android:name="com.ivy.sd.png.model.DownloadReceiver"
-            android:exported="false"></receiver>
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -372,7 +371,6 @@
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-
         <activity
             android:name="com.ivy.sd.camera.CameraActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -390,9 +388,8 @@
             android:name="com.ivy.cpg.view.photocapture.Gallery"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.AdhocGallery"
+            android:name="com.ivy.cpg.view.roadactivity.AdhocGallery"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.UserSettingsActivity"
             android:screenOrientation="portrait"
@@ -424,7 +421,6 @@
         <activity
             android:name="com.ivy.sd.png.view.OrderDiscount"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity"
             android:screenOrientation="portrait" />
@@ -446,18 +442,15 @@
         <activity
             android:name="com.ivy.cpg.view.van.vanunload.VanUnloadActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.print.PrintPreviewScreenTitan"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.print.CollectionPreviewScreen"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.print.EODStockReportPreviewScreen"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.asset.AssetTrackingActivity"
             android:exported="false"
@@ -634,7 +627,7 @@
             android:name="com.ivy.sd.png.view.PlanningVisitActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.profile.HistoryDetailActivity"
+            android:name="com.ivy.sd.png.view.profile.orderandinvoicehistory.HistoryDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.survey.DragDropPictureActivity"
@@ -761,28 +754,23 @@
         <activity
             android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.ui.photocapture.view.PhotoGalleryActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.ui.photocapture.view.PhotoCaptureActivity"
             android:screenOrientation="portrait" />
-
-
         <activity
             android:name="com.ivy.cpg.view.reports.salesreturnreport.salesreportdetails.SalesReturnDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.asset.AssetServiceActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.sfdc.SalesforceAuthenticateActivity"
             android:label="@string/app_name" />
 
-        <!--FCM Service Registration-->
+        <!-- FCM Service Registration -->
 
         <service android:name="com.ivy.cpg.fcmnotification.CPGFirebaseMessagingService">
             <intent-filter>
@@ -815,19 +803,22 @@
         <activity
             android:name="com.ivy.cpg.view.collection.NoCollectionReasonActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.van.vanunload.VanUnloadHistoryActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.reports.orderfulfillmentreport.OrderFulfillmentDetailReportActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.sd.png.view.LicenseActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name="com.ivy.cpg.view.supervisor.chat.StartChatActivity"
+        <activity
+            android:name="com.ivy.cpg.view.supervisor.chat.StartChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.digitalcontent.PlayVideoActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name="com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity"
             android:screenOrientation="portrait"/>
 
         <activity
@@ -840,6 +831,18 @@
             android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetServiceActivity"
             android:screenOrientation="portrait" />
 
+
+        <service android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadService"
+            android:exported="false"
+            android:enabled="true"/>
+
+        <service android:name="com.ivy.cpg.view.sync.largefiledownload.DummyService"
+            android:exported="false"
+            android:enabled="true"/>
+
+        <service android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
+            android:exported="false"
+            android:enabled="true"/>
     </application>
 
 </manifest>

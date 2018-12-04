@@ -67,9 +67,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/spinner_layout_height"
                     android:layout_gravity="bottom"
-                    android:layout_marginEnd="@dimen/dash_margin"
                     android:layout_marginStart="@dimen/dash_margin"
                     android:layout_marginTop="@dimen/dash_margin"
+                    android:layout_marginEnd="@dimen/dash_margin"
                     android:background="?mtdDashboardBackground"
                     android:orientation="horizontal"
                     android:visibility="visible">
@@ -78,10 +78,10 @@
                         android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginEnd="30dp"
-                        android:layout_marginLeft="@dimen/dash_margin"
-                        android:layout_marginRight="30dp"
                         android:layout_marginStart="@dimen/dash_margin"
+                        android:layout_marginLeft="@dimen/dash_margin"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginRight="30dp"
                         android:gravity="center"
                         android:text="@string/all_results"
                         android:textColor="?accentcolor"
@@ -163,9 +163,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:layout_marginEnd="@dimen/dash_margin"
                     android:layout_marginStart="@dimen/dash_margin"
                     android:layout_marginTop="@dimen/dash_margin"
+                    android:layout_marginEnd="@dimen/dash_margin"
                     android:background="@drawable/curved_black_bg"
                     android:orientation="vertical"
                     android:visibility="gone">
@@ -234,11 +234,28 @@
                 android:id="@+id/dashboardLv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/spinnerLayout"
-                android:layout_marginEnd="@dimen/dash_margin"
+                android:layout_below="@+id/text_last_sync"
                 android:layout_marginStart="@dimen/dash_margin"
                 android:layout_marginTop="@dimen/dash_margin"
+                android:layout_marginEnd="@dimen/dash_margin"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <TextView
+                android:id="@+id/text_last_sync"
+                style="@style/TextViewCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spinnerLayout"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:layout_marginEnd="@dimen/dash_margin"
+                android:layout_marginRight="@dimen/dash_margin"
+                android:gravity="end"
+                android:padding="@dimen/dimen_2dp"
+                android:text=""
+                android:textStyle="italic" />
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

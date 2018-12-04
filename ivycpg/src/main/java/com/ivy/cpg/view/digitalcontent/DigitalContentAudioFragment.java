@@ -255,7 +255,7 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
                     @Override
                     public void onClick(View v) {
 
-                        openAudio(((VHItem) holder).filename);
+                        openAudio(((VHItem) holder).filename,product);
                     }
                 });
             } else if (holder instanceof VHHeader) {
@@ -317,7 +317,7 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
      *
      * @param name Audio file name
      */
-    private void openAudio(String name) {
+    private void openAudio(String name,DigitalContentBO digitalContentBO) {
         Uri path;
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
@@ -339,6 +339,14 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
 
             try {
                 startActivity(intent);
+
+                String vStart_Time = "" + SDUtil.now(SDUtil.DATE) + " " + SDUtil.now(SDUtil.TIME);
+
+                DigitalContentHelper.getInstance(getContext()).
+                        saveDigitalContentDetails(getContext(),String.valueOf(digitalContentBO.getImageID()),
+                                String.valueOf(digitalContentBO.getProductID()),
+                                vStart_Time,"",false);
+
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(
                         getActivity(),

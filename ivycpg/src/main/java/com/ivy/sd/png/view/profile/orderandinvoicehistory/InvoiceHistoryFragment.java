@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.profile;
+package com.ivy.sd.png.view.profile.orderandinvoicehistory;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -152,7 +152,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 holder.del_rep_code_val.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
             }
             Vector<OrderHistoryBO> historyDetailList = null;
-            if (bmodel.profilehelper.getChild_invoiceHistoryList() != null && bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
+            if (bmodel.profilehelper.getChild_invoiceHistoryList() != null && bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY_DETAIL) {
                 historyDetailList = bmodel.profilehelper.getChild_invoiceHistoryList()
                         .get(position);
                 if (historyDetailList != null && historyDetailList.size() > 0 && (historyDetailList.get(0).getCaseQty() > 0 || historyDetailList.get(0).getPcsQty() > 0 || historyDetailList.get(0).getOuterQty() > 0))
@@ -199,7 +199,7 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
                 del_rep_code_val = itemView.findViewById(R.id.del_rep_code_val);
 
 
-                if (bmodel.configurationMasterHelper.SHOW_HISTORY_DETAIL) {
+                if (bmodel.configurationMasterHelper.SHOW_INVOICE_HISTORY_DETAIL) {
                     itemView.setClickable(true);
                     itemView.setOnClickListener(new OnSingleClickListener() {
                         @Override

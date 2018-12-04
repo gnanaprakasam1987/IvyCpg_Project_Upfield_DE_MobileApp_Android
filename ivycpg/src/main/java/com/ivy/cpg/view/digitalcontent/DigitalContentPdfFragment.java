@@ -268,7 +268,7 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
                     @Override
                     public void onClick(View v) {
 
-                        openPDF(((VHItem) holder).filename);
+                        openPDF(((VHItem) holder).filename,product);
 
                     }
                 });
@@ -317,7 +317,7 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
      *
      * @param name PDF Name
      */
-    private void openPDF(String name) {
+    private void openPDF(String name,DigitalContentBO digitalContentBO) {
         Uri path;
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
@@ -339,6 +339,14 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
 
             try {
                 startActivity(intent);
+
+                String vStart_Time = "" + SDUtil.now(SDUtil.DATE) + " " + SDUtil.now(SDUtil.TIME);
+
+                DigitalContentHelper.getInstance(getContext()).
+                        saveDigitalContentDetails(getContext(),String.valueOf(digitalContentBO.getImageID()),
+                                String.valueOf(digitalContentBO.getProductID()),
+                                vStart_Time,"",false);
+
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(
                         getActivity(),

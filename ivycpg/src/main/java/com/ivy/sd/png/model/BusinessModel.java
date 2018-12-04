@@ -86,6 +86,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
+import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
@@ -290,7 +291,7 @@ public class BusinessModel extends Application {
     public String invoiceNumber;
     public String invoiceDate;
     //
-    public HashMap<String, PhotoCaptureProductBO> adhocGalleryDetails;
+
     private Vector<StandardListBO> slist;
     private List<IndicativeBO> indicativeRtrList = null;
     private OrderHeader orderHeaderBO;
@@ -383,6 +384,9 @@ public class BusinessModel extends Application {
 
     private ArrayList<String> orderedBrands = new ArrayList<>();
     private ArrayList<String> totalFocusBrandList = new ArrayList<>();
+
+
+    private HashMap<Integer,DigitalContentModel> digitalContentLargeFileURLS;
 
     public BusinessModel() {
 
@@ -1415,9 +1419,9 @@ public class BusinessModel extends Application {
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistributorId," : +userMasterHelper.getUserMasterBO().getBranchId() + " as RetDistributorId,")
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.sid as RetDistParentId," : +userMasterHelper.getUserMasterBO().getDistributorid() + " as RetDistParentId,")
                             + "RA.address1, RA.address2, RA.address3, RA.City, RA.State, RA.pincode, RA.contactnumber, RA.email, IFNULL(RA.latitude,0) as latitude, IFNULL(RA.longitude,0) as longitude, RA.addressId"
-                            + " , RC1.contactname as pc_name, RC1.ContactName_LName as pc_LName, RC1.ContactNumber as pc_Number,"
+                            + " , IFNULL(RC1.contactname,'') as pc_name, IFNULL(RC1.ContactName_LName,'') as pc_LName, RC1.ContactNumber as pc_Number,"
                             + " RC1.CPID as pc_CPID, IFNULL(RC1.DOB,'') as pc_DOB, RC1.contact_title as pc_title, RC1.contact_title_lovid as pc_title_lovid"
-                            + " , RC2.contactname as sc_name, RC2.ContactName_LName as sc_LName, RC2.ContactNumber as sc_Number,"
+                            + " , IFNULL(RC2.contactname,'') as sc_name, IFNULL(RC2.ContactName_LName,'') as sc_LName, RC2.ContactNumber as sc_Number,"
                             + " RC2.CPID as sc_CPID, IFNULL(RC2.DOB,'') as sc_DOB, RC2.contact_title as sc_title, RC2.contact_title_lovid as sc_title_lovid,"
 
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
@@ -2691,53 +2695,7 @@ public class BusinessModel extends Application {
     }
 
 
-    // Load all retailer in Gallery
-    public void loadAdhocPhotoCapturedDetails() {
 
-        adhocGalleryDetails = new HashMap<String, PhotoCaptureProductBO>();
-
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.createDataBase();
-        db.openDataBase();
-
-
-        String sql = " select uid,sm.listname||\" - \"||PM.psname||\" - \"||lm.locname||\" - \"||uid as header from RoadActivityTransaction RA"
-                + " inner join  StandardListMaster sm on sm.listid=RA.typeid"
-                + " inner join productmaster pm on pm.pid=RA.pid"
-                + " inner join locationMAster lm on lm.locid=RA.locationid  where RA.upload= 'N'";
-
-
-        Cursor c = db.selectSQL(sql);
-
-        if (c != null) {
-            PhotoCaptureProductBO photoBO;
-            while (c.moveToNext()) {
-                photoBO = new PhotoCaptureProductBO();
-                photoBO.setRetailerName(c.getString(1));
-
-                String sql1 = "select imgname from RoadActivityTransactiondetail where uid="
-                        + QT(c.getString(0));
-
-                Cursor c1 = db.selectSQL(sql1);
-
-                if (c1 != null) {
-                    while (c1.moveToNext()) {
-                        String imageName = c1.getString(0).substring(c1.getString(0).lastIndexOf("/") + 1);
-
-                        Commons.print("Image NBame>>>>," + "" + imageName);
-                        adhocGalleryDetails
-                                .put(imageName,
-                                        photoBO);
-                    }
-                }
-
-
-            }
-        }
-
-
-        db.closeDB();
-    }
 
 
     //Applying currency value config or normal format(2)
@@ -3492,7 +3450,7 @@ public class BusinessModel extends Application {
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
                 if (c != null) {
                     while (c.moveToNext()) {
-                        DataMembers.img_Down_URL = c.getString(0);
+                        DataMembers.IMG_DOWN_URL = c.getString(0);
                     }
                     c.close();
                 }
@@ -3501,7 +3459,7 @@ public class BusinessModel extends Application {
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_ROOT_DIR'");
                 if (c != null) {
                     while (c.moveToNext()) {
-                        DataMembers.img_Down_URL = c.getString(0) + "/";
+                        DataMembers.IMG_DOWN_URL = c.getString(0) + "/";
                     }
                     c.close();
                 }
@@ -3518,7 +3476,10 @@ public class BusinessModel extends Application {
      */
     public boolean isDigitalContentAvailable() {
         getimageDownloadURL();
-        setDigitalContentURLS(new HashMap<String, String>());
+        setDigitalContentURLS(new HashMap<>());
+        setDigitalContentLargeFileURLS(new HashMap<>());
+        configurationMasterHelper.getDigitalContentSize();
+
         boolean isDigiContentAvail = false;
         try {
 
@@ -3532,19 +3493,38 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.PLANOGRAM);
 
                 }
                 c.close();
             }
 
-            c = db.selectSQL("SELECT DISTINCT ImageURL FROM DigitalContentMaster");
+            c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename FROM DigitalContentMaster");
             if (c != null) {
                 while (c.moveToNext()) {
-                    getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
-                            DataMembers.DIGITALCONTENT);
+
+                    if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1 &&
+                            configurationMasterHelper.DIGITAL_CONTENT_SIZE < c.getLong(1)) {
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(c.getString(1));
+                        digitalContentBO.setImageID(c.getInt(2));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.DIGITALCONTENT);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID(),digitalContentBO);
+
+                    }else {
+
+                        getDigitalContentURLS().put(
+                                DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                DataMembers.DIGITALCONTENT);
+
+                    }
+
                 }
                 c.close();
             }
@@ -3553,7 +3533,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.APP_DIGITAL_CONTENT);
                 }
                 c.close();
@@ -3563,7 +3543,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.MVP);
                 }
                 c.close();
@@ -3573,7 +3553,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while ((c.moveToNext())) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.LOYALTY_POINTS);
 
                 }
@@ -3584,7 +3564,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while ((c.moveToNext())) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.USER);
 
                 }
@@ -3596,7 +3576,7 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while ((c.moveToNext())) {
                     getDigitalContentURLS().put(
-                            DataMembers.img_Down_URL + "" + c.getString(0),
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.PROFILE);
 
                 }
@@ -3606,19 +3586,19 @@ public class BusinessModel extends Application {
             db.closeDB();
 
             getDigitalContentURLS().put(
-                    DataMembers.img_Down_URL + "PRINT/" + "order_print.xml",
+                    DataMembers.IMG_DOWN_URL + "PRINT/" + "order_print.xml",
                     DataMembers.PRINT);
             getDigitalContentURLS().put(
-                    DataMembers.img_Down_URL + "PRINT/" + "invoice_print.xml",
+                    DataMembers.IMG_DOWN_URL + "PRINT/" + "invoice_print.xml",
                     DataMembers.PRINT);
             getDigitalContentURLS().put(
-                    DataMembers.img_Down_URL + "PRINT/" + "credit_note_print.xml",
+                    DataMembers.IMG_DOWN_URL + "PRINT/" + "credit_note_print.xml",
                     DataMembers.PRINT);
             getDigitalContentURLS().put(
-                    DataMembers.img_Down_URL + "PRINT/" + "eod_print.xml",
+                    DataMembers.IMG_DOWN_URL + "PRINT/" + "eod_print.xml",
                     DataMembers.PRINT);
 
-            if (getDigitalContentURLS().size() > 0)
+            if (getDigitalContentURLS().size() > 0 || getDigitalContentLargeFileURLS().size() > 0)
                 isDigiContentAvail = true;
 
             return isDigiContentAvail;
@@ -3830,30 +3810,7 @@ public class BusinessModel extends Application {
 
     /* ******* Invoice Number To Print End ******* */
 
-    public boolean getAdhocTransCount(String imgName) {
-        boolean hasonlyOne = false;
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        Cursor c = db.selectSQL("select uid  from RoadActivityTransactiondetail where imgname = " + QT("RoadActivity" + "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
-                + "/" + userMasterHelper.getUserMasterBO().getUserid()
-                + "/" + imgName) + " and Upload = 'N'");
-        if (c != null) {
-            if (c.moveToNext() || c.getCount() == 1) {
-                Cursor c1 = db.selectSQL("select count(uid)  from RoadActivityTransactiondetail where uid = " + QT(c.getString(0)) + " and Upload = 'N'");
-                if (c1 != null) {
-                    if (c1.moveToNext()) {
-                        Commons.print("UID," + ">>" + c.getString(0) + " C1 Count" + "" + c1.getInt(0));
-                        if (c1.getInt(0) == 1)
-                            hasonlyOne = true;
-                    }
-                }
-                c1.close();
-            }
-            c.close();
-        }
-        db.closeDB();
-        return hasonlyOne;
-    }
+
 
 
     /* ******* Invoice Number To Print End ******* */
@@ -7471,6 +7428,24 @@ public class BusinessModel extends Application {
 
     public void setPhotosTakeninCurrentAssetTracking(HashMap<String, String> photosTakeninCurrentAssetTracking) {
         this.photosTakeninCurrentAssetTracking = photosTakeninCurrentAssetTracking;
+    }
+
+    public ArrayList<DigitalContentModel> getDigitalContentLargeFileURLS() {
+        if (digitalContentLargeFileURLS == null)
+            return new ArrayList<>();
+        else
+            return new ArrayList<>(digitalContentLargeFileURLS.values());
+    }
+
+    public DigitalContentModel getDigitalContenLargeFileModel(int imageId) {
+        if (digitalContentLargeFileURLS.get(imageId) == null)
+            return null;
+        else
+            return digitalContentLargeFileURLS.get(imageId);
+    }
+
+    public void setDigitalContentLargeFileURLS(HashMap<Integer,DigitalContentModel> digitalContentLargeFileURLS) {
+        this.digitalContentLargeFileURLS = digitalContentLargeFileURLS;
     }
 
     public AppDataProvider getAppDataProvider() {

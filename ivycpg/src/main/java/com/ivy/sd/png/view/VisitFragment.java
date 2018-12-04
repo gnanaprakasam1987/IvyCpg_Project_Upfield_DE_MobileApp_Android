@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -322,7 +321,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                         if (constraint != null) {
                             suggestions.clear();
                             for (BeatMasterBO bmBO : tempItems) {
-                                if(constraint.toString().equalsIgnoreCase("all")) constraint = "";
+                                if (constraint.toString().equalsIgnoreCase("all")) constraint = "";
                                 if (bmBO.toString().toLowerCase().contains(constraint.toString().toLowerCase())) {
                                     suggestions.add(bmBO);
                                 }
@@ -723,7 +722,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         else
             tv_target1.setText(getTotalVisitActual());
 
-        if(mSchedule != null)
+        if (mSchedule != null)
             mSchedule.notifyDataSetChanged();
 
     }
@@ -1540,7 +1539,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
             holder.outletNameTextView.setText(tvText);
 
-            if (bmodel.configurationMasterHelper.SHOW_RETAILER_LOCATION)
+            if (bmodel.configurationMasterHelper.SHOW_RFIELD4)
                 holder.outletLocationTextView.setText(retailerObj.getRField4());
             else
                 holder.outletLocationTextView.setVisibility(View.GONE);
@@ -1718,10 +1717,15 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                         if (holder.retailerObjectHolder.getRField5() != null) {
                             holder.iv_outlet_color.setVisibility(View.VISIBLE);
 
-                            if (bmodel.configurationMasterHelper.COLOR_ICON == 1)
+                            if (bmodel.configurationMasterHelper.COLOR_ICON == 1) {
                                 holder.iv_outlet_color.setImageDrawable(getResources().getDrawable(R.drawable.badge_circle));
-
-                            holder.iv_outlet_color.setColorFilter(Color.parseColor(holder.retailerObjectHolder.getRField5()));
+                                holder.iv_outlet_color.setColorFilter(Color.parseColor(holder.retailerObjectHolder.getRField5()));
+                            } else if (bmodel.configurationMasterHelper.COLOR_ICON == 2) {
+                                holder.iv_outlet_color.setImageDrawable(getResources().getDrawable(R.drawable.ic_thumbs_up));
+                                if (!holder.retailerObjectHolder.getRField5().equals("1"))
+                                    holder.iv_outlet_color.setVisibility(View.GONE);
+                            } else// for default star icon color applying
+                                holder.iv_outlet_color.setColorFilter(Color.parseColor(holder.retailerObjectHolder.getRField5()));
                         } else {
                             holder.iv_outlet_color.setVisibility(View.GONE);
                         }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,8 +29,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,26 +48,32 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
     private EditText CA1;
     private EditText PC1;
     private EditText OU1;
+    private EditText BACTHNO1;
     private Button date2;
     private EditText CA2;
     private EditText PC2;
     private EditText OU2;
+    private EditText BACTHNO2;
     private Button date3;
     private EditText CA3;
     private EditText PC3;
     private EditText OU3;
+    private EditText BACTHNO3;
     private Button date4;
     private EditText CA4;
     private EditText PC4;
     private EditText OU4;
+    private EditText BACTHNO4;
     private Button date5;
     private EditText CA5;
     private EditText PC5;
     private EditText OU5;
+    private EditText BACTHNO5;
     private Button date6;
     private EditText CA6;
     private EditText PC6;
     private EditText OU6;
+    private EditText BACTHNO6;
     private String append = "";
     private ProductMasterBO mSKUBO;
 
@@ -99,12 +104,12 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
         View view = inflater.inflate(R.layout.dialog_nearexpiry, container, false);
 
         mBModel = (BusinessModel) getActivity().getApplicationContext();
-        Button btn_ok = (Button) view.findViewById(R.id.btn_ok);
-        btn_ok.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button btn_ok = view.findViewById(R.id.btn_ok);
+        btn_ok.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         btn_ok.setOnClickListener(this);
         getActivity().setFinishOnTouchOutside(false);
-        ListView list = (ListView) view.findViewById(R.id.list);
+        ListView list = view.findViewById(R.id.list);
         ExpiryAdapter adapter = new ExpiryAdapter();
         list.setAdapter(adapter);
 
@@ -116,7 +121,6 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -138,7 +142,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
         if (getView() != null) {
             TextView skuName = getView().findViewById(R.id.tvskuname);
-            skuName.setTypeface(mBModel.configurationMasterHelper.getProductNameFont());
+            skuName.setTypeface(FontUtils.getProductNameFont(getActivity()));
             skuName.setText(mSKUBO.getProductName());
         }
     }
@@ -408,9 +412,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int screenWidth = (int) (metrics.widthPixels * 0.90);
-        getDialog().getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+        getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
     }
 
     private class ExpiryAdapter extends ArrayAdapter {
@@ -435,6 +437,8 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 CA1 = row.findViewById(R.id.ca1);
                 PC1 = row.findViewById(R.id.pc1);
                 OU1 = row.findViewById(R.id.ou1);
+                BACTHNO1 = row.findViewById(R.id.batchno1);
+
                 TextView tv_piece = row.findViewById(R.id.tv_piece);
                 TextView tv_case = row.findViewById(R.id.tv_case);
                 TextView tv_outer = row.findViewById(R.id.tv_outer);
@@ -458,11 +462,16 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 OU1.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(0).getNearexpOU());
+                BACTHNO1.setText(mSKUBO.getLocations()
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
+                        .getNearexpiryDate().get(0).getBatchNo());
 
                 date2 = row.findViewById(R.id.datePicker2);
                 CA2 = row.findViewById(R.id.ca2);
                 PC2 = row.findViewById(R.id.pc2);
                 OU2 = row.findViewById(R.id.ou2);
+                BACTHNO2 = row.findViewById(R.id.batchno2);
+
                 TextView tv_piece2 = row.findViewById(R.id.tv_piece2);
                 TextView tv_case2 = row.findViewById(R.id.tv_case2);
                 TextView tv_outer2 = row.findViewById(R.id.tv_outer2);
@@ -485,11 +494,16 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 OU2.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(1).getNearexpOU());
+                BACTHNO2.setText(mSKUBO.getLocations()
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
+                        .getNearexpiryDate().get(1).getBatchNo());
 
                 date3 = row.findViewById(R.id.datePicker3);
                 CA3 = row.findViewById(R.id.ca3);
                 PC3 = row.findViewById(R.id.pc3);
                 OU3 = row.findViewById(R.id.ou3);
+                BACTHNO3 = row.findViewById(R.id.batchno3);
+
                 TextView tv_piece3 = row.findViewById(R.id.tv_piece3);
                 TextView tv_case3 = row.findViewById(R.id.tv_case3);
                 TextView tv_outer3 = row.findViewById(R.id.tv_outer3);
@@ -512,11 +526,16 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 OU3.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(2).getNearexpOU());
+                BACTHNO3.setText(mSKUBO.getLocations()
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
+                        .getNearexpiryDate().get(2).getBatchNo());
 
                 date4 = row.findViewById(R.id.datePicker4);
                 CA4 = row.findViewById(R.id.ca4);
                 PC4 = row.findViewById(R.id.pc4);
                 OU4 = row.findViewById(R.id.ou4);
+                BACTHNO4 = row.findViewById(R.id.batchno4);
+
                 TextView tv_piece4 = row.findViewById(R.id.tv_piece4);
                 TextView tv_case4 = row.findViewById(R.id.tv_case4);
                 TextView tv_outer4 = row.findViewById(R.id.tv_outer4);
@@ -539,11 +558,16 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 OU4.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(3).getNearexpOU());
+                BACTHNO4.setText(mSKUBO.getLocations()
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
+                        .getNearexpiryDate().get(3).getBatchNo());
 
                 date5 = row.findViewById(R.id.datePicker5);
                 CA5 = row.findViewById(R.id.ca5);
                 PC5 = row.findViewById(R.id.pc5);
                 OU5 = row.findViewById(R.id.ou5);
+                BACTHNO5 = row.findViewById(R.id.batchno5);
+
                 TextView tv_piece5 = row.findViewById(R.id.tv_piece5);
                 TextView tv_case5 = row.findViewById(R.id.tv_case5);
                 TextView tv_outer5 = row.findViewById(R.id.tv_outer5);
@@ -565,11 +589,15 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 OU5.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(4).getNearexpOU());
+                BACTHNO5.setText(mSKUBO.getLocations()
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
+                        .getNearexpiryDate().get(4).getBatchNo());
 
                 date6 = row.findViewById(R.id.datePicker6);
                 CA6 = row.findViewById(R.id.ca6);
                 PC6 = row.findViewById(R.id.pc6);
                 OU6 = row.findViewById(R.id.ou6);
+                BACTHNO6 = row.findViewById(R.id.batchno6);
 
                 TextView tv_piece6 = row.findViewById(R.id.tv_piece6);
                 TextView tv_case6 = row.findViewById(R.id.tv_case6);
@@ -592,6 +620,9 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 OU6.setText(mSKUBO.getLocations()
                         .get(mNearExpiryHelper.mSelectedLocationIndex)
                         .getNearexpiryDate().get(5).getNearexpOU());
+                BACTHNO6.setText(mSKUBO.getLocations()
+                        .get(mNearExpiryHelper.mSelectedLocationIndex)
+                        .getNearexpiryDate().get(5).getBatchNo());
 
                 if (!mBModel.configurationMasterHelper.SHOW_ORDER_PCS) {
                     row.findViewById(R.id.ll_piece).setVisibility(View.GONE);
@@ -720,6 +751,14 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     CA4.setEnabled(true);
                     CA5.setEnabled(true);
                     CA6.setEnabled(true);
+                }
+                if (!mNearExpiryHelper.SHOW_BATCH_NO) {
+                    row.findViewById(R.id.ll_batchno1).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_batchno2).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_batchno3).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_batchno4).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_batchno5).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_batchno6).setVisibility(View.GONE);
                 }
 
                 if (mBModel.configurationMasterHelper.IS_TEAMLEAD && mBModel.configurationMasterHelper.IS_AUDIT_USER) {
@@ -940,6 +979,31 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
+                BACTHNO1.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!"".equals(s)) {
+                            if (s.toString().length() > 0)
+                                BACTHNO1.setSelection(s.toString().length());
+                            mSKUBO.getLocations()
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .getNearexpiryDate().get(0)
+                                    .setBatchNo(s.toString());
+
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+
                 date2.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1122,6 +1186,31 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                    }
+                });
+
+                BACTHNO2.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!"".equals(s)) {
+                            if (s.toString().length() > 0)
+                                BACTHNO2.setSelection(s.toString().length());
+                            mSKUBO.getLocations()
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .getNearexpiryDate().get(1)
+                                    .setBatchNo(s.toString());
+
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
                     }
                 });
 
@@ -1309,6 +1398,31 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void afterTextChanged(Editable s) {
                     }
                 });
+                BACTHNO3.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!"".equals(s)) {
+                            if (s.toString().length() > 0)
+                                BACTHNO3.setSelection(s.toString().length());
+                            mSKUBO.getLocations()
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .getNearexpiryDate().get(2)
+                                    .setBatchNo(s.toString());
+
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+
                 date4.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1493,6 +1607,31 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
+                BACTHNO4.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!"".equals(s)) {
+                            if (s.toString().length() > 0)
+                                BACTHNO4.setSelection(s.toString().length());
+                            mSKUBO.getLocations()
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .getNearexpiryDate().get(3)
+                                    .setBatchNo(s.toString());
+
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+
                 date5.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1674,6 +1813,32 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void afterTextChanged(Editable s) {
                     }
                 });
+
+                BACTHNO5.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!"".equals(s)) {
+                            if (s.toString().length() > 0)
+                                BACTHNO5.setSelection(s.toString().length());
+                            mSKUBO.getLocations()
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .getNearexpiryDate().get(4)
+                                    .setBatchNo(s.toString());
+
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+
                 date6.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1855,6 +2020,30 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                    }
+                });
+                BACTHNO6.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!"".equals(s)) {
+                            if (s.toString().length() > 0)
+                                BACTHNO6.setSelection(s.toString().length());
+                            mSKUBO.getLocations()
+                                    .get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .getNearexpiryDate().get(5)
+                                    .setBatchNo(s.toString());
+
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
                     }
                 });
 

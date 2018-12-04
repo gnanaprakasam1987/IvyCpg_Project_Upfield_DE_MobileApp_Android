@@ -288,9 +288,9 @@ dependencies {
 
 
     //Chat-Sdk
-    implementation 'co.chatsdk.chatsdk:chat-sdk-core:4.1.26'
-    implementation 'co.chatsdk.chatsdk:chat-sdk-ui:4.1.26'
-    implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-adapter:4.1.26'
+    implementation 'co.chatsdk.chatsdk:chat-sdk-core:4.1.36'
+    implementation 'co.chatsdk.chatsdk:chat-sdk-ui:4.1.36'
+    implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-adapter:4.1.29'
     implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-file-storage:4.1.26'
     implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-push:4.1.36'
 
@@ -302,5 +302,7 @@ dependencies {
     testImplementation 'org.json:json:20140107'
 
     sfdcImplementation 'com.salesforce.mobilesdk:SmartSync:5.0.0'
+
+    implementation 'com.mindorks.android:prdownloader:0.4.0'
 }
 apply plugin: 'com.google.gms.google-services'
