@@ -1198,7 +1198,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
             holder.outletAddress.setText(retailerObj.getAddress1());
 
-            if (!bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
+            if (bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
 
                 String contact_name = retailerObj.getContactname() + " " + retailerObj.getContactLname();
                 if (contact_name.trim().length() > 0) {
