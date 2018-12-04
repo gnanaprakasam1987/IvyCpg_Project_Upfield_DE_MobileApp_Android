@@ -27,9 +27,12 @@ import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -259,7 +262,7 @@ public class DigitalContentVideoFragment extends IvyBaseFragment {
                     @Override
                     public void onClick(View v) {
 
-                        openVideo(((VHItem) holder).filename);
+                        openVideo(((VHItem) holder).filename,product);
 
                     }
                 });
@@ -311,25 +314,38 @@ public class DigitalContentVideoFragment extends IvyBaseFragment {
      *
      * @param name File Name
      */
-    private void openVideo(String name) {
+    private void openVideo(String name,DigitalContentBO digitalContentBO) {
         Uri path;
-        File file = new File(
-                getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
-                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                        + DataMembers.DIGITAL_CONTENT + "/"
-                        + DataMembers.DIGITALCONTENT + "/" + name);
+        String filePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                + DataMembers.DIGITAL_CONTENT + "/"
+                + DataMembers.DIGITALCONTENT + "/" + name;
+
+        File file = new File(filePath);
+
         if (file.exists()) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
+
+            String mimeType = getMimeType(filePath);
+
+            if (mimeType == null || !mimeType.contains("video")) {
+                Toast.makeText(
+                        getActivity(),
+                        getResources()
+                                .getString(
+                                        R.string.file_format_not_support),
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent intent = new Intent(getActivity(),PlayVideoActivity.class);
             if (Build.VERSION.SDK_INT >= 24) {
                 path = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
-                intent.setDataAndType(path, "video/*");
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
                 path = Uri.fromFile(file);
-                intent.setDataAndType(path, "video/*");
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
+
+            intent.putExtra("DigiContentId", digitalContentBO.getImageID()+"");
+            intent.putExtra("PId", digitalContentBO.getProductID()+"");
+            intent.putExtra("videoPath", path.toString());
 
             try {
                 startActivity(intent);
@@ -346,6 +362,15 @@ public class DigitalContentVideoFragment extends IvyBaseFragment {
                     getResources().getString(R.string.file_not_found),
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String getMimeType(String fileUrl) {
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        String type = fileNameMap.getContentTypeFor(fileUrl);
+
+        Commons.print("Mime Type: " + type + " URL:" + fileUrl);
+
+        return type;
     }
 
 }

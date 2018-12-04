@@ -112,7 +112,7 @@ public class MovementTrackingLocationUtil implements LocationListener, GoogleApi
             //Notifies if GPS is Disabled
             LocationServiceHelper.getInstance().notifyGPSStatus(context);
             //Notifies if Mock Location is enabled
-            LocationServiceHelper.getInstance().notifyMockLocationStatus(context);
+            LocationServiceHelper.getInstance().notifyMockLocationStatus(context,loc);
 
             location = loc;
 
@@ -200,7 +200,7 @@ public class MovementTrackingLocationUtil implements LocationListener, GoogleApi
         //Notifies if GPS is Disabled
         LocationServiceHelper.getInstance().notifyGPSStatus(context);
         //Notifies if Mock Location is enabled
-        LocationServiceHelper.getInstance().notifyMockLocationStatus(context);
+        LocationServiceHelper.getInstance().notifyMockLocationStatus(context,location);
 
 
         this.location = location;

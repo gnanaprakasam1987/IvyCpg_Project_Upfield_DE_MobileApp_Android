@@ -305,7 +305,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                 ((VHItem) holder).image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        openImages(((VHItem) holder).filename);
+                        openImages(((VHItem) holder).filename,product);
                     }
                 });
             } else if (holder instanceof VHHeader) {
@@ -382,7 +382,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
      *
      * @param name Image name
      */
-    private void openImages(String name) {
+    private void openImages(String name,DigitalContentBO digitalContentBO) {
         Uri path;
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
@@ -405,6 +405,14 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
 
             try {
                 startActivity(intent);
+
+                String vStart_Time = "" + SDUtil.now(SDUtil.DATE) + " " + SDUtil.now(SDUtil.TIME);
+
+                DigitalContentHelper.getInstance(getContext()).
+                        saveDigitalContentDetails(getContext(),String.valueOf(digitalContentBO.getImageID()),
+                                String.valueOf(digitalContentBO.getProductID()),
+                                vStart_Time,"",false);
+
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(
                         getActivity(),
