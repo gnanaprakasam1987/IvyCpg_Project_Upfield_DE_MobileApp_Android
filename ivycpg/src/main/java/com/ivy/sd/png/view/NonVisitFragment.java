@@ -1016,16 +1016,13 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
                 holder.outletname = convertView
                         .findViewById(R.id.outletName_tv);
-                holder.outletname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
                 holder.rField4 = convertView
                         .findViewById(R.id.rfield4_tv);
                 holder.rField4.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
                 holder.outletAddress = convertView.findViewById(R.id.outlet_address_tv);
-                holder.outletAddress.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.contactName = convertView.findViewById(R.id.contact_name_tv);
-                holder.contactName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
 
                 convertView.setOnClickListener(new OnClickListener() {
@@ -1201,7 +1198,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
             holder.outletAddress.setText(retailerObj.getAddress1());
 
-            if (bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
+            if (!bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
 
                 String contact_name = retailerObj.getContactname() + " " + retailerObj.getContactLname();
                 if (contact_name.trim().length() > 0) {

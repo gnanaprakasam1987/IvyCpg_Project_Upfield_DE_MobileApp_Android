@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
     card_view:cardBackgroundColor="@color/white"
-    card_view:cardCornerRadius="0dp"
+    card_view:cardCornerRadius="@dimen/cardview_default_radius"
     card_view:cardElevation="@dimen/ret_card_elevation"
     card_view:cardPreventCornerOverlap="false"
     card_view:cardUseCompatPadding="true"
@@ -16,6 +16,8 @@
         android:id="@+id/ll_first"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10px"
+        android:layout_marginBottom="@dimen/margin_10px"
         android:orientation="vertical"
         android:padding="@dimen/dimen_1dp">
 
@@ -24,7 +26,6 @@
             style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/margin_left_retailer_name"
             android:layout_marginLeft="@dimen/margin_left_retailer_name"
             android:text="@string/outlet_name" />
@@ -34,7 +35,6 @@
             style="@style/TextViewListItemSecondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/margin_left_retailer_name"
             android:layout_marginLeft="@dimen/margin_left_retailer_name"
             android:layout_marginTop="@dimen/dimen_2dp"
@@ -44,6 +44,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_2dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -63,8 +64,9 @@
 
                 <TextView
                     android:id="@+id/outlet_address_tv"
-                    style="@style/TextViewListItemSecondary"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
+                    android:singleLine="true"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_left_retailer_name"
                     android:layout_marginLeft="@dimen/margin_left_retailer_name"
@@ -86,8 +88,9 @@
 
                 <TextView
                     android:id="@+id/contact_name_tv"
-                    style="@style/TextViewListItemSecondary"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
+                    android:singleLine="true"
                     android:layout_height="wrap_content"
                     android:text="@string/contact_name" />
             </LinearLayout>
