@@ -1,10 +1,8 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.reports.orderstatusreport;
 
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportBO;
-import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusRetailerReportBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.BusinessModel;
