@@ -490,6 +490,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), SellerDashboardFragment.this);
             dashboardRecyclerView.setAdapter(dashboardListAdapter);
 
+            dashboardListAdapter.notifyDataSetChanged();
+
             if (presenter.shouldShowTrendChart()) {
 
                 if (!isFragmentsAdded)
@@ -581,6 +583,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         if (presenter.shouldShowTrendChart()) {
 
             DashBoardEventData dashBoardEventData = new DashBoardEventData();
+            dashBoardEventData.setSource(DASHBOARD);
 
             if ((((selectedInterval.equalsIgnoreCase(WEEK) || isFromWeekSpinner) && !currentItem.getMonthName().equals(""))
                     || selectedInterval.equals(P3M)) && presenter.shouldShowKPIBarChart()) {
@@ -591,7 +594,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                     }
                 }
                 dashBoardEventData.setEventDataList(kpiChartData);
-                dashBoardEventData.setSource(DASHBOARD);
+                dashBoardEventData.setSelectedInterval(selectedInterval);
             }
 
             if (presenter.shouldShowSMPDash())
@@ -622,6 +625,8 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                 }
             }
 
+            dashboardListAdapter.notifyDataSetChanged();
+
             if (presenter.shouldShowTrendChart()) {
                 if (!isFragmentsAdded)
                     generatePagerFragments();
@@ -649,9 +654,10 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                     dashboardListData.add(dashBoardBO);
                 }
             }
-
             dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), SellerDashboardFragment.this);
             dashboardRecyclerView.setAdapter(dashboardListAdapter);
+
+            dashboardListAdapter.notifyDataSetChanged();
 
             if (presenter.shouldShowTrendChart()) {
 

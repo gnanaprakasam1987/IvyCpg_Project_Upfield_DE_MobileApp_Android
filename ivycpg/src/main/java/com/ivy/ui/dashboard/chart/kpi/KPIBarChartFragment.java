@@ -17,10 +17,16 @@ import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.event.DashBoardEventData;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
+
+import static com.ivy.ui.dashboard.view.SellerDashboardFragment.DASHBOARD;
 
 public class KPIBarChartFragment extends BaseFragment {
 
@@ -56,6 +62,33 @@ public class KPIBarChartFragment extends BaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe
+    public void onMessageEvent(DashBoardEventData event) {
+        if (event.getSource().equalsIgnoreCase(DASHBOARD)) {
+            dashboardListData.clear();
+            dashboardListData.addAll(event.getEventDataList());
+
+        }
+
+        setChartData();
+
+    }
+
+
+
+    @Override
     protected void setUpViews() {
 
         mBarChart.getAxisLeft().setDrawGridLines(false);
@@ -65,6 +98,8 @@ public class KPIBarChartFragment extends BaseFragment {
     }
 
     private void setChartData() {
+        mBarChart.clear();
+        mBarChart.clearValues();
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
         for (int i = 0; i < dashboardListData.size(); i++) {
             yVals1.add(new BarEntry(i, dashboardListData.get(i).getCalculatedPercentage(), dashboardListData.get(i).getText()));

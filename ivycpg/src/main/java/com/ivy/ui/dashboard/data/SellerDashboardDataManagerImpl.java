@@ -1010,7 +1010,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     initDb();
 
                     Cursor c = null;
-                    if (configurationMasterHelper.IS_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                    if (configurationMasterHelper.IS_INVOICE && !configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                         // c =
                         // db.selectSQL("SELECT distinct(Retailerid) FROM InvoiceMaster");
 
@@ -1111,47 +1111,44 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
     @Override
     public Single<Integer> getProductiveCallsForTheDayExcludingDeviatedVisits() {
-        return Single.fromCallable(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                int productive_calls = 0;
-                try {
-                    initDb();
+        return Single.fromCallable(() -> {
+            int productive_calls = 0;
+            try {
+                initDb();
 
-                    Cursor c = null;
-                    if (configurationMasterHelper.IS_INVOICE && !configurationMasterHelper.IS_SHOW_SELLER_DIALOG) {
+                Cursor c = null;
+                if (configurationMasterHelper.IS_INVOICE && !configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
 
-                        if (appDataProvider.getBeatMasterBo() == null
-                                || appDataProvider.getBeatMasterBo().getBeatId() == 0) {
-                            c = mDbUtil.selectSQL("select distinct(i.Retailerid) from InvoiceMaster i" +
-                                    " inner join retailermaster r on i.retailerid=r.retailerid inner join " +
-                                    "RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid where RBM.isdeviated='N' and RBM.isVisited = 'Y'");
-                        } else {
-                            c = mDbUtil.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
-                                    + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
-                                    + "inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid"
-                                    + " where RBM.isdeviated='N' or RMI.isToday=1 and i.IsPreviousInvoice = 0 and RBM.isVisited = 'Y'");
-                        }
+                    if (appDataProvider.getBeatMasterBo() == null
+                            || appDataProvider.getBeatMasterBo().getBeatId() == 0) {
+                        c = mDbUtil.selectSQL("select distinct(i.Retailerid) from InvoiceMaster i" +
+                                " inner join retailermaster r on i.retailerid=r.retailerid inner join " +
+                                "RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid where RBM.isdeviated='N' and RBM.isVisited = 'Y'");
                     } else {
-                        c = mDbUtil.selectSQL("select  distinct(r.Retailerid) from OrderHeader o inner join retailermaster r " +
-                                "on o.retailerid=r.retailerid inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid " +
-                                "where o.upload!='X' and RBM.isdeviated='N' and RBM.isVisited = 'Y'");
+                        c = mDbUtil.selectSQL("select  distinct(i.Retailerid) from InvoiceMaster i inner join retailermaster r on "
+                                + "i.retailerid=r.retailerid  inner join Retailermasterinfo RMI on RMI.retailerid= R.retailerid "
+                                + "inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid"
+                                + " where RBM.isdeviated='N' or RMI.isToday=1 and i.IsPreviousInvoice = 0 and RBM.isVisited = 'Y'");
                     }
-                    if (c != null) {
-                        if (c.getCount() > 0) {
-                            while (c.moveToNext())
-                                productive_calls = c.getCount();
-                        }
-                        c.close();
+                } else {
+                    c = mDbUtil.selectSQL("select  distinct(r.Retailerid) from OrderHeader o inner join retailermaster r " +
+                            "on o.retailerid=r.retailerid inner join RetailerBeatMapping RBM on r.retailerid = RBM.Retailerid " +
+                            "where o.upload!='X' and RBM.isdeviated='N' and RBM.isVisited = 'Y'");
+                }
+                if (c != null) {
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext())
+                            productive_calls = c.getCount();
                     }
-
-                } catch (Exception ignored) {
-
+                    c.close();
                 }
 
-                shutDownDb();
-                return productive_calls;
+            } catch (Exception ignored) {
+
             }
+
+            shutDownDb();
+            return productive_calls;
         });
     }
 

@@ -14,6 +14,16 @@ public class DashBoardEventData {
 
     private DashBoardBO smpDashBoardData;
 
+    private String selectedInterval;
+
+    public String getSelectedInterval() {
+        return selectedInterval;
+    }
+
+    public void setSelectedInterval(String selectedInterval) {
+        this.selectedInterval = selectedInterval;
+    }
+
     public DashBoardBO getSmpDashBoardData() {
         return smpDashBoardData;
     }
