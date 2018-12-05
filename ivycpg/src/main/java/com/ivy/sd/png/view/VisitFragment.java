@@ -1721,7 +1721,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 holder.iv_outlet_color.setImageDrawable(getResources().getDrawable(R.drawable.badge_circle));
                                 holder.iv_outlet_color.setColorFilter(Color.parseColor(holder.retailerObjectHolder.getRField5()));
                             } else if (bmodel.configurationMasterHelper.COLOR_ICON == 2) {
-                                holder.iv_outlet_color.setImageDrawable(getResources().getDrawable(R.drawable.ic_thumbs_up));
+                                holder.iv_outlet_color.setImageDrawable(getResources().getDrawable(R.drawable.ic_thumbs_down));
                                 if (!holder.retailerObjectHolder.getRField5().equals("1"))
                                     holder.iv_outlet_color.setVisibility(View.GONE);
                             } else// for default star icon color applying

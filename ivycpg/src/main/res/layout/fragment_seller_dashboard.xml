@@ -250,6 +250,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="end"
                 android:layout_marginTop="@dimen/target_top_margin"
+                android:visibility="gone"
                 android:layout_marginEnd="@dimen/dash_margin"
                 android:layout_marginRight="@dimen/dash_margin"
                 android:gravity="end"
