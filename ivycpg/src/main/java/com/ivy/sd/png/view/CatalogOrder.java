@@ -769,7 +769,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         super.onStart();
         loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
-        if (bmodel.productHelper.getFilterProductLevels() != null && bmodel.productHelper.getFilterProductLevels().size() != 0) {
+        if (loadedFilterValues != null && loadedFilterValues.size() != 0 && bmodel.productHelper.getFilterProductLevels() != null && bmodel.productHelper.getFilterProductLevels().size() != 0) {
             sequence = bmodel.productHelper.getFilterProductLevels();
             for (int i = 0; i < sequence.size(); i++) {
                 if (sequence.get(i).getLevelName().equals("Category")) {
