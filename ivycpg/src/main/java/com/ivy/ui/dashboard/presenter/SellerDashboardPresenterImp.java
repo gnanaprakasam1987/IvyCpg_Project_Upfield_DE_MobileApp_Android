@@ -573,7 +573,10 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .subscribeWith(new DisposableObserver<ArrayList<UserMasterBO>>() {
                     @Override
                     public void onNext(ArrayList<UserMasterBO> userMasterBOS) {
-                        getIvyView().setUpMultiSelectUserSpinner(userMasterBOS);
+                        if (isMultiSelect)
+                            getIvyView().setUpMultiSelectUserSpinner(userMasterBOS);
+                        else
+                            getIvyView().setUpUserSpinner(userMasterBOS);
 
 
                     }
@@ -599,7 +602,10 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .subscribeWith(new DisposableObserver<ArrayList<UserMasterBO>>() {
                     @Override
                     public void onNext(ArrayList<UserMasterBO> userMasterBOS) {
-                        getIvyView().setUpMultiSelectUserSpinner(userMasterBOS);
+                        if (isMultiSelect)
+                            getIvyView().setUpMultiSelectUserSpinner(userMasterBOS);
+                        else
+                            getIvyView().setUpUserSpinner(userMasterBOS);
                     }
 
                     @Override

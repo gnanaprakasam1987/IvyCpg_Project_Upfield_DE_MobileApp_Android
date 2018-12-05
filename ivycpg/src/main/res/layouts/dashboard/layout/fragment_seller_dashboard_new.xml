@@ -102,7 +102,6 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/userSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/resultsHeaderTxt"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -117,7 +116,6 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/dashSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/distributorSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -132,7 +130,6 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/monthSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/userSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -147,7 +144,6 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/weekSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/dashSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -162,13 +158,12 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/routeSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/monthSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
                     android:id="@+id/routeSpinner"
-                    android:layout_width="0dp"
+                    android:layout_width="38dp"
                     android:layout_height="0dp"
                     android:background="?mtdDashboardBackground"
                     android:dropDownSelector="?dashboardSpinnerSelector"

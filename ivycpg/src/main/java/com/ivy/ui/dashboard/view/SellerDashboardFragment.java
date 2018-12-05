@@ -135,7 +135,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private String mSelectedUser = "0";
 
-    private String selectedInterval;
+    private String selectedInterval=SellerDashboardConstants.MONTH;
 
     private String screenTitle;
 
