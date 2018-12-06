@@ -59,6 +59,7 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.moq.MOQHighlightDialog;
 import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
@@ -769,7 +770,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         super.onStart();
         loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
-        if (bmodel.productHelper.getFilterProductLevels() != null && bmodel.productHelper.getFilterProductLevels().size() != 0) {
+        if (loadedFilterValues != null && loadedFilterValues.size() != 0 && bmodel.productHelper.getFilterProductLevels() != null && bmodel.productHelper.getFilterProductLevels().size() != 0) {
             sequence = bmodel.productHelper.getFilterProductLevels();
             for (int i = 0; i < sequence.size(); i++) {
                 if (sequence.get(i).getLevelName().equals("Category")) {

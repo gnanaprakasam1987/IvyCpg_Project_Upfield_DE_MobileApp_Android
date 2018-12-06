@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order.moq;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -42,15 +42,8 @@ import java.util.Vector;
 @SuppressLint("ValidFragment")
 public class MOQHighlightDialog extends DialogFragment implements View.OnClickListener {
     private BusinessModel bmodel;
-    private Vector<ProductMasterBO> productMstBo;
-    private Vector<ProductMasterBO> productBoRfield;
-    private Vector<ProductMasterBO> productBoRfieldChanges;
-    private ListView lvwplist;
-    private MyAdaper mSchedule;
     private savePcsValue listner;
-    private Button save, closeButton;
     private EditText QUANTITY;
-    private String append = "";
     public InputMethodManager inputManager;
 
     @Override
@@ -60,8 +53,6 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         listner = (savePcsValue) getActivity();
-
-
 
     }
 
@@ -75,7 +66,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         getDialog().setCancelable(false);
         this.setCancelable(false);
 
-        View view = inflater.inflate(R.layout.show_moq_highlight_dialog, container, false);
+        View view = inflater.inflate(R.layout.moq_highlight_dialog, container, false);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
@@ -85,17 +76,19 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     @Override
     public void onStart() {
         super.onStart();
+
         getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
 
 
-        lvwplist = (ListView) getView().findViewById(R.id.list);
+        ListView lvwplist = getView().findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
-        productBoRfield = new Vector<>();
-        productBoRfieldChanges = new Vector<>();
-        productMstBo = bmodel.productHelper.getProductMaster();
+
+        Vector<ProductMasterBO> productBoRfield = new Vector<>();
+        Vector<ProductMasterBO> productMstBo = bmodel.productHelper.getProductMaster();
 
         int count = productMstBo.size();
         for (int i = 0; i < count; i++) {
@@ -107,18 +100,17 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                     if (product.getOrderedPcsQty() % res != 0)
                         productBoRfield.add(product);
                 }
-                Commons.print("product.getProductName()" + product.getProductShortName());
             }
 
         }
-        //edtEmail.setWidth(outMetrics.widthPixels);
-        mSchedule = new MyAdaper(productBoRfield);
+
+        MOQHighlightAdaper mSchedule = new MOQHighlightAdaper(productBoRfield);
         lvwplist.setAdapter(mSchedule);
-        save = (Button) getView().findViewById(R.id.save_btn);
-        closeButton = (Button) getView().findViewById(R.id.closeButton);
-        closeButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+
+        Button save = getView().findViewById(R.id.save_btn);
+        Button closeButton = getView().findViewById(R.id.closeButton);
+
         closeButton.setOnClickListener(this);
-        save.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         save.setOnClickListener(this);
     }
 
@@ -126,41 +118,20 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.save_btn) {
-          /*  int size = bmodel.productHelper
-                    .getProductMaster().size();
-            int count = 0;
-            for (int j = 0; j < size; ++j) {
-                ProductMasterBO product = bmodel.productHelper
-                        .getProductMaster().get(j);
-
-                if (product.getOrderedPcsQty() > 0 && !TextUtils.isEmpty(product.getRField1())) {
-                    //converting string Rfield1 value to integra
-                    int res = SDUtil.convertToInt(product.getRField1());
-                    if (product.getOrderedPcsQty() % res != 0)
-                        count++;
-
-                }
-            }
-            if (count == 0) {*/
-                /*for (ProductMasterBO value : productBoRfieldChanges)
-                    updateData(value);*/
-
             listner.saveChanges();
             dismiss();
-          /*  } else
-                Toast.makeText(bmodel, "" + getString(R.string.please_enter_minimum_order_qty), Toast.LENGTH_SHORT).show();*/
-        }
+         }
         if (i == R.id.closeButton)
             dismiss();
 
     }
 
-    private class MyAdaper extends ArrayAdapter<ProductMasterBO> {
+    private class MOQHighlightAdaper extends ArrayAdapter<ProductMasterBO> {
         private final Vector<ProductMasterBO> items;
 
-        public MyAdaper(Vector<ProductMasterBO> items) {
+        public MOQHighlightAdaper(Vector<ProductMasterBO> items) {
             super(bmodel,
-                    R.layout.ordered_piece_value, items);
+                    R.layout.moq_highlight_dialog_listview, items);
             this.items = items;
         }
 
@@ -178,16 +149,16 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
                 //Configuration based row rendering
                 row = inflater.inflate(
-                        R.layout.ordered_piece_value, parent,
+                        R.layout.moq_highlight_dialog_listview, parent,
                         false);
                 holder = new ViewHolder();
                 holder.productBo = product;
-                holder.productNameTxt = (TextView) row
+                holder.productNameTxt = row
                         .findViewById(R.id.orderPRODNAME);
-                holder.orderQTYinpiece = (TextView) row
+                holder.orderQTYinpiece = row
                         .findViewById(R.id.orderQTYinpiece);
 
-                holder.rField1Txt = (EditText) row
+                holder.rField1Txt = row
                         .findViewById(R.id.rField1_qty);
 
                 holder.productNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
@@ -244,9 +215,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                             Commons.print("tot" + tot);
                             holder.productBo.setTotalamount(tot);
                         }
-                       /* if (SDUtil.convertToInt(qty) % res == 0) {
-                            productBoRfieldChanges.add(holder.productBo);
-                        }*/
+
                     }
                 });
 
@@ -278,31 +247,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         EditText rField1Txt;
     }
 
-    private void updateData(ProductMasterBO productBO) {
-        int qty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
 
-        if (qty == 0) {
-            bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
-            bmodel.productHelper.getmProductidOrderByEntryMap().remove(SDUtil.convertToInt(productBO.getProductID()));
-        } else {
-            int lastQty = 0;
-            if (bmodel.productHelper.getmProductidOrderByEntryMap().get(SDUtil.convertToInt(productBO.getProductID())) != null)
-                lastQty = bmodel.productHelper.getmProductidOrderByEntryMap().get(SDUtil.convertToInt(productBO.getProductID()));
-            if (lastQty == qty) {
-                // Dont do any thing
-            } else {
-                if (bmodel.productHelper.getmProductidOrderByEntry().contains(productBO.getProductID())) {
-                    bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntry().add(productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productBO.getProductID()), qty);
-                } else {
-                    bmodel.productHelper.getmProductidOrderByEntry().add(productBO.getProductID());
-                    bmodel.productHelper.getmProductidOrderByEntryMap().put(SDUtil.convertToInt(productBO.getProductID()), qty);
-                }
-            }
-        }
-
-    }
 
     public interface savePcsValue {
         void saveChanges();
@@ -319,7 +264,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
             int id = vw.getId();
             if (id == R.id.calcdel) {
 
-                String enterText = (String) QUANTITY.getText().toString();
+                String enterText = QUANTITY.getText().toString();
                 if (enterText.contains(".")) {
                     String[] splitValue = enterText.split("\\.");
                     try {
@@ -342,7 +287,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
                 } else {
 
-                    int s = SDUtil.convertToInt((String) QUANTITY.getText()
+                    int s = SDUtil.convertToInt(QUANTITY.getText()
                             .toString());
                     s = s / 10;
                     QUANTITY.setText(s + "");
@@ -358,7 +303,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                 }
 
             } else {
-                Button ed = (Button) getDialog().findViewById(vw.getId());
+                Button ed = getDialog().findViewById(vw.getId());
                 String append = ed.getText().toString();
                 eff(append);
 
@@ -368,7 +313,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
     }
 
     public void eff(String append) {
-        String s = (String) QUANTITY.getText().toString();
+        String s = QUANTITY.getText().toString();
         if (!s.equals("0") && !s.equals("0.0")) {
             QUANTITY.setText(QUANTITY.getText() + append);
         } else

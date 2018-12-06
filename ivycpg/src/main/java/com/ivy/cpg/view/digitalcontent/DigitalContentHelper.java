@@ -6,9 +6,11 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -331,6 +333,60 @@ public class DigitalContentHelper {
             Commons.printException("" + e);
         }
         return str;
+    }
+
+    public void saveDigitalContentDetails(Context context,String digiContentId,String productID,String startTime,String endTime,
+                                          boolean isFastForward){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
+                DataMembers.DB_PATH);
+        db.openDataBase();
+
+        try {
+            String tid ="";
+            String content;
+            String retailerId = mBModel.getRetailerMasterBO().getRetailerID()!=null?mBModel.getRetailerMasterBO().getRetailerID():"0";
+
+            Cursor c = db.selectSQL("select UId from DigitalContentTrackingHeader where DId ="+
+                    digiContentId+" and RetailerId = "+AppUtils.QT(retailerId) +
+                    " and upload='N' and Date="+AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+
+            if (c != null && c.getCount() > 0 && c.moveToNext()) {
+                tid = c.getString(0);
+                c.close();
+            }
+
+            if (tid.equals("")) {
+                tid = mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                        + SDUtil.now(SDUtil.DATE_TIME_ID) + "";
+
+                // UId,DId,RetailerId,Date
+                content = AppUtils.QT(tid)+","
+                        + AppUtils.QT(digiContentId)+","
+                        + AppUtils.QT(retailerId)+","
+                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                ;
+
+                db.insertSQL(DataMembers.tbl_DigitalContent_Tracking_Header,
+                        DataMembers.tbl_DigitalContent_Tracking_Header_cols, content);
+            }
+
+            // UId,DId,UserID,RetailerId,StartTime,EndTime,PId,isFastForwarded
+            content = AppUtils.QT(tid)+","
+                    + AppUtils.QT(startTime)+","//startTime
+                    + AppUtils.QT(endTime)+","//EndTime
+                    + AppUtils.QT(productID)+","//Product Id
+                    + "'"+isFastForward+"'"
+                    ;
+
+            db.insertSQL(DataMembers.tbl_DigitalContent_Tracking_Detail,
+                    DataMembers.tbl_DigitalContent_Tracking_Detail_cols, content);
+
+            db.closeDB();
+        } catch (Exception e) {
+            e.printStackTrace();
+            db.closeDB();
+        }
     }
 
 }

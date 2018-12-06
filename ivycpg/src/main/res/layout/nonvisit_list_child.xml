@@ -1,112 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    card_view:cardBackgroundColor="@color/white"
+    card_view:cardCornerRadius="@dimen/cardview_default_radius"
+    card_view:cardElevation="@dimen/ret_card_elevation"
+    card_view:cardPreventCornerOverlap="false"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="0dp">
 
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
+    <LinearLayout
+        android:id="@+id/ll_first"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?attr/selectableItemBackground"
-        card_view:cardBackgroundColor="@color/white"
-        card_view:cardCornerRadius="0dp"
-        card_view:cardElevation="@dimen/ret_card_elevation"
+        android:layout_marginTop="@dimen/margin_10px"
+        android:layout_marginBottom="@dimen/margin_10px"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_1dp">
 
-        card_view:cardPreventCornerOverlap="false"
-        card_view:cardUseCompatPadding="true"
-        card_view:contentPadding="0dp">
-
-        <LinearLayout
-            android:id="@+id/ll_first"
+        <TextView
+            android:id="@+id/outletName_tv"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_left_retailer_name"
+            android:layout_marginLeft="@dimen/margin_left_retailer_name"
+            android:text="@string/outlet_name" />
+
+        <TextView
+            android:id="@+id/rfield4_tv"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_left_retailer_name"
+            android:layout_marginLeft="@dimen/margin_left_retailer_name"
+            android:layout_marginTop="@dimen/dimen_2dp"
+            android:text="" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_2dp"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/outletName_tv"
-                    style="@style/TextViewListItemPrimary"
+                    style="@style/TextViewCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/margin_left_retailer_name"
-                    android:layout_marginTop="@dimen/margin_top_retailer_name"
-                    android:text="Outlet name"
-                    android:layout_marginLeft="@dimen/margin_left_retailer_name" />
+                    android:layout_marginLeft="@dimen/margin_left_retailer_name"
+                    android:text="@string/Address" />
 
                 <TextView
                     android:id="@+id/outlet_address_tv"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
+                    android:singleLine="true"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/margin_left_retailer_name"
-                    android:layout_marginTop="@dimen/dimen_2dp"
-                    android:text="Outlet Address "
-                    android:textSize="@dimen/font_small"
-                    android:layout_marginLeft="@dimen/margin_left_retailer_name" />
-
-                <TextView
-                    android:id="@+id/outlet_location_tv"
-                    style="@style/TextViewCaption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/margin_left_retailer_name"
-                    android:layout_marginTop="@dimen/dimen_2dp"
-                    android:text="Outlet location "
-                    android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/text_size_primary"
-                    android:layout_marginLeft="@dimen/margin_left_retailer_name" />
-
-
+                    android:layout_marginLeft="@dimen/margin_left_retailer_name"
+                    android:text="@string/Address" />
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/outlet"
-                android:layout_width="@dimen/visit_lst_img_width"
-                android:layout_height="@dimen/visit_lst_img_width"
-                android:gravity="center"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/info_iv"
-                android:layout_width="@dimen/visit_info_img_width"
-                android:layout_height="@dimen/visit_info_img_width"
-                android:gravity="center"
-                android:src="@drawable/ic_info_new"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/visit_frequency"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/llContactName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/outletName_tv"
-                android:layout_alignBottom="@+id/outletName_tv"
-                android:layout_toEndOf="@+id/outletName_tv"
-                android:singleLine="true"
-                android:text="@string/visit_frequency"
-                android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/font_small"
-                android:visibility="gone"
-                android:layout_toRightOf="@+id/outletName_tv" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/outlet_iv"
-                android:layout_width="@dimen/visit_lst_img_width"
-                android:layout_height="@dimen/visit_lst_img_width"
-                android:layout_alignParentStart="true"
-                android:gravity="center"
-                android:src="@drawable/icon_outlet_normal"
-                android:visibility="gone"
-                android:layout_alignParentLeft="true" />
+                <TextView
+                    style="@style/TextViewCaption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_name" />
+
+                <TextView
+                    android:id="@+id/contact_name_tv"
+                    style="@style/TextViewListItemValues"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_name" />
+            </LinearLayout>
+
+
         </LinearLayout>
+    </LinearLayout>
 
+</android.support.v7.widget.CardView>
 
-    </android.support.v7.widget.CardView>
-</LinearLayout>

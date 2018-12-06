@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order.indicativeOrderReason;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -38,13 +38,10 @@ import java.util.ArrayList;
 
 public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickListener {
 
-    BusinessModel bmodel;
-    Context mContext;
-    ArrayList<SpinnerBO> mReasonList;
+    private BusinessModel bmodel;
+    private Context mContext;
+    private ArrayList<SpinnerBO> mReasonList;
     private ArrayAdapter<SpinnerBO> mReasonAdapter;
-    ArrayList<ProductMasterBO> mProducts;
-    ListView listView;
-    Button btnOK;
 
     public IndicativeOrderReasonDialog(Context mContext, BusinessModel bmodel) {
         super(mContext);
@@ -71,8 +68,8 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
     protected void onStart() {
         super.onStart();
 
-        listView = (ListView) findViewById(R.id.lv_products);
-        btnOK = (Button) findViewById(R.id.okButton);
+        ListView listView = findViewById(R.id.lv_products);
+        Button btnOK = findViewById(R.id.okButton);
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,11 +80,10 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
 
         if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
             try {
-                if (bmodel.labelsMasterHelper.applyLabels(((TextView)
-                        findViewById(R.id.titlebar))
+                if (bmodel.labelsMasterHelper.applyLabels(findViewById(R.id.titlebar)
                         .getTag()) != null)
                     ((TextView) findViewById(R.id.titlebar)).setText(bmodel.labelsMasterHelper
-                            .applyLabels(((TextView) findViewById(R.id.titlebar)).getTag()));
+                            .applyLabels(findViewById(R.id.titlebar).getTag()));
                 else
                     ((TextView) findViewById(R.id.titlebar)).setText(mContext.getResources().getString(R.string.reason_for_ordered_prods));
 
@@ -108,7 +104,7 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
                 android.R.layout.simple_spinner_item, mReasonList);
         mReasonAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mProducts = new ArrayList<>();
+        ArrayList<ProductMasterBO> mProducts = new ArrayList<>();
         for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
             if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
                 if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
@@ -156,20 +152,20 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
                         false);
                 (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 holder = new ViewHolder();
-                holder.tv_pname = (TextView) row.findViewById(R.id.productname);
-                holder.tv_indicativeOrder = (TextView) row
+                holder.tv_pname = row.findViewById(R.id.productname);
+                holder.tv_indicativeOrder = row
                         .findViewById(R.id.io_case);
-                holder.tv_cleanOrder = (TextView) row
+                holder.tv_cleanOrder = row
                         .findViewById(R.id.co_case);
-                holder.spn_reason = (Spinner) row.findViewById(R.id.reason);
+                holder.spn_reason = row.findViewById(R.id.reason);
 
-                holder.tv_case = (TextView) row
+                holder.tv_case = row
                         .findViewById(R.id.ordered_case);
-                holder.tv_outer = (TextView) row
+                holder.tv_outer = row
                         .findViewById(R.id.ordered_outer);
-                holder.tv_pcs = (TextView) row
+                holder.tv_pcs = row
                         .findViewById(R.id.ordered_pcs);
-                holder.editText_remark = (EditText) row.
+                holder.editText_remark = row.
                         findViewById(R.id.remarks);
 
                 holder.tv_pname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());

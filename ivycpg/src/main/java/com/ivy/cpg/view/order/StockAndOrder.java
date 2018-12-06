@@ -112,7 +112,7 @@ import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.cpg.view.initiative.InitiativeActivity;
-import com.ivy.sd.png.view.MOQHighlightDialog;
+import com.ivy.cpg.view.order.moq.MOQHighlightDialog;
 import com.ivy.sd.png.view.MustSellReasonDialog;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.ProductSchemeDetailsActivity;

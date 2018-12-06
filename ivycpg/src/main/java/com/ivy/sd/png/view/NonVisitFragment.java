@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -26,7 +25,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -45,10 +43,10 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.profile.CommonReasonDialog;
 import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +54,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class NonVisitFragment extends Fragment implements BrandDialogInterface,
-        SearchView.OnQueryTextListener,FiveLevelFilterCallBack {
+        SearchView.OnQueryTextListener, FiveLevelFilterCallBack {
 
     private final String MENU_PLANNING = "Day Planning";
     private final String MENU_VISIT = "Trade Coverage";
@@ -167,16 +165,16 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             View view = mWeekRG.getChildAt(i);
             if (view instanceof RadioButton) {
                 RadioButton radioButton = (RadioButton) view;
-                radioButton.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                radioButton.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             }
         }
 
         TextView tvWeekSelection = mview.findViewById(R.id.week_title);
-        tvWeekSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        tvWeekSelection.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         TextView tvDaySelection = mview.findViewById(R.id.day_title);
-        tvDaySelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        tvDaySelection.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         TextView tvBeatSelection = mview.findViewById(R.id.beat_title);
-        tvBeatSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+        tvBeatSelection.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
 
         LinearLayout dateLL = mview
@@ -236,7 +234,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         mWeekList.add(getResources().getString(R.string.week2));
         mWeekList.add(getResources().getString(R.string.week3));
         mWeekList.add(getResources().getString(R.string.week4));
-        mSelectedWeek=getResources().getString(R.string.all);
+        mSelectedWeek = getResources().getString(R.string.all);
 
         // for mapping with db
         mWeekMap.put(getResources().getString(R.string.all), getResources()
@@ -276,7 +274,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         //calledBy = getActivity().getIntent().getStringExtra("From");
-        calledBy=getArguments().getString("From");
+        calledBy = getArguments().getString("From");
         if (calledBy == null)
             calledBy = MENU_VISIT;
     }
@@ -966,12 +964,12 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                     getActivity().finish();
                 } else if (calledBy.equalsIgnoreCase(MENU_PLANNING)) {
                     Intent i = new Intent(getActivity(), PlanningVisitActivity.class);
-                    i.putExtra("isPlanning",true);
+                    i.putExtra("isPlanning", true);
                     startActivity(i);
                     getActivity().finish();
-                }else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
+                } else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
                     Intent i = new Intent(getActivity(), PlanningVisitActivity.class);
-                    i.putExtra("isPlanningSub",true);
+                    i.putExtra("isPlanningSub", true);
                     startActivity(i);
                     getActivity().finish();
                 }
@@ -1014,51 +1012,18 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                         parent, false);
                 holder = new ViewHolder();
 
-                holder.card_view = convertView.findViewById(R.id.card_view);
                 holder.llFirst = convertView.findViewById(R.id.ll_first);
-                holder.outletIV = convertView
-                        .findViewById(R.id.outlet_iv);
-                holder.icon = convertView.findViewById(R.id.outlet);
+
                 holder.outletname = convertView
                         .findViewById(R.id.outletName_tv);
-                holder.outletname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outletLocation = convertView
-                        .findViewById(R.id.outlet_location_tv);
-                holder.outletLocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.rField4 = convertView
+                        .findViewById(R.id.rfield4_tv);
+                holder.rField4.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
-                holder.info = convertView
-                        .findViewById(R.id.info_iv);
-                holder.visitFrequency = convertView
-                        .findViewById(R.id.visit_frequency);
+
                 holder.outletAddress = convertView.findViewById(R.id.outlet_address_tv);
-                holder.outletAddress.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.contactName = convertView.findViewById(R.id.contact_name_tv);
 
-
-                if (!bmodel.configurationMasterHelper.HAS_PROFILE_BUTTON_IN_RETAILER_LIST)
-                    holder.info.setVisibility(View.GONE);
-
-
-                holder.info.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        retailerObj = retailer.get(holder.ref);
-                        bmodel.setRetailerMasterBO(retailerObj);
-
-                        Commons.print("menu visit," +
-                                "startvisit=true, non visit faragment");
-
-                        if (!profileclick) {
-                            bmodel.newOutletHelper.downloadLinkRetailer();
-                            profileclick = true;
-
-                            Intent i = new Intent(getActivity(), ProfileActivity.class);
-                            i.putExtra("visit", true);
-                            startActivityForResult(i, 1);
-                        }
-
-
-                    }
-                });
 
                 convertView.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
@@ -1098,10 +1063,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             bmodel.newOutletHelper.downloadLinkRetailer();
                                             Intent i = new Intent(getActivity(), ProfileActivity.class);
                                             i.putExtra("From", calledBy);
-                                            if(calledBy.equalsIgnoreCase(MENU_PLANNING))
-                                                i.putExtra("isPlanning",true);
-                                            else if(calledBy.equalsIgnoreCase(MENU_PLANNING_SUB))
-                                                i.putExtra("isPlanningSub",true);
+                                            if (calledBy.equalsIgnoreCase(MENU_PLANNING))
+                                                i.putExtra("isPlanning", true);
+                                            else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB))
+                                                i.putExtra("isPlanningSub", true);
                                             i.putExtra("non_visit", true);
                                             startActivityForResult(i, 1);
                                         }
@@ -1226,44 +1191,45 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             holder.retailerId = retailerObj.getRetailerID();
             holder.outletname.setText(retailerObj.getRetailerName());
 
-            if (bmodel.configurationMasterHelper.SHOW_RETAILER_LOCATION)//to show retailer location
-                holder.outletLocation.setText(retailerObj.getRField4());
+            if (bmodel.configurationMasterHelper.SHOW_RFIELD4)//to show retailer reserve field 4 value
+                holder.rField4.setText(retailerObj.getRField4());
             else
-                holder.outletLocation.setVisibility(View.INVISIBLE);
+                holder.rField4.setVisibility(View.GONE);
 
             holder.outletAddress.setText(retailerObj.getAddress1());
+
+            if (!bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
+
+                String contact_name = retailerObj.getContactname() + " " + retailerObj.getContactLname();
+                if (contact_name.trim().length() > 0) {
+                    String lNAme = retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
+                    if (lNAme.trim().length() > 0)
+                        contact_name = contact_name + " & " + retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
+                } else
+                    contact_name = retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
+
+
+                if (contact_name.trim().length() > 0)
+                    holder.contactName.setText(contact_name);
+                else
+                    convertView.findViewById(R.id.llContactName).setVisibility(View.GONE);
+            } else
+                convertView.findViewById(R.id.llContactName).setVisibility(View.GONE);
+
             holder.ref = position;
 
-            holder.visitFrequency.setText(((bmodel.configurationMasterHelper.SHOW_RETAILER_FREQUENCY) ? " - F - " + ((retailerObj.getVisit_frequencey() > 0) ? retailerObj.getVisit_frequencey() : "0") : ""));
-
-            if (("Y").equals(retailerObj.getIsNew())) {
-                holder.outletIV
-                        .setImageResource(R.drawable.icon_outlet_all_new);
-            } else {
-                holder.outletIV.setImageResource(R.drawable.icon_outlet_all);
-            }
-
-            if (("Y").equals(retailerObj.getIsDeadStore())) {
-                holder.icon.setImageResource(R.drawable.icon_outlet_dead);
-            } else {
-                holder.icon.setImageResource(android.R.color.transparent);
-            }
 
             return convertView;
         }
 
         class ViewHolder {
-            ImageView info;
-            ImageView outletIV;
-            ImageView icon;
             TextView outletname;
-            TextView outletLocation;
+            TextView rField4;
             TextView outletAddress;
+            TextView contactName;
             String retailerId;
             int ref;
             LinearLayout llFirst;
-            CardView card_view;
-            TextView visitFrequency;
         }
 
     }

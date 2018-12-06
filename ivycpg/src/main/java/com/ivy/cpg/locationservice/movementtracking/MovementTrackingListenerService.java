@@ -154,7 +154,7 @@ public class MovementTrackingListenerService extends Service {
 
 						boolean isGpsEnabled = LocationServiceHelper.getInstance().notifyGPSStatus(getApplicationContext());
 						//Notifies if Mock Location is enabled
-						boolean isMockLocationEnabled = LocationServiceHelper.getInstance().notifyMockLocationStatus(getApplicationContext());
+						boolean isMockLocationEnabled = LocationServiceHelper.getInstance().notifyMockLocationStatus(getApplicationContext(),location);
 
 						LocationDetailBO locationDetailBO = new LocationDetailBO();
 						locationDetailBO.setLatitude(String.valueOf(location.getLatitude()));

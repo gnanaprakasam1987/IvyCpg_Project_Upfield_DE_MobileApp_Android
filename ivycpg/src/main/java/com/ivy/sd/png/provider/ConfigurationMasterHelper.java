@@ -20,6 +20,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class ConfigurationMasterHelper {
     public static final String CODE_VALIDATE_TRADE_COVERAGE = "RTRS29";
     public static final String CODE_SUBD_RETIALER_SELECTION = "RTRS30";
     public static final String CODE_SIMPLE_RETAIER_ROW = "RTRS31";
+    public static final String CODE_RETAILER_CONTACT_NAME = "RTRS32";
     public static final String CODE_CONTRACT_TYPE = "PROFILE17";
     public static final String CODE_CONTRACT_EXPIRYDATE = "PROFILE18";
     public static final String CODE_VISIT_FREQUENCY = "PROFILE19";
@@ -138,7 +140,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_MONTH_OBJ_PROFILE = "PROFILE16";
     private static final String CODE_SHOW_CREDIT_LIMIT_PROFILE = "PROFILE19";
     private static final String CODE_SHOW_NO_VISIT_REASON = "PROFILE21";
-    private static final String CODE_SHOW_HISTORY = "PRO05";
+    private static final String CODE_SHOW_ORDER_HISTORY = "PRO05";
     private static final String CODE_SHOW_TASK = "PRO08";
     public static final String CODE_SHOW_AVG_SALES_PER_LEVEL = "PRO09";
     //
@@ -580,10 +582,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_VISITSCREEN_DEV_ALLOW;
     public boolean IS_DATE_VALIDATION_REQUIRED;
     public boolean IS_INITIATIVE;
-    public boolean IS_HST01;//history fragment
-    public boolean IS_HST02;//history fragment
-    public boolean IS_HST03;//history fragment
-    public boolean IS_HST04;//history fragment
+
     public boolean SHOW_HST_DELDATE;
     public boolean SHOW_HST_INVDATE;
     public boolean SHOW_HST_INVQTY;
@@ -591,7 +590,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_HST_TOTAL;
     public boolean SHOW_HST_VOLUM;
     public boolean SHOW_HST_DELSTATUS;
-    public boolean SHOW_HST_INVDET;
+    public boolean SHOW_ORDER_HISTORY_DETAILS;
     public boolean SHOW_HST_STARTDATE;
     public boolean SHOW_HST_DUETDATE;
     public boolean SHOW_HST_PAID_AMOUNT;
@@ -621,7 +620,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_MONTH_OBJ_PROFILE; //
     public boolean SHOW_CREDIT_LIMIT_PROFILE; //
     public boolean SHOW_NO_VISIT_REASON; //
-    public boolean SHOW_HISTORY; // PRO05
+    public boolean SHOW_ORDER_HISTORY; // PRO05
     public boolean SHOW_ASSET_HISTORY; //PRO07
     public boolean SHOW_TASK;  //PRO08
     public boolean SHOW_AVG_SALES_PER_LEVEL;  //PRO09
@@ -931,11 +930,12 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_DATE_ROUTE;
     public boolean SHOW_BEAT_ROUTE;
     public boolean SHOW_WEEK_ROUTE;
-    public boolean SHOW_RETAILER_LOCATION;//RTRS26
+    public boolean SHOW_RFIELD4;//RTRS26
     public boolean SHOW_MISSED_RETAILER;//RTRS28
     public boolean VALIDATE_TRADE_COVERAGE;//RTRS29
     public boolean SUBD_RETAILER_SELECTION;//RTRS30
     public boolean IS_SIMPLE_RETIALER;//RTRS31
+    public boolean SHOW_RETIALER_CONTACTS;//RTRS32
     public boolean SHOW_CONTRACT_TYPE;
     public boolean SHOW_CONTRACT_EXPIRYDATE;
     public boolean SHOW_VISIT_FREQUENCY;
@@ -1314,9 +1314,14 @@ public class ConfigurationMasterHelper {
     private HashMap<String, Boolean> hashMapHHTModuleConfig;
     private HashMap<String, Integer> hashMapHHTModuleOrder;
 
-    public boolean SHOW_TOTAL_VALUE_ORDER;
-    public boolean SHOW_HISTORY_DETAIL = false;
+
+
+    public boolean SHOW_INVOICE_HISTORY_DETAIL = false;
+
+
     private static final String CODE_SHOW_VALUE_ORDER = "ORDB64";
+    public boolean SHOW_TOTAL_VALUE_ORDER;
+
     public boolean SHOW_TOTAL_QTY_ORDER;
     private static final String CODE_SHOW_QTY_ORDER = "ORDB65";
 
@@ -1525,6 +1530,9 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_GLOBAL_NO_ORDER_REASON;
     private static final String CODE_MENU_FIREBASE_CHAT = "CHAT02";
     public boolean IS_FIREBASE_CHAT_ENABLED;
+
+    private static final String CODE_CHECK_DIGITAL_SIZE = "SYNC11";
+    public long DIGITAL_CONTENT_SIZE = -1;
 
 
     private ConfigurationMasterHelper(Context context) {
@@ -2023,10 +2031,6 @@ public class ConfigurationMasterHelper {
         this.IS_VISITSCREEN_DEV_ALLOW = hashMapHHTModuleConfig.get(CODE_VISITSCREEN_DEV_ALLOW) != null ? hashMapHHTModuleConfig.get(CODE_VISITSCREEN_DEV_ALLOW) : false;
         this.IS_DATE_VALIDATION_REQUIRED = hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) != null ? hashMapHHTModuleConfig.get(CODE_DAY_MISMATCH) : false;
         this.IS_INITIATIVE = hashMapHHTModuleConfig.get(CODE_INITIATIVE) != null ? hashMapHHTModuleConfig.get(CODE_INITIATIVE) : false;
-        /*this.IS_HST01 = hashMapHHTModuleConfig.get(CODE_HST01) != null ? hashMapHHTModuleConfig.get(CODE_HST01) : false;//history fragment
-        this.IS_HST02 = hashMapHHTModuleConfig.get(CODE_HST02) != null ? hashMapHHTModuleConfig.get(CODE_HST02) : false;//history fragment
-        this.IS_HST03 = hashMapHHTModuleConfig.get(CODE_HST03) != null ? hashMapHHTModuleConfig.get(CODE_HST03) : false;//history fragment
-        this.IS_HST04 = hashMapHHTModuleConfig.get(CODE_HST04) != null ? hashMapHHTModuleConfig.get(CODE_HST04) : false;//history fragment*/
         this.IS_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_CHAT) : false;
         this.IS_PRESENTATION_INORDER = hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) != null ? hashMapHHTModuleConfig.get(CODE_PRASENTATION_INORDER) : false;
         this.HAS_PROFILE_BUTTON_IN_RETAILER_LIST = hashMapHHTModuleConfig.get(CODE_HAS_PROFILE_BUTTON_IN_RETAILER_LIST) != null ? hashMapHHTModuleConfig.get(CODE_HAS_PROFILE_BUTTON_IN_RETAILER_LIST) : false;
@@ -2037,7 +2041,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_CREDIT_LIMIT_PROFILE = hashMapHHTModuleConfig.get(CODE_SHOW_CREDIT_LIMIT_PROFILE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CREDIT_LIMIT_PROFILE) : false;
         this.SHOW_CREDIT_BALANCE = hashMapHHTModuleConfig.get(CODE_SHOW_CREDIT_BALANCE) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_CREDIT_BALANCE) : false;
         this.SHOW_NO_VISIT_REASON = hashMapHHTModuleConfig.get(CODE_SHOW_NO_VISIT_REASON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_NO_VISIT_REASON) : false;
-        this.SHOW_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_HISTORY) : false;
+        this.SHOW_ORDER_HISTORY = hashMapHHTModuleConfig.get(CODE_SHOW_ORDER_HISTORY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_ORDER_HISTORY) : false;
         this.SHOW_TASK = hashMapHHTModuleConfig.get(CODE_SHOW_TASK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK) : false;
         this.SHOW_AVG_SALES_PER_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_AVG_SALES_PER_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_AVG_SALES_PER_LEVEL) : false;
 
@@ -2188,7 +2192,8 @@ public class ConfigurationMasterHelper {
         this.VALIDATE_TRADE_COVERAGE = hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_TRADE_COVERAGE) : false;
         this.SUBD_RETAILER_SELECTION = hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) != null ? hashMapHHTModuleConfig.get(CODE_SUBD_RETIALER_SELECTION) : false;
         this.IS_SIMPLE_RETIALER = hashMapHHTModuleConfig.get(CODE_SIMPLE_RETAIER_ROW) != null ? hashMapHHTModuleConfig.get(CODE_SIMPLE_RETAIER_ROW) : false;
-        this.SHOW_RETAILER_LOCATION = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
+        this.SHOW_RETIALER_CONTACTS = hashMapHHTModuleConfig.get(CODE_RETAILER_CONTACT_NAME) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_CONTACT_NAME) : false;
+        this.SHOW_RFIELD4 = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LOCATION) : false;
         this.SHOW_PROFILE_LOC2 = hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_LOC2) : false;
         this.SHOW_CONTRACT_TYPE = hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_TYPE) : false;
         this.SHOW_CONTRACT_EXPIRYDATE = hashMapHHTModuleConfig.get(CODE_CONTRACT_EXPIRYDATE) != null ? hashMapHHTModuleConfig.get(CODE_CONTRACT_EXPIRYDATE) : false;
@@ -2506,9 +2511,6 @@ public class ConfigurationMasterHelper {
 
         this.IS_UPPERCASE_LETTER = hashMapHHTModuleConfig.get(CODE_UPPERCASE_LETTER) != null ? hashMapHHTModuleConfig.get(CODE_UPPERCASE_LETTER) : false;
 
-        if (hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null) {
-            this.SHOW_HISTORY_DETAIL = hashMapHHTModuleOrder.get(CODE_SHOW_VALUE_ORDER) == 1;
-        }
 
         if (hashMapHHTModuleConfig.get(CODE_SHOW_SPL_FILTER) != null) {
             if (hashMapHHTModuleOrder.get(CODE_SHOW_SPL_FILTER) == 1)
@@ -3527,7 +3529,6 @@ public class ConfigurationMasterHelper {
             SHOW_HST_REPCODE = false;
             SHOW_HST_TOTAL = false;
             SHOW_HST_VOLUM = false;
-            SHOW_HST_INVDET = false;
             SHOW_HST_STARTDATE = false;
             SHOW_HST_DUETDATE = false;
             SHOW_HST_PAID_AMOUNT = false;
@@ -3535,6 +3536,8 @@ public class ConfigurationMasterHelper {
             SHOW_HST_DRIVER_NAME = false;
             SHOW_HST_PO_NUM = false;
             SHOW_HST_DOC_NO = false;
+
+            SHOW_ORDER_HISTORY_DETAILS = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
@@ -3574,7 +3577,7 @@ public class ConfigurationMasterHelper {
                             SHOW_HST_VOLUM = true;
                             break;
                         case "INVDT":
-                            SHOW_HST_INVDET = true;
+                            SHOW_ORDER_HISTORY_DETAILS = true;
                             break;
                         case "ST":
                             SHOW_HST_DELSTATUS = true;
@@ -3626,6 +3629,8 @@ public class ConfigurationMasterHelper {
             SHOW_INV_HST_MARGIN_PRICE = false;
             SHOW_INV_HST_MARGIN_PER = false;
 
+            SHOW_INVOICE_HISTORY_DETAIL = false;
+
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -3647,6 +3652,9 @@ public class ConfigurationMasterHelper {
                     switch (temp) {
                         case "ORDID":
                             SHOW_INV_HST_ORDERID = true;
+                            break;
+                        case "INV_DETAIL":
+                            SHOW_INVOICE_HISTORY_DETAIL = true;
                             break;
                         case "INVDATE":
                             SHOW_INV_HST_INVOICEDATE = true;
@@ -6186,6 +6194,26 @@ public class ConfigurationMasterHelper {
         }
 
         return title;
+    }
+
+    public void getDigitalContentSize(){
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + AppUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.DIGITAL_CONTENT_SIZE = c.getLong(0);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        }catch (Exception e){
+            Commons.printException(e);
+        }
     }
 
 }

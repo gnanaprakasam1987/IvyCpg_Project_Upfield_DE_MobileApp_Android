@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.profile.mslUnsold;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 public class MSLUnsoldFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private View view;
-    private ListView lv_msl;
     private ArrayList<String> mslUnsoldList;
     private boolean _hasLoadedOnce = false;
 
@@ -68,8 +67,9 @@ public class MSLUnsoldFragment extends IvyBaseFragment {
     }
 
     private void initialization() {
-        lv_msl = (ListView) view.findViewById(R.id.lv_msl);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, mslUnsoldList);
+        ListView lv_msl = view.findViewById(R.id.lv_msl);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, mslUnsoldList);
         lv_msl.setAdapter(adapter);
 
     }

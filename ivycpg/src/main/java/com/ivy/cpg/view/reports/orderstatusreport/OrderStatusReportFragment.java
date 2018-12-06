@@ -33,8 +33,8 @@ public class OrderStatusReportFragment extends IvyBaseFragment implements OrderS
     private Spinner spnRetailer;
     private TextView emptytxtview;
     private LinearLayout retailerLayout;
-    ArrayAdapter<OrderStatusRetailerReportBO> spinnerRetailerAdapter;
-    Vector<OrderStatusRetailerReportBO> strings = new Vector<>();
+    private ArrayAdapter<OrderStatusRetailerReportBO> spinnerRetailerAdapter;
+    private Vector<OrderStatusRetailerReportBO> strings = new Vector<>();
     boolean isOrderScreen = true;
 
     public static OrderStatusReportFragment newInstance(boolean screenFlag) {
@@ -47,7 +47,6 @@ public class OrderStatusReportFragment extends IvyBaseFragment implements OrderS
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.sd.png.view.profile.assetHistory;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,23 +14,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.asset.AssetHistoryBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.Vector;
 
 /**
- * Created by anish.k on 12/26/2017.
+ * Created by anish.k on 9/28/2017.
+ * This screen shows asset history in profile screen
+ *
  */
 
-public class SalesPerCategory extends IvyBaseFragment {
+public class AssetHistoryFragment extends IvyBaseFragment {
 
     protected BusinessModel mBModel;
     protected RecyclerView recyclerView;
     protected RecyclerAdapter recyclerAdapter;
     private boolean _hasLoadedOnce = false;
-    private String lovLabel = "";
     private View view;
 
     @Nullable
@@ -40,10 +41,24 @@ public class SalesPerCategory extends IvyBaseFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
-        view = inflater.inflate(R.layout.fragment_sales_cateogry, container,
+        view = inflater.inflate(R.layout.fragment_asset_history, container,
                 false);
 
         return view;
+    }
+
+    private void initializeViews() {
+        if (view != null) {
+            recyclerView = view.findViewById(R.id.recycler_asset_history);
+            if (recyclerView != null) {
+                recyclerView.setHasFixedSize(false);
+            }
+            final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+            loadListData();
+        }
     }
 
     @Override
@@ -63,57 +78,41 @@ public class SalesPerCategory extends IvyBaseFragment {
         }
     }
 
-    private void initializeViews() {
-        if (view != null) {
-            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_sales_cateogry);
-            if (recyclerView != null) {
-                recyclerView.setHasFixedSize(false);
-            }
-            final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            loadListData();
-        }
-    }
-
     private void loadListData() {
-        mBModel.profilehelper.salesPerCategory();
-        lovLabel = mBModel.profilehelper.getmSalesCategoryLabel();
-        Vector<RetailerMasterBO> salesCateogryList = mBModel.profilehelper.getmSalesCategoryList();
-        if(salesCateogryList!=null && salesCateogryList.size()>0) {
-            recyclerAdapter = new RecyclerAdapter(salesCateogryList);
+        mBModel.profilehelper.downloadAssetHistory(mBModel.getRetailerMasterBO().getRetailerID());
+        Vector<AssetHistoryBO> items = mBModel.profilehelper.getAssetHistoryList();
+        if(items!=null && items.size()>0)
+        {
+            recyclerAdapter = new RecyclerAdapter(items);
             recyclerView.setAdapter(recyclerAdapter);
         }
     }
 
     class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
-        protected Vector<RetailerMasterBO> data;
+        protected Vector<AssetHistoryBO> data;
 
-        RecyclerAdapter(Vector<RetailerMasterBO> data) {
+        RecyclerAdapter(Vector<AssetHistoryBO> data) {
             this.data = data;
         }
 
         @Override
         public RecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(
-                    parent.getContext()).inflate(R.layout.row_sales_category_list, parent, false);
+                    parent.getContext()).inflate(R.layout.row_asset_history_list, parent, false);
             return new RecyclerAdapter.MyViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            holder.retailerMasterBO = data.get(position);
-
-            holder.TVCategoryName.setText(holder.retailerMasterBO.getSalesProductSName());
-            holder.TVCategoryLabel.setText(lovLabel);
-            holder.TVInvoiceId.setText(holder.retailerMasterBO.getSalesInvoiceId());
-            holder.TVInvoiceValue.setText(holder.retailerMasterBO.getSalesInvoiceValue());
-            holder.TVInvoiceQty.setText(holder.retailerMasterBO.getSalesQty());
-            holder.TVInvoiceLpc.setText(holder.retailerMasterBO.getSalesLpc());
+        public void onBindViewHolder(final RecyclerAdapter.MyViewHolder holder, int position) {
+            holder.assetHistoryBO = data.get(position);
             if (position % 2 == 0)
                 holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
             else
                 holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+            holder.TVAssetName.setText(holder.assetHistoryBO.getAssetName());
+            holder.TVSerialNumber.setText(holder.assetHistoryBO.getAssetSerialNo());
+            holder.TVDate.setText(holder.assetHistoryBO.getAssetDate());
+
         }
 
         @Override
@@ -121,24 +120,18 @@ public class SalesPerCategory extends IvyBaseFragment {
             return data.size();
         }
 
-
         class MyViewHolder extends RecyclerView.ViewHolder {
-            TextView TVCategoryName,TVCategoryLabel, TVInvoiceId,TVInvoiceValue,TVInvoiceQty,TVInvoiceLpc;
-            RetailerMasterBO retailerMasterBO;
+            TextView TVAssetName, TVSerialNumber,TVDate;
+            AssetHistoryBO assetHistoryBO;
             LinearLayout layoutBackground;
 
             MyViewHolder(View itemView) {
                 super(itemView);
-                TVCategoryName = (TextView) itemView.findViewById(R.id.txt_categoryName);
-                TVCategoryLabel = (TextView) itemView.findViewById(R.id.txt_categoryLabel);
-                TVInvoiceId = (TextView) itemView.findViewById(R.id.txt_invoice_no);
-                TVInvoiceValue=(TextView)itemView.findViewById(R.id.txt_invoice_value);
-                TVInvoiceQty=(TextView)itemView.findViewById(R.id.txt_invoice_qty);
-                TVInvoiceLpc = (TextView)itemView.findViewById(R.id.txt_invoice_lpc);
-
-                layoutBackground=(LinearLayout)itemView.findViewById(R.id.list_background);
+                TVAssetName = itemView.findViewById(R.id.txt_history_assetName);
+                TVSerialNumber = itemView.findViewById(R.id.txt_history_serialNo);
+                TVDate= itemView.findViewById(R.id.txt_history_date);
+                layoutBackground= itemView.findViewById(R.id.list_background);
             }
         }
-
     }
 }

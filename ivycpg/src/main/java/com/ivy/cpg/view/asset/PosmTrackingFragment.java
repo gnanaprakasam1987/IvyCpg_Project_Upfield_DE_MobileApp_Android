@@ -754,7 +754,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                 });
                 holder.execQtyET.performClick();
-                holder.compQtyET.addTextChangedListener(new TextWatcher() {
+
+
+                holder.execQtyET.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -769,12 +771,12 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                     public void afterTextChanged(Editable s) {
                         String qty = s.toString();
                         if (qty.length() > 0)
-                            holder.compQtyET.setSelection(qty.length());
+                            holder.execQtyET.setSelection(qty.length());
 
                         if (!"".equals(qty)) {
-                            int mAvailQty = SDUtil.convertToInt(holder.compQtyET
+                            int mExceqQty = SDUtil.convertToInt(holder.execQtyET
                                     .getText().toString());
-                            holder.assetBO.setCompetitorQty(mAvailQty);
+                            holder.assetBO.setExecutorQty(mExceqQty);
                         }
                     }
                 });

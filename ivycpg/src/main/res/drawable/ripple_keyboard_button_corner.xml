@@ -4,8 +4,8 @@
     tools:targetApi="lollipop"
     tools:ignore="MissingDefaultResource">
 
-    <item android:drawable="@color/light_gray" android:state_pressed="true"/>
-        <item android:drawable="@color/light_gray" android:state_focused="true"/>
-        <item android:drawable="@drawable/keyboard_back_ground"/>
+    <item android:drawable="@color/grey_odd" android:state_pressed="true"/>
+    <item android:drawable="@color/grey_odd" android:state_focused="true"/>
+    <item android:drawable="@drawable/keyboard_back_ground"/>
 
 </selector>
