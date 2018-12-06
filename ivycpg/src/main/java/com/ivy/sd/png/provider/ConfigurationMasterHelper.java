@@ -1529,7 +1529,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MENU_FIREBASE_CHAT = "CHAT02";
     public boolean IS_FIREBASE_CHAT_ENABLED;
 
-    private static final String CODE_CHECK_DIGITAL_SIZE = "SYNC11";
+    private static final String CODE_CHECK_DIGITAL_SIZE = "SYNC12";
     public long DIGITAL_CONTENT_SIZE = -1;
 
 
