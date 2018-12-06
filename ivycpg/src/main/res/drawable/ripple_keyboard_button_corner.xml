@@ -1,7 +1,11 @@
-<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:color="?android:colorControlHighlight"
     tools:targetApi="lollipop"
     tools:ignore="MissingDefaultResource">
-    <item android:drawable="@drawable/keyboard_back_ground" />
-</ripple>
+
+    <item android:drawable="@color/light_gray" android:state_pressed="true"/>
+        <item android:drawable="@color/light_gray" android:state_focused="true"/>
+        <item android:drawable="@drawable/keyboard_back_ground"/>
+
+</selector>

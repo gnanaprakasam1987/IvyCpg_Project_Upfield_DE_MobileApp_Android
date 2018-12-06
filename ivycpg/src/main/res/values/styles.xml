@@ -660,6 +660,27 @@ negative button and neutral button -->
         <item name="android:textColor">@color/FullBlack</item>
     </style>
 
+    <!-- Banner Header Text Style-->
+    <style name="BannerTextViewLabel" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">?attr/accentcolor</item>
+    </style>
+
+    <style name="BannerTextViewValue" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/highlight_small</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="TradeCoverageHeaderText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">?attr/accentcolor</item>
+    </style>
+
+
 
     <!-- List View Header Text Style-->
     <style name="TextViewListTitle" parent="@android:style/Widget.TextView">

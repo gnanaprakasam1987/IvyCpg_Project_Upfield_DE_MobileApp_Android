@@ -3,11 +3,14 @@ package com.ivy.cpg.view.collection;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,6 +32,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.png.view.profile.HorizontalDividerItemDecoration;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
 
@@ -79,17 +83,13 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         setScreenTitle(bmodel.mSelectedActivityName);
 
         recyclerView_paytype = view.findViewById(R.id.paymentmode_recycview);
+        recyclerView_paytype.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
         mPayableAmtTV = view.findViewById(R.id.tv_paidamt);
         mDiscTV = view.findViewById(R.id.tv_disc_amt);
         mBalaceAmtTV = view.findViewById(R.id.tv_balanceamt);
         mCollectionAmtTV = view.findViewById(R.id.tv_collectionamt);
         payBtn = view.findViewById(R.id.paybtn);
-        payBtn.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.REGULAR));
         payBtn.setOnClickListener(this);
-
-        mPayableAmtTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-        mDiscTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-        mBalaceAmtTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
         mInvioceList = bmodel.getInvoiceHeaderBO();
         mPaymentList = collectionHelper.getCollectionPaymentList();
@@ -202,9 +202,6 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                         .findViewById(R.id.tv_paidamtlabel);
                 view.setOnClickListener(this);
 
-                nameTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                paidAmtLabel.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                             R.id.tv_paidamtlabel).getTag()) != null)
@@ -258,8 +255,6 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
         @Override
         public void onBindViewHolder(final PayTypeRecyclerAdapter.MyViewHolder holder, int position) {
-
-            holder.nameTV.setTypeface(FontUtils.getFontRoboto(getActivity(),FontUtils.FontType.LIGHT));
             holder.nameTV.setText(mPaymentList.get(position).getListName());
 
             if (mPaymentList.get(position).getAmount() > 0) {
@@ -270,14 +265,6 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             } else {
                 holder.paidAmtLabel.setText("");
             }
-
-
-            if (position % 2 == 0) {
-                holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.list_even_item_bg));
-            } else {
-                holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.list_odd_item_bg));
-            }
-
         }
 
         @Override

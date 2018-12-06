@@ -4,23 +4,21 @@
     android:id="@+id/ll_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/dimens_6dp">
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:elevation="@dimen/dimens_6dp"
+        android:layout_margin="@dimen/card_rel_margin"
         app:cardBackgroundColor="?attr/customFooterBackgroundColor"
-
         app:cardCornerRadius="@dimen/dimens_4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_80dp"
             android:layout_gravity="center"
-            android:layout_marginTop="5dp"
             android:elevation="0dp"
             android:gravity="center"
             android:orientation="horizontal"
@@ -29,102 +27,91 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginLeft="5dp">
+                android:layout_gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_title_tos_amount"
+                    style="@style/BannerTextViewLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5px"
                     android:gravity="center"
-                    android:text="@string/tos_amount"
-                    android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/text_size_caption" />
+                    android:text="@string/tos_amount" />
 
                 <TextView
                     android:id="@+id/tv_tos_amount"
+                    style="@style/BannerTextViewValue"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingBottom="@dimen/dimen_8dp"
-                    android:textColor="@color/list_header_text_color"
-                    android:textSize="@dimen/font_small" />
+                    />
 
 
             </LinearLayout>
 
-            <LinearLayout
+            <View
                 android:layout_width="@dimen/dimens_1dp"
                 android:layout_height="@dimen/dimens_40dp"
                 android:background="@color/gray_text"
+                android:id="@+id/line1"
                 android:padding="@dimen/dimens_4dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginLeft="5dp">
+                android:layout_gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_title_pending_bills"
+                    style="@style/BannerTextViewLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5px"
                     android:gravity="center"
-                    android:text="@string/PendingBills"
-                    android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/text_size_caption" />
+                    android:text="@string/PendingBills" />
 
                 <TextView
                     android:id="@+id/tv_pending_bills"
+                    style="@style/BannerTextViewValue"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingBottom="@dimen/dimen_8dp"
-                    android:textColor="@color/list_header_text_color"
-                    android:textSize="@dimen/font_small" />
+                     />
 
             </LinearLayout>
 
-            <LinearLayout
+            <View
                 android:layout_width="@dimen/dimens_1dp"
                 android:layout_height="@dimen/dimens_40dp"
                 android:background="@color/gray_text"
+                android:id="@+id/line2"
                 android:padding="@dimen/dimens_4dp" />
 
             <LinearLayout
                 android:id="@+id/ll_due_bills"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginLeft="5dp">
+                android:layout_gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_title_due_bill"
+                    style="@style/BannerTextViewLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_5px"
                     android:gravity="center"
-                    android:text="Due Bills"
-                    android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/text_size_caption" />
+                    android:text="Due Bills" />
 
                 <TextView
                     android:id="@+id/tv_due_bill"
+                    style="@style/BannerTextViewValue"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingBottom="@dimen/dimens_8dp"
-                    android:text="0"
-                    android:textColor="@color/list_header_text_color"
-                    android:textSize="@dimen/font_small" />
+                    android:text="0" />
 
             </LinearLayout>
 
@@ -135,62 +122,51 @@
     <ListView
         android:id="@+id/lv_collection"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@null"
         android:dividerHeight="0dp" />
 
-    <RelativeLayout
+    <View
+        android:id="@+id/line"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/screen_bg_color"
-        android:orientation="vertical">
+        android:layout_height="@dimen/dimens_1dp"
+        android:background="@color/light_gray"
+        android:orientation="horizontal" />
 
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_1dp"
-            android:background="@color/light_gray"
-            android:orientation="horizontal" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:background="?customFooterBackgroundColor"
+        android:gravity="end|center"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/line"
-            android:layout_centerInParent="true"
-            android:gravity="end|center"
-            android:orientation="horizontal">
+        <Button
+            android:id="@+id/paybtn"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/pay"
+            android:textAllCaps="false" />
 
-            <Button
-                android:id="@+id/paybtn"
-                style="?attr/roundedCustomButtonSmall"
-                android:layout_margin="@dimen/target_top_margin"
-                android:text="@string/pay"
-                android:textAllCaps="false"
-                android:textSize="@dimen/text_size_primary" />
+        <Button
+            android:id="@+id/btn_close"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_margin="@dimen/target_top_margin"
+            android:layout_toEndOf="@id/paybtn"
+            android:layout_toRightOf="@id/paybtn"
+            android:text="@string/next"
+            android:textAllCaps="false"
+            android:visibility="gone" />
 
-            <Button
-                android:id="@+id/btn_close"
-                style="?attr/roundedCustomButtonSmall"
-                android:layout_margin="@dimen/target_top_margin"
-                android:layout_toEndOf="@id/paybtn"
-                android:text="@string/next"
-                android:textAllCaps="false"
-                android:visibility="gone"
-                android:layout_toRightOf="@id/paybtn" />
-
-        </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 
     <android.support.v7.widget.CardView
         android:id="@+id/bottom_value_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:cardBackgroundColor="?customFooterBackgroundColor">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
@@ -205,18 +181,20 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_osamount"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
-                    android:gravity="center"
-                    android:textSize="@dimen/font_small" />
-
-                <TextView
+                    style="@style/BannerTextViewLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/os_amt"
-                    android:textSize="@dimen/text_size_caption" />
+                    android:text="@string/os_amt" />
+
+                <TextView
+                    android:id="@+id/tv_osamount"
+                    style="@style/BannerTextViewValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -227,19 +205,20 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_paidamt"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
-                    android:gravity="center"
-                    android:textSize="@dimen/font_small" />
-
-                <TextView
-
+                    style="@style/BannerTextViewLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Payable Amt"
-                    android:textSize="@dimen/text_size_caption" />
+                    android:text="@string/bill_payment" />
+
+                <TextView
+                    android:id="@+id/tv_paidamt"
+                    style="@style/BannerTextViewValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -249,41 +228,23 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_disc_amt"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
-                    android:gravity="center"
-                    android:textSize="@dimen/font_small" />
 
                 <TextView
+                    style="@style/BannerTextViewLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Disc Amt"
-                    android:textSize="@dimen/text_size_caption" />
+                    android:text="@string/disc_amt" />
+
+                <TextView
+                    android:id="@+id/tv_disc_amt"
+                    style="@style/BannerTextViewValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
             </LinearLayout>
 
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/primarycolor"
-        android:visibility="gone"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/colorPrimaryAlpha"
-        app:tabSelectedTextColor="@color/white"
-        app:tabTextAppearance="@style/MineCustomTabText" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
 </LinearLayout>
