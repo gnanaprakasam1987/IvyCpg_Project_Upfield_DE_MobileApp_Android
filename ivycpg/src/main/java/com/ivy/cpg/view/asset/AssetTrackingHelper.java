@@ -2301,7 +2301,6 @@ public class AssetTrackingHelper {
     private ArrayList<String> getPosmId(DBUtil db, Context mContext) {
         ArrayList<String> mappingsetId = new ArrayList<>();
         ArrayList<String> attrmappingsetId = new ArrayList<>();
-        ArrayList<String> tempmappingsetId = new ArrayList<>(); // used for checking attr mapped
 
 
         String attrQuery = "Select distinct Id,MappingSetId from POSMCriteriaAttributesMappingV2 PCA"
