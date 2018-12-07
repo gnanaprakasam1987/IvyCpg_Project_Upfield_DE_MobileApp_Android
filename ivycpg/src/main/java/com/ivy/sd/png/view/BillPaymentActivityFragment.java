@@ -424,6 +424,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             }
         }
         totalPayableAmt = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(totalPayableAmt));
+        totalCollected = SDUtil.convertToDouble(bmodel.formatValueBasedOnConfig(totalCollected));
         if (totalCollected > totalPayableAmt) {
             flag = true;
         }
