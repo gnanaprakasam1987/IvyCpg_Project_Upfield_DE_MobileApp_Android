@@ -829,6 +829,9 @@
             android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetServiceActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.AddSerializedAssetActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadService"
             android:exported="false"

@@ -27,16 +27,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ivy.cpg.view.asset.AddAssetDialogFragment;
-import com.ivy.cpg.view.asset.AssetMovementActivity;
-import com.ivy.cpg.view.asset.AssetPosmRemoveActivity;
-import com.ivy.cpg.view.asset.AssetServiceActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
@@ -414,8 +409,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             return true;
         } else if (i == R.id.menu_add) {
 
-            AddSerializedAssetDialogFragment dialog = new AddSerializedAssetDialogFragment();
-            dialog.show(getFragmentManager(), MENU_SERIALIZED_ASSET);
+            Intent intent=new Intent(getActivity(),AddSerializedAssetActivity.class);
+            startActivity(intent);
 
             return true;
         } else if (i == R.id.menu_remove) {
