@@ -1195,7 +1195,7 @@ public class SchemeDetailsMasterHelper {
      */
     private void clearPROMOFlag(DBUtil db) {
 
-        String sql = "select distinct(PID) from object1 inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
+        String sql = "select distinct(PID) from productMaster inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
         Cursor c = db.selectSQL(sql);
         if (c != null) {
             while (c.moveToNext()) {

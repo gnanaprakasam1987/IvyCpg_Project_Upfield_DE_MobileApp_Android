@@ -12,6 +12,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -21,6 +23,7 @@ import io.reactivex.ObservableOnSubscribe;
 
 public class SalesReturnDeliveryHelper {
     private static SalesReturnDeliveryHelper instance = null;
+    private HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> salesReturnDelDataMap;
 
     private SalesReturnDeliveryHelper() {
     }
@@ -50,7 +53,7 @@ public class SalesReturnDeliveryHelper {
                             "from SalesReturnHeader where retailerId ='" + businessModel.getRetailerMasterBO().getRetailerID() + "' " +
                             "AND upload='X' " +
                             "AND uid NOT IN (select ifnull(RefUID,0) from salesReturnHeader " +
-                            "where upload='Y'and isCanceFlag != 1) ");
+                            "where upload='Y'and isCancel != 1) ");
 
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
@@ -91,6 +94,8 @@ public class SalesReturnDeliveryHelper {
                 try {
                     BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
                     Vector<SalesReturnDeliveryDataModel> returnDeliveryDataModelVector = new Vector<>();
+                    ArrayList<SalesReturnDeliveryDataModel> skuLevelReturnData;
+                    HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> srdDataModelMap = new HashMap<>();
                     DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
                     dbUtil.openDataBase();
 
@@ -161,6 +166,24 @@ public class SalesReturnDeliveryHelper {
                             returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
                         }
 
+                        for (SalesReturnDeliveryDataModel srdDataModel : returnDeliveryDataModelVector) {
+                            skuLevelReturnData = new ArrayList<>();
+                            Cursor cur = dbUtil.selectSQL("select pid,psname from productmaster where parenthierarchy LIKE '%" +
+                                        srdDataModel.getProductId() + "%'");
+                            if (cur != null) {
+                                while (cur.moveToNext()) {
+                                    SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = new SalesReturnDeliveryDataModel();
+                                    salesReturnDeliveryDataModel.setProductId(cur.getString(0));
+                                    salesReturnDeliveryDataModel.setProductName(cur.getString(1));
+                                    salesReturnDeliveryDataModel.setReason(srdDataModel.getReason());
+                                    skuLevelReturnData.add(salesReturnDeliveryDataModel);
+                                }
+                                cur.close();
+                            }
+                            srdDataModelMap.put(srdDataModel.getProductId(), skuLevelReturnData);
+                        }
+
+                        setSalesReturnDelDataMap(srdDataModelMap);
                         subscriber.onNext(returnDeliveryDataModelVector);
                         subscriber.onComplete();
                     }
@@ -432,5 +455,11 @@ public class SalesReturnDeliveryHelper {
         }
     }
 
+    public HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> getSalesReturnDelDataMap() {
+        return salesReturnDelDataMap;
+    }
 
+    public void setSalesReturnDelDataMap(HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> salesReturnDelDataMap) {
+        this.salesReturnDelDataMap = salesReturnDelDataMap;
+    }
 }

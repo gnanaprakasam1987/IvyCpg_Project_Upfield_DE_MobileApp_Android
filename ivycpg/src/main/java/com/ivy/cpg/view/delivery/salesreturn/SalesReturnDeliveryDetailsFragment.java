@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -52,24 +53,26 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     RecyclerView recyclerView;
 
     private SalesReturnDeliveryDataBo salesReturnDeliveryDataBo = null;
-
+    private String data;
+    private BusinessModel bmodel;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_salesreturn_deliverydetails, container, false);
         unbinder = ButterKnife.bind(this, view);
-
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         setLabelMaserValue(view);
         if (getArguments() != null) {
-            String data = getArguments().getString("DATA");
+            data = getArguments().getString("DATA");
             salesReturnDeliveryDataBo =
                     new Gson().fromJson(data, SalesReturnDeliveryDataBo.class);
             //  uId = salesReturnDeliveryDataBo.getUId();
@@ -239,23 +242,27 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     private String append = "";
 
     public void numberPressed(View vw) {
-
-        int id = vw.getId();
-        if (id == R.id.calcdel) {
-            String s = QUANTITY.getText().toString();
-            if (!(s.length() == 0)) {
-                s = s.substring(0, s.length() - 1);
-                if (s.length() == 0) {
-                    s = "";
-                }
-            }
-            QUANTITY.setText(s);
+        if (QUANTITY == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.please_select_item), 0);
         } else {
-            if (getView() != null) {
-                Button ed = getView().findViewById(vw.getId());
-                append = ed.getText().toString();
+            int id = vw.getId();
+            if (id == R.id.calcdel) {
+                String s = QUANTITY.getText().toString();
+                if (!(s.length() == 0)) {
+                    s = s.substring(0, s.length() - 1);
+                    if (s.length() == 0) {
+                        s = "";
+                    }
+                }
+                QUANTITY.setText(s);
+            } else {
+                if (getView() != null) {
+                    Button ed = getView().findViewById(vw.getId());
+                    append = ed.getText().toString();
+                }
+                eff();
             }
-            eff();
         }
     }
 
@@ -300,7 +307,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
          * @param salesReturnDeliveryDataModels : data
          */
 
-        public SalesReturnDeliveryAdapter(Context context, RecyclerViewItemClickListener recyclerViewItemClickListener,
+        SalesReturnDeliveryAdapter(Context context, RecyclerViewItemClickListener recyclerViewItemClickListener,
                                           Vector<SalesReturnDeliveryDataModel> salesReturnDeliveryDataModels, boolean isDetails) {
             this.recyclerViewItemClickListener = recyclerViewItemClickListener;
             mContext = context;
@@ -317,8 +324,9 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
          * Inflate the Views
          * Create the each views and Hold for Reuse
          */
+        @NonNull
         @Override
-        public SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.salesreturn_deliverydetails, parent, false);
             return new SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder(view);
@@ -330,24 +338,24 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
          *                 set the values to the views
          */
         @Override
-        public void onBindViewHolder(final SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder holder, int position) {
 
 
             if (isDetails) {
 
 
-                holder.productName.setText(salesReturnDeliveryDataModelsList.get(position).getProductName());
-                holder.returnCaseQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(position).getReturnCaseQuantity()));
-                holder.returnPieceQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(position).getReturnPieceQuantity()));
-                holder.reason.setText(salesReturnDeliveryDataModelsList.get(position).getReason());
-                holder.actualPieceQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(position).getActualPieceQuantity()));
-                holder.actualCaseQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(position).getActualCaseQuantity()));
+                holder.productName.setText(salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).getProductName());
+                holder.returnCaseQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).getReturnCaseQuantity()));
+                holder.returnPieceQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).getReturnPieceQuantity()));
+                holder.reason.setText(salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).getReason());
+                holder.actualPieceQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).getActualPieceQuantity()));
+                holder.actualCaseQuantity.setText(String.valueOf(salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).getActualCaseQuantity()));
 
                 holder.actualCaseQuantity.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = holder.actualCaseQuantity;
-                        currentSelectedValue = salesReturnDeliveryDataModelsList.get(position).getReturnCaseQuantity();
+                        currentSelectedValue = salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).getReturnCaseQuantity();
                         int inType = holder.actualCaseQuantity.getInputType();
                         holder.actualCaseQuantity.setInputType(InputType.TYPE_NULL);
                         holder.actualCaseQuantity.onTouchEvent(event);
@@ -362,7 +370,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = holder.actualPieceQuantity;
-                        currentSelectedValue = salesReturnDeliveryDataModelsList.get(position).getReturnPieceQuantity();
+                        currentSelectedValue = salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).getReturnPieceQuantity();
                         int inType = holder.actualPieceQuantity.getInputType();
                         holder.actualPieceQuantity.setInputType(InputType.TYPE_NULL);
                         holder.actualPieceQuantity.onTouchEvent(event);
@@ -389,7 +397,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         if ((!(s.toString()).isEmpty())) {
                             if (s.toString().length() > 0)
                                 holder.actualCaseQuantity.setSelection(s.toString().length());
-                            salesReturnDeliveryDataModelsList.get(position).setActualCaseQuantity(Integer.valueOf(s.toString()));
+                            salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).setActualCaseQuantity(Integer.valueOf(s.toString()));
                         }
 
                     }
@@ -409,7 +417,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         if (!(s.toString()).isEmpty()) {
                             if (s.toString().length() > 0)
                                 holder.actualPieceQuantity.setSelection(s.toString().length());
-                            salesReturnDeliveryDataModelsList.get(position).setActualPieceQuantity(Integer.valueOf(s.toString()));
+                            salesReturnDeliveryDataModelsList.get(holder.getAdapterPosition()).setActualPieceQuantity(Integer.valueOf(s.toString()));
                         }
                     }
                 });
@@ -472,6 +480,12 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
             public void onClick(View view) {
                 if (recyclerViewItemClickListener != null)
                     recyclerViewItemClickListener.onItemClickListener(view, this.getAdapterPosition());
+                SalesReturnDeliveryDialog returnDeliveryDialog = new SalesReturnDeliveryDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString("key", salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId());
+                bundle.putString("data", data);
+                returnDeliveryDialog.setArguments(bundle);
+                returnDeliveryDialog.show(getFragmentManager(), "salesreturn");
             }
         }
 

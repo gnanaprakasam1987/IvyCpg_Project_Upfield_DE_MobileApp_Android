@@ -25,15 +25,17 @@ public class SalesReturnDeliveryActivity extends IvyBaseActivityNoActionBar {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle(null);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        // Used to on / off the back arrow icon
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Used to remove the app logo actionbar icon and set title as home
-        // (title support click)
-        // getSupportActionBar().setDisplayShowHomeEnabled(true);
-        // Used to hide the app logo icon from actionbar
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            // Used to on / off the back arrow icon
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            // Used to remove the app logo actionbar icon and set title as home
+            // (title support click)
+            // getSupportActionBar().setDisplayShowHomeEnabled(true);
+            // Used to hide the app logo icon from actionbar
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+        }
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
@@ -42,19 +44,15 @@ public class SalesReturnDeliveryActivity extends IvyBaseActivityNoActionBar {
 
         SalesReturnDeliveryFragment salesReturnDeliveryFragment = new SalesReturnDeliveryFragment();
 
-        addFragment(salesReturnDeliveryFragment, false);
+        addFragment(salesReturnDeliveryFragment);
 
     }
 
-    public void addFragment(Fragment fragment, boolean isReplace) {
+    public void addFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        if (isReplace) {
-            transaction.replace(R.id.container_salesReturn, fragment, fragment.getClass().toString());
-        } else {
-            transaction.add(R.id.container_salesReturn, fragment, fragment.getClass().toString());
-        }
+        transaction.add(R.id.container_salesReturn, fragment, fragment.getClass().toString());
         transaction.addToBackStack(null);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         transaction.commit();
@@ -63,11 +61,9 @@ public class SalesReturnDeliveryActivity extends IvyBaseActivityNoActionBar {
 
     public void numberPressed(View vw) {
 
-        for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
-            List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
-            ((SalesReturnDeliveryDetailsFragment) fragmentList.get(i)).numberPressed(vw);
-            break;
-        }
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        if (!fragmentList.isEmpty())
+            ((SalesReturnDeliveryDetailsFragment) fragmentList.get(0)).numberPressed(vw);
 
 
     }
