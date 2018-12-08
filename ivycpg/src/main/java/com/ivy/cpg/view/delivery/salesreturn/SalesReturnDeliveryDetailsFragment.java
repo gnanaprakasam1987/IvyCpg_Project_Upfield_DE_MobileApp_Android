@@ -3,6 +3,7 @@ package com.ivy.cpg.view.delivery.salesreturn;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +31,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -63,6 +65,10 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        if (bmodel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
+            view.findViewById(R.id.ll_keypad).setVisibility(View.GONE);
+            view.findViewById(R.id.footer).setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -204,36 +210,38 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     private void showConfirmAlert() {
 
-        new AlertDialog.Builder(getActivity())
-                .setTitle("IvyCpg")
-                .setMessage(getActivity().getString(R.string.do_u_want_to_save))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
-                        if (isSuccess) {
-                            Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
-                            (getActivity()).onBackPressed();
-                        }
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null).show();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("IvyCpg");
+        alertDialog.setMessage(getActivity().getString(R.string.do_u_want_to_save));
+        alertDialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
+                if (isSuccess) {
+                    Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
+                    (getActivity()).onBackPressed();
+                }
+            }
+        });
+        alertDialog.setNegativeButton(android.R.string.no, null);
+        bmodel.applyAlertDialogTheme(alertDialog);
     }
 
     private void showConfirConfirmAlert() {
 
-        new AlertDialog.Builder(getActivity())
-                .setTitle("IvyCpg")
-                .setMessage(getActivity().getString(R.string.do_u_want_to_cancel))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataBo);
-                        if (isSuccess) {
-                            Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
-                            (getActivity()).onBackPressed();
-                        }
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null).show();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("IvyCpg");
+        alertDialog.setMessage(getActivity().getString(R.string.do_u_want_to_cancel));
+        alertDialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataBo);
+                if (isSuccess) {
+                    Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
+                    (getActivity()).onBackPressed();
+                }
+            }
+        });
+        alertDialog.setNegativeButton(android.R.string.no, null);
+        bmodel.applyAlertDialogTheme(alertDialog);
     }
 
     private EditText QUANTITY;
@@ -480,12 +488,26 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
             public void onClick(View view) {
                 if (recyclerViewItemClickListener != null)
                     recyclerViewItemClickListener.onItemClickListener(view, this.getAdapterPosition());
-                SalesReturnDeliveryDialog returnDeliveryDialog = new SalesReturnDeliveryDialog();
-                Bundle bundle = new Bundle();
-                bundle.putString("key", salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId());
-                bundle.putString("data", data);
-                returnDeliveryDialog.setArguments(bundle);
-                returnDeliveryDialog.show(getFragmentManager(), "salesreturn");
+
+                    if (bmodel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
+                        SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
+                        ArrayList<SalesReturnDeliveryDataModel> dataList = new ArrayList<>();
+                        if (salesReturnDeliveryHelper.getSalesReturnDelDataMap() != null
+                                &&!salesReturnDeliveryHelper.getSalesReturnDelDataMap().isEmpty()
+                                && salesReturnDeliveryHelper.getSalesReturnDelDataMap().containsKey(salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId()))
+                            dataList = salesReturnDeliveryHelper.getSalesReturnDelDataMap().get(salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId());
+                        if (!dataList.isEmpty()) {
+                        Intent i = new Intent(getActivity(),
+                                SalesReturnDeliveryDialog.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        i.putExtra("menuName", getActivity().getIntent().getExtras().getString("menuName"));
+                        i.putExtra("key", salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId());
+                        i.putExtra("data", data);
+                        startActivity(i);
+                        getActivity().finish();
+                    } else
+                            Toast.makeText(getActivity(), getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
+                }
             }
         }
 

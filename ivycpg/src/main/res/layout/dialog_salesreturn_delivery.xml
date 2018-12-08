@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <include
+        android:id="@id/toolbar"
+        layout="@layout/material_tool_bar" />
 
     <LinearLayout
         android:id="@+id/container_titles"
@@ -10,6 +12,7 @@
         android:layout_height="50dp"
         android:background="?customLayoutBackground"
         android:orientation="horizontal"
+        android:layout_below="@+id/toolbar"
         android:weightSum="8">
 
         <TextView

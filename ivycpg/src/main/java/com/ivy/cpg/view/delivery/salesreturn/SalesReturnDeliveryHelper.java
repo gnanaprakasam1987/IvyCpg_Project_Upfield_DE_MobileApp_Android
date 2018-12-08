@@ -166,24 +166,27 @@ public class SalesReturnDeliveryHelper {
                             returnDeliveryDataModelVector.add(salesReturnDeliveryDataModel);
                         }
 
-                        for (SalesReturnDeliveryDataModel srdDataModel : returnDeliveryDataModelVector) {
-                            skuLevelReturnData = new ArrayList<>();
-                            Cursor cur = dbUtil.selectSQL("select pid,psname from productmaster where parenthierarchy LIKE '%" +
+                        if (businessModel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
+                            for (SalesReturnDeliveryDataModel srdDataModel : returnDeliveryDataModelVector) {
+                                skuLevelReturnData = new ArrayList<>();
+                                Cursor cur = dbUtil.selectSQL("select pid,psname from productmaster where parenthierarchy LIKE '%" +
                                         srdDataModel.getProductId() + "%'");
-                            if (cur != null) {
-                                while (cur.moveToNext()) {
-                                    SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = new SalesReturnDeliveryDataModel();
-                                    salesReturnDeliveryDataModel.setProductId(cur.getString(0));
-                                    salesReturnDeliveryDataModel.setProductName(cur.getString(1));
-                                    salesReturnDeliveryDataModel.setReason(srdDataModel.getReason());
-                                    skuLevelReturnData.add(salesReturnDeliveryDataModel);
+                                if (cur != null) {
+                                    while (cur.moveToNext()) {
+                                        SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = new SalesReturnDeliveryDataModel();
+                                        salesReturnDeliveryDataModel.setProductId(cur.getString(0));
+                                        salesReturnDeliveryDataModel.setProductName(cur.getString(1));
+                                        salesReturnDeliveryDataModel.setReason(srdDataModel.getReason());
+                                        salesReturnDeliveryDataModel.setReturnCaseQuantity(srdDataModel.getReturnCaseQuantity());
+                                        salesReturnDeliveryDataModel.setReturnPieceQuantity(srdDataModel.getReturnPieceQuantity());
+                                        skuLevelReturnData.add(salesReturnDeliveryDataModel);
+                                    }
+                                    cur.close();
                                 }
-                                cur.close();
+                                srdDataModelMap.put(srdDataModel.getProductId(), skuLevelReturnData);
                             }
-                            srdDataModelMap.put(srdDataModel.getProductId(), skuLevelReturnData);
+                            setSalesReturnDelDataMap(srdDataModelMap);
                         }
-
-                        setSalesReturnDelDataMap(srdDataModelMap);
                         subscriber.onNext(returnDeliveryDataModelVector);
                         subscriber.onComplete();
                     }

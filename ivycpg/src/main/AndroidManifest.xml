@@ -814,6 +814,8 @@
 
         <activity android:name="com.ivy.cpg.view.supervisor.chat.StartChatActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliveryDialog"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

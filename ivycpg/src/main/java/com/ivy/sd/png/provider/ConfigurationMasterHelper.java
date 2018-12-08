@@ -1028,6 +1028,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = "SR21";
     public boolean IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL, IS_INDICATIVE_MASTER;
 
+    private static final String CODE_SALES_RETURN_DELIVERY_SKU_LEVEL = "SR23";
+    public boolean IS_SR_DELIVERY_SKU_LEVEL;
+
     //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
@@ -2661,6 +2664,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
+        this.IS_SR_DELIVERY_SKU_LEVEL = hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) : false;
     }
 
     private boolean isInOutModule() {
