@@ -1783,6 +1783,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             if (orderHelper.hasAlreadyOrdered(this, bmodel.getRetailerMasterBO()
                                     .getRetailerID())) {
                                 bmodel.setEdit(true);
+                            }  else {
+                                bmodel.setOrderHeaderBO(null);
                             }
 
                             if (bmodel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE) {
