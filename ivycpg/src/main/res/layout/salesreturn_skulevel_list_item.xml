@@ -13,7 +13,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:padding="@dimen/dimen_8dp"
-            android:layout_weight="4">
+            android:layout_weight="5">
 
             <TextView
                 android:id="@+id/txt_productName"
@@ -34,7 +34,7 @@
         </RelativeLayout>
 
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/txt_returnCaseQuantity"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -49,7 +49,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="0" />
+            android:text="0" />-->
 
 
         <EditText
@@ -58,10 +58,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center_horizontal|center_vertical"
             android:inputType="number"
             android:maxLength="4"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
             android:text="0" />
 
 
@@ -72,10 +74,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center_horizontal|center_vertical"
             android:inputType="number"
             android:maxLength="4"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
             android:text="0" />
     </LinearLayout>
 

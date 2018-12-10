@@ -1155,7 +1155,7 @@ public class SchemeDetailsMasterHelper {
              * should not be equal zero in Scheme master table
              */
             StringBuffer sb = new StringBuffer();
-            sb.append("select  distinct(PID),SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from object1");
+            sb.append("select  distinct(PID),SM.parentid,SCM.groupId,Case  IFNULL(OP.groupid,-1) when -1  then '0' else '1' END as flag from productMaster");
             sb.append(" inner join SchemeBuyMaster SB on ProductMaster.pID=ProductID");
             sb.append(" inner join schememaster SM  on SM. schemeID=SB.schemeID");
             sb.append(" inner join schemeApplyCountMaster SAC on SAC.schemeid=SB.schemeid");
@@ -1195,7 +1195,7 @@ public class SchemeDetailsMasterHelper {
      */
     private void clearPROMOFlag(DBUtil db) {
 
-        String sql = "select distinct(PID) from object1 inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
+        String sql = "select distinct(PID) from productMaster inner join SchemeBuyMaster on ProductMaster.pID=ProductID";
         Cursor c = db.selectSQL(sql);
         if (c != null) {
             while (c.moveToNext()) {
