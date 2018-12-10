@@ -50,7 +50,7 @@ public class SalesReturnDeliveryHelper {
                             "from SalesReturnHeader where retailerId ='" + businessModel.getRetailerMasterBO().getRetailerID() + "' " +
                             "AND upload='X' " +
                             "AND uid NOT IN (select ifnull(RefUID,0) from salesReturnHeader " +
-                            "where upload='Y'and isCanceFlag != 1) ");
+                            "where upload='Y'and isCancel != 1) ");
 
                     if (cursor != null) {
                         while (cursor.moveToNext()) {

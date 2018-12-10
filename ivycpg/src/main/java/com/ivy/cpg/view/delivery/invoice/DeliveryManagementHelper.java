@@ -54,7 +54,7 @@ public class DeliveryManagementHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String query = "select invoiceno,invoicedate,invNetamount,linespercall from InvoiceDeliveryMaster " +
+            String query = "select invoiceno,invoicedate,invNetamount,linespercall,invoicerefno from InvoiceDeliveryMaster " +
                     " where retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
                     " and invoiceno not in(select vh.invoiceid from vandeliveryheader vh)";
 
@@ -67,6 +67,7 @@ public class DeliveryManagementHelper {
                     invoiceHeaderBO.setInvoiceDate(c.getString(1));
                     invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
                     invoiceHeaderBO.setLinesPerCall(c.getInt(3));
+                    invoiceHeaderBO.setInvoiceRefNo(c.getString(4));
                     mInvoiceList.add(invoiceHeaderBO);
 
                 }
