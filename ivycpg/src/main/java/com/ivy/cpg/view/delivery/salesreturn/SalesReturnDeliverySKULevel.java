@@ -1,9 +1,6 @@
 package com.ivy.cpg.view.delivery.salesreturn;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
@@ -23,7 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
@@ -37,20 +33,18 @@ import java.util.ArrayList;
  * Class which defines SKU Level Sales Return Entry.
  */
 
-public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implements View.OnClickListener {
+public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar implements View.OnClickListener {
 
     private EditText QUANTITY;
     private int currentSelectedValue = 0;
     private String append = "";
     ArrayList<SalesReturnDeliveryDataModel> dataList = new ArrayList<>();
-    private SalesReturnDeliveryDataBo salesReturnDeliveryDataBo = null;
     private BusinessModel bmodel;
-    private String title = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_salesreturn_delivery);
+        setContentView(R.layout.salesreturn_delivery_skulevel);
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -70,19 +64,19 @@ public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implem
         }
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
+            String title = extras.getString("menuName") == null ? "" : extras.getString("menuName");
             setScreenTitle(title);
         }
 
-        findViewById(R.id.btn_save).setOnClickListener(this);
-        findViewById(R.id.btn_cancel).setOnClickListener(this);
+        Button btnDone = findViewById(R.id.btn_save);
+        btnDone.setText(getResources().getString(R.string.done));
+        btnDone.setOnClickListener(this);
+
+        findViewById(R.id.btn_cancel).setVisibility(View.GONE);
 
         setLabelMaserValue();
         String key;
         key = getIntent().getExtras().getString("key");
-        String data = getIntent().getExtras().getString("DATA");
-        salesReturnDeliveryDataBo =
-                new Gson().fromJson(data, SalesReturnDeliveryDataBo.class);
 
         SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
         dataList = new ArrayList<>();
@@ -105,52 +99,10 @@ public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implem
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            Intent intent = new Intent(this,
-                    SalesReturnDeliveryActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra("menuName", title);
-            startActivity(intent);
             finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void showConfirmAlert() {
-
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("IvyCpg");
-        alertDialog.setMessage(getResources().getString(R.string.do_u_want_to_save));
-        alertDialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(SalesReturnDeliveryDialog.this, dataList, salesReturnDeliveryDataBo);
-                if (isSuccess) {
-                    Toast.makeText(SalesReturnDeliveryDialog.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
-                    onBackPressed();
-                }
-            }
-        });
-        alertDialog.setNegativeButton(android.R.string.no, null);
-        bmodel.applyAlertDialogTheme(alertDialog);
-    }
-
-    private void showCancelAlert() {
-
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("IvyCpg");
-        alertDialog.setMessage(getResources().getString(R.string.do_u_want_to_cancel));
-        alertDialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(SalesReturnDeliveryDialog.this, salesReturnDeliveryDataBo);
-                if (isSuccess) {
-                    Toast.makeText(SalesReturnDeliveryDialog.this, "Cancel Successfully", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
-                }
-            }
-        });
-        alertDialog.setNegativeButton(android.R.string.no, null);
-        bmodel.applyAlertDialogTheme(alertDialog);
     }
 
     private void setLabelMaserValue() {
@@ -197,10 +149,8 @@ public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implem
 
         switch (v.getId()) {
             case R.id.btn_save:
-                showConfirmAlert();
-                break;
-            case R.id.btn_cancel:
-                showCancelAlert();
+                SalesReturnDeliveryHelper.getInstance().setSkuLevelDataList(dataList);
+                finish();
                 break;
         }
     }
@@ -252,7 +202,7 @@ public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implem
         }
     }
 
-    public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturnDeliveryDialog.SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder> {
+    public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturnDeliverySKULevel.SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder> {
 
         private Context mContext;
         private ArrayList<SalesReturnDeliveryDataModel> list;
@@ -282,9 +232,9 @@ public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implem
          */
         @NonNull
         @Override
-        public SalesReturnDeliveryDialog.SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public SalesReturnDeliverySKULevel.SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.salesreturn_deliverydetails, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.salesreturn_skulevel_list_item, parent, false);
             return new SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder(view);
         }
 
@@ -294,7 +244,7 @@ public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implem
          *                 set the values to the views
          */
         @Override
-        public void onBindViewHolder(@NonNull final SalesReturnDeliveryDialog.SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final SalesReturnDeliverySKULevel.SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder holder, int position) {
 
 
             holder.productName.setText(list.get(holder.getAdapterPosition()).getProductName());
@@ -391,7 +341,7 @@ public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implem
 
         class SalesReturnDeliveryViewHolder extends RecyclerView.ViewHolder {
 
-            TextView productName, returnCaseQuantity, returnPieceQuantity, reason;
+            TextView productName, reason;
             EditText actualCaseQuantity, actualPieceQuantity;
 
 
@@ -399,10 +349,6 @@ public class SalesReturnDeliveryDialog extends IvyBaseActivityNoActionBar implem
                 super(itemView);
                 reason = itemView.findViewById(R.id.txt_reason);
                 productName = itemView.findViewById(R.id.txt_productName);
-                returnCaseQuantity = itemView.findViewById(R.id.txt_returnCaseQuantity);
-                returnCaseQuantity.setVisibility(View.GONE);
-                returnPieceQuantity = itemView.findViewById(R.id.txt_returnPieceQuantity);
-                returnPieceQuantity.setVisibility(View.GONE);
                 actualCaseQuantity = itemView.findViewById(R.id.txt_actualCaseQuantity);
                 actualPieceQuantity = itemView.findViewById(R.id.txt_actualPieceQuantity);
 

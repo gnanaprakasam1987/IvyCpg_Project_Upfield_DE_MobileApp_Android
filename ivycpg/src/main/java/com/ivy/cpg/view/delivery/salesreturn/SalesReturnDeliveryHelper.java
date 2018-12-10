@@ -24,6 +24,7 @@ import io.reactivex.ObservableOnSubscribe;
 public class SalesReturnDeliveryHelper {
     private static SalesReturnDeliveryHelper instance = null;
     private HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> salesReturnDelDataMap;
+    private ArrayList<SalesReturnDeliveryDataModel> skuLevelDataList;
 
     private SalesReturnDeliveryHelper() {
     }
@@ -169,20 +170,57 @@ public class SalesReturnDeliveryHelper {
                         if (businessModel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
                             for (SalesReturnDeliveryDataModel srdDataModel : returnDeliveryDataModelVector) {
                                 skuLevelReturnData = new ArrayList<>();
-                                Cursor cur = dbUtil.selectSQL("select pid,psname from productmaster where parenthierarchy LIKE '%" +
-                                        srdDataModel.getProductId() + "%'");
+                                int actCQty = 0, actPQty = 0;
+                                Cursor cur = dbUtil.selectSQL("select pm.pid,pm.pname,ifnull(srd.pqty,0) as pqty,ifnull(srd.cqty,0) as cqty,srd .* from productmaster pm left join SalesReturnDetails srd on pm.pid = srd.productid where pm.parentid = '" +
+                                        srdDataModel.getProductId() + "'");
                                 if (cur != null) {
                                     while (cur.moveToNext()) {
                                         SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = new SalesReturnDeliveryDataModel();
+                                        salesReturnDeliveryDataModel.setUId(srdDataModel.getUId());
                                         salesReturnDeliveryDataModel.setProductId(cur.getString(0));
                                         salesReturnDeliveryDataModel.setProductName(cur.getString(1));
                                         salesReturnDeliveryDataModel.setReason(srdDataModel.getReason());
                                         salesReturnDeliveryDataModel.setReturnCaseQuantity(srdDataModel.getReturnCaseQuantity());
                                         salesReturnDeliveryDataModel.setReturnPieceQuantity(srdDataModel.getReturnPieceQuantity());
+                                        salesReturnDeliveryDataModel.setReasonID(srdDataModel.getReasonID());
+                                        salesReturnDeliveryDataModel.setCaseSize(srdDataModel.getCaseSize());
+
+                                        salesReturnDeliveryDataModel.setOldMrp(srdDataModel.getOldMrp());
+                                        salesReturnDeliveryDataModel.setMfgDate(srdDataModel.getMfgDate());
+
+                                        salesReturnDeliveryDataModel.setExpDate(srdDataModel.getExpDate());
+                                        salesReturnDeliveryDataModel.setOuterQty(srdDataModel.getOuterQty());
+
+                                        salesReturnDeliveryDataModel.setdOUomQty(srdDataModel.getdOUomQty());
+                                        salesReturnDeliveryDataModel.setdOUomId(srdDataModel.getdOUomId());
+
+                                        salesReturnDeliveryDataModel.setdUomId(srdDataModel.getdUomId());
+                                        salesReturnDeliveryDataModel.setInVoiceNumber(srdDataModel.getInVoiceNumber());
+
+                                        salesReturnDeliveryDataModel.setSrpedit(srdDataModel.getSrpedit());
+                                        salesReturnDeliveryDataModel.setTotalQuantity(srdDataModel.getTotalQuantity());
+
+                                        salesReturnDeliveryDataModel.setTotalAmount(srdDataModel.getTotalAmount());
+                                        salesReturnDeliveryDataModel.setRetailerId(srdDataModel.getRetailerId());
+
+                                        salesReturnDeliveryDataModel.setReasonType(srdDataModel.getReasonType());
+
+                                        salesReturnDeliveryDataModel.setLotNumber(srdDataModel.getLotNumber());
+                                        salesReturnDeliveryDataModel.setPieceUomId(srdDataModel.getPieceUomId());
+
+                                        salesReturnDeliveryDataModel.setStatus(srdDataModel.getStatus());
+                                        salesReturnDeliveryDataModel.setHnsCode(srdDataModel.getHnsCode());
+
+                                        actCQty += cur.getInt(3);
+                                        actPQty += cur.getInt(2);
+                                        salesReturnDeliveryDataModel.setActualCaseQuantity(cur.getInt(3));
+                                        salesReturnDeliveryDataModel.setActualPieceQuantity(cur.getInt(2));
                                         skuLevelReturnData.add(salesReturnDeliveryDataModel);
                                     }
                                     cur.close();
                                 }
+                                srdDataModel.setActualCaseQuantity(actCQty);
+                                srdDataModel.setActualPieceQuantity(actPQty);
                                 srdDataModelMap.put(srdDataModel.getProductId(), skuLevelReturnData);
                             }
                             setSalesReturnDelDataMap(srdDataModelMap);
@@ -191,7 +229,7 @@ public class SalesReturnDeliveryHelper {
                         subscriber.onComplete();
                     }
                 } catch (Exception exception) {
-                    exception.printStackTrace();
+                    Commons.printException(exception);
                     subscriber.onError(exception);
                     subscriber.onComplete();
                 }
@@ -312,75 +350,151 @@ public class SalesReturnDeliveryHelper {
             String values;
             int totalQty;
             double totalvalue = 0;
-            for (int i = 0; i < list.size(); i++) {
-                SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = list.get(i);
-                totalQty = salesReturnDeliveryDataModel.getActualPieceQuantity()
-                        + (salesReturnDeliveryDataModel.getActualCaseQuantity() * salesReturnDeliveryDataModel
-                        .getCaseSize())
-                        + (salesReturnDeliveryDataModel.getOuterQty() * salesReturnDeliveryDataModel
-                        .getOuterSize());
+            if (!businessModel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
+                for (int i = 0; i < list.size(); i++) {
+                    SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = list.get(i);
+                    totalQty = salesReturnDeliveryDataModel.getActualPieceQuantity()
+                            + (salesReturnDeliveryDataModel.getActualCaseQuantity() * salesReturnDeliveryDataModel
+                            .getCaseSize())
+                            + (salesReturnDeliveryDataModel.getOuterQty() * salesReturnDeliveryDataModel
+                            .getOuterSize());
 
-                columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty," +
-                        "dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount," +
-                        "RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode,RefUID";
-                if (salesReturnDeliveryDataModel.getActualPieceQuantity() > 0 ||
-                        salesReturnDeliveryDataModel.getActualCaseQuantity() > 0) {
-
-
-                    values = AppUtils.QT(uid)
-                            + ","
-                            + AppUtils.QT(salesReturnDeliveryDataModel.getProductId())
-                            + ","
-                            + salesReturnDeliveryDataModel.getActualPieceQuantity()
-                            + ","
-                            + salesReturnDeliveryDataModel.getActualCaseQuantity()
-                            + ","
-                            + salesReturnDeliveryDataModel.getReasonID()
-                            + ","
-                            + salesReturnDeliveryDataModel.getCaseSize()
-                            + ","
-                            + AppUtils.QT(Utils.formatAsTwoDecimal(salesReturnDeliveryDataModel
-                            .getOldMrp()))
-                            + ","
-                            + DatabaseUtils
-                            .sqlEscapeString(salesReturnDeliveryDataModel.getMfgDate())
-                            + ","
-                            + DatabaseUtils
-                            .sqlEscapeString(salesReturnDeliveryDataModel.getExpDate())
-                            + ","
-                            + salesReturnDeliveryDataModel.getOuterQty()
-                            + ","
-                            + salesReturnDeliveryDataModel.getOuterSize()
-                            + ","
-                            + salesReturnDeliveryDataModel.getdOUomId()
-                            + ","
-                            + salesReturnDeliveryDataModel.getCaseUomId()
-                            + ","
-                            + salesReturnDeliveryDataModel.getProductId()
-                            + ","
-                            + AppUtils.QT(salesReturnDeliveryDataModel.getInvoiceId())
-                            + ","
-                            + salesReturnDeliveryDataModel.getSrpedit()
-                            + ","
-                            + totalQty
-                            + ","
-                            + totalvalue
-                            + ","
-                            + AppUtils.QT(businessModel.retailerMasterBO
-                            .getRetailerID()) + ","
-                            + salesReturnDeliveryDataModel.getReasonCategory() + ","
-                            + AppUtils.QT(salesReturnDeliveryDataModel.getLotNumber() + "")
-                            + "," + salesReturnDeliveryDataModel.getPieceUomId()
-                            + "," + AppUtils.QT(salesReturnDeliveryDataModel.getStatus() + "")
-                            + "," + AppUtils.QT(salesReturnDeliveryDataModel.getHnsCode())
-                            + "," + AppUtils.QT(salesReturnDeliveryDataModel.getUId());
+                    columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty," +
+                            "dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount," +
+                            "RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode,RefUID";
+                    if (salesReturnDeliveryDataModel.getActualPieceQuantity() > 0 ||
+                            salesReturnDeliveryDataModel.getActualCaseQuantity() > 0) {
 
 
-                    db.insertSQL(
-                            DataMembers.tbl_SalesReturnDetails,
-                            columns, values);
+                        values = AppUtils.QT(uid)
+                                + ","
+                                + AppUtils.QT(salesReturnDeliveryDataModel.getProductId())
+                                + ","
+                                + salesReturnDeliveryDataModel.getActualPieceQuantity()
+                                + ","
+                                + salesReturnDeliveryDataModel.getActualCaseQuantity()
+                                + ","
+                                + salesReturnDeliveryDataModel.getReasonID()
+                                + ","
+                                + salesReturnDeliveryDataModel.getCaseSize()
+                                + ","
+                                + AppUtils.QT(Utils.formatAsTwoDecimal(salesReturnDeliveryDataModel
+                                .getOldMrp()))
+                                + ","
+                                + DatabaseUtils
+                                .sqlEscapeString(salesReturnDeliveryDataModel.getMfgDate())
+                                + ","
+                                + DatabaseUtils
+                                .sqlEscapeString(salesReturnDeliveryDataModel.getExpDate())
+                                + ","
+                                + salesReturnDeliveryDataModel.getOuterQty()
+                                + ","
+                                + salesReturnDeliveryDataModel.getOuterSize()
+                                + ","
+                                + salesReturnDeliveryDataModel.getdOUomId()
+                                + ","
+                                + salesReturnDeliveryDataModel.getCaseUomId()
+                                + ","
+                                + salesReturnDeliveryDataModel.getProductId()
+                                + ","
+                                + AppUtils.QT(salesReturnDeliveryDataModel.getInvoiceId())
+                                + ","
+                                + salesReturnDeliveryDataModel.getSrpedit()
+                                + ","
+                                + totalQty
+                                + ","
+                                + totalvalue
+                                + ","
+                                + AppUtils.QT(businessModel.retailerMasterBO
+                                .getRetailerID()) + ","
+                                + salesReturnDeliveryDataModel.getReasonCategory() + ","
+                                + AppUtils.QT(salesReturnDeliveryDataModel.getLotNumber() + "")
+                                + "," + salesReturnDeliveryDataModel.getPieceUomId()
+                                + "," + AppUtils.QT(salesReturnDeliveryDataModel.getStatus() + "")
+                                + "," + AppUtils.QT(salesReturnDeliveryDataModel.getHnsCode())
+                                + "," + AppUtils.QT(salesReturnDeliveryDataModel.getUId());
+
+
+                        db.insertSQL(
+                                DataMembers.tbl_SalesReturnDetails,
+                                columns, values);
+                    }
+                    isData = true;
                 }
-                isData = true;
+            }
+
+            ArrayList<SalesReturnDeliveryDataModel> srdDataList = getSkuLevelDataList();
+            if (businessModel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL && srdDataList != null) {
+                for (int i = 0; i < srdDataList.size(); i++) {
+                    SalesReturnDeliveryDataModel salesReturnDeliveryDataModel = srdDataList.get(i);
+                    totalQty = salesReturnDeliveryDataModel.getActualPieceQuantity()
+                            + (salesReturnDeliveryDataModel.getActualCaseQuantity() * salesReturnDeliveryDataModel
+                            .getCaseSize())
+                            + (salesReturnDeliveryDataModel.getOuterQty() * salesReturnDeliveryDataModel
+                            .getOuterSize());
+
+                    columns = "uid,ProductID,Pqty,Cqty,Condition,duomQty,oldmrp,mfgdate,expdate,outerQty," +
+                            "dOuomQty,dOuomid,duomid,batchid,invoiceno,srpedited,totalQty,totalamount," +
+                            "RetailerID,reason_type,LotNumber,piece_uomid,status,HsnCode,RefUID";
+                    if (salesReturnDeliveryDataModel.getActualPieceQuantity() > 0 ||
+                            salesReturnDeliveryDataModel.getActualCaseQuantity() > 0) {
+
+
+                        values = AppUtils.QT(uid)
+                                + ","
+                                + AppUtils.QT(salesReturnDeliveryDataModel.getProductId())
+                                + ","
+                                + salesReturnDeliveryDataModel.getActualPieceQuantity()
+                                + ","
+                                + salesReturnDeliveryDataModel.getActualCaseQuantity()
+                                + ","
+                                + salesReturnDeliveryDataModel.getReasonID()
+                                + ","
+                                + salesReturnDeliveryDataModel.getCaseSize()
+                                + ","
+                                + AppUtils.QT(Utils.formatAsTwoDecimal(salesReturnDeliveryDataModel
+                                .getOldMrp()))
+                                + ","
+                                + DatabaseUtils
+                                .sqlEscapeString(salesReturnDeliveryDataModel.getMfgDate())
+                                + ","
+                                + DatabaseUtils
+                                .sqlEscapeString(salesReturnDeliveryDataModel.getExpDate())
+                                + ","
+                                + salesReturnDeliveryDataModel.getOuterQty()
+                                + ","
+                                + salesReturnDeliveryDataModel.getOuterSize()
+                                + ","
+                                + salesReturnDeliveryDataModel.getdOUomId()
+                                + ","
+                                + salesReturnDeliveryDataModel.getCaseUomId()
+                                + ","
+                                + salesReturnDeliveryDataModel.getProductId()
+                                + ","
+                                + AppUtils.QT(salesReturnDeliveryDataModel.getInvoiceId())
+                                + ","
+                                + salesReturnDeliveryDataModel.getSrpedit()
+                                + ","
+                                + totalQty
+                                + ","
+                                + totalvalue
+                                + ","
+                                + AppUtils.QT(businessModel.retailerMasterBO
+                                .getRetailerID()) + ","
+                                + salesReturnDeliveryDataModel.getReasonCategory() + ","
+                                + AppUtils.QT(salesReturnDeliveryDataModel.getLotNumber() + "")
+                                + "," + salesReturnDeliveryDataModel.getPieceUomId()
+                                + "," + AppUtils.QT(salesReturnDeliveryDataModel.getStatus() + "")
+                                + "," + AppUtils.QT(salesReturnDeliveryDataModel.getHnsCode())
+                                + "," + AppUtils.QT(salesReturnDeliveryDataModel.getUId());
+
+
+                        db.insertSQL(
+                                DataMembers.tbl_SalesReturnDetails,
+                                columns, values);
+                    }
+                    isData = true;
+                }
             }
 
             if (isData) {
@@ -464,5 +578,13 @@ public class SalesReturnDeliveryHelper {
 
     public void setSalesReturnDelDataMap(HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> salesReturnDelDataMap) {
         this.salesReturnDelDataMap = salesReturnDelDataMap;
+    }
+
+    public ArrayList<SalesReturnDeliveryDataModel> getSkuLevelDataList() {
+        return skuLevelDataList;
+    }
+
+    public void setSkuLevelDataList(ArrayList<SalesReturnDeliveryDataModel> skuLevelDataList) {
+        this.skuLevelDataList = skuLevelDataList;
     }
 }

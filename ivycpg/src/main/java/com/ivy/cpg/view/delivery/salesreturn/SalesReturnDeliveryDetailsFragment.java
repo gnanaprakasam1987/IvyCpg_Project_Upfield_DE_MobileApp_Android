@@ -57,6 +57,8 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     private SalesReturnDeliveryDataBo salesReturnDeliveryDataBo = null;
     private String data;
     private BusinessModel bmodel;
+    private int mSelectedPos = 0;
+    private SalesReturnDeliveryAdapter salesReturnDeliveryAdapter;
 
     @Nullable
     @Override
@@ -65,10 +67,6 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        if (bmodel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
-            view.findViewById(R.id.ll_keypad).setVisibility(View.GONE);
-            view.findViewById(R.id.footer).setVisibility(View.GONE);
-        }
         return view;
     }
 
@@ -87,6 +85,12 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
             getSalesReturnDeliveryDetails(salesReturnDeliveryDataBo.getUId());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (bmodel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL)
+        setActualQty();
+    }
 
     private void setLabelMaserValue(View view) {
 
@@ -181,7 +185,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                                                                 salesReturnDeliveryDataModels) {
 
         if (salesReturnDeliveryDataModels != null && salesReturnDeliveryDataModels.size() > 0) {
-            SalesReturnDeliveryAdapter salesReturnDeliveryAdapter =
+            salesReturnDeliveryAdapter =
                     new SalesReturnDeliveryAdapter(getActivity().getApplicationContext(), null,
                             salesReturnDeliveryDataModels, true);
 
@@ -480,6 +484,10 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         actualCaseQuantity.setVisibility(View.GONE);
                     }
                 }
+                if (bmodel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
+                    actualCaseQuantity.setOnClickListener(this);
+                    actualPieceQuantity.setOnClickListener(this);
+                }
                 itemView.setOnClickListener(this);
             }
 
@@ -498,13 +506,12 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                             dataList = salesReturnDeliveryHelper.getSalesReturnDelDataMap().get(salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId());
                         if (!dataList.isEmpty()) {
                         Intent i = new Intent(getActivity(),
-                                SalesReturnDeliveryDialog.class);
+                                SalesReturnDeliverySKULevel.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         i.putExtra("menuName", getActivity().getIntent().getExtras().getString("menuName"));
                         i.putExtra("key", salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId());
-                        i.putExtra("data", data);
+                        mSelectedPos = this.getAdapterPosition();
                         startActivity(i);
-                        getActivity().finish();
                     } else
                             Toast.makeText(getActivity(), getString(R.string.data_not_mapped), Toast.LENGTH_SHORT).show();
                 }
@@ -519,4 +526,20 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void setActualQty() {
+        SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
+        ArrayList<SalesReturnDeliveryDataModel> srdDataModel = salesReturnDeliveryHelper.getSkuLevelDataList();
+        int cQty = 0;
+        int pQty = 0;
+        if (srdDataModel != null && salesReturnDeliveryDataModelsList != null) {
+            for (SalesReturnDeliveryDataModel srdData : srdDataModel) {
+                cQty += srdData.getActualCaseQuantity();
+                pQty += srdData.getActualPieceQuantity();
+            }
+            salesReturnDeliveryDataModelsList.get(mSelectedPos).setActualPieceQuantity(pQty);
+            salesReturnDeliveryDataModelsList.get(mSelectedPos).setActualCaseQuantity(cQty);
+            if (salesReturnDeliveryAdapter != null)
+            salesReturnDeliveryAdapter.notifyDataSetChanged();
+        }
+    }
 }
