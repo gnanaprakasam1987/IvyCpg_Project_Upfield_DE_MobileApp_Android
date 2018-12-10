@@ -197,7 +197,7 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 holder = (Holder) convertView.getTag();
             }
             holder.invoiceHeaderBO = mInvoiceList.get(position);
-            holder.invoicenoTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceNo()));
+            holder.invoicenoTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceRefNo()));
             holder.invoiceDateTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceDate()));
             holder.totalAmountTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceAmount()));
             holder.totalLinesTV.setText(String.valueOf(holder.invoiceHeaderBO.getLinesPerCall()));
