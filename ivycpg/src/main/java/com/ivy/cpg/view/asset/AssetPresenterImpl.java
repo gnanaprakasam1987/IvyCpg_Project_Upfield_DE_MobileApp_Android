@@ -293,6 +293,9 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         mSelectedSerial.equals(assetBO.getSerialNo())) {
                     assetBO.setImageName(imagePath);
                     assetBO.setImgName(mSelectedImageName);
+                    ArrayList<String> imageList = assetBO.getImageList();
+                    imageList.add(imagePath);
+                    assetBO.setImageList(imageList);
                     break;
                 }
             }

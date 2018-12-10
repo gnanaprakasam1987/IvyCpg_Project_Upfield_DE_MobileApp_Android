@@ -531,6 +531,8 @@ public class OrderHelper {
             businessModel.getOrderHeaderBO().setRemark("");
             businessModel.getOrderHeaderBO().setRField1("");
             businessModel.getOrderHeaderBO().setRField2("");
+            businessModel.getOrderHeaderBO().setSignatureName("");
+            businessModel.getOrderHeaderBO().setSignaturePath("");
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -1043,6 +1045,8 @@ public class OrderHelper {
                 businessModel.getOrderHeaderBO().setRemark("");
                 businessModel.getOrderHeaderBO().setRField1("");
                 businessModel.getOrderHeaderBO().setRField2("");
+                businessModel.getOrderHeaderBO().setSignatureName("");
+                businessModel.getOrderHeaderBO().setSignaturePath("");
             }
 
         } catch (Exception e) {
