@@ -225,7 +225,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
 
         setDiscountDialog(false);
-
+        signatureName = "";
 
         String screenTitle = bModel.configurationMasterHelper
                 .getHomescreentwomenutitle("MENU_CLOSING");
