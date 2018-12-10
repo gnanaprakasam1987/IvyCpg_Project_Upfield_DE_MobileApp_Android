@@ -3,6 +3,7 @@ package com.ivy.ui.dashboard.data;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
+import com.ivy.utils.rx.Optional;
 
 import java.util.ArrayList;
 
@@ -36,13 +37,13 @@ public interface SellerDashboardDataManager {
 
     Single<String> getCurrentWeekInterval();
 
-    Single<DailyReportBO> fetchOutletDailyReport();
+    Single<Optional<DailyReportBO>> fetchOutletDailyReport();
 
     Single<Integer> fetchTotalCallsForTheDayExcludingDeviatedVisits();
 
-    Single<DailyReportBO> fetchNoOfInvoiceAndValue();
+    Single<Optional<DailyReportBO>> fetchNoOfInvoiceAndValue();
 
-    Single<DailyReportBO> fetchNoOfOrderAndValue();
+    Single<Optional<DailyReportBO>> fetchNoOfOrderAndValue();
 
     Single<Integer> getProductiveCallsForDay();
 
@@ -54,12 +55,12 @@ public interface SellerDashboardDataManager {
 
     Single<Double> fetchSalesReturnValue();
 
-    Single<DailyReportBO> fetchFulfilmentValue();
+    Single<Optional<DailyReportBO>> fetchFulfilmentValue();
 
     Single<Integer> fetchPromotionCount();
 
     Single<Integer> fetchPromotionExecutedCount();
 
-    Single<String> fetchMslCount();
+    Single<Optional<String>> fetchMslCount();
 
 }

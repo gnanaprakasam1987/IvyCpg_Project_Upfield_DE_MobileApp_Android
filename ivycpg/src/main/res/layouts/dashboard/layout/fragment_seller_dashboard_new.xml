@@ -66,6 +66,7 @@
                 android:background="?mtdDashboardBackground"
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
+                android:paddingStart="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"

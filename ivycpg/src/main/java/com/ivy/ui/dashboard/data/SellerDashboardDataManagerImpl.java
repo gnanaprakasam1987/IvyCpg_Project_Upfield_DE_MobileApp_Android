@@ -3,7 +3,6 @@ package com.ivy.ui.dashboard.data;
 import android.database.Cursor;
 
 import com.ivy.core.data.app.AppDataProvider;
-import com.ivy.core.data.beat.BeatDataManager;
 import com.ivy.core.data.channel.ChannelDataManager;
 import com.ivy.core.di.scope.ChannelInfo;
 import com.ivy.core.di.scope.DataBaseInfo;
@@ -15,6 +14,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
+import com.ivy.utils.rx.Optional;
 
 import org.reactivestreams.Publisher;
 
@@ -31,10 +31,8 @@ import javax.inject.Inject;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
-import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
@@ -830,10 +828,10 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Single<DailyReportBO> fetchOutletDailyReport() {
-        return Single.fromCallable(new Callable<DailyReportBO>() {
+    public Single<Optional<DailyReportBO>> fetchOutletDailyReport() {
+        return Single.fromCallable(new Callable<Optional<DailyReportBO>>() {
             @Override
-            public DailyReportBO call() throws Exception {
+            public Optional<DailyReportBO> call() throws Exception {
 
                 DailyReportBO dailyRep = null;
 
@@ -890,7 +888,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 }
 
                 shutDownDb();
-                return dailyRep;
+                return new Optional<DailyReportBO>(dailyRep);
             }
         });
     }
@@ -926,10 +924,10 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Single<DailyReportBO> fetchNoOfInvoiceAndValue() {
-        return Single.fromCallable(new Callable<DailyReportBO>() {
+    public Single<Optional<DailyReportBO>> fetchNoOfInvoiceAndValue() {
+        return Single.fromCallable(new Callable<Optional<DailyReportBO>>() {
             @Override
-            public DailyReportBO call() throws Exception {
+            public Optional<DailyReportBO> call() throws Exception {
                 DailyReportBO dailyRp = new DailyReportBO();
                 try {
                     initDb();
@@ -953,16 +951,16 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 }
 
                 shutDownDb();
-                return dailyRp;
+                return new Optional<>(dailyRp);
             }
         });
     }
 
     @Override
-    public Single<DailyReportBO> fetchNoOfOrderAndValue() {
-        return Single.fromCallable(new Callable<DailyReportBO>() {
+    public Single<Optional<DailyReportBO>> fetchNoOfOrderAndValue() {
+        return Single.fromCallable(new Callable<Optional<DailyReportBO>>() {
             @Override
-            public DailyReportBO call() throws Exception {
+            public Optional<DailyReportBO> call() throws Exception {
                 DailyReportBO dailyRp = new DailyReportBO();
                 try {
                     initDb();
@@ -985,7 +983,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 }
 
                 shutDownDb();
-                return dailyRp;
+                return new Optional<>(dailyRp);
             }
         });
     }
@@ -1215,10 +1213,10 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Single<DailyReportBO> fetchFulfilmentValue() {
-        return Single.fromCallable(new Callable<DailyReportBO>() {
+    public Single<Optional<DailyReportBO>> fetchFulfilmentValue() {
+        return Single.fromCallable(new Callable<Optional<DailyReportBO>>() {
             @Override
-            public DailyReportBO call() throws Exception {
+            public Optional<DailyReportBO> call() throws Exception {
                 DailyReportBO dailyRp = new DailyReportBO();
 
                 try{
@@ -1259,7 +1257,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                 shutDownDb();
 
-                return dailyRp;
+                return new Optional<>(dailyRp);
             }
         });
     }
@@ -1367,95 +1365,80 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Single<String> fetchMslCount() {
+    public Single<Optional<String>> fetchMslCount() {
         final int[] mslCount = {0};
-        return channelDataManager.fetchChannelIds().flatMap(new Function<String, SingleSource<String>>() {
-            @Override
-            public SingleSource<String> apply(final String channelIds) throws Exception {
+        return channelDataManager.fetchChannelIds().flatMap((Function<String, SingleSource<Optional<String>>>) channelIds -> Single.fromCallable(() -> {
 
-               return Single.fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
+            String chIDs = "";
+            String mslProdIDs="";
+            try{
 
-                        String chIDs = "";
-                        String mslProdIDs="";
-                        try{
-
-                            for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters()){
-                                if(retailerMasterBO.getIsToday() == 1){
-                                    chIDs = chIDs + "," + channelIds;
-                                }
-                            }
-                            if (chIDs.endsWith(","))
-                                chIDs = chIDs.substring(0, chIDs.length() - 1);
-
-                            String sb = "SELECT PTGM.pid FROM ProductTaggingMaster PTM " +
-                                    "inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid " +
-                                    "inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid " +
-                                    "AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') " +
-                                    "where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")";
-
-                            Cursor c = mDbUtil.selectSQL(sb);
-                            if (c.getCount() > 0) {
-                                while (c.moveToNext()) {
-                                    mslCount[0]++;
-                                    mslProdIDs=mslProdIDs+","+c.getInt(1);
-                                }
-                            }
-                            c.close();
-                        }catch (Exception ignored){
-
-                        }
-                        shutDownDb();
-                        return mslProdIDs;
+                for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters()){
+                    if(retailerMasterBO.getIsToday() == 1){
+                        chIDs = chIDs + "," + channelIds;
                     }
-                }).flatMap(new Function<String, SingleSource<String>>() {
-                   @Override
-                   public SingleSource<String> apply(final String mslProdIDs) throws Exception {
-                       return Single.fromCallable(new Callable<String>() {
-                           @Override
-                           public String call() throws Exception {
+                }
+                if (chIDs.endsWith(","))
+                    chIDs = chIDs.substring(0, chIDs.length() - 1);
 
-                               String rids = "";
-                               int mslExecutedCount=0;
+                String sb = "SELECT PTGM.pid FROM ProductTaggingMaster PTM " +
+                        "inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid " +
+                        "inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid " +
+                        "AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') " +
+                        "where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")";
 
-                               for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters())
-                                   if (retailerMasterBO.getIsToday() == 1) {
-                                       rids = rids + "," + retailerMasterBO.getRetailerID();
-                                   }
-
-                               if (rids.startsWith(","))
-                                   rids = rids.substring(1, rids.length());
-                               if (rids.endsWith(","))
-                                   rids = rids.substring(0, rids.length() - 1);
-
-                               try{
-                                   initDb();
-
-                                   StringBuilder sb = new StringBuilder();
-                                   sb.append("select count(*) from OrderDetail where retailerid in (").append(rids).append(")");
-                                   if (mslProdIDs != null && !mslProdIDs.isEmpty())
-                                       sb.append("and ProductID in (").append(mslProdIDs).append(")");
-                                   Cursor c = mDbUtil.selectSQL(sb.toString());
-                                   if (c.getCount() > 0) {
-                                       while (c.moveToNext()) {
-                                           mslExecutedCount = c.getInt(0);
-                                       }
-                                   }
-                                   c.close();
-
-                               }catch (Exception ignored){
-
-                               }
-
-
-                               return mslCount[0]+","+mslExecutedCount;
-                           }
-                       });
-                   }
-               });
+                Cursor c = mDbUtil.selectSQL(sb);
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        mslCount[0]++;
+                        mslProdIDs=mslProdIDs+","+c.getInt(1);
+                    }
+                }
+                c.close();
+            }catch (Exception ignored){
 
             }
-        });
+            shutDownDb();
+            return mslProdIDs;
+        }).flatMap((Function<String, SingleSource<Optional<String>>>) mslProdIDs -> Single.fromCallable(new Callable<Optional<String>>() {
+            @Override
+            public Optional<String> call() throws Exception {
+
+                String rids = "";
+                int mslExecutedCount=0;
+
+                for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters())
+                    if (retailerMasterBO.getIsToday() == 1) {
+                        rids = rids + "," + retailerMasterBO.getRetailerID();
+                    }
+
+                if (rids.startsWith(","))
+                    rids = rids.substring(1, rids.length());
+                if (rids.endsWith(","))
+                    rids = rids.substring(0, rids.length() - 1);
+
+                try{
+                    initDb();
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("select count(*) from OrderDetail where retailerid in (").append(rids).append(")");
+                    if (mslProdIDs != null && !mslProdIDs.isEmpty())
+                        sb.append("and ProductID in (").append(mslProdIDs).append(")");
+                    Cursor c = mDbUtil.selectSQL(sb.toString());
+                    if (c.getCount() > 0) {
+                        while (c.moveToNext()) {
+                            mslExecutedCount = c.getInt(0);
+                        }
+                    }
+                    c.close();
+
+                }catch (Exception ignored){
+
+                }
+
+
+                return new Optional<String>(mslCount[0]+","+mslExecutedCount);
+            }
+        })));
     }
 }
