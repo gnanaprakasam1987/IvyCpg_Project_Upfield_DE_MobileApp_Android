@@ -1365,7 +1365,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
 
-    private static final String CODE_SALES_DISTRIBUTION = "SALES_DIST_TAGGING";
+    private static final String CODE_SALES_DISTRIBUTION = "SALES_DISTRIBUTION_TAGGING";
     public boolean IS_PRODUCT_DISTRIBUTION;
     public String PRD_DISTRIBUTION_TYPE = "";
 

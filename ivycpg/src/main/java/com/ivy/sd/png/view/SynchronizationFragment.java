@@ -69,6 +69,9 @@ import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity;
 import com.ivy.cpg.view.sync.uploadStatusReport.UploadStatusActivity;
+import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
+import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
+import com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity;
 import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -877,6 +880,9 @@ public class SynchronizationFragment extends IvyBaseFragment
         } else if (i == R.id.menu_sync_report) {
                 startActivity(new Intent(getActivity(), UploadStatusActivity.class));
                 getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        }
+        else if (i == R.id.menu_file_download){
+            startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
         }
         else if (i == R.id.menu_file_download){
             startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
