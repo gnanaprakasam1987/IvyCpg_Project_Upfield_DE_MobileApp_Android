@@ -91,7 +91,6 @@ public class SOSFragment extends IvyBaseFragment implements
 
     SalesFundamentalHelper mSFHelper;
     private BusinessModel mBModel;
-    private ShelfShareDialogFragment dialogFragment = null;
 
     private DrawerLayout mDrawerLayout;
     private ListView mListView;
@@ -106,6 +105,8 @@ public class SOSFragment extends IvyBaseFragment implements
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private ArrayList<String> totalImgList = new ArrayList<>();
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
+
+    private final int SHARE_SHELF_RESULT_CODE = 112;
 
 
     @Override
@@ -362,6 +363,13 @@ public class SOSFragment extends IvyBaseFragment implements
             mSFHelper.onSaveImageName(
                     mSFHelper.mSelectedBrandID,
                     mImageName, HomeScreenTwo.MENU_SOS, mSelectedLocationIndex);
+        }else if (requestCode == SHARE_SHELF_RESULT_CODE){
+            if (resultCode == 112){
+                mCategoryForDialog.clear();
+                mCategoryForDialog.addAll(mSFHelper.getmCategoryForDialogSOSBO());
+                calculateTotalValues();
+                mListView.invalidateViews();
+            }
         }
     }
 
@@ -1146,7 +1154,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                 getTotalValue(mSelectedHolder.mSOS
                                         .getParentID());
                             }
-                        } else if (dialogFragment == null) {
+                        } else {
                             mSelectedHolder = (ViewHolder) v.getTag();
                             Bundle bundle = new Bundle();
 
@@ -1159,48 +1167,13 @@ public class SOSFragment extends IvyBaseFragment implements
                                     mSelectedHolder.mSOS.getProductID());
                             bundle.putInt("flag", ShelfShareHelper.SOS);
                             bundle.putInt("selectedlocation", mSelectedLocationIndex);
-                            dialogFragment = new ShelfShareDialogFragment();
-                            dialogFragment.setArguments(bundle);
-                            dialogFragment
-                                    .setStyle(
-                                            DialogFragment.STYLE_NO_TITLE,
-                                            android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-                            dialogFragment.setCancelable(false);
-                            dialogFragment
-                                    .setOnShelfShareListener(new ShelfShareCallBackListener() {
 
-                                        @Override
-                                        public void SOSBOCallBackListener(
-                                                List<SOSBO> sosBOList) {
-
-                                            mCategoryForDialog.clear();
-                                            mCategoryForDialog
-                                                    .addAll(sosBOList);
-                                            dialogFragment.dismiss();
-                                            dialogFragment = null;
-                                            calculateTotalValues();
-                                            mListView.invalidateViews();
-                                        }
-
-                                        @Override
-                                        public void SODDOCallBackListener(List<SODBO> sosBOList) {
-
-                                        }
-
-                                        @Override
-                                        public void handleDialogClose() {
-                                            dialogFragment.dismiss();
-                                            dialogFragment = null;
-                                        }
-                                    });
-                            dialogFragment.show(getChildFragmentManager(),
-                                    "Shelf Share");
+                            Intent intent = new Intent(getActivity(),ShelfShareActivity.class);
+                            intent.putExtras(bundle);
+                            startActivityForResult(intent,SHARE_SHELF_RESULT_CODE);
                         }
-
                     }
-
                 });
-
 
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
                     @Override

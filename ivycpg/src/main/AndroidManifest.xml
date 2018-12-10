@@ -844,6 +844,9 @@
 
         <activity
             android:name="com.ivy.cpg.view.order.moq.MOQHighlightActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name="com.ivy.cpg.view.sf.ShelfShareActivity"
             android:screenOrientation="portrait"/>
     </application>
 

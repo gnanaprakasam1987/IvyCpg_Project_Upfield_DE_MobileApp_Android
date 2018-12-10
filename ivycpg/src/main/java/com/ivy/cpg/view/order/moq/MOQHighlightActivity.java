@@ -54,12 +54,16 @@ public class MOQHighlightActivity extends IvyBaseActivityNoActionBar implements 
         if (toolbar != null ) {
 
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
 //            // Used to on / off the back arrow icon
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //           // Used to remove the app logo actionbar icon and set title as home
 //          // (title support click)
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
 
             setScreenTitle(getResources().getString(R.string.minimum_order_required));
         }
@@ -111,6 +115,7 @@ public class MOQHighlightActivity extends IvyBaseActivityNoActionBar implements 
         if (i == R.id.btn_next) {
             setResult(1);
             finish();
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
 
