@@ -70,6 +70,8 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
 
                     Intent i = new Intent(DeliveryManagement.this, DeliveryManagementDetail.class);
                     i.putExtra("invoiceno",
+                            mInvoiceList.get(0).getInvoiceRefNo());
+                    i.putExtra("invoiceId",
                             mInvoiceList.get(0).getInvoiceNo());
                     i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
                     if (getIntent().getStringExtra("From") != null) {
@@ -183,6 +185,8 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                     public void onClick(View v) {
                         Intent i = new Intent(DeliveryManagement.this, DeliveryManagementDetail.class);
                         i.putExtra("invoiceno",
+                                holder.invoiceHeaderBO.getInvoiceRefNo());
+                        i.putExtra("invoiceId",
                                 holder.invoiceHeaderBO.getInvoiceNo());
                         i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
                         if (getIntent().getStringExtra("From") != null) {

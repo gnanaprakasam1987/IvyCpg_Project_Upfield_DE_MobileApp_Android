@@ -549,7 +549,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        // setUpMapIfNeeded();
+        setUpMapIfNeeded();
     }
 
     @Override
@@ -642,8 +642,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
             if (mMap == null) {
                 SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                 supportMapFragment.getMapAsync(this);
-                float pxlDp = 39 + 20;
-                mainLayout.init(mMap, getPixelsFromDp(PlanningMapFragment.this.getActivity(), pxlDp));
+
                 this.infoWindow = (ViewGroup) layInflater.inflate(
                         R.layout.custom_info_window, nullParent);
                 this.infoTitle = (TextView) infoWindow.findViewById(R.id.title);
@@ -1188,7 +1187,9 @@ public class PlanningMapFragment extends SupportMapFragment implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setUpMap();
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
+        float pxlDp = 39 + 20;
+        mainLayout.init(mMap, getPixelsFromDp(PlanningMapFragment.this.getActivity(), pxlDp));
     }
 
     public interface DataPulling {

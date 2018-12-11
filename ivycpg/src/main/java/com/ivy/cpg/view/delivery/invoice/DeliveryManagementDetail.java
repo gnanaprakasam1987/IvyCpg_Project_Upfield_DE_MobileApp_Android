@@ -81,6 +81,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
     private ArrayList<ProductMasterBO> mProductList;
 
     private String mInvoiceNo = "";
+    private String mInvoiceId = "";
     private MyAdapter myAdapter;
 
     private EditText QUANTITY;
@@ -139,13 +140,14 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         myAdapter = new MyAdapter();
         if (getIntent().getExtras() != null) {
             mInvoiceNo = getIntent().getExtras().getString("invoiceno");
+            mInvoiceId = getIntent().getExtras().getString("invoiceId");
         }
 
         mInvoiceNoTV.setText(mInvoiceNo);
         setScreenTitle("" + mInvoiceNo);
 
         // load data
-        deliveryManagementHelper.downloadDeliveryProductDetails(mInvoiceNo);
+        deliveryManagementHelper.downloadDeliveryProductDetails(mInvoiceId);
         mProductList = deliveryManagementHelper.getmInvoiceDetailsList();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(DeliveryManagementDetail.this,
@@ -820,7 +822,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
 
         @Override
         protected Void doInBackground(Void... params) {
-            deliveryManagementHelper.saveDeliveryManagement(mInvoiceNo, mSelectedItem, signName, signPath, contactName, contactNo);
+            deliveryManagementHelper.saveDeliveryManagement(mInvoiceId, mSelectedItem, signName, signPath, contactName, contactNo);
             bmodel.saveModuleCompletion("MENU_DELIVERY_MGMT");
 
             return null;
