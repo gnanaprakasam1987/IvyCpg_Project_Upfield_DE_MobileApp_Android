@@ -1,5 +1,7 @@
 package com.ivy.ui.dashboard;
 
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 public class SellerDashboardConstants {
 
     public enum DashBoardType {
@@ -7,6 +9,10 @@ public class SellerDashboardConstants {
         RETAILER,
         SELLER
     }
+
+    public static final int[] MATERIAL_COLORS = {
+            ColorTemplate.rgb("#2ecc71"), ColorTemplate.rgb("#e74c3c")
+    };
 
     public static final String MONTH = "MONTH";
     public static final String DAY = "DAY";

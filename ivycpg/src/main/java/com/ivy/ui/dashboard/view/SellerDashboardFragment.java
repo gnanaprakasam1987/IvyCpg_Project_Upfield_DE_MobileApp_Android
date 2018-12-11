@@ -369,8 +369,20 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     @Override
     public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS) {
 
-        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashBoardBOS, presenter.getLabelsMap(), this);
+        dashboardListData.clear();
+        dashboardListData.addAll(dashBoardBOS);
+
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), this);
         dashboardRecyclerView.setAdapter(dashboardListAdapter);
+
+        if (presenter.shouldShowTrendChart()) {
+
+            if (!isFragmentsAdded)
+                generatePagerFragments();
+            else
+                updateChartData(dashboardListData.get(0));
+
+        }
 
     }
 
@@ -584,7 +596,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             DashBoardEventData dashBoardEventData = new DashBoardEventData();
             dashBoardEventData.setSource(DASHBOARD);
-
+            dashBoardEventData.setSelectedInterval(selectedInterval);
             if ((((selectedInterval.equalsIgnoreCase(WEEK) || isFromWeekSpinner) && !currentItem.getMonthName().equals(""))
                     || selectedInterval.equals(P3M)) && presenter.shouldShowKPIBarChart()) {
                 kpiChartData.clear();
@@ -594,7 +606,9 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                     }
                 }
                 dashBoardEventData.setEventDataList(kpiChartData);
-                dashBoardEventData.setSelectedInterval(selectedInterval);
+
+            }else {
+                dashBoardEventData.setEventDataList(dashboardListData);
             }
 
             if (presenter.shouldShowSMPDash())
@@ -619,6 +633,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
             String weekName = adapterView.getSelectedItem().toString();
+            dashboardListData.clear();
             for (DashBoardBO dashBoardBO : presenter.getDashboardListData()) {
                 if (dashBoardBO.getMonthName().equalsIgnoreCase(weekName) || weekName.equals("")) {
                     dashboardListData.add(dashBoardBO);
@@ -686,14 +701,6 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                     presenter.fetchSellerDashboardDataForUser(mSelectedUser);
                 else
                     presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval);
-            }
-
-            if (presenter.shouldShowTrendChart()) {
-                if (!isFragmentsAdded)
-                    generatePagerFragments();
-                else
-                    updateChartData(dashboardListData.get(0));
-
             }
 
         }

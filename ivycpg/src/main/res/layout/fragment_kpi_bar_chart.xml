@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/viewpger_padding"
-    android:layout_marginBottom="@dimen/card_margin"
+    android:layout_marginBottom="@dimen/dimens_14dp"
     tools:context="com.ivy.cpg.view.dashboard.sellerdashboard.KpiBarChartFragment" />
 
