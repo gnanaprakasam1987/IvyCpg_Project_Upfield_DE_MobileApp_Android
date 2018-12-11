@@ -26,6 +26,7 @@ import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.FontUtils;
 
 
@@ -201,24 +202,28 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     private void showConfirmAlert() {
 
-        new AlertDialog.Builder(getActivity())
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle("IvyCpg")
                 .setMessage(getActivity().getString(R.string.do_u_want_to_save))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
                         if (isSuccess) {
+                            BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
+                            businessModel.saveModuleCompletion(HomeScreenTwo.MENU_SALES_RET_DELIVERY);
                             Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
                             (getActivity()).onBackPressed();
                         }
                     }
                 })
-                .setNegativeButton(android.R.string.no, null).show();
+                .setNegativeButton(android.R.string.no, null);
+        BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
+        businessModel.applyAlertDialogTheme(builder);
     }
 
     private void showConfirConfirmAlert() {
 
-        new AlertDialog.Builder(getActivity())
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle("IvyCpg")
                 .setMessage(getActivity().getString(R.string.do_u_want_to_cancel))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -230,7 +235,9 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         }
                     }
                 })
-                .setNegativeButton(android.R.string.no, null).show();
+                .setNegativeButton(android.R.string.no, null);
+        BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
+        businessModel.applyAlertDialogTheme(builder);
     }
 
     private EditText QUANTITY;
