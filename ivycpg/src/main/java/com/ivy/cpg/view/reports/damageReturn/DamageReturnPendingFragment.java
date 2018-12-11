@@ -136,7 +136,7 @@ public class DamageReturnPendingFragment extends IvyBaseFragment {
             }
             PendingDeliveryBO pandingDeliveryBO = arrayList.get(position);
 
-            holder.invoiceNo.setText(pandingDeliveryBO.getInvoiceNo());
+            holder.invoiceNo.setText(pandingDeliveryBO.getInvoiceRefNo());
             holder.invoiceDate.setText(pandingDeliveryBO.getInvoiceDate());
             holder.invNetamount.setText(pandingDeliveryBO.getInvNetamount());
             holder.txtStorename.setText(pandingDeliveryBO.getRetailerName());
