@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order.catalog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -35,8 +36,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -67,7 +66,6 @@ import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
@@ -75,7 +73,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.model.CatalogOrderValueUpdate;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
@@ -83,7 +80,18 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.ScreenOrientation;
+import com.ivy.sd.png.view.BatchAllocation;
+import com.ivy.sd.png.view.CustomKeyBoardCatalog;
+import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.MOQHighlightDialog;
+import com.ivy.sd.png.view.MustSellReasonDialog;
+import com.ivy.sd.png.view.OrderDiscount;
+import com.ivy.sd.png.view.PauseOnFling;
+import com.ivy.sd.png.view.SlantView;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.NetworkUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,12 +103,11 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 /**
- * Created by dharmapriya.k on 10/14/2016,11:34 AM.
+ * Created by dharmapriya.k on 10/14/2016,11:34 AM
  */
 public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue, TextView.OnEditorActionListener, FiveLevelFilterCallBack {
     private static final String BRAND = "Brand";
     public static final String GENERAL = "General";
-    private final String mCommon = "Filt01";
     private final String mSbd = "Filt02";
     private final String mSbdGaps = "Filt03";
     private final String mOrdered = "Filt04";
@@ -112,31 +119,20 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private final String mMustSell = "Filt10";
     private final String mFocusBrand = "Filt11";
     private final String mFocusBrand2 = "Filt12";
-    private final String mFocusBrand3 = "Filt20";
-    private final String mFocusBrand4 = "Filt21";
-    private final String mSMP = "Filt22";
     private final String msih = "Filt13";
     private final String mOOS = "Filt14";
     private final String mNMustSell = "Filt16";
     private final String mStock = "Filt17";
     private final String mDiscount = "Filt18";
-    private final String mNearExpiryTag = "Filt19";
-    private final String mCompertior = "Filt23";
     private final String mDrugProducts = "Filt28";
-    private final String mSuggestedOrder = "Filt25";
     private final String mDeadProducts = "Filt15";
     //public int mSelectedLocationIndex;
     private RecyclerViewAdapter adapter;
-    private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
-    private HashMap<Integer, Integer> mSelectedIdByLevelId = new HashMap<Integer, Integer>();
-    private Vector<LevelBO> sequence;
-    private Vector<LevelBO> filterValues;
-    private Spinadapter spinadapter;
-    private ArrayList<Integer> selectedBrands = new ArrayList<>();
+    private HashMap<Integer, Integer> mSelectedIdByLevelId = new HashMap<>();
     private int SbdDistPre = 0; // Dist stock
     private int sbdDistAchieved = 0;
     private boolean isSbd, isSbdGaps, isOrdered, isPurchased, isInitiative, isOnAllocation, isInStock, isPromo, isMustSell, isFocusBrand,
-            isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount, isNearExpiryTag, isFocusBrand3, isFocusBrand4, isSMP;
+            isFocusBrand2, isSIH, isOOS, isNMustSell, isStock, isDiscount;
     private boolean isDeadProducts;
     private boolean isDrugProducts;
     //private TypedArray typearr;
@@ -144,34 +140,21 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private RecyclerView pdt_recycler_view;
     private String tempPo, tempRemark, tempRField1, tempRField2, tempOrdImg;
-    ;
     private int tempAddressId;
     private MustSellReasonDialog dialog;
     private Vector<ProductMasterBO> mylist;
     private String brandbutton, generalbutton;
-    private int mSelectedBrandID = 0;
     private String strBarCodeSearch = "ALL";
 
-
-    private Toolbar toolbar;
-
-    private Vector<ProductMasterBO> asyncList = new Vector<>();
-
-    private ArrayList<Integer> brandIds = new ArrayList<>();
     private LinearLayout bottom_layout;
-    private Animation slide_down, slide_up;
-    private Button btn_filter_popup, btn_search, btn_clear;
     private ViewFlipper viewFlipper;
     private EditText search_txt;
-    private LinearLayout search_toolbar;
     private String searchedtext = "";
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
 
-    private int categoryIndex, brandIndex;
     private double totalvalue = 0;
     private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private HashMap<String, String> mSelectedFilterMap = new HashMap<String, String>();
+    private HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private String OrderedFlag, screenCode;
 
     private TextView totalValueText, lpcText, distValue;
@@ -181,8 +164,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private static Bundle mBundleRecyclerViewState = null;
     private ArrayList<String> productIdList;
-    private FrameLayout drawer;
-    private Button nextBtn;
     private int totalAllQty = 0;
     private TextView totalQtyTV;
     private File appImageFolderPath;
@@ -208,7 +189,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         pdt_recycler_view = findViewById(R.id.pdt_recycler_view);
 
-        search_toolbar = findViewById(R.id.search_toolbar);
+        LinearLayout search_toolbar = findViewById(R.id.search_toolbar);
         bottom_layout = findViewById(R.id.bottom_layout);
 
         search_txt = search_toolbar.findViewById(R.id.edt_searchproductName);
@@ -232,12 +213,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         Button nextBtn = findViewById(R.id.btn_next);
         nextBtn.setOnClickListener(this);
-        nextBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         viewFlipper = findViewById(R.id.view_flipper);
-        toolbar = findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -261,14 +241,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         Button mBtn_Search = findViewById(R.id.btn_search);
         Button mBtnFilterPopup = findViewById(R.id.btn_filter_popup);
         Button mBtn_clear = findViewById(R.id.btn_clear);
-        Button saveBtn = findViewById(R.id.btn_next);
-        saveBtn.setText(getResources().getString(R.string.save));
+        nextBtn.setText(getResources().getString(R.string.save));
 
         mBtn_Search.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
         mBtn_clear.setOnEditorActionListener(this);
-        saveBtn.setOnClickListener(this);
 
         search_txt.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
@@ -321,14 +299,14 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         }
 
-        drawer = (FrameLayout) findViewById(R.id.right_drawer);
+        FrameLayout drawer = findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
 
-        /**
+        /*
          * To check stock validation
          * product will load based on loadStockedProduct
          * -1  - load all products
@@ -341,7 +319,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
-        mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
                 mDrawerLayout, /* DrawerLayout object */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
@@ -356,9 +334,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 supportInvalidateOptionsMenu();
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        mSearchTypeArray = new ArrayList<String>();
+        mSearchTypeArray = new ArrayList<>();
         mSearchTypeArray.add(getResources().getString(R.string.all));
         mSearchTypeArray.add(getResources().getString(R.string.product_name));
         mSearchTypeArray.add(getResources().getString(R.string.prod_code));
@@ -383,13 +361,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         } catch (Exception e) {
             Commons.printException(e);
         }
-
-        ((TextView) findViewById(R.id.totalText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.totalValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lpc_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lcp)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.distText)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) findViewById(R.id.distValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
         if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
             findViewById(R.id.ll_lpc).setVisibility(View.GONE);
@@ -444,56 +415,18 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             gridLayoutManager = new GridLayoutManager(getApplicationContext(), 1);
         }
 
-        if (pdt_recycler_view != null) {
-            pdt_recycler_view.setHasFixedSize(true);
-            pdt_recycler_view.setItemViewCacheSize(10);
-            pdt_recycler_view.setDrawingCacheEnabled(true);
-            pdt_recycler_view.setItemAnimator(new DefaultItemAnimator());
-            pdt_recycler_view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        }
+        pdt_recycler_view.setHasFixedSize(true);
+        pdt_recycler_view.setItemViewCacheSize(10);
+        pdt_recycler_view.setDrawingCacheEnabled(true);
+        pdt_recycler_view.setItemAnimator(new DefaultItemAnimator());
+        pdt_recycler_view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
         pdt_recycler_view.setLayoutManager(gridLayoutManager);
         pdt_recycler_view.setNestedScrollingEnabled(false);
         pdt_recycler_view.addOnScrollListener(new PauseOnFling(glide));
 
-        slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.slide_down);
-        slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.slide_up);
-//        pdt_recycler_view.addOnScrollListener(new HideShowScrollListener() {
-//            @Override
-//            public void onHide() {
-//                if (bottom_layout.getVisibility() == View.VISIBLE) {
-//                    bottom_layout.startAnimation(slide_down);
-//                    bottom_layout.setVisibility(View.GONE);
-//                }
-//            }
-//
-//            @Override
-//            public void onShow() {
-//                if (bottom_layout.getVisibility() == View.GONE) {
-//                    bottom_layout.setVisibility(View.VISIBLE);
-//                    bottom_layout.startAnimation(slide_up);
-//                }
-//            }
-//
-//            @Override
-//            public void onScrolled() {
-//                // To load more data
-//            }
-//        });
-
-
-        //mylist = bmodel.productHelper.getProductMaster();
-        //generalbutton = GENERAL;
-        //brandbutton = BRAND;
-        //if (mylist == null) {
-        //  bmodel.showAlert(getResources().getString(R.string.no_products_exists),0);
-        //  return;
-        //}
 
         getMandatoryFilters();
-        //Following line not required.
-        //updatebrandtext(BRAND, -1);
 
         //FUN07 - Bill wise discount
         if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
@@ -515,9 +448,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
             adapter = new RecyclerViewAdapter(mylist);
             pdt_recycler_view.setAdapter(adapter);
-
-            //Loadmore(0);
-            brandIds = null;
 
         }
 
@@ -542,6 +472,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                                   KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm != null)
                             imm.hideSoftInputFromWindow(
                                     search_txt.getWindowToken(),
                                     InputMethodManager.RESULT_UNCHANGED_SHOWN);
@@ -558,6 +489,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                                   KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm != null)
                             imm.hideSoftInputFromWindow(
                                     search_txt.getWindowToken(),
                                     InputMethodManager.RESULT_UNCHANGED_SHOWN);
@@ -617,6 +549,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (imm != null)
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             return true;
         }
@@ -768,30 +701,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     public void onStart() {
 
         super.onStart();
-        loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
-        if (bmodel.productHelper.getFilterProductLevels() != null && bmodel.productHelper.getFilterProductLevels().size() != 0) {
-            sequence = bmodel.productHelper.getFilterProductLevels();
-            for (int i = 0; i < sequence.size(); i++) {
-                if (sequence.get(i).getLevelName().equals("Category")) {
-                    categoryIndex = i;
-                } else if (sequence.get(i).getLevelName().equals("Brand")) {
-                    brandIndex = i;
-                }
-            }
-
-            if (sequence.size() > 0) {
-                int levelID = sequence.get(categoryIndex).getProductID();
-                filterValues = new Vector<LevelBO>();
-                filterValues.addAll(loadedFilterValues.get(levelID));
-                LevelBO levelBO = new LevelBO();
-                levelBO.setLevelName("All");
-                //levelBO.setProductLevel("0");
-                levelBO.setParentID(0);
-                filterValues.add(0, levelBO);
-                spinadapter = new Spinadapter(CatalogOrder.this, android.R.layout.simple_spinner_item,//loadedFilterValues.get(levelID));
-                        filterValues);
-            }
-        }
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
     }
@@ -800,7 +709,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         int flag;
 
         if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
-            flag = bmodel.getRetailerMasterBO().getIsVansales() == 1 ? 1 : 0;
+            flag = bmodel.getAppDataProvider().getRetailMaster().getIsVansales() == 1 ? 1 : 0;
         } else {
             flag = bmodel.configurationMasterHelper.IS_INVOICE ? 1 : 0;
         }
@@ -809,8 +718,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     @Override
     public void updateBrandText(String filtertext, int bid) {
-
-        mSelectedBrandID = bid;
 
         Commons.print("updatebrandtext method called with : " + filtertext);
 
@@ -882,8 +789,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
             adapter = new RecyclerViewAdapter(mylist);
             pdt_recycler_view.setAdapter(adapter);
-            brandIds = null;
-
 
             strBarCodeSearch = "ALL";
             updateValue();
@@ -927,11 +832,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     }
 
     private boolean isSpecialFilterAppliedProduct(String generaltxt, ProductMasterBO ret) {
-        if (generaltxt.equalsIgnoreCase(mSbd) && ret.isRPS()
+        return generaltxt.equalsIgnoreCase(mSbd) && ret.isRPS()
                 || (generaltxt.equalsIgnoreCase(mOrdered) && ret.getOrderedPcsQty() > 0)
                 || (generaltxt.equalsIgnoreCase(mPurchased) && ret.getIsPurchased() == 1)
                 || (generaltxt.equalsIgnoreCase(mInitiative) && ret.getIsInitiativeProduct() == 1)
-                || (generaltxt.equalsIgnoreCase(mCommon) && applyCommonFilterConfig(ret))
+                || (generaltxt.equalsIgnoreCase("Filt01") && applyCommonFilterConfig(ret))
                 || (generaltxt.equalsIgnoreCase(mSbdGaps) && (ret.isRPS() && !ret.isSBDAcheived()))
                 || (generaltxt.equalsIgnoreCase(mInStock) && ret.getWSIH() > 0)
                 || (generaltxt.equalsIgnoreCase(mOnAllocation) && ret.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION)
@@ -944,83 +849,88 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 || (generaltxt.equalsIgnoreCase(mNMustSell) && ret.getIsNMustSell() == 1)
                 || (generaltxt.equalsIgnoreCase(mDiscount) && ret.getIsDiscountable() == 1)
                 || (generaltxt.equalsIgnoreCase(mStock) && ret.getLocations().get(0).getShelfPiece() > 0)
-                || (generaltxt.equalsIgnoreCase(mNearExpiryTag) && ret.getIsNearExpiryTaggedProduct() == 1)
-                || (generaltxt.equalsIgnoreCase(mFocusBrand3) && ret.getIsFocusBrand3() == 1)
-                || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
-                || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
-                || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
+                || (generaltxt.equalsIgnoreCase("Filt19") && ret.getIsNearExpiryTaggedProduct() == 1)
+                || (generaltxt.equalsIgnoreCase("Filt20") && ret.getIsFocusBrand3() == 1)
+                || (generaltxt.equalsIgnoreCase("Filt21") && ret.getIsFocusBrand4() == 1)
+                || (generaltxt.equalsIgnoreCase("Filt22") && ret.getIsSMP() == 1)
+                || (generaltxt.equalsIgnoreCase("Filt23") && ret.getOwn() == 0)
                 || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)
-                || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)
-                || (generaltxt.equalsIgnoreCase(mDeadProducts) && ret.getmDeadProduct() == 1)) {
-            return true;
-        }
-        return false;
+                || (generaltxt.equalsIgnoreCase("Filt25") && ret.getSoInventory() > 0)
+                || (generaltxt.equalsIgnoreCase(mDeadProducts) && ret.getmDeadProduct() == 1);
 
     }
 
 
     private boolean applyCommonFilterConfig(ProductMasterBO ret) {
-        if ((isSbd && ret.isRPS()) || (isSbdGaps && ret.isRPS() && !ret.isSBDAcheived()) || (isOrdered && ret.getOrderedPcsQty() > 0)
+        return (isSbd && ret.isRPS()) || (isSbdGaps && ret.isRPS() && !ret.isSBDAcheived()) || (isOrdered && ret.getOrderedPcsQty() > 0)
                 || (isPurchased && ret.getIsPurchased() == 1) || (isInitiative && ret.getIsInitiativeProduct() == 1) || (isOnAllocation && ret.isAllocation() == 1
                 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
                 || (isFocusBrand && ret.getIsFocusBrand() == 1) || (isFocusBrand2 && ret.getIsFocusBrand2() == 1) || (isSIH && ret.getSIH() > 0) || (isOOS && ret.getOos() == 0)
                 || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && ret.getLocations().get(0).getShelfPiece() > 0) || (isDiscount && ret.getIsDiscountable() == 1)
                 || (isDrugProducts && ret.getIsDrug() == 1)
-                || (isDeadProducts && ret.getmDeadProduct() == 1)) {
-
-            return true;
-        }
-        return false;
+                || (isDeadProducts && ret.getmDeadProduct() == 1);
     }
 
     private void getMandatoryFilters() {
 
         for (ConfigureBO bo : bmodel.configurationMasterHelper.getGenFilter()) {
             if (bo.getMandatory() == 1) {
-                if (bo.getConfigCode().equals(mSbd))
-                    isSbd = true;
-                else if (bo.getConfigCode().equals(mSbdGaps))
-                    isSbdGaps = true;
-                else if (bo.getConfigCode().equals(mOrdered))
-                    isOrdered = true;
-                else if (bo.getConfigCode().equals(mPurchased))
-                    isPurchased = true;
-                else if (bo.getConfigCode().equals(mInitiative))
-                    isInitiative = true;
-                else if (bo.getConfigCode().equals(mOnAllocation))
-                    isOnAllocation = true;
-                else if (bo.getConfigCode().equals(mInStock))
-                    isInStock = true;
-                else if (bo.getConfigCode().equals(mPromo))
-                    isPromo = true;
-                else if (bo.getConfigCode().equals(mMustSell))
-                    isMustSell = true;
-                else if (bo.getConfigCode().equals(mFocusBrand))
-                    isFocusBrand = true;
-                else if (bo.getConfigCode().equals(mFocusBrand2))
-                    isFocusBrand2 = true;
-                else if (bo.getConfigCode().equals(msih))
-                    isSIH = true;
-                else if (bo.getConfigCode().equals(mOOS))
-                    isOOS = true;
-                else if (bo.getConfigCode().equals(mNMustSell))
-                    isNMustSell = true;
-                else if (bo.getConfigCode().equals(mDiscount))
-                    isDiscount = true;
-                else if (bo.getConfigCode().equals(mStock))
-                    isStock = true;
-                else if (bo.getConfigCode().equals(mNearExpiryTag))
-                    isNearExpiryTag = true;
-                else if (bo.getConfigCode().equals(mFocusBrand3))
-                    isFocusBrand3 = true;
-                else if (bo.getConfigCode().equals(mFocusBrand4))
-                    isFocusBrand4 = true;
-                else if (bo.getConfigCode().equals(mSMP))
-                    isSMP = true;
-                else if (bo.getConfigCode().equals(mDrugProducts))
-                    isDrugProducts = true;
-                else if (bo.getConfigCode().equals(mDeadProducts))
-                    isDeadProducts = true;
+                switch (bo.getConfigCode()) {
+                    case mSbd:
+                        isSbd = true;
+                        break;
+                    case mSbdGaps:
+                        isSbdGaps = true;
+                        break;
+                    case mOrdered:
+                        isOrdered = true;
+                        break;
+                    case mPurchased:
+                        isPurchased = true;
+                        break;
+                    case mInitiative:
+                        isInitiative = true;
+                        break;
+                    case mOnAllocation:
+                        isOnAllocation = true;
+                        break;
+                    case mInStock:
+                        isInStock = true;
+                        break;
+                    case mPromo:
+                        isPromo = true;
+                        break;
+                    case mMustSell:
+                        isMustSell = true;
+                        break;
+                    case mFocusBrand:
+                        isFocusBrand = true;
+                        break;
+                    case mFocusBrand2:
+                        isFocusBrand2 = true;
+                        break;
+                    case msih:
+                        isSIH = true;
+                        break;
+                    case mOOS:
+                        isOOS = true;
+                        break;
+                    case mNMustSell:
+                        isNMustSell = true;
+                        break;
+                    case mDiscount:
+                        isDiscount = true;
+                        break;
+                    case mStock:
+                        isStock = true;
+                        break;
+                    case mDrugProducts:
+                        isDrugProducts = true;
+                        break;
+                    case mDeadProducts:
+                        isDeadProducts = true;
+                        break;
+                }
             }
         }
     }
@@ -1048,24 +958,18 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String filtertext) {
-        //String filtertext = getResources().getString(R.string.product_name);
-        /*if (!filter.equals(""))
-            filtertext = filter;*/
 
         brandbutton = filtertext;
         fiveFilter_productIDs = new ArrayList<>();
 
 
-        int count = 0;
         mylist = new Vector<>();
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
             setTaggingDetails(items);
         }
         if (mAttributeProducts != null) {
-            count = 0;
             if (mFilteredPid != 0) {
-                count++;
                 for (ProductMasterBO productBO : items) {
                     if (loadStockedProduct == -1
                             || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
@@ -1074,7 +978,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                             // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                             if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
-                                //filtertext = levelBO.getLevelName();
                                 mylist.add(productBO);
                                 fiveFilter_productIDs.add(productBO.getProductID());
                             }
@@ -1105,7 +1008,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
                         if (productBO.getIsSaleable() == 1) {
                             if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
-                                //  filtertext = levelBO.getLevelName();
                                 mylist.add(productBO);
                                 fiveFilter_productIDs.add(productBO.getProductID());
                             }
@@ -1118,7 +1020,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
                         if (productBO.getIsSaleable() == 1) {
-                            //  filtertext = levelBO.getLevelName();
                             mylist.add(productBO);
                             fiveFilter_productIDs.add(productBO.getProductID());
                         }
@@ -1132,7 +1033,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 //        Applying special filter in product filtered list(mylist)
         if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
 
-            Vector<ProductMasterBO> temp = new Vector<ProductMasterBO>();
+            Vector<ProductMasterBO> temp = new Vector<>();
             String generaltxt = generalbutton;
             for (ProductMasterBO ret : mylist) {
                 if (generaltxt.equals(GENERAL))//No special filters selected
@@ -1233,8 +1134,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (bmodel.getOrderHeaderBO() == null)
                 bmodel.setOrderHeaderBO(new OrderHeader());
 
-            bmodel.getRetailerMasterBO().setSbdDistStock(SbdDistPre);
-            bmodel.getRetailerMasterBO().setSbdDistAchieved(
+            bmodel.getAppDataProvider().getRetailMaster().setSbdDistStock(SbdDistPre);
+            bmodel.getAppDataProvider().getRetailMaster().setSbdDistAchieved(
                     sbdDistAchieved);
 
             // If Crown Management is Enable , then go for Crown Management
@@ -1245,11 +1146,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             } else {
                 // Other wise check if Bottle Return enable or not,according to
                 // that it will work.
-                /*if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
-                    new calculateReturnProductValusAndQty().execute();
-                } else {*/
                 nextButtonClick();
-                //}
             }
             return true;
         } else if (i == R.id.menu_fivefilter) {
@@ -1266,7 +1163,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             supportInvalidateOptionsMenu();
             return true;
         } else if (i == R.id.menu_refresh) {
-            if (bmodel.isOnline()) {
+            if (NetworkUtils.isNetworkConnected(CatalogOrder.this)) {
                 new DownloadNewStock().execute();
             } else {
                 bmodel.showAlert(
@@ -1280,9 +1177,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private void generalFilterClickedFragment() {
         try {
 
-            //QUANTITY = null;
-            Vector<String> vect = new Vector();
-            Collections.addAll(vect, getResources().getStringArray(
+            Collections.addAll(new Vector<>(), getResources().getStringArray(
                     R.array.productFilterArray));
 
             mDrawerLayout.openDrawer(GravityCompat.END);
@@ -1314,9 +1209,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private void FiveFilterFragment() {
         try {
 
-            //QUANTITY = null;
-            Vector<String> vect = new Vector();
-            Collections.addAll(vect, getResources().getStringArray(
+            Collections.addAll(new Vector<>(), getResources().getStringArray(
                     R.array.productFilterArray));
 
             mDrawerLayout.openDrawer(GravityCompat.END);
@@ -1534,7 +1427,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     }
                     if (count > 0) {
                         new MOQConfigEnabled().execute();
-                        count = 0;
                         return;
                     }
                 } else if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
@@ -1547,7 +1439,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         if (product.getOrderedPcsQty() > 0 || product.getOrderedCaseQty() > 0 ||
                                 product.getOrderedOuterQty() > 0) {
                             if (!checkTaggingDetails(product)) {
-                                Toast.makeText(CatalogOrder.this, product.getProductName() + " exceeded Allocation", Toast.LENGTH_LONG).show();
+                                Toast.makeText(CatalogOrder.this, product.getProductName() + getResources().getString(R.string.label_exceeded_alloc), Toast.LENGTH_LONG).show();
                                 return;
                             }
                         }
@@ -1582,8 +1474,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     return;
                 }
                 if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE)
-                    if (bmodel.getRetailerMasterBO().getCredit_balance() != -1
-                            && totalvalue > bmodel.getRetailerMasterBO()
+                    if (bmodel.getAppDataProvider().getRetailMaster().getCredit_balance() != -1
+                            && totalvalue > bmodel.getAppDataProvider().getRetailMaster()
                             .getCredit_balance())
                         bmodel.showAlert(
                                 getResources()
@@ -1769,12 +1661,13 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         @Override
         protected void onPostExecute(Void voids) {
-            lpcText.setText(lpccount + "");
-            String strFormatValue = bmodel.formatValue(totalvalue) + "";
+            lpcText.setText(String.valueOf(lpccount));
+            String strFormatValue = bmodel.formatValue(totalvalue);
             totalValueText.setText(strFormatValue);
-            totalQtyTV.setText("" + totalAllQty);
-            distValue.setText(sbdAchievement + "/" + bmodel.getRetailerMasterBO()
-                    .getSbdDistributionTarget());
+            totalQtyTV.setText(String.valueOf(totalAllQty));
+            String  strDistValue = sbdAchievement + "/" + bmodel.getAppDataProvider().getRetailMaster()
+                    .getSbdDistributionTarget();
+            distValue.setText(strDistValue);
         }
     }
 
@@ -1837,7 +1730,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (v.getId() == R.id.btn_filter_popup) {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(
                     CatalogOrder.this);
-            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                     CatalogOrder.this,
                     android.R.layout.select_dialog_singlechoice,
                     mSearchTypeArray);
@@ -1899,8 +1792,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (bmodel.getOrderHeaderBO() == null)
                 bmodel.setOrderHeaderBO(new OrderHeader());
 
-            bmodel.getRetailerMasterBO().setSbdDistStock(SbdDistPre);
-            bmodel.getRetailerMasterBO().setSbdDistAchieved(
+            bmodel.getAppDataProvider().getRetailMaster().setSbdDistStock(SbdDistPre);
+            bmodel.getAppDataProvider().getRetailMaster().setSbdDistAchieved(
                     sbdDistAchieved);
             // If Crown Management is Enable , then go for Crown Management
             // Screen and calcuale liability to crown Products also
@@ -1916,6 +1809,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             viewFlipper.showNext();
             search_txt.requestFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null)
             imm.showSoftInput(search_txt,
                     InputMethodManager.SHOW_FORCED);
         }
@@ -1936,7 +1830,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Commons.printException(e);
         }
         return true;
     }
@@ -1950,7 +1844,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Commons.printException(e);
         }
     }
 
@@ -1989,8 +1883,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             productList = new ArrayList<>(items);
         }
 
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.activity_catalog_order_list_items_hr, parent, false);
@@ -1998,7 +1893,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             holder.productObj = productList.get(position);
             holder.catalog_order_listview_productname.setText(holder.productObj.getProductShortName());
             if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
@@ -2047,10 +1942,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 holder.ssrp.setText(price);
             }
             if (holder.mrp != null) {
-                holder.mrp.setText(getResources().getString(R.string.mrp) + ": " + bmodel.formatValue(holder.productObj.getMRP()));
+                String strMRP = getResources().getString(R.string.mrp) + ": " + bmodel.formatValue(holder.productObj.getMRP());
+                holder.mrp.setText(strMRP);
             }
             if (holder.sih != null) {
-                holder.sih.setText(getResources().getString(R.string.sih) + ": " + holder.productObj.getSIH());
+                String strSIH = getResources().getString(R.string.sih) + ": " + holder.productObj.getSIH();
+                holder.sih.setText(strSIH);
             }
             if (holder.slant_view != null) {
                 if (holder.productObj.isPromo()) {
@@ -2063,24 +1960,25 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (holder.productObj.getLocations().get(0).getShelfPiece() == -1 &&
                         holder.productObj.getLocations().get(0).getShelfCase() == -1 &&
                         holder.productObj.getLocations().get(0).getShelfOuter() == -1) {
-                    holder.list_view_stock_btn.setText("STOCK");
+                    holder.list_view_stock_btn.setText(getResources().getString(R.string.stock).toUpperCase());
                 } else {
-                    holder.list_view_stock_btn.setText("Stock - "
+                    String strStock = getResources().getString(R.string.stock) + " - "
                             + ((holder.productObj.getLocations().get(0).getShelfCase() * holder.productObj.getCaseSize())
                             + (holder.productObj.getLocations().get(0).getShelfOuter() * holder.productObj.getOutersize())
-                            + (holder.productObj.getLocations().get(0).getShelfPiece())) + "");
+                            + (holder.productObj.getLocations().get(0).getShelfPiece()));
+                    holder.list_view_stock_btn.setText(strStock);
                 }
             }
             if (holder.list_view_order_btn != null && holder.total != null) {
                 if (holder.productObj.getOrderedPcsQty() != 0 ||
                         holder.productObj.getOrderedCaseQty() != 0 ||
                         holder.productObj.getOrderedOuterQty() != 0) {
-                    holder.list_view_order_btn.setText(getResources().getString(R.string.ordered) + " - "
+                    String strOrder = getResources().getString(R.string.ordered) + " - "
                             + ((holder.productObj.getOrderedCaseQty() * holder.productObj.getCaseSize())
                             + (holder.productObj.getOrderedOuterQty() * holder.productObj.getOutersize())
-                            + holder.productObj.getOrderedPcsQty())
-                            + "");
-                    holder.total.setText("" + bmodel.formatValue(holder.productObj.getTotalamount()));
+                            + holder.productObj.getOrderedPcsQty());
+                    holder.list_view_order_btn.setText(strOrder);
+                    holder.total.setText(bmodel.formatValue(holder.productObj.getTotalamount()));
                 } else {
                     holder.total.setText("0");
                     holder.list_view_order_btn.setText(getResources().getString(R.string.order));
@@ -2101,7 +1999,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                     + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg"));
                 }
 
-                //Glide.with(getApplicationContext())
                 glide.load(path)
                         .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))
                         .dontAnimate()
@@ -2113,10 +2010,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     if ((holder.productObj.isAllocation() == 1
                             && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) || bmodel.configurationMasterHelper.IS_INVOICE) {
 
-                        holder.sih.setText("SIH : " + holder.productObj.getSIH() + "");
+                        String strSIH = getResources().getString(R.string.sih) + " : " + holder.productObj.getSIH();
+                        holder.sih.setText(strSIH);
                     }
                 }
-                holder.wsih.setText("WSIH : " + holder.productObj.getWSIH());
+                String strWSIH = getResources().getString(R.string.wsih_label) + " : " + holder.productObj.getWSIH();
+                holder.wsih.setText(strWSIH);
                 if (holder.slant_view != null) {
 
                     try {
@@ -2153,7 +2052,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
 
         @Override
-        public void onViewRecycled(MyViewHolder holder) {
+        public void onViewRecycled(@NonNull MyViewHolder holder) {
             super.onViewRecycled(holder);
 
             Glide.clear(holder.pdt_image);
@@ -2175,7 +2074,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             private TextView catalog_order_listview_productname, ppq, ssrp,
                     mrp, total, sih, wsih, moq, allocation, productCode;
             private Button list_view_order_btn, list_view_stock_btn, list_view_sales_return_qty;
-            private LinearLayout pdt_details_layout;
             private ProductMasterBO productObj;
             private RelativeLayout slant_view;
             private SlantView slant_view_bg;
@@ -2193,29 +2091,23 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 list_view_order_btn = v.findViewById(R.id.list_view_order_btn);
                 list_view_stock_btn = v.findViewById(R.id.list_view_stock_btn);
                 list_view_sales_return_qty = v.findViewById(R.id.list_view_sales_return_qty);
-                pdt_details_layout = v.findViewById(R.id.pdt_details_layout);
                 sih = v.findViewById(R.id.catalog_order_listview_sih);
                 wsih = v.findViewById(R.id.catalog_order_listview_wsih);
                 slant_view = v.findViewById(R.id.slant_view);
                 slant_view_bg = v.findViewById(R.id.slant_view_bg);
                 allocation = v.findViewById(R.id.catalog_order_listview_allocation);
 
-                catalog_order_listview_productname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                productCode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ppq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                ssrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                list_view_order_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                list_view_stock_btn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                list_view_sales_return_qty.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-                moq.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                allocation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-
-                /*Drawable mDrawable = getApplicationContext().getResources().getDrawable(R.drawable.ic_action_star_01);
-                mDrawable.setColorFilter(new
-                        PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY));
-                scheme_star.setImageDrawable(mDrawable);*/
+                catalog_order_listview_productname.setTypeface(FontUtils.getProductNameFont(CatalogOrder.this));
+                productCode.setTypeface(FontUtils.getFontRoboto(CatalogOrder.this, FontUtils.FontType.LIGHT));
+                ppq.setTypeface(FontUtils.getFontRoboto(CatalogOrder.this, FontUtils.FontType.LIGHT));
+                ssrp.setTypeface(FontUtils.getFontRoboto(CatalogOrder.this, FontUtils.FontType.LIGHT));
+                mrp.setTypeface(FontUtils.getFontRoboto(CatalogOrder.this, FontUtils.FontType.LIGHT));
+                total.setTypeface(FontUtils.getFontRoboto(CatalogOrder.this, FontUtils.FontType.LIGHT));
+                list_view_order_btn.setTypeface(FontUtils.getFontBalooHai(CatalogOrder.this, FontUtils.FontType.REGULAR));
+                list_view_stock_btn.setTypeface(FontUtils.getFontBalooHai(CatalogOrder.this, FontUtils.FontType.REGULAR));
+                list_view_sales_return_qty.setTypeface(FontUtils.getFontBalooHai(CatalogOrder.this, FontUtils.FontType.REGULAR));
+                moq.setTypeface(FontUtils.getFontRoboto(CatalogOrder.this, FontUtils.FontType.LIGHT));
+                allocation.setTypeface(FontUtils.getFontRoboto(CatalogOrder.this, FontUtils.FontType.LIGHT));
 
                 if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP
                         || screenCode
@@ -2272,16 +2164,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                     productCode.setVisibility(View.GONE);
 
-//                pdt_details_layout.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if (bottom_layout.getVisibility() == View.VISIBLE) {
-//                            bottom_layout.startAnimation(slide_down);
-//                            bottom_layout.setVisibility(View.GONE);
-//                        }
-//                    }
-//                });
-
                 list_view_order_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -2294,9 +2176,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             //Grab the window of the dialog, and change the width
                             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                             Window window = dialogCustomKeyBoard.getWindow();
+                            if (window != null)
                             lp.copyFrom(window.getAttributes());
                             lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
                             lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                            if (window != null)
                             window.setAttributes(lp);
                         }
 
@@ -2314,9 +2198,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             //Grab the window of the dialog, and change the width
                             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                             Window window = dialogCustomKeyBoard.getWindow();
+                            if (window != null)
                             lp.copyFrom(window.getAttributes());
                             lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
                             lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                            if (window != null)
                             window.setAttributes(lp);
                         }
                         if (bmodel.configurationMasterHelper.ALLOW_SO_COPY) {
@@ -2341,7 +2227,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     @Override
                     public void onClick(View v) {
                         bmodel.selectedPdt = productObj;
-                        productIdList = new ArrayList<String>();
+                        productIdList = new ArrayList<>();
                         for (ProductMasterBO product : mylist) {
                             productIdList.add(product.getProductID());
                         }
@@ -2349,8 +2235,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         Intent i = new Intent(CatalogOrder.this, ProductDetailsCatalogActivity.class);
                         i.putExtra("FiveFilter", mSelectedIdByLevelId);
                         i.putStringArrayListExtra("ProductIdList", productIdList);
-
-                        //  i.putExtra("mylist",mylist);
                         startActivity(i);
                         finish();
                     }
@@ -2404,8 +2288,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
 
     public class wareHouseStockBroadCastReceiver extends BroadcastReceiver {
-        public static final String RESPONSE = "com.ivy.intent.action.WareHouseStock";
-
         @Override
         public void onReceive(Context arg0, Intent arg1) {
             updateReceiver(arg1);
@@ -2423,8 +2305,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private void updateReceiver(Intent intent) {
         Bundle bundle = intent.getExtras();
-        int method = bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0);
-        String errorCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
+        int method = 0;
+        String errorCode = "";
+        if (bundle != null) {
+            method = bundle.getInt(SynchronizationHelper.SYNXC_STATUS, 0);
+            errorCode = bundle.getString(SynchronizationHelper.ERROR_CODE);
+        }
 
         switch (method) {
             case SynchronizationHelper.WAREHOUSE_STOCK_DOWNLOAD:

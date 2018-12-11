@@ -1,8 +1,9 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order.productdetails;
 
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -32,32 +33,25 @@ import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by nagaganesh.n on 4/27/2017.
+ * Created by nagaganesh.n on 4/27/2017
  */
 
 public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
     private ArrayList<Fragment> mFragmentList;
-    private Fragment mSelectFragment, mSelectedFragment;
-    private TabLayout.Tab schemeDetailsTab;
-    private TabLayout.Tab productDetailsTab;
+    private Fragment mSelectedFragment;
     private ViewPager viewPager;
-    private Bundle instate;
     private BusinessModel bmodel;
     private String productId="0";
     private boolean isFromUpSelling;
-    private ImageView pdt_image;
-    private File appImageFolderPath;
     AppBarLayout appbar;
     NestedScrollView nestedScrollView;
 
@@ -71,9 +65,9 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -88,7 +82,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             productId=String.valueOf(getIntent().getStringExtra("productId"));
         }
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         addFragments();
 
         ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
@@ -99,12 +93,12 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             for (int i = 0; i < tabChildsCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    ((TextView) tabViewChild).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                    ((TextView) tabViewChild).setTypeface(FontUtils.getFontRoboto(ProductSchemeDetailsActivity.this, FontUtils.FontType.MEDIUM));
                 }
             }
         }
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
         TabsPagerAdapter mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -132,10 +126,9 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         });
         mAdapter.notifyDataSetChanged();
 
-        if (tabLayout != null)
-            tabLayout.removeAllTabs();
+        tabLayout.removeAllTabs();
 
-        schemeDetailsTab = tabLayout.newTab();
+        TabLayout.Tab schemeDetailsTab = tabLayout.newTab();
         try {
             if (bmodel.labelsMasterHelper.applyLabels("scheme_details_tab") != null)
                 schemeDetailsTab.setText(bmodel.labelsMasterHelper.applyLabels("scheme_details_tab"));
@@ -148,7 +141,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         tabLayout.addTab(schemeDetailsTab);
 
         if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-            productDetailsTab = tabLayout.newTab();
+            TabLayout.Tab productDetailsTab = tabLayout.newTab();
             try {
                 if (bmodel.labelsMasterHelper.applyLabels("product_details_tab") != null)
                     productDetailsTab.setText(bmodel.labelsMasterHelper.applyLabels("product_details_tab"));
@@ -161,7 +154,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             tabLayout.addTab(productDetailsTab);
         }
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
@@ -182,12 +175,12 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             tabLayout.setVisibility(View.GONE);
 
         try {
-            pdt_image = findViewById(R.id.pdt_image);
+            ImageView pdt_image = findViewById(R.id.pdt_image);
             appbar = findViewById(R.id.appbar);
             nestedScrollView = findViewById(R.id.scrollView);
             nestedScrollView.setFillViewport (true);
 
-            appImageFolderPath = bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name));
+            File appImageFolderPath = bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name));
             if (pdt_image != null) {
                 Uri path;
                 if (Build.VERSION.SDK_INT >= 24) {
@@ -225,17 +218,13 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Commons.printException(e);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    protected void passData(Bundle instate) {
-        this.instate = instate;
     }
 
     @Override
@@ -272,7 +261,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
     private void addFragments() {
 
         mFragmentList = new ArrayList<>();
-        mSelectFragment = new SchemeDetailsFragment();
+        Fragment mSelectFragment = new SchemeDetailsFragment();
         Bundle bundle =new Bundle();
         bundle.putString("productId",productId);
         if(getIntent()!=null&&getIntent().getStringExtra("slabId")!=null)
@@ -296,7 +285,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         FragmentManager fragmentManager;
 
-        public TabsPagerAdapter(FragmentManager fm) {
+        TabsPagerAdapter(FragmentManager fm) {
             super(fm);
             this.fragmentManager = fm;
         }
@@ -312,7 +301,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         }
 
         @Override
-        public int getItemPosition(Object object) {
+        public int getItemPosition(@NonNull Object object) {
             return POSITION_NONE;
         }
     }
@@ -332,9 +321,6 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
             return true;
         }
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 }

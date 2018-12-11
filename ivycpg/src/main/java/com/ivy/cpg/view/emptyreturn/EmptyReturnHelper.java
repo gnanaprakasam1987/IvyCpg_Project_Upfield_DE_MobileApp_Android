@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.emptyreturn;
 
 
 import android.content.Context;
@@ -48,13 +48,10 @@ public class EmptyReturnHelper {
 
 			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
 			db.openDataBase();
-			StringBuffer sb = new StringBuffer();
-			sb.append("Select Distinct PM.Pid,PM.Pname,PM.piece_uomid From ProductMaster PM INNER JOIN StandardListMaster SLM on PM.TypeId = SLM.ListId");
-			sb.append(" WHERE PM.isReturnable =1 and SLM.ListCode ='GENERIC' ORDER BY PM.Pid");
-			Cursor cur = db.selectSQL(sb.toString());
-			/*Cursor cur = db
-					.selectSQL("SELECT DISTINCT PM.Pid,PM.Pname,PM.piece_uomid FROM ProductMaster PM  Where isReturnable = 1 and PM.TypeID != 0");
-*/
+			String sb = "Select Distinct PM.Pid,PM.Pname,PM.piece_uomid From ProductMaster PM INNER JOIN StandardListMaster SLM on PM.TypeId = SLM.ListId"
+					+ " WHERE PM.isReturnable =1 and SLM.ListCode ='GENERIC' ORDER BY PM.Pid";
+			Cursor cur = db.selectSQL(sb);
+
 			if (cur != null) {
 				while (cur.moveToNext()) {
 					ProductMasterBO product = new ProductMasterBO();
@@ -93,7 +90,7 @@ public class EmptyReturnHelper {
 			String headerColumns = "orderid,orderdate,retailerid,ReturnValue,OFlag";
 			String returncolumns = "OrderID,Pid,ReturnQty,Price,UomID,TypeID,LineValue,RetailerID,LiableQty,Qty";
 
-			tid = QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
+			tid = QT(bmodel.getAppDataProvider().getUser().getUserid()
 					+ SDUtil.now(SDUtil.DATE_TIME_ID));
 
 			// save detail
@@ -120,7 +117,7 @@ public class EmptyReturnHelper {
 								+ ","
 								+ QT(lineValue + "")
 								+ ","
-								+ QT(bmodel.getRetailerMasterBO()
+								+ QT(bmodel.getAppDataProvider().getRetailMaster()
 										.getRetailerID()) + "," + "0" + ","
 								+ "0";
 
@@ -153,7 +150,7 @@ public class EmptyReturnHelper {
 								+ ","
 								+ QT(lineValue + "")
 								+ ","
-								+ QT(bmodel.getRetailerMasterBO()
+								+ QT(bmodel.getAppDataProvider().getRetailMaster()
 										.getRetailerID()) + "," + "0" + ","
 								+ "0";
 
@@ -166,22 +163,22 @@ public class EmptyReturnHelper {
 
 			// save header with total line value
 			values = tid + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-					+ QT(bmodel.getRetailerMasterBO().getRetailerID()) + ","
+					+ QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) + ","
 					+ QT(returnValue + "") + "," + 0;
 
 			db.insertSQL(DataMembers.tbl_orderHeader, headerColumns, values);
 
 			// update credit limit in RetailerMaster
 			db.executeQ("UPDATE RetailerMaster SET RetCreditLimit = "
-					+ (bmodel.getRetailerMasterBO().getBottle_creditLimit() + returnValue)
+					+ (bmodel.getAppDataProvider().getRetailMaster().getBottle_creditLimit() + returnValue)
 					+ " Where RetailerID = "
-					+ bmodel.getRetailerMasterBO().getRetailerID());
+					+ bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
 			// Update the lastest amount in RetailerMasterBo, then only reduce
 			// the amount for next order within the Screen
-			bmodel.getRetailerMasterBO().setBottle_creditLimit(
-					bmodel.getRetailerMasterBO().getBottle_creditLimit()
+			bmodel.getAppDataProvider().getRetailMaster().setBottle_creditLimit(
+					bmodel.getAppDataProvider().getRetailMaster().getBottle_creditLimit()
 							+ returnValue);
-			bmodel.getRetailerMasterBO().setProfile_creditLimit("" + (bmodel.getRetailerMasterBO().getBottle_creditLimit()
+			bmodel.getAppDataProvider().getRetailMaster().setProfile_creditLimit("" + (bmodel.getAppDataProvider().getRetailMaster().getBottle_creditLimit()
 					+ returnValue));
 			if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
 				saveTotalOrderReturnQty();

@@ -115,7 +115,7 @@ import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.sd.png.view.MOQHighlightDialog;
 import com.ivy.sd.png.view.MustSellReasonDialog;
 import com.ivy.sd.png.view.OrderDiscount;
-import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
+import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;

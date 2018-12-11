@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order.catalog;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +18,9 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -28,14 +28,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by dharmapriya.k on 11/28/2016,11:00 AM.
+ * Created by dharmapriya.k on 11/28/2016,11:00 AM
  */
 public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {//implements TabLayout.OnTabSelectedListener {
     private BusinessModel bmodel;
-    private Toolbar toolbar;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private ArrayList<String> mProductIdList;
-    private int mTotalScreenWidth = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +42,9 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -54,10 +52,10 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         setScreenTitle(getResources().getString(R.string.Product_details));
         DisplayMetrics dm = new DisplayMetrics();
         getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        mTotalScreenWidth = dm.widthPixels;
+        int mTotalScreenWidth = dm.widthPixels;
         mSelectedIdByLevelId = (HashMap<Integer, Integer>) getIntent().getSerializableExtra("FiveFilter");
         mProductIdList = getIntent().getStringArrayListExtra("ProductIdList");
-        ImageView pdt_image_details = (ImageView) findViewById(R.id.pdt_image_details);
+        ImageView pdt_image_details = findViewById(R.id.pdt_image_details);
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             if (bmodel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
 
@@ -73,12 +71,13 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
                 pdt_image_details.setImageResource(R.drawable.no_image_available);
             }
         }
-        TextView sih_detail = (TextView) findViewById(R.id.sih_detail);
-        TextView pdt_name = (TextView) findViewById(R.id.pdt_name);
-        sih_detail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        pdt_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        TextView sih_detail = findViewById(R.id.sih_detail);
+        TextView pdt_name = findViewById(R.id.pdt_name);
+        sih_detail.setTypeface(FontUtils.getFontRoboto(ProductDetailsCatalogActivity.this, FontUtils.FontType.MEDIUM));
+        pdt_name.setTypeface(FontUtils.getFontRoboto(ProductDetailsCatalogActivity.this, FontUtils.FontType.MEDIUM));
         pdt_name.setText(bmodel.selectedPdt.getProductName());
-        sih_detail.setText("SIH : " + bmodel.formatValue(bmodel.selectedPdt.getSIH()));
+        String strSIHDetail = getResources().getString(R.string.sih) + " : " + bmodel.formatValue(bmodel.selectedPdt.getSIH());
+        sih_detail.setText(strSIHDetail);
         pdt_name.setText(bmodel.selectedPdt.getProductName());
         StringBuilder sihDetail = new StringBuilder();
         if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
@@ -95,12 +94,14 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         }
 
         if (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP) {
-            sihDetail.append(getResources().getString(R.string.mrp) + ": ");
+            sihDetail.append(getResources().getString(R.string.mrp));
+            sihDetail.append(": ");
             sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getMRP()));
         }
 
         if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
-            sihDetail.append(getResources().getString(R.string.sih) + ": ");
+            sihDetail.append(getResources().getString(R.string.sih));
+            sihDetail.append(": ");
             sihDetail.append(bmodel.formatValue(bmodel.selectedPdt.getSIH()));
         }
         sih_detail.setText(sihDetail.toString());
@@ -134,7 +135,6 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
         int i = item.getItemId();
         if (i == android.R.id.home) {
             Intent intent = new Intent(ProductDetailsCatalogActivity.this, CatalogOrder.class);
@@ -150,17 +150,11 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
     /**
      * Method used to get image file from sdcard
      *
-     * @param fileName
-     * @return
+     * @param fileName name of the file
+     * @return path of the file
      */
     public String getImageFilePath(final String fileName) {
-        File file = new File(/*getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS)
-                + "/"
-                + bmodel.userMasterHelper.getUserMasterBO()
-                .getUserid()
-                + DataMembers.DIGITAL_CONTENT*/
-                bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name))
+        File file = new File(bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name))
                         + "/"
                         + DataMembers.CATALOG);
 

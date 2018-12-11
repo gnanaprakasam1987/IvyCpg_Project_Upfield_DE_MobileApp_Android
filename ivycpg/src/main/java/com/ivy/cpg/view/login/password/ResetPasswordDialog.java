@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.login.password;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -20,10 +20,11 @@ import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
+import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONObject;
 
@@ -33,13 +34,10 @@ import java.util.regex.Pattern;
 
 public class ResetPasswordDialog extends Dialog {
 
-    EditText edtNewPswd, edtRePswd, edtOTP;
+    private EditText edtOTP;
     private BusinessModel bmodel;
-    Button btnSubmit;
-    String Npassword;
-    Context ctx;
-    TextView lbl_forget_pswd;
-    TextView lbl_login;
+    private String Npassword;
+    private Context ctx;
 
     public ResetPasswordDialog(Context context) {
         super(context);
@@ -51,23 +49,24 @@ public class ResetPasswordDialog extends Dialog {
         super.onCreate(savedInstanceState);
 
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if (getWindow() != null)
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.dialog_forgot_password);
         setCancelable(false);
         bmodel = (BusinessModel) ctx.getApplicationContext();
         bmodel.configurationMasterHelper.downloadPasswordPolicy();
-        edtOTP = (EditText) findViewById(R.id.edtOtp);
-        edtNewPswd = (EditText) findViewById(R.id.edtNewPassword);
-        edtRePswd = (EditText) findViewById(R.id.edtConfirmPassword);
-        edtOTP.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        edtNewPswd.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        edtRePswd.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
-        lbl_forget_pswd = (TextView) findViewById(R.id.lbl_forget_pswd);
-        lbl_login = (TextView) findViewById(R.id.login);
-        lbl_login.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        lbl_forget_pswd.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        edtOTP = findViewById(R.id.edtOtp);
+        EditText edtNewPswd = findViewById(R.id.edtNewPassword);
+        EditText edtRePswd = findViewById(R.id.edtConfirmPassword);
+        edtOTP.setTypeface(FontUtils.getFontRoboto(ctx, FontUtils.FontType.LIGHT));
+        edtNewPswd.setTypeface(FontUtils.getFontRoboto(ctx, FontUtils.FontType.LIGHT));
+        edtRePswd.setTypeface(FontUtils.getFontRoboto(ctx, FontUtils.FontType.LIGHT));
+        Button btnSubmit = findViewById(R.id.btnSubmit);
+        TextView lbl_forget_pswd = findViewById(R.id.lbl_forget_pswd);
+        TextView lbl_login = findViewById(R.id.login);
+        lbl_login.setTypeface(FontUtils.getFontRoboto(ctx, FontUtils.FontType.LIGHT));
+        lbl_forget_pswd.setTypeface(FontUtils.getFontBalooHai(ctx, FontUtils.FontType.REGULAR));
         lbl_login.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -76,7 +75,7 @@ public class ResetPasswordDialog extends Dialog {
             }
         });
 
-        btnSubmit.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btnSubmit.setTypeface(FontUtils.getFontBalooHai(ctx, FontUtils.FontType.REGULAR));
         btnSubmit.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -121,12 +120,12 @@ public class ResetPasswordDialog extends Dialog {
                         edtNewPswd.requestFocus();
                         edtNewPswd.setError(ctx.getResources().getString(R.string.numeric_mandatory));
                     } else if (bmodel.configurationMasterHelper.IS_SPECIAL_CASE
-                            && !Pattern.compile("[/,:<>!~@#$%^&amp;*()+=?()\"|!\\-]")
+                            && !Pattern.compile("[/,:<>!~@#$%^&amp;*()+=?\"|\\-]")
                             .matcher(password).find()) {
                         edtNewPswd.requestFocus();
                         edtNewPswd.setError(ctx.getResources().getString(R.string.special_case_mandatory));
                     } else if (bmodel.configurationMasterHelper.IS_SAME_LOGIN
-                            && bmodel.userMasterHelper.getUserMasterBO()
+                            && bmodel.getAppDataProvider().getUser()
                             .getLoginName().equals(password)) {
                         edtNewPswd.requestFocus();
                         edtNewPswd.setError(ctx.getResources().getString(R.string.password_should_not_be_same));
@@ -137,7 +136,7 @@ public class ResetPasswordDialog extends Dialog {
                         edtRePswd.requestFocus();
                         edtRePswd.setError(ctx.getResources().getString(R.string.password_not_matched));
                     } else {
-                        if (bmodel.isOnline()) {
+                        if (NetworkUtils.isNetworkConnected(ctx)) {
                             Npassword = edtNewPswd.getText()
                                     .toString();
                             new uploadPassword().execute();
@@ -173,12 +172,6 @@ public class ResetPasswordDialog extends Dialog {
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                int listid = 0;
-                if (LoginHelper.getInstance(ctx).IS_PASSWORD_LOCK) {
-                    listid = bmodel.configurationMasterHelper.getActivtyType("RESET_PWD");
-                } else {
-                    listid = bmodel.configurationMasterHelper.getActivtyType("FP");
-                }
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("VersionCode",
                         bmodel.getApplicationVersionNumber());
@@ -203,7 +196,7 @@ public class ResetPasswordDialog extends Dialog {
                         while (itr.hasNext()) {
                             String key = (String) itr.next();
                             if (key.equals("Response")) {
-                                SharedPreferences passwordlockSharedPreference = ctx.getSharedPreferences("passwordlock", ctx.MODE_PRIVATE);
+                                SharedPreferences passwordlockSharedPreference = ctx.getSharedPreferences("passwordlock", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor edt = passwordlockSharedPreference.edit();
                                 edt.putInt("lockcount", 0);
                                 edt.apply();
@@ -261,15 +254,15 @@ public class ResetPasswordDialog extends Dialog {
                         0);
             } else if (result == 1) {
                 if (LoginHelper.getInstance(ctx).IS_PASSWORD_LOCK) {
-                    SharedPreferences mPasswordLockCountPref = ctx.getSharedPreferences("passwordlock", ctx.MODE_PRIVATE);
+                    SharedPreferences mPasswordLockCountPref = ctx.getSharedPreferences("passwordlock", Context.MODE_PRIVATE);
                     SharedPreferences.Editor edt = mPasswordLockCountPref.edit();
                     edt.putInt("passwordlock", 0);
                     edt.apply();
                 }
                 bmodel.passwordTemp = Npassword;
 
-                bmodel.userMasterHelper.changePassword(bmodel.userMasterHelper
-                        .getUserMasterBO().getUserid(), bmodel.passwordTemp);
+                bmodel.userMasterHelper.changePassword(bmodel.getAppDataProvider()
+                        .getUser().getUserid(), bmodel.passwordTemp);
 
                 onCreateDialog(0, ctx.getResources().getString(R.string.password_changed_successfully)).show();
             } else if (result == -1) {
