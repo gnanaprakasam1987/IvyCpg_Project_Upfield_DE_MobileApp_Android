@@ -12,44 +12,45 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:padding="@dimen/dimen_8dp"
-            android:layout_weight="4">
+            android:layout_weight="4"
+            android:padding="@dimen/dimen_8dp">
 
             <TextView
                 android:id="@+id/txt_productName"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:gravity="start"
-                android:textSize="@dimen/text_size_primary" />
+                android:gravity="start" />
 
             <TextView
                 android:id="@+id/txt_reason"
+                style="@style/TextViewListItemSecondaryHighlight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_productName"
-                android:gravity="start"
-                android:textSize="@dimen/text_size_primary" />
+                android:gravity="start" />
 
         </RelativeLayout>
 
 
         <TextView
             android:id="@+id/txt_returnCaseQuantity"
+            style="@style/TextViewListItemValues"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical" />
 
 
-
         <TextView
             android:id="@+id/txt_returnPieceQuantity"
+            style="@style/TextViewListItemValues"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_horizontal|center_vertical"
-            android:text="0" />
+            android:text="@string/zero" />
 
 
         <EditText
@@ -62,8 +63,7 @@
             android:gravity="center_horizontal|center_vertical"
             android:inputType="number"
             android:maxLength="4"
-            android:text="0" />
-
+            android:text="@string/zero" />
 
 
         <EditText
@@ -76,7 +76,7 @@
             android:gravity="center_horizontal|center_vertical"
             android:inputType="number"
             android:maxLength="4"
-            android:text="0" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

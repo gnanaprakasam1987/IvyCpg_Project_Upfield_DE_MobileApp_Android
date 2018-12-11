@@ -127,8 +127,6 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
                                 .applyLabels(findViewById(R.id.actual_PcQty)
                                         .getTag()));
 
-            ((TextView) findViewById(R.id.actual_caseQty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
-            ((TextView) findViewById(R.id.actual_PcQty)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
 
             if (!salesReturnDeliveryHelper.SHOW_SALES_RET_PCS) {
                 (findViewById(R.id.actual_PcQty)).setVisibility(View.GONE);
@@ -351,11 +349,6 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
                 productName = itemView.findViewById(R.id.txt_productName);
                 actualCaseQuantity = itemView.findViewById(R.id.txt_actualCaseQuantity);
                 actualPieceQuantity = itemView.findViewById(R.id.txt_actualPieceQuantity);
-
-                productName.setTypeface(FontUtils.getProductNameFont(mContext));
-                reason.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-                actualCaseQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
-                actualPieceQuantity.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, mContext));
 
                 SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
                 if (!salesReturnDeliveryHelper.SHOW_SALES_RET_PCS) {
