@@ -2,6 +2,7 @@ package com.ivy.cpg.view.collection;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
@@ -74,7 +75,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_cash_mode, container, false);
 
         setHasOptionsMenu(true);

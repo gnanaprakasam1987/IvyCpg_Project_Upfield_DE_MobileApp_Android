@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/zxing_transparent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.ivy.cpg.view.collection.BillPaymentActivityFragment">
@@ -32,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
@@ -45,7 +47,7 @@
                 <TextView
                     android:id="@+id/tv_disc_amt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                   style="@style/BannerTextViewValue" />
 
@@ -78,7 +80,7 @@
                 <TextView
                     android:id="@+id/tv_paidamt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     style="@style/BannerTextViewValue"/>
 
@@ -109,7 +111,7 @@
                 <TextView
                     android:id="@+id/tv_balanceamt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                    style="@style/BannerTextViewValue" />
 

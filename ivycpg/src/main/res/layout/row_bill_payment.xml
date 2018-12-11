@@ -1,66 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/parentLayout"
-    android:layout_width="fill_parent"
+    android:id="@+id/childLayout"
+    style="@style/ActivityListClickEffect"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="@dimen/dimens_10dp">
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/SubActivityNameStyle"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/collection_total_height"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dimens_16dp"
+        android:layout_marginLeft="@dimen/dimens_16dp"
+        android:layout_weight="1"
+        android:gravity="center|start"
+        android:text="Ret1"
+        android:textColor="@color/list_item_secondary_text_color"
+        android:textIsSelectable="false" />
+
+    <TextView
+        android:id="@+id/tv_paidamtlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/collection_total_height"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dimens_16dp"
+        android:layout_marginLeft="@dimen/dimens_16dp"
+        android:gravity="center|start"
+        android:tag="paid_label"
+        android:text=""
+        android:textColor="@color/colorPrimary"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/text_size_caption" />
+
 
     <LinearLayout
-        android:id="@+id/childLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="@dimen/dimens_10dp">
+        android:id="@+id/icon_ll"
+        android:layout_width="@dimen/activity_list_height"
+        android:layout_height="@dimen/activity_list_height"
+        android:layout_marginStart="@dimen/dimens_16dp"
+        android:layout_marginEnd="@dimen/dimens_16dp"
+        android:gravity="center">
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/collection_total_height"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/dimens_16dp"
-            android:layout_weight="1"
-            android:gravity="center|start"
-            android:text="Ret1"
-            android:textColor="@color/list_item_secondary_text_color"
-            android:textIsSelectable="false"
-            style="@style/SubActivityNameStyle"
-            android:layout_marginLeft="@dimen/dimens_16dp" />
-
-        <TextView
-            android:id="@+id/tv_paidamtlabel"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/collection_total_height"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/dimens_16dp"
-            android:gravity="center|start"
-            android:text=""
-            android:tag="paid_label"
-            android:textColor="@color/colorPrimary"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/text_size_caption"
-            android:layout_marginLeft="@dimen/dimens_16dp" />
-
-
-        <LinearLayout
-            android:id="@+id/icon_ll"
-            android:layout_width="@dimen/activity_list_height"
-            android:layout_height="@dimen/activity_list_height"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dimens_16dp"
-            android:layout_marginEnd="@dimen/dimens_16dp"
-            android:gravity="center"
-            android:layout_alignParentRight="true">
-
-            <ImageView
-                android:id="@+id/btn_inandout"
-                android:layout_width="@dimen/sub_activity_list_icon_circle"
-                android:layout_height="@dimen/sub_activity_list_icon_circle"
-                android:src="@drawable/activity_icon_next" />
-
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/btn_inandout"
+            android:layout_width="@dimen/sub_activity_list_icon_circle"
+            android:layout_height="@dimen/sub_activity_list_icon_circle"
+            android:src="@drawable/activity_icon_next" />
 
     </LinearLayout>
+
 </LinearLayout>

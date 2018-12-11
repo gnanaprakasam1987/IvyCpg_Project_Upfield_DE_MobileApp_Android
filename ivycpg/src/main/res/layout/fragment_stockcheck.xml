@@ -294,28 +294,48 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/llstockCheckedProductscount"
+                android:id="@+id/ll_Productscount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="horizontal">
+                android:layout_margin="@dimen/target_top_margin"
+                android:orientation="vertical"
+                android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/tv_stockCheckedProductscount"
-                    style="@style/TextViewFooterValue"
+                    android:id="@+id/tv_share_Product_counct_lbl"
+                    style="@style/TextViewFooterLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/zero"
-                    android:textSize="@dimen/highlight_small" />
+                    android:gravity="start"
+                    android:text="@string/total_lines" />
 
-                <TextView
-                    android:id="@+id/tv_productsCount"
-                    style="@style/TextViewFooterValue"
+                <LinearLayout
+                    android:id="@+id/llstockCheckedProductscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="/0"
-                    tools:ignore="HardcodedText" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_stockCheckedProductscount"
+                        style="@style/TextViewFooterValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/zero"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_productsCount"
+                        style="@style/TextViewFooterValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/0"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
             </LinearLayout>
+
+
 
             <LinearLayout
                 android:id="@+id/llstockCheckSharePercent"
@@ -323,8 +343,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_margin="@dimen/target_top_margin"
-                android:layout_toEndOf="@+id/llstockCheckedProductscount"
-                android:layout_toRightOf="@id/llstockCheckedProductscount"
+                android:layout_toEndOf="@+id/ll_Productscount"
+                android:layout_toRightOf="@id/ll_Productscount"
                 android:orientation="vertical"
                 android:visibility="visible">
 

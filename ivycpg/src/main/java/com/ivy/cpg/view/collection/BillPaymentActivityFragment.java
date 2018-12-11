@@ -83,7 +83,6 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
         setScreenTitle(bmodel.mSelectedActivityName);
 
         recyclerView_paytype = view.findViewById(R.id.paymentmode_recycview);
-        recyclerView_paytype.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
         mPayableAmtTV = view.findViewById(R.id.tv_paidamt);
         mDiscTV = view.findViewById(R.id.tv_disc_amt);
         mBalaceAmtTV = view.findViewById(R.id.tv_balanceamt);

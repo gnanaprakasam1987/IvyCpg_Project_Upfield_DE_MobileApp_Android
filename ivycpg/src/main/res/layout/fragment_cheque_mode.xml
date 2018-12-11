@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/mode_top_margin"
@@ -9,32 +10,8 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/ll_total"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimens_4dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_amount_title1"
-            android:layout_width="100dp"
-            android:layout_height="@dimen/collection_total_height"
-            android:gravity="center_vertical"
-            android:text="Total - " />
-
-        <TextView
-            android:id="@+id/tv_total_amount"
-            android:layout_width="150dp"
-            android:layout_height="@dimen/collection_total_height"
-            android:gravity="center_vertical"
-            android:text=" 0 " />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dimens_4dp"
         android:layout_weight="1"
         android:orientation="vertical"
@@ -44,9 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_360dp"
             android:layout_gravity="center"
-            android:elevation="@dimen/dimens_10dp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/dimens_8dp"
+            app:cardElevation="@dimen/dimens_10dp"
             app:contentPadding="@dimen/dimens_12dp">
 
             <LinearLayout
@@ -59,6 +36,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -70,11 +48,10 @@
 
                         <TextView
                             android:id="@+id/tv_chequeno_title"
+                            style="@style/TextViewCaption"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/cheque_no"
-                            android:textColor="@color/half_Black"
-                            android:textSize="@dimen/text_size_caption"
                             android:textStyle="bold" />
 
                         <EditText
@@ -96,13 +73,12 @@
 
                         <TextView
                             android:id="@+id/tv_date_title"
+                            style="@style/TextViewCaption"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
+                            android:layout_marginLeft="5dp"
                             android:text="@string/cheque_date"
-                            android:textColor="@color/half_Black"
-                            android:textSize="@dimen/text_size_caption"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -134,13 +110,12 @@
 
                     <TextView
                         android:id="@+id/tv_branch_title"
+                        style="@style/TextViewCaption"
                         android:layout_width="@dimen/cheque_no_width"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
                         android:text="@string/bank_name"
-                        android:textColor="@color/half_Black"
-                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <Spinner
@@ -161,13 +136,12 @@
 
                     <TextView
                         android:id="@+id/tv_bank_title"
+                        style="@style/TextViewCaption"
                         android:layout_width="@dimen/cheque_no_width"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
                         android:text="@string/branch_area"
-                        android:textColor="@color/half_Black"
-                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <Spinner
@@ -189,13 +163,12 @@
 
                     <TextView
                         android:id="@+id/tv_accountno_title"
+                        style="@style/TextViewCaption"
                         android:layout_width="@dimen/cheque_no_width"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
                         android:text="@string/acc_no"
-                        android:textColor="@color/half_Black"
-                        android:textSize="@dimen/text_size_caption"
                         android:textStyle="bold" />
 
                     <EditText
@@ -213,6 +186,7 @@
                     android:id="@+id/llbankbranch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal"
                     android:visibility="gone">
 
@@ -273,10 +247,11 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimens_6dp"
                         android:layout_weight="0.7"
@@ -284,13 +259,12 @@
 
                         <TextView
                             android:id="@+id/tv_amount_title"
+                            style="@style/TextViewCaption"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
+                            android:layout_marginLeft="5dp"
                             android:text="@string/amount"
-                            android:textColor="@color/half_Black"
-                            android:textSize="@dimen/text_size_caption"
                             android:textStyle="bold" />
 
                         <EditText
@@ -298,8 +272,8 @@
                             style="@style/EditTextGravity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
+                            android:layout_marginLeft="5dp"
                             android:layout_marginTop="@dimen/dimens_2dp"
                             android:clickable="true"
                             android:focusable="true"
@@ -321,6 +295,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/photo_capture"
                             android:src="@drawable/ic_camera"
                             android:tint="?attr/primarycolor"
 
@@ -354,37 +329,62 @@
         android:layout_marginTop="@dimen/dimens_10dp"
         android:background="@color/light_gray" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_60dp"
+        android:layout_height="@dimen/footer_height"
         android:layout_gravity="center"
+        android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="@dimen/dimens_10dp">
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/target_top_margin"
+            android:orientation="vertical"
+            android:visibility="visible"
+            tools:ignore="RelativeOverlap">
+
+            <TextView
+                android:id="@+id/tv_amount_label"
+                style="@style/TextViewFooterLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_amount" />
+
+            <TextView
+                android:id="@+id/tv_total_amount"
+                style="@style/TextViewFooterValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:maxLines="1"
+                android:text="@string/zero" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/cancelbtn"
-            style="?attr/roundedCustomButtonNormalTransparent"
-            android:layout_width="@dimen/dimens_100dp"
-            android:layout_height="@dimen/dimens_40dp"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dimen_6dp"
             android:layout_marginRight="@dimen/dimen_6dp"
-            android:text="@string/cancel"
-            android:textColor="@color/half_Black"
-            android:textSize="@dimen/text_size_primary"
-            android:textStyle="bold" />
+            android:layout_toStartOf="@+id/applybtn"
+            android:layout_toLeftOf="@+id/applybtn"
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/applybtn"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_width="@dimen/dimens_100dp"
-            android:layout_height="@dimen/dimens_40dp"
-            android:layout_marginEnd="@dimen/dimens_6dp"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dimens_6dp"
-            android:text="@string/apply"
-            android:textSize="@dimen/text_size_primary"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:layout_marginEnd="@dimen/dimens_6dp"
+            android:text="@string/apply" />
+    </RelativeLayout>
 
 
 </LinearLayout>

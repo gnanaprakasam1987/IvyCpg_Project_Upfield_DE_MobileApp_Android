@@ -55,12 +55,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        setScreenTitle("No Collection Reason");
-
-        ((TextView) findViewById(R.id.invoice_no)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.invoice_date)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.invoice_amount)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.invoice_reason)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        setScreenTitle(getString(R.string.no_collection_reason));
 
         recyclerView = findViewById(R.id.invoice_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -182,9 +177,6 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
                 invoicedate = view.findViewById(R.id.invoice_date);
                 invoiceAmt = view.findViewById(R.id.invoice_amount);
 
-                invoiceNumber.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
-                invoicedate.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
-                invoiceAmt.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
 
             }
         }

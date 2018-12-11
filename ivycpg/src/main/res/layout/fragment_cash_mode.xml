@@ -1,48 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/dimens_4dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:visibility="visible">
-
-    <TextView
-            android:id="@+id/tv_amount_title"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:text="Total - " />
-
-        <TextView
-            android:id="@+id/tv_total_amount"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:text=" 0 " />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimens_10dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:padding="@dimen/dimens_10dp">
 
         <android.support.v7.widget.CardView
+            android:id="@+id/cash_card_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_200dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/list_margin"
-            android:elevation="@dimen/dimens_10dp"
+            app:cardElevation="@dimen/dimens_10dp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/dimens_8dp">
 
@@ -66,13 +37,12 @@
                         android:id="@+id/tv_enteramount_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
+                        android:layout_marginStart="2dp"
                         android:text="@string/Amount"
-                        android:textColor="@color/half_Black"
-                        android:textSize="@dimen/text_size_secondary"
+                        style="@style/TextViewCaption"
                         android:textStyle="bold"
                         android:visibility="visible"
-                        android:layout_marginLeft="5dp" />
+                        android:layout_marginLeft="2dp" />
 
                     <EditText
                         android:id="@+id/edit_amount"
@@ -81,6 +51,8 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
+                        android:gravity="start"
+                        android:textAlignment="textStart"
                         android:maxLength="12"
                         />
                 </LinearLayout>
@@ -89,7 +61,6 @@
                     android:id="@+id/ll3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/ll2"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -99,78 +70,108 @@
                         android:id="@+id/tv_refno_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="Cash RefNo"
-                        android:textColor="@color/half_Black"
-                        android:textSize="@dimen/text_size_secondary"
+                        android:layout_marginStart="2dp"
+                        android:text="@string/cash_ref_no"
+                        style="@style/TextViewCaption"
                         android:visibility="visible"
                         android:textStyle="bold"
-                        android:layout_marginLeft="5dp" />
+                        android:layout_marginLeft="2dp" />
 
                     <EditText
                         android:id="@+id/edit_refno"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="true" />
+                        android:gravity="start"
+                        android:textAlignment="viewStart"
+                        android:clickable="true"
+                        tools:ignore="KeyboardInaccessibleWidget" />
                 </LinearLayout>
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
-    </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/ll_keypad"
-        android:layout_width="fill_parent"
+        android:layout_above="@+id/ll_vertical_line"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <include
             android:id="@+id/keypad"
             layout="@layout/keypad"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_vertical_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_above="@+id/ll_footer"
+        android:orientation="vertical"
         android:background="@color/light_gray" />
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/ll_footer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_60dp"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="@dimen/dimens_10dp">
+        android:background="?attr/customFooterBackgroundColor">
+
+        <LinearLayout
+            android:id="@+id/ll_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/target_top_margin"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_amount_title"
+                style="@style/TextViewFooterLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/total_amount" />
+
+            <TextView
+                android:id="@+id/tv_total_amount"
+                style="@style/TextViewFooterValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:maxLines="1"
+                android:text="@string/zero" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/cancelbtn"
-            style="?attr/roundedCustomButtonNormalTransparent"
-            android:layout_width="@dimen/dimens_100dp"
-            android:layout_height="@dimen/dimens_40dp"
+            style="?attr/roundedCustomButtonSmall"
             android:layout_marginEnd="@dimen/dimens_6dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/applybtn"
+            android:layout_toLeftOf="@+id/applybtn"
             android:text="@string/cancel"
-            android:textColor="@color/half_Black"
-            android:textSize="@dimen/text_size_primary"
-            android:textStyle="bold"
             android:layout_marginRight="@dimen/dimens_6dp" />
 
         <Button
             android:id="@+id/applybtn"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_width="@dimen/dimens_100dp"
-            android:layout_height="@dimen/dimens_40dp"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dimens_6dp"
             android:layout_marginEnd="@dimen/dimens_6dp"
-            android:text="@string/apply"
-            android:textSize="@dimen/text_size_primary"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:text="@string/apply" />
+    </RelativeLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

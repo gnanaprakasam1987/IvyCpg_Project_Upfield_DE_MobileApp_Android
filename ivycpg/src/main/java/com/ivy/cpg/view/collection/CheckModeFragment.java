@@ -44,7 +44,6 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.utils.AppUtils;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -127,10 +126,8 @@ public class CheckModeFragment extends IvyBaseFragment
 
         applyBtn = rootView.findViewById(R.id.applybtn);
         applyBtn.setOnClickListener(this);
-        applyBtn.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
         cancelBTn = rootView.findViewById(R.id.cancelbtn);
         cancelBTn.setOnClickListener(this);
-        cancelBTn.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
         collectionHelper.clearPaymentObjects(mPaymentBO);
         mTotalAmountTV = rootView.findViewById(R.id.tv_total_amount);

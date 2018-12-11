@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:elevation="@dimen/dimens_6dp"
+        app:cardElevation="@dimen/dimens_6dp"
         android:layout_margin="@dimen/card_rel_margin"
         app:cardBackgroundColor="?attr/customFooterBackgroundColor"
         app:cardCornerRadius="@dimen/dimens_4dp">
@@ -22,7 +23,8 @@
             android:elevation="0dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="@dimen/dimens_10dp">
+            android:padding="@dimen/dimens_10dp"
+            tools:ignore="UnusedAttribute">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -103,7 +105,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Due Bills" />
+                    android:text="@string/PendingBills" />
 
                 <TextView
                     android:id="@+id/tv_due_bill"
@@ -111,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="0" />
+                    android:text="@string/zero" />
 
             </LinearLayout>
 
@@ -152,8 +154,6 @@
             android:id="@+id/btn_close"
             style="?attr/roundedCustomButtonSmall"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_toEndOf="@id/paybtn"
-            android:layout_toRightOf="@id/paybtn"
             android:text="@string/next"
             android:textAllCaps="false"
             android:visibility="gone" />
@@ -171,6 +171,7 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <LinearLayout
