@@ -829,6 +829,8 @@
             android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetServiceActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliverySKULevel"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.ivy.cpg.view.serializedAsset.AddSerializedAssetActivity"
             android:screenOrientation="portrait" />
