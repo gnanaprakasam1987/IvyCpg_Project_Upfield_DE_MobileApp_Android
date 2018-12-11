@@ -58,6 +58,7 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.moq.MOQHighlightDialog;
 import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
@@ -66,6 +67,7 @@ import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
@@ -90,6 +92,7 @@ import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.PauseOnFling;
 import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.sd.png.view.Spinadapter;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -128,6 +131,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private final String mDeadProducts = "Filt15";
     //public int mSelectedLocationIndex;
     private RecyclerViewAdapter adapter;
+    private HashMap<Integer, Vector<LevelBO>> loadedFilterValues;
+    private Vector<LevelBO> sequence;
+    private Vector<LevelBO> filterValues;
+    private Spinadapter spinadapter;
+    private ArrayList<Integer> selectedBrands = new ArrayList<>();
+
     private HashMap<Integer, Integer> mSelectedIdByLevelId = new HashMap<>();
     private int SbdDistPre = 0; // Dist stock
     private int sbdDistAchieved = 0;
@@ -151,6 +160,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private EditText search_txt;
     private String searchedtext = "";
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
+    private int categoryIndex, brandIndex;
 
     private double totalvalue = 0;
     private DrawerLayout mDrawerLayout;
@@ -701,6 +711,30 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     public void onStart() {
 
         super.onStart();
+        loadedFilterValues = bmodel.productHelper.getFilterProductsByLevelId();
+        if (loadedFilterValues != null && loadedFilterValues.size() != 0 && bmodel.productHelper.getFilterProductLevels() != null && bmodel.productHelper.getFilterProductLevels().size() != 0) {
+            sequence = bmodel.productHelper.getFilterProductLevels();
+            for (int i = 0; i < sequence.size(); i++) {
+                if (sequence.get(i).getLevelName().equals("Category")) {
+                    categoryIndex = i;
+                } else if (sequence.get(i).getLevelName().equals("Brand")) {
+                    brandIndex = i;
+                }
+            }
+
+            if (sequence.size() > 0) {
+                int levelID = sequence.get(categoryIndex).getProductID();
+                filterValues = new Vector<LevelBO>();
+                filterValues.addAll(loadedFilterValues.get(levelID));
+                LevelBO levelBO = new LevelBO();
+                levelBO.setLevelName("All");
+                //levelBO.setProductLevel("0");
+                levelBO.setParentID(0);
+                filterValues.add(0, levelBO);
+                spinadapter = new Spinadapter(CatalogOrder.this, android.R.layout.simple_spinner_item,//loadedFilterValues.get(levelID));
+                        filterValues);
+            }
+        }
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
     }

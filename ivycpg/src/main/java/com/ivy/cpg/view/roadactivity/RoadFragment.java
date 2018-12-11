@@ -27,7 +27,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.AdhocGallery;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.utils.AppUtils;
@@ -57,7 +56,7 @@ public class RoadFragment extends IvyBaseFragment {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        roadActivityHelper = RoadActivityHelper.getInstance(getActivity());
+        roadActivityHelper = RoadActivityHelper.getInstance(getContext());
     }
 
     @Override

@@ -76,7 +76,7 @@ import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.IndicativeOrderReasonDialog;
+import com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonDialog;
 import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.png.view.OrderSummaryDialogFragment;
 import com.ivy.sd.png.view.SerialNoEntryScreen;
@@ -232,7 +232,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
 
         setDiscountDialog(false);
-
+        signatureName = "";
 
         String screenTitle = bModel.configurationMasterHelper
                 .getHomescreentwomenutitle("MENU_CLOSING");

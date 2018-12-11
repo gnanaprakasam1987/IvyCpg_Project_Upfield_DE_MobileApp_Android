@@ -2216,7 +2216,7 @@ public class AssetTrackingHelper {
      */
     private void downloadPosmMaster(Context mContext) {
 
-        String posmIds = "";
+        ArrayList<String> mappingIDs;
 
         mAssetTrackingList = new ArrayList<>();
         mUniqueSerialNo = new HashMap<>();
@@ -2229,15 +2229,14 @@ public class AssetTrackingHelper {
 
             db.openDataBase();
             mBusinessModel.productHelper.getRetailerlevel(MENU_POSM);
-            posmIds = getPosmId(db, mContext);
+            mappingIDs = getPosmId(db, mContext);
 
-            sb.append("select Distinct P.PosmId,P.Posmdesc,PGCM.Qty,PPM.Productid,PCM.InStoreLocId,SDM.listname as locname,PM.ParentHierarchy as ParentHierarchy,PCM.Id as MappingId from PosmMaster P  ");
+            sb.append("select Distinct P.PosmId,P.Posmdesc,PGCM.Qty,PPM.Productid,PCM.InStoreLocId,SDM.listname as locname,PM.ParentHierarchy as ParentHierarchy,PCM.Id as MappingId,PCM.MappingSetId as GroupID from PosmMaster P  ");
             sb.append("inner join POSMGroupCriteriaMappingV2 PGCM on P.PosmID=PGCM.PosmId ");
             sb.append("inner join POSMCriteriaMappingV2 PCM on PCM.Id=PGCM.Id and PCM.MappingSetId=PGCM.MappingSetId ");
             sb.append("left join POSMProductMapping PPM on P.PosmID=PPM.posmid ");
             sb.append("left join Standardlistmaster SDM on SDM.listid=PCM.InStoreLocId and SDM.ListType='PL' ");
             sb.append("left join ProductMaster PM on PM.PID=PPM.Productid ");
-            sb.append("where PGCM.PosmId in(" + posmIds + ")");
 
 
             if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
@@ -2252,22 +2251,24 @@ public class AssetTrackingHelper {
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    assetTrackingBO = new AssetTrackingBO();
-                    assetTrackingBO.setAssetID(c.getInt(0));
-                    assetTrackingBO.setAssetName(c.getString(1));
+                    if (mappingIDs.contains("/" + c.getString(c.getColumnIndex("MappingId")) + "" + c.getString(c.getColumnIndex("GroupID")) + "/")) {
+                        assetTrackingBO = new AssetTrackingBO();
+                        assetTrackingBO.setAssetID(c.getInt(0));
+                        assetTrackingBO.setAssetName(c.getString(1));
 
-                    assetTrackingBO.setTarget(c.getInt(2));
-                    assetTrackingBO.setProductId(c.getInt(3));
+                        assetTrackingBO.setTarget(c.getInt(2));
+                        assetTrackingBO.setProductId(c.getInt(3));
 
-                    assetTrackingBO.setGroupLevelName("");
-                    assetTrackingBO.setGroupLevelId(0);
+                        assetTrackingBO.setGroupLevelName("");
+                        assetTrackingBO.setGroupLevelId(0);
 
-                    assetTrackingBO.setTargetLocId(c.getInt(4));
-                    assetTrackingBO.setLocationName(c.getString(c.getColumnIndex("locname")));
-                    assetTrackingBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
-                    assetTrackingBO.setmMappingID(c.getString(c.getColumnIndex("MappingId")));
+                        assetTrackingBO.setTargetLocId(c.getInt(4));
+                        assetTrackingBO.setLocationName(c.getString(c.getColumnIndex("locname")));
+                        assetTrackingBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                        assetTrackingBO.setmMappingID(c.getString(c.getColumnIndex("MappingId")));
 
-                    mAssetTrackingList.add(assetTrackingBO);
+                        mAssetTrackingList.add(assetTrackingBO);
+                    }
 
                 }
 
@@ -2297,10 +2298,10 @@ public class AssetTrackingHelper {
         }
     }
 
-    private String getPosmId(DBUtil db, Context mContext) {
-        String posmIDs = "";
+    private ArrayList<String> getPosmId(DBUtil db, Context mContext) {
         ArrayList<String> mappingsetId = new ArrayList<>();
         ArrayList<String> attrmappingsetId = new ArrayList<>();
+        ArrayList<String> tempmappingsetId = new ArrayList<>(); // used for checking attr mapped
 
 
         String attrQuery = "Select distinct Id,MappingSetId from POSMCriteriaAttributesMappingV2 PCA"
@@ -2311,46 +2312,43 @@ public class AssetTrackingHelper {
 
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
-                attrmappingsetId.add(c.getInt(0) + "" + c.getInt(1));
+                attrmappingsetId.add("/" + c.getInt(0) + "" + c.getInt(1) + "/");
             }
         }
 
-        String criteriaQuery = "Select Distinct Id,MappingSetId,AccountId,Retailerid,LocationId,ChannelId from POSMCriteriaMappingV2 where "
-                + " AccountId in(0," + mBusinessModel.getRetailerMasterBO().getAccountid() + ") and "
+        String criteriaQuery = "Select Distinct pcm.Id,pcm.MappingSetId,pcm.AccountId,pcm.Retailerid,pcm.LocationId,pcm.ChannelId,IFNULL(pca.Id,0) as attrMapped from POSMCriteriaMappingV2 pcm "
+                + " Left Join POSMCriteriaAttributesMappingV2 pca on pca.Id = pcm.Id and pca.MappingSetId = pcm.MappingSetId "
+                + "where AccountId in(0," + mBusinessModel.getRetailerMasterBO().getAccountid() + ") and "
                 + " Retailerid in(0," + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ") and "
                 + " LocationId in(0," + mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()) + ") and "
                 + " ChannelId in(0," + mBusinessModel.getRetailerMasterBO().getSubchannelid() + ") OR "
                 + " ChannelId in (0," + AppUtils.QT(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext)) + ")";
 
+        //TODO Mansoor to Verify
         c = db.selectSQL(criteriaQuery);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
 
+                // only mapped through attribute
                 if (c.getInt(2) == 0 && c.getInt(3) == 0 && c.getInt(4) == 0 && c.getInt(5) == 0) {
-                    if (attrmappingsetId.contains(c.getInt(0) + "" + c.getInt(1)))
-                        mappingsetId.add(c.getInt(0) + "" + c.getInt(1));
+                    tempmappingsetId.add("/" + c.getInt(0) + "" + c.getInt(1) + "/");
                 } else {
-                    mappingsetId.add(c.getInt(0) + "" + c.getInt(1));
+                    mappingsetId.add("/" + c.getInt(0) + "" + c.getInt(1) + "/");
                 }
             }
         }
 
-        String posmGroupQuery = "Select Id,MappingSetId,PosmId from POSMGroupCriteriaMappingV2";
+        //to remove mappingID if it doesnt match through retailer Attributes
+        for (String attrmappingID : tempmappingsetId)
+            if (attrmappingsetId.contains(attrmappingID))//matched add
+                mappingsetId.add(attrmappingID);
+            else // not matched need to remove that mappingId if it is present in list (AND logic)
+                mappingsetId.remove(attrmappingID);
 
-        c = db.selectSQL(posmGroupQuery);
 
-        if (c.getCount() > 0) {
-            StringBuilder sb = new StringBuilder();
-            while (c.moveToNext()) {
+        c.close();
 
-                if (mappingsetId.contains(c.getInt(0) + "" + c.getInt(1))) {
-                    sb.append(c.getInt(2)).append(",");
-                }
-            }
-            posmIDs = sb.deleteCharAt(sb.length() - 1).toString();
-        }
-
-        return posmIDs;
+        return mappingsetId;
 
     }
 }

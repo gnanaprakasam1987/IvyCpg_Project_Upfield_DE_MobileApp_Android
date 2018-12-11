@@ -2853,8 +2853,6 @@ public class SchemeDetailsMasterHelper {
                                                 + (batchProductBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                                                 + (batchProductBO.getOrderedOuterQty() * productMasterBO.getOutersize());
 
-                                        if(isAccumulationScheme)
-                                        totalQuantity += getTotalAccumulationQuantity(schemeId, productMasterBO.getProductID(), isBatchWise, batchId);
 
                                         total += getNumberOfGivenUOM(productMasterBO, uomId, totalQuantity);
 
@@ -2866,14 +2864,17 @@ public class SchemeDetailsMasterHelper {
                 } else {
                     int totalQuantity = productMasterBO.getOrderedPcsQty() + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                             + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize());
-                    if(isAccumulationScheme)
-                    totalQuantity += getTotalAccumulationQuantity(schemeId, productMasterBO.getProductID(), isBatchWise, batchId);
 
                     total += getNumberOfGivenUOM(productMasterBO, uomId, totalQuantity);
                 }
             }
         }
 
+        // Getting accumulation qty for every buy products
+        if(isAccumulationScheme) {
+            int totalQuantity = getTotalAccumulationQuantity(schemeId, bModel.productHelper.getProductMasterBOById(productId).getProductID(), isBatchWise, batchId);
+            total += getNumberOfGivenUOM(bModel.productHelper.getProductMasterBOById(productId), uomId, totalQuantity);
+        }
 
         return total;
 
@@ -2908,8 +2909,7 @@ public class SchemeDetailsMasterHelper {
                                                     + (batchProductBO.getOrderedCaseQty() * batchProductBO.getCsrp())
                                                     + (batchProductBO.getOrderedOuterQty() * batchProductBO.getOsrp());
                                         }
-                                        if(isAccumulationScheme)
-                                        totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
+
 
 
                                     }
@@ -2930,24 +2930,29 @@ public class SchemeDetailsMasterHelper {
                                 + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp());
                     }
 
-                    if(isAccumulationScheme)
-                    totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
+
                 }
             }
         }
+
+        // Getting accumulation value for every buy products
+        if(isAccumulationScheme)
+            totalValue += getTotalAccumulationValue(schemeId, productId, isBatchWise, batchId);
 
         return SDUtil.formatAsPerCalculationConfig(totalValue);
 
     }
 
     private int getNumberOfGivenUOM(ProductMasterBO productMasterBO, int uomId, int totalQuantity) {
-        int total;
-        if (uomId == productMasterBO.getCaseUomId()) {
-            total = totalQuantity / productMasterBO.getCaseSize();
-        } else if (uomId == productMasterBO.getOuUomid()) {
-            total = totalQuantity / productMasterBO.getOutersize();
-        } else {
-            total = totalQuantity;
+        int total=0;
+        if(productMasterBO!=null) {
+            if (uomId == productMasterBO.getCaseUomId()) {
+                total = totalQuantity / productMasterBO.getCaseSize();
+            } else if (uomId == productMasterBO.getOuUomid()) {
+                total = totalQuantity / productMasterBO.getOutersize();
+            } else {
+                total = totalQuantity;
+            }
         }
         return total;
     }

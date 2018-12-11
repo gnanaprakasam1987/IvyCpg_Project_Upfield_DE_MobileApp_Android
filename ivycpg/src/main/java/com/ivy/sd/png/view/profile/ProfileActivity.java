@@ -95,16 +95,16 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
-import com.ivy.sd.png.view.AssetHistoryFragment;
+import com.ivy.sd.png.view.profile.assetHistory.AssetHistoryFragment;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.MSLUnsoldFragment;
+import com.ivy.sd.png.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.sd.png.view.SBDGapFragment;
-import com.ivy.sd.png.view.SalesPerCategory;
 import com.ivy.cpg.view.task.TaskListFragment;
-import com.ivy.sd.png.view.UserDialogue;
+import com.ivy.sd.png.view.profile.userSelection.UserSelectionDialogue;
+import com.ivy.sd.png.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
+import com.ivy.sd.png.view.profile.orderandinvoicehistory.OrderHistoryFragment;
 import com.ivy.sd.png.view.profile.otpValidation.OTPValidationDialog;
 
 import org.json.JSONObject;
@@ -433,7 +433,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 Commons.printException("Error while setting label for Msl Tab", ex);
             }
         }
-        if (bmodel.configurationMasterHelper.SHOW_HISTORY) {
+        if (bmodel.configurationMasterHelper.SHOW_ORDER_HISTORY) {
             try {
                 bmodel.configurationMasterHelper.loadProfileHistoryConfiguration();
                 if ((bmodel.labelsMasterHelper.applyLabels("order_history") != null) &&
@@ -1376,7 +1376,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 //profileFragment.onProfileFragemntListener(ProfileActivity.this);
                 return profileFragment;
             } else if (tabName.equals(order_history_title)) {
-                return new HistoryFragment();
+                return new OrderHistoryFragment();
             } else if (tabName.equals(plan_outlet_title)) {
                 return new PlanningOutletFragment();
             } else if (tabName.equals(retailer_kpi_title)) {
@@ -1790,7 +1790,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             ArrayList<UserMasterBO> mUserList = mUserByRetailerID.get(ret
                     .getRetailerID());
             if (mUserList != null) {
-                UserDialogue userDialogue = new UserDialogue(
+                UserSelectionDialogue userSelectionDialogue = new UserSelectionDialogue(
                         this, mUserList,
                         new UserDialogInterface() {
 
@@ -1815,8 +1815,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                 }
                             }
                         });
-                userDialogue.setCancelable(false);
-                userDialogue.show();
+                userSelectionDialogue.setCancelable(false);
+                userSelectionDialogue.show();
                 isClicked = false;
 
             } else {

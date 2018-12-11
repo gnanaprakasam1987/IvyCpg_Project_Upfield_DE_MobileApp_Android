@@ -816,11 +816,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 } else {
                     holder.etPromoQty.setVisibility(View.GONE);
                 }
-                if (promotionHelper.SHOW_PROMO_ANNOUNCER) {
-                    holder.rbAnnounced.setVisibility(View.VISIBLE);
-                } else {
-                    holder.rbAnnounced.setVisibility(View.GONE);
-                }
+                if (!promotionHelper.SHOW_PROMO_ANNOUNCER)
+                    (row.findViewById(R.id.ll_announced)).setVisibility(View.GONE);
 
                 holder.rbExecuted.setOnClickListener(new OnClickListener() {
                     @Override

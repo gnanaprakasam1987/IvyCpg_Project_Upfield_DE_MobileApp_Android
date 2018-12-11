@@ -34,7 +34,7 @@ public class UserFeedbackActivity extends IvyBaseActivityNoActionBar implements 
     private LinearLayout mRankingLayout;
     private ArrayList<ImageView> mRanks;
     private int mRankSize;
-    UserFeedBackHelper userFeedBackHelper;
+    private UserFeedBackHelper userFeedBackHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -308,7 +308,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                     BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                             ConfigurationMasterHelper.SECRET_KEY);
                     AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-                    ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.img_Down_URL + "Product/ProductCatalog");
+                    ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.IMG_DOWN_URL + "Product/ProductCatalog");
 
                     if (listing.getObjectSummaries().size() > 0) {
                         for (S3ObjectSummary fileList : listing.getObjectSummaries()) {
