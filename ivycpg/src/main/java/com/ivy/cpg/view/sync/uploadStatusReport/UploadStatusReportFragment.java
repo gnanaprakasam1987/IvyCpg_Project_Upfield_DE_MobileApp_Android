@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.sync.uploadStatusReport;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,11 +15,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.SyncStatusBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 
@@ -27,10 +28,10 @@ import java.util.ArrayList;
  * Created by anbarasan on 25/4/18.
  */
 
-public class SyncStatusReportFragment extends IvyBaseFragment {
+public class UploadStatusReportFragment extends IvyBaseFragment {
 
-    View view;
-    BusinessModel bmodel;
+    private View view;
+    private BusinessModel bmodel;
     private RecyclerView rvPerformance;
 
 
@@ -40,7 +41,7 @@ public class SyncStatusReportFragment extends IvyBaseFragment {
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        view = inflater.inflate(R.layout.fragment_sync_status, container, false);
+        view = inflater.inflate(R.layout.fragment_upload_status, container, false);
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
@@ -66,15 +67,23 @@ public class SyncStatusReportFragment extends IvyBaseFragment {
     public void onStart() {
         super.onStart();
         setHasOptionsMenu(true);
-        initializeViews();
-        bmodel.reportHelper.downloadSyncStatusReport();
 
-        SyncStatusAdapter adapter=new SyncStatusAdapter(bmodel.reportHelper.getmSyncStatusBOList());
+        UploadStatusHelper uploadStatusHelper = new UploadStatusHelper(getContext());
+
+        ArrayList<SyncStatusBO> data=uploadStatusHelper.downloadSyncStatusReport();
+
+        if(data.size() == 0){
+            onBackButtonClick();
+        }
+
+        initializeViews();
+
+        SyncStatusAdapter adapter=new SyncStatusAdapter(data);
         rvPerformance.setAdapter(adapter);
     }
 
     private void initializeViews() {
-        rvPerformance = (RecyclerView) view.findViewById(R.id.rvPerformance);
+        rvPerformance = view.findViewById(R.id.rvPerformance);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         rvPerformance.setLayoutManager(mLayoutManager);
         rvPerformance.setItemAnimator(new DefaultItemAnimator());
@@ -92,10 +101,6 @@ public class SyncStatusReportFragment extends IvyBaseFragment {
     }
 
     private void onBackButtonClick() {
-        Intent i = new Intent(getActivity(), HomeScreenActivity.class);
-        i.putExtra("menuCode", "MENU_SYNC");
-        i.putExtra("title", "Sync");
-        startActivity(i);
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
@@ -112,10 +117,10 @@ public class SyncStatusReportFragment extends IvyBaseFragment {
 
             public MyViewHolder(View view) {
                 super(view);
-                tvTransactionId = (TextView) view.findViewById(R.id.idValueTv);
-                tvTransactionTableName = (TextView) view.findViewById(R.id.transactionValue);
-                tvLineCount = (TextView) view.findViewById(R.id.lineCountValue);
-                dateCardview=(CardView) view.findViewById(R.id.dateCardview);
+                tvTransactionId = view.findViewById(R.id.idValueTv);
+                tvTransactionTableName = view.findViewById(R.id.transactionValue);
+                tvLineCount = view.findViewById(R.id.lineCountValue);
+                dateCardview= view.findViewById(R.id.dateCardview);
 
                 tvTransactionId.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 tvTransactionTableName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

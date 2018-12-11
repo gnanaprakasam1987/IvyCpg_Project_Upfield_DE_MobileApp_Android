@@ -68,6 +68,10 @@ import com.ivy.cpg.view.sync.catalogdownload.CatalogImagesDownlaod;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity;
+import com.ivy.cpg.view.sync.uploadStatusReport.UploadStatusActivity;
+import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
+import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
+import com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity;
 import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -813,7 +817,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         else
             menu.findItem(R.id.menu_switch_user).setVisible(false);
 
-        if (!bmodel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT)
+        if (!bmodel.configurationMasterHelper.SHOW_DATA_UPLOAD_STATUS)
             menu.findItem(R.id.menu_sync_report).setVisible(false);
 
         if (bmodel.getDigitalContentLargeFileURLS().size() > 0) {
@@ -874,14 +878,11 @@ public class SynchronizationFragment extends IvyBaseFragment
             dialog.show(ft, "MENU_SYNC");
 
         } else if (i == R.id.menu_sync_report) {
-            bmodel.reportHelper.downloadSyncStatusReport();
-            if (bmodel.reportHelper.getmSyncStatusBOList().size() > 0) {
-                startActivity(new Intent(getActivity(), SyncStatusActivity.class));
-                getActivity().finish();
+                startActivity(new Intent(getActivity(), UploadStatusActivity.class));
                 getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-            } else {
-                bmodel.showAlert(getResources().getString(R.string.no_data_exists), 0);
-            }
+        }
+        else if (i == R.id.menu_file_download){
+            startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
         }
         else if (i == R.id.menu_file_download){
             startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));

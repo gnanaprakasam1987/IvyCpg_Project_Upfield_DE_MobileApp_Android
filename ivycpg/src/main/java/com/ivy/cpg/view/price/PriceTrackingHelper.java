@@ -360,7 +360,7 @@ public class PriceTrackingHelper {
                                 + "," + sku.getPriceCompliance() + ","
                                 + sku.getReasonID() + "," + sku.getOwn() + ","
                                 + bmodel.getRetailerMasterBO().getRetailerID()
-                                + "," + 0 + "," + sku.getMrp_ou() + "," + sku.getPriceMOP();
+                                + "," + 0 + "," + sku.getMrp_ou() + "," + sku.getPriceMOP() +","+ sku.getPriceChangeReasonID();
 
                         if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                             productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());

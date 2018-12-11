@@ -2316,17 +2316,20 @@ public class AssetTrackingHelper {
             }
         }
 
-        String criteriaQuery = "Select Distinct Id,MappingSetId,AccountId,Retailerid,LocationId,ChannelId from POSMCriteriaMappingV2 where "
-                + " AccountId in(0," + mBusinessModel.getRetailerMasterBO().getAccountid() + ") and "
+        String criteriaQuery = "Select Distinct pcm.Id,pcm.MappingSetId,pcm.AccountId,pcm.Retailerid,pcm.LocationId,pcm.ChannelId,IFNULL(pca.Id,0) as attrMapped from POSMCriteriaMappingV2 pcm "
+                + " Left Join POSMCriteriaAttributesMappingV2 pca on pca.Id = pcm.Id and pca.MappingSetId = pcm.MappingSetId "
+                + "where AccountId in(0," + mBusinessModel.getRetailerMasterBO().getAccountid() + ") and "
                 + " Retailerid in(0," + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ") and "
                 + " LocationId in(0," + mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()) + ") and "
                 + " ChannelId in(0," + mBusinessModel.getRetailerMasterBO().getSubchannelid() + ") OR "
                 + " ChannelId in (0," + AppUtils.QT(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext)) + ")";
 
+        //TODO Mansoor to Verify
         c = db.selectSQL(criteriaQuery);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
 
+                // only mapped through attribute
                 if (c.getInt(2) == 0 && c.getInt(3) == 0 && c.getInt(4) == 0 && c.getInt(5) == 0) {
                     tempmappingsetId.add("/" + c.getInt(0) + "" + c.getInt(1) + "/");
                 } else {

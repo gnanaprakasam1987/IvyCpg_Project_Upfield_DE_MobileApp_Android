@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.sync.uploadStatusReport;
 
 /**
  * Created by anbarasan on 25/4/18.
