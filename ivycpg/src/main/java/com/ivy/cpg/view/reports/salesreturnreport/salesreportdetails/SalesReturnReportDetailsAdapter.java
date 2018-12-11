@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -20,6 +21,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
     private Context mContext;
 
     private BusinessModel businessModel;
+    private SalesReturnHelper salesReturnHelper;
 
     /**
      * Initialize the values
@@ -31,6 +33,7 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
         this.salesReturnReportBosList = salesReturnReportBosList;
         this.mContext = context;
         businessModel = (BusinessModel) context.getApplicationContext();
+        salesReturnHelper=SalesReturnHelper.getInstance(context);
     }
 
 
@@ -66,11 +69,11 @@ public class SalesReturnReportDetailsAdapter extends RecyclerView.Adapter<SalesR
         holder.outerQty.setText(String.valueOf(salesReturnReportBosList.get(position).getOuterQty()));
 
 
-        if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+        if (!salesReturnHelper.SHOW_SALES_RET_CASE)
             holder.caseQty.setVisibility(View.GONE);
-        if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+        if (!salesReturnHelper.SHOW_SALES_RET_PCS)
             holder.pieceQty.setVisibility(View.GONE);
-        if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
+        if (!salesReturnHelper.SHOW_SALES_RET_OUTER_CASE)
             holder.outerQty.setVisibility(View.GONE);
 
         if (position % 2 == 0)
