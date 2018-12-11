@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.reports.salesreturnreport.SalesReturnReportHelper;
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -35,6 +36,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
     private Unbinder unbinder;
+    private SalesReturnHelper salesReturnHelper;
 
     @BindView(R.id.recyclerView_salesReport)
     RecyclerView recyclerView;
@@ -108,11 +110,11 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         }
 
 
-        if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE)
+        if (!salesReturnHelper.SHOW_SALES_RET_CASE)
             findViewById(R.id.cqty).setVisibility(View.GONE);
-        if (!businessModel.configurationMasterHelper.SHOW_ORDER_PCS)
+        if (!salesReturnHelper.SHOW_SALES_RET_PCS)
             findViewById(R.id.piececqty).setVisibility(View.GONE);
-        if (!businessModel.configurationMasterHelper.SHOW_OUTER_CASE)
+        if (!salesReturnHelper.SHOW_SALES_RET_OUTER_CASE)
             findViewById(R.id.outercqty).setVisibility(View.GONE);
     }
 
@@ -127,6 +129,9 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
         }
 
         totalValue(uId);
+
+        salesReturnHelper = SalesReturnHelper.getInstance(this);
+        salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
 
         SalesReturnReportHelper salesReturnReportHelper = new SalesReturnReportHelper();
         mCompositeDisposable = new CompositeDisposable();

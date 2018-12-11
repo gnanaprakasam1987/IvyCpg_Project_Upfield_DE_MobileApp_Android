@@ -56,7 +56,7 @@ public class DamageReturenReportHelper {
                             DataMembers.DB_PATH);
                     db.openDataBase();
                     Cursor c = db
-                            .selectSQL("select distinct InvoiceNo,InvoiceDate,invNetamount,RM.RetailerName,ifnull(vh.status,'') as status from InvoiceDeliveryMaster idm inner join RetailerMaster RM  on RM.RetailerID=idm.Retailerid left join VanDeliveryHeader  vh on vh.invoiceid=idm.InvoiceNo  group by idm.InvoiceNo");
+                            .selectSQL("select distinct InvoiceNo,InvoiceDate,invNetamount,RM.RetailerName,ifnull(vh.status,'') as status,InvoiceRefNo from InvoiceDeliveryMaster idm inner join RetailerMaster RM  on RM.RetailerID=idm.Retailerid left join VanDeliveryHeader  vh on vh.invoiceid=idm.InvoiceNo  group by idm.InvoiceNo");
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
                             pandingDeliveryBO = new PendingDeliveryBO();
@@ -65,6 +65,7 @@ public class DamageReturenReportHelper {
                             pandingDeliveryBO.setInvNetamount(c.getString(2));
                             pandingDeliveryBO.setRetailerName(c.getString(3));
                             pandingDeliveryBO.setStatus(c.getString(4));
+                            pandingDeliveryBO.setInvoiceRefNo(c.getString(5));
                             pandingDeliveryBOS.add(pandingDeliveryBO);
                         }
                         c.close();
