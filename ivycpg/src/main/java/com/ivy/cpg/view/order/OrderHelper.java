@@ -3691,4 +3691,18 @@ public class OrderHelper {
         }
         return totalReturnAmount;
     }
+
+    public int getTotalOrderedQty(ProductMasterBO productBO) {
+        if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE
+                && !businessModel.configurationMasterHelper.SHOW_OUTER_CASE
+                && !businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
+            return productBO.getOrderedCaseQty();
+        } else if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE
+                && businessModel.configurationMasterHelper.SHOW_OUTER_CASE
+                && !businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
+            return productBO.getOrderedOuterQty();
+        } else {
+            return -1;
+        }
+    }
 }
