@@ -505,16 +505,20 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                     if (bmodel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
                         SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
                         ArrayList<SalesReturnDeliveryDataModel> dataList = new ArrayList<>();
+                        String key = salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId() +
+                                salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getReasonID() +
+                                salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getInVoiceNumber();
                         if (salesReturnDeliveryHelper.getSalesReturnDelDataMap() != null
                                 &&!salesReturnDeliveryHelper.getSalesReturnDelDataMap().isEmpty()
-                                && salesReturnDeliveryHelper.getSalesReturnDelDataMap().containsKey(salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId()))
-                            dataList = salesReturnDeliveryHelper.getSalesReturnDelDataMap().get(salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId());
+                                && salesReturnDeliveryHelper.getSalesReturnDelDataMap().containsKey(key))
+                            dataList = salesReturnDeliveryHelper.getSalesReturnDelDataMap().get(key);
+
                         if (!dataList.isEmpty()) {
                         Intent i = new Intent(getActivity(),
                                 SalesReturnDeliverySKULevel.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         i.putExtra("menuName", getActivity().getIntent().getExtras().getString("menuName"));
-                        i.putExtra("key", salesReturnDeliveryDataModelsList.get(this.getAdapterPosition()).getProductId());
+                        i.putExtra("key", key);
                         mSelectedPos = this.getAdapterPosition();
                         startActivity(i);
                     } else
@@ -533,18 +537,26 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     private void setActualQty() {
         SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
-        ArrayList<SalesReturnDeliveryDataModel> srdDataModel = salesReturnDeliveryHelper.getSkuLevelDataList();
-        int cQty = 0;
-        int pQty = 0;
-        if (srdDataModel != null && salesReturnDeliveryDataModelsList != null) {
-            for (SalesReturnDeliveryDataModel srdData : srdDataModel) {
-                cQty += srdData.getActualCaseQuantity();
-                pQty += srdData.getActualPieceQuantity();
-            }
-            salesReturnDeliveryDataModelsList.get(mSelectedPos).setActualPieceQuantity(pQty);
-            salesReturnDeliveryDataModelsList.get(mSelectedPos).setActualCaseQuantity(cQty);
-            if (salesReturnDeliveryAdapter != null)
-            salesReturnDeliveryAdapter.notifyDataSetChanged();
+        ArrayList<SalesReturnDeliveryDataModel> dataList = new ArrayList<>();
+
+        if (salesReturnDeliveryDataModelsList != null) {
+            SalesReturnDeliveryDataModel dataModel = salesReturnDeliveryDataModelsList.get(mSelectedPos);
+            String key = dataModel.getProductId() + dataModel.getReasonID() + dataModel.getInVoiceNumber();
+            int cQty = 0;
+            int pQty = 0;
+            if (salesReturnDeliveryHelper.getSalesReturnDelDataMap() != null
+                    && !salesReturnDeliveryHelper.getSalesReturnDelDataMap().isEmpty()
+                    && salesReturnDeliveryHelper.getSalesReturnDelDataMap().containsKey(key))
+                dataList = salesReturnDeliveryHelper.getSalesReturnDelDataMap().get(key);
+
+                for (SalesReturnDeliveryDataModel srdData : dataList) {
+                    cQty += srdData.getActualCaseQuantity();
+                    pQty += srdData.getActualPieceQuantity();
+                }
+                dataModel.setActualPieceQuantity(pQty);
+                dataModel.setActualCaseQuantity(cQty);
+                if (salesReturnDeliveryAdapter != null)
+                    salesReturnDeliveryAdapter.notifyDataSetChanged();
         }
     }
 }

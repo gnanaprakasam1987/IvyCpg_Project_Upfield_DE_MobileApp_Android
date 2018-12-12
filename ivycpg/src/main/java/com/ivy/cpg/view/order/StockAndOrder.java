@@ -4092,8 +4092,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             + ret.getOrderedOuterQty() * ret.getOsrp();
                     totalvalue = totalvalue + temp;
 
-                    totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
+
                     totalWeight = totalWeight + ((ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())) * ret.getWeight());
+                    int totalOrderedQty = orderHelper.getTotalOrderedQty(ret);
+                    totalAllQty = (totalOrderedQty != -1)? (totalAllQty + totalOrderedQty) : (totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())));
+
                     orderedList.add(ret);
                 }
             }
