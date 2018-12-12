@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -49,7 +50,8 @@ public class SerializedAssetMovementDialog extends DialogFragment {
 
     protected BusinessModel mBModel;
     protected TextView TVOutletName, TVSerialNo, TVAssetName;
-    protected Spinner SpToOutletName, SpReason;
+    protected Spinner /*SpToOutletName,*/ SpReason;
+    protected AutoCompleteTextView autoCompleteToOutletName;
     protected EditText ETDesc;
     protected Button BTCancel, BTSave;
     protected ArrayList<ReasonMaster> mAssetReasonList;
@@ -81,7 +83,8 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         TVOutletName = (TextView) view.findViewById(R.id.input_current_outletcode);
         TVSerialNo = (TextView) view.findViewById(R.id.input_movement_serialNo);
         TVAssetName = (TextView) view.findViewById(R.id.input_movement_assetName);
-        SpToOutletName = (Spinner) view.findViewById(R.id.spinnerMovementOutletName);
+        //SpToOutletName = (Spinner) view.findViewById(R.id.spinnerMovementOutletName);
+        autoCompleteToOutletName = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteMovementOutletName);
         SpReason = (Spinner) view.findViewById(R.id.spinnerMovementReason);
         ETDesc = (EditText) view.findViewById(R.id.input_move_description);
         BTCancel = (Button) view.findViewById(R.id.btn_dialog_move_cancel);
@@ -163,13 +166,17 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         }
 
 
-        ArrayAdapter<String> mRetailerSpinAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_bluetext_layout, mRetailerNameList);
-        mRetailerSpinAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        SpToOutletName.setAdapter(mRetailerSpinAdapter);
+        ArrayAdapter<String> mRetailerSpinAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mRetailerNameList);
+        mRetailerSpinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        //SpToOutletName.setAdapter(mRetailerSpinAdapter);
 
-        SpToOutletName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        autoCompleteToOutletName.setAdapter(mRetailerSpinAdapter);
+        autoCompleteToOutletName.setThreshold(1);
+        autoCompleteToOutletName.setSelection(0);
+
+        autoCompleteToOutletName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 retailerSelected=position;
                 toRetailerId=mRetailerIdList.get(position);
 
@@ -177,12 +184,23 @@ public class SerializedAssetMovementDialog extends DialogFragment {
                     movementType="RTR_RTR";
                 else movementType="RTR_WH";
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
         });
+//        SpToOutletName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                retailerSelected=position;
+//                toRetailerId=mRetailerIdList.get(position);
+//
+//                if(position>0)
+//                    movementType="RTR_RTR";
+//                else movementType="RTR_WH";
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
     }
 
     private void saveFunction() {
