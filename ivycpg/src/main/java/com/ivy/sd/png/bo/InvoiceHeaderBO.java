@@ -197,4 +197,14 @@ public class InvoiceHeaderBO {
     public void setDocSignImage(String docSignImage) {
         this.docSignImage = docSignImage;
     }
+
+    private String invoiceRefNo;
+
+    public String getInvoiceRefNo() {
+        return invoiceRefNo;
+    }
+
+    public void setInvoiceRefNo(String invoiceRefNo) {
+        this.invoiceRefNo = invoiceRefNo;
+    }
 }

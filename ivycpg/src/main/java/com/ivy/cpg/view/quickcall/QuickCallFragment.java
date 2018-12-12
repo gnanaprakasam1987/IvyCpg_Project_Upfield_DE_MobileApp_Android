@@ -41,6 +41,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.OrderTransactionListDialog;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Vector;
 
@@ -75,7 +76,13 @@ public class QuickCallFragment extends IvyBaseFragment {
         View view = inflater.inflate(R.layout.fragment_sub_d, container, false);
 
         context = getActivity();
-        retailer = bmodel.getRetailerMaster();
+        Vector<RetailerMasterBO> retailerList = bmodel.getRetailerMaster();
+        for(RetailerMasterBO retailerBO : retailerList){
+            if(!retailerBO.getIsNew().equalsIgnoreCase("y")){
+                retailer.add(retailerBO);
+            }
+        }
+
         lvSubDId = view.findViewById(R.id.lv_subdid);
 
         setScreenTitle(bmodel.configurationMasterHelper.getSubdtitle());
@@ -94,6 +101,14 @@ public class QuickCallFragment extends IvyBaseFragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (retailer.size() > 0) {
+            RetailerSelectionAdapter adapter = new RetailerSelectionAdapter(retailer);
+            lvSubDId.setAdapter(adapter);
+        }
+    }
 
     private class RetailerSelectionAdapter extends ArrayAdapter<RetailerMasterBO> {
 
@@ -529,7 +544,7 @@ public class QuickCallFragment extends IvyBaseFragment {
     }
 
     private void searchRetailer(String searchText) {
-        retailer = new Vector<>();
+        Vector<RetailerMasterBO> retailernew = new Vector<>();
         for (int i = 0; i < bmodel.retailerMaster.size(); i++) {
             if (searchText != null) {
                 if ((bmodel.getRetailerMaster().get(i)
@@ -539,14 +554,14 @@ public class QuickCallFragment extends IvyBaseFragment {
                                 .getRetailerCode().toLowerCase())
                                 .contains(searchText.toLowerCase())))
 
-                    retailer.add(bmodel.getRetailerMaster().get(i));
+                    retailernew.add(bmodel.getRetailerMaster().get(i));
 
 
             } else
-                retailer.add(bmodel.getRetailerMaster().get(i));
+                retailernew.add(bmodel.getRetailerMaster().get(i));
         }
 
-        RetailerSelectionAdapter adapter = new RetailerSelectionAdapter(retailer);
+        RetailerSelectionAdapter adapter = new RetailerSelectionAdapter(retailernew);
         adapter.notifyDataSetChanged();
         lvSubDId.setAdapter(adapter);
         setHasOptionsMenu(true);

@@ -69,6 +69,8 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
 
                     Intent i = new Intent(DeliveryManagement.this, DeliveryManagementDetail.class);
                     i.putExtra("invoiceno",
+                            mInvoiceList.get(0).getInvoiceRefNo());
+                    i.putExtra("invoiceId",
                             mInvoiceList.get(0).getInvoiceNo());
                     i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
                     if (getIntent().getStringExtra("From") != null) {
@@ -182,6 +184,8 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                     public void onClick(View v) {
                         Intent i = new Intent(DeliveryManagement.this, DeliveryManagementDetail.class);
                         i.putExtra("invoiceno",
+                                holder.invoiceHeaderBO.getInvoiceRefNo());
+                        i.putExtra("invoiceId",
                                 holder.invoiceHeaderBO.getInvoiceNo());
                         i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
                         if (getIntent().getStringExtra("From") != null) {
@@ -196,7 +200,7 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 holder = (Holder) convertView.getTag();
             }
             holder.invoiceHeaderBO = mInvoiceList.get(position);
-            holder.invoicenoTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceNo()));
+            holder.invoicenoTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceRefNo()));
             holder.invoiceDateTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceDate()));
             holder.totalAmountTV.setText(String.valueOf(holder.invoiceHeaderBO.getInvoiceAmount()));
             holder.totalLinesTV.setText(String.valueOf(holder.invoiceHeaderBO.getLinesPerCall()));

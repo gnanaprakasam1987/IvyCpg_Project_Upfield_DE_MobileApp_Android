@@ -300,7 +300,7 @@ public class ProductHelper {
     }
 
     public HashMap<Integer, Vector<Integer>> getmProductIdByBrandId() {
-        if(mProductIdByBrandId==null)
+        if (mProductIdByBrandId == null)
             return new HashMap<>();
         return mProductIdByBrandId;
     }
@@ -1028,7 +1028,7 @@ public class ProductHelper {
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));
 
                     product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
-                    product.setTempSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setTempSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
                     product.setPrevPrice_pc(SDUtil.format(c.getFloat(c.getColumnIndex("srp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
                     product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
                     product.setPrevPrice_ca(SDUtil.format(c.getFloat(c.getColumnIndex("csrp")), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0));
@@ -1244,6 +1244,7 @@ public class ProductHelper {
         String PRODUCT_DISTRIBUTION_TYPE_ROUTE = "ROUTE";
         String PRODUCT_DISTRIBUTION_TYPE_RETAILER = "RETAILER";
         String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE = "SALES_TYPE";
+        String PRODUCT_DISTRIBUTION_TYPE_CHANNEL = "CHANNEL";
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1267,6 +1268,9 @@ public class ProductHelper {
                     stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getRetailerID() + ")");
                 } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE)) {
                     stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getSalesTypeId() + ")");
+                } else if (bmodel.configurationMasterHelper.PRD_DISTRIBUTION_TYPE.equals(PRODUCT_DISTRIBUTION_TYPE_CHANNEL)) {
+                    stringBuilder.append(" and criteriaid IN(" + bmodel.getRetailerMasterBO().getSubchannelid() + ") ");
+                    stringBuilder.append(" OR criteriaid IN(" + bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + ")");
                 }
                 cursor = db.selectSQL(stringBuilder.toString());
                 if (cursor.getCount() > 0) {
@@ -3789,9 +3793,9 @@ public class ProductHelper {
                     product.setProductShortName(c.getString(5));
 //                    product.setBarCode(c.getString(6));
 
-                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(7),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(8),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(9),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    product.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(7), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    product.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(8), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    product.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(9), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 
                     product.setMSQty(c.getInt(10));
                     product.setCaseSize(c.getInt(11));

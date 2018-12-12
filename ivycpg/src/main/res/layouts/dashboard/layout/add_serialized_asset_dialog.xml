@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_noise"
     android:orientation="vertical"
-    android:padding="@dimen/dimens_16dp">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_10dp"
-        android:text="@string/addnewasset"
-        android:textAllCaps="true"
-        android:textColor="?attr/primarycolor"
-        android:textSize="@dimen/font_large" />
+    >
 
     <LinearLayout
+        android:id="@+id/ll_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/material_tool_bar" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_16dp"
+        android:layout_below="@+id/ll_toolbar">
 
         <TextView
             style="@style/TextViewCaption"
@@ -42,10 +47,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_two"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="2.05">
+        android:weightSum="2.05"
+        android:padding="@dimen/dimens_16dp"
+        android:layout_below="@+id/layout_one">
 
         <Spinner
             android:id="@+id/spinner_asset"
@@ -75,12 +83,16 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_three"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_16dp"
+        android:layout_below="@+id/layout_two">
 
         <TextView
+            android:id="@+id/label_scan"
             style="@style/TextViewCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -100,9 +112,14 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_four"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_16dp"
+        android:layout_below="@+id/layout_three"
+        android:weightSum="5"
+        android:gravity="center_vertical">
 
         <EditText
             android:id="@+id/etxt_sno"
@@ -110,14 +127,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginEnd="@dimen/dimen_10dp"
-            android:layout_marginRight="@dimen/dimen_10dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:cursorVisible="true"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
             android:hint="@string/zero"
             android:maxLength="50"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            />
+        <ImageView
+            android:id="@+id/imageView_barcode_scan"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="@dimen/dimen_20dp"
+            android:src="@drawable/barcode_scan_black"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_marginEnd="@dimen/dimen_10dp"
+
+            />
 
         <Button
             android:id="@+id/date_button"
@@ -127,7 +153,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginStart="@dimen/dimen_10dp"
-            android:layout_weight="1"
+            android:layout_weight="2.5"
             android:gravity="center"
             android:text="@string/servicedate" />
     </LinearLayout>
@@ -150,28 +176,20 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/footer_height"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg_color"
+        android:padding="@dimen/footer_padding">
 
-        <Button
-            android:id="@+id/btn_cancel"
-            style="?attr/roundedCustomButtonNormalTransparent"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/dimen_2dp"
-            android:text="@string/cancel"
-            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/btn_save"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/dimen_2dp"
+            style="?attr/roundedCustomButtonSmall"
             android:text="@string/save"
             android:textAllCaps="false" />
 
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
 

@@ -1,29 +1,31 @@
 package com.ivy.cpg.view.serializedAsset;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
-import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.asset.AssetTrackingHelper;
-import com.ivy.lib.DialogFragment;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -40,7 +42,7 @@ import java.util.Vector;
  * This dialog is used to add new asset.
  */
 
-public class AddSerializedAssetDialogFragment extends DialogFragment implements View.OnClickListener, TextView.OnEditorActionListener {
+public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener, TextView.OnEditorActionListener {
 
     BusinessModel mBModel;
 
@@ -54,57 +56,64 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
     private int mYear;
     private int mMonth;
     private int mDay;
-    Button btnSave, btnCancel;
+    Button btnSave;
     private String append = "";
 
     private final SerializedAssetBO assetBo = new SerializedAssetBO();
     SerializedAssetHelper assetTrackingHelper;
 
+    ImageView imageView_barcode_scan;
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        if (getDialog().getWindow() != null) {
-            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.add_serialized_asset_dialog);
+        mBModel = (BusinessModel) getApplicationContext();
+        mBModel.setContext(this);
+
+        assetTrackingHelper = SerializedAssetHelper.getInstance(this);
+
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            setScreenTitle(getResources().getString(R.string.addnewasset));
         }
 
-        setCancelable(false);
-
-
-        View view = inflater.inflate(R.layout.add_serialized_asset_dialog, container);
-
-        Context context = getActivity();
-        mBModel = (BusinessModel) context.getApplicationContext();
-        assetTrackingHelper = SerializedAssetHelper.getInstance(context);
-
-        mAsset = (Spinner) view.findViewById(R.id.spinner_asset);
-        mBrand = (Spinner) view.findViewById(R.id.spinner_brand);
-        btnAddInstallDate = (Button) view.findViewById(R.id.date_button);
-        mSNO = (EditText) view.findViewById(R.id.etxt_sno);
-        editext_NFC_number= view.findViewById(R.id.etxt_nfc_number);
-        btnSave = (Button) view.findViewById(R.id.btn_save);
-        btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-        btnCancel.setOnClickListener(this);
+        mAsset = (Spinner) findViewById(R.id.spinner_asset);
+        mBrand = (Spinner) findViewById(R.id.spinner_brand);
+        btnAddInstallDate = (Button) findViewById(R.id.date_button);
+        mSNO = (EditText) findViewById(R.id.etxt_sno);
+        editext_NFC_number= findViewById(R.id.etxt_nfc_number);
+        btnSave = (Button) findViewById(R.id.btn_save);
         btnSave.setOnClickListener(this);
+        imageView_barcode_scan=findViewById(R.id.imageView_barcode_scan);
+        imageView_barcode_scan.setOnClickListener(this);
 
         loadData();
 
-        return view;
+
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        Window window = getDialog().getWindow();
-        if (window != null) {
-            //lp.copyFrom(window.getAttributes()); cmd for device alignment issue
-            window.setAttributes(lp);
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
         }
 
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -113,14 +122,14 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
      */
     private void loadData() {
 
-        assetTrackingHelper.downloadUniqueAssets(getContext().getApplicationContext(), "MENU_ASSET");
+        assetTrackingHelper.downloadUniqueAssets(getApplicationContext(), "MENU_ASSET");
 
         Vector mPOSMList = assetTrackingHelper.getAssetNames();
 
         int siz = mPOSMList.size();
 
         ArrayAdapter<CharSequence> mAssetSpinAdapter = new ArrayAdapter<>(
-                getActivity(), R.layout.spinner_bluetext_layout);
+                this, R.layout.spinner_bluetext_layout);
         mAssetSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         mAssetSpinAdapter.add(SELECT);
@@ -182,7 +191,7 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
 
                     // Launch Date Picker Dialog
                     DatePickerDialog dpd = new DatePickerDialog(
-                            getActivity(), R.style.DatePickerDialogStyle,
+                            AddSerializedAssetActivity.this, R.style.DatePickerDialogStyle,
                             new DatePickerDialog.OnDateSetListener() {
 
                                 @Override
@@ -202,7 +211,7 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
                                             .getInstance();
                                     if (selectedDate.after(mCurrentCalendar)) {
                                         Toast.makeText(
-                                                getActivity(),
+                                                AddSerializedAssetActivity.this,
                                                 R.string.future_date_not_allowed,
                                                 Toast.LENGTH_SHORT).show();
                                         btnAddInstallDate.setText(DateUtil
@@ -249,10 +258,10 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
      * Load brands
      */
     private void loadBrandData() {
-        ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.brand_spinner_txt)).setVisibility(View.VISIBLE);
         mBrand.setVisibility(View.VISIBLE);
         ArrayAdapter<CharSequence> mAssetBrandsAdapter = new ArrayAdapter<>(
-                getActivity(), R.layout.spinner_bluetext_layout);
+                this, R.layout.spinner_bluetext_layout);
         mAssetBrandsAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         Vector mBrand = assetTrackingHelper.getAssetBrandNames();
@@ -281,8 +290,8 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
      */
     private void setAddAssetDetails() {
 
-            assetBo.setPOSM(assetTrackingHelper.getAssetIds(mAsset
-                    .getSelectedItem().toString()));
+        assetBo.setPOSM(assetTrackingHelper.getAssetIds(mAsset
+                .getSelectedItem().toString()));
 
             /*if (mBrand.getSelectedItem() != null) {
                 if (!mBrand.getSelectedItem().toString()
@@ -292,15 +301,15 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
                 else
                     assetBo.setBrand("0");
             } else*/
-                assetBo.setBrand("0");
+        assetBo.setBrand("0");
 
-            assetBo.setNewInstallDate(btnAddInstallDate.getText().toString());
+        assetBo.setNewInstallDate(btnAddInstallDate.getText().toString());
 
-            assetBo.setSNO(mSNO.getText().toString());
+        assetBo.setSNO(mSNO.getText().toString());
 
-            assetBo.setNFCTagId(editext_NFC_number.getText().toString());
+        assetBo.setNFCTagId(editext_NFC_number.getText().toString());
 
-            assetTrackingHelper.setAssetTrackingBO(assetBo);
+        assetTrackingHelper.setAssetTrackingBO(assetBo);
 
 
     }
@@ -322,19 +331,20 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
 
 
                         assetTrackingHelper
-                                    .saveNewAsset(getContext().getApplicationContext());
+                                .saveNewAsset(getApplicationContext());
                         Toast.makeText(
-                                getActivity(),
+                                this,
                                 getResources()
                                         .getString(
                                                 R.string.saved_successfully),
                                 Toast.LENGTH_SHORT).show();
-                        dismiss();
+                        //dismiss();
+                        finish();
 
 
                     } else {
                         Toast.makeText(
-                                getActivity(),
+                                this,
                                 getResources()
                                         .getString(
                                                 R.string.serial_number_already_exists),
@@ -342,7 +352,7 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
                     }
                 } else {
                     Toast.makeText(
-                            getActivity(),
+                            this,
                             getResources().getString(
                                     R.string.no_assets_exists),
                             Toast.LENGTH_SHORT).show();
@@ -350,14 +360,41 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
 
             } catch (Exception e) {
                 Toast.makeText(
-                        getActivity(),
+                        this,
                         getResources().getString(
                                 R.string.no_assets_exists),
                         Toast.LENGTH_SHORT).show();
             }
         } else if (view.getId() == R.id.btn_cancel) {
-            dismiss();
+            //dismiss();
+            finish();
         }
+        else if(view.getId()==R.id.imageView_barcode_scan){
+            scanBarCode();
+        }
+    }
+
+    private void scanBarCode(){
+        {
+            checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                IntentIntegrator integrator = new IntentIntegrator(this) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        AddSerializedAssetActivity.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
+            } else {
+                Toast.makeText(this,
+                        getResources().getString(R.string.permission_enable_msg)
+                                + " " + getResources().getString(R.string.permission_camera)
+                        , Toast.LENGTH_LONG).show();
+            }
+        }
+
     }
 
     /**
@@ -378,10 +415,8 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
                 String strQty = s + "";
                 edittext.setText(strQty);
             } else {
-                if (getView() != null) {
-                    Button ed = (Button) getView().findViewById(vw.getId());
-                    append = ed.getText().toString();
-                }
+                Button ed = (Button) findViewById(vw.getId());
+                append = ed.getText().toString();
                 eff();
             }
         }
@@ -403,5 +438,27 @@ public class AddSerializedAssetDialogFragment extends DialogFragment implements 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (requestCode == IntentIntegrator.REQUEST_CODE) {
+                if (result != null) {
+                    if (result.getContents() == null) {
+                        Toast.makeText(this, getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
+                    } else {
+                        mSNO.setText(result.getContents());
+                    }
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
     }
 }

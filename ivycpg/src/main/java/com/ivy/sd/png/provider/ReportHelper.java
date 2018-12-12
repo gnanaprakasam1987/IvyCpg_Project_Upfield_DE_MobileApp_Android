@@ -4,27 +4,22 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 
-import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
-import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
-import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.OrderTakenTimeBO;
-import com.ivy.cpg.view.reports.performancereport.OutletReportBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductivityReportBO;
 import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
-import com.ivy.sd.png.bo.SKUReportBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
-import com.ivy.sd.png.bo.SyncStatusBO;
+import com.ivy.cpg.view.sync.uploadStatusReport.SyncStatusBO;
 import com.ivy.cpg.view.reports.taskexcutionreport.TaskReportBo;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -2000,61 +1995,7 @@ public class ReportHelper {
     }
 
 
-    public ArrayList<SyncStatusBO> getmSyncStatusBOList() {
-        return mSyncStatusBOList;
-    }
 
-    public void setmSyncStatusBOList(ArrayList<SyncStatusBO> mSyncStatusBOList) {
-        this.mSyncStatusBOList = mSyncStatusBOList;
-    }
-
-    public void downloadSyncStatusReport() {
-        try {
-
-            mSyncStatusBOList = new ArrayList<>();
-            SyncStatusBO syncStatusBO;
-            String id = "0";
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.openDataBase();
-
-            String sql = "select ID,TableName,LineCount from SyncStatus_Internal order by ID desc";
-
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-
-                    syncStatusBO = new SyncStatusBO();
-                    syncStatusBO.setId(c.getString(0));
-                    syncStatusBO.setName(c.getString(1));
-                    syncStatusBO.setCount(c.getInt(2));
-
-                    if (!id.equalsIgnoreCase(syncStatusBO.getId())) {
-
-                        if (!id.equals("0")) {
-                            syncStatusBO.setShowDateTime(1);
-                            mSyncStatusBOList.add(syncStatusBO);
-                            id = syncStatusBO.getId();
-                        } else {
-                            syncStatusBO.setShowDateTime(1);
-                            mSyncStatusBOList.add(syncStatusBO);
-                            id = syncStatusBO.getId();
-                        }
-
-                    } else {
-                        syncStatusBO.setShowDateTime(0);
-                        mSyncStatusBOList.add(syncStatusBO);
-                    }
-
-                }
-
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Check wheather the payment done for any retailers.

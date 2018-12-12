@@ -281,7 +281,7 @@ public class UploadHelper {
             }
 
 
-            if (businessModel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT) {
+            if (businessModel.configurationMasterHelper.SHOW_DATA_UPLOAD_STATUS) {
                 String id = SDUtil.now(SDUtil.DATE_TIME);
                 Iterator<String> keyItr = jsonObjData.keys();
                 while (keyItr.hasNext()) {
