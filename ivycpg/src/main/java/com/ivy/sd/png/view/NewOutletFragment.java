@@ -2300,6 +2300,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS2") ||
                 profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS3")) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
+            checkRegex(profileConfig.get(mNumber).getRegex());
         }
 
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("PAN_NUMBER")) {
@@ -2316,7 +2317,7 @@ public class NewOutletFragment extends IvyBaseFragment
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACTPERSON1")) {
             edittextinputLayout = new TextInputLayout(getActivity());
             edittextinputLayout2 = new TextInputLayout(getActivity());
-
+            checkRegex(profileConfig.get(mNumber).getRegex());
 
             if (mandatory == 1) {
                 TextView mn_textview = new TextView(getActivity());
@@ -2549,7 +2550,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
             edittextinputLayout = new TextInputLayout(getActivity());
             edittextinputLayout2 = new TextInputLayout(getActivity());
-
+            checkRegex(profileConfig.get(mNumber).getRegex());
 
             if (mandatory == 1) {
                 TextView mn_textview = new TextView(getActivity());
