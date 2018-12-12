@@ -135,7 +135,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
     private String mSelectedUser = "0";
 
-    private String selectedInterval=SellerDashboardConstants.MONTH;
+    private String selectedInterval = SellerDashboardConstants.MONTH;
 
     private String screenTitle;
 
@@ -379,7 +379,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             if (!isFragmentsAdded)
                 generatePagerFragments();
-            else
+            else if (dashboardListData.size() > 0)
                 updateChartData(dashboardListData.get(0));
 
         }
@@ -606,8 +606,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
                     }
                 }
                 dashBoardEventData.setEventDataList(kpiChartData);
-
-            }else {
+            } else {
                 dashBoardEventData.setEventDataList(dashboardListData);
             }
 

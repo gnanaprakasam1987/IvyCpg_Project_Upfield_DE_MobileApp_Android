@@ -70,7 +70,7 @@ public class KPIBarChartFragment extends BaseFragment {
 
     @Override
     protected void getMessageFromAliens() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             selectedInterval = getArguments().getString("selectedInterval");
             dashboardListData = (ArrayList<DashBoardBO>) getArguments().getSerializable("dashChartList");
             setChartData();
@@ -97,12 +97,14 @@ public class KPIBarChartFragment extends BaseFragment {
             dashboardListData.addAll(event.getEventDataList());
 
         }
-        mBarChart.clear();
-        mBarChart.clearValues();
+
+        if (mBarChart.getData() != null) {
+            mBarChart.clear();
+            mBarChart.clearValues();
+        }
         setChartData();
 
     }
-
 
 
     @Override
@@ -112,7 +114,7 @@ public class KPIBarChartFragment extends BaseFragment {
 
     }
 
-    private void initChartView(){
+    private void initChartView() {
         mBarChart.getAxisLeft().setDrawGridLines(false);
         mBarChart.getXAxis().setDrawGridLines(false);
         mBarChart.getDescription().setEnabled(false);
@@ -161,7 +163,7 @@ public class KPIBarChartFragment extends BaseFragment {
         set1 = new BarDataSet(yVals1, "");
         String kpiLabel = " " + text;
         if (selectedInterval != null && (selectedInterval.matches("WEEK|P3M"))) {
-            set1.setStackLabels(new String[]{getResources().getString(R.string.achieved) + kpiLabel , getResources().getString(R.string.balance) + kpiLabel});
+            set1.setStackLabels(new String[]{getResources().getString(R.string.achieved) + kpiLabel, getResources().getString(R.string.balance) + kpiLabel});
         } else {
             set1.setStackLabels(new String[]{"% " + getResources().getString(R.string.achieved), "% " + getResources().getString(R.string.balance)});
         }
