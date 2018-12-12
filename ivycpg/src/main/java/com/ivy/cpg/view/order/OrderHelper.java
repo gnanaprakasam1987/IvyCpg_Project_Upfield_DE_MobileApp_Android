@@ -3691,4 +3691,9 @@ public class OrderHelper {
         }
         return totalReturnAmount;
     }
+
+    public int getTotalOrderedQty(ProductMasterBO productBO) {
+        return (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) ? -1 :
+                ((businessModel.configurationMasterHelper.SHOW_OUTER_CASE) ? productBO.getOrderedOuterQty() : productBO.getOrderedCaseQty());
+    }
 }
