@@ -3693,16 +3693,7 @@ public class OrderHelper {
     }
 
     public int getTotalOrderedQty(ProductMasterBO productBO) {
-        if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE
-                && !businessModel.configurationMasterHelper.SHOW_OUTER_CASE
-                && !businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
-            return productBO.getOrderedCaseQty();
-        } else if (!businessModel.configurationMasterHelper.SHOW_ORDER_CASE
-                && businessModel.configurationMasterHelper.SHOW_OUTER_CASE
-                && !businessModel.configurationMasterHelper.SHOW_ORDER_PCS) {
-            return productBO.getOrderedOuterQty();
-        } else {
-            return -1;
-        }
+        return (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) ? -1 :
+                ((businessModel.configurationMasterHelper.SHOW_OUTER_CASE) ? productBO.getOrderedOuterQty() : productBO.getOrderedCaseQty());
     }
 }
