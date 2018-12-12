@@ -367,8 +367,42 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS) {
+    public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS, boolean isFromUser) {
 
+        dashboardListData.clear();
+        dashboardListData.addAll(dashBoardBOS);
+
+        dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), this);
+        dashboardRecyclerView.setAdapter(dashboardListAdapter);
+
+        if(!isFromUser){
+            monthSpinner.setVisibility(View.GONE);
+
+            if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser.equals(String.valueOf(presenter.getCurrentUser().getUserid()))) {
+                presenter.computeDayAchievements();
+            } else if (selectedInterval.equals(P3M))
+                presenter.fetchKpiMonths(isFromRetailer);
+            else if (selectedInterval.equals(WEEK))
+                presenter.fetchWeeks();
+            else {
+                weekSpinner.setVisibility(View.GONE);
+                dashboardListAdapter.notifyDataSetChanged();
+            }
+        }
+
+        if (presenter.shouldShowTrendChart()) {
+
+            if (!isFragmentsAdded)
+                generatePagerFragments();
+            else if (dashboardListData.size() > 0)
+                updateChartData(dashboardListData.get(0));
+
+        }
+
+    }
+
+    @Override
+    public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS){
         dashboardListData.clear();
         dashboardListData.addAll(dashBoardBOS);
 
@@ -527,32 +561,19 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             selectedInterval = adapterView.getSelectedItem().toString();
             if (!isFromRetailer) {
                 if (selectedInterval.equalsIgnoreCase(P3M))
-                    presenter.fetchSellerDashboardDataForUser(mSelectedUser);
+                    presenter.fetchSellerDashboardDataForUser(mSelectedUser,true);
                 else if (selectedInterval.equals(WEEK))
                     presenter.fetchSellerDashboardDataForWeek(mSelectedUser);
                 else {
                     if (type.equals(ROUTE))
                         presenter.fetchRouteDashboardData(selectedInterval);
                     else
-                        presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval);
+                        presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval,true);
 
                 }
             } else
                 presenter.fetchRetailerDashboard(selectedInterval);
 
-            monthSpinner.setVisibility(View.GONE);
-
-            if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser.equals(String.valueOf(presenter.getCurrentUser().getUserid()))) {
-                presenter.computeDayAchievements();
-                dashboardListAdapter.notifyDataSetChanged();
-            } else if (selectedInterval.equals(P3M))
-                presenter.fetchKpiMonths(isFromRetailer);
-            else if (selectedInterval.equals(WEEK))
-                presenter.fetchWeeks();
-            else {
-                weekSpinner.setVisibility(View.GONE);
-                dashboardListAdapter.notifyDataSetChanged();
-            }
         }
 
         @Override
@@ -697,9 +718,9 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             if (!isFromRetailer) {
                 if (selectedInterval.equalsIgnoreCase(P3M))
-                    presenter.fetchSellerDashboardDataForUser(mSelectedUser);
+                    presenter.fetchSellerDashboardDataForUser(mSelectedUser,true);
                 else
-                    presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval);
+                    presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval,true);
             }
 
         }

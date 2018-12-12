@@ -302,17 +302,16 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
-    public void fetchSellerDashboardDataForUser(String selectedUser) {
+    public void fetchSellerDashboardDataForUser(String selectedUser, boolean isFromDash) {
         getCompositeDisposable().add(sellerDashboardDataManager.getP3MSellerDashboardData(selectedUser)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
                     @Override
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
-
-                        getIvyView().setDashboardListAdapter(dashBoardBOS);
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
+                        getIvyView().setDashboardListAdapter(dashBoardBOS, isFromDash);
                     }
 
                     @Override
@@ -325,6 +324,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
                     }
                 }));
+    }
+
+    @Override
+    public void fetchSellerDashboardDataForUser(String selectedUser) {
+        fetchSellerDashboardDataForUser(selectedUser, false);
     }
 
     @Override
@@ -354,7 +358,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     @Override
-    public void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval) {
+    public void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval, boolean isFromDash) {
         getIvyView().showLoading();
         getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForInterval(selectedUser, interval)
                 .subscribeOn(getSchedulerProvider().io())
@@ -364,7 +368,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                     public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
-                        getIvyView().setDashboardListAdapter(dashBoardBOS);
+                        getIvyView().setDashboardListAdapter(dashBoardBOS, isFromDash);
 
 
                     }
@@ -379,6 +383,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                         getIvyView().hideLoading();
                     }
                 }));
+    }
+
+    @Override
+    public void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval) {
+        fetchSellerDashboardForUserAndInterval(selectedUser, interval, false);
     }
 
     @Override
@@ -647,7 +656,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 return sellerDashboardDataManager.fetchNoOfInvoiceAndValue();
             else
                 return Single.fromCallable(() -> {
-                    DailyReportBO dailyReportBO=null;
+                    DailyReportBO dailyReportBO = null;
                     return new Optional<>(dailyReportBO);
                 });
         }).flatMap((Function<Optional<DailyReportBO>, SingleSource<Optional<DailyReportBO>>>) invoiceReport -> {
@@ -659,7 +668,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 return sellerDashboardDataManager.fetchNoOfOrderAndValue();
             else
                 return Single.fromCallable(() -> {
-                    DailyReportBO dailyReportBO=null;
+                    DailyReportBO dailyReportBO = null;
                     return new Optional<>(dailyReportBO);
                 });
         }).flatMap((Function<Optional<DailyReportBO>, SingleSource<Integer>>) dailyReportBoWithOrderValue -> {
@@ -712,7 +721,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 return sellerDashboardDataManager.fetchFulfilmentValue();
             else
                 return Single.fromCallable(() -> {
-                    DailyReportBO dailyReportBO=null;
+                    DailyReportBO dailyReportBO = null;
                     return new Optional<>(dailyReportBO);
                 });
         }).flatMap((Function<Optional<DailyReportBO>, SingleSource<Integer>>) fulfilmentReport -> {
@@ -741,7 +750,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             else
                 return Single.fromCallable(() -> new Optional<String>(null));
         }).flatMapObservable((Function<Optional<String>, ObservableSource<ArrayList<Double>>>) mslCount -> {
-            if (!mslCount.isEmpty()&&mslCount.get().contains(",")) {
+            if (!mslCount.isEmpty() && mslCount.get().contains(",")) {
                 dayAchievementData.setMslCount(SDUtil.convertToInt(mslCount.get().split(",")[0]));
                 dayAchievementData.setMslExecutedCount(SDUtil.convertToInt(mslCount.get().split(",")[1]));
             }
@@ -752,7 +761,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 return Observable.fromCallable(ArrayList::new);
         }).flatMapSingle((Function<ArrayList<Double>, SingleSource<DayAchievementData>>) collectionData -> {
 
-            if (collectionData.size()>0)
+            if (collectionData.size() > 0)
                 dayAchievementData.setCollectionData(collectionData);
 
             return Single.fromCallable(() -> dayAchievementData);

@@ -25,6 +25,8 @@ public interface SellerDashboardContract {
 
         void setUpMultiSelectUserSpinner(ArrayList<UserMasterBO> userMasterBOS);
 
+        void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS, boolean isFromUser);
+
         void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS);
 
         void setUpMonthSpinner(ArrayList<String> monthList);
@@ -47,11 +49,15 @@ public interface SellerDashboardContract {
 
         void fetchSellerDashList(SellerDashboardConstants.DashBoardType dashBoardType);
 
+        void fetchSellerDashboardDataForUser(String selectedUser, boolean isFromDash);
+
         void fetchSellerDashboardDataForUser(String selectedUser);
 
         void fetchSellerDashboardDataForWeek(String selectedUser);
 
         void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval);
+
+        void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval, boolean isFromDash);
 
         void fetchRouteDashboardData(String interval);
 
