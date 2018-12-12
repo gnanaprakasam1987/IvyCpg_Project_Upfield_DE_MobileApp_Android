@@ -279,6 +279,22 @@ public class UploadHelper {
                 Commons.print("jsonObjData.toString():3:"
                         + jsonObjData.toString());
             }
+            else if (flag == DataMembers.SYNCPICKLISTUPLOAD) { // Pick List
+
+                Set<String> keys = DataMembers.uploadPickListStatusTable.keySet();
+
+                jsonObjData = new JSONObject();
+                for (String tableName : keys) {
+                    JSONArray jsonArray = prepareDataForUploadJSON(db,
+                            handlerr, tableName,
+                            DataMembers.uploadPickListStatusTable.get(tableName));
+
+                    if (jsonArray.length() > 0)
+                        jsonObjData.put(tableName, jsonArray);
+                }
+                Commons.print("jsonObjData.toString():3:"
+                        + jsonObjData.toString());
+            }
 
 
             if (businessModel.configurationMasterHelper.SHOW_SYNC_INTERNAL_REPORT) {
@@ -438,6 +454,12 @@ public class UploadHelper {
                 }
             } else if (flag == DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD) {
                 url = businessModel.synchronizationHelper.getUploadUrl("UPLDORDDELSTS");
+                if (url.length() == 0) {
+                    responseMessage = 2;
+                    return responseMessage;
+                }
+            } else if (flag == DataMembers.SYNCPICKLISTUPLOAD) {
+                url = businessModel.synchronizationHelper.getUploadUrl("UPLDDELIVERYSTS");
                 if (url.length() == 0) {
                     responseMessage = 2;
                     return responseMessage;
@@ -858,6 +880,9 @@ public class UploadHelper {
                 responseMsg = 1;
             } else if (flag == DataMembers.SYNC_ORDER_DELIVERY_STATUS_UPLOAD) {
                 updateUploadFlag(DataMembers.uploadOrderDeliveryStatusTable, context.getApplicationContext());
+                responseMsg = 2;
+            } else if (flag == DataMembers.SYNCPICKLISTUPLOAD) {
+                updateUploadFlag(DataMembers.uploadPickListStatusTable, context.getApplicationContext());
                 responseMsg = 2;
             }else {
                 updateUploadFlag(DataMembers.uploadColumn, context.getApplicationContext());

@@ -172,6 +172,11 @@ public class DataMembers {
     public static final int NOTIFY_ORDER_DELIVERY_STATUS_UPLOADED = -48;
     public static final int NOTIFY_ORDER_DELIVERY_STATUS_UPLOAD_ERROR = -49;
 
+    //Pick List
+    public static final int SYNCPICKLISTUPLOAD = -50;
+    public static final int NOTIFY_PICKLIST_UPLOADED = -51;
+    public static final int NOTIFY_PICKLIST_UPLOAD_ERROR = -52;
+
     // ***********
     public static final int PRINT_COUNT = 5;
     public static final int PRINT_TEXT_SIZE = 1;
@@ -529,7 +534,7 @@ public class DataMembers {
     private static final String tbl_UserFeedBack_cols = "UId,DateTime,TypeLovId,Feedback,Rating";
 
     public static final String tbl_van_delivery_header = "VanDeliveryHeader";
-    private static final String tbl_van_delivery_header_cols = "Uid,RetailerID,InvoicedDate,DeliveryDate,status,ReasonId,Remarks,Proofpicture,latitude,longtitude,utcdate,invoiceid,contactName,contactNo,SignaturePath";
+    private static final String tbl_van_delivery_header_cols = "Uid,RetailerID,InvoicedDate,DeliveryDate,status,ReasonId,Remarks,Proofpicture,latitude,longtitude,utcdate,invoiceid,contactName,contactNo,SignaturePath,PickListId";
     public static final String tbl_van_delivery_detail = "VanDeliveryDetail";
     private static final String tbl_van_delivery_detail_cols = "Uid,Pid,Uomid,Batchid,invoiceqty,Deliveredqty,Returnqty";
 
@@ -639,6 +644,10 @@ public class DataMembers {
     public static final String tbl_movement_tracking_history = "MovementTrackingHistory";
     public static final String tbl_movement_tracking_history_cols = "userid,latitude,longitude,date_time";
 
+    public static final String tbl_picklist = "PickListStatus";
+    public static final String tbl_picklist_cols = "PickListId,Status";
+    public static final String tbl_picklist_invoice = "PickListInvoiceStatus";
+    public static final String tbl_picklist_invoice_cols = "PickListId,InvoiceId,Status";
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
@@ -1126,6 +1135,17 @@ public class DataMembers {
     static {
         uploadOrderDeliveryStatusTable.put(tbl_order_delivery_status,
                 tbl_order_delivery_status_cols);
+    }
+
+
+    public static final HashMap<String, String> uploadPickListStatusTable = new HashMap<>();
+
+    static {
+
+        uploadPickListStatusTable.put(tbl_picklist,
+                tbl_picklist_cols);
+        uploadPickListStatusTable.put(tbl_picklist_invoice,
+                tbl_picklist_invoice_cols);
     }
 
 }
