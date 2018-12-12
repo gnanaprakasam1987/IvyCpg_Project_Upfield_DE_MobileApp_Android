@@ -27,7 +27,7 @@ public class SerializedAssetBO {
     private String imageName = "";
     private String AssetName;
     private String SerialNo = "0";
-    private int mProductId;
+    //private int mProductId;
     private boolean isSelectedToRemove;
     private int targetLocId;
     private String locationName;
@@ -61,7 +61,7 @@ public class SerializedAssetBO {
         this.mServiceDate = serializedAssetBO.getServiceDate();
         this.mPOSMName = serializedAssetBO.getPOSMName();
         this.mFlag = serializedAssetBO.getFlag();
-        this.mProductId = serializedAssetBO.getProductId();
+        //this.mProductId = serializedAssetBO.getProductId();
         this.mSNO = serializedAssetBO.getSNO();
         this.reason1ID = serializedAssetBO.getReason1ID();
         this.reasonDesc = serializedAssetBO.getReasonDesc();
@@ -300,13 +300,13 @@ public class SerializedAssetBO {
         this.audit = audit;
     }
 
-    public int getProductId() {
-        return mProductId;
-    }
-
-    public void setProductId(int mProductId) {
-        this.mProductId = mProductId;
-    }
+//    public int getProductId() {
+//        return mProductId;
+//    }
+//
+//    public void setProductId(int mProductId) {
+//        this.mProductId = mProductId;
+//    }
 
     public boolean isSelectedToRemove() {
         return isSelectedToRemove;

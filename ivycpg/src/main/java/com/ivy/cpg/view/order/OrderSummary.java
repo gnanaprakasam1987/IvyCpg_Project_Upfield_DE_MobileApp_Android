@@ -226,6 +226,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
         }
 
+        signatureName = "";
+
         String screenTitle = bModel.configurationMasterHelper
                 .getHomescreentwomenutitle("MENU_CLOSING");
 
@@ -586,7 +588,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
-                    totalQuantityOrdered = totalQuantityOrdered + totalQuantity;
+                    int totalOrderedQty = orderHelper.getTotalOrderedQty(productBO);
+                    totalQuantityOrdered = (totalOrderedQty != -1)? (totalQuantityOrdered + totalOrderedQty) : (totalQuantityOrdered + totalQuantity);
+
                     totalWeight = totalWeight + SDUtil.convertToFloat(String.valueOf(SDUtil.formatAsPerCalculationConfig(totalQuantity * productBO.getWeight())));
 
                     mOrderedProductList.add(productBO);
@@ -776,7 +780,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         || productBO.getOrderedOuterQty() > 0) {
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
-                    totalQuantityOrdered = totalQuantityOrdered + totalQuantity;
+
+                    int totalOrderedQty = orderHelper.getTotalOrderedQty(productBO);
+                    totalQuantityOrdered = (totalOrderedQty != -1)? (totalQuantityOrdered + totalOrderedQty) : (totalQuantityOrdered + totalQuantity);
 
                     mOrderedProductList.add(productBO);
 

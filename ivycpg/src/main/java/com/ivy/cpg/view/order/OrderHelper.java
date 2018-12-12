@@ -528,6 +528,8 @@ public class OrderHelper {
             businessModel.getOrderHeaderBO().setRemark("");
             businessModel.getOrderHeaderBO().setRField1("");
             businessModel.getOrderHeaderBO().setRField2("");
+            businessModel.getOrderHeaderBO().setSignatureName("");
+            businessModel.getOrderHeaderBO().setSignaturePath("");
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -1040,6 +1042,8 @@ public class OrderHelper {
                 businessModel.getOrderHeaderBO().setRemark("");
                 businessModel.getOrderHeaderBO().setRField1("");
                 businessModel.getOrderHeaderBO().setRField2("");
+                businessModel.getOrderHeaderBO().setSignatureName("");
+                businessModel.getOrderHeaderBO().setSignaturePath("");
             }
 
         } catch (Exception e) {
@@ -3712,5 +3716,8 @@ public class OrderHelper {
         return totalReturnAmount;
     }
 
-
+    public int getTotalOrderedQty(ProductMasterBO productBO) {
+        return (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) ? -1 :
+                ((businessModel.configurationMasterHelper.SHOW_OUTER_CASE) ? productBO.getOrderedOuterQty() : productBO.getOrderedCaseQty());
+    }
 }

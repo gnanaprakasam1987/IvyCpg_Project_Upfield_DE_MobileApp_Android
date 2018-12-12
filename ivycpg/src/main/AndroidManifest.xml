@@ -723,7 +723,7 @@
             android:name="com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.SyncStatusActivity"
+            android:name="com.ivy.cpg.view.sync.uploadStatusReport.UploadStatusActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity"
@@ -824,10 +824,15 @@
             android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetServiceActivity"
             android:screenOrientation="portrait" />
 
-        <service
-            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
-            android:enabled="true"
-            android:exported="false" />
+        <activity android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliverySKULevel"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.AddSerializedAssetActivity"
+            android:screenOrientation="portrait" />
+
+        <service android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
+            android:exported="false"
+            android:enabled="true"/>
 
         <activity
             android:name="com.ivy.cpg.view.order.moq.MOQHighlightActivity"

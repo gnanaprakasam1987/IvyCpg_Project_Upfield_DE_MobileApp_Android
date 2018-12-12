@@ -78,6 +78,45 @@ public class DenominationHelper {
         });
     }
 
+    public Observable<ArrayList<DenominationUpdateBO>> downloadDenomintionSavedData(final Context context) {
+        return Observable.create(new ObservableOnSubscribe<ArrayList<DenominationUpdateBO>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<DenominationUpdateBO>> subscribe) throws Exception {
+
+                ArrayList<DenominationUpdateBO> denominationUpdateBOArrayList = new ArrayList<>();
+                DBUtil db = null;
+                try {
+                    db = new DBUtil(context, DataMembers.DB_NAME,
+                            DataMembers.DB_PATH);
+                    db.openDataBase();
+                    Cursor cursor = db.selectSQL("Select * from DenominationDetails");
+
+                    if (cursor != null) {
+                        while (cursor.moveToNext()) {
+                            DenominationUpdateBO denominationUpdateBO = new DenominationUpdateBO();
+                            denominationUpdateBO.setUid(cursor.getString(0));
+                            denominationUpdateBO.setValue(cursor.getString(1));
+                            denominationUpdateBO.setCount(cursor.getString(2));
+                            denominationUpdateBO.setLineAmount(cursor.getString(3));
+                            denominationUpdateBO.setIsCoin(cursor.getInt(4));
+                            denominationUpdateBOArrayList.add(denominationUpdateBO);
+                        }
+                        cursor.close();
+                    }
+                    subscribe.onNext(denominationUpdateBOArrayList);
+                    subscribe.onComplete();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                    subscribe.onError(e);
+                    subscribe.onComplete();
+                } finally {
+                    if (db != null)
+                        db.closeDB();
+                }
+            }
+        });
+    }
+
     public Single<String> downLoadTotalCashInHand(final Context context) {
 
         return Single.fromCallable(new Callable<String>() {
@@ -105,8 +144,8 @@ public class DenominationHelper {
         });
     }
 
-    public Single<Boolean> insertDenomination(final Context context, final ArrayList<DenominationBO> denominationInputValues
-            , final String initialTotalAmount) {
+    public Single<Boolean> insertDenomination(final Context context, final ArrayList<DenominationBO> denominationInputValues,
+                                              final String initialTotalAmount) {
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
@@ -114,8 +153,7 @@ public class DenominationHelper {
                 boolean insertDenomination = false;
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
                     db.openDataBase();
                     db.deleteSQL("DenominationDetails", "", true);
                     db.deleteSQL("DenominationHeader", "", true);
@@ -126,8 +164,7 @@ public class DenominationHelper {
 
                     for (int i = 0; i < denominationInputValues.size(); i++) {
 
-                        double lineAmount = Double.valueOf(denominationInputValues.get(i).getDenominationDisplayNameValues()) *
-                                Double.valueOf(denominationInputValues.get(i).getCount());
+                        double lineAmount = Double.valueOf(denominationInputValues.get(i).getDenominationDisplayNameValues()) * Double.valueOf(denominationInputValues.get(i).getCount());
 
                         String columns = "uid,value,count,lineAmount,isCoin";
 

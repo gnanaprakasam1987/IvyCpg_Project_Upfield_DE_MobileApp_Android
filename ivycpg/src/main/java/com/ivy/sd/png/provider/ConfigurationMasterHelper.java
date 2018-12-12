@@ -1008,8 +1008,8 @@ public class ConfigurationMasterHelper {
     public boolean HIDE_SALES_VALUE_FIELD;
 
     // TO show sync status report in Sync screen.
-    private static final String CODE_SYNC_INTERNAL_REPORT = "SYNC11";
-    public boolean SHOW_SYNC_INTERNAL_REPORT;
+    private static final String CODE_DATA_UPLOAD_STATUS = "SYNC11";
+    public boolean SHOW_DATA_UPLOAD_STATUS;
 
 
     //TO Show both salable and non salable products
@@ -1025,6 +1025,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL = "SR21";
     public boolean IS_SR_RETURN_OR_REPLACE_AT_ANY_LEVEL, IS_INDICATIVE_MASTER;
+
+    private static final String CODE_SALES_RETURN_DELIVERY_SKU_LEVEL = "SR23";
+    public boolean IS_SR_DELIVERY_SKU_LEVEL;
 
     //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
@@ -1365,7 +1368,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_INVOICE_HISTORY = "PRO06";
     public boolean SHOW_INVOICE_HISTORY; // PRO06
 
-    private static final String CODE_SALES_DISTRIBUTION = "SALES_DIST_TAGGING";
+    private static final String CODE_SALES_DISTRIBUTION = "SALES_DISTRIBUTION_TAGGING";
     public boolean IS_PRODUCT_DISTRIBUTION;
     public String PRD_DISTRIBUTION_TYPE = "";
 
@@ -1531,7 +1534,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_MENU_FIREBASE_CHAT = "CHAT02";
     public boolean IS_FIREBASE_CHAT_ENABLED;
 
-    private static final String CODE_CHECK_DIGITAL_SIZE = "SYNC11";
+    private static final String CODE_CHECK_DIGITAL_SIZE = "SYNC12";
     public long DIGITAL_CONTENT_SIZE = -1;
 
 
@@ -2571,7 +2574,7 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_VOLUME_QTY = hashMapHHTModuleConfig.get(CODE_ORDER_RPT_VOLUME) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_RPT_VOLUME) : false;
         this.HIDE_SALES_VALUE_FIELD = hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) != null ? hashMapHHTModuleConfig.get(CODE_OUTLET_SALES_VALUE) : false;
-        this.SHOW_SYNC_INTERNAL_REPORT = hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT) != null ? hashMapHHTModuleConfig.get(CODE_SYNC_INTERNAL_REPORT) : false;
+        this.SHOW_DATA_UPLOAD_STATUS = hashMapHHTModuleConfig.get(CODE_DATA_UPLOAD_STATUS) != null ? hashMapHHTModuleConfig.get(CODE_DATA_UPLOAD_STATUS) : false;
 
         this.retailerLocAccuracyLvl = hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) != null ? hashMapHHTModuleOrder.get(CODE_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) : 0;
         this.IS_DELIVERY_PRINT = hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_PRINT_DELIVERY) : false;
@@ -2671,6 +2674,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
+        this.IS_SR_DELIVERY_SKU_LEVEL = hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) : false;
         this.IS_SHOW_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_OOS) : false;
         this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
     }
