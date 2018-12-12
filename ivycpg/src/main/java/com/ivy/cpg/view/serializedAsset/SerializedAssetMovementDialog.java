@@ -54,7 +54,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     protected Button BTCancel, BTSave;
     protected ArrayList<ReasonMaster> mAssetReasonList;
     protected ArrayList<RetailerMasterBO> retailerMasterBOs;
-    protected String serialNo,reasonId,toRetailerId="0",assetName,brand,retailerName;
+    protected String serialNo,reasonId,toRetailerId="0",assetName,/*brand,*/retailerName;
     protected Integer retailerSelected=-1,assetId,referenceId;
     private final SerializedAssetBO assetBo = new SerializedAssetBO();
     SerializedAssetHelper assetTrackingHelper;
@@ -111,7 +111,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         serialNo = getArguments().getString("serialNo");
         retailerName = getArguments().getString("retailerName");
         assetName = getArguments().getString("assetName");
-        brand=getArguments().getString("brand");
+        //brand=getArguments().getString("brand");
         assetId=getArguments().getInt("assetId");
         referenceId=getArguments().getInt("referenceId");
         String mSerialNumber=getString(R.string.serial_no) + ": " + serialNo;
@@ -212,7 +212,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         String remarks=ETDesc.getText().toString().trim();
 
         assetBo.setPOSM(String.valueOf(assetId));
-        assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(brand));
+        assetBo.setBrand("");//assetTrackingHelper.getAssetBrandIds(brand));
         assetBo.setNewInstallDate(todayDate);
         assetBo.setSNO(serialNo);
         assetBo.setReasonId(reasonId);
