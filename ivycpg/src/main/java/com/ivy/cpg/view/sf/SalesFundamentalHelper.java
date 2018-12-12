@@ -57,6 +57,7 @@ public class SalesFundamentalHelper {
 
 
     public List<SOSBO> mCategoryForDialogSOSBO = null;
+    public List<SODBO> mCategoryForDialogSODBO = null;
 
 
     protected SalesFundamentalHelper(Context context) {
@@ -1818,8 +1819,9 @@ public class SalesFundamentalHelper {
      * @param mTotalShelf Total Shelf
      * @param mLocationId Location Id
      */
-    public void loadSODBlockDetails(String uid, String pid, int mTotalShelf, int mLocationId) {
+    public HashMap<String, ShelfShareBO> loadSODBlockDetails(String uid, String pid, int mTotalShelf, int mLocationId) {
         DBUtil db = null;
+        HashMap<String, ShelfShareBO> mBrandsDetailsHashMap = new HashMap<>();
 
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -1844,7 +1846,7 @@ public class SalesFundamentalHelper {
                     shelfShareBO.setSecondCell("empty");
                     shelfShareBO.setThirdCell("empty");
                     shelfShareBO.setFourthCell("empty");
-                    SODDialogFragment.mBrandsDetailsHashMap.put(
+                    mBrandsDetailsHashMap.put(
                             String.valueOf(i), shelfShareBO);
 
                     while (detailCursor.moveToNext()) {
@@ -1863,7 +1865,7 @@ public class SalesFundamentalHelper {
                                     shelfShareBO.setFourthCell(((detailCursor
                                             .getString(3) == null) ? "Ext.Shelf" : detailCursor.getString(3)));
                                 shelfShareBO.setOthersCount(1);
-                                SODDialogFragment.mBrandsDetailsHashMap.put(
+                                mBrandsDetailsHashMap.put(
                                         String.valueOf(i), shelfShareBO);
                             }
                         } else {
@@ -1882,6 +1884,8 @@ public class SalesFundamentalHelper {
                 db.closeDB();
             }
         }
+
+        return mBrandsDetailsHashMap;
     }
 
     public ArrayList<SOSBO> getLstSOS_PRJSpecific() {
@@ -2213,5 +2217,13 @@ public class SalesFundamentalHelper {
 
     public void setmCategoryForDialogSOSBO(List<SOSBO> mCategoryForDialogSOSBO) {
         this.mCategoryForDialogSOSBO = mCategoryForDialogSOSBO;
+    }
+
+    public List<SODBO> getmCategoryForDialogSODBO() {
+        return mCategoryForDialogSODBO!=null?mCategoryForDialogSODBO:new ArrayList<>();
+    }
+
+    public void setmCategoryForDialogSODBO(List<SODBO> mCategoryForDialogSOSBO) {
+        this.mCategoryForDialogSODBO = mCategoryForDialogSODBO;
     }
 }

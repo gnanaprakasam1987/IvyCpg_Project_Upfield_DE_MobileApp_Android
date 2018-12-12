@@ -11,7 +11,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -34,6 +35,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -54,14 +56,12 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.SOSBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -364,7 +364,10 @@ public class SOSFragment extends IvyBaseFragment implements
                     mSFHelper.mSelectedBrandID,
                     mImageName, HomeScreenTwo.MENU_SOS, mSelectedLocationIndex);
         }else if (requestCode == SHARE_SHELF_RESULT_CODE){
-            if (resultCode == 112){
+
+            if (getActivity() != null)
+                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
+            if (resultCode == 1){
                 mCategoryForDialog.clear();
                 mCategoryForDialog.addAll(mSFHelper.getmCategoryForDialogSOSBO());
                 calculateTotalValues();
@@ -1168,9 +1171,11 @@ public class SOSFragment extends IvyBaseFragment implements
                             bundle.putInt("flag", ShelfShareHelper.SOS);
                             bundle.putInt("selectedlocation", mSelectedLocationIndex);
 
-                            Intent intent = new Intent(getActivity(),ShelfShareActivity.class);
+                            Intent intent = new Intent(getActivity(),SOSMeasureActivity.class);
                             intent.putExtras(bundle);
-                            startActivityForResult(intent,SHARE_SHELF_RESULT_CODE);
+
+                            startActivityForResult(intent, SHARE_SHELF_RESULT_CODE);
+                            getActivity().overridePendingTransition(R.anim.zoom_enter,R.anim.hold);
                         }
                     }
                 });

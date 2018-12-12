@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -35,20 +35,21 @@ import com.ivy.lib.Logs;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.ShelfShareBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-
-public class SODDialogFragment extends DialogFragment {
+public class SODMeasureActivity extends IvyBaseActivityNoActionBar {
 
     private RecyclerView mListBrands;
     private EditText mEdtTxtBlock;
@@ -82,86 +83,69 @@ public class SODDialogFragment extends DialogFragment {
     private boolean mTextWatcherEnabled = true;
 
     private BusinessModel mBModel;
-    private ShelfShareCallBackListener callBackListener;
-    SalesFundamentalHelper mSFHelper;
-    ShelfShareHelper mShelfShareHelper;
+    private SalesFundamentalHelper mSFHelper;
+    private ShelfShareHelper mShelfShareHelper;
 
     private ArrayList<String> mBrandNameList;
     private ArrayList<String> mBrandNameListForDB;
     private List<SODBO> mCategoryForDialogSODBO = null;
-    public static final HashMap<String, ShelfShareBO> mBrandsDetailsHashMap = new HashMap<>();
+    private final HashMap<String, ShelfShareBO> mBrandsDetailsHashMap = new HashMap<>();
     private HashMap<String, HashMap<String, Object>> mShelfDetailForSOD = null;
     private HashMap<String, HashMap<String, Object>> mBrandNameColorCount;
-    com.ivy.sd.png.view.BrandsAdapter mBrandsAdapter;
-
-
-
-
-
-    public SODDialogFragment() {
-
-    }
+    private com.ivy.sd.png.view.BrandsAdapter mBrandsAdapter;
 
     @Override
-    public void onAttach(Context mContext) {
-        super.onAttach(mContext);
-        mBModel = (BusinessModel) mContext.getApplicationContext();
-        mBModel.setContext(getActivity());
-        mShelfShareHelper = ShelfShareHelper.getInstance();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
+        setContentView(R.layout.dialog_fragment_shelf_share);
+
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             this.mParentID = bundle.getInt("parent_id");
             this.mModuleFlag = bundle.getInt("flag");
             this.mSelectedLocationIndex = bundle.getInt("selectedlocation");
             mKey = Integer.toString(mParentID);
         }
-        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_fragment_shelf_share,
-                container, false);
+        mBModel = (BusinessModel) getApplicationContext();
+        mBModel.setContext(this);
+        mShelfShareHelper = ShelfShareHelper.getInstance();
+        mSFHelper = SalesFundamentalHelper.getInstance(this);
 
         isCreateClicked = false;
 
-        mEdtTxtBlock = (EditText) view.findViewById(R.id.edtTxtBlock);
-        mEdtTxtShelf = (EditText) view.findViewById(R.id.edtTxtShelf);
-        mEdtTxtShelfLength = (EditText) view
-                .findViewById(R.id.edtTxtShelfLength);
-        TextView mTxtBrandName = (TextView) view.findViewById(R.id.txtBrandName);
-        mHScrollShelfWrapper = (HorizontalScrollView) view
-                .findViewById(R.id.hrScrollShelfWrapper);
-        mListBrands = (RecyclerView) view.findViewById(R.id.listBrands);
-        Button mBtnDone = (Button) view.findViewById(R.id.btnDoneShelfShare);
-        Button mBtnCancel = (Button) view.findViewById(R.id.btnCancelShelfShare);
-        Button mBtnCreate = (Button) view.findViewById(R.id.btnCreateShelfShare);
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        mEdtTxtBlock = findViewById(R.id.edtTxtBlock);
+        mEdtTxtShelf = findViewById(R.id.edtTxtShelf);
+        mEdtTxtShelfLength = findViewById(R.id.edtTxtShelfLength);
+        TextView mTxtBrandName = findViewById(R.id.txtBrandName);
+        mHScrollShelfWrapper = findViewById(R.id.hrScrollShelfWrapper);
+        mListBrands = findViewById(R.id.listBrands);
+        Button mBtnDone = findViewById(R.id.btnDoneShelfShare);
+        Button mBtnCancel = findViewById(R.id.btnCancelShelfShare);
+        Button mBtnCreate = findViewById(R.id.btnCreateShelfShare);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
-            ((TextView) view.findViewById(R.id.tv_toolbar_title)).setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) findViewById(R.id.tv_toolbar_title)).setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
             toolbar.setTitle(R.string.create_shelf);
         }
 
         mSelectedET = null;
         //setTypefaces
-        ((TextView) view.findViewById(R.id.tvEnterTitle)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.tvNorows)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.tvNoColumns)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.tvBlockLength)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.tvChooseBlocks)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        mTxtBrandName.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        mEdtTxtBlock.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mEdtTxtShelf.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mEdtTxtShelfLength.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mBtnCancel.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        mBtnCreate.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        mBtnDone.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        ((TextView) findViewById(R.id.tvEnterTitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvNorows)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvNoColumns)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvBlockLength)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvChooseBlocks)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        mTxtBrandName.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        mEdtTxtBlock.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        mEdtTxtShelf.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        mEdtTxtShelfLength.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
+        mBtnCancel.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+        mBtnCreate.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+        mBtnDone.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
 
         mEdtTxtBlock.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -206,23 +190,12 @@ public class SODDialogFragment extends DialogFragment {
         mBtnCancel.setOnClickListener(mCancelListener);
         mBtnCreate.setOnClickListener(mShelfCreateListener);
 
-        setNumberPadListener(view);
+        setNumberPadListener();
 
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle arg0) {
-        super.onActivityCreated(arg0);
-
-        if (getDialog().getWindow() != null) {
-            getDialog().getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        }
         initBrandNameList();
         createBrandColor();
         preloadShelf();
-        mBrandsAdapter = new com.ivy.sd.png.view.BrandsAdapter(getActivity(), mBrandNameList, mBrandNameColorCount, mSelectedBrandName, new com.ivy.sd.png.view.BrandsAdapter.OnItemClickListener() {
+        mBrandsAdapter = new com.ivy.sd.png.view.BrandsAdapter(this, mBrandNameList, mBrandNameColorCount, mSelectedBrandName, new com.ivy.sd.png.view.BrandsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String item) {
                 mSelectedBrandName = item;
@@ -239,40 +212,9 @@ public class SODDialogFragment extends DialogFragment {
         });
 
         LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mListBrands.setLayoutManager(layoutManager);
         mListBrands.setAdapter(mBrandsAdapter);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getDialog().getWindow() != null) {
-            getDialog().getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        mBModel.setContext(getActivity());
-        if (getDialog().getWindow() != null) {
-            getDialog().getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Logs.debug("ShelfShareDialogFragment", "Cycle: onPause");
-    }
-
-    public void setOnShelfShareListener(
-            ShelfShareCallBackListener callBackListener) {
-        this.callBackListener = callBackListener;
     }
 
     /**
@@ -283,10 +225,9 @@ public class SODDialogFragment extends DialogFragment {
     private class CommonTextWatcher implements TextWatcher {
 
         private final EditText editText;
-        private final InputMethodManager inputMethodManager = (InputMethodManager) getActivity()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        private final InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        public CommonTextWatcher(EditText editText) {
+        private CommonTextWatcher(EditText editText) {
             this.editText = editText;
         }
 
@@ -306,7 +247,7 @@ public class SODDialogFragment extends DialogFragment {
 
                     if (mBlockCount > mMaxBlockCount)
                         Toast.makeText(
-                                getActivity(),
+                                SODMeasureActivity.this,
                                 getResources().getString(
                                         R.string.shelf_max_block_count)
                                         + " " + mMaxBlockCount,
@@ -320,7 +261,7 @@ public class SODDialogFragment extends DialogFragment {
 
                     if (mShelfCount > mMaxShelfCount)
                         Toast.makeText(
-                                getActivity(),
+                                SODMeasureActivity.this,
                                 getResources().getString(
                                         R.string.shelf_max_shelf_count)
                                         + " " + mMaxShelfCount,
@@ -349,32 +290,32 @@ public class SODDialogFragment extends DialogFragment {
         }
     }
 
-    private void setNumberPadListener(View view) {
-        view.findViewById(R.id.calczero)
+    private void setNumberPadListener() {
+        findViewById(R.id.calczero)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcone)
+        findViewById(R.id.calcone)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calctwo)
+        findViewById(R.id.calctwo)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcthree)
+        findViewById(R.id.calcthree)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcfour)
+        findViewById(R.id.calcfour)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcfive)
+        findViewById(R.id.calcfive)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcsix)
+        findViewById(R.id.calcsix)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcseven)
+        findViewById(R.id.calcseven)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calceight)
+        findViewById(R.id.calceight)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcnine)
+        findViewById(R.id.calcnine)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcdel)
+        findViewById(R.id.calcdel)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcdot)
+        findViewById(R.id.calcdot)
                 .setOnClickListener(mNumberPadListener);
-        view.findViewById(R.id.calcdot).setVisibility(View.GONE);
+        findViewById(R.id.calcdot).setVisibility(View.GONE);
     }
 
     private final View.OnClickListener mNumberPadListener = new View.OnClickListener() {
@@ -528,8 +469,8 @@ public class SODDialogFragment extends DialogFragment {
         if (mShelfCount == 0 && !mBrandNameListForDB.isEmpty())
             return;
 
-        mSFHelper.loadSODBlockDetails(DataMembers.uidSOD,
-                String.valueOf(mKey), totalShelf, locid);
+        mBrandsDetailsHashMap.putAll(mSFHelper.loadSODBlockDetails(DataMembers.uidSOD,
+                String.valueOf(mKey), totalShelf, locid));
 
     }
 
@@ -540,7 +481,7 @@ public class SODDialogFragment extends DialogFragment {
 
         Logs.debug("ShelfShareDialogFragment", "createBrandColor Method");
 
-        int[] mBrandColorArray = getActivity().getResources().getIntArray(
+        int[] mBrandColorArray = getResources().getIntArray(
                 R.array.array_color_brands);
         mBrandNameColorCount = new HashMap<>();
 
@@ -559,7 +500,7 @@ public class SODDialogFragment extends DialogFragment {
             mBrandNameColorCount.put(mBrandNameList.get(i), hashMap);
         }
 
-        int color = ContextCompat.getColor(getActivity(), R.color.gray_text);
+        int color = ContextCompat.getColor(this, R.color.gray_text);
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(COLOR, color);
         hashMap.put(COUNT, 0);
@@ -614,7 +555,7 @@ public class SODDialogFragment extends DialogFragment {
         mExtraCount = 0;
         final Vector<Integer> mExtraPosition = new Vector<>();
         mHScrollShelfWrapper.removeAllViews();
-        TableLayout tableLayout = new TableLayout(getActivity());
+        TableLayout tableLayout = new TableLayout(this);
         LinearLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(
                 TableLayout.LayoutParams.WRAP_CONTENT,
                 TableLayout.LayoutParams.MATCH_PARENT);
@@ -622,7 +563,7 @@ public class SODDialogFragment extends DialogFragment {
         final ViewGroup parent = null;
         for (int i = 0; i < mShelfCount; i++) {
 
-            TableRow tableRow = new TableRow(getActivity());
+            TableRow tableRow = new TableRow(this);
             LinearLayout.LayoutParams tableRowParams = new TableRow.LayoutParams(
                     TableRow.LayoutParams.WRAP_CONTENT, 60);
             tableRowParams.setMargins(0, 4, 0, 4);
@@ -630,8 +571,7 @@ public class SODDialogFragment extends DialogFragment {
             tableRow.setOrientation(TableRow.HORIZONTAL);
 
             for (int j = 0; j < mBlockCount; j++) {
-                LayoutInflater inflater = getActivity()
-                        .getLayoutInflater();
+                LayoutInflater inflater = getLayoutInflater();
                 View convertView = inflater.inflate(R.layout.grid_item_shelfs,
                         parent, false);
                 convertView.setTag(counter);
@@ -647,7 +587,7 @@ public class SODDialogFragment extends DialogFragment {
                                     String.valueOf(view.getTag()));
                         else
                             Toast.makeText(
-                                    getActivity(),
+                                    SODMeasureActivity.this,
                                     getResources()
                                             .getString(R.string.selectany)
                                             + " "
@@ -682,7 +622,7 @@ public class SODDialogFragment extends DialogFragment {
                             Commons.print("extra count" + mExtraShelfCount);
                         } else
                             Toast.makeText(
-                                    getActivity(),
+                                    SODMeasureActivity.this,
                                     getResources()
                                             .getString(R.string.selectany)
                                             + " "
@@ -726,7 +666,7 @@ public class SODDialogFragment extends DialogFragment {
             setCellColor(view, String.valueOf(position));
         } else {
             setCellColor(view,
-                    ContextCompat.getColor(getActivity(), R.color.gray_text));
+                    ContextCompat.getColor(SODMeasureActivity.this, R.color.gray_text));
             addShelfDetails(String.valueOf(position), mEmpty, mEmpty,
                     mEmpty, mEmpty, 1, true);
         }
@@ -861,7 +801,7 @@ public class SODDialogFragment extends DialogFragment {
                 addShelfDetails(positionKey, mEmpty, mEmpty, mEmpty, mEmpty, 1,
                         false);
                 setCellColor(view,
-                        ContextCompat.getColor(getActivity(), R.color.gray_text));
+                        ContextCompat.getColor(this, R.color.gray_text));
             } else {
                 addShelfDetails(positionKey, mSelectedBrandName,
                         mSelectedBrandName, mSelectedBrandName,
@@ -884,10 +824,9 @@ public class SODDialogFragment extends DialogFragment {
      */
     private void showDialog(final View gridCellView, final String positionKey) {
 
-        final Dialog dialog = new Dialog(getActivity(),
+        final Dialog dialog = new Dialog(this,
                 android.R.style.Theme_Translucent_NoTitleBar);
-        LayoutInflater inflater = getActivity()
-                .getLayoutInflater();
+        LayoutInflater inflater = getLayoutInflater();
         final ViewGroup parent = null;
         final View dialogView = inflater.inflate(R.layout.dialog_shelf_share,
                 parent, false);
@@ -1041,7 +980,7 @@ public class SODDialogFragment extends DialogFragment {
      * @return Color Id
      */
     private int getOppositeColor(String brandName) {
-        int competitorBrandColor = ContextCompat.getColor(getActivity(),
+        int competitorBrandColor = ContextCompat.getColor(this,
                 R.color.gray_text);
         return brandName.equals(mSelectedBrandName) ? competitorBrandColor
                 : mSelectedBrandColor;
@@ -1092,7 +1031,7 @@ public class SODDialogFragment extends DialogFragment {
     private final View.OnClickListener mCancelListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            callBackListener.handleDialogClose();
+            finish();
         }
     };
     private final View.OnClickListener mEditDoneListener = new View.OnClickListener() {
@@ -1114,8 +1053,9 @@ public class SODDialogFragment extends DialogFragment {
                     mShelfShareHelper.getLocations().get(mSelectedLocationIndex).setShelfBlockDetailForSOD(
                             String.valueOf(mKey), mBrandsDetailsHashMap);
                 }
-                callBackListener.SODDOCallBackListener(mCategoryForDialogSODBO);
-
+                mSFHelper.setmCategoryForDialogSODBO(mCategoryForDialogSODBO);
+                setResult(1);
+                finish();
             }
         }
     };
@@ -1202,7 +1142,7 @@ public class SODDialogFragment extends DialogFragment {
 
             if (mBlockCount == 0 || mShelfCount == 0
                     || SDUtil.convertToFloat(mShelfLength) == 0)
-                Toast.makeText(getActivity(),
+                Toast.makeText(SODMeasureActivity.this,
                         getResources().getString(R.string.shelf_empty_alert),
                         Toast.LENGTH_SHORT).show();
             else if (mBlockCount <= mMaxBlockCount
@@ -1219,7 +1159,7 @@ public class SODDialogFragment extends DialogFragment {
     private void showDataClearDialog() {
 
         boolean flag = PreferenceManager.getDefaultSharedPreferences(
-                getActivity()).getBoolean("do_not_show_clear_data_dialog",
+                SODMeasureActivity.this).getBoolean("do_not_show_clear_data_dialog",
                 false);
         int count = mShelfCount * mBlockCount * 4;
         if (!flag) {
@@ -1227,13 +1167,12 @@ public class SODDialogFragment extends DialogFragment {
             if (!mBrandsDetailsHashMap.isEmpty()
                     && count != (Integer) mBrandNameColorCount.get(mEmpty).get(
                     COUNT)) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        getActivity());
-                LayoutInflater inflater = getActivity().getLayoutInflater();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                LayoutInflater inflater = getLayoutInflater();
                 View view = inflater.inflate(R.layout.check_box_do_not_show,
                         parent, false);
                 builder.setView(view);
-                final CheckBox checkBox = (CheckBox) view
+                final CheckBox checkBox = view
                         .findViewById(R.id.chkBoxDoNotShowAgain);
                 builder.setMessage("This may remove existing data");
                 builder.setNeutralButton("Ok",
@@ -1245,7 +1184,7 @@ public class SODDialogFragment extends DialogFragment {
                                 if (checkBox.isChecked())
                                     PreferenceManager
                                             .getDefaultSharedPreferences(
-                                                    getActivity())
+                                                    SODMeasureActivity.this)
                                             .edit()
                                             .putBoolean(
                                                     "do_not_show_clear_data_dialog",
@@ -1253,7 +1192,7 @@ public class SODDialogFragment extends DialogFragment {
                                 else
                                     PreferenceManager
                                             .getDefaultSharedPreferences(
-                                                    getActivity())
+                                                    SODMeasureActivity.this)
                                             .edit()
                                             .putBoolean(
                                                     "do_not_show_clear_data_dialog",
@@ -1273,6 +1212,4 @@ public class SODDialogFragment extends DialogFragment {
             isCreateClicked = true;
         }
     }
-
-
 }

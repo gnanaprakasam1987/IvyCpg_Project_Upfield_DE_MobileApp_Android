@@ -4411,10 +4411,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     }
                     if (count > 0) {
-                        startActivityForResult(
-                                new Intent(StockAndOrder.this,MOQHighlightActivity.class),
-                                MOQ_RESULT_CODE);
-                        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        Intent intent = new Intent(StockAndOrder.this,MOQHighlightActivity.class);
+                        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                        ActivityCompat.startActivityForResult(this, intent, MOQ_RESULT_CODE, opts.toBundle());
                         count = 0;
                         return;
                     }
@@ -4875,6 +4874,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
         } else if (requestCode == MOQ_RESULT_CODE) {
+            overridePendingTransition(0, R.anim.zoom_exit);
             if (resultCode == 1) {
                 lvwplist.invalidateViews();
             }

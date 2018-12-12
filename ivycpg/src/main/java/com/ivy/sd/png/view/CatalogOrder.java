@@ -1535,10 +1535,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         }
                     }
                     if (count > 0) {
-                        startActivityForResult(
-                                new Intent(CatalogOrder.this,MOQHighlightActivity.class),
-                                MOQ_RESULT_CODE);
-                        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+                        Intent intent = new Intent(CatalogOrder.this,MOQHighlightActivity.class);
+                        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                        ActivityCompat.startActivityForResult(this, intent, MOQ_RESULT_CODE, opts.toBundle());
+
                         count = 0;
                         return;
                     }
@@ -2481,6 +2482,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == MOQ_RESULT_CODE) {
+            overridePendingTransition(0, R.anim.zoom_exit);
             if (resultCode == 1) {
                 adapter.notifyDataSetChanged();
             }

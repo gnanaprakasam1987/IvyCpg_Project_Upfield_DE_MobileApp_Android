@@ -4,12 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -80,7 +81,6 @@ public class SODFragment extends IvyBaseFragment implements
 
     private SalesFundamentalHelper mSFHelper;
     private BusinessModel mBModel;
-    private SODDialogFragment dialogFragment = null;
 
     private DrawerLayout mDrawerLayout;
     private Dialog dialog = null;
@@ -103,6 +103,8 @@ public class SODFragment extends IvyBaseFragment implements
     private boolean isFromChild;
     private final int CAMERA_REQUEST_CODE = 1;
     private String sb = "";
+
+    private final int SOD_RESULT_CODE = 113;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -308,6 +310,18 @@ public class SODFragment extends IvyBaseFragment implements
             } else {
                 Commons.print(mSFHelper.mSelectedActivityName
                         + "Camera Activity : Canceled");
+            }
+        }else if (requestCode == SOD_RESULT_CODE){
+
+            if (getActivity() != null)
+                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
+
+            if (resultCode == 112){
+
+                mCategoryForDialog.clear();
+                mCategoryForDialog.addAll(mSFHelper.getmCategoryForDialogSODBO());
+                calculateTotalValues();
+                mListView.invalidateViews();
             }
         }
     }
@@ -841,7 +855,7 @@ public class SODFragment extends IvyBaseFragment implements
                                 mSelectedHolder = (ViewHolder) v.getTag();
                                 getTotalValue(mSelectedHolder.mSOD.getParentID());
                             }
-                        } else if (dialogFragment == null) {
+                        } else  {
                             mSelectedHolder = (ViewHolder) v.getTag();
                             Bundle bundle = new Bundle();
 
@@ -854,42 +868,12 @@ public class SODFragment extends IvyBaseFragment implements
                                     mSelectedHolder.mSOD.getProductID());
                             bundle.putInt("flag", ShelfShareHelper.SOD);
                             bundle.putInt("selectedlocation", mSelectedLocationIndex);
-                            dialogFragment = new SODDialogFragment();
-                            dialogFragment.setArguments(bundle);
-                            dialogFragment
-                                    .setStyle(
-                                            DialogFragment.STYLE_NO_TITLE,
-                                            android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-                            dialogFragment.setCancelable(false);
-                            dialogFragment
-                                    .setOnShelfShareListener(new ShelfShareCallBackListener() {
-                                                                 @Override
-                                                                 public void SOSBOCallBackListener(List<SOSBO> sosBOList) {
 
-                                                                 }
+                            Intent intent = new Intent(getActivity(),SODMeasureActivity.class);
+                            intent.putExtras(bundle);
 
-                                                                 @Override
-                                                                 public void SODDOCallBackListener(List<SODBO> sosBOList) {
-                                                                     Logs.debug("SOSFragment",
-                                                                             "SOSBOCallBackListener");
-                                                                     mCategoryForDialog.clear();
-                                                                     mCategoryForDialog
-                                                                             .addAll(sosBOList);
-                                                                     dialogFragment.dismiss();
-                                                                     dialogFragment = null;
-                                                                     calculateTotalValues();
-                                                                     mListView.invalidateViews();
-                                                                 }
-
-                                                                 @Override
-                                                                 public void handleDialogClose() {
-                                                                     dialogFragment.dismiss();
-                                                                     dialogFragment = null;
-                                                                 }
-                                                             }
-                                    );
-                            dialogFragment.show(getChildFragmentManager(),
-                                    "Shelf Share");
+                            startActivityForResult(intent, SOD_RESULT_CODE);
+                            getActivity().overridePendingTransition(R.anim.zoom_enter,R.anim.hold);
                         }
 
                     }

@@ -91,8 +91,6 @@
             android:name="com.google.android.maps"
             android:required="false" />
 
-        <receiver android:name="com.ivy.sd.png.model.ScreenReceiver" />
-
         <service
             android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingListenerService"
             android:enabled="true"
@@ -581,9 +579,6 @@
             android:name="com.ivy.sd.print.CreditNotePrintPreviewScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NewOutletEdit"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.cpg.view.mvp.MVPNotification"
             android:screenOrientation="portrait" />
         <activity
@@ -830,14 +825,6 @@
             android:screenOrientation="portrait" />
 
         <service
-            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
-            android:name="com.ivy.cpg.view.sync.largefiledownload.DummyService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
             android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
             android:enabled="true"
             android:exported="false" />
@@ -845,8 +832,15 @@
         <activity
             android:name="com.ivy.cpg.view.order.moq.MOQHighlightActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name="com.ivy.cpg.view.sf.ShelfShareActivity"
+        <activity
+            android:name="com.ivy.cpg.view.sf.SOSMeasureActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.sf.SODMeasureActivity" />
+        <activity
+            android:name="com.ivy.cpg.view.nearexpiry.NearExpiryDateInputActivity"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.order.DiscountEditActivity"
             android:screenOrientation="portrait"/>
     </application>
 

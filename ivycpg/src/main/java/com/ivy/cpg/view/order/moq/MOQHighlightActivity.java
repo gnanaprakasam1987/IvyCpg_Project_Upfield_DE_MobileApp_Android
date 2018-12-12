@@ -47,8 +47,6 @@ public class MOQHighlightActivity extends IvyBaseActivityNoActionBar implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.moq_highlight_dialog);
 
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null ) {
@@ -68,7 +66,8 @@ public class MOQHighlightActivity extends IvyBaseActivityNoActionBar implements 
             setScreenTitle(getResources().getString(R.string.minimum_order_required));
         }
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        if (getWindow() != null)
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -115,7 +114,6 @@ public class MOQHighlightActivity extends IvyBaseActivityNoActionBar implements 
         if (i == R.id.btn_next) {
             setResult(1);
             finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
 
@@ -311,7 +309,6 @@ public class MOQHighlightActivity extends IvyBaseActivityNoActionBar implements 
         int i = item.getItemId();
         if (i == android.R.id.home) {
             finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
         return super.onOptionsItemSelected(item);
     }
