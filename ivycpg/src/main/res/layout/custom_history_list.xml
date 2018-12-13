@@ -47,7 +47,7 @@
 
                     <TextView
                         android:id="@+id/order_id_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -99,7 +99,7 @@
 
                     <TextView
                         android:id="@+id/date_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -151,7 +151,7 @@
 
                     <TextView
                         android:id="@+id/due_date_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -204,7 +204,7 @@
                     <TextView
 
                         android:id="@+id/tot_lines_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -256,7 +256,7 @@
                     <TextView
 
                         android:id="@+id/tot_val_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -309,7 +309,7 @@
                     <TextView
 
                         android:id="@+id/tot_vol_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -362,7 +362,7 @@
                     <TextView
 
                         android:id="@+id/del_status_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -426,7 +426,7 @@
                     <TextView
 
                         android:id="@+id/del_date_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -479,7 +479,7 @@
                     <TextView
 
                         android:id="@+id/invoice_date_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -533,7 +533,7 @@
                     <TextView
 
                         android:id="@+id/invoice_qty_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -587,7 +587,7 @@
                     <TextView
 
                         android:id="@+id/del_rep_code_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -641,7 +641,7 @@
                     <TextView
 
                         android:id="@+id/paid_amt_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"
@@ -693,7 +693,7 @@
                     <TextView
 
                         android:id="@+id/bal_amt_txt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|top"

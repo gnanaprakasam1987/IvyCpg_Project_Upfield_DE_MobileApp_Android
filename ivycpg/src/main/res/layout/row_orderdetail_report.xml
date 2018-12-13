@@ -29,7 +29,7 @@
 
             <TextView
                 android:id="@+id/product_code"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/PRDNAME1"
@@ -41,7 +41,7 @@
 
             <TextView
                 android:id="@+id/prdbatchid"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/PRDNAME1"
@@ -55,7 +55,7 @@
 
             <TextView
                 android:id="@+id/prdweight"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/PRDNAME1"

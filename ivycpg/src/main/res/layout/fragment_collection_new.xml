@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:cardElevation="@dimen/dimens_6dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true"
         android:layout_margin="@dimen/card_rel_margin"
         app:cardBackgroundColor="?attr/customFooterBackgroundColor"
         app:cardCornerRadius="@dimen/dimens_4dp">
@@ -127,6 +128,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@null"
+        android:layout_marginLeft="@dimen/card_rel_margin"
+        android:layout_marginRight="@dimen/card_rel_margin"
         android:dividerHeight="0dp" />
 
     <View

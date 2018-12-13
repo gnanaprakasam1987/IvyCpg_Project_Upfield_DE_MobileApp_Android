@@ -328,8 +328,8 @@
     <!-- Burger Menu -->
 
     <!--  ButtonSmallRoundCorner-->
-    <dimen name="btn_small_round_corner_height">26dp</dimen>
-    <dimen name="btn_small_round_corner_width">56dp</dimen>
+    <dimen name="btn_small_round_corner_height">30dp</dimen>
+    <dimen name="btn_small_round_corner_width">60dp</dimen>
 
     <dimen name="btn_small_round_corner_padding">6dp</dimen>
 
@@ -734,9 +734,12 @@
 
     <dimen name="actionbar_title_text_size">20sp</dimen>
     <dimen name="actionbar_subtitle_text_size">18sp</dimen>
+    <dimen name="trade_coverage_text_size">13sp</dimen>
+    <dimen name="banner_text_size">13sp</dimen>
     <dimen name="text_size_primary">15sp</dimen>
     <dimen name="text_size_secondary">13sp</dimen>
     <dimen name="text_size_caption">13sp</dimen>
+    <dimen name="date_picker_text_size">13sp</dimen>
 
     <!-- List header text size -->
     <dimen name="list_header_text_size">14sp</dimen>

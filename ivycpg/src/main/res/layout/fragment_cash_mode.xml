@@ -7,96 +7,94 @@
     android:orientation="vertical">
 
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/cash_card_view"
+    <android.support.v7.widget.CardView
+        android:id="@+id/cash_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_200dp"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/list_margin"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dimens_8dp"
+        app:cardElevation="@dimen/dimens_10dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_200dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/list_margin"
-            app:cardElevation="@dimen/dimens_10dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="@dimen/dimens_8dp">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/ll2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dimens_10dp">
 
-                <LinearLayout
-                    android:id="@+id/ll2"
+                <TextView
+                    android:id="@+id/tv_enteramount_title"
+                    style="@style/TextViewNormal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dimens_10dp">
+                    android:layout_marginStart="2dp"
+                    android:layout_marginLeft="2dp"
+                    android:text="@string/Amount"
+                    android:visibility="visible" />
 
-                    <TextView
-                        android:id="@+id/tv_enteramount_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
-                        android:text="@string/Amount"
-                        style="@style/TextViewCaption"
-                        android:textStyle="bold"
-                        android:visibility="visible"
-                        android:layout_marginLeft="2dp" />
-
-                    <EditText
-                        android:id="@+id/edit_amount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:gravity="start"
-                        android:textAlignment="textStart"
-                        android:maxLength="12"
-                        />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll3"
+                <EditText
+                    android:id="@+id/edit_amount"
+                    style="@style/EditTextNormal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dimens_10dp">
-
-                    <TextView
-                        android:id="@+id/tv_refno_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
-                        android:text="@string/cash_ref_no"
-                        style="@style/TextViewCaption"
-                        android:visibility="visible"
-                        android:textStyle="bold"
-                        android:layout_marginLeft="2dp" />
-
-                    <EditText
-                        android:id="@+id/edit_refno"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:textAlignment="viewStart"
-                        android:clickable="true"
-                        tools:ignore="KeyboardInaccessibleWidget" />
-                </LinearLayout>
-
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="start"
+                    android:maxLength="12"
+                    android:textAlignment="textStart" />
             </LinearLayout>
-        </android.support.v7.widget.CardView>
 
+            <LinearLayout
+                android:id="@+id/ll3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/dimens_10dp">
+
+                <TextView
+                    android:id="@+id/tv_refno_title"
+                    style="@style/TextViewNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginLeft="2dp"
+                    android:text="@string/cash_ref_no"
+                    android:visibility="visible" />
+
+                <EditText
+                    android:id="@+id/edit_refno"
+                    style="@style/EditTextNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:gravity="start"
+                    android:textAlignment="viewStart"
+                    tools:ignore="KeyboardInaccessibleWidget" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 
     <LinearLayout
         android:id="@+id/ll_keypad"
-        android:layout_above="@+id/ll_vertical_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_vertical_line"
         android:orientation="vertical">
 
         <include
@@ -111,10 +109,10 @@
         android:id="@+id/ll_vertical_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dimens_10dp"
         android:layout_above="@+id/ll_footer"
-        android:orientation="vertical"
-        android:background="@color/light_gray" />
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:background="@color/light_gray"
+        android:orientation="vertical" />
 
     <RelativeLayout
         android:id="@+id/ll_footer"
@@ -122,9 +120,9 @@
         android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
+        android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:background="?attr/customFooterBackgroundColor">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/ll_total"
@@ -155,21 +153,21 @@
 
         <Button
             android:id="@+id/cancelbtn"
-            style="?attr/roundedCustomButtonSmall"
-            android:layout_marginEnd="@dimen/dimens_6dp"
+            style="?attr/roundedCustomButtonSmallTransparent"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dimens_6dp"
+            android:layout_marginRight="@dimen/dimens_6dp"
             android:layout_toStartOf="@+id/applybtn"
             android:layout_toLeftOf="@+id/applybtn"
-            android:text="@string/cancel"
-            android:layout_marginRight="@dimen/dimens_6dp" />
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/applybtn"
             style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dimens_6dp"
             android:layout_marginEnd="@dimen/dimens_6dp"
-            android:layout_alignParentRight="true"
             android:text="@string/apply" />
     </RelativeLayout>
 
