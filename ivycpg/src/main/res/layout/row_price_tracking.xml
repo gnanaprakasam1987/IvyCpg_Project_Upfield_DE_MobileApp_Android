@@ -189,7 +189,7 @@
 
             <TextView
                 android:id="@+id/prev_price_label"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -216,7 +216,7 @@
 
                 <TextView
                     android:id="@+id/prev_ca_label"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -246,7 +246,7 @@
 
                 <TextView
                     android:id="@+id/prev_oo_label"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -277,7 +277,7 @@
 
                 <TextView
                     android:id="@+id/prev_pc_label"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -309,7 +309,7 @@
 
             <TextView
                 android:id="@+id/prev_mrp_label"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -334,7 +334,7 @@
 
                 <TextView
                     android:id="@+id/prev_mrp_ca_label"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -365,7 +365,7 @@
 
                 <TextView
                     android:id="@+id/prev_mrp_oo_label"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -396,7 +396,7 @@
 
                 <TextView
                     android:id="@+id/prev_mrp_pc_label"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

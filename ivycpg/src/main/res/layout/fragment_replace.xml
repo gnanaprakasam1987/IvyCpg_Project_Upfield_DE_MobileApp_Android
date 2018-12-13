@@ -100,7 +100,7 @@
 
                             <TextView
                                 android:id="@+id/srpcsTitle"
-                                style="@style/TextViewCaption"
+                                style="@style/TextViewListItemCaption"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_piece"
@@ -127,7 +127,7 @@
 
                             <TextView
                                 android:id="@+id/srcaseTitle"
-                                style="@style/TextViewCaption"
+                                style="@style/TextViewListItemCaption"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_case"
@@ -155,7 +155,7 @@
 
                             <TextView
                                 android:id="@+id/sroutercaseTitle"
-                                style="@style/TextViewCaption"
+                                style="@style/TextViewListItemCaption"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="item_sr_outer"

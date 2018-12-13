@@ -660,6 +660,40 @@ negative button and neutral button -->
         <item name="android:textColor">@color/FullBlack</item>
     </style>
 
+    <!-- Banner Header Text Style-->
+    <style name="BannerTextViewLabel" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/banner_text_size</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">?attr/accentcolor</item>
+    </style>
+
+    <style name="BannerTextViewValue" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/highlight_small</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextViewNormal" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+
+    <style name="TextViewCaptionNormal" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">?attr/captionTextColor</item>
+    </style>
+
+
+    <style name="TradeCoverageHeaderText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/trade_coverage_text_size</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">?attr/accentcolor</item>
+    </style>
+
+
 
     <!-- List View Header Text Style-->
     <style name="TextViewListTitle" parent="@android:style/Widget.TextView">
@@ -677,8 +711,7 @@ negative button and neutral button -->
     <style name="TextViewListItemPrimary" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:textColor">?attr/listItemPrimaryTextColor</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
     </style>
 
     <!-- List Item Secondary View Text Style-->
@@ -696,11 +729,14 @@ negative button and neutral button -->
 
 
     <!-- List Item Caption View Text Style-->
-    <style name="TextViewCaption" parent="@android:style/Widget.TextView">
+    <style name="TextViewListItemCaption" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_caption</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textColor">?attr/captionTextColor</item>
     </style>
+
+
+
 
     <!-- Footer View Text Style-->
     <style name="TextViewFooterLabel" parent="@android:style/Widget.TextView">
@@ -742,7 +778,7 @@ negative button and neutral button -->
         <item name="android:background">@drawable/edittext_bottom_border</item>
         <item name="android:drawableRight">@drawable/ic_date_picker</item>
         <item name="android:textColor">@color/date_picker_text_color</item>
-        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:textSize">@dimen/date_picker_text_size</item>
         <item name="android:drawablePadding">@dimen/date_picker_drawable_padding</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
@@ -783,14 +819,26 @@ negative button and neutral button -->
         <!--<item name="android:gravity">left</item>-->
         <item name="android:gravity">start</item>
         <item name="android:textAlignment" tools:targetApi="jelly_bean_mr1">viewStart</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:paddingBottom">2dp</item>
         <item name="android:height">50dp</item>
     </style>
 
     <style name="EditTextGravity" parent="@android:style/Widget.EditText">
         <item name="android:gravity">start</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textAlignment" tools:targetApi="jelly_bean_mr1">viewStart</item>
     </style>
+
+    <style name="EditTextNormal" parent="@android:style/Widget.EditText">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textColor">@color/FullBlack</item>
+        <item name="android:textColorHighlight">?attr/accentcolor</item>
+        <item name="android:gravity">start</item>
+        <item name="android:textAlignment" tools:targetApi="jelly_bean_mr1">viewStart</item>
+    </style>
+
     <!--Edittext -->
 
     <!-- Activity Click Effect -->
@@ -861,6 +909,7 @@ negative button and neutral button -->
         <item name="android:lines">2</item>
         <item name="android:maxLength">6</item>
         <item name="android:selectAllOnFocus">true</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:singleLine">false</item>
         <item name="android:textColor">@color/list_item_values_text_color</item>
         <item name="android:textSize">@dimen/text_size_secondary</item>

@@ -20,8 +20,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/toolbar_image_top"
         android:orientation="vertical"
-        android:paddingEnd="@dimen/dimen_2dp"
-        android:paddingStart="@dimen/dimen_2dp">
+        android:paddingStart="@dimen/dimen_2dp"
+        android:paddingEnd="@dimen/dimen_2dp">
 
         <include layout="@layout/visit_fragment_title_layout" />
 
@@ -33,37 +33,36 @@
 
             <TextView
                 android:id="@+id/tv_label"
+                style="@style/HeadingStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/store_margin_left"
-                android:text="@string/stores"
-                android:textColor="@color/FullBlack"
-                android:textSize="@dimen/highlight_normal"
-                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/store_margin_left"
                 android:tag="store_title"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/store_margin_left" />
+                android:text="@string/stores"
+                android:textSize="@dimen/highlight_normal" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/margin_10px"
+                android:layout_marginRight="@dimen/margin_10px"
                 android:layout_toStartOf="@+id/ll_view"
+                android:layout_toLeftOf="@+id/ll_view"
                 android:text="View"
                 android:textColor="@color/black_bg2"
-                android:visibility="gone"
-                android:layout_marginRight="@dimen/margin_10px"
-                android:layout_toLeftOf="@+id/ll_view" />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/ll_view"
                 style="?attr/roundedCustomButtonSmallGrey"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
                 android:orientation="horizontal"
                 android:visibility="visible"
                 android:weightSum="4">
@@ -83,8 +82,8 @@
                     android:id="@+id/cross_line"
                     android:layout_width="@dimen/dimen_2dp"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="-2dp"
                     android:layout_marginTop="-2dp"
+                    android:layout_marginBottom="-2dp"
                     android:layout_weight="1"
                     android:background="@drawable/ic_cross_line" />
 
@@ -119,16 +118,16 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/dimen_16dp"
         android:scaleType="center"
         android:src="@drawable/ic_dashboard_floating_deviation"
         android:visibility="visible"
         app:backgroundTint="?attr/primarycolor"
         app:elevation="@dimen/floating_btn_elevation"
-        app:useCompatPadding="false"
-        android:layout_alignParentRight="true" />
+        app:useCompatPadding="false" />
     <!--app:paddingStart="-20dp"-->
     <!--app:paddingEnd="10dp"-->
     <!--android:padding="10dp"-->

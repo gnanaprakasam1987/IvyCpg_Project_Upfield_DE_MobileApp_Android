@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/zxing_transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.ivy.cpg.view.collection.BillPaymentActivityFragment">
 
@@ -10,12 +12,18 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
-
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:cardElevation="@dimen/dimens_6dp"
+            android:layout_margin="@dimen/card_rel_margin"
+            app:cardBackgroundColor="?attr/customFooterBackgroundColor"
+            app:cardCornerRadius="@dimen/dimens_4dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@android:color/transparent"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="@dimen/dimens_10dp">
@@ -25,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
@@ -32,17 +41,15 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/discount_amount"
-                    android:textColor="?attr/primarycolor"
-                    android:textSize="@dimen/text_size_primary"
-                    android:textStyle="bold" />
+                    style="@style/BannerTextViewLabel"
+                    />
 
                 <TextView
                     android:id="@+id/tv_disc_amt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/half_Black"
-                    android:textSize="@dimen/font_small" />
+                  style="@style/BannerTextViewValue" />
 
             </LinearLayout>
 
@@ -53,7 +60,8 @@
                 android:layout_gravity="center"
                 android:background="@color/light_gray"
                 android:gravity="center"
-                android:padding="@dimen/dimens_4dp" />
+                android:padding="@dimen/dimens_4dp"
+                tools:ignore="Orientation" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,17 +75,14 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/payment_amount"
-                    android:textColor="?attr/primarycolor"
-                    android:textSize="@dimen/text_size_primary"
-                    android:textStyle="bold" />
+                   style="@style/BannerTextViewLabel"/>
 
                 <TextView
                     android:id="@+id/tv_paidamt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/half_Black"
-                    android:textSize="@dimen/font_small" />
+                    style="@style/BannerTextViewValue"/>
 
             </LinearLayout>
 
@@ -101,36 +106,32 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/balance_amount"
-                    android:textColor="?attr/primarycolor"
-                    android:textSize="@dimen/text_size_primary"
-                    android:textStyle="bold" />
+                   style="@style/BannerTextViewLabel" />
 
                 <TextView
                     android:id="@+id/tv_balanceamt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tv_osamt_height"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/half_Black"
-                    android:textSize="@dimen/font_small" />
+                   style="@style/BannerTextViewValue" />
 
             </LinearLayout>
 
         </LinearLayout>
+        </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/paymentmode_recycview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/windowBackground"
-            android:padding="@dimen/margin_5px"
             android:scrollbars="vertical" />
 
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimens_80dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="@dimen/footer_height"
         android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
         android:orientation="horizontal">
@@ -140,42 +141,34 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="@dimen/dimens_10dp"
-            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="@dimen/dimens_6dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/dimens_10dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="start|center"
                 android:text="@string/collective_amount"
-                android:textColor="?attr/colorAccent"
-                android:textSize="@dimen/text_size_secondary" />
+                style="@style/TextViewFooterLabel" />
 
             <TextView
                 android:id="@+id/tv_collectionamt"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/tv_osamt_height"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_small" />
+                android:layout_height="wrap_content"
+                android:gravity="start|center"
+                style="@style/TextViewFooterValue" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/paybtn"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_width="@dimen/dimens_100dp"
-            android:layout_height="@dimen/dimens_40dp"
+            style="?attr/roundedCustomButtonSmall"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dimens_6dp"
-            android:layout_marginTop="@dimen/dimens_14dp"
             android:text="@string/save"
-            android:textSize="@dimen/text_size_primary"
-            android:textStyle="bold"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dimens_6dp" />
     </RelativeLayout>

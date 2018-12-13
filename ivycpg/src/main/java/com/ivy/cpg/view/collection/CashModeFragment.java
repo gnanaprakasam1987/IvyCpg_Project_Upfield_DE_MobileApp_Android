@@ -2,6 +2,7 @@ package com.ivy.cpg.view.collection;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
@@ -74,7 +75,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_cash_mode, container, false);
 
         setHasOptionsMenu(true);
@@ -186,6 +187,8 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
                         mCollectAmtET.setText(SDUtil.getWithoutExponential(SDUtil.convertToDouble(qty)));
                         Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                 Toast.LENGTH_SHORT).show();
+                    } else if (!collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CASH)) {
+                        updateTotalAmountEntered();
                     } else {
                         if (value > 0) {
                             if (!qty.contains("."))

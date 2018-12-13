@@ -4,7 +4,7 @@
     android:layout_height="@dimen/dimen_30dp">
 
     <TextView
-        style="@style/TextViewCaption"
+        style="@style/TextViewListItemCaption"
         android:id="@+id/text_product_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -45,7 +45,7 @@
 
                 <TextView
                     android:id="@+id/tv_last_sync_title"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -55,7 +55,7 @@
 
                 <TextView
                     android:id="@+id/tv_last_sync_value"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.2"
@@ -92,7 +92,7 @@
 
                     <TextView
                         android:id="@+id/tvActualTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/actual" />
@@ -100,7 +100,7 @@
 
                     <TextView
                         android:id="@+id/tvactualValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -118,7 +118,7 @@
 
                     <TextView
                         android:id="@+id/tv_sales_volume_title"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:tag="sales_volume"
@@ -127,7 +127,7 @@
 
                     <TextView
                         android:id="@+id/tv_sales_volume_value"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -145,7 +145,7 @@
 
                     <TextView
                         android:id="@+id/tvVisitPerTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Visit %" />
@@ -153,7 +153,7 @@
 
                     <TextView
                         android:id="@+id/tvVisitPerValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -171,7 +171,7 @@
 
                     <TextView
                         android:id="@+id/tvProdPerTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Productive %" />
@@ -179,7 +179,7 @@
 
                     <TextView
                         android:id="@+id/tvProdPerValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -197,7 +197,7 @@
 
                     <TextView
                         android:id="@+id/tv_time_spent_title"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Time Spent" />
@@ -205,7 +205,7 @@
 
                     <TextView
                         android:id="@+id/tv_timespent_value"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -234,7 +234,7 @@
 
                     <TextView
                         android:id="@+id/tvplnCallTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Planned Call" />
@@ -242,7 +242,7 @@
 
                     <TextView
                         android:id="@+id/tvPlnCallValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -260,7 +260,7 @@
 
                     <TextView
                         android:id="@+id/tvdevCallTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Deviate Call" />
@@ -268,7 +268,7 @@
 
                     <TextView
                         android:id="@+id/tvadevCallValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -286,7 +286,7 @@
 
                     <TextView
                         android:id="@+id/tvActCallTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Actual Call" />
@@ -294,7 +294,7 @@
 
                     <TextView
                         android:id="@+id/tvActualCallValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -312,7 +312,7 @@
 
                     <TextView
                         android:id="@+id/tvProdCallTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Productive Call" />
@@ -320,7 +320,7 @@
 
                     <TextView
                         android:id="@+id/tvProdCallValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|right"
@@ -348,7 +348,7 @@
 
                 <TextView
                     android:id="@+id/tvFitScoreTitle"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Fit Score" />
@@ -356,7 +356,7 @@
 
                 <TextView
                     android:id="@+id/tvFitScore"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center|right"

@@ -79,7 +79,7 @@
 
                         <TextView
                             android:id="@+id/tv_outlet_covered"
-                            style="@style/TextViewCaption"
+                            style="@style/TextViewListItemCaption"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/_2sdp"
@@ -107,7 +107,7 @@
 
                             <TextView
                                 android:id="@+id/tv_percent_txt"
-                                style="@style/TextViewCaption"
+                                style="@style/TextViewListItemCaption"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/_10sdp"
@@ -143,7 +143,7 @@
 
                             <TextView
                                 android:id="@+id/tv_status"
-                                style="@style/TextViewCaption"
+                                style="@style/TextViewListItemCaption"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
