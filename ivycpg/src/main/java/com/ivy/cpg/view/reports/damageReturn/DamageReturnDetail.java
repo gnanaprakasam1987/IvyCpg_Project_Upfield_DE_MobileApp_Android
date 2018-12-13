@@ -78,6 +78,13 @@ public class DamageReturnDetail extends IvyBaseFragment {
                     outerTitleTv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 }
 
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    caseTitleTv.setVisibility(View.GONE);
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    pieceTitleTv.setVisibility(View.GONE);
+                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                    outerTitleTv.setVisibility(View.GONE);
+
             } catch (Exception e) {
                 Commons.printException(e);
             }
@@ -156,6 +163,14 @@ public class DamageReturnDetail extends IvyBaseFragment {
                         false);
                 holder = new ViewHolder(row);
                 holder.tvwpsname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
+                    holder.tv_case_qty.setVisibility(View.GONE);
+                if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+                    holder.tv_piece_qty.setVisibility(View.GONE);
+                if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
+                    holder.tv_outer_qty.setVisibility(View.GONE);
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();

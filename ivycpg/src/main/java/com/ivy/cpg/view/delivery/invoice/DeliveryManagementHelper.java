@@ -17,6 +17,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class DeliveryManagementHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
 
-            String query = "select invoiceno,invoicedate,invNetamount,linespercall from InvoiceDeliveryMaster " +
+            String query = "select invoiceno,invoicedate,invNetamount,linespercall,invoicerefno,PickListId from InvoiceDeliveryMaster " +
                     " where retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
                     " and invoiceno not in(select vh.invoiceid from vandeliveryheader vh)";
 
@@ -67,6 +68,8 @@ public class DeliveryManagementHelper {
                     invoiceHeaderBO.setInvoiceDate(c.getString(1));
                     invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
                     invoiceHeaderBO.setLinesPerCall(c.getInt(3));
+                    invoiceHeaderBO.setInvoiceRefNo(c.getString(4));
+                    invoiceHeaderBO.setPickListId(c.getString(5));
                     mInvoiceList.add(invoiceHeaderBO);
 
                 }
@@ -195,7 +198,7 @@ public class DeliveryManagementHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
             String deliveryheadercolumns = "uid,retailerid,invoiceddate,deliverydate,status,latitude,longtitude,utcdate," +
-                    "invoiceid,SignName,Proofpicture,contactName,contactNo,SignaturePath";
+                    "invoiceid,SignName,Proofpicture,contactName,contactNo,SignaturePath,PickListId";
             String status = "";
             if (selectedItem.equals(mContext.getResources().getString(R.string.fullfilled))) {
                 status = "F";
@@ -205,19 +208,26 @@ public class DeliveryManagementHelper {
                 status = "R";
             }
 
-            String uid = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String uid = AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
-            String header = (uid + "," + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",") +
-                    bmodel.QT(invoiceHeaderBO.getInvoiceDate()) + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," +
-                    bmodel.QT(status) + "," + bmodel.QT(bmodel.mSelectedRetailerLatitude + "") + "," + bmodel.QT(bmodel.mSelectedRetailerLongitude + "") + "," +
+            String header = (uid + "," + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",") +
+                    AppUtils.QT(invoiceHeaderBO.getInvoiceDate()) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," +
+                    AppUtils.QT(status) + "," + AppUtils.QT(bmodel.mSelectedRetailerLatitude + "") + "," + AppUtils.QT(bmodel.mSelectedRetailerLongitude + "") + "," +
                     DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) +
-                    "," + bmodel.QT(invoiceno) +
-                    "," + bmodel.QT(SignName) +//internal colunm
-                    "," + bmodel.QT(SignPath) +// proofPicture not used... so using same column
-                    "," + bmodel.QT(contactName) +
-                    "," + bmodel.QT(contactNo) +
-                    "," + bmodel.QT(SignPath);
+                    "," + AppUtils.QT(invoiceno) +
+                    "," + AppUtils.QT(SignName) +//internal colunm
+                    "," + AppUtils.QT(SignPath) +// proofPicture not used... so using same column
+                    "," + AppUtils.QT(contactName) +
+                    "," + AppUtils.QT(contactNo) +
+                    "," + AppUtils.QT(SignPath) +
+                    "," + AppUtils.QT(invoiceHeaderBO.getPickListId());
             db.insertSQL(DataMembers.tbl_van_delivery_header, deliveryheadercolumns, header);
+
+            String values = AppUtils.QT(invoiceHeaderBO.getPickListId()) + ","
+                    + AppUtils.QT(invoiceno) + ","
+                    + AppUtils.QT(status);
+
+            db.insertSQL(DataMembers.tbl_picklist_invoice, DataMembers.tbl_picklist_invoice_cols, values);
 
             if (selectedItem.equals(mContext.getResources().getString(R.string.partially_fullfilled))) {
                 String detailColumns = "uid,pid,uomid,batchid,invoiceqty,deliveredqty,returnqty,retailerid";

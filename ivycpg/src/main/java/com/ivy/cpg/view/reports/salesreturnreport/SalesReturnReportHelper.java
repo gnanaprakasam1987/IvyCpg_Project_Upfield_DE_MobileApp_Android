@@ -34,7 +34,7 @@ public class SalesReturnReportHelper {
 
             String query = "SELECT  distinct RM.RetailerName,srh.* from SalesReturnHeader srh"
                     + " LEFT JOIN RetailerMaster RM ON srh.RetailerID=RM.RetailerID"
-                    + " where date =" + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + " where srh.upload!='X' and date =" + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {

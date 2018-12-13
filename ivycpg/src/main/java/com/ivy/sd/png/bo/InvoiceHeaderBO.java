@@ -20,6 +20,7 @@ public class InvoiceHeaderBO {
     private String docRemark     = "";
     private String docSignPath     = "";
     private String docSignImage     = "";
+    private String pickListId = "";
 
     //pending invoice
     String retailerName;
@@ -196,5 +197,23 @@ public class InvoiceHeaderBO {
 
     public void setDocSignImage(String docSignImage) {
         this.docSignImage = docSignImage;
+    }
+
+    private String invoiceRefNo;
+
+    public String getInvoiceRefNo() {
+        return invoiceRefNo;
+    }
+
+    public void setInvoiceRefNo(String invoiceRefNo) {
+        this.invoiceRefNo = invoiceRefNo;
+    }
+
+    public String getPickListId() {
+        return pickListId;
+    }
+
+    public void setPickListId(String pickListId) {
+        this.pickListId = pickListId;
     }
 }
