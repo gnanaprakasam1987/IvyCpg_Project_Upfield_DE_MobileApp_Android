@@ -1,42 +1,38 @@
 package com.ivy.cpg.view.order;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
-public class ReturnProductDialog extends Dialog {
+public class ReturnProductActivity extends IvyBaseActivityNoActionBar {
 
     // Declare Businness Model Class
     private BusinessModel bmodel;
-    // Declare Context
-    private Context context;
     // List to add values and Show in ListView
     private ArrayList<BomReturnBO> mylist;
     // Vairalbes
@@ -44,33 +40,31 @@ public class ReturnProductDialog extends Dialog {
     // Views
     private ListView lvwplist;
     private EditText QUANTITY;
-    private Button btnSave;
-    private OrderSummary orderSummaryActivity;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_returnproduct);
 
-    public ReturnProductDialog(Context context, OrderSummary summaryActivity) {
-        super(context);
-        this.context = context;
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.VISIBLE);
 
-        bmodel = (BusinessModel) context.getApplicationContext();
-        orderSummaryActivity = summaryActivity;
+        setSupportActionBar(toolbar);
 
-        RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
-                .inflate(R.layout.dialog_returnproduct, null);
-        setContentView(ll);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        if (getSupportActionBar() != null) {
 
-        TextView mTitle = (TextView) findViewById(R.id.tv_toolbar_title);
-        mTitle.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
-        setCancelable(true);
+        setScreenTitle(getResources().getString(R.string.Product_details));
+
+        bmodel = (BusinessModel) getApplicationContext();
+
         initializeView();
 
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
@@ -79,17 +73,18 @@ public class ReturnProductDialog extends Dialog {
             showListValues();
     }
 
+
     private void initializeView() {
         try {
-            btnSave = (Button) findViewById(R.id.save_btn);
-            lvwplist = (ListView) findViewById(R.id.list);
+            Button btnSave = findViewById(R.id.save_btn);
+            lvwplist = findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
 
-            ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            ((TextView) findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            ((TextView) findViewById(R.id.caseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.tvProductNameTitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+            btnSave.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
 
             btnSave.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,11 +94,8 @@ public class ReturnProductDialog extends Dialog {
                                 .calculateOrderReturnTypeWiseValue();
                     else
                         bmodel.productHelper.calculateOrderReturnValue();
-                    if (orderSummaryActivity != null)
-                        ReturnProductDialog.this.orderSummaryActivity
-                                .onResume();
 
-                    dismiss();
+                    finish();
                 }
             });
 
@@ -121,8 +113,7 @@ public class ReturnProductDialog extends Dialog {
                     .getBomReturnProducts();
             // If Total Size is null,Show alert in the Screen
             if (totalSize == null) {
-                bmodel.showAlert(
-                        context.getResources().getString(
+                bmodel.showAlert(getResources().getString(
                                 R.string.no_products_exists), 0);
                 return;
             }
@@ -139,7 +130,7 @@ public class ReturnProductDialog extends Dialog {
                     mylist.add(productBo);
 
             }
-            ProductAdapter mSchedule = new ProductAdapter(context, mylist);
+            ProductAdapter mSchedule = new ProductAdapter(this, mylist);
             lvwplist.setAdapter(mSchedule);
         } catch (Exception e) {
             Commons.printException(e);
@@ -153,8 +144,7 @@ public class ReturnProductDialog extends Dialog {
 
             // If Total Size is null,Show alert in the Screen
             if (totalSize == null) {
-                bmodel.showAlert(
-                        context.getResources().getString(
+                bmodel.showAlert(getResources().getString(
                                 R.string.no_products_exists), 0);
                 return;
             }
@@ -170,7 +160,7 @@ public class ReturnProductDialog extends Dialog {
                     mylist.add(productBo);
 
             }
-            ProductAdapter mSchedule = new ProductAdapter(context, mylist);
+            ProductAdapter mSchedule = new ProductAdapter(this, mylist);
             lvwplist.setAdapter(mSchedule);
         } catch (Exception e) {
             Commons.printException(e);
@@ -181,7 +171,7 @@ public class ReturnProductDialog extends Dialog {
         private ArrayList<BomReturnBO> items;
         private Context context;
 
-        public ProductAdapter(Context context, ArrayList<BomReturnBO> mylist) {
+        private ProductAdapter(Context context, ArrayList<BomReturnBO> mylist) {
             super(context, R.layout.dialog_returnproduct_row, mylist);
             this.items = mylist;
             this.context = context;
@@ -209,24 +199,24 @@ public class ReturnProductDialog extends Dialog {
                         R.layout.dialog_returnproduct_row, parent, false);
                 holder = new ViewHolder();
 
-                holder.tvBarcode = (TextView) convertView
+                holder.tvBarcode = convertView
                         .findViewById(R.id.stock_and_order_listview_productbarcode);
 
-                holder.tvSKUName = (TextView) convertView
+                holder.tvSKUName = convertView
                         .findViewById(R.id.orderPRODNAME);
 
-                holder.tvLiableQty = (TextView) convertView
+                holder.tvLiableQty = convertView
                         .findViewById(R.id.tv_liableqty);
 
-                holder.etReturnQty = (EditText) convertView
+                holder.etReturnQty = convertView
                         .findViewById(R.id.et_returnqty);
 
-                holder.tvBarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.tvSKUName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tvLiableQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.etReturnQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.tvBarcode.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.THIN));
+                holder.tvSKUName.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.MEDIUM));
+                holder.tvLiableQty.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.THIN));
+                holder.etReturnQty.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.THIN));
 
-                holder.etReturnQty.setOnTouchListener(new OnTouchListener() {
+                holder.etReturnQty.setOnTouchListener(new View.OnTouchListener() {
 
                     @Override
                     public boolean onTouch(View arg0, MotionEvent arg1) {
@@ -338,8 +328,7 @@ public class ReturnProductDialog extends Dialog {
 
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
-            bmodel.showAlert(
-                    context.getResources().getString(
+            bmodel.showAlert(getResources().getString(
                             R.string.please_select_item), 0);
         } else {
             int id = vw.getId();
@@ -349,13 +338,12 @@ public class ReturnProductDialog extends Dialog {
                 s = s / 10;
                 QUANTITY.setText(s + "");
             } else {
-                Button ed = (Button) findViewById(vw.getId());
+                Button ed = findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }
         }
 
     }
-
 
 }

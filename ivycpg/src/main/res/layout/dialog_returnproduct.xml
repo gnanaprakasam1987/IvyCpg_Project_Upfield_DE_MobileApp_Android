@@ -1,152 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/screen_bg_color">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar"
+        android:visibility="visible" />
 
     <LinearLayout
+        android:id="@+id/top_layout"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_header_height"
+        android:background="@color/list_title_bg_color"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/list_margin"
+        android:paddingStart="@dimen/list_margin">
+
+        <TextView
+            android:id="@+id/productBarcodetitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|start"
+            android:text="@string/barcode"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@id/tvProductNameTitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center|start"
+            android:text="@string/product_name" />
+
+        <TextView
+            android:id="@+id/caseTitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:tag="item_case"
+            android:text="@string/liableqty" />
+
+        <TextView
+            android:id="@+id/outercaseTitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/returnqty" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_below="@+id/top_layout"
+        android:layout_above="@id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="1dp"
+        android:layout_marginStart="1dp"
+        android:cacheColorHint="@null"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:fitsSystemWindows="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true" />
+
+    <RelativeLayout
         android:id="@+id/footer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:background="@color/screen_bg_color"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:background="?attr/customFooterBackgroundColor"
+        android:orientation="horizontal">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/activity_divider_height"
-            android:background="@color/divider_view_color" />
+        <include
+            android:id="@+id/keypad"
+            layout="@layout/keypad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/save_btn"
-            style="?attr/roundedCustomButtonNormal"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/keypad"
+            android:layout_centerVertical="true"
             android:layout_gravity="center"
+            android:layout_margin="@dimen/target_top_margin"
             android:layout_marginBottom="@dimen/activity_margin1"
             android:layout_marginTop="@dimen/activity_margin1"
             android:text="@string/done" />
 
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/footer"
-        android:orientation="vertical">
-
-        <LinearLayout
-            style="?attr/dialogTitleStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">>
-            <TextView
-                android:id="@+id/tv_toolbar_title"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:padding="8dp"
-                android:text="@string/Product_details"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/font_small"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/list_margin"
-            app:cardBackgroundColor="@android:color/transparent">
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal">
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/list_header_height"
-                        android:layout_alignParentTop="true"
-                        android:background="@color/list_title_bg_color"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingStart="@dimen/list_margin"
-                        android:paddingEnd="@dimen/list_margin">
-
-                        <TextView
-                            android:id="@+id/productBarcodetitle"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center|start"
-                            android:text="@string/barcode"
-                            android:visibility="gone" />
-
-                        <TextView
-                            android:id="@id/tvProductNameTitle"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="2"
-                            android:gravity="center|start"
-                            android:text="@string/product_name" />
-
-                        <TextView
-                            android:id="@+id/caseTitle"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:tag="item_case"
-                            android:text="@string/liableqty" />
-
-                        <TextView
-                            android:id="@+id/outercaseTitle"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="@string/returnqty" />
-                    </LinearLayout>
-
-                    <ListView
-                        android:id="@+id/list"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_marginStart="1dp"
-                        android:layout_marginEnd="1dp"
-                        android:cacheColorHint="@null"
-                        android:divider="@android:color/transparent"
-                        android:dividerHeight="0dp"
-                        android:fitsSystemWindows="true"
-                        android:scrollbarAlwaysDrawHorizontalTrack="true"
-                        android:scrollbarAlwaysDrawVerticalTrack="true"/>
-                </LinearLayout>
-
-                <include
-                    android:id="@+id/keypad"
-                    layout="@layout/keypad"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true" />
-
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

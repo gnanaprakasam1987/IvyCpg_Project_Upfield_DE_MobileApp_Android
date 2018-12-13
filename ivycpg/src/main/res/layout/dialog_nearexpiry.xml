@@ -17,6 +17,7 @@
         android:fitsSystemWindows="true"
         android:layout_below="@+id/toolbar"
         android:layout_above="@+id/footer"
+        android:layout_marginTop="@dimen/list_margin"
         android:layout_marginBottom="@dimen/list_margin"/>
 
     <RelativeLayout

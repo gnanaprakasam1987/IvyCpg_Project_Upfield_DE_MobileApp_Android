@@ -132,6 +132,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int CAMERA_REQUEST_CODE = 7;
 
     private static final int DISCOUNT_RESULT_CODE = 114;
+    private static final int RETURN_PRODUCT_RESULT_CODE = 115;
 
 
     private static final int FILE_SELECTION = 12;
@@ -149,7 +150,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private AlertDialog alertDialog;
     private AmountSplitUpDialog amountSplitUpDialog;
     private OrderConfirmationDialog orderConfirmationDialog;
-    private ReturnProductDialog returnProductDialog;
     private CollectionBeforeInvoiceDialog collectionBeforeInvoiceDialog;
     private StoreWiseDiscountDialog mStoreWiseDiscountDialogFragment;
 
@@ -1014,9 +1014,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             .size();
                 }
                 if (productSize > 0) {
-                    returnProductDialog = new ReturnProductDialog(this, this);
-                    returnProductDialog.show();
-                    returnProductDialog.setCancelable(false);
+
+                    Intent intent = new Intent(this,ReturnProductActivity.class);
+                    ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                    ActivityCompat.startActivityForResult(this, intent, RETURN_PRODUCT_RESULT_CODE, opts.toBundle());
+
                 } else {
                     Toast.makeText(OrderSummary.this,
                             getResources().getString(R.string.data_not_mapped),
@@ -3391,9 +3393,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
     public void numberPressed(View vw) {
-        if (returnProductDialog != null && returnProductDialog.isShowing()) {
-            returnProductDialog.numberPressed(vw);
-        }
         if (collectionBeforeInvoiceDialog != null && collectionBeforeInvoiceDialog.isShowing()) {
             collectionBeforeInvoiceDialog.numberPressed(vw);
         }
@@ -3435,9 +3434,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 break;
             case DISCOUNT_RESULT_CODE :
                 overridePendingTransition(0, R.anim.zoom_exit);
-                if (resultCode == 1){
-
-                }
+                break;
+            case RETURN_PRODUCT_RESULT_CODE :
+                overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             default:
                 break;
