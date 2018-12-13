@@ -38,6 +38,9 @@ public class DiscountHelper {
     private ArrayList<StoreWiseDiscountBO> mBillWisePaytTermDiscountList;
     private ArrayList<StoreWiseDiscountBO> mBillWiseWithHoldDiscountList;
     private boolean isWihtHoldApplied;
+    private String schemeData;
+    private String distDiscountData;
+    private String compDiscountData;
 
     private DiscountHelper(Context context) {
         this.businessModel = (BusinessModel) context;
@@ -277,6 +280,8 @@ public class DiscountHelper {
     public double calculateItemLevelDiscount(List<ProductMasterBO> orderedList) {
 
         double totalDiscountValue = 0.0;
+        String discountName = "";
+        String compDiscount = "";
 
         if (businessModel.productHelper.getDiscountIdList() != null) {
             for (Integer discountID : businessModel.productHelper.getDiscountIdList()) {
@@ -313,6 +318,15 @@ public class DiscountHelper {
                                     boolean isCompanyWiseDisc = false;
                                     if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
                                         isCompanyWiseDisc = true;
+                                        if (!"".equals(compDiscount)) {
+                                            compDiscount = compDiscount + "\n" + storeWiseDiscountBO.getDescription();
+                                        } else
+                                            compDiscount = storeWiseDiscountBO.getDescription();
+                                    } else {
+                                        if (!"".equals(discountName)) {
+                                            discountName = discountName + "\n" + storeWiseDiscountBO.getDescription();
+                                        } else
+                                            discountName = storeWiseDiscountBO.getDescription();
                                     }
 
 
@@ -351,6 +365,8 @@ public class DiscountHelper {
             }
         }
 
+        setDistDiscountData(discountName);
+        setCompDiscountData(compDiscount);
         return totalDiscountValue;
     }
 
@@ -493,6 +509,8 @@ public class DiscountHelper {
         double totalBillWiseDiscountValue = 0;
         double billWiseCompanyDiscount = 0;
         double billWiseDistributorDiscount = 0;
+        String discountName = "";
+        String compDiscount = "";
         if (mBillWiseDiscountList != null && mBillWiseDiscountList.size() > 0) {
             for (StoreWiseDiscountBO storeWiseDiscountBO : mBillWiseDiscountList) {
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
@@ -511,14 +529,24 @@ public class DiscountHelper {
                 storeWiseDiscountBO.setDiscountValue(discountValue);
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
                     billWiseCompanyDiscount = billWiseCompanyDiscount + discountValue;
+                    if (!"".equals(compDiscount)) {
+                        compDiscount = compDiscount + "\n" + storeWiseDiscountBO.getDescription();
+                    } else
+                        compDiscount = storeWiseDiscountBO.getDescription();
                 } else {
                     billWiseDistributorDiscount = billWiseDistributorDiscount + discountValue;
+                    if (!"".equals(discountName)) {
+                        discountName = discountName + "\n" + storeWiseDiscountBO.getDescription();
+                    } else
+                        discountName = storeWiseDiscountBO.getDescription();
                 }
 
                 totalBillWiseDiscountValue = totalBillWiseDiscountValue + discountValue;
             }
 
         }
+        setDistDiscountData(discountName);
+        setCompDiscountData(compDiscount);
         businessModel.getRetailerMasterBO().setBillWiseCompanyDiscount(billWiseCompanyDiscount);
         businessModel.getRetailerMasterBO().setBillWiseDistributorDiscount(billWiseDistributorDiscount);
 
@@ -863,6 +891,8 @@ public class DiscountHelper {
         double discountValue = 0;
         double billWiseCompanyDiscount = 0;
         double billWiseDistributorDiscount = 0;
+        String discountName = "";
+        String compDiscount = "";
         if (mBillWisePaytTermDiscountList != null) {
             for (StoreWiseDiscountBO storeWiseDiscountBO : mBillWisePaytTermDiscountList) {
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 0) {
@@ -877,10 +907,20 @@ public class DiscountHelper {
                 }
                 discountValue=SDUtil.formatAsPerCalculationConfig(discountValue);
 
-                if (storeWiseDiscountBO.getIsCompanyGiven() == 1)
+                if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
                     billWiseCompanyDiscount = billWiseCompanyDiscount + discountValue;
-                else
+                    if (!"".equals(compDiscount)) {
+                        compDiscount = compDiscount + "\n" + storeWiseDiscountBO.getDescription();
+                    } else
+                        compDiscount = storeWiseDiscountBO.getDescription();
+                }
+                else {
                     billWiseDistributorDiscount = billWiseDistributorDiscount + discountValue;
+                    if (!"".equals(discountName)) {
+                        discountName = discountName + "\n" + storeWiseDiscountBO.getDescription();
+                    } else
+                        discountName = storeWiseDiscountBO.getDescription();
+                }
 
 
                 storeWiseDiscountBO.setDiscountValue(discountValue);
@@ -894,6 +934,8 @@ public class DiscountHelper {
             }
 
         }
+        setDistDiscountData(discountName);
+        setCompDiscountData(compDiscount);
         businessModel.getRetailerMasterBO().setBillWiseCompanyDiscount(billWiseCompanyDiscount);
         businessModel.getRetailerMasterBO().setBillWiseDistributorDiscount(billWiseDistributorDiscount);
         return discountValue;
@@ -938,12 +980,17 @@ public class DiscountHelper {
 
         double totalSchemeDiscountValue = 0;
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
+        String strAppliedSchemes = "";
 
         ArrayList<SchemeBO> appliedSchemeList = schemeHelper.getAppliedSchemeList();
         if (appliedSchemeList != null) {
 
             for (SchemeBO schemeBO : appliedSchemeList) {
                 boolean isFreeProductGiven=false;
+                if (!"".equals(strAppliedSchemes))
+                    strAppliedSchemes = strAppliedSchemes + "\n" + schemeBO.getScheme();
+                else
+                    strAppliedSchemes = schemeBO.getScheme();
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
@@ -1162,6 +1209,7 @@ public class DiscountHelper {
             }
         }
 
+        setSchemeData(strAppliedSchemes);
         return totalSchemeDiscountValue;
     }
 
@@ -1266,5 +1314,29 @@ public class DiscountHelper {
         }
         return mDiscountsApplied;
 
+    }
+
+    public String getSchemeData() {
+        return schemeData;
+    }
+
+    public void setSchemeData(String schemeData) {
+        this.schemeData = schemeData;
+    }
+
+    public String getDistDiscountData() {
+        return distDiscountData;
+    }
+
+    public void setDistDiscountData(String distDiscountData) {
+        this.distDiscountData = distDiscountData;
+    }
+
+    public String getCompDiscountData() {
+        return compDiscountData;
+    }
+
+    public void setCompDiscountData(String compDiscountData) {
+        this.compDiscountData = compDiscountData;
     }
 }

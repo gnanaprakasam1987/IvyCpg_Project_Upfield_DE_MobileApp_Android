@@ -46,6 +46,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     private static final int UPLOAD_STOCK_APPLY = 4;
     private static final int UPLOAD_LOYALTY_POINTS = 6;
     private static final int UPLOAD_ORDER_DELIVERY_STATUS = 7;
+    private static final int UPLOAD_PICK_LIST = 8;
 
 
     public UploadPresenterImpl(Context mContext, BusinessModel mBModel, SyncContractor.SyncView view
@@ -212,6 +213,9 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         else if (mBModel.synchronizationHelper.checkLoyaltyPoints()
                 && !mBModel.synchronizationHelper.getUploadUrl("UPLDLOYALTY").isEmpty())
             startSync(UPLOAD_LOYALTY_POINTS);
+        else if (mBModel.synchronizationHelper.checkPickListData()
+                && !mBModel.synchronizationHelper.getUploadUrl("UPLDDELIVERYSTS").isEmpty())
+            startSync(UPLOAD_PICK_LIST);
         else if (isVisitedRetailerList != null && isVisitedRetailerList.size() > 0
                 && !isDayClosed) {
             startSync(RETAILER_WISE_UPLOAD);
@@ -256,6 +260,8 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             new MyThread((Activity) mContext, DataMembers.SYNC_EXPORT, isFromCallAnalysis).start();
         else if (callFlag == UPLOAD_LOYALTY_POINTS)
             new MyThread((Activity) mContext, DataMembers.SYNCLYTYPTUPLOAD, isFromCallAnalysis).start();
+        else if (callFlag == UPLOAD_PICK_LIST)
+            new MyThread((Activity) mContext, DataMembers.SYNCPICKLISTUPLOAD, isFromCallAnalysis).start();
 
     }
 
