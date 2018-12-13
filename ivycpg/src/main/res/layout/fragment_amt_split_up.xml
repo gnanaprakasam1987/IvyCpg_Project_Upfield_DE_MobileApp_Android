@@ -147,6 +147,15 @@
             android:layout_marginRight="@dimen/card_margin" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/tv_scheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/card_margin"
+        android:layout_marginStart="@dimen/card_margin"
+        android:textColor="@color/gray_text"
+        android:padding="@dimen/card_child_margin"
+        android:textSize="@dimen/text_size_primary" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -171,6 +180,53 @@
 
         <TextView
             android:id="@+id/tv_dist_disc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:maxLines="1"
+            android:text="@string/zero"
+            android:textColor="@color/black_bg1"
+            android:textSize="@dimen/value_text_size"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/card_margin" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/card_margin"
+        android:layout_marginStart="@dimen/card_margin"
+        android:padding="@dimen/card_child_margin"
+        android:textColor="@color/GRAY_TEXT"
+        android:visibility="gone"
+        android:textSize="@dimen/font_micro_small" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_margin"
+        android:orientation="horizontal"
+        android:padding="@dimen/card_child_margin">
+
+        <TextView
+            android:id="@+id/lbl_tax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/card_margin"
+            android:maxLines="1"
+            android:text="@string/tax_value"
+            android:textColor="@color/black_bg1"
+            android:textSize="@dimen/font_small"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/card_margin" />
+
+        <TextView
+            android:id="@+id/tv_taxValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

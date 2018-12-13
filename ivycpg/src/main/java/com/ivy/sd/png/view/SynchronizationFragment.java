@@ -1019,6 +1019,18 @@ public class SynchronizationFragment extends IvyBaseFragment
                             getResources().getString(
                                     R.string.upload_failed_please_try_again), 0);
                     break;
+                case DataMembers.NOTIFY_PICKLIST_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+
+                case DataMembers.NOTIFY_PICKLIST_UPLOAD_ERROR:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+
                 case DataMembers.NOTIFY_UPLOADED:
                     if ((withPhotosCheckBox.isChecked() || !bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES)
                             && (presenter.getImageFilesCount() > 0 || presenter.getTextFilesCount() > 0)) {
