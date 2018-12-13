@@ -30,7 +30,6 @@
         android:id="@+id/pageLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/footer"
         android:layout_below="@+id/tabLayout"
         android:orientation="horizontal">
 

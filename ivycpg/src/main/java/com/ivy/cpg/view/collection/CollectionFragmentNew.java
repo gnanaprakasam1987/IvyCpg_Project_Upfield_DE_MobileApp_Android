@@ -118,7 +118,6 @@ public class CollectionFragmentNew extends IvyBaseFragment
         setScreenTitle("" + bmodel.mSelectedActivityName);
 
         Button paybtn = rootView.findViewById(R.id.paybtn);
-        paybtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         paybtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,21 +170,12 @@ public class CollectionFragmentNew extends IvyBaseFragment
             }
         });
 
-        TextView tosAmtTitle = rootView.findViewById(R.id.tv_title_tos_amount);
-        tosAmtTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-        TextView pendingBillTitle = rootView.findViewById(R.id.tv_title_pending_bills);
-        pendingBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
-        TextView dueBillTitle = rootView.findViewById(R.id.tv_title_due_bill);
-        dueBillTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
         //As of now we hiding this because functionality not yet completed
         rootView.findViewById(R.id.ll_due_bills).setVisibility(View.GONE);
+        rootView.findViewById(R.id.line2).setVisibility(View.GONE);
 
         if (bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             Button btnClose = rootView.findViewById(R.id.btn_close);
-            btnClose.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             btnClose.setVisibility(View.VISIBLE);
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override

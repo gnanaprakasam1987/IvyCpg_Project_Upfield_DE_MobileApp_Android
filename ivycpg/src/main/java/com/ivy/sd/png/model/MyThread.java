@@ -288,7 +288,7 @@ public class MyThread extends Thread {
                     // If Stock and order is enabled , then save stock too.
                     if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                             && bmodel.hasStockInOrder()) {
-                        stockCheckHelper.saveClosingStock(ctx.getApplicationContext(),true);
+                        stockCheckHelper.saveClosingStock(ctx.getApplicationContext(), true);
 
                         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                             // save price check
@@ -343,7 +343,7 @@ public class MyThread extends Thread {
                     // If Stock and order is enabled , then save stock too.
                     if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                             && bmodel.hasStockInOrder()) {
-                        stockCheckHelper.saveClosingStock(ctx.getApplicationContext(),true);
+                        stockCheckHelper.saveClosingStock(ctx.getApplicationContext(), true);
 
                         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                             // save price check
@@ -605,7 +605,7 @@ public class MyThread extends Thread {
 
                 if (bmodel.configurationMasterHelper.IS_ORDER_STOCK
                         && bmodel.hasStockInOrder()) {
-                    stockCheckHelper.saveClosingStock(ctx.getApplicationContext(),true);
+                    stockCheckHelper.saveClosingStock(ctx.getApplicationContext(), true);
 
                     if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
                         // save price check
@@ -781,6 +781,39 @@ public class MyThread extends Thread {
                 } else {
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_LP_UPLOAD_ERROR);
+                }
+            } else {
+                handler.sendEmptyMessage(
+                        DataMembers.NOTIFY_CONNECTION_PROBLEM);
+            }
+
+        } else if (opt == DataMembers.SYNCPICKLISTUPLOAD) {
+            bmodel.synchronizationHelper.computePicklistData();
+            bmodel = (BusinessModel) ctx.getApplicationContext();
+            bmodel.setContext(ctx);
+
+            Handler handler;
+            if (isFromCallAnalysis) {
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler = fragment.getHandler();
+            } else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler = fragment.getHandler();
+            }
+            if (bmodel.isOnline()) {
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCPICKLISTUPLOAD, ctx.getApplicationContext());
+
+                if (bool == 2) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_PICKLIST_UPLOADED);
+                } else if (bool == -1) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+
+                } else {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_PICKLIST_UPLOAD_ERROR);
                 }
             } else {
                 handler.sendEmptyMessage(

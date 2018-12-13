@@ -39,7 +39,7 @@
                 android:paddingRight="@dimen/whats_on_item_padding"/>
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:id="@+id/txtValueTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                             android:background="@drawable/dot_circle_orange"/>
 
                         <TextView
-                            style="@style/TextViewCaption"
+                            style="@style/TextViewListItemCaption"
                             android:id="@+id/txtRetailerTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                             android:background="@drawable/dot_circle_orange"/>
 
                         <TextView
-                            style="@style/TextViewCaption"
+                            style="@style/TextViewListItemCaption"
                             android:id="@+id/txtDateTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

@@ -52,7 +52,7 @@
                     android:layout_marginBottom="@dimen/card_child_margin"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="GHKW"
+                    android:text="@string/location"
                     android:textColor="@color/white"
                     android:textSize="@dimen/highlight_normal" />
             </LinearLayout>
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/card_child_margin"
                     android:gravity="center"
-                    android:text="125"
+                    android:text="@string/zero"
                     android:textColor="@color/white"
                     android:textSize="@dimen/highlight_normal" />
             </LinearLayout>
@@ -125,7 +125,7 @@
                     android:layout_marginBottom="@dimen/card_child_margin"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="30,000"
+                    android:text="@string/zero"
                     android:textColor="@color/white"
                     android:textSize="@dimen/highlight_normal" />
             </LinearLayout>

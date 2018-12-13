@@ -27,7 +27,7 @@
         android:layout_below="@+id/ll_toolbar">
 
         <TextView
-            style="@style/TextViewCaption"
+            style="@style/TextViewListItemCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -37,7 +37,7 @@
             android:text="@string/addasset" />
 
         <TextView
-            style="@style/TextViewCaption"
+            style="@style/TextViewListItemCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_10dp"
@@ -93,7 +93,7 @@
 
         <TextView
             android:id="@+id/label_scan"
-            style="@style/TextViewCaption"
+            style="@style/TextViewListItemCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_10dp"
@@ -102,7 +102,7 @@
             android:text="@string/addassetsno" />
 
         <TextView
-            style="@style/TextViewCaption"
+            style="@style/TextViewListItemCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"

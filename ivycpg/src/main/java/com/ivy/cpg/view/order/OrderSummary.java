@@ -191,6 +191,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Calendar mCalendar = null;
     private String mImageName, attachedFilePath = "";
     private int linesPerCall = 0;
+    private String schemeNames;
+    private String discountNames;
+    private double taxValue;
 
     private CollectionHelper collectionHelper;
 
@@ -655,6 +658,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_ON &&
                     SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_SHOW_SCREEN) {
                 totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList, getApplicationContext());
+                schemeNames = discountHelper.getSchemeData();
                 totalOrderValue -= totalSchemeDiscValue;
             }
 
@@ -673,6 +677,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bModel.configurationMasterHelper.SHOW_DISCOUNT) {
                 double itemLevelDiscount = discountHelper.calculateItemLevelDiscount(mOrderedProductList);
                 totalOrderValue = totalOrderValue - itemLevelDiscount;
+                discountNames = discountHelper.getDistDiscountData();
+                if (!"".equals(schemeNames)) {
+                    schemeNames = schemeNames + "\n" + discountHelper.getCompDiscountData();
+                } else
+                    schemeNames = discountHelper.getCompDiscountData();
             }
 
             //Calculating with hold tax
@@ -690,6 +699,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 else {
                     double totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
                     totalOrderValue = totalOrderValue + totalTaxVal;
+                    taxValue = totalTaxVal;
                 }
             }
 
@@ -741,8 +751,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 double billLevelTax = bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
                 bModel.getOrderHeaderBO().setBillLevelTaxValue(billLevelTax);
 
-                if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
+                if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     totalOrderValue += billLevelTax;
+                    taxValue += billLevelTax;
+                }
 
             }
             //updating footer labels
@@ -1290,6 +1302,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             args.putDouble("cmy_disc", cmyDiscount);
             args.putDouble("dist_disc", distDiscount);
             args.putDouble("scheme_disc", totalSchemeDiscValue);
+            args.putString("scheme_name", schemeNames);
+            args.putString("disc_name", discountNames);
+            args.putDouble("tax_value", taxValue);
             amountSplitUpDialog.setArguments(args);
             amountSplitUpDialog.show(getSupportFragmentManager(), "AmtSplitupDialog");
         }

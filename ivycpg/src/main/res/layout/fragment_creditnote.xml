@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/dimens_4dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,9 +33,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimens_100dp"
         android:layout_margin="3dp"
-        android:elevation="@dimen/dimens_4dp"
         android:padding="@dimen/dimens_6dp"
-        app:cardCornerRadius="@dimen/dimens_4dp">
+        app:cardCornerRadius="@dimen/dimens_4dp"
+        app:cardElevation="@dimen/dimens_4dp">
 
         <LinearLayout
             android:id="@+id/ll_enter_creditnote"
@@ -46,21 +45,22 @@
             android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/dimens_12dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
                 android:text="@string/Amount"
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_caption"
+               style="@style/TextViewListItemCaption"
                 android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/edit_creditnoteamt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/EditTextGravity"
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true" />
@@ -106,34 +106,25 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_60dp"
+            android:layout_height="@dimen/footer_height"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimens_10dp">
+            android:background="?attr/customFooterBackgroundColor"
+            android:gravity="center|end"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/cancelbtn"
-                style="?attr/roundedCustomButtonNormalTransparent"
-                android:layout_width="@dimen/dimens_100dp"
-                android:layout_height="@dimen/dimens_40dp"
+                style="?attr/roundedCustomButtonSmall"
                 android:layout_marginEnd="@dimen/dimens_6dp"
-                android:text="@string/cancel"
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_primary"
-                android:textStyle="bold"
-                android:layout_marginRight="@dimen/dimens_6dp" />
+                android:layout_marginRight="@dimen/dimens_6dp"
+                android:text="@string/cancel" />
 
             <Button
                 android:id="@+id/applybtn"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_width="@dimen/dimens_100dp"
-                android:layout_height="@dimen/dimens_40dp"
+                style="?attr/roundedCustomButtonSmall"
                 android:layout_marginStart="@dimen/dimens_6dp"
                 android:layout_marginEnd="@dimen/dimens_6dp"
-                android:text="@string/apply"
-                android:textSize="@dimen/text_size_primary"
-                android:textStyle="bold" />
+                android:text="@string/apply" />
         </LinearLayout>
 
     </LinearLayout>

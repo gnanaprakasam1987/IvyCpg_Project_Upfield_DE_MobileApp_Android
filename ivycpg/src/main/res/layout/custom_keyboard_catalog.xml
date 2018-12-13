@@ -126,7 +126,7 @@
 
                     <TextView
                         android:id="@+id/caseTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/padding_rb"
@@ -159,7 +159,7 @@
 
                     <TextView
                         android:id="@+id/outercaseTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/padding_rb"
@@ -192,7 +192,7 @@
 
                     <TextView
                         android:id="@+id/pcsTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/padding_rb"

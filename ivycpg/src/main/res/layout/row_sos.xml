@@ -155,7 +155,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -186,7 +186,7 @@
 
             <TextView
                 android:id="@+id/remark_tv_label"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -220,7 +220,7 @@
 
             <TextView
                 android:id="@+id/tv_to_date_title"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
