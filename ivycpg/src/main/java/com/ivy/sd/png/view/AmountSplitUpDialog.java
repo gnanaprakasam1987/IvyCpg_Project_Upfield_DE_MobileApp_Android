@@ -66,21 +66,21 @@ public class AmountSplitUpDialog extends DialogFragment {
         (view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
 
-        ((TextView) view.findViewById(R.id.tvTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.tvTitleDeduction)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.lbl_total)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.lblOrderValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.lbl_comy_disc)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.lbl_dist_disc)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        ((TextView) view.findViewById(R.id.lbl_tax)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        ((TextView) view.findViewById(R.id.tvTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.tvTitleDeduction)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lbl_total)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lblOrderValue)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lbl_comy_disc)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lbl_dist_disc)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lbl_tax)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
-        tvOrderValue.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        tv_comy_disc.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        tv_dist_disc.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        tv_total_value.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
-        tv_scheme.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
-        tv_discount.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
-        tv_tax.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
+        tvOrderValue.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        tv_comy_disc.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        tv_dist_disc.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        tv_total_value.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        tv_scheme.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        tv_discount.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        tv_tax.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
         try {
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
                     R.id.lbl_comy_disc).getTag()) != null)

@@ -200,9 +200,9 @@
         android:layout_marginLeft="@dimen/card_margin"
         android:layout_marginStart="@dimen/card_margin"
         android:padding="@dimen/card_child_margin"
-        android:textColor="@color/GRAY_TEXT"
+        android:textColor="@color/grey_odd"
         android:visibility="gone"
-        android:textSize="@dimen/font_micro_small" />
+        android:textSize="@dimen/text_size_primary" />
 
     <RelativeLayout
         android:layout_width="match_parent"
