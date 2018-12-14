@@ -85,8 +85,9 @@ public class DamageReturenReportHelper {
     }
 
     HashMap<String, DeliveryStockBo> mDeliveryProductsBObyId;
+
     public Observable<ArrayList<DeliveryStockBo>> downloadDeliveryStockDetails(final Context context
-            , final String invoiceid, final String status){
+            , final String invoiceid, final String status) {
         return Observable.create(new ObservableOnSubscribe<ArrayList<DeliveryStockBo>>() {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<DeliveryStockBo>> subscriber) throws Exception {
@@ -99,20 +100,22 @@ public class DamageReturenReportHelper {
 
                     db.openDataBase();
 
-                    if(AppUtils.isEmptyString(status)){
-                        sql ="select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,qty as orderedQty " +
+                    if (AppUtils.isEmptyString(status)) {
+                        sql = "select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,qty as orderedQty " +
                                 "from InvoiceDetailUOMWise ID Left join ProductMaster pm on pm.pid=ID.productid " +
                                 "where invoiceid in(select InvoiceNo from InvoiceDeliveryMaster " +
-                                "where InvoiceNo in ("+invoiceid+")) and  " +
-                                "invoiceid not in(select InvoiceId from VanDeliveryHeader where InvoiceId in ("+invoiceid+"))";
-                    }else if("p".equalsIgnoreCase(status)){
-                        sql="select ID.Pid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,Deliveredqty as orderedQty from VanDeliveryDetail ID inner join VanDeliveryHeader vdh on vdh.uid=ID.uid Left join ProductMaster pm on pm.pid=ID.Pid";
-                    }else{
-                        sql ="select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,qty as orderedQty " +
+                                "where InvoiceNo in (" + invoiceid + ")) and  " +
+                                "invoiceid not in(select InvoiceId from VanDeliveryHeader where InvoiceId in (" + invoiceid + "))";
+                    } else if ("p".equalsIgnoreCase(status)) {
+                        sql = "select ID.Pid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,Deliveredqty as orderedQty from VanDeliveryDetail ID " +
+                                " inner join VanDeliveryHeader vdh on vdh.uid=ID.uid Left join ProductMaster pm on pm.pid=ID.Pid " +
+                                " where invoiceid in (" + invoiceid + ")";
+                    } else {
+                        sql = "select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid,uomid as orderedUomId,qty as orderedQty " +
                                 "from InvoiceDetailUOMWise ID Left join ProductMaster pm on pm.pid=ID.productid " +
                                 "where invoiceid in(select InvoiceNo from InvoiceDeliveryMaster " +
-                                "where InvoiceNo in ("+invoiceid+")) and  " +
-                                "invoiceid  in(select InvoiceId from VanDeliveryHeader where InvoiceId in ("+invoiceid+"))";
+                                "where InvoiceNo in (" + invoiceid + ")) and  " +
+                                "invoiceid  in(select InvoiceId from VanDeliveryHeader where InvoiceId in (" + invoiceid + "))";
                     }
 
                     Cursor c = db.selectSQL(sql);
