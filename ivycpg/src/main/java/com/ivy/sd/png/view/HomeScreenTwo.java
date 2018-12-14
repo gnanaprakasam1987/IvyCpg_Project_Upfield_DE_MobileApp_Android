@@ -3620,13 +3620,22 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_SALES_RET_DELIVERY) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
-                Intent i = new Intent(this,
-                        SalesReturnDeliveryActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                i.putExtra("menuName", menu.getMenuName());
-                i.putExtra("menuCode", menu.getConfigCode());
-                startActivity(i);
-                finish();
+                if (DeliveryManagementHelper.getInstance(this).hasDeliveryReturn()) {
+                    Intent i = new Intent(this,
+                            SalesReturnDeliveryActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    i.putExtra("menuName", menu.getMenuName());
+                    i.putExtra("menuCode", menu.getConfigCode());
+                    startActivity(i);
+                    finish();
+                } else {
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.data_not_mapped),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+                }
             }
         } else {
             isCreated = false;
