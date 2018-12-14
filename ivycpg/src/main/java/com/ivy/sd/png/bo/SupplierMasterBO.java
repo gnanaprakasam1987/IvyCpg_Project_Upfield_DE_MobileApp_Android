@@ -9,6 +9,16 @@ public class SupplierMasterBO {
     private float creditLimit;
     private int supplierTaxLocId;
 
+    public boolean isCompositeRetailer() {
+        return isCompositeRetailer;
+    }
+
+    public void setCompositeRetailer(boolean compositeRetailer) {
+        isCompositeRetailer = compositeRetailer;
+    }
+
+    private boolean isCompositeRetailer;
+
     public SupplierMasterBO(){
 
     }

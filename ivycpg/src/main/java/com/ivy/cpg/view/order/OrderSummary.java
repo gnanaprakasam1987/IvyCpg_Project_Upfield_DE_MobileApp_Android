@@ -637,6 +637,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
 
+            bModel.getOrderHeaderBO().setOriginalOrderValue(totalOrderValue);
+
             if (linesPerCall == 0)
                 linesPerCall = mOrderedProductList.size();
 
@@ -707,12 +709,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             // Apply Exclude Item level Tax  in Product
             if (bModel.configurationMasterHelper.SHOW_TAX) {
-                if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
-                    bModel.productHelper.taxHelper.updateProductWiseExcludeTax();
-                else {
-                    double totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
-                    totalOrderValue = totalOrderValue + totalTaxVal;
-                    taxValue = totalTaxVal;
+
+                if(!bModel.configurationMasterHelper.IS_GST || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
+
+                    if(!bModel.configurationMasterHelper.IS_GST
+                            || (!bModel.getRetailerMasterBO().getGSTNumber().equals("")||bModel.getOrderHeaderBO().getOriginalOrderValue()>5000)) {
+
+                        if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                            bModel.productHelper.taxHelper.updateProductWiseExcludeTax();
+                        else {
+                            double totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
+                            totalOrderValue = totalOrderValue + totalTaxVal;
+                            taxValue = totalTaxVal;
+                        }
+                    }
                 }
             }
 

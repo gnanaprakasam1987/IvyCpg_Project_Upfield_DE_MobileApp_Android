@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
@@ -11,6 +12,7 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHeader;
@@ -1799,6 +1801,11 @@ public class OrderHelper {
                 businessModel.insertSeqNumber("INV");
                 seqNo = businessModel.downloadSequenceNo("INV");
                 invoiceId = seqNo;
+            }
+
+            if(invoiceId.length()>16) {
+                Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
+                return;
             }
 
             String timeStampId = "";
