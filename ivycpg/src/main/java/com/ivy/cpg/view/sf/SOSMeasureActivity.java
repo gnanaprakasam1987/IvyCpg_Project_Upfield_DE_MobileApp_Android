@@ -790,7 +790,7 @@ public class SOSMeasureActivity extends IvyBaseActivityNoActionBar {
                         nullParent, false);
                 builder.setView(view);
                 final CheckBox checkBox = view.findViewById(R.id.chkBoxDoNotShowAgain);
-                builder.setMessage("This may remove existing data");
+                builder.setMessage(getResources().getString(R.string.this_may_remove_existing_data));
                 builder.setNeutralButton("Ok",
                         new DialogInterface.OnClickListener() {
 

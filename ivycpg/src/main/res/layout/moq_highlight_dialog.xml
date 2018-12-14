@@ -44,8 +44,8 @@
 
         <ListView
             android:id="@+id/list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_above="@+id/footer"
             android:layout_below="@+id/header"
             android:layout_marginLeft="@dimen/list_margin"
@@ -58,7 +58,7 @@
 
         <RelativeLayout
             android:id="@+id/footer"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="?attr/customFooterBackgroundColor"
@@ -67,7 +67,7 @@
             <include
                 android:id="@+id/keypad"
                 layout="@layout/keypad"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <Button

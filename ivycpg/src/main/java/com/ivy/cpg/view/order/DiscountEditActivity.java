@@ -223,7 +223,7 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
 
                 sum = SDUtil.convertToDouble(D1.getText().toString());
                 if (sum > bmodel.configurationMasterHelper.discount_max) {
-                    Toast.makeText(DiscountEditActivity.this, "value exceeded",
+                    Toast.makeText(DiscountEditActivity.this, getResources().getString(R.string.value_exceeded),
                             Toast.LENGTH_SHORT).show();
                     int s1 = SDUtil.convertToInt(qty);
                     s1 = s1 / 10;
@@ -482,7 +482,7 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
                                     + holder.productObj.getD2()
                                     + holder.productObj.getD1();
                             if (sum > bmodel.configurationMasterHelper.discount_max) {
-                                Toast.makeText(context, "value exceeded",
+                                Toast.makeText(context, context.getResources().getString(R.string.value_exceeded),
                                         Toast.LENGTH_SHORT).show();
                                 int s1 = SDUtil.convertToInt(qty);
                                 s1 = s1 / 10;
@@ -672,7 +672,7 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
             holder.caseSize = holder.productObj.getCaseSize();
             holder.stockInHand = holder.productObj.getSIH();
 
-            holder.mrp.setText("Price : "
+            holder.mrp.setText(context.getResources().getString(R.string.price)+" : "
                     + bmodel.formatValue(holder.productObj.getSrp()) + "");
 
 

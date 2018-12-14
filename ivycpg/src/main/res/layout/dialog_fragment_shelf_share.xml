@@ -231,12 +231,12 @@
         android:id="@+id/keypad"
         layout="@layout/keypad"
         android:layout_above="@+id/footer"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/footer"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/footer_bg_color"
