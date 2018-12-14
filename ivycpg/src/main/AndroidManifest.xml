@@ -850,7 +850,10 @@
             android:name="com.ivy.cpg.view.order.DiscountEditActivity"
             android:screenOrientation="portrait" />
         <activity android:name="com.ivy.cpg.view.order.ReturnProductActivity" />
-        <activity android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
+        <activity
+            android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.initiative.InitiativeEditActivity"
             android:screenOrientation="portrait"/>
     </application>
 

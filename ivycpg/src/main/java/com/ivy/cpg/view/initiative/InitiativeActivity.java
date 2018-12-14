@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,10 +22,10 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CatalogOrder;
@@ -43,6 +45,7 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
     private Button initiativeButton[];
     private boolean isClicked=false;
     private String screenCode = "MENU_STK_ORD";
+    private final int INITIATIVE_RESULT_CODE = 116;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,25 +208,30 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 }
+            case INITIATIVE_RESULT_CODE :
+                overridePendingTransition(0, R.anim.zoom_exit);
+                break;
         }
     }
-
-    private InitiativeDialog initDialog;
 
     @Override
     public void onClick(View v) {
         if (!isClicked) {
             isClicked = true;
             Button b = (Button) v;
-            InitiativeHeaderBO init = (InitiativeHeaderBO) b.getTag();
-            initDialog = new InitiativeDialog(this, init, this);
-            initDialog.show();
-            initDialog.setCancelable(false);
-        }
-    }
 
-    public void numberPressed(View vw) {
-        initDialog.numberPressed(vw);
+            InitiativeHeaderBO init = (InitiativeHeaderBO) b.getTag();
+
+            Intent intent = new Intent(InitiativeActivity.this,InitiativeEditActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("INITIATIVE_BO",init);
+
+            intent.putExtras(bundle);
+
+            ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+            ActivityCompat.startActivityForResult(this, intent, INITIATIVE_RESULT_CODE, opts.toBundle());
+
+        }
     }
 
     @Override
