@@ -247,4 +247,5 @@
     <string name="fill_photo_and_adherence">Please take photo and fill adherence</string>
 
     <string name="invoice_generated_already">"Invoice has been generated already"</string>
+    <string name="order_will_be_saved_later">Order will be saved when saving the New Retailer</string>
 </resources>
