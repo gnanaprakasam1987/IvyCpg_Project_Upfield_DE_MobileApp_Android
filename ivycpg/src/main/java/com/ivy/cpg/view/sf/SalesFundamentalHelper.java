@@ -19,6 +19,7 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 public class SalesFundamentalHelper {
@@ -53,6 +54,10 @@ public class SalesFundamentalHelper {
     public int sodDigits = 4;
     public static final String CODE_SOS_DIGITS = "SOS03";
     public static final String CODE_SOD_DIGITS = "SOD01";
+
+
+    public List<SOSBO> mCategoryForDialogSOSBO = null;
+    public List<SODBO> mCategoryForDialogSODBO = null;
 
 
     protected SalesFundamentalHelper(Context context) {
@@ -1368,8 +1373,9 @@ public class SalesFundamentalHelper {
      * @param totalShelf  Total Shelf
      * @param mLocationId Location Id
      */
-    public void loadSOSBlockDetails(String uid, String pid, int totalShelf, int mLocationId) {
+    public HashMap<String, ShelfShareBO> loadSOSBlockDetails(String uid, String pid, int totalShelf, int mLocationId) {
         DBUtil db = null;
+        HashMap<String, ShelfShareBO> mBrandsDetailsHashMap = new HashMap<>();
 
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -1394,8 +1400,7 @@ public class SalesFundamentalHelper {
                     shelfShareBO.setSecondCell("empty");
                     shelfShareBO.setThirdCell("empty");
                     shelfShareBO.setFourthCell("empty");
-                    ShelfShareDialogFragment.mBrandsDetailsHashMap.put(
-                            String.valueOf(i), shelfShareBO);
+                    mBrandsDetailsHashMap.put(String.valueOf(i), shelfShareBO);
 
                     while (detailCursor.moveToNext()) {
 
@@ -1414,8 +1419,7 @@ public class SalesFundamentalHelper {
                                     shelfShareBO.setFourthCell(((detailCursor
                                             .getString(3) == null) ? "Ext.Shelf" : detailCursor.getString(3)));
                                 shelfShareBO.setOthersCount(1);
-                                ShelfShareDialogFragment.mBrandsDetailsHashMap.put(
-                                        String.valueOf(i), shelfShareBO);
+                                mBrandsDetailsHashMap.put(String.valueOf(i), shelfShareBO);
                             }
                         } else {
                             detailCursor.moveToPrevious();
@@ -1432,6 +1436,8 @@ public class SalesFundamentalHelper {
             if (db != null)
                 db.closeDB();
         }
+
+        return mBrandsDetailsHashMap;
     }
 
     /**
@@ -1813,8 +1819,9 @@ public class SalesFundamentalHelper {
      * @param mTotalShelf Total Shelf
      * @param mLocationId Location Id
      */
-    public void loadSODBlockDetails(String uid, String pid, int mTotalShelf, int mLocationId) {
+    public HashMap<String, ShelfShareBO> loadSODBlockDetails(String uid, String pid, int mTotalShelf, int mLocationId) {
         DBUtil db = null;
+        HashMap<String, ShelfShareBO> mBrandsDetailsHashMap = new HashMap<>();
 
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
@@ -1839,7 +1846,7 @@ public class SalesFundamentalHelper {
                     shelfShareBO.setSecondCell("empty");
                     shelfShareBO.setThirdCell("empty");
                     shelfShareBO.setFourthCell("empty");
-                    SODDialogFragment.mBrandsDetailsHashMap.put(
+                    mBrandsDetailsHashMap.put(
                             String.valueOf(i), shelfShareBO);
 
                     while (detailCursor.moveToNext()) {
@@ -1858,7 +1865,7 @@ public class SalesFundamentalHelper {
                                     shelfShareBO.setFourthCell(((detailCursor
                                             .getString(3) == null) ? "Ext.Shelf" : detailCursor.getString(3)));
                                 shelfShareBO.setOthersCount(1);
-                                SODDialogFragment.mBrandsDetailsHashMap.put(
+                                mBrandsDetailsHashMap.put(
                                         String.valueOf(i), shelfShareBO);
                             }
                         } else {
@@ -1877,6 +1884,8 @@ public class SalesFundamentalHelper {
                 db.closeDB();
             }
         }
+
+        return mBrandsDetailsHashMap;
     }
 
     public ArrayList<SOSBO> getLstSOS_PRJSpecific() {
@@ -2200,5 +2209,21 @@ public class SalesFundamentalHelper {
             Commons.printException("Download Location", e);
         }
 
+    }
+
+    public List<SOSBO> getmCategoryForDialogSOSBO() {
+        return mCategoryForDialogSOSBO!=null?mCategoryForDialogSOSBO:new ArrayList<>();
+    }
+
+    public void setmCategoryForDialogSOSBO(List<SOSBO> mCategoryForDialogSOSBO) {
+        this.mCategoryForDialogSOSBO = mCategoryForDialogSOSBO;
+    }
+
+    public List<SODBO> getmCategoryForDialogSODBO() {
+        return mCategoryForDialogSODBO!=null?mCategoryForDialogSODBO:new ArrayList<>();
+    }
+
+    public void setmCategoryForDialogSODBO(List<SODBO> mCategoryForDialogSOSBO) {
+        this.mCategoryForDialogSODBO = mCategoryForDialogSODBO;
     }
 }

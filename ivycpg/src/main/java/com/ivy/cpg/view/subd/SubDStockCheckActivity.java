@@ -81,7 +81,6 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.order.moq.MOQHighlightDialog;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SpecialFilterFragment;
@@ -96,7 +95,7 @@ import java.util.List;
 import java.util.Vector;
 
 public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener,
-        BrandDialogInterface, TextView.OnEditorActionListener, MOQHighlightDialog.savePcsValue, FiveLevelFilterCallBack {
+        BrandDialogInterface, TextView.OnEditorActionListener,FiveLevelFilterCallBack {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -113,7 +112,6 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
     private String brandbutton;
     private String generalbutton;
     LinearLayout ll_spl_filter, ll_tab_selection;
-    private MOQHighlightDialog mMOQHighlightDialog;
     private DrawerLayout mDrawerLayout;
     private ViewFlipper viewFlipper;
 
@@ -1153,11 +1151,6 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
         switchProfile();
     }
 
-    @Override
-    public void saveChanges() {
-        lvwplist.invalidateViews();
-    }
-
     private class MyAdapter extends ArrayAdapter<ProductMasterBO> {
         private final Vector<ProductMasterBO> items;
         private CustomKeyBoard dialogCustomKeyBoard;
@@ -2176,64 +2169,59 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
 
     public void numberPressed(View vw) {
 
-        if (mMOQHighlightDialog != null && mMOQHighlightDialog.isVisible()) {
-            mMOQHighlightDialog.numberPressed(vw);
+        int val;
+        if (QUANTITY == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.please_select_item), 0);
         } else {
-            int val;
-            if (QUANTITY == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.please_select_item), 0);
-            } else {
-                int id = vw.getId();
-                if (id == R.id.calcdel) {
+            int id = vw.getId();
+            if (id == R.id.calcdel) {
 
-                    int s = SDUtil.convertToInt(QUANTITY.getText()
-                            .toString());
-                    s = s / 10;
-                    String strS = s + "";
-                    QUANTITY.setText(strS);
-                    val = s;
+                int s = SDUtil.convertToInt(QUANTITY.getText()
+                        .toString());
+                s = s / 10;
+                String strS = s + "";
+                QUANTITY.setText(strS);
+                val = s;
 
 
-                } else if (id == R.id.calcdot) {
-                    val = SDUtil.convertToInt(append);
-                    if (QUANTITY.getTag() != null) {
-                        if (QUANTITY.getId() == R.id.stock_and_order_listview_srpedit) {
-                            Button ed = (Button) findViewById(vw.getId());
-                            append = ed.getText().toString();
-                            eff();
-                            val = SDUtil.convertToInt(append);
-                        }
-
+            } else if (id == R.id.calcdot) {
+                val = SDUtil.convertToInt(append);
+                if (QUANTITY.getTag() != null) {
+                    if (QUANTITY.getId() == R.id.stock_and_order_listview_srpedit) {
+                        Button ed = (Button) findViewById(vw.getId());
+                        append = ed.getText().toString();
+                        eff();
+                        val = SDUtil.convertToInt(append);
                     }
-                } else {
-                    Button ed =  findViewById(vw.getId());
-                    append = ed.getText().toString();
-                    eff();
-                    val = SDUtil.convertToInt(append);
-                }
 
-                ProductMasterBO temp = (ProductMasterBO) QUANTITY.getTag();
-
-                if (val > 0
-                        && temp.isRPS()
-                        && !temp.isSBDAcheivedLocal()
-                        && (temp.getOrderedPcsQty() > 0
-                        || temp.getOrderedCaseQty() > 0 || temp
-                        .getOrderedOuterQty() > 0)) {
-                    updateSBDAcheived(temp.getSbdGroupName(), true);
-                } else if (val == 0
-                        && temp.isRPS()
-                        && temp.isSBDAcheivedLocal()
-                        && (temp.getOrderedPcsQty()
-                        + (temp.getOrderedCaseQty() * temp.getCaseSize()) + (temp
-                        .getOrderedOuterQty() * temp.getOutersize())) == 0) {
-                    updateSBDAcheived(temp.getSbdGroupName(), false);
                 }
-                updateValue();
+            } else {
+                Button ed =  findViewById(vw.getId());
+                append = ed.getText().toString();
+                eff();
+                val = SDUtil.convertToInt(append);
             }
-        }
 
+            ProductMasterBO temp = (ProductMasterBO) QUANTITY.getTag();
+
+            if (val > 0
+                    && temp.isRPS()
+                    && !temp.isSBDAcheivedLocal()
+                    && (temp.getOrderedPcsQty() > 0
+                    || temp.getOrderedCaseQty() > 0 || temp
+                    .getOrderedOuterQty() > 0)) {
+                updateSBDAcheived(temp.getSbdGroupName(), true);
+            } else if (val == 0
+                    && temp.isRPS()
+                    && temp.isSBDAcheivedLocal()
+                    && (temp.getOrderedPcsQty()
+                    + (temp.getOrderedCaseQty() * temp.getCaseSize()) + (temp
+                    .getOrderedOuterQty() * temp.getOutersize())) == 0) {
+                updateSBDAcheived(temp.getSbdGroupName(), false);
+            }
+            updateValue();
+        }
     }
 
     private void loadSBDAchievementLocal() {

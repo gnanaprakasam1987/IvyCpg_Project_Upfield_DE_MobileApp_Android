@@ -35,13 +35,6 @@ public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar imple
         }
     }
 
-    public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
-                .findFragmentById(R.id.nearexpiry_tracking_fragment);
-        fragment.getDialog().numberPressed(vw);
-    }
-
     @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
