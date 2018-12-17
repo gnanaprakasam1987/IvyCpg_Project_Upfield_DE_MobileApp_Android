@@ -122,4 +122,5 @@
     <string name="unable_to_play">Unable To Play</string>
     <string name="cash_ref_no">Cash RefNo</string>
     <string name="print_count_dialog_title">Would you like to add this store \n in today\'s plan?</string>
+    <string name="created_by">Created By</string>
 </resources>

@@ -851,7 +851,7 @@
     <string name="cnfrm_pswd">Confirm Password</string>
     <string name="about_ivy">About IvyMobility</string>
     <string name="task">Task</string>
-    <string name="task_created_on">Created On</string>
+    <string name="task_created_on">Created On :</string>
     <string name="taskexecution">Execution</string>
     <string name="search">Search</string>
     <string name="enter_atleast_three_letters">Enter atleast 3 letters.</string>
