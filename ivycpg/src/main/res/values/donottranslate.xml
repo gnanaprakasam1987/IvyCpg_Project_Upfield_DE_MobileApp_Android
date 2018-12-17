@@ -125,4 +125,5 @@
 
     <string name="value_exceeded">Value Exceeded</string>
     <string name="this_may_remove_existing_data">This may remove existing data</string>
+    <string name="created_by">Created By</string>
 </resources>

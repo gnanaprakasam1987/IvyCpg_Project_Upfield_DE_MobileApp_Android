@@ -31,13 +31,13 @@
     <color name="list_header_text_color">#ffffff</color>
 
     <!--List item Primary Text color-->
-    <color name="list_item_primary_text_color">@color/FullBlack</color>
+    <color name="list_item_primary_text_color">#252525</color>
     
     <!--Caption Text color-->
     <color name="caption_text_color">#cc262626</color>
 
     <!--List item Value Text color-->
-    <color name="list_item_values_text_color">#262626</color>
+    <color name="list_item_values_text_color">#252525</color>
 
 
     <!--**************************************************************************************-->
