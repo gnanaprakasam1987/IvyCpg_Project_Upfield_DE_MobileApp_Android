@@ -6,8 +6,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +41,7 @@ import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,7 +72,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private ArrayAdapter<StandardListBO> contactTitleAdapter;
     private ArrayList<RetailerContactBo> contactList;
     private ArrayList<RetailerContactBo> retailerContactList;
-
+    private ArrayList<InputFilter> inputFilters = new ArrayList<>();
     //views
     @BindView(R.id.tvTitlePrimary)
     TextView tvTitlePrimary;
@@ -433,10 +438,28 @@ public class ContactCreationFragment extends IvyBaseFragment {
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNUMBER)) {
                 ISCONTACTNO = true;
                 tvTitlePhno.setText(configureBO.getMenuName());
+                addLengthFilter(configureBO.getRegex());
+                checkRegex(configureBO.getRegex());
+                if (inputFilters != null && inputFilters.size() > 0 && etPhno != null) {
+                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
+                    stockArr = inputFilters.toArray(stockArr);
+                    etPhno.setFilters(stockArr);
+                    if (inputFilters.size() == 2)
+                        etPhno.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }
             }
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTMAIL)) {
                 ISCONTACTEMAIL = true;
                 tvTitleEmail.setText(configureBO.getMenuName());
+                addLengthFilter(configureBO.getRegex());
+                checkRegex(configureBO.getRegex());
+                if (inputFilters != null && inputFilters.size() > 0 && etEmail != null) {
+                    InputFilter[] stockArr = new InputFilter[inputFilters.size()];
+                    stockArr = inputFilters.toArray(stockArr);
+                    etEmail.setFilters(stockArr);
+                    if (inputFilters.size() == 2)
+                        etEmail.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }
             }
         }
         if (!ISCONTACTPRIMARY) {
@@ -766,6 +789,64 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 }
             }
         return default_value;
+    }
+
+    private void addLengthFilter(String regex) {
+        inputFilters = new ArrayList<>();
+        InputFilter fil = new InputFilter.LengthFilter(25);
+        String str = regex;
+        if (str != null && !str.isEmpty()) {
+            if (str.contains("<") && str.contains(">")) {
+
+                String len = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
+                if (len != null && !len.isEmpty()) {
+                    if (len.contains(",")) {
+                        try {
+                            fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len.split(",")[1]));
+                        } catch (Exception ex) {
+                            Commons.printException("regex length split", ex);
+                        }
+                    } else {
+                        fil = new InputFilter.LengthFilter(SDUtil.convertToInt(len));
+                    }
+                }
+            }
+        }
+
+        inputFilters.add(fil);
+    }
+
+    private void checkRegex(String regex) {
+        final String reg;
+
+        try {
+            if (regex != null && !regex.isEmpty()) {
+                if (regex.contains("<") && regex.contains(">")) {
+                    reg = regex.replaceAll("\\<.*?\\>", "");
+                } else {
+                    reg = regex;
+                }
+
+                InputFilter filter = new InputFilter() {
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            String checkMe = String.valueOf(source.charAt(i));
+
+                            if (!Pattern.compile(reg).matcher(checkMe).matches()) {
+                                Log.d("", "invalid");
+                                return "";
+                            }
+
+                        }
+                        return null;
+                    }
+                };
+                inputFilters.add(filter);
+
+            }
+        } catch (Exception ex) {
+            Commons.printException("regex check", ex);
+        }
     }
 }
 
