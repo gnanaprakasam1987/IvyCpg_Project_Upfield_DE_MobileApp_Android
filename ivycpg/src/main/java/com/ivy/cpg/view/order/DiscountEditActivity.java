@@ -1,19 +1,17 @@
 package com.ivy.cpg.view.order;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,63 +23,70 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.cpg.view.initiative.InitiativeHeaderBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class DiscountDialog extends Dialog implements OnClickListener {
+public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
+
     private BusinessModel bmodel;
-    private Context context;
-    private Button back, saveButton;
+    private Button saveButton;
     private TextView totalval, oldTotalValue;
     private ListView lvwplist;
     private ArrayList<ProductMasterBO> mylist;
     private EditText QUANTITY, D1;
     private String append = "", d1 = "0";
-    private OrderSummary initAct;
     double sum = 0;
     private Double result = 0.0;
     private double totalOrderValue;
-    OnDismissListener disListner;
-    DiscountHelper discountHelper;
+    private DiscountHelper discountHelper;
 
-    public DiscountDialog(final Context context, InitiativeHeaderBO initHeaderBO,
-                          OnDismissListener discountDismissListener) {
-        super(context);
-        // TODO Auto-generated constructor stub
-        this.context = context;
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        initAct = (OrderSummary) context;
-        discountHelper = DiscountHelper.getInstance(context);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_discount);
 
-        RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
-                .inflate(R.layout.dialog_discount, null);
-        setContentView(ll);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        // setContentView(R.layout.initiativedialog);
-        setCancelable(true);
-        disListner = discountDismissListener;
+        findViewById(R.id.tolllayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.LL_titleBar).setVisibility(View.GONE);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
-        bmodel = (BusinessModel) context.getApplicationContext();
-        back = (Button) findViewById(R.id.closeButton);
-        saveButton = (Button) findViewById(R.id.saveButton);
+        if (toolbar != null ) {
+
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            setScreenTitle(getResources().getString(R.string.discount));
+        }
+
+        if (getWindow() != null)
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        discountHelper = DiscountHelper.getInstance(this);
+
+        bmodel = (BusinessModel) getApplicationContext();
+        Button back = findViewById(R.id.closeButton);
+        saveButton = findViewById(R.id.saveButton);
+        back.setVisibility(View.GONE);
         back.setOnClickListener(this);
         saveButton.setOnClickListener(this);
-        saveButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        totalval = (TextView) findViewById(R.id.totalValue);
-        oldTotalValue = (TextView) findViewById(R.id.oldTotalValue);
+        saveButton.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+        totalval = findViewById(R.id.totalValue);
+        oldTotalValue = findViewById(R.id.oldTotalValue);
         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.old_order_volume).getTag()) != null) {
             ((TextView) findViewById(R.id.old_order_volume))
@@ -90,17 +95,17 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                     R.id.old_order_volume)
                                     .getTag()));
         }
-        D1 = (EditText) findViewById(R.id.d1);
+        D1 = findViewById(R.id.d1);
 
-        ((TextView) findViewById(R.id.titlebar)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ((TextView) findViewById(R.id.tvProductNameTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tvTotalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.minmax)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.tvValuetitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        totalval.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.titlebar)).setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+        ((TextView) findViewById(R.id.tvProductNameTitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvTotalTitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.minmax)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.tvValuetitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        totalval.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
 
         if (bmodel.configurationMasterHelper.SHOW_DISCOUNTED_PRICE) {
-            ((TextView) findViewById(R.id.disc_price_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.disc_price_title)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                         R.id.disc_price_title).getTag()) != null)
@@ -117,7 +122,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             findViewById(R.id.disc_price_title).setVisibility(View.GONE);
 
 
-        ((TextView) findViewById(R.id.u_price_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.u_price_title)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
         try {
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                     R.id.u_price_title).getTag()) != null)
@@ -131,7 +136,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         }
 
 
-        lvwplist = (ListView) findViewById(R.id.list);
+        lvwplist = findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         // On/Off order case and pcs
@@ -163,20 +168,20 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             findViewById(R.id.d1title).setVisibility(View.GONE);
             // findViewById(R.id.d1).setVisibility(View.GONE); //As the SHOW_D1 will be false by default, editText is disabled. But it should.
         } else {
-            ((TextView) findViewById(R.id.d1title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.d1title)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
         }
 
         if (!bmodel.configurationMasterHelper.SHOW_DA)
             findViewById(R.id.datitle).setVisibility(View.GONE);
         else {
-            ((TextView) findViewById(R.id.datitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.datitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
         }
 
 
         if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
             bmodel.productHelper.downloadDiscountRange();
         } else {
-            ((TextView) findViewById(R.id.minmax)).setVisibility(View.GONE);
+            (findViewById(R.id.minmax)).setVisibility(View.GONE);
         }
 
         updateOrderTable();
@@ -184,7 +189,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         D1.setText(d1);
 
 
-        D1.setOnTouchListener(new OnTouchListener() {
+        D1.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -218,7 +223,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
 
                 sum = SDUtil.convertToDouble(D1.getText().toString());
                 if (sum > bmodel.configurationMasterHelper.discount_max) {
-                    Toast.makeText(context, "value exceeded",
+                    Toast.makeText(DiscountEditActivity.this, getResources().getString(R.string.value_exceeded),
                             Toast.LENGTH_SHORT).show();
                     int s1 = SDUtil.convertToInt(qty);
                     s1 = s1 / 10;
@@ -252,8 +257,6 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 }
             }
         });
-
-
     }
 
     public String PerfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
@@ -282,58 +285,22 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         return rFinal;
     }
 
-
-    public void onBackPressed() {
-        // do something on back.
-        return;
-    }
-
     @Override
     public void onClick(View v) {
         Button b = (Button) v;
-        if (b == back) {
 
-            disListner.onDismiss(this);
-            if (result > 0) {
-
-                this.initAct.onResume();
-            } else
-                discountHelper.clearDiscountQuantity();
-            //this.initAct.onResume();
-        }
         if (b == saveButton) {
-
-            disListner.onDismiss(this);
-            this.initAct.onResume();
+            setResult(1);
+            finish();
         }
     }
-
-
-    private boolean validateFromRange() {
-        for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
-            if (bo.getOrderedPcsQty() > 0 || bo.getOrderedCaseQty() > 0
-                    || bo.getOrderedOuterQty() > 0) {
-                if (bo.getGroupid() == 0 && !bo.isCbsihAvailable()) {
-                    if (bo.getFrom_range() > 0 && ((bo.getD1() > 0 && bo.getD1() < bo.getFrom_range() && bmodel.configurationMasterHelper.SHOW_D1) || (bo.getD2() > 0 && bo.getD2() < bo.getFrom_range() && bmodel.configurationMasterHelper.SHOW_D2) || (bo.getD3() > 0 && bo.getD3() < bo.getFrom_range() && bmodel.configurationMasterHelper.SHOW_D3))) {
-                        return false;
-                    }
-                }
-            }
-            /*else if((bo.getD1()>bo.getTo_range()&&bmodel.configurationMasterHelper.SHOW_D1)||(bo.getD2()>bo.getTo_range()&&bmodel.configurationMasterHelper.SHOW_D2)||(bo.getD3()>bo.getTo_range()&&bmodel.configurationMasterHelper.SHOW_D3)){
-                return false;
-            }*/
-        }
-
-        return true;
-    }
-
 
     private void updateDiscount(double discount, int j) {
 
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (items == null) {
             bmodel.showAlert(
-                    context.getResources().getString(
+                    getResources().getString(
                             R.string.no_products_exists), 0);
             return;
         }
@@ -369,12 +336,12 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (items == null) {
             bmodel.showAlert(
-                    context.getResources().getString(
+                    getResources().getString(
                             R.string.no_products_exists), 0);
             return;
         }
         int siz = items.size();
-        mylist = new ArrayList<ProductMasterBO>();
+        mylist = new ArrayList<>();
         for (int i = 0; i < siz; ++i) {
             ProductMasterBO ret = items.elementAt(i);
             if (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0
@@ -385,11 +352,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 } else {
                     d1 = ret.getD1() + "";
                 }
-                double temp = 0;
-                /*temp = (ret.getOrderedPcsQty() * ret.getSrp())
-                        + (ret.getOrderedCaseQty() * ret.getCsrp())
-						+ (ret.getOrderedOuterQty() * ret.getOsrp());
-				ret.setNetValue(temp);*/
+
                 if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && ret.getBatchwiseProductCount() > 0) {
                     ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(ret.getProductID());
                     if (batchList != null) {
@@ -416,7 +379,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         }
         totalval.setText(bmodel.formatValue(totalOrderValue) + "");
         oldTotalValue.setText(bmodel.formatValue(totalOrderValue));
-        MyAdapter mSchedule = new MyAdapter(context, mylist);
+        MyAdapter mSchedule = new MyAdapter(DiscountEditActivity.this, mylist);
         lvwplist.setAdapter(mSchedule);
 
     }
@@ -455,40 +418,40 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 row = inflater.inflate(R.layout.dialog_discount_row, parent,
                         false);
                 holder = new ViewHolder();
-                holder.psname = (TextView) row.findViewById(R.id.orderPRODNAME);
-                holder.caseqty = (TextView) row
+                holder.psname = row.findViewById(R.id.orderPRODNAME);
+                holder.caseqty = row
                         .findViewById(R.id.orderQTYinCase);
-                holder.pieceqty = (TextView) row
+                holder.pieceqty =  row
                         .findViewById(R.id.orderQTYinpiece);
-                holder.d1 = (EditText) row.findViewById(R.id.d1);
-                holder.da = (EditText) row.findViewById(R.id.da);
+                holder.d1 = row.findViewById(R.id.d1);
+                holder.da = row.findViewById(R.id.da);
 
-                holder.mrp = (TextView) row.findViewById(R.id.mrp);
-                holder.total = (TextView) row.findViewById(R.id.total);
-                holder.outerQty = (TextView) row
+                holder.mrp = row.findViewById(R.id.mrp);
+                holder.total = row.findViewById(R.id.total);
+                holder.outerQty = row
                         .findViewById(R.id.outerorderQTYinCase);
-                holder.min_max = (TextView) row
+                holder.min_max = row
                         .findViewById(R.id.min_max);
-                holder.discounted_price = (TextView) row
+                holder.discounted_price = row
                         .findViewById(R.id.discounted_price);
-                holder.unit_price = (TextView) row
+                holder.unit_price = row
                         .findViewById(R.id.unit_price);
 
-                holder.psname.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.caseqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.pieceqty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.outerQty.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.d1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.da.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                holder.mrp.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.total.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.min_max.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.psname.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.MEDIUM));
+                holder.caseqty.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.LIGHT));
+                holder.pieceqty.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.LIGHT));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.LIGHT));
+                holder.d1.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.THIN));
+                holder.da.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.THIN));
+                holder.mrp.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.MEDIUM));
+                holder.total.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.MEDIUM));
+                holder.min_max.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.THIN));
                 if (bmodel.configurationMasterHelper.SHOW_DISCOUNTED_PRICE) {//change with proper config later
-                    holder.discounted_price.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                    holder.discounted_price.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.THIN));
                 } else {
                     holder.discounted_price.setVisibility(View.GONE);
                 }
-                holder.unit_price.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                holder.unit_price.setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.THIN));
 
                 if (!bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS)
                     holder.min_max.setVisibility(View.GONE);
@@ -519,7 +482,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                                     + holder.productObj.getD2()
                                     + holder.productObj.getD1();
                             if (sum > bmodel.configurationMasterHelper.discount_max) {
-                                Toast.makeText(context, "value exceeded",
+                                Toast.makeText(context, context.getResources().getString(R.string.value_exceeded),
                                         Toast.LENGTH_SHORT).show();
                                 int s1 = SDUtil.convertToInt(qty);
                                 s1 = s1 / 10;
@@ -657,7 +620,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.GONE);
 
-                holder.d1.setOnTouchListener(new OnTouchListener() {
+                holder.d1.setOnTouchListener(new View.OnTouchListener() {
 
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
@@ -674,7 +637,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
                 });
 
 
-                holder.da.setOnTouchListener(new OnTouchListener() {
+                holder.da.setOnTouchListener(new View.OnTouchListener() {
 
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
@@ -709,7 +672,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             holder.caseSize = holder.productObj.getCaseSize();
             holder.stockInHand = holder.productObj.getSIH();
 
-            holder.mrp.setText("Price : "
+            holder.mrp.setText(context.getResources().getString(R.string.price)+" : "
                     + bmodel.formatValue(holder.productObj.getSrp()) + "");
 
 
@@ -798,7 +761,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         // ProductMasterBO temp = (ProductMasterBO) QUANTITY.getTag();
         if (QUANTITY == null) {
             bmodel.showAlert(
-                    context.getResources().getString(
+                    getResources().getString(
                             R.string.please_select_item), 0);
         } else {
             int id = vw.getId();
@@ -891,7 +854,7 @@ public class DiscountDialog extends Dialog implements OnClickListener {
         double value = 0;
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         int siz = items.size();
-        mylist = new ArrayList<ProductMasterBO>();
+        mylist = new ArrayList<>();
         for (int i = 0; i < siz; ++i) {
             ProductMasterBO ret = items.elementAt(i);
             if (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0
@@ -918,5 +881,21 @@ public class DiscountDialog extends Dialog implements OnClickListener {
             }
         }
         totalval.setText(bmodel.formatValue(value) + "");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i1 = item.getItemId();
+        if (i1 == android.R.id.home) {
+            if (result > 0) {
+                setResult(1);
+                finish();
+            } else {
+                finish();
+                discountHelper.clearDiscountQuantity();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
