@@ -52,8 +52,7 @@ public class SalesReturnDeliveryHelper {
                             "uid,date,ReturnValue,Lpc,invoiceid,SignaturePath,ImgName,RefModule,RefModuleTId " +
                             "from SalesReturnHeader where retailerId ='" + businessModel.getRetailerMasterBO().getRetailerID() + "' " +
                             "AND upload='X' " +
-                            "AND uid NOT IN (select ifnull(RefUID,0) from salesReturnHeader " +
-                            "where upload='Y'and isCancel != 1) ");
+                            "AND uid NOT IN (select ifnull(RefUID,0) from salesReturnHeader where upload='N' and isCancel == 1) ");
 
                     if (cursor != null) {
                         while (cursor.moveToNext()) {

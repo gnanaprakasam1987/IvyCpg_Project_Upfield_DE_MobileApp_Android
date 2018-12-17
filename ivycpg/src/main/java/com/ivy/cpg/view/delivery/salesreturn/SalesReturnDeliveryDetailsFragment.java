@@ -242,6 +242,8 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
             public void onClick(DialogInterface dialog, int whichButton) {
                 boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataBo);
                 if (isSuccess) {
+                    BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
+                    businessModel.saveModuleCompletion(HomeScreenTwo.MENU_SALES_RET_DELIVERY);
                     Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
                     (getActivity()).onBackPressed();
                 }
