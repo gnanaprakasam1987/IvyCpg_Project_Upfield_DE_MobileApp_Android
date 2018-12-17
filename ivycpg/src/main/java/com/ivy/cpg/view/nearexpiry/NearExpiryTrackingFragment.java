@@ -59,7 +59,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     private BusinessModel mBModel;
     private DrawerLayout mDrawerLayout;
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
-    private Vector<ProductMasterBO> myList;
+    private Vector<ProductMasterBO> myList = new Vector<>();
     private EditText QUANTITY;
     private String append = "";
     private ArrayAdapter<StandardListBO> mLocationAdapter;
@@ -68,20 +68,14 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     private ListView lvwplist;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private boolean isAlertShowed;
-    private NearExpiryDialogueFragment dialog;
     private boolean isFromChild;
     private ArrayList<ProductMasterBO> clearList = null;
 
     NearExpiryTrackingHelper mNearExpiryHelper;
     private ActionBar actionBar;
 
-    public NearExpiryDialogueFragment getDialog() {
-        return dialog;
-    }
-
-    public void setDialog(NearExpiryDialogueFragment dialog) {
-        this.dialog = dialog;
-    }
+    private final static int NEAR_EXPIRY_RESULT_CODE = 113;
+    private MyAdapter mSchedule;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -187,6 +181,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 nextButtonClick();
             }
         });
+
+        mSchedule = new MyAdapter(myList);
     }
 
     @Override
@@ -463,18 +459,16 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     public void onClick(View v) {
 
                         String id = holder.mSKUBO.getProductID();
-                        dialog = new NearExpiryDialogueFragment();
-                        setDialog(dialog);
-                        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                notifyDataSetChanged();
-                            }
-                        });
+
                         Bundle args = new Bundle();
                         args.putString("PID", id);
-                        dialog.setArguments(args);
-                        dialog.show(getFragmentManager(), "Near Expiry");
+
+                        Intent intent = new Intent(getActivity(),NearExpiryDateInputActivity.class);
+                        intent.putExtras(args);
+
+                        startActivityForResult( intent, NEAR_EXPIRY_RESULT_CODE);
+                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
                     }
                 });
 
@@ -709,7 +703,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             // Consider generalbutton text if it is dependent filter.
             String generaltxt = generalFilterText;
 
-            myList = new Vector<>();
+            myList.clear();
             // Add the products into list
             for (ProductMasterBO ret : items) {
 
@@ -737,7 +731,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             }
 
             // set the new list to listview
-            MyAdapter mSchedule = new MyAdapter(myList);
+            mSchedule = new MyAdapter(myList);
             lvwplist.setAdapter(mSchedule);
 
         } catch (Exception e) {
@@ -756,7 +750,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 return;
             }
 
-            myList = new Vector<>();
+            myList.clear();
             // Add the products into list
             if (mAttributeProducts != null) {
                 if (productId != 0) {
@@ -792,7 +786,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             }
             this.mSelectedIdByLevelId = mSelectedIdByLevelId;
             // set the new list to listview
-            MyAdapter mSchedule = new MyAdapter(myList);
+            mSchedule = new MyAdapter(myList);
             lvwplist.setAdapter(mSchedule);
 
         } catch (Exception e) {
@@ -883,5 +877,14 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             clearList = null;
         mNearExpiryHelper.clear();
         System.gc();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == NEAR_EXPIRY_RESULT_CODE && resultCode == 1){
+            mSchedule.notifyDataSetChanged();
+        }
     }
 }

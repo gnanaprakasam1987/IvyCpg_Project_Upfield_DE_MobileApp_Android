@@ -20,23 +20,17 @@
         android:text="@string/barcode"
         android:visibility="gone" />
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/orderPRODNAME"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/orderPRODNAME"
-            style="@style/TextViewListItemPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="start|center"
-            android:maxLines="1"
-            android:padding="3dp"
-            android:text="@string/product_name" />
-    </RelativeLayout>
+        android:layout_gravity="center"
+        android:gravity="start|center"
+        android:maxLines="1"
+        android:padding="3dp"
+        android:text="@string/product_name" />
 
     <TextView
         android:id="@+id/tv_liableqty"
