@@ -987,10 +987,13 @@ public class DiscountHelper {
 
             for (SchemeBO schemeBO : appliedSchemeList) {
                 boolean isFreeProductGiven=false;
-                if (!"".equals(strAppliedSchemes))
-                    strAppliedSchemes = strAppliedSchemes + "\n" + schemeBO.getScheme();
-                else
-                    strAppliedSchemes = schemeBO.getScheme();
+                if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected() ||
+                        schemeBO.isQuantityTypeSelected() || schemeBO.isPriceTypeSeleted()) {
+                    if (!"".equals(strAppliedSchemes))
+                        strAppliedSchemes = strAppliedSchemes + "\n" + schemeBO.getScheme();
+                    else
+                        strAppliedSchemes = schemeBO.getScheme();
+                }
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
