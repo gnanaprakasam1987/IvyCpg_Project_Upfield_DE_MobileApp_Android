@@ -48,7 +48,7 @@ import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
-import com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonDialog;
+import com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonActivity;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -133,6 +133,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private static final int DISCOUNT_RESULT_CODE = 114;
     private static final int RETURN_PRODUCT_RESULT_CODE = 115;
+    private static final int INDICATIVE_ORDER_REASON_RESULT_CODE = 116;
 
 
     private static final int FILE_SELECTION = 12;
@@ -1085,8 +1086,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             else
                 showDialog(DIALOG_DELETE_ONLY_ORDER);
         } else if (i1 == R.id.menu_indicative_order_reason) {
-            IndicativeOrderReasonDialog indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bModel);
-            indicativeReasonDialog.show();
+
+            Intent intent = new Intent(OrderSummary.this,IndicativeOrderReasonActivity.class);
+            ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+            ActivityCompat.startActivityForResult(this, intent, INDICATIVE_ORDER_REASON_RESULT_CODE, opts.toBundle());
+
         } else if (i1 == R.id.menu_capture) {
             if (bModel.isExternalStorageAvailable()) {
                 mImageName = "ORD_"
@@ -1769,7 +1773,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private void saveOrder() {
 
-        IndicativeOrderReasonDialog indicativeReasonDialog;
         isFromOrder = true;
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE && mSortedList != null)
@@ -1795,8 +1798,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 if ((bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || bModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !orderHelper.isReasonProvided(mOrderedProductList)) {
 
-                    indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bModel);
-                    indicativeReasonDialog.show();
+                    Intent intent = new Intent(OrderSummary.this,IndicativeOrderReasonActivity.class);
+                    ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                    ActivityCompat.startActivityForResult(this, intent, INDICATIVE_ORDER_REASON_RESULT_CODE, opts.toBundle());
+
                     isClick = false;
 
                 } else {
@@ -1849,7 +1854,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private void saveInvoice() {
 
         isFromOrder = false;
-        IndicativeOrderReasonDialog indicativeReasonDialog;
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE && mSortedList != null)
             orderHelper.setSortedOrderedProducts(mSortedList);
@@ -1948,8 +1952,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                         if ((bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || bModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !orderHelper.isReasonProvided(mOrderedProductList)) {
 
-                            indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bModel);
-                            indicativeReasonDialog.show();
+                            Intent intent = new Intent(OrderSummary.this,IndicativeOrderReasonActivity.class);
+                            ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                            ActivityCompat.startActivityForResult(this, intent, INDICATIVE_ORDER_REASON_RESULT_CODE, opts.toBundle());
+
                             isClick = false;
 
                         } else {
@@ -3451,6 +3457,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             case RETURN_PRODUCT_RESULT_CODE :
+                overridePendingTransition(0, R.anim.zoom_exit);
+                break;
+            case INDICATIVE_ORDER_REASON_RESULT_CODE :
                 overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             default:

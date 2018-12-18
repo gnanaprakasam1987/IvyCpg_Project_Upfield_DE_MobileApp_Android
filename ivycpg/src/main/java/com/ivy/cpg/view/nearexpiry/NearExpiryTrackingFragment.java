@@ -74,7 +74,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     NearExpiryTrackingHelper mNearExpiryHelper;
     private ActionBar actionBar;
 
-    private final static int NEAR_EXPIRY_RESULT_CODE = 113;
+    private final static int NEAR_EXPIRY_RESULT_CODE = 119;
     private MyAdapter mSchedule;
 
     @Override

@@ -45,7 +45,7 @@ public class InitiativeActivity extends IvyBaseActivityNoActionBar implements
     private Button initiativeButton[];
     private boolean isClicked=false;
     private String screenCode = "MENU_STK_ORD";
-    private final int INITIATIVE_RESULT_CODE = 116;
+    private final int INITIATIVE_RESULT_CODE = 117;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
