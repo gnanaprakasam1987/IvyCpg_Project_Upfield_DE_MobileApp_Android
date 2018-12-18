@@ -201,6 +201,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
     private boolean isFilter = true;// only for guided selling. Default value is true, so it will ot affect normal flow
     private TextView totalQtyTV;
+    private OrderHelper orderHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -211,6 +212,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        orderHelper = OrderHelper.getInstance(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         Bundle extras = getIntent().getExtras();
         OrderedFlag = "MENU_STK_ORD";
@@ -1283,7 +1285,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             + ret.getOrderedOuterQty() * ret.getOsrp();
                     totalvalue = totalvalue + temp;
 
-                    totalAllQty = totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize()));
+                    int totalOrderedQty = orderHelper.getTotalOrderedQty(ret);
+                    totalAllQty = (totalOrderedQty != -1)? (totalAllQty + totalOrderedQty) : (totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())));
                 }
                 if (ret.isRPS()) {
                     int size = ret.getLocations().size();
@@ -1527,6 +1530,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         //Intent i = new Intent(OrderNewOutlet.this, OrderSummary.class);
         // i.putExtra("ScreenCode", screenCode);
         // startActivity(i);
+        Toast.makeText(OrderNewOutlet.this, R.string.order_will_be_saved_later, Toast.LENGTH_LONG).show();
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         finish();
 
