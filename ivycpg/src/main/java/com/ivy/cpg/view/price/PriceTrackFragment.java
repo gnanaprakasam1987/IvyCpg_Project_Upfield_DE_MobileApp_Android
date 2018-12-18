@@ -1177,7 +1177,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mCaPrice.setSelection(qty.length());
-                        if (businessModel.validDecimalValue(qty, 8, 2)) {
+                        if (businessModel.validDecimalValue(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
                             holder.mSKUBO.setPrice_ca(qty);
                         } else {
                             Toast.makeText(
@@ -1225,7 +1225,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mPcPrice.setSelection(qty.length());
-                        if (businessModel.validDecimalValue(qty, 8, 2)) {
+                        if (businessModel.validDecimalValue(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
                             holder.mSKUBO.setPrice_pc(qty);
                         } else {
                             Toast.makeText(
@@ -1274,7 +1274,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         if (qty.length() > 0)
                             holder.mOoPrice.setSelection(qty.length());
 
-                        if (businessModel.validDecimalValue(qty, 8, 2)) {
+                        if (businessModel.validDecimalValue(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
                             holder.mSKUBO.setPrice_oo(qty);
                         } else {
                             Toast.makeText(
