@@ -1562,6 +1562,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                 }
+                if (alertDialog != null)
+                    alertDialog.dismiss();
             }
 
         }
