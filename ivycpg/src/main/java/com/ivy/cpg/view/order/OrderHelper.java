@@ -188,8 +188,15 @@ public class OrderHelper {
             if ((!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())||
                 businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
                     businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+
                 businessModel.insertSeqNumber("ORD");
                 uid = AppUtils.QT(businessModel.downloadSequenceNo("ORD"));
+
+                if(uid.length()>16) {
+                    //Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
+                    return false;
+                }
+
             }
 
 
@@ -604,6 +611,10 @@ public class OrderHelper {
                 if (businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
                     businessModel.insertSeqNumber("ORD");
                     uid = AppUtils.QT(businessModel.downloadSequenceNo("ORD"));
+
+                    if(uid.length()>16){
+                        return false;
+                    }
                 }
 
                 // It can be used to show in OrderSummary alert
@@ -1759,7 +1770,7 @@ public class OrderHelper {
      * Invoice details into Invoice Details Table.
      * Saving Invoice will also update the SIH in ProductMaster.
      */
-    public void saveInvoice(Context mContext) {
+    public boolean saveInvoice(Context mContext) {
 
         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
         salesReturnHelper.getSalesReturnGoods(mContext);
@@ -1801,12 +1812,14 @@ public class OrderHelper {
                 businessModel.insertSeqNumber("INV");
                 seqNo = businessModel.downloadSequenceNo("INV");
                 invoiceId = seqNo;
+
+                if(invoiceId.length()>16) {
+                    Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
+                    return false;
+                }
             }
 
-            if(invoiceId.length()>16) {
-                Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
-                return;
-            }
+
 
             String timeStampId = "";
             String query = "select max(VisitID) from OutletTimestamp where retailerid="
@@ -2093,9 +2106,11 @@ public class OrderHelper {
             }
 
         } catch (Exception e) {
-
             Commons.printException(e);
+            return false;
         }
+
+        return true;
     }
 
 

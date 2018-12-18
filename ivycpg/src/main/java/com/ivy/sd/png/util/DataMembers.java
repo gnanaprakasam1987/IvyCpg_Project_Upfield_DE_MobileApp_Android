@@ -157,6 +157,7 @@ public class DataMembers {
     public static final int NOTIFY_ORDER_DELETED = -8;
     public static final int NOTIFY_DATABASE_NOT_SAVED = -9;
     public static final int NOTIFY_ORDER_NOT_SAVED = -11;
+    public static final int NOTIFY_INVOICE_NOT_SAVED = -12;
 
     public static final int NOTIFY_EXPORT_SUCCESS = 69;
     public static final int NOTIFY_EXPORT_FAILURE = 70;

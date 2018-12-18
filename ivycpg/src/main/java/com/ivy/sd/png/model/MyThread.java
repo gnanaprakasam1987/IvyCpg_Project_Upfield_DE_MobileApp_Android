@@ -618,12 +618,9 @@ public class MyThread extends Thread {
                     }
                 }
 
+                boolean isInvoiceSaved=false;
                 if (bmodel.configurationMasterHelper.IS_INVOICE) {
-                    // update stockinhandmaster all record upload=N
-                    //bmodel.updateStockinHandMaster();
-
-
-                    orderHelper.saveInvoice(ctx);
+                    isInvoiceSaved=orderHelper.saveInvoice(ctx);
                 }
 
                 bmodel.setRField1("");
@@ -677,10 +674,18 @@ public class MyThread extends Thread {
                     PrintPreviewScreenTitan frm = (PrintPreviewScreenTitan) ctx;
                     frm.getHandler().sendEmptyMessage(
                             DataMembers.NOTIFY_INVOICE_SAVED);
-                } else {
+                }
+                else {
                     OrderSummary frm = (OrderSummary) ctx;
-                    frm.getHandler().sendEmptyMessage(
-                            DataMembers.NOTIFY_INVOICE_SAVED);
+
+                    if(isInvoiceSaved) {
+                        frm.getHandler().sendEmptyMessage(
+                                DataMembers.NOTIFY_INVOICE_SAVED);
+                    }
+                    else {
+                        frm.getHandler().sendEmptyMessage(
+                                DataMembers.NOTIFY_INVOICE_NOT_SAVED);
+                    }
                 }
             } else {
                 OrderSummary frm = (OrderSummary) ctx;

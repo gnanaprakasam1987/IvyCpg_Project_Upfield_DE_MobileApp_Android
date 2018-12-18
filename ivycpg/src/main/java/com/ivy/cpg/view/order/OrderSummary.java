@@ -637,7 +637,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
 
-            bModel.getOrderHeaderBO().setOriginalOrderValue(totalOrderValue);
 
             if (linesPerCall == 0)
                 linesPerCall = mOrderedProductList.size();
@@ -713,7 +712,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if(!bModel.configurationMasterHelper.IS_GST || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
 
                     if(!bModel.configurationMasterHelper.IS_GST
-                            || (!bModel.getRetailerMasterBO().getGSTNumber().equals("")||bModel.getOrderHeaderBO().getOriginalOrderValue()>5000)) {
+                            || (!bModel.getRetailerMasterBO().getGSTNumber().equals("-")||totalOrderValue>5000)) {
 
                         if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
                             bModel.productHelper.taxHelper.updateProductWiseExcludeTax();
@@ -3079,6 +3078,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 } catch (Exception e) {
                     Commons.printException(e);
+                }
+            }else if (msg.what == DataMembers.NOTIFY_INVOICE_NOT_SAVED) {
+                try {
+                    alertDialog.dismiss();
+                    Toast.makeText(OrderSummary.this, getResources().getString(R.string.not_able_to_generate_invoice),
+                            Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
                 }
             } else if (msg.what == DataMembers.NOTIFY_ORDER_DELETED) {
                 try {
