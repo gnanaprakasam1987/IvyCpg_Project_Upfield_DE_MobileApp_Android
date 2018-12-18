@@ -63,16 +63,12 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
         bmodel = (BusinessModel) context.getApplicationContext();
 
         ListView splFilterList = view.findViewById(R.id.splFiterList);
-        TextView cLevelFilterHeading = view.findViewById(R.id.chooseBrandTitle);
+
 
         Button cancelButton = view.findViewById(R.id.btn_cancel);
         Button allButton = view.findViewById(R.id.btn_all);
 
         splFilterList.setOnItemClickListener(this);
-
-        cLevelFilterHeading.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        cancelButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        allButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
 
         try {
@@ -177,7 +173,6 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
                     holder.splFilterText = row.findViewById(R.id.grid_item_text);
                     holder.cbFiltered = row.findViewById(R.id.selectedfilters);
 
-                    holder.splFilterText.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                     row.setTag(holder);
                 } else {
                     holder = (ViewHolder) row.getTag();

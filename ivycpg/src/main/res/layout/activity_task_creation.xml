@@ -1,173 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal" >
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
 
-        <Button
-            android:id="@+id/closeTask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:text="@string/close"
-            android:visibility="gone"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:id="@+id/toolbar_ll">
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar"
-            />
-
-    </LinearLayout>
 
     <ScrollView
+        android:id="@+id/scroll_footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scroll_footer"
         android:layout_above="@id/footer"
-        android:layout_below="@id/toolbar_ll">
+        android:layout_below="@id/toolbar">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_10dp">
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginStart="@dimen/dimen_18dp"
-                android:layout_marginEnd="@dimen/dimen_18dp"
-                android:layout_marginTop="@dimen/dimen_30dp">
+                android:padding="@dimen/dimen_2dp">
 
                 <TextView
                     android:id="@+id/task_title_tv"
-                    android:textColor="?colorPrimary"
-                    android:layout_width="fill_parent"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:padding="8dp"
                     android:paddingBottom="0dp"
-                    android:text="@string/plan_task"
-                    android:textSize="@dimen/text_size_secondary"/>
+                    android:text="@string/plan_task" />
 
                 <EditText
                     android:id="@+id/tv"
-                    android:layout_width="fill_parent"
+                    style="@style/EditTextNormal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_8dp"
-                    android:maxLength="25"
                     android:layout_gravity="start|center"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/highlight_small"/>
+                    android:maxLength="25"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimens_6dp"
                 card_view:cardBackgroundColor="@color/white"
-                card_view:cardUseCompatPadding="true"
-                android:layout_marginStart="@dimen/dimen_10dp"
-                android:layout_marginEnd="@dimen/dimen_10dp"
-                android:layout_marginTop="@dimen/dimen_18dp" >
+                card_view:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginStart="@dimen/dimen_10dp"
-                    android:layout_marginEnd="@dimen/dimen_10dp">
+                    android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/taskView"
-                        android:layout_width="fill_parent"
+                        style="@style/EditTextNormal"
+                        android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:paddingStart="@dimen/dimen_6dp"
-                        android:paddingTop="@dimen/dimen_6dp"
-                        android:gravity="start|top"
-                        android:background="@drawable/feedback_edit_selector"
-                        android:hint="@string/enter_task_description"
-                        android:textColorHint="@color/light_gray"
-                        android:maxLines="4"
-                        android:textSize="@dimen/text_size_primary"
-                        style="@style/EditText_ListItem"
-                        android:textColor="@color/half_Black"
+                        android:layout_margin="@dimen/dimens_4dp"
                         android:layout_marginStart="@dimen/list_margin"
-                        android:maxLength="250"
-                        android:inputType="textMultiLine"
+                        android:layout_marginLeft="@dimen/list_margin"
                         android:layout_marginBottom="@dimen/list_margin"
-                        android:paddingEnd="@dimen/dimen_6dp"
+                        android:background="@drawable/feedback_edit_selector"
                         android:cursorVisible="true"
-                        />
+                        android:gravity="start|top"
+                        android:hint="@string/enter_task_description"
+                        android:inputType="textMultiLine"
+                        android:maxLength="250"
+                        android:maxLines="4"
+                        android:padding="@dimen/dimen_6dp"
+                        tools:ignore="Autofill" />
 
                     <TextView
-                        style="?textFieldStyle"
                         android:id="@+id/applicable_tv"
-                        android:paddingTop="10dp"
-                        android:layout_width="fill_parent"
+                        style="@style/TextViewNormal"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:textColor="@android:color/black"
+                        android:paddingTop="10dp"
                         android:text="@string/applyto"
-                        android:textSize="@dimen/text_size_primary"/>
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_size_primary" />
 
                     <RadioGroup
                         android:id="@+id/rg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:weightSum="9"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:weightSum="9">
 
                         <RadioButton
                             android:id="@+id/seller"
+                            style="@style/TextViewNormal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:text="@string/Seller"
-                            android:textSize="@dimen/text_size_primary"
-                            android:paddingEnd="@dimen/radio_button_gap"
-                            android:layout_weight="3"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/half_Black" />
+                            android:layout_weight="3"
+                            android:checked="true"
+                            android:text="@string/Seller" />
 
                         <RadioButton
                             android:id="@+id/Channelwise"
+                            style="@style/TextViewNormal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/Channelwise"
-                            android:paddingEnd="@dimen/radio_button_gap"
-                            android:textSize="@dimen/text_size_primary"
-                            android:layout_weight="3"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/half_Black" />
+                            android:layout_weight="3"
+                            android:text="@string/Channelwise" />
+
                         <RadioButton
                             android:id="@+id/Retailerwise"
+                            style="@style/TextViewNormal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/Retailerwise"
-                            android:textSize="@dimen/text_size_primary"
-                            android:layout_weight="3"
                             android:layout_gravity="center_vertical"
-                            android:textColor="@color/half_Black" />
+                            android:layout_weight="3"
+                            android:text="@string/Retailerwise" />
                     </RadioGroup>
 
                     <LinearLayout
@@ -175,96 +135,81 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:weightSum="9"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:id="@+id/all_seller"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/dimen_22dp"
-                            android:visibility="visible"
-                            android:paddingEnd="@dimen/radio_button_gap"
-                            android:layout_weight="3">
-
-                            <Spinner
-                                android:id="@+id/spinner_seller"
-                                android:background="@android:color/transparent"
-                                android:layout_width="@dimen/spinner_width"
-                                android:layout_height="@dimen/spinner_height"
-                                android:paddingLeft="@dimen/dimen_20dp"
-                                android:paddingStart="@dimen/dimen_20dp"
-                                android:paddingRight="@dimen/dimen_10dp"
-                                android:paddingEnd="@dimen/dimen_10dp"
-                                android:popupTheme="@android:style/ThemeOverlay.Material.Light"/>
-                        </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/allchannel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="@dimen/radio_button_gap"
-                        android:layout_marginBottom="@dimen/dimen_22dp"
-                        android:layout_weight="3"
-                        android:visibility="visible" >
-
-                            <Spinner
-                                android:id="@+id/channel"
-                                android:background="@android:color/transparent"
-                                android:layout_width="@dimen/spinner_width"
-                                android:layout_height="@dimen/spinner_height"
-                                android:paddingLeft="@dimen/dimen_20dp"
-                                android:paddingStart="@dimen/dimen_20dp"
-                                android:paddingRight="@dimen/dimen_10dp"
-                                android:paddingEnd="@dimen/dimen_10dp"
-                                android:popupTheme="@android:style/ThemeOverlay.Material.Light"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/allretailer"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:visibility="visible"
-                        android:layout_weight="3"
-                        android:layout_marginBottom="@dimen/dimen_22dp">
+                        android:weightSum="9">
 
-                            <Spinner
-                                android:id="@+id/retailer"
-                                android:background="@android:color/transparent"
-                                android:layout_width="@dimen/spinner_width"
-                                android:layout_height="@dimen/spinner_height"
-                                android:paddingLeft="@dimen/dimen_20dp"
-                                android:paddingStart="@dimen/dimen_20dp"
-                                android:paddingRight="@dimen/dimen_10dp"
-                                android:paddingEnd="@dimen/dimen_10dp"
-                                android:popupTheme="@android:style/ThemeOverlay.Material.Light">
-                            </Spinner>
-                    </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/spinner_seller"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/spinner_height"
+                            android:layout_weight="3"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="@dimen/dimen_20dp"
+                            android:paddingLeft="@dimen/dimen_20dp"
+                            android:paddingEnd="@dimen/dimen_10dp"
+                            android:paddingRight="@dimen/dimen_10dp"
+                            android:popupTheme="@android:style/ThemeOverlay.Material.Light"
+                            tools:ignore="UnusedAttribute" />
+
+
+                        <Spinner
+                            android:id="@+id/channel"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/spinner_height"
+                            android:layout_weight="3"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="@dimen/dimen_20dp"
+                            android:paddingLeft="@dimen/dimen_20dp"
+                            android:paddingEnd="@dimen/dimen_10dp"
+                            android:paddingRight="@dimen/dimen_10dp"
+                            android:popupTheme="@android:style/ThemeOverlay.Material.Light"
+                            tools:ignore="UnusedAttribute" />
+
+
+                        <Spinner
+                            android:id="@+id/retailer"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/spinner_height"
+                            android:layout_weight="3"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="@dimen/dimen_20dp"
+                            android:paddingLeft="@dimen/dimen_20dp"
+                            android:paddingEnd="@dimen/dimen_10dp"
+                            android:paddingRight="@dimen/dimen_10dp"
+                            android:popupTheme="@android:style/ThemeOverlay.Material.Light"
+                            tools:ignore="UnusedAttribute">
+
+                        </Spinner>
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </ScrollView>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_divider_height"
+        android:layout_above="@+id/save_ll"
+        android:background="@color/divider_view_color" />
+
     <LinearLayout
         android:id="@+id/save_ll"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
+        android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/activity_divider_height"
-            android:background="@color/divider_view_color" />
 
         <Button
             android:id="@+id/saveTask"
             style="?attr/roundedCustomButtonNormal"
-            android:layout_marginBottom="@dimen/activity_margin1"
-            android:layout_marginTop="@dimen/activity_margin1"
+            android:layout_gravity="center"
             android:text="@string/save"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
     </LinearLayout>
 

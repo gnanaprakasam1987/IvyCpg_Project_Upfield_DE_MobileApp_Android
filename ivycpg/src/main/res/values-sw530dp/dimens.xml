@@ -647,9 +647,9 @@
     <dimen name="actionbar_subtitle_text_size">17.2sp</dimen>
     <dimen name="trade_coverage_text_size">11.2sp</dimen>
     <dimen name="banner_text_size">11.2sp</dimen>
-    <dimen name="text_size_primary">12.8sp</dimen>
+    <dimen name="text_size_primary">13.8sp</dimen>
     <dimen name="text_size_secondary">11.2sp</dimen>
-    <dimen name="text_size_caption">8.8sp</dimen>
+    <dimen name="text_size_caption">9.8sp</dimen>
     <dimen name="date_picker_text_size">11.2sp</dimen>
 
     <!-- List header text size -->
