@@ -642,9 +642,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_INIT_FOOTER;
     public boolean SHOW_REVIEW_AND_PO;
     // Order & stock flags
-    public boolean SHOW_STOCK_SC;
-    public boolean SHOW_STOCK_SP;
-    public boolean SHOW_CAT_STOCK_SP;
     public boolean SHOW_ORDER_PCS;
     public boolean SHOW_FOC;
     public boolean SHOW_ORDER_CASE;
@@ -656,17 +653,11 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_VANLOAD_OC;
     public boolean SHOW_VANLOAD_OO;
     public boolean SHOW_VANLOAD_OP;
-    public boolean SHOW_STOCK_RSN;// available reason
-    public boolean SHOW_STOCK_CB;// available checkbox
-    public boolean CHANGE_AVAL_FLOW;// check box tristate flow
-    public boolean SHOW_STOCK_POURING;// Pouring
-    public boolean SHOW_STOCK_COCKTAIL;// Distributes=d checkbox
 
     public boolean SHOW_DISCOUNT_ACTIVITY;// FUN03
     public boolean SHOW_REPLACED_QTY_PC;
     public boolean SHOW_REPLACED_QTY_CS;
     public boolean SHOW_REPLACED_QTY_OU;
-    public boolean SHOW_STOCK_AVGDAYS;
 
     // Outer & case conversion
     public boolean CONVERT_STOCK_SIH_PS;
@@ -860,7 +851,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_END_JOURNEY;
     public boolean SHOW_RETAILER_SELECTION_VALID;
     public boolean SHOW_CLOSE_DAY_VALID;
-    public boolean SHOW_SHELF_OUTER;
     public boolean SHOW_ZEBRA_ATS;
     public boolean SHOW_INTERMEC_ATS;
     //public boolean SHOW_SRP_EDIT;
@@ -891,7 +881,6 @@ public class ConfigurationMasterHelper {
     public boolean HIDE_STOCK_APPLY_BUTTON;
     public boolean SHOW_UNIT_PRICE;
     // Added in 45 version
-    public boolean SHOW_STOCK_TOTAL;
     public boolean SHOW_GOLD_STORE_DISCOUNT;
     public boolean ISUPLOADUSERLOC = false;
     public boolean IS_SHOW_DROPSIZE = false;
@@ -3821,16 +3810,6 @@ public class ConfigurationMasterHelper {
 
     public void loadOrderAndStockConfiguration(int subChannelID) {
         try {
-            SHOW_STOCK_SP = false;
-            SHOW_CAT_STOCK_SP = false;
-            SHOW_STOCK_SC = false;
-            SHOW_STOCK_CB = false;
-            CHANGE_AVAL_FLOW = false;
-            SHOW_STOCK_RSN = false;
-            SHOW_STOCK_POURING = false;
-            SHOW_STOCK_COCKTAIL = false;
-            SHOW_STOCK_TOTAL = false;
-            SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
             SHOW_ORDER_PCS = false;
             SHOW_FOC = false;
@@ -3872,7 +3851,6 @@ public class ConfigurationMasterHelper {
             SHOW_REPLACED_QTY_PC = false;
             SHOW_REPLACED_QTY_CS = false;
             SHOW_REPLACED_QTY_OU = false;
-            SHOW_STOCK_AVGDAYS = false;
 
             SHOW_VANLOAD_OC = false;
             SHOW_VANLOAD_OO = false;
@@ -3936,38 +3914,16 @@ public class ConfigurationMasterHelper {
 
                 String codeSplit[] = codeValue.split(",");
                 for (String temp : codeSplit) {
-                    if (temp.equals("SP"))
-                        SHOW_STOCK_SP = true;
-                    else if (temp.equals("CASP"))
-                        SHOW_CAT_STOCK_SP = true;
-                    else if (temp.equals("SC"))
-                        SHOW_STOCK_SC = true;
-                    else if (temp.equals("CB"))
-                        SHOW_STOCK_CB = true;
-                    else if (temp.equals("REASON"))
-                        SHOW_STOCK_RSN = true;
-                    else if (temp.equals("SHO"))
-                        SHOW_SHELF_OUTER = true;
-                    else if (temp.equals("TOTAL"))
-                        SHOW_STOCK_TOTAL = true;
-                    else if (temp.equals("PUR"))
-                        SHOW_STOCK_POURING = true;
-                    else if (temp.equals("CTS"))
-                        SHOW_STOCK_COCKTAIL = true;
-                    else if (temp.equals("REPPC"))
+                   if (temp.equals("REPPC"))
                         SHOW_REPLACED_QTY_PC = true;
                     else if (temp.equals("REPCS"))
                         SHOW_REPLACED_QTY_CS = true;
                     else if (temp.equals("REPOO"))
                         SHOW_REPLACED_QTY_OU = true;
-                    else if (temp.equals("AVGDAYS"))
-                        SHOW_STOCK_AVGDAYS = true;
                     else if (temp.equals("CSTK"))
                         IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
                     else if (temp.equals("SR"))
                         SHOW_SALES_RETURN_IN_ORDER = true;
-                    else if (temp.equals("CB01"))
-                        CHANGE_AVAL_FLOW = true;
                 }
             }
 

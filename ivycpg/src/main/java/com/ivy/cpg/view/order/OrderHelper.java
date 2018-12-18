@@ -9,6 +9,7 @@ import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -3240,13 +3241,14 @@ public class OrderHelper {
      *
      * @return stock check availability
      */
-    public boolean isStockCheckMenuEnabled() {
+    public boolean isStockCheckMenuEnabled(Context context) {
         Vector<ConfigureBO> config = businessModel.configurationMasterHelper.getActivityMenu();
+        StockCheckHelper stockCheckHelper = StockCheckHelper.getInstance(context);
 
         // No need to show delete stock&order button if stock columns disabled even if the call from MENU_STK_ORD
-        if(!businessModel.configurationMasterHelper.SHOW_STOCK_SC
-                &&!businessModel.configurationMasterHelper.SHOW_STOCK_SP
-                &&!businessModel.configurationMasterHelper.SHOW_SHELF_OUTER){
+        if(!stockCheckHelper.SHOW_STOCK_SC
+                &&!stockCheckHelper.SHOW_STOCK_SP
+                &&!stockCheckHelper.SHOW_SHELF_OUTER){
             return false;
         }
         for (int i = 0; i < config.size(); i++) {

@@ -1579,7 +1579,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 if (bmodel.productHelper.getTaggedProducts().size() > 0) {
-                    if (bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS && menu.getConfigCode().equals(MENU_COMBINED_STOCK))
+                    if (stockCheckHelper.SHOW_STOCK_AVGDAYS && menu.getConfigCode().equals(MENU_COMBINED_STOCK))
                         bmodel.productHelper.loadRetailerWiseInventoryFlexQty();
 
                     if (bmodel.configurationMasterHelper
@@ -1720,6 +1720,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     ) {
                 if (!isClick) {
                     isClick = true;
+                    StockCheckHelper.getInstance(HomeScreenTwo.this).loadStockCheckConfiguration(HomeScreenTwo.this, bmodel.retailerMasterBO.getSubchannelid());
 
                     if (bmodel.configurationMasterHelper.IS_ORDER_FROM_EXCESS_STOCK) {
                         bmodel.productHelper.clearOrderTable();
@@ -1776,7 +1777,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             if (orderHelper.hasAlreadyOrdered(this, bmodel.getRetailerMasterBO()
                                     .getRetailerID())) {
                                 bmodel.setEdit(true);
-                            }  else {
+                            } else {
                                 bmodel.setOrderHeaderBO(null);
                             }
 
@@ -1835,6 +1836,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                             if (bmodel.isEdit()) {
+
 
                                 bmodel.productHelper.downloadIndicativeOrderList();
 
@@ -1926,6 +1928,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
         } else if (menu.getConfigCode().equals(MENU_STK_ORD)
                 || menu.getConfigCode().equals(MENU_CATALOG_ORDER) && hasLink == 1) {
+            StockCheckHelper.getInstance(HomeScreenTwo.this).loadStockCheckConfiguration(HomeScreenTwo.this, bmodel.retailerMasterBO.getSubchannelid());
             new StockAndOrderTask(menu, this).execute();
             // moveToStockAndOrder(menu);
         } else if (menu.getConfigCode().equals(MENU_CLOSING) && hasLink == 1) {
@@ -1934,7 +1937,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     ) {
 
                 OrderHelper orderHelper = OrderHelper.getInstance(this);
-
+                StockCheckHelper.getInstance(HomeScreenTwo.this).loadStockCheckConfiguration(HomeScreenTwo.this, bmodel.retailerMasterBO.getSubchannelid());
                 /** Load the stock check if opened in edit mode. **/
                 bmodel.setEditStockCheck(false);
                 if (bmodel.hasAlreadyStockChecked(bmodel.getRetailerMasterBO()

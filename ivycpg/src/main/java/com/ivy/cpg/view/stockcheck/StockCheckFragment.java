@@ -227,12 +227,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void initializeViews(View view) {
 
-        listview =  view.findViewById(R.id.list);
+        listview = view.findViewById(R.id.list);
         listview.setCacheColorHint(0);
 
-        mDrawerLayout =  view.findViewById(
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
-        drawer =  view.findViewById(R.id.right_drawer);
+        drawer = view.findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
@@ -274,29 +274,29 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        viewFlipper =  view.findViewById(R.id.view_flipper);
-        productName =  view.findViewById(R.id.productName);
-        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+        viewFlipper = view.findViewById(R.id.view_flipper);
+        productName = view.findViewById(R.id.productName);
+        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
-        mEdt_searchProductName =  view.findViewById(
+        mEdt_searchProductName = view.findViewById(
                 R.id.edt_searchproductName);
-        mEdt_searchProductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-        mBtn_Search =  view.findViewById(R.id.btn_search);
+        mEdt_searchProductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+        mBtn_Search = view.findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
-        mBtn_clear =  view.findViewById(R.id.btn_clear);
+        mBtn_clear = view.findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
-        mBtnFilterPopup =  view.findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup = view.findViewById(R.id.btn_filter_popup);
         mBtnFilterPopup.setOnClickListener(this);
 
-        tv_total_stockCheckedProducts =  view.findViewById(R.id.tv_stockCheckedProductscount);
-        tv_total_products =  view.findViewById(R.id.tv_productsCount);
+        tv_total_stockCheckedProducts = view.findViewById(R.id.tv_stockCheckedProductscount);
+        tv_total_products = view.findViewById(R.id.tv_productsCount);
 
-        tv_total_stockCheckedProducts.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,getActivity()));
-        tv_total_products.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN,getActivity()));
+        tv_total_stockCheckedProducts.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
+        tv_total_products.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.THIN, getActivity()));
 
 
-        btn_save =  view.findViewById(R.id.btn_save);
-        btn_save.setTypeface(FontUtils.getFontBalooHai(getActivity(),FontUtils.FontType.REGULAR));
+        btn_save = view.findViewById(R.id.btn_save);
+        btn_save.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
         btn_save.setOnClickListener(this);
         mEdt_searchProductName.setOnEditorActionListener(this);
 
@@ -323,10 +323,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
             }
         });
 
-        mBtnFilterPopup =  view.findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup = view.findViewById(R.id.btn_filter_popup);
 
-        ll_stockCheck_SharePercent =  view.findViewById(R.id.llstockCheckSharePercent);
-        tv_sharePercent =  view.findViewById(R.id.tv_sharePercent);
+        ll_stockCheck_SharePercent = view.findViewById(R.id.llstockCheckSharePercent);
+        tv_sharePercent = view.findViewById(R.id.tv_sharePercent);
     }
 
     private ActionBar getActionBar() {
@@ -527,45 +527,45 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             R.layout.activity_stock_check_listview, parent,
                             false);
                     holder = new ViewHolder();
-                    holder.audit =  row
+                    holder.audit = row
                             .findViewById(R.id.btn_audit);
-                    holder.psname =  row
+                    holder.psname = row
                             .findViewById(R.id.stock_and_order_listview_productname);
                     holder.psname.setTypeface(FontUtils.getProductNameFont(getActivity()));
                     holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                    holder.productCode =  row
+                    holder.productCode = row
                             .findViewById(R.id.stock_and_order_listview_produtCode);
-                    holder.productCode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-                    holder.ppq =  row
+                    holder.productCode.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                    holder.ppq = row
                             .findViewById(R.id.stock_and_order_listview_ppq);
-                    holder.ppq.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-                    holder.psq =  row
+                    holder.ppq.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                    holder.psq = row
                             .findViewById(R.id.stock_and_order_listview_psq);
-                    holder.psq.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.psq.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
-                    holder.mReason =  row.findViewById(R.id.reason);
+                    holder.mReason = row.findViewById(R.id.reason);
 
-                    holder.shelfPcsQty =  row
+                    holder.shelfPcsQty = row
                             .findViewById(R.id.stock_and_order_listview_sp_qty);
-                    holder.shelfCaseQty =  row
+                    holder.shelfCaseQty = row
                             .findViewById(R.id.stock_and_order_listview_sc_qty);
-                    holder.shelfouter =  row
+                    holder.shelfouter = row
                             .findViewById(R.id.stock_and_order_listview_shelfouter_qty);
-                    holder.shelfPcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-                    holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
-                    holder.shelfouter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.shelfPcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                    holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
+                    holder.shelfouter.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
-                    holder.ll_stkCB =  row
+                    holder.ll_stkCB = row
                             .findViewById(R.id.ll_stock_and_order_listview_cb);
 
-                    holder.imageButton_availability =  row
+                    holder.imageButton_availability = row
                             .findViewById(R.id.btn_availability);
-                    holder.total =  row
+                    holder.total = row
                             .findViewById(R.id.stock_check_listview_total);
-                    holder.total.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,getActivity()));
+                    holder.total.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, getActivity()));
 
 
-                    holder.facingQty =  row
+                    holder.facingQty = row
                             .findViewById(R.id.stock_check_listview_fc_qty);
 
                     if (businessModel.configurationMasterHelper.IS_SHOW_PSQ) {
@@ -763,15 +763,15 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
 
 
-                                /*
-                                 * When one of the config is not enable the default value set as 0 instead of -1
-                                 *
-                                 * so that remove config here
-                                 * */
+                                    /*
+                                     * When one of the config is not enable the default value set as 0 instead of -1
+                                     *
+                                     * so that remove config here
+                                     * */
 
-                                holder.shelfPcsQty.setText("");
-                                holder.shelfCaseQty.setText("");
-                                holder.shelfouter.setText("");
+                                    holder.shelfPcsQty.setText("");
+                                    holder.shelfCaseQty.setText("");
+                                    holder.shelfouter.setText("");
 
                                     if (stockCheckHelper.SHOW_STOCK_RSN) {
                                         holder.mReason.setEnabled(false);
@@ -1725,7 +1725,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void onNextButtonClick() {
         if (businessModel.configurationMasterHelper.IS_MUST_SELL_STK
-                && !businessModel.productHelper.isMustSellFilledStockCheck(true)) {
+                && !businessModel.productHelper.isMustSellFilledStockCheck(true, getActivity())) {
             Toast.makeText(getActivity(), R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -1768,10 +1768,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     private void loadSpecialFilterView(View view) {
-        hscrl_spl_filter =  view.findViewById(R.id.hscrl_spl_filter);
+        hscrl_spl_filter = view.findViewById(R.id.hscrl_spl_filter);
         hscrl_spl_filter.setVisibility(View.VISIBLE);
-        ll_spl_filter =  view.findViewById(R.id.ll_spl_filter);
-        ll_tab_selection =  view.findViewById(R.id.ll_tab_selection);
+        ll_spl_filter = view.findViewById(R.id.ll_spl_filter);
+        ll_tab_selection = view.findViewById(R.id.ll_tab_selection);
         stockCheckPresenter.getGeneralFilter().add(0, new ConfigureBO("ALL", "All", "0", 0, 1, 1));
 
         Vector<ConfigureBO> generalFilter = stockCheckPresenter.getGeneralFilter();
@@ -1818,7 +1818,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,getActivity()));
+            tab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, getActivity()));
             tab.setTextColor(color);
             tab.setMaxLines(1);
             tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
@@ -2187,7 +2187,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     @Override
     public void showStockSavedDialog() {
-        if(businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY){
+        if (businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY) {
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                     "", getResources().getString(R.string.saved_successfully),
                     false, getActivity().getResources().getString(R.string.next),
@@ -2215,7 +2215,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                 }
             }).show();
-        }else{
+        } else {
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                     "", getResources().getString(R.string.saved_successfully),
                     false, getActivity().getResources().getString(R.string.ok),

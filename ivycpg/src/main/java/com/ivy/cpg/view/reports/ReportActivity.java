@@ -63,6 +63,7 @@ import com.ivy.cpg.view.reports.userlogreport.LogReportFragment;
 import com.ivy.cpg.view.reports.webviewreport.SOreportFragment;
 import com.ivy.cpg.view.reports.webviewreport.WebViewArchivalReportFragment;
 import com.ivy.cpg.view.reports.webviewreport.WebViewReportHelper;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.ApplicationConfigs;
@@ -507,7 +508,7 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
 
         } else if (config.getConfigCode().equals(
                 StandardListMasterConstants.MENU_CLOSING_STK_RPT)) {
-
+            StockCheckHelper.getInstance(this).loadStockCheckConfiguration(this, 0);
             ClosingStockReportFragment closingStockReportFragment = new ClosingStockReportFragment();
             transaction.replace(R.id.fragment_content, closingStockReportFragment);
             commitFragment(transaction, config);
