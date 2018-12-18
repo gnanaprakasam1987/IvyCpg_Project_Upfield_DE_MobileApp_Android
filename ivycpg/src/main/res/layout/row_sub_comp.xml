@@ -86,7 +86,7 @@
 
             <TextView
                 android:id="@+id/remark_tv_label"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -121,7 +121,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fromdate" />
@@ -146,7 +146,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/todate" />
@@ -175,7 +175,7 @@
 
             <TextView
                 android:id="@+id/tv_qty"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/qty" />
@@ -201,7 +201,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"

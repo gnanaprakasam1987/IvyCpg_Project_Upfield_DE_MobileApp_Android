@@ -3,6 +3,7 @@ package com.ivy.cpg.view.collection;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -55,17 +56,13 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        setScreenTitle("No Collection Reason");
-
-        ((TextView) findViewById(R.id.invoice_no)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.invoice_date)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.invoice_amount)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.invoice_reason)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        setScreenTitle(getString(R.string.no_collection_reason));
 
         recyclerView = findViewById(R.id.invoice_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
         MyAdapter myAdapter = new MyAdapter();
         recyclerView.setAdapter(myAdapter);
@@ -182,9 +179,6 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
                 invoicedate = view.findViewById(R.id.invoice_date);
                 invoiceAmt = view.findViewById(R.id.invoice_amount);
 
-                invoiceNumber.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
-                invoicedate.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
-                invoiceAmt.setTypeface(FontUtils.getFontRoboto(NoCollectionReasonActivity.this, FontUtils.FontType.REGULAR));
 
             }
         }

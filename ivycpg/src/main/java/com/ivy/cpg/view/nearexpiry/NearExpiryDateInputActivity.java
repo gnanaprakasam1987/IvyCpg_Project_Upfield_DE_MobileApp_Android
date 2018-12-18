@@ -2,35 +2,31 @@ package com.ivy.cpg.view.nearexpiry;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.net.ParseException;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.FontUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,8 +34,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Vector;
 
-public class NearExpiryDialogueFragment extends DialogFragment implements
-        View.OnClickListener {
+public class NearExpiryDateInputActivity extends IvyBaseActivityNoActionBar implements
+        View.OnClickListener{
 
     private BusinessModel mBModel;
     private EditText QUANTITY;
@@ -91,44 +87,29 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
     NearExpiryTrackingHelper mNearExpiryHelper;
 
-    @SuppressLint("NewApi")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_nearexpiry);
 
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        setCancelable(false);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
-        mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(getActivity());
+        mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
 
-        View view = inflater.inflate(R.layout.dialog_nearexpiry, container, false);
-
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        Button btn_ok = view.findViewById(R.id.btn_ok);
-        btn_ok.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        mBModel = (BusinessModel) getApplicationContext();
+        Button btn_ok = findViewById(R.id.btn_ok);
 
         btn_ok.setOnClickListener(this);
-        getActivity().setFinishOnTouchOutside(false);
-        ListView list = view.findViewById(R.id.list);
+        ListView list = findViewById(R.id.list);
         ExpiryAdapter adapter = new ExpiryAdapter();
         list.setAdapter(adapter);
 
-        view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        return view;
-    }
+        Bundle mArgs = getIntent().getExtras();
+        final String pid = mArgs!=null?mArgs.getString("PID"):"";
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        Bundle mArgs = getArguments();
-        final String pid = mArgs.getString("PID");
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         Vector<ProductMasterBO> items = mBModel.productHelper.getProductMaster();
 
@@ -140,10 +121,22 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
             }
         }
 
-        if (getView() != null) {
-            TextView skuName = getView().findViewById(R.id.tvskuname);
-            skuName.setTypeface(FontUtils.getProductNameFont(getActivity()));
-            skuName.setText(mSKUBO.getProductName());
+        if (toolbar != null ) {
+
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            if (mSKUBO != null && mSKUBO.getProductName() != null)
+                setScreenTitle(mSKUBO.getProductName());
         }
     }
 
@@ -161,7 +154,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
     public void numberPressed(View vw) {
 
         if (QUANTITY == null) {
-            Toast.makeText(getActivity(),
+            Toast.makeText(NearExpiryDateInputActivity.this,
                     getResources().getString(R.string.please_select_item),
                     Toast.LENGTH_SHORT).show();
         } else {
@@ -235,7 +228,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         || !nearExpiryDateBO.getNearexpOU().equals("0")) {
 
                     if (nearExpiryDateBO.getDate().equals("")) {
-                        Toast.makeText(getActivity(),
+                        Toast.makeText(NearExpiryDateInputActivity.this,
                                 getResources().getString(R.string.select_date),
                                 Toast.LENGTH_SHORT).show();
                         isflag = false;
@@ -247,8 +240,11 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         nearExpiryDateBO.setDate("");
                 }
             }
-            if (isflag)
-                getDialog().dismiss();
+            if (isflag) {
+                setResult(1);
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
         }
     }
 
@@ -409,16 +405,10 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
         return false;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-    }
-
     private class ExpiryAdapter extends ArrayAdapter {
 
         public ExpiryAdapter() {
-            super(getActivity(), R.layout.dialog_enter_expiry);
+            super(NearExpiryDateInputActivity.this, R.layout.dialog_enter_expiry);
         }
 
         public int getCount() {
@@ -429,8 +419,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
             if (row == null) {
-                LayoutInflater inflater = LayoutInflater.from(getActivity()
-                        .getBaseContext());
+                LayoutInflater inflater = LayoutInflater.from(getBaseContext());
                 row = inflater.inflate(R.layout.dialog_enter_expiry, parent, false);
                 date1 = row.findViewById(R.id.datePicker1);
 
@@ -793,7 +782,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                 }
 
 
-                date1.setOnClickListener(new OnClickListener() {
+                date1.setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("NewApi")
                     @Override
                     public void onClick(View v) {
@@ -819,7 +808,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(NearExpiryDateInputActivity.this, R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     public void onDateSet(DatePicker view, int year,
@@ -842,7 +831,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                                     .setDate(date);
                                         } else {
                                             Toast.makeText(
-                                                    getActivity(),
+                                                    NearExpiryDateInputActivity.this,
                                                     getResources().getString(
                                                             R.string.invaliddate),
                                                     Toast.LENGTH_SHORT).show();
@@ -855,7 +844,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                CA1.setOnTouchListener(new OnTouchListener() {
+                CA1.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = CA1;
                         int inType = CA1.getInputType(); // backup the
@@ -896,7 +885,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                PC1.setOnTouchListener(new OnTouchListener() {
+                PC1.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = PC1;
                         int inType = PC1.getInputType(); // backup
@@ -938,7 +927,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                OU1.setOnTouchListener(new OnTouchListener() {
+                OU1.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = OU1;
                         int inType = OU1.getInputType(); // backup
@@ -1004,7 +993,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                date2.setOnClickListener(new OnClickListener() {
+                date2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -1028,7 +1017,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mDay = day;
                         mMonth = month - 1;
                         mYear = year;
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(NearExpiryDateInputActivity.this, R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1052,7 +1041,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                                     .setDate(date);
                                         } else {
                                             Toast.makeText(
-                                                    getActivity(),
+                                                    NearExpiryDateInputActivity.this,
                                                     getResources().getString(
                                                             R.string.invaliddate),
                                                     Toast.LENGTH_SHORT).show();
@@ -1065,7 +1054,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                CA2.setOnTouchListener(new OnTouchListener() {
+                CA2.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = CA2;
                         int inType = CA2.getInputType(); // backup
@@ -1106,7 +1095,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                PC2.setOnTouchListener(new OnTouchListener() {
+                PC2.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = PC2;
                         int inType = PC2.getInputType(); // backup
@@ -1147,7 +1136,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                OU2.setOnTouchListener(new OnTouchListener() {
+                OU2.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = OU2;
                         int inType = OU2.getInputType(); // backup
@@ -1214,7 +1203,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                date3.setOnClickListener(new OnClickListener() {
+                date3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -1238,7 +1227,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(NearExpiryDateInputActivity.this, R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1262,7 +1251,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                                     .setDate(date);
                                         } else {
                                             Toast.makeText(
-                                                    getActivity(),
+                                                    NearExpiryDateInputActivity.this,
                                                     getResources().getString(
                                                             R.string.invaliddate),
                                                     Toast.LENGTH_SHORT).show();
@@ -1275,7 +1264,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                CA3.setOnTouchListener(new OnTouchListener() {
+                CA3.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = CA3;
                         int inType = CA3.getInputType(); // backup
@@ -1316,7 +1305,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                PC3.setOnTouchListener(new OnTouchListener() {
+                PC3.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = PC3;
                         int inType = PC3.getInputType(); // backup
@@ -1358,7 +1347,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                OU3.setOnTouchListener(new OnTouchListener() {
+                OU3.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = OU3;
                         int inType = OU3.getInputType(); // backup
@@ -1423,7 +1412,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                date4.setOnClickListener(new OnClickListener() {
+                date4.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -1446,7 +1435,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(NearExpiryDateInputActivity.this, R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1469,7 +1458,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                                     .setDate(date);
                                         } else {
                                             Toast.makeText(
-                                                    getActivity(),
+                                                    NearExpiryDateInputActivity.this,
                                                     getResources().getString(
                                                             R.string.invaliddate),
                                                     Toast.LENGTH_SHORT).show();
@@ -1482,7 +1471,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                CA4.setOnTouchListener(new OnTouchListener() {
+                CA4.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = CA4;
                         int inType = CA4.getInputType(); // backup
@@ -1524,7 +1513,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                PC4.setOnTouchListener(new OnTouchListener() {
+                PC4.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = PC4;
                         int inType = PC4.getInputType(); // backup
@@ -1565,7 +1554,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                OU4.setOnTouchListener(new OnTouchListener() {
+                OU4.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = OU4;
                         int inType = OU4.getInputType(); // backup
@@ -1632,7 +1621,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                date5.setOnClickListener(new OnClickListener() {
+                date5.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -1656,7 +1645,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(NearExpiryDateInputActivity.this, R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1681,7 +1670,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                                     .setDate(date);
                                         } else {
                                             Toast.makeText(
-                                                    getActivity(),
+                                                    NearExpiryDateInputActivity.this,
                                                     getResources().getString(
                                                             R.string.invaliddate),
                                                     Toast.LENGTH_SHORT).show();
@@ -1694,7 +1683,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                CA5.setOnTouchListener(new OnTouchListener() {
+                CA5.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = CA5;
                         int inType = CA5.getInputType(); // backup
@@ -1734,7 +1723,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     public void afterTextChanged(Editable s) {
                     }
                 });
-                PC5.setOnTouchListener(new OnTouchListener() {
+                PC5.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = PC5;
                         int inType = PC5.getInputType(); // backup
@@ -1775,7 +1764,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                OU5.setOnTouchListener(new OnTouchListener() {
+                OU5.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = OU5;
                         int inType = OU5.getInputType(); // backup
@@ -1839,7 +1828,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                date6.setOnClickListener(new OnClickListener() {
+                date6.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -1863,7 +1852,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                         mMonth = month - 1;
                         mYear = year;
 
-                        DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle,
+                        DatePickerDialog dpd = new DatePickerDialog(NearExpiryDateInputActivity.this, R.style.DatePickerDialogStyle,
                                 new DatePickerDialog.OnDateSetListener() {
 
                                     @Override
@@ -1886,7 +1875,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                                                     .setDate(date);
                                         } else {
                                             Toast.makeText(
-                                                    getActivity(),
+                                                    NearExpiryDateInputActivity.this,
                                                     getResources().getString(
                                                             R.string.invaliddate),
                                                     Toast.LENGTH_SHORT).show();
@@ -1900,7 +1889,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                CA6.setOnTouchListener(new OnTouchListener() {
+                CA6.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = CA6;
                         int inType = CA6.getInputType(); // backup
@@ -1940,7 +1929,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                PC6.setOnTouchListener(new OnTouchListener() {
+                PC6.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = PC6;
                         int inType = PC6.getInputType(); // backup
@@ -1981,7 +1970,7 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
                     }
                 });
 
-                OU6.setOnTouchListener(new OnTouchListener() {
+                OU6.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         QUANTITY = OU6;
                         int inType = OU6.getInputType(); // backup
@@ -2049,21 +2038,6 @@ public class NearExpiryDialogueFragment extends DialogFragment implements
 
             }
             return row;
-        }
-
-    }
-
-    private DialogInterface.OnDismissListener onDismissListener;
-
-    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
-        this.onDismissListener = onDismissListener;
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss(dialog);
         }
     }
 }

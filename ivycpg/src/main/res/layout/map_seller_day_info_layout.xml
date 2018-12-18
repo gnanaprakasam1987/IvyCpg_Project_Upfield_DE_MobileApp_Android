@@ -95,7 +95,7 @@
 
                     <TextView
                         android:id="@+id/tv_start_time"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_2sdp"
@@ -107,7 +107,7 @@
 
                     <TextView
                         android:id="@+id/tv_address"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_2sdp"
@@ -128,7 +128,7 @@
 
                         <TextView
                             android:id="@+id/tv_target_outlet"
-                            style="@style/TextViewCaption"
+                            style="@style/TextViewListItemCaption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/target_bg_gradient"
@@ -143,7 +143,7 @@
 
                         <TextView
                             android:id="@+id/tv_outlet_covered"
-                            style="@style/TextViewCaption"
+                            style="@style/TextViewListItemCaption"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_10sdp"
@@ -178,7 +178,7 @@
 
                 <TextView
                     android:id="@+id/number_text"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
@@ -189,7 +189,7 @@
 
                 <TextView
                     android:id="@+id/store_text"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -200,7 +200,7 @@
 
                 <TextView
                     android:id="@+id/time_in_text"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.2"
@@ -212,7 +212,7 @@
 
                 <TextView
                     android:id="@+id/time_out_text"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.2"

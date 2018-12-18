@@ -23,7 +23,7 @@
             android:text="@string/product_name" />
         <TextView
             android:id="@+id/product_code"
-            style="@style/TextViewCaption"
+            style="@style/TextViewListItemCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/productname"
@@ -33,7 +33,7 @@
             android:text="@string/prod_code" />
         <TextView
             android:id="@+id/batchid"
-            style="@style/TextViewCaption"
+            style="@style/TextViewListItemCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/productname"

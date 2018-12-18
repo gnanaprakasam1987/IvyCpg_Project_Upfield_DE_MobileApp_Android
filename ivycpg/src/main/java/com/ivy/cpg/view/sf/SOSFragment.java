@@ -11,7 +11,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -34,6 +35,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -54,14 +56,12 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.SOSBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.model.ShelfShareCallBackListener;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -91,7 +91,6 @@ public class SOSFragment extends IvyBaseFragment implements
 
     SalesFundamentalHelper mSFHelper;
     private BusinessModel mBModel;
-    private ShelfShareDialogFragment dialogFragment = null;
 
     private DrawerLayout mDrawerLayout;
     private ListView mListView;
@@ -106,6 +105,8 @@ public class SOSFragment extends IvyBaseFragment implements
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
     private ArrayList<String> totalImgList = new ArrayList<>();
     private ArrayAdapter<ReasonMaster> spinnerAdapter;
+
+    private final int SHARE_SHELF_RESULT_CODE = 112;
 
 
     @Override
@@ -362,6 +363,16 @@ public class SOSFragment extends IvyBaseFragment implements
             mSFHelper.onSaveImageName(
                     mSFHelper.mSelectedBrandID,
                     mImageName, HomeScreenTwo.MENU_SOS, mSelectedLocationIndex);
+        }else if (requestCode == SHARE_SHELF_RESULT_CODE){
+
+            if (getActivity() != null)
+                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
+            if (resultCode == 1){
+                mCategoryForDialog.clear();
+                mCategoryForDialog.addAll(mSFHelper.getmCategoryForDialogSOSBO());
+                calculateTotalValues();
+                mListView.invalidateViews();
+            }
         }
     }
 
@@ -1146,7 +1157,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                 getTotalValue(mSelectedHolder.mSOS
                                         .getParentID());
                             }
-                        } else if (dialogFragment == null) {
+                        } else {
                             mSelectedHolder = (ViewHolder) v.getTag();
                             Bundle bundle = new Bundle();
 
@@ -1159,48 +1170,15 @@ public class SOSFragment extends IvyBaseFragment implements
                                     mSelectedHolder.mSOS.getProductID());
                             bundle.putInt("flag", ShelfShareHelper.SOS);
                             bundle.putInt("selectedlocation", mSelectedLocationIndex);
-                            dialogFragment = new ShelfShareDialogFragment();
-                            dialogFragment.setArguments(bundle);
-                            dialogFragment
-                                    .setStyle(
-                                            DialogFragment.STYLE_NO_TITLE,
-                                            android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-                            dialogFragment.setCancelable(false);
-                            dialogFragment
-                                    .setOnShelfShareListener(new ShelfShareCallBackListener() {
 
-                                        @Override
-                                        public void SOSBOCallBackListener(
-                                                List<SOSBO> sosBOList) {
+                            Intent intent = new Intent(getActivity(),SOSMeasureActivity.class);
+                            intent.putExtras(bundle);
 
-                                            mCategoryForDialog.clear();
-                                            mCategoryForDialog
-                                                    .addAll(sosBOList);
-                                            dialogFragment.dismiss();
-                                            dialogFragment = null;
-                                            calculateTotalValues();
-                                            mListView.invalidateViews();
-                                        }
-
-                                        @Override
-                                        public void SODDOCallBackListener(List<SODBO> sosBOList) {
-
-                                        }
-
-                                        @Override
-                                        public void handleDialogClose() {
-                                            dialogFragment.dismiss();
-                                            dialogFragment = null;
-                                        }
-                                    });
-                            dialogFragment.show(getChildFragmentManager(),
-                                    "Shelf Share");
+                            startActivityForResult(intent, SHARE_SHELF_RESULT_CODE);
+                            getActivity().overridePendingTransition(R.anim.zoom_enter,R.anim.hold);
                         }
-
                     }
-
                 });
-
 
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
                     @Override

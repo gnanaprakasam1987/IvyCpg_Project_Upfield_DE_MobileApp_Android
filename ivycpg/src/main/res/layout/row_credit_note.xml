@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parentLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -19,37 +20,35 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/dimens_4dp"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/dimens_4dp" />
+            android:layout_marginLeft="@dimen/dimens_4dp"
+            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimens_2dp"
+            android:layout_marginLeft="@dimen/dimens_2dp"
             android:layout_weight="3"
             android:orientation="vertical"
-            android:padding="@dimen/dimens_4dp"
-            android:layout_marginLeft="@dimen/dimens_2dp">
+            android:padding="@dimen/dimens_4dp">
+
+            <TextView
+                style="@style/TextViewListItemCaption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
+                android:maxLines="1"
+                android:text="@string/ref_no" />
 
             <TextView
                 android:id="@+id/refNoTxt"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/stock_screen_txtview_height"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:maxLines="1"
-                android:textColor="@color/FullBlack"
-                android:textSize="@dimen/text_size_primary" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_16dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="0dp"
-                android:maxLines="1"
-                android:text="Ref No"
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_secondary"
-                android:layout_marginLeft="0dp" />
+                android:maxLines="1" />
 
         </LinearLayout>
 
@@ -61,26 +60,26 @@
             android:padding="@dimen/dimens_4dp"
             android:visibility="visible">
 
+
+            <TextView
+                style="@style/TextViewListItemCaption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="@string/total_value" />
+
             <TextView
                 android:id="@+id/totcrdNoteAmtTxt"
+                style="@style/TextViewListItemValues"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/stock_screen_txtview_height"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/dimens_10dp"
-                android:textColor="@color/FullBlack"
-                android:textSize="@dimen/text_size_primary"
-                android:paddingRight="@dimen/dimens_10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_16dp"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:text="TotalValue"
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_secondary" />
+                android:paddingRight="@dimen/dimens_10dp"
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
 
         <LinearLayout
@@ -93,26 +92,27 @@
             android:padding="@dimen/dimens_4dp">
 
             <TextView
-                android:id="@+id/crdNoteAmtTxt"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/stock_screen_txtview_height"
-                android:layout_gravity="center"
-                android:gravity="center|start"
-                android:maxLines="1"
-                android:paddingEnd="@dimen/dimens_10dp"
-                android:textColor="@color/FullBlack"
-                android:textSize="@dimen/text_size_primary"
-                android:paddingRight="@dimen/dimens_10dp" />
-
-            <TextView
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center|start"
                 android:maxLines="1"
-                android:text="Balance "
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_secondary" />
+                android:text="@string/balance" />
+
+
+            <TextView
+                android:id="@+id/crdNoteAmtTxt"
+                style="@style/TextViewListItemValues"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:paddingEnd="@dimen/dimens_10dp"
+                android:paddingRight="@dimen/dimens_10dp"
+                tools:ignore="RtlSymmetry" />
+
         </LinearLayout>
 
     </LinearLayout>

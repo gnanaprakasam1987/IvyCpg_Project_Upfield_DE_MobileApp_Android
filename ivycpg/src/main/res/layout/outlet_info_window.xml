@@ -46,7 +46,7 @@
             android:layout_alignParentRight="true" />
         <TextView
             android:id="@+id/tv_loc_name"
-            style="@style/TextViewCaption"
+            style="@style/TextViewListItemCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_5px"
@@ -55,7 +55,7 @@
             android:layout_marginLeft="@dimen/margin_5px" />
         <TextView
             android:id="@+id/tv_address"
-            style="@style/TextViewCaption"
+            style="@style/TextViewListItemCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_5px"
@@ -85,7 +85,7 @@
 
             <TextView
                 android:id="@+id/lbl_time_in"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_in" />
@@ -93,7 +93,7 @@
 
             <TextView
                 android:id="@+id/tv_time_in"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -113,7 +113,7 @@
 
             <TextView
                 android:id="@+id/lbl_time_out"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_out" />
@@ -121,7 +121,7 @@
 
             <TextView
                 android:id="@+id/tv_time_out"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -141,7 +141,7 @@
 
             <TextView
                 android:id="@+id/lbl_sales_value"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sales_value" />
@@ -149,7 +149,7 @@
 
             <TextView
                 android:id="@+id/tv_sales_value"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -169,7 +169,7 @@
             android:layout_marginTop="@dimen/dimen_5dp">
             <TextView
                 android:id="@+id/tv_seller"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_bg1"

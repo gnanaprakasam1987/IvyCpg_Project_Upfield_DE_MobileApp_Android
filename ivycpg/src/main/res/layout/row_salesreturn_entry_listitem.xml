@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
@@ -47,7 +47,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:text="@string/inv_no"
-                      style="@style/TextViewCaption"/>
+                      style="@style/TextViewListItemCaption"/>
 
                     <TextView
                         android:id="@+id/tvinvmandate"
@@ -88,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/lot_number"
-                    style="@style/TextViewCaption" />
+                    style="@style/TextViewListItemCaption" />
 
                 <EditText
                     android:id="@+id/lotnumber"
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:tag="old_mrp"
                     android:text="@string/old_mrp"
-                    style="@style/TextViewCaption" />
+                    style="@style/TextViewListItemCaption" />
 
                 <EditText
                     android:id="@+id/oldMrp"
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:tag="srp"
                     android:text="@string/srp_text"
-                    style="@style/TextViewCaption" />
+                    style="@style/TextViewListItemCaption" />
 
                 <EditText
                     android:id="@+id/srpedit"
@@ -245,7 +245,7 @@
                     android:layout_height="wrap_content"
                     android:tag="item_sr_piece"
                     android:text="@string/avail_pcs"
-                    style="@style/TextViewCaption" />
+                    style="@style/TextViewListItemCaption" />
 
                 <EditText
                     android:id="@+id/productqtyPieces"
@@ -275,7 +275,7 @@
                     android:layout_height="wrap_content"
                     android:tag="item_sr_case"
                     android:text="@string/avail_cases"
-                    style="@style/TextViewCaption" />
+                    style="@style/TextViewListItemCaption" />
 
                 <EditText
                     android:id="@+id/productqtyCases"
@@ -305,7 +305,7 @@
                     android:layout_height="wrap_content"
                     android:tag="item_sr_outer"
                     android:text="@string/avail_outer"
-                    style="@style/TextViewCaption" />
+                    style="@style/TextViewListItemCaption" />
 
                 <EditText
                     android:id="@+id/outerproductqtyCases"
@@ -334,7 +334,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mfg_date"
-                    style="@style/TextViewCaption" />
+                    style="@style/TextViewListItemCaption" />
 
                 <Button
                     android:id="@+id/mfgDate"
@@ -361,7 +361,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/exp_date"
-                    style="@style/TextViewCaption" />
+                    style="@style/TextViewListItemCaption" />
 
                 <Button
                     android:id="@+id/expDate"

@@ -59,7 +59,7 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
-import com.ivy.cpg.view.order.moq.MOQHighlightDialog;
+import com.ivy.cpg.view.order.moq.MOQHighlightActivity;
 import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
@@ -95,10 +95,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import static com.ivy.cpg.view.order.moq.MOQHighlightActivity.MOQ_RESULT_CODE;
+
 /**
  * Created by dharmapriya.k on 10/14/2016,11:34 AM.
  */
-public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, MOQHighlightDialog.savePcsValue, TextView.OnEditorActionListener, FiveLevelFilterCallBack {
+public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogOrderValueUpdate, BrandDialogInterface, View.OnClickListener, TextView.OnEditorActionListener, FiveLevelFilterCallBack {
     private static final String BRAND = "Brand";
     public static final String GENERAL = "General";
     private final String mCommon = "Filt01";
@@ -188,7 +190,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private TextView totalQtyTV;
     private File appImageFolderPath;
     public Timer orderTimer;
-    private MOQHighlightDialog mMOQHighlightDialog;
     SearchAsync searchAsync;
     private int loadStockedProduct;
 
@@ -1534,7 +1535,11 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         }
                     }
                     if (count > 0) {
-                        new MOQConfigEnabled().execute();
+
+                        Intent intent = new Intent(CatalogOrder.this,MOQHighlightActivity.class);
+                        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                        ActivityCompat.startActivityForResult(this, intent, MOQ_RESULT_CODE, opts.toBundle());
+
                         count = 0;
                         return;
                     }
@@ -1976,11 +1981,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         updateValue();
     }
 
-    @Override
-    public void saveChanges() {
-        adapter.notifyDataSetChanged();
-    }
-
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
         private CustomKeyBoardCatalog dialogCustomKeyBoard;
@@ -2377,33 +2377,6 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         ActivityCompat.startActivityForResult(this, intent, SALES_RETURN, opts.toBundle());
     }
 
-    public void numberPressed(View v) {
-        if (mMOQHighlightDialog != null && mMOQHighlightDialog.isVisible()) {
-            mMOQHighlightDialog.numberPressed(v);
-        }
-    }
-
-
-    //if Rfield1 enabled show this dialog
-    private class MOQConfigEnabled extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-
-            android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-            mMOQHighlightDialog = new MOQHighlightDialog();
-            mMOQHighlightDialog.setCancelable(false);
-            mMOQHighlightDialog.show(ft, "Sample Fragment");
-        }
-    }
-
-
     public class wareHouseStockBroadCastReceiver extends BroadcastReceiver {
         public static final String RESPONSE = "com.ivy.intent.action.WareHouseStock";
 
@@ -2502,6 +2475,16 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
                 if (alertDialog.isShowing())
                     alertDialog.dismiss();
+            }
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == MOQ_RESULT_CODE) {
+            overridePendingTransition(0, R.anim.zoom_exit);
+            if (resultCode == 1) {
+                adapter.notifyDataSetChanged();
             }
         }
     }

@@ -33,7 +33,7 @@
                 android:paddingLeft="@dimen/whats_on_item_padding" />
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:id="@+id/incentive_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

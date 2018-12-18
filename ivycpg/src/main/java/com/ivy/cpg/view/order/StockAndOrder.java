@@ -74,6 +74,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.moq.MOQHighlightActivity;
 import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
@@ -112,7 +113,6 @@ import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.cpg.view.initiative.InitiativeActivity;
-import com.ivy.cpg.view.order.moq.MOQHighlightDialog;
 import com.ivy.sd.png.view.MustSellReasonDialog;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
@@ -131,8 +131,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
+import static com.ivy.cpg.view.order.moq.MOQHighlightActivity.MOQ_RESULT_CODE;
+
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener, MOQHighlightDialog.savePcsValue, FiveLevelFilterCallBack {
+        BrandDialogInterface, OnEditorActionListener,FiveLevelFilterCallBack {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -150,7 +152,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private String brandbutton;
     private String generalbutton;
     LinearLayout ll_spl_filter, ll_tab_selection;
-    private MOQHighlightDialog mMOQHighlightDialog;
     private DrawerLayout mDrawerLayout;
     private ViewFlipper viewFlipper;
 
@@ -281,7 +282,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private AlertDialog alertDialog;
 
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1190,12 +1190,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             registerReceiver();
         }
     }
-
-    @Override
-    public void saveChanges() {
-        lvwplist.invalidateViews();
-    }
-
 
     private class MyAdapter extends ArrayAdapter<ProductMasterBO> {
         private final Vector<ProductMasterBO> items;
@@ -4420,7 +4414,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     }
                     if (count > 0) {
-                        new MOQConfigEnabled().execute();
+                        Intent intent = new Intent(StockAndOrder.this,MOQHighlightActivity.class);
+                        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                        ActivityCompat.startActivityForResult(this, intent, MOQ_RESULT_CODE, opts.toBundle());
                         count = 0;
                         return;
                     }
@@ -4765,62 +4761,58 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     public void numberPressed(View vw) {
 
-        if (mMOQHighlightDialog != null && mMOQHighlightDialog.isVisible()) {
-            mMOQHighlightDialog.numberPressed(vw);
+        int val;
+        if (QUANTITY == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.please_select_item), 0);
         } else {
-            int val;
-            if (QUANTITY == null) {
-                bmodel.showAlert(
-                        getResources().getString(R.string.please_select_item), 0);
-            } else {
-                int id = vw.getId();
-                if (id == R.id.calcdel) {
+            int id = vw.getId();
+            if (id == R.id.calcdel) {
 
-                    int s = SDUtil.convertToInt(QUANTITY.getText()
-                            .toString());
-                    s = s / 10;
-                    String strS = s + "";
-                    QUANTITY.setText(strS);
-                    val = s;
+                int s = SDUtil.convertToInt(QUANTITY.getText()
+                        .toString());
+                s = s / 10;
+                String strS = s + "";
+                QUANTITY.setText(strS);
+                val = s;
 
 
-                } else if (id == R.id.calcdot) {
-                    val = SDUtil.convertToInt(append);
-                    if (QUANTITY.getTag() != null) {
-                        if (QUANTITY.getId() == R.id.stock_and_order_listview_srpedit) {
-                            Button ed = (Button) findViewById(vw.getId());
-                            append = ed.getText().toString();
-                            eff();
-                            val = SDUtil.convertToInt(append);
-                        }
-
+            } else if (id == R.id.calcdot) {
+                val = SDUtil.convertToInt(append);
+                if (QUANTITY.getTag() != null) {
+                    if (QUANTITY.getId() == R.id.stock_and_order_listview_srpedit) {
+                        Button ed = (Button) findViewById(vw.getId());
+                        append = ed.getText().toString();
+                        eff();
+                        val = SDUtil.convertToInt(append);
                     }
-                } else {
-                    Button ed = (Button) findViewById(vw.getId());
-                    append = ed.getText().toString();
-                    eff();
-                    val = SDUtil.convertToInt(append);
-                }
 
-                ProductMasterBO temp = (ProductMasterBO) QUANTITY.getTag();
-
-                if (val > 0
-                        && temp.isRPS()
-                        && !temp.isSBDAcheivedLocal()
-                        && (temp.getOrderedPcsQty() > 0
-                        || temp.getOrderedCaseQty() > 0 || temp
-                        .getOrderedOuterQty() > 0)) {
-                    updateSBDAcheived(temp.getSbdGroupName(), true);
-                } else if (val == 0
-                        && temp.isRPS()
-                        && temp.isSBDAcheivedLocal()
-                        && (temp.getOrderedPcsQty()
-                        + (temp.getOrderedCaseQty() * temp.getCaseSize()) + (temp
-                        .getOrderedOuterQty() * temp.getOutersize())) == 0) {
-                    updateSBDAcheived(temp.getSbdGroupName(), false);
                 }
-                updateValue();
+            } else {
+                Button ed = (Button) findViewById(vw.getId());
+                append = ed.getText().toString();
+                eff();
+                val = SDUtil.convertToInt(append);
             }
+
+            ProductMasterBO temp = (ProductMasterBO) QUANTITY.getTag();
+
+            if (val > 0
+                    && temp.isRPS()
+                    && !temp.isSBDAcheivedLocal()
+                    && (temp.getOrderedPcsQty() > 0
+                    || temp.getOrderedCaseQty() > 0 || temp
+                    .getOrderedOuterQty() > 0)) {
+                updateSBDAcheived(temp.getSbdGroupName(), true);
+            } else if (val == 0
+                    && temp.isRPS()
+                    && temp.isSBDAcheivedLocal()
+                    && (temp.getOrderedPcsQty()
+                    + (temp.getOrderedCaseQty() * temp.getCaseSize()) + (temp
+                    .getOrderedOuterQty() * temp.getOutersize())) == 0) {
+                updateSBDAcheived(temp.getSbdGroupName(), false);
+            }
+            updateValue();
         }
 
     }
@@ -4884,7 +4876,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
-        } else {
+        } else if (requestCode == MOQ_RESULT_CODE) {
+            overridePendingTransition(0, R.anim.zoom_exit);
+            if (resultCode == 1) {
+                lvwplist.invalidateViews();
+            }
+        }else {
             if (result != null) {
                 if (result.getContents() != null) {
                     strBarCodeSearch = result.getContents();
@@ -6956,25 +6953,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     protected void onRestart() {
         super.onRestart();
 
-    }
-
-    //if Rfield1 enabled show this dialog
-    private class MOQConfigEnabled extends AsyncTask<Void, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-
-            android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
-            mMOQHighlightDialog = new MOQHighlightDialog();
-            mMOQHighlightDialog.setCancelable(false);
-            mMOQHighlightDialog.show(ft, "Sample Fragment");
-        }
     }
 
     private void showSalesReturnDialog(String productId, View v, int holderPostion, int holderTop) {

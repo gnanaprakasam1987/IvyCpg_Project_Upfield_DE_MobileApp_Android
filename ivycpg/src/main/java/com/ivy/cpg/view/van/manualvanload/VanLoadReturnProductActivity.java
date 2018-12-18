@@ -1,23 +1,18 @@
 package com.ivy.cpg.view.van.manualvanload;
 
-import android.app.Dialog;
-import android.content.Context;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
@@ -30,63 +25,55 @@ import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
-public class VanLoadReturnProductDialog extends Dialog implements
-        android.view.View.OnClickListener {
+public class VanLoadReturnProductActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
 
     // Declare Businness Model Class
     private BusinessModel bmodel;
-    // Declare Context
-    private Context context;
-
 
     // Views
     private ListView lvwplist;
     private EditText QUANTITY;
-    private ManualVanLoadActivity manualVanLoadActivity;
     private Button btnSave;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_returnproduct);
 
-    public VanLoadReturnProductDialog(Context context,
-                                      ManualVanLoadActivity vanloadActivity) {
-        super(context);
-        this.context = context;
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        bmodel = (BusinessModel) getApplicationContext();
 
-        bmodel = (BusinessModel) context.getApplicationContext();
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        Window window = getWindow();
-        lp.copyFrom(window.getAttributes());
-        // This makes the dialog take up the full width
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        window.setAttributes(lp);
-
-        manualVanLoadActivity = vanloadActivity;
-        RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
-                .inflate(R.layout.dialog_returnproduct, null);
-        setContentView(ll);
-        this.getWindow().setLayout(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setCancelable(true);
-        // Initialize Views in the Screen
         initializeView();
         // Iterate valus and show Values in the Listivew
 
         // Always Load SKU in Manual Van Load Module Bottle Return
-        if (manualVanLoadActivity != null)
-            showListValues();
-
+        showListValues();
     }
 
     private void initializeView() {
         try {
-            lvwplist = (ListView) findViewById(R.id.list);
+
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar.setVisibility(View.VISIBLE);
+
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            setScreenTitle(getResources().getString(R.string.Product_details));
+
+            lvwplist = findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
-            btnSave = (Button) findViewById(R.id.save_btn);
+            btnSave = findViewById(R.id.save_btn);
             btnSave.setOnClickListener(this);
-            btnSave.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
+            btnSave.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -103,7 +90,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
             // If Total Size is null,Show alert in the Screen
             if (totalSize == null) {
                 bmodel.showAlert(
-                        context.getResources().getString(
+                        getResources().getString(
                                 R.string.no_products_exists), 0);
                 return;
             }
@@ -128,7 +115,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
         private ArrayList<BomReturnBO> items;
 
         private ProductAdapter(ArrayList<BomReturnBO> mylist) {
-            super(context, R.layout.dialog_initiative_listrow, mylist);
+            super(VanLoadReturnProductActivity.this, R.layout.dialog_initiative_listrow, mylist);
             this.items = mylist;
         }
 
@@ -154,19 +141,19 @@ public class VanLoadReturnProductDialog extends Dialog implements
                         R.layout.dialog_returnproduct_row, parent, false);
                 holder = new ViewHolder();
 
-                holder.tvBarcode = (TextView) convertView
+                holder.tvBarcode = convertView
                         .findViewById(R.id.stock_and_order_listview_productbarcode);
 
-                holder.tvSKUName = (TextView) convertView
+                holder.tvSKUName = convertView
                         .findViewById(R.id.orderPRODNAME);
 
-                holder.tvLiableQty = (TextView) convertView
+                holder.tvLiableQty = convertView
                         .findViewById(R.id.tv_liableqty);
 
-                holder.etReturnQty = (EditText) convertView
+                holder.etReturnQty = convertView
                         .findViewById(R.id.et_returnqty);
 
-                holder.etReturnQty.setOnTouchListener(new OnTouchListener() {
+                holder.etReturnQty.setOnTouchListener(new View.OnTouchListener() {
 
                     @Override
                     public boolean onTouch(View arg0, MotionEvent arg1) {
@@ -210,7 +197,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
                                         .convertToInt(qty));
                             } else {
 
-                                ((IvyBaseActivityNoActionBar) context).showMessage(context.getString(
+                                ((IvyBaseActivityNoActionBar) VanLoadReturnProductActivity.this).showMessage(getString(
                                         R.string.exceed_allocation));
                                 qty = qty.length() > 1 ? qty.substring(0,
                                         qty.length() - 1) : "0";
@@ -261,7 +248,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
             bmodel.showAlert(
-                    context.getResources().getString(
+                    getResources().getString(
                             R.string.please_select_item), 0);
         } else {
             int id = vw.getId();
@@ -284,12 +271,7 @@ public class VanLoadReturnProductDialog extends Dialog implements
         Button b = (Button) v;
         if (b == btnSave) {
             bmodel.productHelper.calculateOrderReturnValue();
-            if (manualVanLoadActivity != null) {
-                VanLoadReturnProductDialog.this.manualVanLoadActivity
-                        .onResume();
-                dismiss();
-            }
+            finish();
         }
     }
-
 }
