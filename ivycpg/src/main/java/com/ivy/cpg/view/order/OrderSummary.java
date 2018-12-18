@@ -47,6 +47,7 @@ import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -154,6 +155,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private DiscountHelper discountHelper;
     private OrderHelper orderHelper;
+    private StockCheckHelper stockCheckHelper;
 
     private LinkedList<ProductMasterBO> mOrderedProductList;
     private Vector<ProductMasterBO> mSortedList;
@@ -210,6 +212,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         discountHelper = DiscountHelper.getInstance(this);
         orderHelper = OrderHelper.getInstance(this);
+        stockCheckHelper = StockCheckHelper.getInstance(this);
         mCalendar = Calendar.getInstance();
 
         // Close the screen if user id becomes 0 **/
@@ -1074,7 +1077,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 editOrder();
             }
         } else if (i1 == R.id.menu_delete) {
-            if (orderHelper.isStockCheckMenuEnabled())
+            if (orderHelper.isStockCheckMenuEnabled(OrderSummary.this))
                 showDialog(DIALOG_DELETE_STOCK_AND_ORDER);
             else
                 showDialog(DIALOG_DELETE_ONLY_ORDER);
@@ -2269,7 +2272,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 if (!"MENU_ORDER".equals(screenCode) && bModel.configurationMasterHelper.SHOW_STOCK_IN_SUMMARY) {
 
-                    if (bModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                    if (stockCheckHelper.SHOW_STOCK_SC) {
                         (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         holder.shelfCaseQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -2286,7 +2289,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         }
 
                     }
-                    if (bModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                    if (stockCheckHelper.SHOW_SHELF_OUTER) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         holder.shelfOuterQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -2304,7 +2307,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
 
-                    if (bModel.configurationMasterHelper.SHOW_STOCK_SP) {
+                    if (stockCheckHelper.SHOW_STOCK_SP) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                         holder.shelfPieceQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -2612,7 +2615,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!"MENU_ORDER".equals(screenCode) && bModel.configurationMasterHelper.SHOW_STOCK_IN_SUMMARY) {
 
 
-                    if (bModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                    if (stockCheckHelper.SHOW_STOCK_SC) {
                         (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         holder.shelfCaseQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -2629,7 +2632,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         }
 
                     }
-                    if (bModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                    if (stockCheckHelper.SHOW_SHELF_OUTER) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         holder.shelfOuterQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -2647,7 +2650,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
 
-                    if (bModel.configurationMasterHelper.SHOW_STOCK_SP) {
+                    if (stockCheckHelper.SHOW_STOCK_SP) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                         holder.shelfPieceQty.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));

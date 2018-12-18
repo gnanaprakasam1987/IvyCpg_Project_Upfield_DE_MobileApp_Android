@@ -62,6 +62,7 @@ import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -189,7 +190,6 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     private double totalvalue = 0;
 
 
-
     private int mSelectedBrandID = 0;
     private String mSelectedFiltertext = "Brand";
 
@@ -230,6 +230,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
 
     private OrderHelper orderHelper;
+    private StockCheckHelper stockCheckHelper;
 
     private static final int SALES_RETURN = 3;
     private static final int DIALOG_ORDER_SAVED = 3;
@@ -247,11 +248,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         orderHelper = OrderHelper.getInstance(this);
+        stockCheckHelper = StockCheckHelper.getInstance(this);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
 
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         Bundle extras = getIntent().getExtras();
         OrderedFlag = "MENU_STK_ORD";
         screenCode = "MENU_STK_ORD";
@@ -290,14 +292,14 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
         }
 
-        FrameLayout drawer =  findViewById(R.id.right_drawer);
+        FrameLayout drawer = findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
-        mDrawerLayout =  findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         // set a custom shadow that overlays the main content when the drawer
         // opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -309,15 +311,15 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        viewFlipper =  findViewById(R.id.view_flipper);
+        viewFlipper = findViewById(R.id.view_flipper);
 
-        mEdt_searchproductName =  findViewById(R.id.edt_searchproductName);
-        mBtn_Search =  findViewById(R.id.btn_search);
-        mBtnFilterPopup =  findViewById(R.id.btn_filter_popup);
-        mBtn_clear =  findViewById(R.id.btn_clear);
-        mBtnNext =  findViewById(R.id.btn_next);
-        mBtnGuidedSelling_next =  findViewById(R.id.btn_guided_selling_next);
-        mBtnGuidedSelling_prev =  findViewById(R.id.btn_guided_selling_prev);
+        mEdt_searchproductName = findViewById(R.id.edt_searchproductName);
+        mBtn_Search = findViewById(R.id.btn_search);
+        mBtnFilterPopup = findViewById(R.id.btn_filter_popup);
+        mBtn_clear = findViewById(R.id.btn_clear);
+        mBtnNext = findViewById(R.id.btn_next);
+        mBtnGuidedSelling_next = findViewById(R.id.btn_guided_selling_next);
+        mBtnGuidedSelling_prev = findViewById(R.id.btn_guided_selling_prev);
         mBtnGuidedSelling_next.setOnClickListener(this);
         mBtnGuidedSelling_prev.setOnClickListener(this);
 
@@ -327,7 +329,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         mBtn_clear.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
 
-        mBtnNext.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+        mBtnNext.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
         mBtnNext.setText(getResources().getString(R.string.save));
 
 
@@ -393,10 +395,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }
 
-        totalValueText =  findViewById(R.id.totalValue);
-        lpcText =  findViewById(R.id.lcp);
-        totalQtyTV =  findViewById(R.id.tv_totalqty);
-        rvFilterList =  findViewById(R.id.rvFilter);
+        totalValueText = findViewById(R.id.totalValue);
+        lpcText = findViewById(R.id.lcp);
+        totalQtyTV = findViewById(R.id.tv_totalqty);
+        rvFilterList = findViewById(R.id.rvFilter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         rvFilterList.setLayoutManager(mLayoutManager);
         rvFilterList.setItemAnimator(new DefaultItemAnimator());
@@ -406,12 +408,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         (findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
 
-        productName =  findViewById(R.id.productName);
-        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
-        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+        productName = findViewById(R.id.productName);
+        productName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
 
 
-        lvwplist =  findViewById(R.id.list);
+        lvwplist = findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         productList = filterWareHouseProducts();
@@ -705,10 +707,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             if (applyLevel.equals("ALL")) {
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
                     for (int j = 0; j < product.getLocations().size(); j++) {
-                        if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() < 0)) {
+                        if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() < 0)
+                                || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() < 0)
+                                || (stockCheckHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() < 0)
+                                || (stockCheckHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() < 0)) {
                             return false;
                         }
                     }
@@ -720,10 +722,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
                     for (int j = 0; j < product.getLocations().size(); j++) {
                         isStockChecked = false;
-                        if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
+                        if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                                || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                                || (stockCheckHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                                || (stockCheckHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
                             return true;
                         }
                     }
@@ -739,10 +741,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
                         isStockChecked = false;
                         for (int j = 0; j < product.getLocations().size(); j++) {
-                            if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
+                            if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                                    || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                                    || (stockCheckHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                                    || (stockCheckHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
                                 isStockChecked = true;
                             }
                         }
@@ -760,10 +762,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
                         isStockChecked = false;
                         for (int j = 0; j < product.getLocations().size(); j++) {
-                            if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
+                            if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                                    || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                                    || (stockCheckHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                                    || (stockCheckHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
                                 return true;
                             }
                         }
@@ -926,7 +928,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                                             .getMonthly_target()));
                 }
                 try {
-                    ((TextView) findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                    ((TextView) findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
                     if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                             R.id.totalTitle).getTag()) != null)
                         ((TextView) findViewById(R.id.totalTitle))
@@ -944,7 +946,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.caseTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                        ((TextView) findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.caseTitle))
@@ -959,7 +961,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.pcsTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+                        ((TextView) findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.pcsTitle))
@@ -974,7 +976,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.focTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+                        ((TextView) findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.focTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.focTitle))
@@ -990,7 +992,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.outercaseTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,this));
+                        ((TextView) findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.outercaseTitle))
@@ -1007,7 +1009,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.icoTitle).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.icoTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                        ((TextView) findViewById(R.id.icoTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.icoTitle).getTag()) != null)
                             ((TextView) findViewById(R.id.icoTitle))
@@ -1025,7 +1027,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                             View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                        ((TextView) findViewById(R.id.productBarcodetitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.productBarcodetitle).getTag()) != null)
                             ((TextView) findViewById(R.id.productBarcodetitle))
@@ -1043,7 +1045,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     findViewById(R.id.weight).setVisibility(View.GONE);
                 } else {
                     try {
-                        ((TextView) findViewById(R.id.weight)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,this));
+                        ((TextView) findViewById(R.id.weight)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, this));
                         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                                 R.id.weight).getTag()) != null)
                             ((TextView) findViewById(R.id.weight))
@@ -1215,9 +1217,9 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
                 holder = new ViewHolder();
 
-                holder.psname =  row
+                holder.psname = row
                         .findViewById(R.id.stock_and_order_listview_productname);
-                holder.mrp =  row
+                holder.mrp = row
                         .findViewById(R.id.stock_and_order_listview_mrp);
 
 
@@ -1225,25 +1227,25 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
 
                 //Store - Order
-                holder.caseQty =  row
+                holder.caseQty = row
                         .findViewById(R.id.stock_and_order_listview_case_qty);
-                holder.pcsQty =  row
+                holder.pcsQty = row
                         .findViewById(R.id.stock_and_order_listview_pcs_qty);
-                holder.outerQty =  row
+                holder.outerQty = row
                         .findViewById(R.id.stock_and_order_listview_outer_case_qty);
 
-                holder.total =  row
+                holder.total = row
                         .findViewById(R.id.stock_and_order_listview_total);
 
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
                 holder.psname.setTypeface(FontUtils.getProductNameFont(SubDStockOrderActivity.this));
-                holder.mrp.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
-                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
-                holder.pcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
-                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
-                holder.total.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+                holder.mrp.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, SubDStockOrderActivity.this));
+                holder.caseQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, SubDStockOrderActivity.this));
+                holder.pcsQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, SubDStockOrderActivity.this));
+                holder.outerQty.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, SubDStockOrderActivity.this));
+                holder.total.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, SubDStockOrderActivity.this));
 
 
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
@@ -1252,10 +1254,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 // SIH - Enable/Disable - Start
                 // Order Field - Enable/Disable
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    ( row.findViewById(R.id.llCase)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.caseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.caseTitle))
@@ -1267,10 +1269,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    ( row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.pcsTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.pcsTitle))
@@ -1283,10 +1285,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_FOC)
-                    ( row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.focTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.focTitle))
@@ -1299,10 +1301,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                    ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.outercaseTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.outercaseTitle))
@@ -1316,10 +1318,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
-                    ( row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.stkRtTitle))
                                     .setText(bmodel.labelsMasterHelper
@@ -1331,10 +1333,10 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
-                    ( row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
                 else {
                     try {
-                        ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+                        ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.totalTitle).getTag()) != null)
                             ((TextView) row.findViewById(R.id.totalTitle))
@@ -2153,12 +2155,12 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 findViewById(R.id.ll_lpc).setVisibility(View.GONE);
             }
 
-            ((TextView) findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.totalValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.lcp)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.distText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
-            ((TextView) findViewById(R.id.distValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT,SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.totalValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.lcp)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.distText)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
+            ((TextView) findViewById(R.id.distValue)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.LIGHT, SubDStockOrderActivity.this));
 
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -2331,7 +2333,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                                 + (productBO.getOrderedOuterQty() * productBO
                                 .getOsrp());
 
-                        lineValue=SDUtil.formatAsPerCalculationConfig(lineValue);
+                        lineValue = SDUtil.formatAsPerCalculationConfig(lineValue);
 
                         // Set the calculated values in productBO **/
                         productBO.setNetValue(lineValue);
@@ -2623,7 +2625,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             } else if (id == R.id.calcdot) {
                 val = SDUtil.convertToInt(append);
             } else {
-                Button ed =  findViewById(vw.getId());
+                Button ed = findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
                 val = SDUtil.convertToInt(append);
@@ -2998,8 +3000,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             int siz = items.size();
             mylist = new Vector<>();
 
-            pnametitle =  findViewById(R.id.productnametitle);
-            ((TextView) findViewById(R.id.productnametitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+            pnametitle = findViewById(R.id.productnametitle);
+            ((TextView) findViewById(R.id.productnametitle)).setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, SubDStockOrderActivity.this));
 
 
             // Add the products into list
@@ -4095,8 +4097,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
     private void loadSpecialFilterView() {
         findViewById(R.id.hscrl_spl_filter).setVisibility(View.VISIBLE);
-        ll_spl_filter =  findViewById(R.id.ll_spl_filter);
-        ll_tab_selection =  findViewById(R.id.ll_tab_selection);
+        ll_spl_filter = findViewById(R.id.ll_spl_filter);
+        ll_tab_selection = findViewById(R.id.ll_tab_selection);
         float scale;
         int width;
 
@@ -4114,7 +4116,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             scale = den;
             width = (int) (dimen_wd * scale + 25.5f);
         }
-        final TabLayout tabLay =  findViewById(R.id.dummy_tab_lay);
+        final TabLayout tabLay = findViewById(R.id.dummy_tab_lay);
         final TabLayout.Tab tab1 = tabLay.newTab();
         tab1.setText("ABCD");
         tabLay.addTab(tab1);
@@ -4152,7 +4154,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
-            tab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM,SubDStockOrderActivity.this));
+            tab.setTypeface(FontUtils.getFontRoboto(FontUtils.FontType.MEDIUM, SubDStockOrderActivity.this));
             tab.setTextColor(color);
             tab.setMaxLines(1);
             tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
@@ -4287,8 +4289,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
             public MyViewHolder(View view) {
                 super(view);
-                btnFilter =  view.findViewById(R.id.btn_filter);
-                btnFilter.setTypeface(FontUtils.getFontBalooHai(SubDStockOrderActivity.this,FontUtils.FontType.REGULAR));
+                btnFilter = view.findViewById(R.id.btn_filter);
+                btnFilter.setTypeface(FontUtils.getFontBalooHai(SubDStockOrderActivity.this, FontUtils.FontType.REGULAR));
             }
         }
 
