@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
@@ -75,7 +76,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<String>> getDashList(final SellerDashboardConstants.DashBoardType dashBoardType) {
+    public Observable<List<String>> getDashList(final SellerDashboardConstants.DashBoardType dashBoardType) {
         return Observable.fromCallable(new Callable<ArrayList<String>>() {
             @Override
             public ArrayList<String> call() throws Exception {
@@ -121,7 +122,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<DashBoardBO>> getP3MSellerDashboardData(final String userId) {
+    public Observable<List<DashBoardBO>> getP3MSellerDashboardData(final String userId) {
         return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
@@ -208,7 +209,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<DashBoardBO>> getSellerDashboardForWeek(final String userId) {
+    public Observable<List<DashBoardBO>> getSellerDashboardForWeek(final String userId) {
         return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
@@ -272,7 +273,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<DashBoardBO>> getSellerDashboardForInterval(final String userId, final String interval) {
+    public Observable<List<DashBoardBO>> getSellerDashboardForInterval(final String userId, final String interval) {
         return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
@@ -344,7 +345,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<DashBoardBO>> getRetailerDashboardForInterval(final String retailerId, final String interval) {
+    public Observable<List<DashBoardBO>> getRetailerDashboardForInterval(final String retailerId, final String interval) {
         return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
@@ -427,7 +428,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<DashBoardBO>> getRouteDashboardForInterval(final String interval) {
+    public Observable<List<DashBoardBO>> getRouteDashboardForInterval(final String interval) {
         return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
@@ -489,7 +490,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<DashBoardBO>> getKPIDashboard(final String userId, final String interval) {
+    public Observable<List<DashBoardBO>> getKPIDashboard(final String userId, final String interval) {
         return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
@@ -570,7 +571,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<DashBoardBO>> getP3MTrendChart(final String userId) {
+    public Observable<List<DashBoardBO>> getP3MTrendChart(final String userId) {
         return Observable.fromCallable(new Callable<ArrayList<DashBoardBO>>() {
             @Override
             public ArrayList<DashBoardBO> call() throws Exception {
@@ -672,7 +673,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
 
     @Override
-    public Observable<ArrayList<Double>> getCollectedValue() {
+    public Observable<List<Double>> getCollectedValue() {
         return Observable.fromCallable(new Callable<ArrayList<Double>>() {
             @Override
             public ArrayList<Double> call() throws Exception {
@@ -713,7 +714,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<String>> getKpiMonths(final boolean isFromRetailer) {
+    public Observable<List<String>> getKpiMonths(final boolean isFromRetailer) {
         return Observable.fromCallable(new Callable<ArrayList<String>>() {
             @Override
             public ArrayList<String> call() throws Exception {
@@ -774,7 +775,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
     @Override
-    public Observable<ArrayList<String>> getKpiWeekList() {
+    public Observable<List<String>> getKpiWeekList() {
         return Observable.fromCallable(new Callable<ArrayList<String>>() {
             @Override
             public ArrayList<String> call() throws Exception {

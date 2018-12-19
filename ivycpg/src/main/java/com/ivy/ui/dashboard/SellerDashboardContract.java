@@ -8,34 +8,34 @@ import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 public interface SellerDashboardContract {
 
     interface SellerDashboardView extends BaseIvyView {
 
-        void updateDashSpinner(ArrayList<String> dashList);
+        void updateDashSpinner(List<String> dashList);
 
-        void setupMultiSelectDistributorSpinner(ArrayList<DistributorMasterBO> distributorMasterBOS);
+        void setupMultiSelectDistributorSpinner(List<DistributorMasterBO> distributorMasterBOS);
 
-        void setUpDistributorSpinner(ArrayList<DistributorMasterBO> distributorMasterBOS);
+        void setUpDistributorSpinner(List<DistributorMasterBO> distributorMasterBOS);
 
-        void setUpUserSpinner(ArrayList<UserMasterBO> userMasterBOS);
+        void setUpUserSpinner(List<UserMasterBO> userMasterBOS);
 
-        void setUpMultiSelectUserSpinner(ArrayList<UserMasterBO> userMasterBOS);
+        void setUpMultiSelectUserSpinner(List<UserMasterBO> userMasterBOS);
 
-        void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS, boolean isFromUser);
+        void setDashboardListAdapter(List<DashBoardBO> dashBoardBOS, boolean isFromUser);
 
-        void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS);
+        void setDashboardListAdapter(List<DashBoardBO> dashBoardBOS);
 
-        void setUpMonthSpinner(ArrayList<String> monthList);
+        void setUpMonthSpinner(List<String> monthList);
 
-        void setWeekSpinner(ArrayList<String> weekList, int currentWeek);
+        void setWeekSpinner(List<String> weekList, int currentWeek);
 
-        void setupRouteSpinner(ArrayList<BeatMasterBO> beatMasterBOS);
+        void setupRouteSpinner(List<BeatMasterBO> beatMasterBOS);
 
-        void createP3MChartFragment(ArrayList<DashBoardBO> dashBoardBOS);
+        void createP3MChartFragment(List<DashBoardBO> dashBoardBOS);
     }
 
 
@@ -99,7 +99,7 @@ public interface SellerDashboardContract {
 
         HashMap<String, String> getLabelsMap();
 
-        ArrayList<DashBoardBO> getDashboardListData();
+        List<DashBoardBO> getDashboardListData();
 
         UserMasterBO getCurrentUser();
 

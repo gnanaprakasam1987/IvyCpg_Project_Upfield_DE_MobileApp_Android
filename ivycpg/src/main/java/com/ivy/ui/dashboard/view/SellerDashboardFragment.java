@@ -50,6 +50,7 @@ import com.ivy.utils.event.DashBoardEventData;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -259,7 +260,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setupMultiSelectDistributorSpinner(ArrayList<DistributorMasterBO> distributors) {
+    public void setupMultiSelectDistributorSpinner(List<DistributorMasterBO> distributors) {
 
         List<KeyPairBoolData> distArray = new ArrayList<>();
         distArray.add(new KeyPairBoolData(0, getString(R.string.all), true));
@@ -283,7 +284,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             public void onItemsSelected(List<KeyPairBoolData> items) {
                 int count = 0;
                 mSelectedDistributorId = "";
-                if (items.size() > 0) {
+                if (!items.isEmpty()) {
                     for (int i = 0; i < items.size(); i++) {
                         count++;
                         mSelectedDistributorId += QT(items.get(i).getId() + "");
@@ -302,11 +303,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setUpDistributorSpinner(ArrayList<DistributorMasterBO> distributorMasterBOS) {
+    public void setUpDistributorSpinner(List<DistributorMasterBO> distributorMasterBOS) {
         ArrayAdapter<DistributorMasterBO> distributorMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
         distributorMasterBOArrayAdapter.add(new DistributorMasterBO("0", getResources().getString(R.string.select)));
 
-        if (distributorMasterBOS.size() != 0) {
+        if (!distributorMasterBOS.isEmpty()) {
             distributorMasterBOArrayAdapter.addAll(distributorMasterBOS);
             distributorMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
             distributorSpinner.setAdapter(distributorMasterBOArrayAdapter);
@@ -315,12 +316,12 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setUpUserSpinner(ArrayList<UserMasterBO> userMasterBOS) {
+    public void setUpUserSpinner(List<UserMasterBO> userMasterBOS) {
 
         ArrayAdapter<UserMasterBO> userMasterBOArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout);
         userMasterBOArrayAdapter.add(new UserMasterBO(0, getResources().getString(R.string.all)));
 
-        if (userMasterBOS.size() != 0) {
+        if (!userMasterBOS.isEmpty()) {
             userMasterBOArrayAdapter.addAll(userMasterBOS);
             userMasterBOArrayAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
             userSpinner.setAdapter(userMasterBOArrayAdapter);
@@ -329,7 +330,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setUpMultiSelectUserSpinner(ArrayList<UserMasterBO> users) {
+    public void setUpMultiSelectUserSpinner(List<UserMasterBO> users) {
 
         List<KeyPairBoolData> userArray = new ArrayList<>();
 
@@ -367,7 +368,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS, boolean isFromUser) {
+    public void setDashboardListAdapter(List<DashBoardBO> dashBoardBOS, boolean isFromUser) {
 
         dashboardListData.clear();
         dashboardListData.addAll(dashBoardBOS);
@@ -375,7 +376,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         dashboardListAdapter = new DashboardListAdapter(getActivity(), dashboardListData, presenter.getLabelsMap(), this);
         dashboardRecyclerView.setAdapter(dashboardListAdapter);
 
-        if(!isFromUser){
+        if (!isFromUser) {
             monthSpinner.setVisibility(View.GONE);
 
             if (selectedInterval.equalsIgnoreCase(DAY) && mSelectedUser.equals(String.valueOf(presenter.getCurrentUser().getUserid()))) {
@@ -394,7 +395,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             if (!isFragmentsAdded)
                 generatePagerFragments();
-            else if (dashboardListData.size() > 0)
+            else if (!dashboardListData.isEmpty())
                 updateChartData(dashboardListData.get(0));
 
         }
@@ -402,7 +403,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS){
+    public void setDashboardListAdapter(List<DashBoardBO> dashBoardBOS) {
         dashboardListData.clear();
         dashboardListData.addAll(dashBoardBOS);
 
@@ -413,7 +414,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             if (!isFragmentsAdded)
                 generatePagerFragments();
-            else if (dashboardListData.size() > 0)
+            else if (!dashboardListData.isEmpty())
                 updateChartData(dashboardListData.get(0));
 
         }
@@ -421,7 +422,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setupRouteSpinner(ArrayList<BeatMasterBO> beatMasterBOS) {
+    public void setupRouteSpinner(List<BeatMasterBO> beatMasterBOS) {
         routeSpinner.setVisibility(View.VISIBLE);
         ArrayAdapter<BeatMasterBO> routeAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, beatMasterBOS);
         routeAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
@@ -505,7 +506,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void updateDashSpinner(ArrayList<String> dashList) {
+    public void updateDashSpinner(List<String> dashList) {
         // Creating adapter for spinner
 
         if (!dashList.isEmpty()) {
@@ -561,14 +562,14 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
             selectedInterval = adapterView.getSelectedItem().toString();
             if (!isFromRetailer) {
                 if (selectedInterval.equalsIgnoreCase(P3M))
-                    presenter.fetchSellerDashboardDataForUser(mSelectedUser,true);
+                    presenter.fetchSellerDashboardDataForUser(mSelectedUser, true);
                 else if (selectedInterval.equals(WEEK))
                     presenter.fetchSellerDashboardDataForWeek(mSelectedUser);
                 else {
                     if (type.equals(ROUTE))
                         presenter.fetchRouteDashboardData(selectedInterval);
                     else
-                        presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval,true);
+                        presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval, true);
 
                 }
             } else
@@ -583,7 +584,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     };
 
     @Override
-    public void setUpMonthSpinner(ArrayList<String> monthList) {
+    public void setUpMonthSpinner(List<String> monthList) {
         monthSpinner.setVisibility(View.VISIBLE);
         weekSpinner.setVisibility(View.GONE);
         ArrayAdapter<String> monthdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, monthList);
@@ -594,7 +595,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void setWeekSpinner(ArrayList<String> weekList, int currentWeek) {
+    public void setWeekSpinner(List<String> weekList, int currentWeek) {
         weekSpinner.setVisibility(View.VISIBLE);
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(getActivity(), R.layout.dashboard_spinner_layout, weekList);
         monthAdapter.setDropDownViewResource(R.layout.dashboard_spinner_list);
@@ -718,9 +719,9 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             if (!isFromRetailer) {
                 if (selectedInterval.equalsIgnoreCase(P3M))
-                    presenter.fetchSellerDashboardDataForUser(mSelectedUser,true);
+                    presenter.fetchSellerDashboardDataForUser(mSelectedUser, true);
                 else
-                    presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval,true);
+                    presenter.fetchSellerDashboardForUserAndInterval(mSelectedUser, selectedInterval, true);
             }
 
         }
@@ -736,9 +737,9 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-            int mSelectedDistributorId = SDUtil.convertToInt(((DistributorMasterBO) adapterView.getSelectedItem()).getDId());
+            int selectedDistributedId = SDUtil.convertToInt(((DistributorMasterBO) adapterView.getSelectedItem()).getDId());
 
-            presenter.fetchUserList(Integer.toString(mSelectedDistributorId), false);
+            presenter.fetchUserList(Integer.toString(selectedDistributedId), false);
 
         }
 
@@ -756,19 +757,17 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
             fragments = new ArrayList<>();
 
-            if (presenter.isSMPBasedDash()) {
-                if (!selectedInterval.matches("WEEK|ROUTE")) {
-                    if (presenter.shouldShowP3MDash()) {
-                        presenter.fetchP3mTrendChartData(mSelectedUser);
-                    }
-                    if (presenter.shouldShowSMPDash()) {
-                        SMPChartFragment smpChartFragment = new SMPChartFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("dashboardData", dashboardListData.get(0));
-                        smpChartFragment.setArguments(bundle);
-                        fragments.add(smpChartFragment);
+            if (presenter.isSMPBasedDash() && !selectedInterval.matches("WEEK|ROUTE")) {
+                if (presenter.shouldShowP3MDash()) {
+                    presenter.fetchP3mTrendChartData(mSelectedUser);
+                }
+                if (presenter.shouldShowSMPDash()) {
+                    SMPChartFragment smpChartFragment = new SMPChartFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("dashboardData", dashboardListData.get(0));
+                    smpChartFragment.setArguments(bundle);
+                    fragments.add(smpChartFragment);
 
-                    }
                 }
             }
 
@@ -791,11 +790,11 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void createP3MChartFragment(ArrayList<DashBoardBO> dashBoardBOS) {
+    public void createP3MChartFragment(List<DashBoardBO> dashBoardBOS) {
         P3MChartFragment p3MChartFragment = new P3MChartFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("dashChartList", dashBoardBOS);
-        bundle.putInt("paramLovId", dashBoardBOS.size() > 0 ? dashBoardBOS.get(0).getKpiTypeLovID() : 0);
+        bundle.putSerializable("dashChartList", new ArrayList<>(dashBoardBOS));
+        bundle.putInt("paramLovId", !dashBoardBOS.isEmpty() ? dashBoardBOS.get(0).getKpiTypeLovID() : 0);
         p3MChartFragment.setArguments(bundle);
         fragments.add(0, p3MChartFragment);
 

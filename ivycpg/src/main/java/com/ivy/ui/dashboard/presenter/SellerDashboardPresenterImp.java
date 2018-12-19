@@ -36,6 +36,7 @@ import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -138,10 +139,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(getDataManager().saveModuleCompletion(menuCode)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean value) {
-                    }
+                .subscribe(value -> {
                 }));
     }
 
@@ -152,11 +150,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .now(SDUtil.TIME))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) {
+                .subscribe(aBoolean -> {
 
-                    }
                 }));
     }
 
@@ -165,9 +160,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getDashList(dashBoardType)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+                .subscribeWith(new DisposableObserver<List<String>>() {
                     @Override
-                    public void onNext(ArrayList<String> dashList) {
+                    public void onNext(List<String> dashList) {
                         isP3M = dashList.contains(P3M);
                         getIvyView().updateDashSpinner(dashList);
                     }
@@ -279,9 +274,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getKPIDashboard(userid, interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                .subscribeWith(new DisposableObserver<List<DashBoardBO>>() {
                     @Override
-                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+                    public void onNext(List<DashBoardBO> dashBoardBOS) {
 
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
                         dashBoardList.clear();
@@ -306,9 +301,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getP3MSellerDashboardData(selectedUser)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                .subscribeWith(new DisposableObserver<List<DashBoardBO>>() {
                     @Override
-                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+                    public void onNext(List<DashBoardBO> dashBoardBOS) {
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
                         getIvyView().setDashboardListAdapter(dashBoardBOS, isFromDash);
@@ -336,9 +331,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForWeek(selectedUser)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                .subscribeWith(new DisposableObserver<List<DashBoardBO>>() {
                     @Override
-                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+                    public void onNext(List<DashBoardBO> dashBoardBOS) {
 
                         getIvyView().setDashboardListAdapter(dashBoardBOS);
                         dashBoardList.clear();
@@ -363,9 +358,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getSellerDashboardForInterval(selectedUser, interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                .subscribeWith(new DisposableObserver<List<DashBoardBO>>() {
                     @Override
-                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+                    public void onNext(List<DashBoardBO> dashBoardBOS) {
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
                         getIvyView().setDashboardListAdapter(dashBoardBOS, isFromDash);
@@ -396,9 +391,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getRouteDashboardForInterval(interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                .subscribeWith(new DisposableObserver<List<DashBoardBO>>() {
                     @Override
-                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+                    public void onNext(List<DashBoardBO> dashBoardBOS) {
 
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
@@ -423,9 +418,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getRetailerDashboardForInterval(appDataProvider.getRetailMaster().getRetailerID(), interval)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                .subscribeWith(new DisposableObserver<List<DashBoardBO>>() {
                     @Override
-                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+                    public void onNext(List<DashBoardBO> dashBoardBOS) {
                         dashBoardList.clear();
                         dashBoardList.addAll(dashBoardBOS);
                         getIvyView().setDashboardListAdapter(dashBoardList);
@@ -449,9 +444,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getKpiMonths(isFromRetailer)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+                .subscribeWith(new DisposableObserver<List<String>>() {
                     @Override
-                    public void onNext(ArrayList<String> monthList) {
+                    public void onNext(List<String> monthList) {
                         getIvyView().setUpMonthSpinner(monthList);
 
                     }
@@ -473,10 +468,10 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getKpiWeekList()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+                .subscribeWith(new DisposableObserver<List<String>>() {
                     @Override
-                    public void onNext(ArrayList<String> weekList) {
-                        if (weekList.size() > 0)
+                    public void onNext(List<String> weekList) {
+                        if (!weekList.isEmpty())
                             fetchCurrentWeek(weekList);
                         else
                             getIvyView().setDashboardListAdapter(dashBoardList);
@@ -505,7 +500,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 .subscribeWith(new DisposableObserver<ArrayList<BeatMasterBO>>() {
                     @Override
                     public void onNext(ArrayList<BeatMasterBO> beatMasterBOS) {
-                        if (beatMasterBOS.size() > 0)
+                        if (!beatMasterBOS.isEmpty())
                             getIvyView().setupRouteSpinner(beatMasterBOS);
                     }
 
@@ -521,16 +516,10 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 }));
     }
 
-    private void fetchCurrentWeek(final ArrayList<String> weekList) {
+    private void fetchCurrentWeek(final List<String> weekList) {
         getCompositeDisposable().add(sellerDashboardDataManager.getCurrentWeekInterval()
                 .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-
-                        getIvyView().setWeekSpinner(weekList, weekList.indexOf(s));
-                    }
-                }));
+                .observeOn(getSchedulerProvider().ui()).subscribe(s -> getIvyView().setWeekSpinner(weekList, weekList.indexOf(s))));
     }
 
     @Override
@@ -554,9 +543,9 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         getCompositeDisposable().add(sellerDashboardDataManager.getP3MTrendChart(userId)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<ArrayList<DashBoardBO>>() {
+                .subscribeWith(new DisposableObserver<List<DashBoardBO>>() {
                     @Override
-                    public void onNext(ArrayList<DashBoardBO> dashBoardBOS) {
+                    public void onNext(List<DashBoardBO> dashBoardBOS) {
 
                     }
 
@@ -632,7 +621,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         final ArrayList<String> dashCodes = new ArrayList<>();
 
 
-        if (dashBoardList.size() > 0)
+        if (!dashBoardList.isEmpty())
             for (DashBoardBO dashBoardBO : dashBoardList) {
                 if (!dashCodes.contains(dashBoardBO.getCode()))
                     dashCodes.add(dashBoardBO.getCode());
@@ -749,7 +738,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 return sellerDashboardDataManager.fetchMslCount();
             else
                 return Single.fromCallable(() -> new Optional<String>(null));
-        }).flatMapObservable((Function<Optional<String>, ObservableSource<ArrayList<Double>>>) mslCount -> {
+        }).flatMapObservable((Function<Optional<String>, ObservableSource<List<Double>>>) mslCount -> {
             if (!mslCount.isEmpty() && mslCount.get().contains(",")) {
                 dayAchievementData.setMslCount(SDUtil.convertToInt(mslCount.get().split(",")[0]));
                 dayAchievementData.setMslExecutedCount(SDUtil.convertToInt(mslCount.get().split(",")[1]));
@@ -759,10 +748,10 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
                 return sellerDashboardDataManager.getCollectedValue();
             else
                 return Observable.fromCallable(ArrayList::new);
-        }).flatMapSingle((Function<ArrayList<Double>, SingleSource<DayAchievementData>>) collectionData -> {
+        }).flatMapSingle((Function<List<Double>, SingleSource<DayAchievementData>>) collectionData -> {
 
-            if (collectionData.size() > 0)
-                dayAchievementData.setCollectionData(collectionData);
+            if (!collectionData.isEmpty())
+                dayAchievementData.setCollectionData(new ArrayList<>(collectionData));
 
             return Single.fromCallable(() -> dayAchievementData);
         }).subscribeOn(getSchedulerProvider().io())
@@ -983,11 +972,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kpiAcheived * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1011,11 +996,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kpiAcheived * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1039,11 +1020,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kpiAcheived * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1067,11 +1044,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((productiveCalls * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (productiveCalls * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1085,7 +1058,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     private void computeDailyAchievementsForMSP(DashBoardBO dashBoardBO, DailyReportBO dailyReportBOForOutlet) {
         dashBoardBO.setKpiAcheived(dailyReportBOForOutlet.getMspValues());
-        int kpiAcheived = (int) SDUtil.convertToDouble(dailyReportBOForOutlet.getMspValues());
+        int kaiAchieved = (int) SDUtil.convertToDouble(dailyReportBOForOutlet.getMspValues());
         int kpiTarget;
 
         try {
@@ -1095,11 +1068,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kaiAchieved * 100) / kpiTarget);
 
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
@@ -1117,7 +1086,6 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         int plannedRetailerVisitCount = getVisitedRetailerCount();
 
         dashBoardBO.setKpiAcheived(plannedRetailerVisitCount + "");
-        int kpiAcheived = plannedRetailerVisitCount;
         int kpiTarget;
 
         try {
@@ -1127,11 +1095,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (plannedRetailerVisitCount * 100) / kpiTarget);
 
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
@@ -1150,7 +1114,6 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
         dashBoardBO.setKpiAcheived(plannedRetailerVisitCount + "");
         dashBoardBO.setKpiTarget(plannedRetailerCount + "");
-        int kpiAcheived = plannedRetailerVisitCount;
         int kpiTarget;
 
         try {
@@ -1160,11 +1123,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (plannedRetailerVisitCount * 100) / kpiTarget);
 
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
@@ -1209,14 +1168,15 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     }
 
     private void computeDailyAchievementsForCol(DashBoardBO dashBoardBO, ArrayList<Double> collectionData) {
-        double kpiAcheived = 0, kpiTarget = 0;
+        double kaiAchieved = 0;
+        double kpiTarget;
         try {
             double osAmt = collectionData.get(0);
             double paidAmt = collectionData.get(1);
 
             dashBoardBO.setKpiAcheived(paidAmt + "");
             dashBoardBO.setKpiTarget(osAmt + "");
-            kpiAcheived = paidAmt;
+            kaiAchieved = paidAmt;
             kpiTarget = osAmt;
         } catch (Exception e) {
             kpiTarget = 0;
@@ -1226,7 +1186,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         if (kpiTarget == 0) {
             dashBoardBO.setCalculatedPercentage(0);
         } else {
-            float value = SDUtil.convertToFloat("" + (kpiAcheived * 100) / kpiTarget);
+            float value = SDUtil.convertToFloat("" + (kaiAchieved * 100) / kpiTarget);
             dashBoardBO.setCalculatedPercentage(value);
         }
 
@@ -1261,11 +1221,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kpiAcheived * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1296,11 +1252,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kpiAcheived * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1329,11 +1281,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kpiAcheived * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1358,11 +1306,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kpiAcheived * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1388,11 +1332,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
             Commons.printException(e + "");
         }
 
-        if (kpiTarget == 0) {
-            dashBoardBO.setCalculatedPercentage(0);
-        } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
-        }
+        dashBoardBO.setCalculatedPercentage(kpiTarget == 0 ? 0 : (kpiAcheived * 100) / kpiTarget);
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
             dashBoardBO.setConvTargetPercentage(0);
             dashBoardBO.setConvAcheivedPercentage(100);
@@ -1541,7 +1481,6 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     private void computeDailyAchievementsForMSL(DashBoardBO dashBoardBO, int mslCount, int mslAchievedCount) {
         dashBoardBO.setKpiAcheived(mslAchievedCount + "");
-        int kpiAcheived = mslAchievedCount;
         int kpiTarget;
 
         try {
@@ -1554,7 +1493,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         if (kpiTarget == 0) {
             dashBoardBO.setCalculatedPercentage(0);
         } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+            dashBoardBO.setCalculatedPercentage((mslAchievedCount * 100) / kpiTarget);
         }
 
         if (dashBoardBO.getCalculatedPercentage() >= 100) {
@@ -1571,7 +1510,6 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
     private void computeDailyAchievementsForPRM(DashBoardBO dashBoardBO, int promotionCount, int promotionAchievedCount) {
 
         dashBoardBO.setKpiAcheived(promotionAchievedCount + "");
-        int kpiAcheived = promotionAchievedCount;
         int kpiTarget;
 
         try {
@@ -1584,7 +1522,7 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
         if (kpiTarget == 0) {
             dashBoardBO.setCalculatedPercentage(0);
         } else {
-            dashBoardBO.setCalculatedPercentage((kpiAcheived * 100) / kpiTarget);
+            dashBoardBO.setCalculatedPercentage((promotionAchievedCount * 100) / kpiTarget);
         }
 
         if (dashBoardBO.getCalculatedPercentage() >= 100) {

@@ -5,7 +5,7 @@ import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.utils.rx.Optional;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
@@ -13,27 +13,27 @@ import io.reactivex.Single;
 
 public interface SellerDashboardDataManager {
 
-    Observable<ArrayList<String>> getDashList(SellerDashboardConstants.DashBoardType dashBoardType);
+    Observable<List<String>> getDashList(SellerDashboardConstants.DashBoardType dashBoardType);
 
-    Observable<ArrayList<DashBoardBO>> getP3MSellerDashboardData(String userId);
+    Observable<List<DashBoardBO>> getP3MSellerDashboardData(String userId);
 
-    Observable<ArrayList<DashBoardBO>> getSellerDashboardForWeek(String userId);
+    Observable<List<DashBoardBO>> getSellerDashboardForWeek(String userId);
 
-    Observable<ArrayList<DashBoardBO>> getRouteDashboardForInterval(String interval);
+    Observable<List<DashBoardBO>> getRouteDashboardForInterval(String interval);
 
-    Observable<ArrayList<DashBoardBO>> getSellerDashboardForInterval(String userId,String interval);
+    Observable<List<DashBoardBO>> getSellerDashboardForInterval(String userId,String interval);
 
-    Observable<ArrayList<DashBoardBO>> getRetailerDashboardForInterval(String retailerId,String interval);
+    Observable<List<DashBoardBO>> getRetailerDashboardForInterval(String retailerId,String interval);
 
-    Observable<ArrayList<DashBoardBO>> getKPIDashboard(String userId, String interval);
+    Observable<List<DashBoardBO>> getKPIDashboard(String userId, String interval);
 
-    Observable<ArrayList<DashBoardBO>> getP3MTrendChart(String userId);
+    Observable<List<DashBoardBO>> getP3MTrendChart(String userId);
 
-    Observable<ArrayList<Double>> getCollectedValue();
+    Observable<List<Double>> getCollectedValue();
 
-    Observable<ArrayList<String>> getKpiMonths(boolean isFromRetailer);
+    Observable<List<String>> getKpiMonths(boolean isFromRetailer);
 
-    Observable<ArrayList<String>> getKpiWeekList();
+    Observable<List<String>> getKpiWeekList();
 
     Single<String> getCurrentWeekInterval();
 
