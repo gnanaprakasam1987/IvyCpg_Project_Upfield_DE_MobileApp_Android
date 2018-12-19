@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -28,7 +29,6 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class FilterFiveFragment<E> extends Fragment {
 
     @SuppressWarnings("unchecked")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fivefilterdialog, container, false);
@@ -96,10 +96,6 @@ public class FilterFiveFragment<E> extends Fragment {
 
         Button cancelButton = view.findViewById(R.id.btn_cancel);
         Button btnOK = view.findViewById(R.id.btn_ok);
-
-        btnOK.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        cancelButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
 
         btnOK.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -281,8 +277,7 @@ public class FilterFiveFragment<E> extends Fragment {
                 if (bmodel.configurationMasterHelper.IS_FILTER_TAG_PRODUCTS && isTagged)
                     loadTagProductFilters(levelID);
 
-                Vector<LevelBO> filterValues = new Vector<>();
-                filterValues.addAll(filterProductsByLevelId.get(levelID));
+                Vector<LevelBO> filterValues = new Vector<>(filterProductsByLevelId.get(levelID));
                 if (filterValues.size() > 0) {
                     productsAdapter = new FilterProductsAdapter(filterValues);
                     productSelectionListview.setAdapter(productsAdapter);
@@ -361,7 +356,6 @@ public class FilterFiveFragment<E> extends Fragment {
 
             holder.levelBO = filteritem.get(position);
             holder.text.setText(holder.levelBO.getLevelName());
-            holder.text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             int levelId = 0;
             if (mSelectedIdByLevelId.get(holder.levelBO
@@ -561,7 +555,6 @@ public class FilterFiveFragment<E> extends Fragment {
             }
 
             holder.text.setText(levelBO.getLevelName());
-            holder.text.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             if (mSelectedIdByLevelId != null) {
 

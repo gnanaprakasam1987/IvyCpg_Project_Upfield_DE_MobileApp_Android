@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/GridItem"
-    android:layout_width="fill_parent"
-    android:layout_height="@dimen/filter_secondary_list_height"
-    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/sub_activity_list_height"
+    android:padding="@dimen/dimen_10dp"
+    android:gravity="center"
     android:orientation="horizontal">
 
 
     <TextView
         android:id="@+id/grid_item_text"
-        style="@style/TextViewListItemPrimary"
+        style="@style/TextViewListItemValues"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/filter_secondary_list_height"
+        android:layout_height="wrap_content"
         android:layout_toStartOf="@+id/selectedfilters"
-        android:layout_marginStart="@dimen/list_margin"
-        android:gravity="start|center_vertical"
+        android:gravity="start|center"
+        android:layout_centerVertical="true"
         android:text="@string/dummy_txt"
         android:layout_toLeftOf="@+id/selectedfilters"
-        android:layout_marginLeft="@dimen/list_margin" />
+        />
 
     <RadioButton
         android:id="@+id/selectedfilters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/list_margin"
+        android:gravity="center"
         android:clickable="false"
         android:layout_centerVertical="true"
         android:focusable="false"

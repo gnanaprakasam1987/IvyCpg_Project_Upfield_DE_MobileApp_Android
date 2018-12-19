@@ -43,7 +43,7 @@
 
             <TextView
                 android:id="@+id/text_slab_name"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"

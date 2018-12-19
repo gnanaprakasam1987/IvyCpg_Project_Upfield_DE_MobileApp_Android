@@ -91,8 +91,6 @@
             android:name="com.google.android.maps"
             android:required="false" />
 
-        <receiver android:name="com.ivy.sd.png.model.ScreenReceiver" />
-
         <service
             android:name="com.ivy.cpg.locationservice.movementtracking.MovementTrackingListenerService"
             android:enabled="true"
@@ -581,9 +579,6 @@
             android:name="com.ivy.sd.print.CreditNotePrintPreviewScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.NewOutletEdit"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.cpg.view.mvp.MVPNotification"
             android:screenOrientation="portrait" />
         <activity
@@ -818,9 +813,9 @@
         <activity
             android:name="com.ivy.cpg.view.digitalcontent.PlayVideoActivity"
             android:screenOrientation="landscape" />
-        <activity android:name="com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name="com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetActivity"
             android:screenOrientation="portrait" />
@@ -830,24 +825,35 @@
         <activity
             android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetServiceActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliverySKULevel"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.delivery.salesreturn.SalesReturnDeliverySKULevel"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.serializedAsset.AddSerializedAssetActivity"
             android:screenOrientation="portrait" />
 
-        <service android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadService"
-            android:exported="false"
-            android:enabled="true"/>
+        <service
+            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
+            android:enabled="true"
+            android:exported="false" />
 
-        <service android:name="com.ivy.cpg.view.sync.largefiledownload.DummyService"
-            android:exported="false"
-            android:enabled="true"/>
-
-        <service android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
-            android:exported="false"
-            android:enabled="true"/>
+        <activity
+            android:name="com.ivy.cpg.view.order.moq.MOQHighlightActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.sf.SOSMeasureActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.sf.SODMeasureActivity" />
+        <activity
+            android:name="com.ivy.cpg.view.nearexpiry.NearExpiryDateInputActivity"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.order.DiscountEditActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.order.ReturnProductActivity" />
+        <activity android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

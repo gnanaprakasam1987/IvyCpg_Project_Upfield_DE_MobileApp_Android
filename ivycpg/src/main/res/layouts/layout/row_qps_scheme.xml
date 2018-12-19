@@ -34,7 +34,7 @@
 
             <TextView
                 android:id="@+id/tv_scheme_secondary_title"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dimen_2dp"
@@ -61,7 +61,7 @@
 
             <TextView
                 android:id="@+id/tv_schemetype"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
@@ -72,7 +72,7 @@
 
             <TextView
                 android:id="@+id/tv_cumulative_purchase"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
@@ -84,7 +84,7 @@
 
             <TextView
                 android:id="@+id/tv_curslab_sch_amt"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
@@ -95,7 +95,7 @@
 
             <TextView
                 android:id="@+id/tv_curslab_rs_per"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
@@ -106,7 +106,7 @@
 
             <TextView
                 android:id="@+id/tv_nextslab"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
@@ -118,7 +118,7 @@
 
             <TextView
                 android:id="@+id/tv_nextslab_sch_amt"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
@@ -129,7 +129,7 @@
 
             <TextView
                 android:id="@+id/tv_nextslab_rs_per"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
@@ -149,7 +149,7 @@
 
             <TextView
                 android:id="@+id/tv_schemetypeLabel"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
@@ -160,7 +160,7 @@
 
             <TextView
                 android:id="@+id/tv_current_cumulative_purchase"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
@@ -173,7 +173,7 @@
 
             <TextView
                 android:id="@+id/tv_current_cumulative_scheme_discount"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
@@ -185,7 +185,7 @@
 
             <TextView
                 android:id="@+id/tv_current_scheme_per_amt"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
@@ -197,7 +197,7 @@
 
             <TextView
                 android:id="@+id/tv_current_balance_to_nextslab"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
@@ -210,7 +210,7 @@
 
             <TextView
                 android:id="@+id/tv_next_cumulative_scheme_discount"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"
@@ -222,7 +222,7 @@
 
             <TextView
                 android:id="@+id/tv_next_scheme_per_amt"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/dimen_1dp"

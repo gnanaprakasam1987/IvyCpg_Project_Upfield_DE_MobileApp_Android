@@ -7,10 +7,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -22,6 +20,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -43,9 +43,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.AdvancePaymentDialogFragment;
+import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
+import com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonDialog;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -53,7 +56,6 @@ import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.lib.Utils;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -61,7 +63,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
-import com.ivy.sd.png.model.ScreenReceiver;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -69,14 +70,12 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.collection.AdvancePaymentDialogFragment;
 import com.ivy.sd.png.view.AmountSplitUpDialog;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.CatalogOrder;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonDialog;
 import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.png.view.OrderSummaryDialogFragment;
 import com.ivy.sd.png.view.SerialNoEntryScreen;
@@ -132,6 +131,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DIALOG_SIGNATURE_AVAILABLE = 8;
     private static final int CAMERA_REQUEST_CODE = 7;
 
+    private static final int DISCOUNT_RESULT_CODE = 114;
+    private static final int RETURN_PRODUCT_RESULT_CODE = 115;
+
 
     private static final int FILE_SELECTION = 12;
 
@@ -144,12 +146,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private ExpandableListView listView;
     private ImageView imageView_amountSplitUp;
 
-    private DiscountDialog discountDialog;
     private AlertDialog.Builder build;
     private AlertDialog alertDialog;
     private AmountSplitUpDialog amountSplitUpDialog;
     private OrderConfirmationDialog orderConfirmationDialog;
-    private ReturnProductDialog returnProductDialog;
     private CollectionBeforeInvoiceDialog collectionBeforeInvoiceDialog;
     private StoreWiseDiscountDialog mStoreWiseDiscountDialogFragment;
 
@@ -162,13 +162,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private LinkedList<ProductMasterBO> mOrderedProductList;
     private Vector<ProductMasterBO> mSortedList;
 
-    private String sendMailAndLoadClass;
     private boolean isFromOrder;
     private double enteredDiscAmtOrPercent = 0;
 
     private double totalOrderValue;
     private boolean isClick = false;
-    private boolean isDiscountDialog;
     private double entryLevelDiscount = 0.0;
 
     private double totalSchemeDiscValue;
@@ -185,7 +183,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private Connection zebraPrinterConnection;
     private ZebraPrinter printer;
     private AlertDialog.Builder builder10;
-    private BroadcastReceiver mReceiver;
 
     private TextView text_creditNote;
     public static final String CREDIT_TYPE = "CREDIT";
@@ -193,9 +190,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private boolean isEditMode = false;
     private Calendar mCalendar = null;
     private String mImageName, attachedFilePath = "";
-    private Toolbar toolbar;
-    private boolean isWihtHoldApplied = false;
     private int linesPerCall = 0;
+    private String schemeNames;
+    private String discountNames;
+    private double taxValue;
 
     private CollectionHelper collectionHelper;
 
@@ -231,7 +229,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             }
         }
 
-        setDiscountDialog(false);
         signatureName = "";
 
         String screenTitle = bModel.configurationMasterHelper
@@ -240,7 +237,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         if (!screenCode.equals("MENU_CLOSING"))
             screenTitle = getResources().getString(R.string.summary);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
@@ -272,13 +269,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         sharedPreferences = getSharedPreferences(BusinessModel.PREFS_NAME, MODE_PRIVATE);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        // Purpose of the receiver is not clear now. This has created to avoid issue.
-        // Issue was :: If discount Dialog opened and screen goes to idle, after wake up dialog disappeared.
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        mReceiver = new ScreenReceiver();
-        registerReceiver(mReceiver, filter);
 
 
         if (bModel.getOrderHeaderBO() == null) {
@@ -601,7 +591,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
-                    totalQuantityOrdered = totalQuantityOrdered + totalQuantity;
+                    int totalOrderedQty = orderHelper.getTotalOrderedQty(productBO);
+                    totalQuantityOrdered = (totalOrderedQty != -1)? (totalQuantityOrdered + totalOrderedQty) : (totalQuantityOrdered + totalQuantity);
+
                     totalWeight = totalWeight + SDUtil.convertToFloat(String.valueOf(SDUtil.formatAsPerCalculationConfig(totalQuantity * productBO.getWeight())));
 
                     mOrderedProductList.add(productBO);
@@ -627,7 +619,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     productBO.setDistributorTypeDiscount(0);
                     discountHelper.clearProductDiscountAndTaxValue(productBO);
                     // clear scheme free products stored in product obj
-                    productBO.setSchemeProducts(new ArrayList<SchemeProductBO>());
+                    productBO.setSchemeProducts(new ArrayList<>());
 
                 }
             }
@@ -666,6 +658,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_ON &&
                     SchemeDetailsMasterHelper.getInstance(getApplicationContext()).IS_SCHEME_SHOW_SCREEN) {
                 totalSchemeDiscValue = discountHelper.calculateSchemeDiscounts(mOrderedProductList, getApplicationContext());
+                schemeNames = discountHelper.getSchemeData();
                 totalOrderValue -= totalSchemeDiscValue;
             }
 
@@ -684,6 +677,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             if (bModel.configurationMasterHelper.SHOW_DISCOUNT) {
                 double itemLevelDiscount = discountHelper.calculateItemLevelDiscount(mOrderedProductList);
                 totalOrderValue = totalOrderValue - itemLevelDiscount;
+                discountNames = discountHelper.getDistDiscountData();
+                if (!"".equals(schemeNames)) {
+                    schemeNames = schemeNames + "\n" + discountHelper.getCompDiscountData();
+                } else
+                    schemeNames = discountHelper.getCompDiscountData();
             }
 
             //Calculating with hold tax
@@ -701,6 +699,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 else {
                     double totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
                     totalOrderValue = totalOrderValue + totalTaxVal;
+                    taxValue = totalTaxVal;
                 }
             }
 
@@ -744,15 +743,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 final double billWisePayTermDiscount = discountHelper.calculateBillWisePayTermDiscount(totalOrderValue);
                 totalOrderValue = totalOrderValue - billWisePayTermDiscount;
             }
-            // To open the dialog back while resuming
-            if (!isDiscountDialog() && bModel.configurationMasterHelper.IS_PRODUCT_DISCOUNT_BY_USER_ENTRY && discountDialog != null && discountDialog.isShowing()) {
-                setDiscountDialog(true);
-                discountDialog.dismiss();
-                discountDialog = null;
-                discountDialog = new DiscountDialog(OrderSummary.this, null,
-                        discountDismissListener);
-                discountDialog.show();
-            }
 
 
             //Applying bill wise tax
@@ -761,8 +751,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 double billLevelTax = bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
                 bModel.getOrderHeaderBO().setBillLevelTaxValue(billLevelTax);
 
-                if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX)
+                if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
                     totalOrderValue += billLevelTax;
+                    taxValue += billLevelTax;
+                }
 
             }
             //updating footer labels
@@ -800,7 +792,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         || productBO.getOrderedOuterQty() > 0) {
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
-                    totalQuantityOrdered = totalQuantityOrdered + totalQuantity;
+
+                    int totalOrderedQty = orderHelper.getTotalOrderedQty(productBO);
+                    totalQuantityOrdered = (totalOrderedQty != -1)? (totalQuantityOrdered + totalOrderedQty) : (totalQuantityOrdered + totalQuantity);
 
                     mOrderedProductList.add(productBO);
 
@@ -815,7 +809,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     productBO.setCompanyTypeDiscount(0);
                     productBO.setDistributorTypeDiscount(0);
                     // clear scheme free products stored in product obj
-                    productBO.setSchemeProducts(new ArrayList<SchemeProductBO>());
+                    productBO.setSchemeProducts(new ArrayList<>());
 
 
                     if (productBO.isSeparateBill()) {
@@ -1000,9 +994,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             return true;
         } else if (i1 == R.id.menu_product_discount_by_user_entry) {
 
-            discountDialog = new DiscountDialog(OrderSummary.this, null,
-                    discountDismissListener);
-            discountDialog.show();
+            Intent intent = new Intent(OrderSummary.this,DiscountEditActivity.class);
+
+            ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+            ActivityCompat.startActivityForResult(this, intent, DISCOUNT_RESULT_CODE, opts.toBundle());
+
             return true;
         } else if (i1 == R.id.menu_calculator) {
             callCalculatorApplication();
@@ -1030,9 +1026,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             .size();
                 }
                 if (productSize > 0) {
-                    returnProductDialog = new ReturnProductDialog(this, this);
-                    returnProductDialog.show();
-                    returnProductDialog.setCancelable(false);
+
+                    Intent intent = new Intent(this,ReturnProductActivity.class);
+                    ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                    ActivityCompat.startActivityForResult(this, intent, RETURN_PRODUCT_RESULT_CODE, opts.toBundle());
+
                 } else {
                     Toast.makeText(OrderSummary.this,
                             getResources().getString(R.string.data_not_mapped),
@@ -1304,6 +1302,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             args.putDouble("cmy_disc", cmyDiscount);
             args.putDouble("dist_disc", distDiscount);
             args.putDouble("scheme_disc", totalSchemeDiscValue);
+            args.putString("scheme_name", schemeNames);
+            args.putString("disc_name", discountNames);
+            args.putDouble("tax_value", taxValue);
             amountSplitUpDialog.setArguments(args);
             amountSplitUpDialog.show(getSupportFragmentManager(), "AmtSplitupDialog");
         }
@@ -2214,15 +2215,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         isClick = false;
     }
 
-    public boolean isDiscountDialog() {
-        return isDiscountDialog;
-    }
-
-    public void setDiscountDialog(boolean discountDialog) {
-        isDiscountDialog = discountDialog;
-    }
-
-
     private class ProductExpandableAdapter extends BaseExpandableListAdapter {
 
         @Override
@@ -3103,15 +3095,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     };
 
 
-    private final android.content.DialogInterface.OnDismissListener discountDismissListener = new android.content.DialogInterface.OnDismissListener() {
-
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            dialog.dismiss();
-        }
-    };
-
-
     private void printOrder() {
 
         Intent i;
@@ -3425,14 +3408,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
     public void numberPressed(View vw) {
-        if (returnProductDialog != null && returnProductDialog.isShowing()) {
-            returnProductDialog.numberPressed(vw);
-        }
         if (collectionBeforeInvoiceDialog != null && collectionBeforeInvoiceDialog.isShowing()) {
             collectionBeforeInvoiceDialog.numberPressed(vw);
-        }
-        if (discountDialog != null && discountDialog.isShowing()) {
-            discountDialog.numberPressed(vw);
         }
         if (mStoreWiseDiscountDialogFragment != null && mStoreWiseDiscountDialogFragment.isVisible()) {
             mStoreWiseDiscountDialogFragment.numberPressed(vw);
@@ -3470,6 +3447,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         bModel.getOrderHeaderBO().setOrderImageName(attachedFilePath);
                 }
                 break;
+            case DISCOUNT_RESULT_CODE :
+                overridePendingTransition(0, R.anim.zoom_exit);
+                break;
+            case RETURN_PRODUCT_RESULT_CODE :
+                overridePendingTransition(0, R.anim.zoom_exit);
+                break;
             default:
                 break;
         }
@@ -3479,8 +3462,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mReceiver != null)
-            unregisterReceiver(mReceiver);
+
         if (mChatService != null) {
             mChatService.stop();
         }

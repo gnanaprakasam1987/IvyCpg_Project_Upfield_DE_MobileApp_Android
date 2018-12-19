@@ -41,7 +41,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
 
     private EditText taskView;
     private EditText taskTitle;
-    private Button close, save;
+    private Button save;
     private BusinessModel bmodel;
 
     private int channelId, retailerid;
@@ -97,10 +97,8 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         retailerSpinner.setEnabled(false);
         final Spinner sellerSpinner = findViewById(R.id.spinner_seller);
         sellerSpinner.setEnabled(true);
-        close = findViewById(R.id.closeTask);
         save = findViewById(R.id.saveTask);
         bmodel.setContext(this);
-        close.setOnClickListener(this);
         save.setOnClickListener(this);
 
         TextView task_title = findViewById(R.id.task_title_tv);
@@ -333,8 +331,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
 
             new SaveNewTask().execute();
 
-        } else if (bt.equals(close))
-            finish();
+        }
 
 
     }

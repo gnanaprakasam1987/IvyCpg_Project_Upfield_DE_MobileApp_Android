@@ -185,9 +185,8 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
 
                             if (ALL.equals(mCapturedBarcode)) {
                                 if ("".equals(mCapturedNFCTag)) {
-                                    if (mAttributeProducts.contains(assetBO.getProductId())) {
+                                    if (checkAsset(mAttributeProducts, assetBO.getParentHierarchy()))
                                         mAssetList.add(assetBO);
-                                    }
                                 } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
                                     assetBO.setAvailQty(1);
                                     mAssetList.add(assetBO);
@@ -221,7 +220,7 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
                 } else if (mAttributeProducts != null && mProductId != 0) {// Attribute filter alone selected
                     for (int pid : mAttributeProducts) {
                         for (SerializedAssetBO assetBO : mAssetTrackingList) {
-                            if (pid == assetBO.getProductId()) {
+                            if (assetBO.getParentHierarchy().contains("/" + pid + "/")) {
 
                                 if (ALL.equals(mCapturedBarcode)) {
                                     if ("".equals(mCapturedNFCTag)) {
@@ -260,6 +259,15 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
         } catch (Exception ex) {
             Commons.printException(ex);
         }
+    }
+
+    private boolean checkAsset(ArrayList<Integer> mAttributeProducts, String parentHierarchy){
+        for (Integer productId : mAttributeProducts) {
+            if (parentHierarchy.contains("/" + productId + "/")) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -39,16 +39,14 @@
 
                 <TextView
                     android:id="@+id/tv_invoice_no"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_toStartOf="@+id/refresh_catalog"
                     android:text="@string/inv_no"
-                    android:textColor="@color/FullBlack"
-                    android:textSize="@dimen/font_small"
                     android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@+id/refresh_catalog" />
+                    tools:ignore="RelativeOverlap" />
 
                 <ImageView
                     android:id="@+id/ivSign"
@@ -58,7 +56,8 @@
                     android:layout_gravity="end"
                     android:src="@drawable/ic_action_signature"
                     android:tint="@color/black_bg3"
-                    android:layout_alignParentRight="true" />
+                    android:layout_alignParentRight="true"
+                    tools:ignore="ContentDescription" />
             </RelativeLayout>
 
             <LinearLayout
@@ -66,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/list_margin"
                 android:orientation="horizontal"
-                android:weightSum="3">
+                android:baselineAligned="false">
 
                 <LinearLayout
                     android:layout_width="@dimen/dimen_0dp"
@@ -76,7 +75,7 @@
 
                     <TextView
                         android:id="@+id/tvinvamt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/inv_amt" />
@@ -84,13 +83,12 @@
 
                     <TextView
                         android:id="@+id/tvinvamtValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"
                         android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_size_primary" />
+                         />
                 </LinearLayout>
 
                 <LinearLayout
@@ -101,7 +99,7 @@
 
                     <TextView
                         android:id="@+id/tvpaidamt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/amount_paid" />
@@ -109,13 +107,12 @@
 
                     <TextView
                         android:id="@+id/tvpaidamtValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"
                         android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_size_primary" />
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -126,7 +123,7 @@
 
                     <TextView
                         android:id="@+id/tvbalamt"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/balance" />
@@ -134,13 +131,12 @@
 
                     <TextView
                         android:id="@+id/tvbalamtValue"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|end"
                         android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_size_primary" />
+                         />
                 </LinearLayout>
             </LinearLayout>
 
@@ -149,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_margin"
                 android:orientation="horizontal"
-                android:weightSum="3">
+                >
 
                 <LinearLayout
                     android:layout_width="@dimen/dimen_0dp"
@@ -159,7 +155,7 @@
 
                     <TextView
                         android:id="@+id/docRefTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/docRefNo" />
@@ -181,7 +177,7 @@
 
                     <TextView
                         android:id="@+id/contactNameTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/contact_name" />
@@ -203,7 +199,7 @@
 
                     <TextView
                         android:id="@+id/contactNoTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/contact_no" />
@@ -224,8 +220,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_margin"
-                android:orientation="horizontal"
-                android:weightSum="3">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="@dimen/dimen_0dp"
@@ -235,7 +230,7 @@
 
                     <TextView
                         android:id="@+id/DocExcTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/doc_exchanged" />
@@ -261,7 +256,7 @@
 
                     <TextView
                         android:id="@+id/DocReasonTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/reason" />
@@ -286,7 +281,7 @@
 
                     <TextView
                         android:id="@+id/remarkTitle"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/order_remarks_dialog_title" />

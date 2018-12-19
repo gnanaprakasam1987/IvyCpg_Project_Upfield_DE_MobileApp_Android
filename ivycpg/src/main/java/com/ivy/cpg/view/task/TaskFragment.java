@@ -1,17 +1,18 @@
 package com.ivy.cpg.view.task;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,8 +22,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,6 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
-import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -78,7 +78,7 @@ public class TaskFragment extends IvyBaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.task_fragment, container, false);
@@ -136,18 +136,12 @@ public class TaskFragment extends IvyBaseFragment {
             reason[0] = "All";
         }
 
-        int first_tab = 0;
         // Add tabs to Tablayout
         for (String tab_name : reason) {
+            @SuppressLint("InflateParams")
             TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
-            tabOne.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             tabOne.setText(tab_name);
-            tabOne.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
             tabLayout.addTab(tabLayout.newTab().setCustomView(tabOne));
-            if (first_tab == 0) {
-                tabOne.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-            }
-            first_tab++;
         }
 
         if (extras != null) {
@@ -418,7 +412,7 @@ public class TaskFragment extends IvyBaseFragment {
     }
 
 
-
+    @SuppressLint("SetTextI18n")
     private void updateTasks(int taskType) {
         Vector<TaskDataBO> taskDataBO = taskHelper.getTaskData(mSelectedRetailerID);
         taskDataBOForAdapter.clear();
@@ -495,18 +489,12 @@ public class TaskFragment extends IvyBaseFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
+        @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.row_task_heading, null);
-        TextView task_tv =  view.findViewById(R.id.task_tv);
-        task_tv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        TextView task_created =  view.findViewById(R.id.task_created_on);
-        task_created.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        TextView task_execution =  view.findViewById(R.id.task_execution);
-        task_execution.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        LinearLayout layoutTaskExecution =  view.findViewById(R.id.layoutTaskExecution);
-        LinearLayout layoutTaskHeader =  view.findViewById(R.id.layoutTaskHeader);
+        TextView task_execution = view.findViewById(R.id.task_execution);
 
-        layoutTaskExecution.setVisibility(View.VISIBLE);
-        layoutTaskHeader.setVisibility(View.VISIBLE);
+        task_execution.setVisibility(View.VISIBLE);
+        //layoutTaskHeader.setVisibility(View.VISIBLE);
 
         mTaskContainer.addView(view);
 
@@ -517,43 +505,42 @@ public class TaskFragment extends IvyBaseFragment {
                 holder.taskBO = taskDataBOForAdapter.get(i);
                 TaskDataBO task = holder.taskBO;
 
-                View v = inflater.inflate(R.layout.row_task_title, null);
+                @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.row_task_title, null);
 
-                holder.taskCB =  v.findViewById(R.id.task_title_CB);
-                holder.taskTaskOwner =  v.findViewById(R.id.task_taskowner);
-                holder.taskCreatedDate =  v.findViewById(R.id.task_createdOn);
-                holder.layoutCB =  v.findViewById(R.id.layoutCB);
-                holder.layoutrow =  v.findViewById(R.id.layoutBorder);
+                holder.taskCB = v.findViewById(R.id.task_title_CB);
+                holder.taskTaskOwner = v.findViewById(R.id.task_taskowner);
+                holder.taskCreatedDate = v.findViewById(R.id.task_createdOn);
+                holder.layoutCB = v.findViewById(R.id.layoutCB);
+                holder.layoutrow = v.findViewById(R.id.layoutBorder);
 
                 holder.layoutCB.setVisibility(View.VISIBLE);
-                holder.taskTaskOwner.setText(task.getTaskOwner());
-                holder.taskCreatedDate.setText("" + DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat));
+                holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
+                holder.taskCreatedDate.setText(DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
 
-                holder.taskCB
-                        .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                holder.layoutrow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!holder.taskCB.isChecked()) {
+                            holder.taskCB.setChecked(true);
+                            holder.taskBO.setChecked(true);
+                        } else {
+                            holder.taskCB.setChecked(false);
+                            holder.taskBO.setChecked(false);
+                        }
 
-                            @Override
-                            public void onCheckedChanged(
-                                    CompoundButton buttonView, boolean isChecked) {
-                                Commons.print("Checked CB :" + isChecked);
-                                holder.taskBO.setChecked(isChecked);
-                                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
-                                if (IsRetailerwisetask) {
-                                    taskHelper.saveTask(bmodel
-                                            .getRetailerMasterBO()
-                                            .getRetailerID(), holder.taskBO);
-                                } else {
-                                    taskHelper.saveTask(0 + "",
-                                            holder.taskBO);
-                                }
-                            }
-                        });
-
-                holder.taskTitle =  v
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        if (IsRetailerwisetask) {
+                            taskHelper.saveTask(bmodel
+                                    .getRetailerMasterBO()
+                                    .getRetailerID(), holder.taskBO);
+                        } else {
+                            taskHelper.saveTask(0 + "",
+                                    holder.taskBO);
+                        }
+                    }
+                });
+                holder.taskTitle = v
                         .findViewById(R.id.task_title_tv);
-                holder.taskTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.taskCreatedDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.taskTaskOwner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.taskTitle.setText(task.getTasktitle());
                 holder.taskTitle.setOnClickListener(new View.OnClickListener() {
 
@@ -564,9 +551,8 @@ public class TaskFragment extends IvyBaseFragment {
                     }
                 });
 
-                holder.taskDescription =  v
+                holder.taskDescription = v
                         .findViewById(R.id.task_description_tv);
-                holder.taskDescription.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.taskDescription.setText(task.getTaskDesc());
                 if (task.isUpload() && task.getIsdone().equals("1")) {
                     holder.taskCB.setEnabled(false);
@@ -600,8 +586,8 @@ public class TaskFragment extends IvyBaseFragment {
         TextView taskDescription;
         TextView taskTaskOwner;
         TextView taskCreatedDate;
-        LinearLayout layoutCB;
-        LinearLayout layoutrow;
+        RelativeLayout layoutCB;
+        RelativeLayout layoutrow;
     }
 
 }

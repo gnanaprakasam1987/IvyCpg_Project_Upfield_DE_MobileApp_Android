@@ -40,6 +40,8 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
     private String append = "";
     ArrayList<SalesReturnDeliveryDataModel> dataList = new ArrayList<>();
     private BusinessModel bmodel;
+    private int returnCaseQty;
+    private int returnPieceQty;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,8 +77,7 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
         findViewById(R.id.btn_cancel).setVisibility(View.GONE);
 
         setLabelMaserValue();
-        String key;
-        key = getIntent().getExtras().getString("key");
+        String key = getIntent().getExtras().getString("key");
 
         SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
         dataList = new ArrayList<>();
@@ -147,8 +148,10 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
 
         switch (v.getId()) {
             case R.id.btn_save:
-                SalesReturnDeliveryHelper.getInstance().setSkuLevelDataList(dataList);
+                if (validateQty())
                 finish();
+                else
+                    Toast.makeText(this, getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -180,8 +183,7 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
         String s = QUANTITY.getText().toString();
         if (!"0".equals(s) && !"0.0".equals(s)) {
             String strQuantity = QUANTITY.getText() + append;
-            if ((!strQuantity.isEmpty()) && (currentSelectedValue >= Integer.parseInt(strQuantity))
-                    && currentSelectedValue >= (actualQty + Integer.parseInt(strQuantity))) {
+            if ((!strQuantity.isEmpty()) && (currentSelectedValue >= Integer.parseInt(strQuantity))) {
                 QUANTITY.setText(strQuantity);
             } else {
                 Toast.makeText(this, getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
@@ -190,8 +192,7 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
             }
 
         } else {
-            if ((!append.isEmpty()) && (currentSelectedValue >= Integer.parseInt(append))
-                    && currentSelectedValue >= (actualQty + Integer.parseInt(append))) {
+            if ((!append.isEmpty()) && (currentSelectedValue >= Integer.parseInt(append))) {
                 QUANTITY.setText(append);
             } else {
                 Toast.makeText(this, getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
@@ -255,6 +256,7 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
                 public boolean onTouch(View v, MotionEvent event) {
                     QUANTITY = holder.actualCaseQuantity;
                     currentSelectedValue = list.get(holder.getAdapterPosition()).getReturnCaseQuantity();
+                    returnCaseQty = list.get(holder.getAdapterPosition()).getReturnCaseQuantity();
                     int inType = holder.actualCaseQuantity.getInputType();
                     holder.actualCaseQuantity.setInputType(InputType.TYPE_NULL);
                     holder.actualCaseQuantity.onTouchEvent(event);
@@ -270,6 +272,7 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
                 public boolean onTouch(View v, MotionEvent event) {
                     QUANTITY = holder.actualPieceQuantity;
                     currentSelectedValue = list.get(holder.getAdapterPosition()).getReturnPieceQuantity();
+                    returnPieceQty = list.get(holder.getAdapterPosition()).getReturnPieceQuantity();
                     int inType = holder.actualPieceQuantity.getInputType();
                     holder.actualPieceQuantity.setInputType(InputType.TYPE_NULL);
                     holder.actualPieceQuantity.onTouchEvent(event);
@@ -297,7 +300,8 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
                         if (s.toString().length() > 0)
                             holder.actualCaseQuantity.setSelection(s.toString().length());
                         list.get(holder.getAdapterPosition()).setActualCaseQuantity(Integer.valueOf(s.toString()));
-                        actualQty = calculateActualCaseQty();
+                    } else {
+                        holder.actualCaseQuantity.setText("0");
                     }
 
                 }
@@ -318,7 +322,8 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
                         if (s.toString().length() > 0)
                             holder.actualPieceQuantity.setSelection(s.toString().length());
                         list.get(holder.getAdapterPosition()).setActualPieceQuantity(Integer.valueOf(s.toString()));
-                        actualQty = calculateActualPieceQty();
+                    } else {
+                        holder.actualPieceQuantity.setText("0");
                     }
                 }
             });
@@ -366,23 +371,14 @@ public class SalesReturnDeliverySKULevel extends IvyBaseActivityNoActionBar impl
 
     }
 
-    int actualQty = 0;
-
-    private int calculateActualPieceQty() {
+    private boolean validateQty() {
         int actualPieceQty = 0;
-        for (SalesReturnDeliveryDataModel model : dataList) {
-            actualPieceQty += model.getActualPieceQuantity();
-        }
-
-        return actualPieceQty;
-    }
-
-    private int calculateActualCaseQty() {
         int actualCaseQty = 0;
         for (SalesReturnDeliveryDataModel model : dataList) {
+            actualPieceQty += model.getActualPieceQuantity();
             actualCaseQty += model.getActualCaseQuantity();
         }
 
-        return actualCaseQty;
+        return (returnCaseQty >= actualCaseQty && returnPieceQty >= actualPieceQty);
     }
 }

@@ -42,7 +42,7 @@
 
                     <TextView
                         android:id="@+id/input_movement_serialNo"
-                        style="@style/TextViewCaption"
+                        style="@style/TextViewListItemCaption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_10dp"
@@ -83,7 +83,7 @@
                 android:gravity="center_vertical">
                 <TextView
                     android:id="@+id/input_current_outletcode_title"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_10dp"
@@ -94,7 +94,7 @@
                     />
                 <TextView
                     android:id="@+id/input_current_outletcode"
-                    style="@style/TextViewCaption"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_10dp"
@@ -119,14 +119,27 @@
                     android:textSize="@dimen/dimens_16dp"
                     android:paddingStart="@dimen/dimen_10dp"
                     android:paddingLeft="@dimen/dimen_10dp" />
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteMovementOutletName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/card_child_margin"
+                    android:ems="10"
+                    android:hint=" Search"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:layout_marginStart="@dimen/dimen_10dp"
+                    android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/spinner_normal" />
                 <Spinner
                     android:id="@+id/spinnerMovementOutletName"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_10dp"
                     android:layout_marginEnd="@dimen/dimen_10dp"
                     android:background="@android:color/transparent"
-
+                    android:visibility="gone"
                     android:layout_weight="1"/>
             </LinearLayout>
 

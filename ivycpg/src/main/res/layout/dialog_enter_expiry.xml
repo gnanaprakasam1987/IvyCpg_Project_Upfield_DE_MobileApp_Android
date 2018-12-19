@@ -23,7 +23,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_date" />
@@ -51,7 +51,7 @@
 
             <TextView
                 android:id="@+id/tv_case"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
@@ -79,7 +79,7 @@
 
             <TextView
                 android:id="@+id/tv_outer"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
@@ -107,7 +107,7 @@
 
             <TextView
                 android:id="@+id/tv_piece"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
@@ -134,7 +134,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
@@ -183,7 +183,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_date" />
@@ -211,7 +211,7 @@
 
             <TextView
                 android:id="@+id/tv_case2"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -239,7 +239,7 @@
 
             <TextView
                 android:id="@+id/tv_outer2"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -267,7 +267,7 @@
 
             <TextView
                 android:id="@+id/tv_piece2"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -294,7 +294,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
@@ -343,7 +343,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_date" />
@@ -371,7 +371,7 @@
 
             <TextView
                 android:id="@+id/tv_case3"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -399,7 +399,7 @@
 
             <TextView
                 android:id="@+id/tv_outer3"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -427,7 +427,7 @@
 
             <TextView
                 android:id="@+id/tv_piece3"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -454,7 +454,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
@@ -502,7 +502,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_date" />
@@ -530,7 +530,7 @@
 
             <TextView
                 android:id="@+id/tv_case4"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -558,7 +558,7 @@
 
             <TextView
                 android:id="@+id/tv_outer4"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -586,7 +586,7 @@
 
             <TextView
                 android:id="@+id/tv_piece4"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -613,7 +613,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
@@ -662,7 +662,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_date" />
@@ -690,7 +690,7 @@
 
             <TextView
                 android:id="@+id/tv_case5"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -718,7 +718,7 @@
 
             <TextView
                 android:id="@+id/tv_outer5"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -746,7 +746,7 @@
 
             <TextView
                 android:id="@+id/tv_piece5"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -773,7 +773,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
@@ -821,7 +821,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_date" />
@@ -849,7 +849,7 @@
 
             <TextView
                 android:id="@+id/tv_case6"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -877,7 +877,7 @@
 
             <TextView
                 android:id="@+id/tv_outer6"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -905,7 +905,7 @@
 
             <TextView
                 android:id="@+id/tv_piece6"
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -932,7 +932,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/TextViewCaption"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"

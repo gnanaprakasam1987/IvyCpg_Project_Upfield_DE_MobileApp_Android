@@ -47,6 +47,7 @@ import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -60,6 +61,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
 import com.ivy.utils.network.TLSSocketFactory;
@@ -302,8 +304,8 @@ SynchronizationHelper {
     }
 
 
-    public void getAuthToken(VolleyResponseCallbackInterface responseCallbackInterface){
-        new RefreshAuthTokenAsync(context,responseCallbackInterface).execute();
+    public void getAuthToken(VolleyResponseCallbackInterface responseCallbackInterface) {
+        new RefreshAuthTokenAsync(context, responseCallbackInterface).execute();
     }
 
     /**
@@ -708,6 +710,36 @@ SynchronizationHelper {
             Cursor c;
 
             sql = "select count(*) from LoyaltyPoints where upload='N'";
+
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    if (c.getInt(0) > 0)
+                        hasData = true;
+                }
+                c.close();
+            }
+
+            db.closeDB();
+            return hasData;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+            return hasData;
+        }
+
+    }
+
+
+    public boolean checkPickListData() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        boolean hasData = false;
+        try {
+            db.openDataBase();
+            String sql;
+            Cursor c;
+
+            sql = "select count(*) from PickListInvoiceStatus where upload='N'";
 
             c = db.selectSQL(sql);
             if (c != null) {
@@ -1498,7 +1530,7 @@ SynchronizationHelper {
             @Override
             protected void deliverResponse(String jsonObject) {
                 super.deliverResponse(jsonObject);
-                JSONObject json= new JSONObject();
+                JSONObject json = new JSONObject();
 
                 Commons.print("Json Obj " + jsonObject);
                 String successUrl = getUrl();
@@ -4152,10 +4184,11 @@ SynchronizationHelper {
 
 
     public boolean validateUser(String username, String password) {
-        if(isSFDC){
+        if (isSFDC) {
             return new AccountData(context).isUserAvailable();
-        }else {
-            if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
+        } else {
+            if (passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED)
+                setEncryptType();
             LoginHelper.getInstance(context).loadPasswordConfiguration(context);
             boolean isUser = username.equalsIgnoreCase(bmodel.userMasterHelper.getUserMasterBO().getLoginName());
             boolean isPwd;
@@ -4186,7 +4219,8 @@ SynchronizationHelper {
             }
 
             isUser = username.equalsIgnoreCase(jointCallUser.getLoginName());
-            if(passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) setEncryptType();
+            if (passwordType == null && LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED)
+                setEncryptType();
             if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED) {
                 if (passwordType.equalsIgnoreCase(SPF_PSWD_ENCRYPT_TYPE_MD5))
                     isPwd = encryptPassword(password).equalsIgnoreCase(jointCallUser.getPassword());
@@ -4597,7 +4631,7 @@ SynchronizationHelper {
     }
 
     public Vector<String> getUploadResponseForLocation(String data,
-                                            String appendurl) {
+                                                       String appendurl) {
 
         StringBuilder url = new StringBuilder();
 //        url.append(DataMembers.SERVER_URL);
@@ -4608,7 +4642,7 @@ SynchronizationHelper {
             MyHttpConnectionNew http = new MyHttpConnectionNew();
             http.create(MyHttpConnectionNew.POST, url.toString(), null);
             if (data != null) {
-                http.addParam("route",data);
+                http.addParam("route", data);
             }
             http.connectMe();
             Vector<String> result = http.getResult();
@@ -4620,6 +4654,71 @@ SynchronizationHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
             return new Vector<>();
+        }
+
+    }
+
+    public void computePicklistData() {
+        DBUtil db = null;
+        ArrayList<String> pickListIds = new ArrayList<>();
+        HashMap<String, String> pickListIdMap = new HashMap<>();
+        try {
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            db.deleteSQL(DataMembers.tbl_picklist, null, true);
+
+            Cursor c = db.selectSQL("SELECT distinct PickListId from InvoiceDeliveryMaster");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    pickListIds = new ArrayList<>();
+                    while (c.moveToNext()) {
+                        pickListIds.add(c.getString(0));
+                    }
+                }
+            }
+
+            for (String pickListId : pickListIds) {
+                int invoicePickLisIdCount = 0, vanHeaderPickListIdCount = 0;
+                c = db.selectSQL("SELECT count(PickListId) from InvoiceDeliveryMaster where PickListId = " + bmodel.QT(pickListId));
+                if (c != null) {
+                    if (c.moveToFirst()) {
+                        invoicePickLisIdCount = c.getInt(0);
+                    }
+                }
+                c = db.selectSQL("SELECT count(PickListId) from VanDeliveryHeader where PickListId = " + bmodel.QT(pickListId));
+                if (c != null) {
+                    if (c.moveToFirst()) {
+                        vanHeaderPickListIdCount = c.getInt(0);
+                    }
+                }
+
+                if (vanHeaderPickListIdCount == 0)
+                    continue;
+                else if (vanHeaderPickListIdCount == invoicePickLisIdCount)
+                    pickListIdMap.put(pickListId, "F");
+                else
+                    pickListIdMap.put(pickListId, "P");
+            }
+
+            if (pickListIdMap.size() > 0) {
+                for (Map.Entry<String, String> map : pickListIdMap.entrySet()) {
+
+                    String values = AppUtils.QT(map.getKey()) + ","
+                            + AppUtils.QT(map.getValue());
+
+                    db.insertSQL(DataMembers.tbl_picklist, DataMembers.tbl_picklist_cols, values);
+
+                }
+            }
+
+            c.close();
+            db.close();
+
+
+        } catch (Exception e) {
+            Commons.printException(e);
         }
 
     }
