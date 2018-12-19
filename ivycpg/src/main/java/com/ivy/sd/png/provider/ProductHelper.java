@@ -14,6 +14,7 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -1911,7 +1912,7 @@ public class ProductHelper {
         return true;
     }
 
-    public boolean isMustSellFilledStockCheck(boolean isTaggedProducts) {
+    public boolean isMustSellFilledStockCheck(boolean isTaggedProducts,Context context) {
 
         boolean isSkuFilled = true;
 
@@ -1948,7 +1949,7 @@ public class ProductHelper {
                             break loop;
                         }
                     } else {
-                        if (product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getLocations().get(j).getReasonId() == 0) {
+                        if (product.getLocations().get(j).getAvailability() == 0 && StockCheckHelper.getInstance(context).SHOW_STOCK_RSN && product.getLocations().get(j).getReasonId() == 0) {
                             isSkuFilled = false;
                             break loop;
                         } else {

@@ -701,7 +701,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
                         .getApplicationContext());
 
         try {
-            retailer = new ArrayList<>();
+
 
             if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
                 displayTodayRoute(null);
@@ -1400,7 +1400,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private void displayTodayRoute(String filter) {
 
         int siz = bmodel.getRetailerMaster().size();
-        retailer = new ArrayList<>();
+        retailer.clear();
         ArrayList<RetailerMasterBO> retailerWIthSequence = new ArrayList<>();
         ArrayList<RetailerMasterBO> retailerWithoutSequence = new ArrayList<>();
         if (!bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION) {

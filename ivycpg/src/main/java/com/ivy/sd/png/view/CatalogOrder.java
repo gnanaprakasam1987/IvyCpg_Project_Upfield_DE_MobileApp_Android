@@ -195,6 +195,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
 
     private RequestManager glide;
+    private StockCheckHelper stockCheckHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -205,6 +206,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         bmodel.setContext(this);
         this.glide = Glide.with(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+        stockCheckHelper = StockCheckHelper.getInstance(this);
 
         pdt_recycler_view = findViewById(R.id.pdt_recycler_view);
 
@@ -1495,9 +1497,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
     private void nextButtonClick() {
         try {
 
-            if (bmodel.configurationMasterHelper.SHOW_STOCK_SP
+            if (stockCheckHelper.SHOW_STOCK_SP
                     && bmodel.configurationMasterHelper.IS_MUST_SELL_STK
-                    && !bmodel.productHelper.isMustSellFilledStockCheck(false)) {
+                    && !bmodel.productHelper.isMustSellFilledStockCheck(false,this)) {
                 Toast.makeText(this, R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -2217,7 +2219,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY));
                 scheme_star.setImageDrawable(mDrawable);*/
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP
+                if (!stockCheckHelper.SHOW_STOCK_SP
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER)) {
                     list_view_stock_btn.setVisibility(View.GONE);

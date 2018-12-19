@@ -120,4 +120,5 @@
     <string name="resume_download">Resuming Download.</string>
     <string name="files_downloaded">All Files Are Downloaded.</string>
     <string name="unable_to_play">Unable To Play</string>
+    <string name="order_will_be_saved_later">Order will be saved when saving the New Retailer</string>
 </resources>

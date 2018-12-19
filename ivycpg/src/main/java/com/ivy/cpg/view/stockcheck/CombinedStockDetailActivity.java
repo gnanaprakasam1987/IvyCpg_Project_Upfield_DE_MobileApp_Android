@@ -319,7 +319,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     Commons.printException(e + "");
                 }
             }
-            if (!bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
+            if (!stockCheckHelper.SHOW_STOCK_AVGDAYS) {
                 (findViewById(R.id.ll_avgdays)).setVisibility(View.GONE);
 
                 if (!stockCheckHelper.SHOW_COMB_STOCK_SC &&

@@ -665,7 +665,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_REPLACED_QTY_PC;
     public boolean SHOW_REPLACED_QTY_CS;
     public boolean SHOW_REPLACED_QTY_OU;
-    public boolean SHOW_STOCK_AVGDAYS;
 
     // Outer & case conversion
     public boolean CONVERT_STOCK_SIH_PS;
@@ -859,7 +858,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_END_JOURNEY;
     public boolean SHOW_RETAILER_SELECTION_VALID;
     public boolean SHOW_CLOSE_DAY_VALID;
-    public boolean SHOW_SHELF_OUTER;
     public boolean SHOW_ZEBRA_ATS;
     public boolean SHOW_INTERMEC_ATS;
     //public boolean SHOW_SRP_EDIT;
@@ -890,7 +888,6 @@ public class ConfigurationMasterHelper {
     public boolean HIDE_STOCK_APPLY_BUTTON;
     public boolean SHOW_UNIT_PRICE;
     // Added in 45 version
-    public boolean SHOW_STOCK_TOTAL;
     public boolean SHOW_GOLD_STORE_DISCOUNT;
     public boolean ISUPLOADUSERLOC = false;
     public boolean IS_SHOW_DROPSIZE = false;
@@ -3903,7 +3900,6 @@ public class ConfigurationMasterHelper {
             SHOW_REPLACED_QTY_PC = false;
             SHOW_REPLACED_QTY_CS = false;
             SHOW_REPLACED_QTY_OU = false;
-            SHOW_STOCK_AVGDAYS = false;
 
             SHOW_VANLOAD_OC = false;
             SHOW_VANLOAD_OO = false;
