@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/asset_dailog_ListRow"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_selector"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingEnd="@dimen/list_padding_left_n_right"
     android:paddingStart="@dimen/list_padding_left_n_right"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
     android:weightSum="9">
 
     <TextView
@@ -24,7 +25,7 @@
 
     <TextView
         android:id="@+id/txt_move_serialNumber"
-        style="@style/TextViewListItemPrimary"
+        style="@style/TextViewListItemValues"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="4"
@@ -38,7 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="@dimen/dimen_4dp"
-        android:src="@drawable/ic_compare_arrows_black_24dp" />
+        android:src="@drawable/ic_compare_arrows_black_24dp"
+        tools:ignore="ContentDescription" />
 
 
 </LinearLayout>
