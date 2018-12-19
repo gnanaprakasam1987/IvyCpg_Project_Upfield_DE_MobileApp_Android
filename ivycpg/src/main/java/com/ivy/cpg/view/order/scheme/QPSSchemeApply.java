@@ -78,7 +78,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
     HashMap<Integer, SchemeBO> preSchemeList;
     HashMap<Integer, SchemeBO> currentSchemeList;
     HashMap<Integer, SchemeBO> nextSchemeList;
-    List<SchemeBO> schemeIDList;
+    List<SchemeBO> schemeIDList = new ArrayList<>();
     HashMap<Integer, SchemeBO> parentSchemeList;
 
     @Override
@@ -153,8 +153,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         nextSchemeList = new HashMap<>();
         mSchemeDoneList = new ArrayList<>();
         schemeHelper.resetSchemeQPSList();
-        //For setting Ordered SKUs and check Slab in the object.
-        schemeIDList = schemeHelper.getSchemeList();
+
         new SchemeApplyAsync().execute();
 
         if (!schemeHelper.IS_SCHEME_EDITABLE)
@@ -186,6 +185,14 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
+                //For setting Ordered SKUs and check Slab in the object.
+                List<SchemeBO> tempList = schemeHelper.getSchemeList();
+                for (SchemeBO schemeBO : tempList) {
+                    if (schemeHelper.getmSchemaQPSAchHistoryList() != null) {
+                        if (schemeHelper.getmSchemaQPSAchHistoryList().get(schemeBO.getParentId() + "") != null)
+                            schemeIDList.add(schemeBO);
+                    }
+                }
                 checkSlabandsetProduct();
                 mSchemeDoneList = buildListView();
                 return true;

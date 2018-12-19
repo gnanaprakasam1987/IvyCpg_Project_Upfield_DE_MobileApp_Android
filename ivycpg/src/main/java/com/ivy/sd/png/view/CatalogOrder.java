@@ -2089,19 +2089,22 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
             if (holder.pdt_image != null) {
 
+                File mFile = new File(
+                        appImageFolderPath
+                                + "/"
+                                + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg");
+                if (!mFile.exists())
+                    mFile = new File(
+                            appImageFolderPath
+                                    + "/"
+                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".png");
+
                 Uri path;
                 if (Build.VERSION.SDK_INT >= 24) {
-                    path = FileProvider.getUriForFile(CatalogOrder.this, BuildConfig.APPLICATION_ID + ".provider", new File(
-                            appImageFolderPath
-                                    + "/"
-                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg"));
+                    path = FileProvider.getUriForFile(CatalogOrder.this, BuildConfig.APPLICATION_ID + ".provider", mFile);
                 } else {
-                    path = Uri.fromFile(new File(
-                            appImageFolderPath
-                                    + "/"
-                                    + DataMembers.CATALOG + "/" + holder.productObj.getProductCode() + ".jpg"));
+                    path = Uri.fromFile(mFile);
                 }
-
                 //Glide.with(getApplicationContext())
                 glide.load(path)
                         .error(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image_available))

@@ -1255,7 +1255,7 @@ public class CommonPrintHelper {
                     mProductValue = String.valueOf(prod.getFoc());
                     mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
-                     mProductValue = String.valueOf(prod.getNetValue() / prod.getTotalOrderedQtyInPieces());
+                     mProductValue = String.valueOf(prod.getLineValueAfterSchemeApplied() / prod.getTotalOrderedQtyInPieces());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SCHEME_DISCOUNT)) {
                     mProductValue = formatValueInPrint(prod.getSchemeDiscAmount(), attr.getmAttributePrecision());
                 }
@@ -1428,7 +1428,7 @@ public class CommonPrintHelper {
                                 mProductValue = String.valueOf(prod.getFoc());
                                 mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
-                                mProductValue = String.valueOf(prod.getNetValue() / prod.getTotalOrderedQtyInPieces());
+                                mProductValue = String.valueOf(prod.getLineValueAfterSchemeApplied() / prod.getTotalOrderedQtyInPieces());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SCHEME_DISCOUNT)) {
                                 mProductValue = formatValueInPrint(prod.getSchemeDiscAmount(), attr.getmAttributePrecision());
                             }

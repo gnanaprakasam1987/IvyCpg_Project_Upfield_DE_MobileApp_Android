@@ -26,6 +26,7 @@ public class DailyReportBO {
 	private String sosCount;
 	private String priceCheckCount;
 	private String planogramCount;
+	private String totRouteCalls; // total outlets of visited routes
 
 
 	public String getEffCoverage() {
@@ -219,5 +220,13 @@ public class DailyReportBO {
 
 	public void setPlanogramCount(String planogramCount) {
 		this.planogramCount = planogramCount;
+	}
+
+	public String getTotRouteCalls() {
+		return totRouteCalls;
+	}
+
+	public void setTotRouteCalls(String totRouteCalls) {
+		this.totRouteCalls = totRouteCalls;
 	}
 }

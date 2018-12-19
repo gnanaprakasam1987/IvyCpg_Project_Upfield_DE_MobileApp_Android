@@ -401,7 +401,7 @@ public class SurveyHelperNew {
             sb.append(" SMP.Weight,ifnull(SMP.GroupName,''), SMP.isScore, A.isPhotoReq, A.minPhoto,");
             sb.append(" A.maxPhoto,A.isBonus, IFNULL(OM.OptionId,0), OM.OptionText, OSM.Score,");
             sb.append(" CASE OSM.isExcluded WHEN '1' THEN 'true' ELSE 'false' END as isExcluded,");
-            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore,PM.ParentHierarchy as ParentHierarchy FROM SurveyCriteriaMapping SCM");
+            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore FROM SurveyCriteriaMapping SCM");
             sb.append(" INNER JOIN StandardListMaster SL On SL.Listid=SCM.CriteriaType and SL.listtype='SURVEY_CRITERIA_TYPE'");
             sb.append(" INNER JOIN SurveyMapping SMP ON SMP.SurveyId = SCM.SurveyId");
             sb.append(" INNER JOIN SurveyMaster SM ON SM.SurveyId = SCM.SurveyId");
@@ -412,7 +412,6 @@ public class SurveyHelperNew {
             sb.append(" LEFT JOIN OptionScoreMapping OSM ON OSM.optionid = OM.optionid AND OSM.SurveyId = SM.SurveyId");
             sb.append(" LEFT JOIN OptionDQM OD ON OD.OptionId = OM.OptionId");
             sb.append(" LEFT JOIN SurveyCriteriaMapping SCM1 ON SCM1.SurveyId = SCM.SurveyId AND SCM1.Groupid = SCM.Groupid");
-            sb.append(" LEFT JOIN ProductMaster PM ON PM.PID = A.BrandID");
             sb.append(" WHERE Module=");
             sb.append(QT(surveyTypeStandardListId));
             sb.append(" AND SM.menuCode=");
@@ -481,7 +480,8 @@ public class SurveyHelperNew {
                         questionBO.setIsBonus(c.getInt(15));
                         questionBO.setIsSubQuestion(0);
                         questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
-                        questionBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                        if (questionBO.getBrandID() > 0)
+                            questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
 
 
                         sb1.append("Select IFNULL(AID.ImgName,'') FROM AnswerImageDetail AID INNER JOIN AnswerHeader AH  ON AH.uid=AID.Uid " +
@@ -580,7 +580,8 @@ public class SurveyHelperNew {
                             questionBO.setIsBonus(c.getInt(15));
                             questionBO.setIsSubQuestion(0);
                             questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
-                            questionBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                            if (questionBO.getBrandID() > 0)
+                                questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
 
                             sb1.append("Select IFNULL(AID.ImgName,'') FROM AnswerImageDetail AID INNER JOIN AnswerHeader AH  ON AH.uid=AID.Uid " +
                                     "AND AH.surveyid='" + questionBO.getSurveyid() + "' " +
@@ -1802,35 +1803,35 @@ public class SurveyHelperNew {
             if (c != null) {
                 while (c.moveToNext()) {
 
-                    if(getSurvey() !=null)
-                    for (SurveyBO surveyBO : getSurvey()) {
-                        if (surveyBO.getSurveyID() == c.getInt(0)) {
+                    if (getSurvey() != null)
+                        for (SurveyBO surveyBO : getSurvey()) {
+                            if (surveyBO.getSurveyID() == c.getInt(0)) {
 
-                            //Load Main Question Last transaction data
-                            for (QuestionBO questionBO : surveyBO.getQuestions()) {
-                                if (questionBO.getQuestionID() == c.getInt(1)) {
+                                //Load Main Question Last transaction data
+                                for (QuestionBO questionBO : surveyBO.getQuestions()) {
+                                    if (questionBO.getQuestionID() == c.getInt(1)) {
 
-                                    questionBO.setSelectedAnswerID(c.getInt(2));
-                                    questionBO.setSelectedAnswer(c.getString(3));
+                                        questionBO.setSelectedAnswerID(c.getInt(2));
+                                        questionBO.setSelectedAnswer(c.getString(3));
 
+                                    }
                                 }
-                            }
 
 
-                            //Load sub question Last transaction data
-                            for (QuestionBO subQuestioBo : getDependentQuestions()) {
-                                if (subQuestioBo.getQuestionID() == c.getInt(1)) {
-                                    subQuestioBo.setIsSubQuestion(1);
-                                    subQuestioBo.setSelectedAnswerID(c.getInt(2));
-                                    subQuestioBo.setSelectedAnswer(c.getString(3));
-                                    surveyBO.getQuestions().add(subQuestioBo);
+                                //Load sub question Last transaction data
+                                for (QuestionBO subQuestioBo : getDependentQuestions()) {
+                                    if (subQuestioBo.getQuestionID() == c.getInt(1)) {
+                                        subQuestioBo.setIsSubQuestion(1);
+                                        subQuestioBo.setSelectedAnswerID(c.getInt(2));
+                                        subQuestioBo.setSelectedAnswer(c.getString(3));
+                                        surveyBO.getQuestions().add(subQuestioBo);
+                                    }
                                 }
-                            }
 
+
+                            }
 
                         }
-
-                    }
 
                 }
                 c.close();
@@ -2619,4 +2620,26 @@ public class SurveyHelperNew {
         }
     }
 
+    private String getParentHiearchy(int productId) {
+        String parentHiearchy = "";
+
+        try {
+            DBUtil db;
+            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select ParentHierarchy from ProductMaster where PID=" + productId);
+            if (c != null && c.getCount() > 0) {
+                if (c.moveToNext()) {
+                    parentHiearchy = c.getString(0);
+                }
+                c.close();
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return parentHiearchy;
+    }
 }

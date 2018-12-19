@@ -256,7 +256,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             ArrayAdapter<ReasonMaster> spinnerAdapter = new ArrayAdapter<>(this,
                     R.layout.call_analysis_spinner_layout);
             spinnerAdapter.add(new ReasonMaster(-1 + "", getResources().getString(R.string.select_reason_for_no_order)));
-            if(bmodel.reasonHelper.getNonProductiveReasonMaster() != null) {
+            if (bmodel.reasonHelper.getNonProductiveReasonMaster() != null) {
                 for (ReasonMaster temp : bmodel.reasonHelper
                         .getNonProductiveReasonMaster())
                     spinnerAdapter.add(temp);
@@ -1124,7 +1124,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         menuDB = bmodel.configurationMasterHelper.getActivityMenu();
         for (ConfigureBO configureBO : menuDB) {
             if ((configureBO.getConfigCode().equals("MENU_ORDER") ||
-                    configureBO.getConfigCode().equals("MENU_STK_ORD") && configureBO.getHasLink() == 1)) {
+                    configureBO.getConfigCode().equals("MENU_STK_ORD") ||
+                    configureBO.getConfigCode().equals("MENU_CATALOG_ORDER") && configureBO.getHasLink() == 1)) {
                 return true;
             }
         }

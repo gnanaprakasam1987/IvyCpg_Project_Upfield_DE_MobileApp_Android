@@ -4369,7 +4369,7 @@ public class ProductHelper {
         sb = new StringBuffer();
         sb.append("update invoiceMaster set schemeAmount=" + totSchemeAmountValue);
         sb.append(",discount=" + totDiscVaue + ",taxAmount=" + totTaxValue + ",priceoffAmount=" + totPriceOffValue);
-        sb.append(",invoiceAmount=" + bmodel.QT(bmodel.formatValue(totalInvoiceAmount)));
+        sb.append(",invoiceAmount=" + totalInvoiceAmount);
         sb.append(" where invoiceno=" + bmodel.QT(invoiceid));
         db.updateSQL(sb.toString());
 

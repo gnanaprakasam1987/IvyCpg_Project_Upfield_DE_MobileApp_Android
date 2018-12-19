@@ -1538,6 +1538,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || menu.getConfigCode().equals(MENU_COMBINED_STOCK)
                     || menu.getConfigCode().equals(MENU_ORDER)
                     || menu.getConfigCode().equals(MENU_STK_ORD)
+                    || menu.getConfigCode().equals(MENU_CATALOG_ORDER)
                     || menu.getConfigCode().equals(MENU_SALES_RET)
                     || menu.getConfigCode().equals(MENU_NEAREXPIRY)
                     || menu.getConfigCode().equals(MENU_PRICE)

@@ -607,6 +607,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     productBO.setTotalOrderedQtyInPieces(totalQuantity);
                     productBO.setLineValue(lineValue);
                     productBO.setNetValue(lineValue);
+                    productBO.setLineValueAfterSchemeApplied(lineValue);
 
 
                     totalOrderValue += lineValue;
@@ -805,6 +806,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     productBO.setNetValue(lineValue);
                     productBO.setOrderPricePiece(productBO.getSrp());
+                    productBO.setLineValueAfterSchemeApplied(lineValue);
 
                     productBO.setCompanyTypeDiscount(0);
                     productBO.setDistributorTypeDiscount(0);
