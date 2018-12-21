@@ -47,6 +47,7 @@ public class AssetTrackingHelper {
 
     public int mSelectedAssetID = 0;
     public String mSelectedImageName = "";
+    public int mSelectedProductID = 0;
 
     // Asset configuration
     private static final String CODE_ASSET_COLUMNS = "AT01";
@@ -1678,7 +1679,7 @@ public class AssetTrackingHelper {
                                         assetImgInofValues.append(",");
                                         assetImgInofValues.append(assetBo.getProductId());
                                         assetImgInofValues.append(",");
-                                        assetImgInofValues.append(assetBo.getLocationID());
+                                        assetImgInofValues.append((MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM) ? assetBo.getLocationID():standardListBO.getListID());
                                         db.insertSQL(DataMembers.tbl_AssetImgInfo,
                                                 AssetImageInfoColumns,
                                                 assetImgInofValues.toString());
@@ -1914,7 +1915,7 @@ public class AssetTrackingHelper {
                         if (SHOW_LOCATION_POSM)
                             assetBO.setLocationID(locId);
 
-                        assetBO.setImageList(getImagesList(mcontext, assetID, locId));
+                        assetBO.setImageList(getImagesList(mcontext, assetID, locId, pid));
 
                     }
 
@@ -1968,7 +1969,7 @@ public class AssetTrackingHelper {
         return retailerMovedData;
     }
 
-    public ArrayList<String> getImagesList(Context mContext, int assetId, int locId) {
+    public ArrayList<String> getImagesList(Context mContext, int assetId, int locId, int pid) {
         ArrayList<String> imageList = new ArrayList<>();
         try {
 
@@ -1980,7 +1981,7 @@ public class AssetTrackingHelper {
             Cursor c;
 
             sql = "select ImageName from AssetImageDetails "
-                    + " where AssetID = " + assetId + " AND LocId = " + locId
+                    + " where AssetID = " + assetId + " AND LocId = " + locId + " AND PID = " + pid
                     + " AND Upload = " + QT("N");
             c = db.selectSQL(sql);
 

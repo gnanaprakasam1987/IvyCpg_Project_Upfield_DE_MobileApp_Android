@@ -911,11 +911,13 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                             assetTrackingHelper.mSelectedAssetID = holder.assetBO
                                     .getAssetID();
                             assetTrackingHelper.mSelectedImageName = imageName;
+                            assetTrackingHelper.mSelectedProductID = holder.assetBO.getProductId();
 
                             if (holder.assetBO.getImageList().size() != 0) {
                                 Intent intent = new Intent(getActivity(), PosmGallery.class);
                                 intent.putExtra("listId", mSelectedStandardListBO.getListID());
                                 intent.putExtra("assetId", holder.assetBO.getAssetID());
+                                intent.putExtra("productId", holder.assetBO.getProductId());
                                 startActivityForResult(intent, POSM_GALLERY);
                             } else
                                 captureCustom();
@@ -1269,7 +1271,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
      * @param assetID Asset Id
      * @param imgName Image Name
      */
-    private void onSaveImageName(int assetID, String imgName) {
+    private void onSaveImageName(int assetID, String imgName, int productID) {
 
         String imagePath = "Asset/"
                 + mBModel.userMasterHelper.getUserMasterBO().getDownloadDate()
@@ -1279,7 +1281,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         for (AssetTrackingBO assetBO : mAssetTrackingList) {
             if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                 continue;
-            if (assetID == assetBO.getAssetID()) {
+            if (assetID == assetBO.getAssetID() && productID == assetBO.getProductId()) {
                 ArrayList<String> imageList = assetBO.getImageList();
                 imageList.add(imagePath);
                 assetBO.setImageList(imageList);
@@ -1301,7 +1303,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 if (assetTrackingHelper.mSelectedAssetID != 0) {
                     onSaveImageName(
                             assetTrackingHelper.mSelectedAssetID,
-                            assetTrackingHelper.mSelectedImageName);
+                            assetTrackingHelper.mSelectedImageName, assetTrackingHelper.mSelectedProductID);
                 }
             } else {
                 Commons.print(TAG + "," + "Camera Activity : Canceled");
