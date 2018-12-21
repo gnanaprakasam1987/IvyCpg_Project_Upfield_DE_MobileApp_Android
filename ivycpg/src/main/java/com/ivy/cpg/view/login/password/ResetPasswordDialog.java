@@ -23,6 +23,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -184,7 +185,7 @@ public class ResetPasswordDialog extends Dialog {
                 jsonObject.put("OTPValue", OTP);
 
                 jsonObject.put("NewPassword", Npassword);
-                jsonObject.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+                jsonObject.put(SynchronizationHelper.VERSION_NAME, AppUtils.getApplicationVersionName(ctx));
                 Commons.printInformation("Reset password upload " + jsonObject.toString());
                 String appendUrl = "/V1/ForgotPassword/Validate";
                 Vector<String> responseVector = bmodel.synchronizationHelper.getUploadResponseForgotPassword(jsonObject, appendUrl, false);

@@ -2179,12 +2179,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             //Grab the window of the dialog, and change the width
                             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                             Window window = dialogCustomKeyBoard.getWindow();
-                            if (window != null)
-                            lp.copyFrom(window.getAttributes());
-                            lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                            if (window != null)
-                            window.setAttributes(lp);
+                            if (window != null) {
+                                lp.copyFrom(window.getAttributes());
+                                lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                window.setAttributes(lp);
+                            }
                         }
 
                     }
@@ -2201,12 +2201,12 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                             //Grab the window of the dialog, and change the width
                             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                             Window window = dialogCustomKeyBoard.getWindow();
-                            if (window != null)
-                            lp.copyFrom(window.getAttributes());
-                            lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                            if (window != null)
-                            window.setAttributes(lp);
+                            if (window != null) {
+                                lp.copyFrom(window.getAttributes());
+                                lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                window.setAttributes(lp);
+                            }
                         }
                         if (bmodel.configurationMasterHelper.ALLOW_SO_COPY) {
                             productObj.setOrderedPcsQty(productObj.getSoInventory());

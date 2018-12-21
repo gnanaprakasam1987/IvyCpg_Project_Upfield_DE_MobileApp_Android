@@ -35,6 +35,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -184,15 +185,11 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             if (pdt_image != null) {
                 Uri path;
                 if (Build.VERSION.SDK_INT >= 24) {
-                    path = FileProvider.getUriForFile(ProductSchemeDetailsActivity.this, BuildConfig.APPLICATION_ID + ".provider", new File(
-                            appImageFolderPath
-                                    + "/"
-                                    + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg"));
+                    path = AppUtils.getUriFromFile(ProductSchemeDetailsActivity.this, appImageFolderPath + "/"
+                                    + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg");
                 } else {
-                    path = Uri.fromFile(new File(
-                            appImageFolderPath
-                                    + "/"
-                                    + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg"));
+                    path = AppUtils.getUriFromFile(ProductSchemeDetailsActivity.this, appImageFolderPath + "/"
+                                    + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg");
                 }
 
                 //Set Image in Imageview using Glide, on exception disable scrolling of ImageView
