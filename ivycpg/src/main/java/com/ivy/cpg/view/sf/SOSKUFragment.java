@@ -596,6 +596,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
             if (mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOSKU))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
+            menu.findItem(R.id.menu_loc_filter).setVisible(false);
         } catch (Exception e) {
             Commons.printException("" + e);
         }
