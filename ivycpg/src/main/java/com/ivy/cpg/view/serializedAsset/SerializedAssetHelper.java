@@ -325,14 +325,6 @@ public class SerializedAssetHelper {
             sb.append("Where Retailerid in(0,");
             sb.append(AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
 
-            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append(" and (C.Productid = ");
-                sb.append(mBusinessModel.productHelper.getmSelectedGlobalProductId());
-                sb.append(" OR C.Productid = 0 )");
-
-                allMasterSb = allMasterSb + ("and (C.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR C.Productid = 0 )");
-            }
-
             sb.append(" GROUP BY RetailerId,B.AssetId,B.SerialNumber ORDER BY RetailerId");
 
             Cursor c = db.selectSQL(sb.toString());

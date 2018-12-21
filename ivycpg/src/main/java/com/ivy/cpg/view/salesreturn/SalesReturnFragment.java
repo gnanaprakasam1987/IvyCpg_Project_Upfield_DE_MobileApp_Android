@@ -363,6 +363,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             mSelectedFilter = bmodel.getProductFilter();
             for (int i = 0; i < siz; ++i) {
                 ret = items.elementAt(i);
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (mSelectedFilter.equals(getResources().getString(
                         R.string.order_dialog_barcode))) {
                     if (ret.getBarCode() != null && ret.getBarCode()
@@ -446,6 +448,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             mylist = new ArrayList<>();
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (loadBothSalable ?
                         (ret.getIsSaleable() == 1 || ret.getIsSaleable() == 0) : ret.getIsSaleable() == 1) {
                     if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
@@ -924,6 +928,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             int orderCount = -1;
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (bid == -1) {
                     if (BRAND_STRING.equals(mFilterText) || (bid == ret.getParentid())) {
                         int count = 0;
@@ -1024,6 +1030,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         if (mAttributeProducts != null) {
             if (mFilteredPid != 0) {
                 for (ProductMasterBO productBO : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/") && productBO.getIsSaleable() == 1) {
                         // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
                         if (mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
@@ -1035,6 +1043,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                             mylist.add(productBO);
                             fiveFilter_productIDs.add(productBO.getProductID());
@@ -1045,6 +1055,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         } else {
             if (!mFilterText.isEmpty()) {
                 for (ProductMasterBO productBO : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/") && productBO.getIsSaleable() == 1) {
                         mylist.add(productBO);
                         fiveFilter_productIDs.add(productBO.getProductID());

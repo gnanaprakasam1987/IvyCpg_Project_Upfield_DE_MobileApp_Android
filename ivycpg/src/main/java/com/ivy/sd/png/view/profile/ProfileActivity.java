@@ -315,8 +315,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
 
-
-
     }
 
     private void setCustomFont() {
@@ -1655,7 +1653,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
 
-
         // Restrict user to start visit if mock location provider is set.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             if (bmodel.isMockSettingsON()) {
@@ -1838,7 +1835,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             downloadProductsAndPrice = new DownloadProductsAndPrice();
             if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
-            downloadProductsAndPrice.execute();
+                downloadProductsAndPrice.execute();
 
         }
     }
@@ -1959,21 +1956,23 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     /**
      * get photo path.
+     *
      * @return path
      */
     private String getPhotoPath() {
         return this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                        + "/"
-                        + DataMembers.photoFolderName
-                        + "/";
+                + "/"
+                + DataMembers.photoFolderName
+                + "/";
     }
 
     /**
      * Generate photo capture path.
      * photoPath and fnameSatarts should be global to access from save method.
+     *
      * @return imagefileName
      */
-    private String getImageName(){
+    private String getImageName() {
         fnameStarts = "RT_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + dateTimeStampForId;
         return fnameStarts + "_"
                 + (bmodel.synchronizationHelper.getImageCountFromPath(getPhotoPath(), fnameStarts) + 1)
@@ -2130,22 +2129,16 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                         bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
                     }
 
-                    if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                    if (genericObjectPair != null) {
+                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
+                    }
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getFilterProductLevels(), true));
 
-                        Commons.print("time start : " + SDUtil.now(5));
-                        GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
-                        if (genericObjectPair != null) {
-                            bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                            bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                        }
-                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                                bmodel.productHelper.getFilterProductLevels(), true));
-
-                        Commons.print("time stop : " + SDUtil.now(5));
-
-
-                    } else {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                         //to reload product filter if diffrent retailer selected
                         bmodel.productHelper.setmLoadedGlobalProductId(0);
                     }

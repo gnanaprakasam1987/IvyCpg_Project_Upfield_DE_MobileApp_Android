@@ -232,6 +232,7 @@ public class ProductHelper {
         mTaggedProducts = null;
         mTaggedProductById = null;
         productMasterById = null;
+        mSelectedGlobalProductId = 0;
         System.gc();
     }
 
@@ -840,7 +841,7 @@ public class ProductHelper {
                 String query = "SELECT DISTINCT PM.PID, PM.PName,PM.ParentHierarchy,PM.PLid,PM.ParentId FROM ProductMaster PM "
                         + " WHERE PM.PLid in (" + pLIds + ") ";
 
-                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && mSelectedGlobalProductId != 0)
                     query = query + " and PM.ParentHierarchy LIKE '%/' || " + mSelectedGlobalProductId + " || '/%'";
 
                 query = query + " Order By PM.RowId";
@@ -1005,8 +1006,6 @@ public class ProductHelper {
                     sql = sql + " and A.pid in(" + pdQuery + ")";
                 }
             }
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                sql = sql + " and A.ParentHierarchy LIKE '%/' || " + mSelectedGlobalProductId + " || '/%'";
 
             sql = sql + " group by A.pid ORDER BY " + filter + " A.rowid";
 

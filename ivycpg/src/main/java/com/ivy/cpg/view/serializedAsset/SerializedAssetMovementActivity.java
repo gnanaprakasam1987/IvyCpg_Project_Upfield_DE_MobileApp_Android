@@ -81,11 +81,14 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
         ArrayList<Integer> toRemovePos=new ArrayList<>();
         if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
             if (mMovedList != null && mMovedList.size() > 0) {
+
                 for(int i=0;i<mMovedList.size();i++)
                 {
                     String tempMoved=mMovedList.get(i);
                     for(int j=0;j<mAssetTrackingList.size();j++)
                     {
+                        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !mAssetTrackingList.get(j).getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if(tempMoved.equalsIgnoreCase(String.valueOf(mAssetTrackingList.get(j).getAssetID())+mAssetTrackingList.get(j).getSerialNo()))
                         {
                             toRemovePos.add(j);

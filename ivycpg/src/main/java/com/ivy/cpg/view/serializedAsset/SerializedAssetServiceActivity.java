@@ -130,6 +130,8 @@ public class SerializedAssetServiceActivity extends BaseActivity implements Seri
         mList = new ArrayList<>();
         for (int i = 0; i < siz; ++i) {
             SerializedAssetBO ret = items.elementAt(i);
+            if (bModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
             mList.add(ret);
         }
 

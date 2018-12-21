@@ -508,6 +508,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             mylist = new Vector<>();
             for (String productid : productIdList) {
                 ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(productid);
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
                     setTaggingDetails(productBO);
                 }
@@ -675,6 +677,9 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (searchAsync.isCancelled()) {
                 break;
             }
+
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
 
             if (loadStockedProduct == -1
                     || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
@@ -848,6 +853,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             // Add the products into list
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO productMasterBO = items.elementAt(i);
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productMasterBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (productMasterBO.getBarCode().equals(strBarCodeSearch)
                         || productMasterBO.getCasebarcode().equals(strBarCodeSearch)
                         || productMasterBO.getOuterbarcode().equals(strBarCodeSearch)
@@ -1069,6 +1076,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (mFilteredPid != 0) {
                 count++;
                 for (ProductMasterBO productBO : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (loadStockedProduct == -1
                             || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -1087,6 +1096,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -1102,6 +1113,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
             if (filtertext.length() > 0) {
                 for (ProductMasterBO productBO : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (loadStockedProduct == -1
                             || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -1116,6 +1129,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 }
             } else {
                 for (ProductMasterBO productBO : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (loadStockedProduct == -1
                             || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -1137,6 +1152,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             Vector<ProductMasterBO> temp = new Vector<ProductMasterBO>();
             String generaltxt = generalbutton;
             for (ProductMasterBO ret : mylist) {
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (generaltxt.equals(GENERAL))//No special filters selected
                 {
                     if (searchedtext.length() >= 3) {// User entry filter
@@ -1467,7 +1484,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        StockCheckHelper.getInstance(CatalogOrder.this).saveClosingStock(CatalogOrder.this,true);
+                                        StockCheckHelper.getInstance(CatalogOrder.this).saveClosingStock(CatalogOrder.this, true);
 
                                         Toast.makeText(
                                                 CatalogOrder.this,
@@ -1536,7 +1553,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                     }
                     if (count > 0) {
 
-                        Intent intent = new Intent(CatalogOrder.this,MOQHighlightActivity.class);
+                        Intent intent = new Intent(CatalogOrder.this, MOQHighlightActivity.class);
                         ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
                         ActivityCompat.startActivityForResult(this, intent, MOQ_RESULT_CODE, opts.toBundle());
 
@@ -1796,6 +1813,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             mylist = new Vector<>();
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
 
                 if (loadStockedProduct == -1
                         || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {

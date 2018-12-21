@@ -134,7 +134,7 @@ import java.util.Vector;
 import static com.ivy.cpg.view.order.moq.MOQHighlightActivity.MOQ_RESULT_CODE;
 
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener,FiveLevelFilterCallBack {
+        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -4089,7 +4089,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     totalWeight = totalWeight + ((ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())) * ret.getWeight());
                     int totalOrderedQty = orderHelper.getTotalOrderedQty(ret);
-                    totalAllQty = (totalOrderedQty != -1)? (totalAllQty + totalOrderedQty) : (totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())));
+                    totalAllQty = (totalOrderedQty != -1) ? (totalAllQty + totalOrderedQty) : (totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())));
 
                     orderedList.add(ret);
                 }
@@ -4414,7 +4414,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     }
                     if (count > 0) {
-                        Intent intent = new Intent(StockAndOrder.this,MOQHighlightActivity.class);
+                        Intent intent = new Intent(StockAndOrder.this, MOQHighlightActivity.class);
                         ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
                         ActivityCompat.startActivityForResult(this, intent, MOQ_RESULT_CODE, opts.toBundle());
                         count = 0;
@@ -4858,10 +4858,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             mylist = new Vector<>();
                             for (SchemeProductBO schemeProductBO : slabBO.getBuyingProducts()) {
 
-                                if (bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()) != null)
+                                if (bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()) != null) {
+                                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                            !bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                                        continue;
                                     mylist.add(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()));
-                                else {
+                                } else {
                                     for (ProductMasterBO productMasterBO : productList) {
+                                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                                !productMasterBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                                            continue;
                                         if (productMasterBO.getParentHierarchy().contains("/" + schemeProductBO.getProductId() + "/"))
                                             mylist.add(productMasterBO);
                                     }
@@ -4881,7 +4887,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (resultCode == 1) {
                 lvwplist.invalidateViews();
             }
-        }else {
+        } else {
             if (result != null) {
                 if (result.getContents() != null) {
                     strBarCodeSearch = result.getContents();
@@ -4911,6 +4917,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mylist = new Vector<>();
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                        !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
                     continue;
                 if (loadStockedProduct == -1
@@ -5015,6 +5024,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
+                continue;
+
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                    !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                 continue;
 
             if (loadStockedProduct == -1
@@ -5254,6 +5267,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         || ret.getOuterbarcode().equals(strBarCodeSearch)
                         || "ALL".equals(strBarCodeSearch)) {
                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
+                        continue;
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                            !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                         continue;
 
                     if (loadStockedProduct == -1
@@ -6096,6 +6112,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (mFilterText.length() > 0) {
                     count++;
                     for (ProductMasterBO productBO : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6117,6 +6136,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 } else {
                     for (ProductMasterBO productBO : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6140,6 +6162,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6161,7 +6185,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (mProductId != 0) {
                     count++;
                     for (ProductMasterBO productBO : items) {
-
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6180,7 +6206,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             } else {
                 for (ProductMasterBO productBO : items) {
-
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                            !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (loadStockedProduct == -1
                             || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6205,6 +6233,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             Vector<ProductMasterBO> temp = new Vector<>();
             String generaltxt = generalbutton;
             for (ProductMasterBO ret : mylist) {
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                        !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (generaltxt.equals(GENERAL))//No special filters selected
                 {
                     if (mEdt_searchproductName.getText().length() >= 3) {// User entry filter

@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogInterface,FiveLevelFilterCallBack {
+public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogInterface, FiveLevelFilterCallBack {
 
     private BusinessModel bmodel;
     private DrawerLayout mDrawerLayout;
@@ -203,6 +203,8 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         mylist = new ArrayList<>();
 
         for (ProductMasterBO sku : items) {
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
             if (sku.getIsReturnable() == 1) {
                 if (bmodel.mEmptyReturnHelper.mSelectedFilter == sku.getParentid()
                         || bmodel.mEmptyReturnHelper.mSelectedFilter == -1) {
@@ -326,7 +328,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                                 .getString(R.string.no_data_tosave),
                         Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-           Commons.printException(e);
+            Commons.printException(e);
         }
     }
 
@@ -459,7 +461,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     }
 
     @Override
-    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer>mAttributeProducts, String mFilterText) {
+    public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
     }
 }

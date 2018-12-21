@@ -575,14 +575,14 @@ public class CommonPrintHelper {
                                     calculateSchemeAmountDiscountValue();
 
                                 //Bill discount
-                                double billDiscountValue = bmodel.getOrderHeaderBO()!=null?bmodel.getOrderHeaderBO().getBillLevelDiscountValue():0;
+                                double billDiscountValue = bmodel.getOrderHeaderBO() != null ? bmodel.getOrderHeaderBO().getBillLevelDiscountValue() : 0;
                                 if (bmodel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT && !DiscountHelper.getInstance(context).isWihtHoldApplied())
                                     billDiscountValue -= orderHelper.withHoldDiscount;
                                 mBillLevelDiscountValue = billDiscountValue;
                                 //
 
                                 //Bill tax
-                                double billLevelTax=bmodel.getOrderHeaderBO()!=null?bmodel.getOrderHeaderBO().getBillLevelTaxValue():0;
+                                double billLevelTax = bmodel.getOrderHeaderBO() != null ? bmodel.getOrderHeaderBO().getBillLevelTaxValue() : 0;
 
                                 getEmptyReturnValue();
                                 if (bmodel.configurationMasterHelper.SHOW_COLLECTION_BEFORE_INVOICE)
@@ -705,7 +705,7 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_TIME)) {
             value = label + SDUtil.now(SDUtil.TIME);
         } else if (tag.equalsIgnoreCase(TAG_DELIVERY_DATE)) {
-            String deliveryDate = bmodel.getDeliveryDate(OrderHelper.getInstance(context).selectedOrderId,bmodel.getRetailerMasterBO().getRetailerID());
+            String deliveryDate = bmodel.getDeliveryDate(OrderHelper.getInstance(context).selectedOrderId, bmodel.getRetailerMasterBO().getRetailerID());
             if (!deliveryDate.equals("")) {
                 String delDate = DateUtil.convertFromServerDateToRequestedFormat(deliveryDate, bmodel.configurationMasterHelper.outDateFormat);
                 value = label + delDate;
@@ -784,11 +784,11 @@ public class CommonPrintHelper {
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_PRICE_OFF)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint(totalPriceOffValue, precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_APPLY)) {
-            value = getProductLevelApplyDiscount(label,precisionCount);
+            value = getProductLevelApplyDiscount(label, precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_PRODUCT_ENTRY)) {
             value = alignWithLabelForSingleLine(label, formatValueInPrint((DiscountHelper.getInstance(context).calculateUserEntryLevelDiscount(mOrderedProductList)), precisionCount));
         } else if (tag.equalsIgnoreCase(TAG_TAX_PRODUCT)) {
-            value = getProductLevelTax(label,precisionCount);
+            value = getProductLevelTax(label, precisionCount);
         } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_BILL_ENTRY)) {
             int extraSpace = 0;
             extraSpace = SDUtil.convertToInt(attr_space_str);
@@ -1138,7 +1138,7 @@ public class CommonPrintHelper {
         ProductMasterBO productBO;
         for (int i = 0; i < productsCount; i++) {
             productBO = productList.elementAt(i);
-            if (productBO.getTotalOrderedQtyInPieces()>0
+            if (productBO.getTotalOrderedQtyInPieces() > 0
                     || ((bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_DELIVERY || bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                     && isReturnDoneForProduct(productBO))) {
                 mOrderedProductList.add(productBO);
@@ -1255,7 +1255,7 @@ public class CommonPrintHelper {
                     mProductValue = String.valueOf(prod.getFoc());
                     mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
-                     mProductValue = String.valueOf(prod.getLineValueAfterSchemeApplied() / prod.getTotalOrderedQtyInPieces());
+                    mProductValue = formatValueInPrint(prod.getLineValueAfterSchemeApplied() / prod.getTotalOrderedQtyInPieces(), attr.getmAttributePrecision());
                 } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SCHEME_DISCOUNT)) {
                     mProductValue = formatValueInPrint(prod.getSchemeDiscAmount(), attr.getmAttributePrecision());
                 }
@@ -1428,7 +1428,7 @@ public class CommonPrintHelper {
                                 mProductValue = String.valueOf(prod.getFoc());
                                 mProductQtyInPieceTotal = mProductQtyInPieceTotal + SDUtil.convertToInt(mProductValue);
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_DISCOUNTED_PRICE)) {
-                                mProductValue = String.valueOf(prod.getLineValueAfterSchemeApplied() / prod.getTotalOrderedQtyInPieces());
+                                mProductValue = formatValueInPrint(prod.getLineValueAfterSchemeApplied() / prod.getTotalOrderedQtyInPieces(), attr.getmAttributePrecision());
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SCHEME_DISCOUNT)) {
                                 mProductValue = formatValueInPrint(prod.getSchemeDiscAmount(), attr.getmAttributePrecision());
                             }
@@ -1631,7 +1631,7 @@ public class CommonPrintHelper {
                         for (SchemeProductBO buyProd : schemeBO.getBuyingProducts()) {
                             ProductMasterBO productBO = bmodel.productHelper.getProductMasterBOById(buyProd.getProductId());
                             if (productBO != null) {
-                                if (productBO.getTotalOrderedQtyInPieces()>0) {
+                                if (productBO.getTotalOrderedQtyInPieces() > 0) {
                                     mBuyProdDiscountedValue = mBuyProdDiscountedValue + buyProd.getDiscountValue();
                                 }
                             }
@@ -1740,20 +1740,20 @@ public class CommonPrintHelper {
      *
      * @return
      */
-    private String getProductLevelApplyDiscount(String label,int precision) {
-        StringBuffer sb=new StringBuffer();
+    private String getProductLevelApplyDiscount(String label, int precision) {
+        StringBuffer sb = new StringBuffer();
 
-        DiscountHelper discountHelper=DiscountHelper.getInstance(context);
+        DiscountHelper discountHelper = DiscountHelper.getInstance(context);
 
-        HashMap<String,Double> discountList=discountHelper.prepareProductDiscountForPrint(context,orderHelper.getOrderId().replaceAll("\'", ""));
+        HashMap<String, Double> discountList = discountHelper.prepareProductDiscountForPrint(context, orderHelper.getOrderId().replaceAll("\'", ""));
 
-        if(discountList.size()>0) {
+        if (discountList.size() > 0) {
             for (String discountName : discountList.keySet()) {
                 sb.append(alignWithLabelForSingleLine(discountName, formatValueInPrint(discountList.get(discountName), precision)));
                 sb.append("\n");
 
             }
-        }else {
+        } else {
             sb.append(alignWithLabelForSingleLine(label, formatValueInPrint(0, precision)));
             sb.append("\n");
         }
@@ -1767,18 +1767,17 @@ public class CommonPrintHelper {
      *
      * @return
      */
-    private String getProductLevelTax(String label,int precision) {
+    private String getProductLevelTax(String label, int precision) {
 
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        HashMap<String,Double> taxList=bmodel.productHelper.taxHelper.prepareProductTaxForPrint(context,orderHelper.getOrderId().replaceAll("\'", ""),isFromInvoiceTransaction);
-        if(taxList.size()>0) {
+        HashMap<String, Double> taxList = bmodel.productHelper.taxHelper.prepareProductTaxForPrint(context, orderHelper.getOrderId().replaceAll("\'", ""), isFromInvoiceTransaction);
+        if (taxList.size() > 0) {
             for (String taxName : taxList.keySet()) {
                 sb.append(alignWithLabelForSingleLine(taxName, formatValueInPrint(taxList.get(taxName), precision)));
                 sb.append("\n");
             }
-        }
-        else {
+        } else {
             // Printing tax value as 0.
             sb.append(alignWithLabelForSingleLine(label, formatValueInPrint(0, precision)));
             sb.append("\n");

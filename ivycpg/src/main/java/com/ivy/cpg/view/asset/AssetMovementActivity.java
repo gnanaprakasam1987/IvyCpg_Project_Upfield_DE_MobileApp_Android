@@ -107,6 +107,8 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
                 }
                 ArrayList<AssetTrackingBO> assetTrackingList = new ArrayList<>();
                 for (int i = 0; i < mAssetTrackingList.size(); i++) {
+                    if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !mAssetTrackingList.get(i).getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (!toRemovePos.contains(i)) {
                         assetTrackingList.add(mAssetTrackingList.get(i));
                     }

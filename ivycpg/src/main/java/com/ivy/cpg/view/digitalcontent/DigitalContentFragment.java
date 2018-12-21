@@ -497,16 +497,16 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 mImageList = new ArrayList<>();
                 items = mDigitalContentHelper.getDigitalMaster();
                 Activity activity = getActivity();
-                if(activity != null && isAdded())
-                if (items == null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
-                            mBModel.showAlert(getResources().getString(R.string.no_data_exists),
-                                    0);
-                        }
-                    });
-                    return false;
-                }
+                if (activity != null && isAdded())
+                    if (items == null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                mBModel.showAlert(getResources().getString(R.string.no_data_exists),
+                                        0);
+                            }
+                        });
+                        return false;
+                    }
                 size = items.size();
 
 
@@ -640,6 +640,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         private void loadDigitalContentByType(int pid) {
             for (int i = 0; i < size; ++i) {
                 DigitalContentBO ret = items.elementAt(i);
+                if (pid != -1 && mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (ret.getParentHierarchy().contains("/" + pid + "/") || pid == -1) {
                     if ((ret.getFileName().endsWith(".png") || ret.getFileName().endsWith(".jpeg")
                             || ret.getFileName().endsWith(".jpg") || ret.getFileName().endsWith(".JPG")

@@ -242,8 +242,7 @@ public class SalesFundamentalHelper {
             sBuffer.append(" AND " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " BETWEEN SF.StartDate AND SF.EndDate");
             sBuffer.append(" WHERE A.PLID IN (" + mContentLevelId + ")");
-            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                sBuffer.append(" and A.ParentHierarchy LIKE '%/' ||" + mBModel.productHelper.getmSelectedGlobalProductId() + " || '/%'");
+
 
             if (moduleName.equals(moduleSOS)) {
                 SOSBO mSOS;
