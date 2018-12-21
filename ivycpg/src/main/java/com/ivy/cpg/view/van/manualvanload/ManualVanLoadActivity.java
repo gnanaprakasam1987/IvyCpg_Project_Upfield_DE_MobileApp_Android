@@ -80,6 +80,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     private MyAdapter mSchedule;
     private ManualVanLoadHelper manualVanLoadHelper;
 
+    public static final int VAN_RETURN_PRODUCT_RESULT_CODE = 116;
+
     android.content.DialogInterface.OnDismissListener vanloadDismissListener = new android.content.DialogInterface.OnDismissListener() {
         @Override
         public void onDismiss(DialogInterface dialog) {
@@ -90,7 +92,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     };
 
 
-    private VanLoadReturnProductDialog returnProductDialog;
     private ManualVanLoadDialog vanLoadDialog;
     private boolean isAddBatchDialogClicked = false;
 
@@ -612,7 +613,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 isClicked = true;
                 int size = bmodel.productHelper.getBomReturnProducts().size();
                 if (size > 0) {
-                    new LoadReturnProductDialogAsyncTask(ManualVanLoadActivity.this, returnProDialogNumPress).execute();
+                    new LoadReturnProductDialogAsyncTask(ManualVanLoadActivity.this).execute();
                 } else {
                     showMessage(getString(R.string.data_not_mapped));
                     isClicked = false;
@@ -893,13 +894,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     }
 
     public void numberPressed(View vw) {
-        if (returnProductDialog != null) {
-            if (returnProductDialog.isShowing()) {
-                returnProductDialog.numberPressed(vw);
-            } else {
-                activityKeypad(vw);
-            }
-        } else if (vanLoadDialog != null) {
+        if (vanLoadDialog != null) {
             if (vanLoadDialog.isShowing()) {
                 vanLoadDialog.numberPressed(vw);
             } else {
@@ -1269,14 +1264,11 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
         LinearLayout listLayout, rowLayout;
     }
 
-    /**
-     * this interface used to call numberPressed() method
-     * for access view from VanLoadReturnProductDialog
-     */
-    ReturnProDialogNumPress returnProDialogNumPress = new ReturnProDialogNumPress() {
-        @Override
-        public void dialogNumPress(Dialog dialog) {
-            returnProductDialog = (VanLoadReturnProductDialog) dialog;
-        }
-    };
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == VAN_RETURN_PRODUCT_RESULT_CODE)
+            overridePendingTransition(0, R.anim.zoom_exit);
+    }
 }

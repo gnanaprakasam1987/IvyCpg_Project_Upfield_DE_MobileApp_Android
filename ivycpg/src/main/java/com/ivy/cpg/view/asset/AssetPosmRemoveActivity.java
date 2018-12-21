@@ -52,13 +52,13 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
         assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
 
-        mListView = (ListView) findViewById(R.id.lv_assetlist);
+        mListView = findViewById(R.id.lv_assetlist);
         mListView.setCacheColorHint(0);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        btnDelete = (Button) findViewById(R.id.btn_delete);
+        btnDelete = findViewById(R.id.btn_delete);
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -193,13 +193,13 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
                 row = inflater
                         .inflate(R.layout.row_asset_dailog, parent, false);
                 holder = new ViewHolder();
-                holder.tvAssetName = (TextView) row
+                holder.tvAssetName = row
                         .findViewById(R.id.tv_lt_assetname);
-                holder.tvSNO = (TextView) row.findViewById(R.id.tv_lt_sno);
-                holder.tvInstall = (TextView) row
+                holder.tvSNO = row.findViewById(R.id.tv_lt_sno);
+                holder.tvInstall = row
                         .findViewById(R.id.tv_lt_install);
-                holder.chkRemove = (CheckBox) row.findViewById(R.id.chk);
-                holder.SPRemove = (Spinner) row.findViewById(R.id.sp_remove_reason);
+                holder.chkRemove = row.findViewById(R.id.chk);
+                holder.SPRemove = row.findViewById(R.id.sp_remove_reason);
                 holder.SPRemove.setEnabled(false);
                 holder.chkRemove.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override

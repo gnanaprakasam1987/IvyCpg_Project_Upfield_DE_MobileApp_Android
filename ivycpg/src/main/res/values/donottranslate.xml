@@ -120,6 +120,13 @@
     <string name="resume_download">Resuming Download.</string>
     <string name="files_downloaded">All Files Are Downloaded.</string>
     <string name="unable_to_play">Unable To Play</string>
+    <string name="cash_ref_no">Cash RefNo</string>
+    <string name="print_count_dialog_title">Would you like to add this store \n in today\'s plan?</string>
+
+    <string name="value_exceeded">Value Exceeded</string>
+    <string name="this_may_remove_existing_data">This may remove existing data</string>
+    <string name="created_by">Created By</string>
+    <string name="movement">Movement</string>
     <string name="label_exceeded_alloc"> exceeded Allocation</string>
     <string name="wsih_label">WSIH</string>
 </resources>

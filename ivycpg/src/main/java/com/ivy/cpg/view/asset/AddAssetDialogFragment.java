@@ -3,6 +3,7 @@ package com.ivy.cpg.view.asset;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -60,7 +61,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     AssetTrackingHelper assetTrackingHelper;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         if (getDialog().getWindow() != null) {

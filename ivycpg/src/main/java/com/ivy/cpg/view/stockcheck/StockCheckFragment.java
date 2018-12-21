@@ -394,7 +394,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
             }
 
-            if (!stockCheckHelper.SHOW_STOCK_TOTAL) {
+            if (!stockCheckHelper.SHOW_STOCK_TOTAL || stockCheckHelper.SHOW_STOCK_RSN) {
                 view.findViewById(R.id.exp_stktotalTitle).setVisibility(View.GONE);
             } else {
                 try {
@@ -542,8 +542,15 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                     holder.imageButton_availability = row
                             .findViewById(R.id.btn_availability);
-                    holder.total = row
-                            .findViewById(R.id.stock_check_listview_total);
+
+                    if (stockCheckHelper.SHOW_STOCK_RSN) {
+                        row.findViewById(R.id.stock_check_listview_total).setVisibility(View.GONE);
+                        holder.total = row.findViewById(R.id.stock_check_listview_total2);
+                    } else {
+                        row.findViewById(R.id.ll_total2).setVisibility(View.GONE);
+                        holder.total = row
+                                .findViewById(R.id.stock_check_listview_total);
+                    }
 
 
                     holder.facingQty = row
@@ -570,7 +577,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         holder.ll_stkCB.setVisibility(View.GONE);
 
                     if (!stockCheckHelper.SHOW_STOCK_RSN)
-                        holder.mReason.setVisibility(View.GONE);
+                        row.findViewById(R.id.ll_reason).setVisibility(View.GONE);
 
 
                     if (!stockCheckHelper.SHOW_SHELF_OUTER)
@@ -1279,7 +1286,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.psname.setTextColor(holder.productObj.getTextColor());
                 } catch (Exception e) {
                     Commons.printException(e);
-                    holder.psname.setTextColor(ContextCompat.getColor(getActivity(),R.color.list_item_primary_text_color));
+                    holder.psname.setTextColor(ContextCompat.getColor(getActivity(), R.color.list_item_primary_text_color));
                 }
 
 

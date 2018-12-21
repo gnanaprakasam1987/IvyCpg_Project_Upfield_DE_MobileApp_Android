@@ -1,80 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   >
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+
     <LinearLayout
-        android:id="@+id/ll_toolbar"
+        android:id="@+id/ll_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_height="@dimen/list_header_height"
+        android:layout_below="@+id/toolbar"
+        android:background="?attr/customListTitleBackgroundColor"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/list_padding_left_n_right"
+        android:paddingEnd="@dimen/list_padding_left_n_right"
+        android:weightSum="9">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar" />
+        <TextView
+            android:id="@+id/txt_move_assetName"
+            style="@style/TextViewListTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:padding="@dimen/dimen_4dp"
+            android:text="@string/asset_name" />
+
+        <TextView
+            android:id="@+id/txt_move_serialNumber"
+            style="@style/TextViewListTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:padding="@dimen/dimen_4dp"
+            android:text="@string/serial_no" />
+
+        <TextView
+            android:id="@+id/iv_move_icon"
+            style="@style/TextViewListTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/dimen_4dp"
+            android:text="@string/movement" />
+
     </LinearLayout>
-    <android.support.v7.widget.CardView
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_move_asset"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_toolbar"
-        android:layout_margin="@dimen/list_margin">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_header"
+        android:cacheColorHint="@null"
+        android:divider="@null"
+        android:fitsSystemWindows="true" />
 
-        <LinearLayout
-            android:id="@+id/ll_details"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/list_header_height"
-                android:background="@color/list_title_bg_color"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="9"
-                android:paddingStart="@dimen/list_padding_left_n_right"
-                android:paddingEnd="@dimen/list_padding_left_n_right">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextViewListTitle"
-                    android:layout_weight="4"
-                    android:gravity="center_vertical"
-                    android:id="@+id/txt_move_assetName"
-                    android:padding="@dimen/dimen_4dp"
-                    android:text="@string/asset_name"
-                    android:maxLines="1"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextViewListTitle"
-                    android:layout_weight="4"
-                    android:gravity="center_vertical"
-                    android:id="@+id/txt_move_serialNumber"
-                    android:padding="@dimen/dimen_4dp"
-                    android:text="@string/serial_no"
-                    android:maxLines="1"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="@style/TextViewListTitle"
-                    android:id="@+id/iv_move_icon"
-                    android:text="Movement"
-                    android:padding="@dimen/dimen_4dp" />
-
-            </LinearLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview_move_asset"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:cacheColorHint="@null"
-                android:divider="@null"
-                android:fitsSystemWindows="true"/>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
 </RelativeLayout>

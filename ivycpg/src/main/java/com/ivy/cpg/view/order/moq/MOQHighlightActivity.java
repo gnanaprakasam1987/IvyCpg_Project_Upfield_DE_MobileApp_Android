@@ -5,86 +5,83 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
-/**
- * Created by santhosh.c on 25-01-2018.
- * used to Update Piece value in listing
- */
+public class MOQHighlightActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
 
-@SuppressLint("ValidFragment")
-public class MOQHighlightDialog extends DialogFragment implements View.OnClickListener {
     private BusinessModel bmodel;
-    private savePcsValue listner;
     private EditText QUANTITY;
     public InputMethodManager inputManager;
 
+    public static final int MOQ_RESULT_CODE = 111;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.moq_highlight_dialog);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-        listner = (savePcsValue) getActivity();
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
-    }
+        if (toolbar != null ) {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (getDialog() != null) {
-            getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            setScreenTitle(getResources().getString(R.string.minimum_order_required));
         }
-        getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        getDialog().setCancelable(false);
-        this.setCancelable(false);
 
-        View view = inflater.inflate(R.layout.moq_highlight_dialog, container, false);
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        if (getWindow() != null)
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-
-        return view;
+        bmodel = (BusinessModel) getApplicationContext();
+        bmodel.setContext(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-
-        inputManager = (InputMethodManager) getActivity().getSystemService(
+        inputManager = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+        inputManager.hideSoftInputFromWindow(new View(this).getWindowToken(), 0);
 
-
-        ListView lvwplist = getView().findViewById(R.id.list);
+        ListView lvwplist = findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         Vector<ProductMasterBO> productBoRfield = new Vector<>();
@@ -107,29 +104,23 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         MOQHighlightAdaper mSchedule = new MOQHighlightAdaper(productBoRfield);
         lvwplist.setAdapter(mSchedule);
 
-        Button save = getView().findViewById(R.id.save_btn);
-        Button closeButton = getView().findViewById(R.id.closeButton);
-
-        closeButton.setOnClickListener(this);
+        Button save = findViewById(R.id.btn_next);
         save.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.save_btn) {
-            listner.saveChanges();
-            dismiss();
-         }
-        if (i == R.id.closeButton)
-            dismiss();
-
+        if (i == R.id.btn_next) {
+            setResult(1);
+            finish();
+        }
     }
 
     private class MOQHighlightAdaper extends ArrayAdapter<ProductMasterBO> {
         private final Vector<ProductMasterBO> items;
 
-        public MOQHighlightAdaper(Vector<ProductMasterBO> items) {
+        private MOQHighlightAdaper(Vector<ProductMasterBO> items) {
             super(bmodel,
                     R.layout.moq_highlight_dialog_listview, items);
             this.items = items;
@@ -137,7 +128,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
 
         @NonNull
         @Override
-        @SuppressLint("RestrictedApi")
+        @SuppressLint({"RestrictedApi", "SetTextI18n", "ClickableViewAccessibility"})
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             final ProductMasterBO product = items.get(position);
@@ -145,7 +136,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
             View row = convertView;
             if (row == null) {
 
-                LayoutInflater inflater = getActivity().getLayoutInflater();
+                LayoutInflater inflater = getLayoutInflater();
 
                 //Configuration based row rendering
                 row = inflater.inflate(
@@ -161,8 +152,8 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                 holder.rField1Txt = row
                         .findViewById(R.id.rField1_qty);
 
-                holder.productNameTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                holder.rField1Txt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
+                holder.productNameTxt.setTypeface(FontUtils.getFontRoboto(MOQHighlightActivity.this, FontUtils.FontType.REGULAR));
+                holder.rField1Txt.setTypeface(FontUtils.getFontRoboto(MOQHighlightActivity.this, FontUtils.FontType.REGULAR));
 
                 holder.productNameTxt.setText("" + product.getProductShortName());
                 holder.orderQTYinpiece.setText(getString(R.string.multiple_of) + " " + product.getRField1());
@@ -247,19 +238,12 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
         EditText rField1Txt;
     }
 
-
-
-    public interface savePcsValue {
-        void saveChanges();
-
-    }
-
-
+    @SuppressLint("SetTextI18n")
     public void numberPressed(View vw) {
 
 
         if (QUANTITY == null) {
-            Toast.makeText(getActivity(), getResources().getString(R.string.please_select_item), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MOQHighlightActivity.this, getResources().getString(R.string.please_select_item), Toast.LENGTH_SHORT).show();
         } else {
             int id = vw.getId();
             if (id == R.id.calcdel) {
@@ -303,7 +287,7 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
                 }
 
             } else {
-                Button ed = getDialog().findViewById(vw.getId());
+                Button ed = findViewById(vw.getId());
                 String append = ed.getText().toString();
                 eff(append);
 
@@ -320,8 +304,12 @@ public class MOQHighlightDialog extends DialogFragment implements View.OnClickLi
             QUANTITY.setText(append);
     }
 
-
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
-

@@ -316,11 +316,9 @@ public class SerializedAssetHelper {
 
             db.openDataBase();
 
-            sb.append("select Distinct A.assetId,A.assetName,B.serialNumber,C.Productid,B.NFCNumber,PM.ParentHierarchy as ParentHierarchy,AllocationRefId from SerializedAssetMaster A  ");
+            sb.append("select Distinct A.assetId,A.assetName,B.serialNumber,'',B.NFCNumber,'' as ParentHierarchy,AllocationRefId from SerializedAssetMaster A  ");
             sb.append("inner join SerializedAssetMapping B on A.AssetId=B.AssetId ");
             sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
-
-            sb.append("left join ProductMaster PM on PM.PID=C.Productid ");
 
             String allMasterSb = sb.toString();
 
@@ -335,7 +333,7 @@ public class SerializedAssetHelper {
                 allMasterSb = allMasterSb + ("and (C.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR C.Productid = 0 )");
             }
 
-            sb.append(" GROUP BY RetailerId,C.Productid,B.AssetId,B.SerialNumber ORDER BY RetailerId");
+            sb.append(" GROUP BY RetailerId,B.AssetId,B.SerialNumber ORDER BY RetailerId");
 
             Cursor c = db.selectSQL(sb.toString());
             Cursor c1 = db.selectSQL(allMasterSb);
@@ -350,10 +348,10 @@ public class SerializedAssetHelper {
                         assetTrackingBO.setSerialNo(Integer.toString(0));
                     }
 
-                    assetTrackingBO.setProductId(c.getInt(3));
+
 
                     assetTrackingBO.setNFCTagId(c.getString(c.getColumnIndex("NFCNumber")));
-                    assetTrackingBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                    assetTrackingBO.setParentHierarchy("");
                     assetTrackingBO.setReferenceId(c.getInt(c.getColumnIndex("AllocationRefId")));
 
 
@@ -361,6 +359,25 @@ public class SerializedAssetHelper {
 
                 }
 
+            }
+
+            sb = new StringBuilder();
+
+            sb.append("select B.AssetId,replace(Group_Concat(PM.ParentHierarchy),',','') AS ParentHierarchy from SerializedAssetMaster A  ");
+            sb.append("inner join SerializedAssetMapping B on A.AssetId=B.AssetId ");
+            sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
+            sb.append("left join ProductMaster PM on PM.PID=C.Productid ");
+            sb.append("Where Retailerid in(0,");
+            sb.append(AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(" GROUP BY B.AssetId,B.SerialNumber ORDER BY RetailerId");
+            Cursor c2 = db.selectSQL(sb.toString());
+            if (c2.getCount() > 0) {
+                while (c2.moveToNext()) {
+                    for(SerializedAssetBO serial : mAssetTrackingList){
+                        if(serial.getAssetID() == c2.getInt(0))
+                            serial.setParentHierarchy(c2.getString(1));
+                    }
+                }
             }
 
             //load serial no's into hash map for uniqueness
@@ -418,19 +435,36 @@ public class SerializedAssetHelper {
                         assetTrackingBO.setSerialNo(Integer.toString(0));
                     }
 
-                    assetTrackingBO.setProductId(c1.getInt(3));
+
 
                     assetTrackingBO.setNFCTagId(c1.getString(c1.getColumnIndex("NFCNumber")));
-                    assetTrackingBO.setParentHierarchy(c1.getString(c1.getColumnIndex("ParentHierarchy")));
+                    assetTrackingBO.setParentHierarchy("");
 
                     mAllAssetTrackingList.add(assetTrackingBO);
-
                 }
-
             }
 
+            sb = new StringBuilder();
+
+            sb.append("select B.AssetId,replace(Group_Concat(PM.ParentHierarchy),',','') AS ParentHierarchy from SerializedAssetMaster A  ");
+            sb.append("inner join SerializedAssetMapping B on A.AssetId=B.AssetId ");
+            sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
+            sb.append("left join ProductMaster PM on PM.PID=C.Productid ");
+            sb.append(" GROUP BY B.AssetId,B.SerialNumber ORDER BY RetailerId");
+            Cursor c3 = db.selectSQL(sb.toString());
+            if (c3.getCount() > 0) {
+                while (c3.moveToNext()) {
+                    for(SerializedAssetBO serial : mAllAssetTrackingList){
+                        if(serial.getAssetID() == c3.getInt(0))
+                            serial.setParentHierarchy(c3.getString(1));
+                    }
+                }
+            }
 
             c.close();
+            c1.close();
+            c2.close();
+            c3.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);

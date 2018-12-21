@@ -1,9 +1,10 @@
 package com.ivy.cpg.view.task;
 
+import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.survey.SurveyHelperNew;
@@ -23,7 +25,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
 
@@ -87,7 +88,7 @@ public class TaskListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_task_list,
                 container, false);
@@ -132,6 +133,7 @@ public class TaskListFragment extends Fragment {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateTasks(int taskType) {
         taskDataBOForAdapter.clear();
         try {
@@ -209,23 +211,17 @@ public class TaskListFragment extends Fragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.row_task_heading, null);
-        TextView task_tv =  view.findViewById(R.id.task_tv);
-        task_tv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        TextView task_created =  view.findViewById(R.id.task_created_on);
-        task_created.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        TextView task_execution =  view.findViewById(R.id.task_execution);
-        task_execution.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        LinearLayout layoutTaskExecution =  view.findViewById(R.id.layoutTaskExecution);
-        LinearLayout layoutTaskHeader =  view.findViewById(R.id.layoutTaskHeader);
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.row_task_heading, null);
+        TextView tVTaskExecution = view.findViewById(R.id.task_execution);
+        LinearLayout layoutTaskHeader = view.findViewById(R.id.layoutTaskHeader);
 
         if (fromProfileScreen) {
-            layoutTaskExecution.setVisibility(View.GONE);
+            tVTaskExecution.setVisibility(View.GONE);
             layoutTaskHeader.setVisibility(View.GONE);
-        } else {
-            layoutTaskExecution.setVisibility(View.VISIBLE);
+        } /*else {
+            tVTaskExecution.setVisibility(View.VISIBLE);
             layoutTaskHeader.setVisibility(View.VISIBLE);
-        }
+        }*/
         mTaskContainer.addView(view);
 
         if (taskDataBOForAdapter != null) {
@@ -235,24 +231,20 @@ public class TaskListFragment extends Fragment {
                 holder.taskBO = taskDataBOForAdapter.get(i);
                 TaskDataBO task = holder.taskBO;
 
-                View v = inflater.inflate(R.layout.row_task_title, null);
+                @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.row_task_title, null);
 
-                holder.taskCB =  v.findViewById(R.id.task_title_CB);
-                holder.taskTaskOwner =  v.findViewById(R.id.task_taskowner);
-                holder.taskCreatedDate =  v.findViewById(R.id.task_createdOn);
-                holder.layoutCB =  v.findViewById(R.id.layoutCB);
-                holder.layoutrow =  v.findViewById(R.id.layoutBorder);
+                holder.taskCB = v.findViewById(R.id.task_title_CB);
+                holder.taskTaskOwner = v.findViewById(R.id.task_taskowner);
+                holder.taskCreatedDate = v.findViewById(R.id.task_createdOn);
+                holder.layoutCB = v.findViewById(R.id.layoutCB);
+                holder.layoutrow = v.findViewById(R.id.layoutBorder);
                 if (fromProfileScreen) {
                     holder.layoutCB.setVisibility(View.GONE);
-                    if (i % 2 == 0)
-                        holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
-                    else
-                        holder.layoutrow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
 
                 } else
                     holder.layoutCB.setVisibility(View.VISIBLE);
-                holder.taskTaskOwner.setText(task.getTaskOwner());
-                holder.taskCreatedDate.setText("" + DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat));
+                holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
+                holder.taskCreatedDate.setText(DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
 
                 if (task.getIsdone().equals("1") && !holder.taskBO.isUpload()) {
                     holder.taskCB.setChecked(true);
@@ -281,11 +273,8 @@ public class TaskListFragment extends Fragment {
                             }
                         });
 
-                holder.taskTitle =  v
+                holder.taskTitle = v
                         .findViewById(R.id.task_title_tv);
-                holder.taskTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.taskCreatedDate.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.taskTaskOwner.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.taskTitle.setText(task.getTasktitle());
                 holder.taskTitle.setOnClickListener(new OnClickListener() {
 
@@ -296,9 +285,8 @@ public class TaskListFragment extends Fragment {
                     }
                 });
 
-                holder.taskDescription =  v
+                holder.taskDescription = v
                         .findViewById(R.id.task_description_tv);
-                holder.taskDescription.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.taskDescription.setText(task.getTaskDesc());
                 if (holder.taskBO.isUpload() && task.getIsdone().equals("1")) {
                     holder.taskCB.setEnabled(false);
@@ -323,8 +311,8 @@ public class TaskListFragment extends Fragment {
         TextView taskDescription;
         TextView taskTaskOwner;
         TextView taskCreatedDate;
-        LinearLayout layoutCB;
-        LinearLayout layoutrow;
+        RelativeLayout layoutCB;
+        RelativeLayout layoutrow;
     }
 
     public void hideNewTaskMenu() {

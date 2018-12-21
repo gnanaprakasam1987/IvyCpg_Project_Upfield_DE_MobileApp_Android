@@ -2,6 +2,7 @@ package com.ivy.sd.png.view;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,7 +15,8 @@ import android.widget.TextView;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 public class AmountSplitUpDialog extends DialogFragment {
 
@@ -23,12 +25,13 @@ public class AmountSplitUpDialog extends DialogFragment {
 
     private ImageView closeBTN;
 
-    private double totalValue, companyDis, distributorDis, totalSchemeDiscValue;
+    private double totalValue, companyDis, distributorDis, totalSchemeDiscValue, tax;
 
-    private TextView tvOrderValue, tv_comy_disc, tv_dist_disc, tv_total_value;
+    private TextView tvOrderValue, tv_comy_disc, tv_dist_disc, tv_total_value, tv_scheme, tv_discount, tv_tax;
+    private String schemes, discounts;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         if (getDialog() != null) {
@@ -44,31 +47,58 @@ public class AmountSplitUpDialog extends DialogFragment {
         companyDis = getArguments().getDouble("cmy_disc");
         distributorDis = getArguments().getDouble("dist_disc");
         totalSchemeDiscValue = getArguments().getDouble("scheme_disc");
+        schemes = getArguments().getString("scheme_name");
+        discounts = getArguments().getString("disc_name");
+        tax = getArguments().getDouble("tax_value");
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        closeBTN = (ImageView) view.findViewById(R.id.closeBTN);
-        tvOrderValue = (TextView) view.findViewById(R.id.tvOrderValue);
-        tv_comy_disc = (TextView) view.findViewById(R.id.tv_comy_disc);
-        tv_dist_disc = (TextView) view.findViewById(R.id.tv_dist_disc);
-        tv_total_value = (TextView) view.findViewById(R.id.tv_total_value);
+        closeBTN = view.findViewById(R.id.closeBTN);
+        tvOrderValue = view.findViewById(R.id.tvOrderValue);
+        tv_comy_disc = view.findViewById(R.id.tv_comy_disc);
+        tv_dist_disc = view.findViewById(R.id.tv_dist_disc);
+        tv_total_value = view.findViewById(R.id.tv_total_value);
+        tv_scheme = view.findViewById(R.id.tv_scheme);
+        tv_discount = view.findViewById(R.id.tv_discount);
+        tv_tax = view.findViewById(R.id.tv_taxValue);
 
-        ((View) view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        (view.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
 
-        ((TextView) view.findViewById(R.id.tvTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.tvTitleDeduction)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.lbl_total)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.lblOrderValue)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        ((TextView) view.findViewById(R.id.lbl_comy_disc)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        ((TextView) view.findViewById(R.id.lbl_dist_disc)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        ((TextView) view.findViewById(R.id.tvTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.tvTitleDeduction)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lbl_total)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lblOrderValue)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lbl_comy_disc)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lbl_dist_disc)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        ((TextView) view.findViewById(R.id.lbl_tax)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
-        tvOrderValue.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tv_comy_disc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tv_dist_disc.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        tv_total_value.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
+        tvOrderValue.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        tv_comy_disc.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        tv_dist_disc.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        tv_total_value.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        tv_scheme.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        tv_discount.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
+        tv_tax.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.lbl_comy_disc).getTag()) != null)
+                ((TextView) view.findViewById(R.id.lbl_comy_disc))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.lbl_comy_disc)
+                                        .getTag()));
+            if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.lbl_dist_disc).getTag()) != null)
+                ((TextView) view.findViewById(R.id.lbl_dist_disc))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.lbl_dist_disc)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
         return view;
     }
 
@@ -97,7 +127,10 @@ public class AmountSplitUpDialog extends DialogFragment {
         tv_comy_disc.setText("- " + bmodel.formatValue(companyDis + totalSchemeDiscValue));
         tv_dist_disc.setText("- " + bmodel.formatValue(distributorDis));
         tv_total_value.setText(bmodel.formatValue(totalValue));
-        tvOrderValue.setText(bmodel.formatValue(totalValue + distributorDis + companyDis + totalSchemeDiscValue));
+        tvOrderValue.setText(bmodel.formatValue((totalValue + distributorDis + companyDis + totalSchemeDiscValue) - tax));
+        tv_scheme.setText(schemes);
+        tv_discount.setText(discounts);
+        tv_tax.setText(bmodel.formatValue(tax));
 
         closeBTN.setOnClickListener(new OnClickListener() {
             @Override

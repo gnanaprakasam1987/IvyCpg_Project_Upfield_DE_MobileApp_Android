@@ -26,7 +26,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.collection.BillPaymentActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.PaymentBO;
@@ -35,10 +34,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.CustomKeyBoard;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -46,15 +42,15 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
 
     private static ArrayList<PaymentBO> mPaymentList;
 
-    private  PaymentBO mPaymentBO;
+    private PaymentBO mPaymentBO;
     private BusinessModel bmodel;
     private UpdatePaymentByDateInterface mUpdatePaymentInterface;
     private ArrayList<CreditNoteListBO> mCreditNoteList;
     private TextView mTotalTV;
     private EditText mEnterCreditNoteAmtET;
-    private double mTotalCreditNoteValue=0;
-    private double tempCreditNoteValue=0;
-    private boolean isFragmentAlreadyCreated=false;
+    private double mTotalCreditNoteValue = 0;
+    private double tempCreditNoteValue = 0;
+    private boolean isFragmentAlreadyCreated = false;
     private boolean isAdvancePaymentAvailable;
     private Button applyBtn, cancelBtn;
     private EditText QUANTITY;
@@ -63,6 +59,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     private double preCollectionValue, currentCollectionValue;
     private boolean isFromCollection = false;
     private CollectionHelper collectionHelper;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -77,12 +74,12 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         mUpdatePaymentInterface = (UpdatePaymentByDateInterface) getActivity();
 
 
-        final int creditNotePos=getArguments().getInt("position",0);
-        isAdvancePaymentAvailable=getArguments().getBoolean("IsAdvancePaymentAvailable", false);
-        isFromCollection=getArguments().getBoolean("FromCollection", false);
+        final int creditNotePos = getArguments().getInt("position", 0);
+        isAdvancePaymentAvailable = getArguments().getBoolean("IsAdvancePaymentAvailable", false);
+        isFromCollection = getArguments().getBoolean("FromCollection", false);
 
-        mPaymentList=collectionHelper.getCollectionPaymentList();
-        mPaymentBO=mPaymentList.get(creditNotePos);
+        mPaymentList = collectionHelper.getCollectionPaymentList();
+        mPaymentBO = mPaymentList.get(creditNotePos);
         preCollectionValue = mPaymentBO.getAmount();
     }
 
@@ -100,11 +97,9 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             setScreenTitle(mPaymentBO.getListName());
         }
 
-        applyBtn =  rootView.findViewById(R.id.applybtn);
-        applyBtn.setTypeface(FontUtils.getFontBalooHai(getActivity(),FontUtils.FontType.REGULAR));
+        applyBtn = rootView.findViewById(R.id.applybtn);
         applyBtn.setOnClickListener(this);
-        cancelBtn =  rootView.findViewById(R.id.cancelbtn);
-        cancelBtn.setTypeface(FontUtils.getFontBalooHai(getActivity(),FontUtils.FontType.REGULAR));
+        cancelBtn = rootView.findViewById(R.id.cancelbtn);
         cancelBtn.setOnClickListener(this);
 
         if (isFromCollection)
@@ -112,13 +107,13 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         else
             cancelBtn.setText(getString(R.string.cancel));
 
-        isFragmentAlreadyCreated=false;
-        ListView creditNoteLV =  rootView.findViewById(R.id.lv_creditnote);
-        mTotalTV=rootView.findViewById(R.id.tv_total_amount);
-        LinearLayout llEnterCreditNote=rootView.findViewById(R.id.ll_enter_creditnote);
-        mEnterCreditNoteAmtET=rootView.findViewById(R.id.edit_creditnoteamt);
-        LinearLayout numKeyLayout =  rootView.findViewById(R.id.ll_keypad);
-        CardView cardViewLayout =  rootView.findViewById(R.id.ll_cardview);
+        isFragmentAlreadyCreated = false;
+        ListView creditNoteLV = rootView.findViewById(R.id.lv_creditnote);
+        mTotalTV = rootView.findViewById(R.id.tv_total_amount);
+        LinearLayout llEnterCreditNote = rootView.findViewById(R.id.ll_enter_creditnote);
+        mEnterCreditNoteAmtET = rootView.findViewById(R.id.edit_creditnoteamt);
+        LinearLayout numKeyLayout = rootView.findViewById(R.id.ll_keypad);
+        CardView cardViewLayout = rootView.findViewById(R.id.ll_cardview);
 
         if (bmodel.configurationMasterHelper.IS_PARTIAL_CREDIT_NOTE_ALLOW) {
             llEnterCreditNote.setVisibility(View.VISIBLE);
@@ -130,7 +125,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             cardViewLayout.setVisibility(View.GONE);
         }
         mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
-        tempCreditNoteValue=mPaymentBO.getAmount();
+        tempCreditNoteValue = mPaymentBO.getAmount();
         String modeID = bmodel.getStandardListIdAndType(
                 "CNAP",
                 StandardListMasterConstants.CREDIT_NOTE_TYPE);
@@ -141,14 +136,14 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                     .getCreditNoteList()) {
                 if (bo.getRetailerId().equals(
                         bmodel.getRetailerMasterBO().getRetailerID())
-                        && !bo.isUsed()&&(!modeID.equals(bo.getTypeId()+"")))
+                        && !bo.isUsed() && (!modeID.equals(bo.getTypeId() + "")))
                     mCreditNoteList.add(bo);
             }
             if (mCreditNoteList != null && mCreditNoteList.size() > 0) {
-                CreditNoteAdapter creditNoteAdapter=new CreditNoteAdapter();
+                CreditNoteAdapter creditNoteAdapter = new CreditNoteAdapter();
                 creditNoteLV.setAdapter(creditNoteAdapter);
             }
-        }else{
+        } else {
             mEnterCreditNoteAmtET.setVisibility(View.GONE);
             numKeyLayout.setVisibility(View.GONE);
 
@@ -232,7 +227,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
 
     @Override
     public void updatePaymentDetails() {
-        if(isFragmentAlreadyCreated) {
+        if (isFragmentAlreadyCreated) {
             tempCreditNoteValue = mPaymentBO.getAmount();
         }
         updateCreditNotePayment();
@@ -280,13 +275,13 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                 row = inflater.inflate(R.layout.row_credit_note, parent, false);
                 holder = new ViewHolder();
 
-                holder.refNoTxt =  row.findViewById(R.id.refNoTxt);
-                holder.crdNoteAmtTxt =  row
+                holder.refNoTxt = row.findViewById(R.id.refNoTxt);
+                holder.crdNoteAmtTxt = row
                         .findViewById(R.id.crdNoteAmtTxt);
-                holder.creditNoteCheckBox =  row
+                holder.creditNoteCheckBox = row
                         .findViewById(R.id.creditNoteCheckBox);
-                holder.totCrdNoteAmtTxt=row.findViewById(R.id.totcrdNoteAmtTxt);
-                holder.parentLayout =  row.findViewById(R.id.parentLayout);
+                holder.totCrdNoteAmtTxt = row.findViewById(R.id.totcrdNoteAmtTxt);
+                holder.parentLayout = row.findViewById(R.id.parentLayout);
 
                 holder.creditNoteCheckBox
                         .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -294,21 +289,21 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                             @Override
                             public void onCheckedChanged(
                                     CompoundButton buttonView, boolean isChecked) {
-                                if(isFragmentAlreadyCreated)
-                                    tempCreditNoteValue=0;
+                                if (isFragmentAlreadyCreated)
+                                    tempCreditNoteValue = 0;
 
                                 holder.creditNoteListBO.setChecked(isChecked);
                                 updateCreditNotePayment();
-                                if(isChecked && isAdvancePaymentAvailable&&!collectionHelper.isUseAllAdvancePaymentAmt()){
+                                if (isChecked && isAdvancePaymentAvailable && !collectionHelper.isUseAllAdvancePaymentAmt()) {
                                     holder.creditNoteCheckBox.setChecked(false);
                                     holder.creditNoteListBO.setChecked(false);
                                     updateCreditNotePayment();
                                     updateTotal();
-                                    Toast.makeText(getActivity(),getResources().getString(R.string.please_user_advancepayment),
+                                    Toast.makeText(getActivity(), getResources().getString(R.string.please_user_advancepayment),
                                             Toast.LENGTH_SHORT).show();
-                                } else  if(bmodel.configurationMasterHelper.IS_PARTIAL_CREDIT_NOTE_ALLOW||!collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CREDIT_NOTE))
+                                } else if (bmodel.configurationMasterHelper.IS_PARTIAL_CREDIT_NOTE_ALLOW || !collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CREDIT_NOTE))
                                     updateTotal();
-                                else{
+                                else {
 
                                     holder.creditNoteCheckBox.setChecked(false);
                                     holder.creditNoteListBO.setChecked(false);
@@ -321,8 +316,8 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                                                             R.string.amount_exeeds_the_balance_please_check),
                                             Toast.LENGTH_SHORT).show();
                                 }
-                                tempCreditNoteValue=0;
-                                isFragmentAlreadyCreated=true;
+                                tempCreditNoteValue = 0;
+                                isFragmentAlreadyCreated = true;
                             }
 
                         });
@@ -338,7 +333,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                     .getAmount()) + "";
             holder.crdNoteAmtTxt.setText(strCreditAmt);
             holder.creditNoteCheckBox.setChecked(holder.creditNoteListBO.isChecked());
-            String totCrdeitAmt=bmodel.formatValue(holder.creditNoteListBO.getAmount()+holder.creditNoteListBO.getAppliedAmount());
+            String totCrdeitAmt = bmodel.formatValue(holder.creditNoteListBO.getAmount() + holder.creditNoteListBO.getAppliedAmount());
             holder.totCrdNoteAmtTxt.setText(totCrdeitAmt);
 
             if (position % 2 == 0) {
@@ -360,18 +355,18 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         private FrameLayout parentLayout;
     }
 
-    private void updateCreditNotePayment(){
-        mTotalCreditNoteValue=0;
-        if(mCreditNoteList!=null&&mCreditNoteList.size()>0) {
+    private void updateCreditNotePayment() {
+        mTotalCreditNoteValue = 0;
+        if (mCreditNoteList != null && mCreditNoteList.size() > 0) {
 
             for (CreditNoteListBO creditNoteListBO : mCreditNoteList) {
                 if (creditNoteListBO.isChecked()) {
                     mTotalCreditNoteValue = mTotalCreditNoteValue + creditNoteListBO.getAmount();
                 }
             }
-            if(mTotalCreditNoteValue>0){
+            if (mTotalCreditNoteValue > 0) {
                 mEnterCreditNoteAmtET.setEnabled(true);
-            }else{
+            } else {
                 mEnterCreditNoteAmtET.setEnabled(false);
             }
         }
@@ -379,17 +374,17 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         mPaymentBO.setAmount(mTotalCreditNoteValue);
         currentCollectionValue = mTotalCreditNoteValue;
 
-        if(bmodel.configurationMasterHelper.IS_PARTIAL_CREDIT_NOTE_ALLOW) {
+        if (bmodel.configurationMasterHelper.IS_PARTIAL_CREDIT_NOTE_ALLOW) {
             if (tempCreditNoteValue > 0) {
                 mPaymentBO.setAmount(tempCreditNoteValue);
                 currentCollectionValue = tempCreditNoteValue;
             } else {
 
-                if (!collectionHelper.isEnterAmountExceed(mPaymentList,StandardListMasterConstants.CREDIT_NOTE)) {
+                if (!collectionHelper.isEnterAmountExceed(mPaymentList, StandardListMasterConstants.CREDIT_NOTE)) {
                     mPaymentBO.setAmount(mTotalCreditNoteValue);
                     currentCollectionValue = mTotalCreditNoteValue;
                 } else {
-                    mTotalCreditNoteValue = collectionHelper.getBalanceAmountWithOutCreditNote(mPaymentList,true);
+                    mTotalCreditNoteValue = collectionHelper.getBalanceAmountWithOutCreditNote(mPaymentList, true);
                     mPaymentBO.setAmount(mTotalCreditNoteValue);
                     currentCollectionValue = mTotalCreditNoteValue;
                 }
@@ -397,15 +392,15 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
         }
         mTotalCreditNoteValue = SDUtil.convertToDouble(bmodel.formatValue(mTotalCreditNoteValue));
 
-        String strCreditValue = mTotalCreditNoteValue+"";
+        String strCreditValue = mTotalCreditNoteValue + "";
         mEnterCreditNoteAmtET.setText(strCreditValue);
     }
 
-    private void updateTotal(){
-        double totalCollectepayment=0;
-        if(mPaymentList!=null&&mPaymentList.size()>0){
-            for(PaymentBO paymentBO:mPaymentList){
-                totalCollectepayment=totalCollectepayment+paymentBO.getAmount();
+    private void updateTotal() {
+        double totalCollectepayment = 0;
+        if (mPaymentList != null && mPaymentList.size() > 0) {
+            for (PaymentBO paymentBO : mPaymentList) {
+                totalCollectepayment = totalCollectepayment + paymentBO.getAmount();
             }
         }
 
@@ -428,7 +423,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     }
 
     private void checkFromCollectionScreen() {
-        if (isFromCollection){
+        if (isFromCollection) {
             Intent intent = new Intent(getActivity(), BillPaymentActivity.class);
             bmodel.mSelectedActivityName = "Bill Payment";
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -470,7 +465,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                     }
                 }
             } else {
-                Button ed =  getView().findViewById(vw.getId());
+                Button ed = getView().findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }

@@ -45,7 +45,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -75,7 +74,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         String title = bmodel.configurationMasterHelper
                 .getHomescreentwomenutitle("MENU_COLLECTION_REF");
 
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -116,7 +115,6 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
 
         ListView mCollectionLV = findViewById(R.id.list);
         Button btnSave = findViewById(R.id.btn_save);
-        btnSave.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
 
         mInvioceList = new ArrayList<>();
 
@@ -155,7 +153,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 mErrorMsg = "Kindly " + getResources().getString(R.string.select_reason);
                 return false;
             }
-            if (invoiceHeaderBO.getDocExchange() == 0 && invoiceHeaderBO.getDocReasonId().equals("0") && invoiceHeaderBO.getDocRemark().toString().length() == 0) {
+            if (invoiceHeaderBO.getDocExchange() == 0 && invoiceHeaderBO.getDocReasonId().equals("0") && invoiceHeaderBO.getDocRemark().length() == 0) {
                 mErrorMsg = getResources().getString(R.string.enter_remarks);
                 return false;
             }
@@ -227,25 +225,6 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                 holder.llDocReason = row.findViewById(R.id.lldocReason);
                 holder.llDocRemark = row.findViewById(R.id.lldocRemark);
                 holder.ivSignature = row.findViewById(R.id.ivSign);
-
-                ((TextView) row.findViewById(R.id.tvinvamt)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.tvpaidamt)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.tvbalamt)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.docRefTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.contactNameTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.contactNoTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.DocExcTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.DocReasonTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                ((TextView) row.findViewById(R.id.remarkTitle)).setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.REGULAR));
-                holder.tvInvoiceNo.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
-                holder.invAmt.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
-                holder.balanceAmt.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
-                holder.paidAmt.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
-                holder.etDocRef.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
-                holder.etContactName.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
-                holder.etContactNo.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
-                holder.etRemark.setTypeface(FontUtils.getFontRoboto(CollectionReference.this,FontUtils.FontType.MEDIUM));
-
 
                 holder.etDocRef.addTextChangedListener(new TextWatcher() {
                     public void afterTextChanged(Editable s) {
@@ -438,7 +417,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
             holder.etDocRef.setText(holder.invoiceHeaderBO.getDocRefNo());
             holder.etContactName.setText(holder.invoiceHeaderBO.getContactName());
             holder.etContactNo.setText(holder.invoiceHeaderBO.getContactNo());
-            holder.cbDocExchange.setChecked((holder.invoiceHeaderBO.getDocExchange() == 1) ? true : false);
+            holder.cbDocExchange.setChecked(holder.invoiceHeaderBO.getDocExchange() == 1);
 
             if (holder.invoiceHeaderBO.getDocReasonId() != null) {
                 holder.spReason.setSelection(getReasonIndex(holder.invoiceHeaderBO.getDocReasonId()));
@@ -481,6 +460,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         InvoiceHeaderBO invoiceHeaderBO;
     }
 
+    @SuppressLint("StaticFieldLeak")
     class SaveAsyncTask extends AsyncTask<String, Integer, Boolean> {
         private ProgressDialog progressDialogue;
 

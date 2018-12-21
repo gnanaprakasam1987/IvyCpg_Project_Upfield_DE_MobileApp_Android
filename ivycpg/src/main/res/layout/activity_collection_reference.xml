@@ -13,9 +13,8 @@
 
     <ListView
         android:id="@+id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
         android:layout_marginStart="@dimen/list_margin"
         android:layout_marginEnd="@dimen/list_margin"
@@ -25,39 +24,33 @@
         android:fitsSystemWindows="true" />
 
 
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_1dp"
+        android:layout_above="@+id/footer"
+        android:background="@color/light_gray"
+        android:orientation="horizontal" />
+
     <RelativeLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
-        android:background="@color/screen_bg_color"
+        android:background="?attr/customFooterBackgroundColor"
         android:orientation="vertical">
 
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimens_1dp"
-            android:background="@color/light_gray"
-            android:orientation="horizontal" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/line"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_save"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="@dimen/target_top_margin"
-                android:text="@string/save"
-                android:textAllCaps="false" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_save"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/target_top_margin"
+            android:layout_marginRight="@dimen/target_top_margin"
+            android:text="@string/save"
+            android:textAllCaps="false" />
     </RelativeLayout>
 
 </RelativeLayout>

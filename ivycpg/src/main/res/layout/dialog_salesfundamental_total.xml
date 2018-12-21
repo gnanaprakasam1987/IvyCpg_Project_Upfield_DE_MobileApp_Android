@@ -79,6 +79,7 @@
                     android:layout_weight="0.5"
                     android:clickable="false"
                     android:focusable="false"
+                    android:enabled="false"
                     android:focusableInTouchMode="false"
                     android:gravity="center|start"
                     android:inputType="numberDecimal"

@@ -73,7 +73,7 @@
 
                             <TextView
                                 android:id="@+id/tv_is_distributed"
-                                style="@style/TextViewCaption"
+                                style="@style/TextViewListItemCaption"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="item_exp_facing"
@@ -102,7 +102,7 @@
 
                             <TextView
                                 android:id="@+id/tv_is_listed"
-                                style="@style/TextViewCaption"
+                                style="@style/TextViewListItemCaption"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="item_exp_facing"
@@ -128,7 +128,7 @@
 
                             <TextView
                                 android:id="@+id/tv_availability"
-                                style="@style/TextViewCaption"
+                                style="@style/TextViewListItemCaption"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:tag="item_exp_facing"
@@ -211,7 +211,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_avail_pctitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="@string/item_piece"
@@ -236,7 +236,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_avail_cstitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="@string/item_case"
@@ -261,7 +261,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_avail_outitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="@string/item_outer"
@@ -286,7 +286,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_faceqty_cstitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="item_exp_facing"
@@ -332,14 +332,14 @@
 
                                 <TextView
                                     android:id="@+id/tv_avg_qty_label"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="avg_qty"
                                     android:text="@string/qty" />
 
                                 <TextView
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/dimen_1dp"
@@ -366,14 +366,14 @@
 
                                 <TextView
                                     android:id="@+id/tv_avg_rfield1_label"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="avg_rfield1"
                                     android:text="@string/rfield1_klgs" />
 
                                 <TextView
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/dimen_1dp"
@@ -400,14 +400,14 @@
 
                                 <TextView
                                     android:id="@+id/tv_avg_rfield2_label"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="avg_rfield2"
                                     android:text="@string/rfield2_klgs" />
 
                                 <TextView
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/dimen_1dp"
@@ -434,14 +434,14 @@
 
                                 <TextView
                                     android:id="@+id/tv_avg_rfield3_label"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="avg_rfield3"
                                     android:text="@string/rfield3_klgs" />
 
                                 <TextView
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/dimen_1dp"
@@ -504,7 +504,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_price_pcTitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="price_piece"
@@ -534,7 +534,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_price_csTitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="price_case"
@@ -563,7 +563,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_price_ouTitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="price_outer"
@@ -592,7 +592,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_change_price"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/change_in_price" />
@@ -646,7 +646,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_priceMrp_pcTitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="priceMrp_pcLabel"
@@ -677,7 +677,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_priceMrp_csTitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="priceMrp_csLabel"
@@ -707,7 +707,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_priceMrp_ouTitle"
-                                    style="@style/TextViewCaption"
+                                    style="@style/TextViewListItemCaption"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:tag="priceMrp_ouLabel"
@@ -785,7 +785,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_exp_pcTitle"
-                                        style="@style/TextViewCaption"
+                                        style="@style/TextViewListItemCaption"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="expiry_piece"
@@ -813,7 +813,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_exp_csTitle"
-                                        style="@style/TextViewCaption"
+                                        style="@style/TextViewListItemCaption"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="expiry_case"
@@ -841,7 +841,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_exp_ouTitle"
-                                        style="@style/TextViewCaption"
+                                        style="@style/TextViewListItemCaption"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:tag="expiry_outer"
