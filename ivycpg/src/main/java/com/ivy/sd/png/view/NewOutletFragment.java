@@ -5130,7 +5130,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 return true;
             }
         } else if (i == R.id.menu_order) {
-
+            bmodel.setRetailerMasterBO(new RetailerMasterBO());
             if (isDistributor) {
                 DistributorMasterBO distBo = (DistributorMasterBO) distributorSpinner.getSelectedItem();
                 if (distBo.getDId().equals("0")) {
@@ -5144,17 +5144,17 @@ public class NewOutletFragment extends IvyBaseFragment
 
                     bmodel.updatePriceGroupId(false);
 
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
-                            bmodel.productHelper.getFilterProductLevels()));
-                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
-                    if (genericObjectPair != null) {
-                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                    }
                 }
             }
 
+            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(MENU_NEW_RETAILER,
+                    bmodel.productHelper.getFilterProductLevels()));
+            GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+            if (genericObjectPair != null) {
+                bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
+            }
 
             bmodel.configurationMasterHelper.downloadProductDetailsList();
             /* Settign color **/
