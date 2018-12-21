@@ -2415,12 +2415,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(
-                                this,
-                                getResources()
-                                        .getString(
-                                                R.string.no_data_exists),
-                                Toast.LENGTH_SHORT).show();
+                        if(!isFinishing()) {
+                            Toast.makeText(
+                                    this,
+                                    getResources()
+                                            .getString(
+                                                    R.string.no_data_exists),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                         isCreated = false;
                         isClick = false;
                         menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
@@ -2430,11 +2432,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                 } else {
-                    Toast.makeText(
-                            this,
-                            getResources().getString(
-                                    R.string.please_complete_previous_activity),
-                            Toast.LENGTH_SHORT).show();
+                    if(!isFinishing()) {
+                        Toast.makeText(
+                                this,
+                                getResources().getString(
+                                        R.string.please_complete_previous_activity),
+                                Toast.LENGTH_SHORT).show();
+                    }
                     isCreated = false;
                     isClick = false;
                 }
