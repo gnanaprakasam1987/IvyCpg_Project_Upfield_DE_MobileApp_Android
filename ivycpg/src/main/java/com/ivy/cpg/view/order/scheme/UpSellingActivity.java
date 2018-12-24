@@ -19,7 +19,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
+import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.Vector;

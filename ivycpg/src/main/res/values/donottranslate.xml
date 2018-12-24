@@ -127,4 +127,6 @@
     <string name="this_may_remove_existing_data">This may remove existing data</string>
     <string name="created_by">Created By</string>
     <string name="movement">Movement</string>
+    <string name="label_exceeded_alloc"> exceeded Allocation</string>
+    <string name="wsih_label">WSIH</string>
 </resources>

@@ -1,14 +1,17 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.emptyreturn;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
@@ -36,6 +39,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,22 +49,20 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
 
     private BusinessModel bmodel;
     private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private HashMap<String, String> mSelectedFilterMap = new HashMap<>();
     private ListView lv;
-    private ArrayList<ProductMasterBO> mylist;
     private EditText QUANTITY;
     private String append = "";
     View view;
+    private ActionBar actionBar;
+    private Context context;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_empty_return,
                 container, false);
-        mDrawerLayout = (DrawerLayout) view.findViewById(
-                R.id.drawer_layout);
+        mDrawerLayout = view.findViewById(R.id.drawer_layout);
         return view;
     }
 
@@ -71,9 +73,10 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+        bmodel = (BusinessModel) context.getApplicationContext();
         bmodel.setContext(getActivity());
         setHasOptionsMenu(true);
     }
@@ -117,9 +120,9 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+                ((Activity)context).finish();
             }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i == R.id.menu_next) {
             nextButtonClick();
@@ -140,44 +143,44 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                 GravityCompat.END);
 
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setIcon(null);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        if (getActivity() != null)
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setTitle(null);
+            actionBar.setIcon(null);
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
         setScreenTitle(bmodel.mSelectedActivityName);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
                 mDrawerLayout, /* DrawerLayout object */
-                R.drawable.ic_action_bottle_return, /* nav drawer image to replace 'Up' caret */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
 
-                ((AppCompatActivity) getActivity()).getSupportActionBar()
-                        .setTitle(bmodel.mSelectedActivityName);
-                getActivity().supportInvalidateOptionsMenu();
+                actionBar.setTitle(bmodel.mSelectedActivityName);
+                getActivity().invalidateOptionsMenu();
                 // invalidateOptionsMenu(); // creates call to
                 // onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
 
-                ((AppCompatActivity) getActivity()).getSupportActionBar()
-                        .setTitle(getResources().getString(R.string.filter));
-                getActivity().supportInvalidateOptionsMenu();
+                actionBar.setTitle(getResources().getString(R.string.filter));
+                getActivity().invalidateOptionsMenu();
                 // invalidateOptionsMenu(); // creates call to
                 // onPrepareOptionsMenu()
             }
         };
 
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        mSelectedFilterMap.put("Category", "All");
-        mSelectedFilterMap.put("Brand", "All");
-
-        lv = (ListView) getView().findViewById(R.id.list);
+        lv = view.findViewById(R.id.list);
         lv.setCacheColorHint(0);
 
         onLoadModule();
@@ -200,7 +203,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
             return;
         }
 
-        mylist = new ArrayList<>();
+        ArrayList<ProductMasterBO> mylist = new ArrayList<>();
 
         for (ProductMasterBO sku : items) {
             if (sku.getIsReturnable() == 1) {
@@ -219,7 +222,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         private ArrayList<ProductMasterBO> items;
 
         public MyAdapter(ArrayList<ProductMasterBO> items) {
-            super(getActivity(), R.layout.row_empty_return, items);
+            super(context, R.layout.row_empty_return, items);
             this.items = items;
         }
 
@@ -235,21 +238,22 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
             return items.size();
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
 
             if (convertView == null) {
 
                 holder = new ViewHolder();
 
-                LayoutInflater inflater = LayoutInflater.from(getActivity().getBaseContext());
+                LayoutInflater inflater = LayoutInflater.from(context);
 
                 convertView = inflater.inflate(R.layout.row_empty_return, parent, false);
 
-                holder.mSKU = (TextView) convertView.findViewById(R.id.sku);
+                holder.mSKU = convertView.findViewById(R.id.sku);
 
-                holder.mQty = (EditText) convertView.findViewById(R.id.qty);
+                holder.mQty = convertView.findViewById(R.id.qty);
                 holder.mQty.setInputType(InputType.TYPE_NULL);
 
                 holder.mQty.addTextChangedListener(new TextWatcher() {
@@ -302,7 +306,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
             holder.position = position;
 
             holder.mSKU.setText(holder.mSKUBO.getProductName());
-            holder.mQty.setText(holder.mSKUBO.getRetPieceQty() + "");
+            holder.mQty.setText(String.valueOf(holder.mSKUBO.getRetPieceQty()));
 
             return convertView;
         }
@@ -404,7 +408,6 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                 if (QUANTITY.getId() == 1) {
                     String s = QUANTITY.getText().toString();
 
-                    if (s != null) {
                         if (!s.isEmpty()) {
                             s = s.substring(0, s.length() - 1);
 
@@ -414,18 +417,17 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                         }
 
                         QUANTITY.setText(s);
-                    }
                 } else {
 
                     int s = SDUtil.convertToInt(QUANTITY.getText()
                             .toString());
                     s = s / 10;
-                    QUANTITY.setText(s + "");
+                    QUANTITY.setText(String.valueOf(s));
                 }
 
 
             } else {
-                Button ed = (Button) getActivity().findViewById(vw.getId());
+                Button ed = ((Activity)context).findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }
@@ -433,7 +435,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     }
 
     public void eff() {
-        String s = (String) QUANTITY.getText().toString();
+        String s = QUANTITY.getText().toString();
         if (!s.equals("0") && !s.equals("0.0")) {
             QUANTITY.setText(QUANTITY.getText() + append);
         } else

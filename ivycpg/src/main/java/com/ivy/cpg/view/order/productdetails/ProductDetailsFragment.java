@@ -1,8 +1,8 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.order.productdetails;
 
 
-import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,21 +20,20 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
 /**
- * Created by nagaganesh.n on 4/26/2017.
+ * Created by nagaganesh.n on 4/26/2017
  */
 
 public class ProductDetailsFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
-    private static final String CURRENCT_LABEL = "currency";
     private String pdname;
     private ProductMasterBO productObj;
     private int flag;
@@ -55,17 +54,17 @@ public class ProductDetailsFragment extends IvyBaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_product_details, container, false);
 
         setHasOptionsMenu(true);
-        if (getActivity().getActionBar() != null) {
+        if (getActivity() != null && getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
         setScreenTitle("" + bmodel.productHelper.getPdname());
 
-        productRecycView = (RecyclerView) rootView.findViewById(R.id.product_details_recycview);
+        productRecycView = rootView.findViewById(R.id.product_details_recycview);
         productConfigs = bmodel.configurationMasterHelper.getProductDetails();
         rootView.findViewById(R.id.ll_sao_view).setVisibility(View.GONE);
         if (productConfigs != null) {
@@ -77,8 +76,8 @@ public class ProductDetailsFragment extends IvyBaseFragment {
                 .getMetrics(outMetrics);
 
         if (flag == 1) {
-            TextView productTitleTV = (TextView) rootView.findViewById(R.id.product_info_title);
-            productTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            TextView productTitleTV = rootView.findViewById(R.id.product_info_title);
+            productTitleTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
             productTitleTV.setText(pdname);
             productTitleTV.setWidth(outMetrics.widthPixels);
         }
@@ -97,7 +96,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
      */
     private void loadProdDetails() {
 
-        ProdDetailRecyclerAdapter adapter = new ProdDetailRecyclerAdapter(getActivity());
+        ProdDetailRecyclerAdapter adapter = new ProdDetailRecyclerAdapter();
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 4);
         productRecycView.setLayoutManager(mLayoutManager);
         productRecycView.setItemAnimator(new DefaultItemAnimator());
@@ -109,38 +108,31 @@ public class ProductDetailsFragment extends IvyBaseFragment {
      */
     public class ProdDetailRecyclerAdapter extends RecyclerView.Adapter<ProdDetailRecyclerAdapter.MyViewHolder> {
 
-        private Context context;
         private int flag = 0;
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private TextView menuTV;
             private TextView valueTV;
-            private LinearLayout parentLayout, lineLayout;
+            private LinearLayout parentLayout;
             private ConfigureBO configureBO;
 
             public MyViewHolder(View view) {
                 super(view);
 
-                menuTV = (TextView) view
+                menuTV = view
                         .findViewById(R.id.tv_menu_name);
-                valueTV = (TextView) view
+                valueTV = view
                         .findViewById(R.id.tv_values);
-                parentLayout = (LinearLayout) view
+                parentLayout = view
                         .findViewById(R.id.parentLayout);
-                lineLayout = (LinearLayout) view
-                        .findViewById(R.id.line);
 
             }
         }
 
-        public ProdDetailRecyclerAdapter(Context context) {
-            this.context = context;
-        }
-
-
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_product_details, parent, false);
 
@@ -148,10 +140,10 @@ public class ProductDetailsFragment extends IvyBaseFragment {
         }
 
         @Override
-        public void onBindViewHolder(final ProdDetailRecyclerAdapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final ProdDetailRecyclerAdapter.MyViewHolder holder, int position) {
 
-            holder.menuTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.valueTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.menuTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+            holder.valueTV.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
             holder.configureBO = productConfigs.get(position);
 
@@ -190,9 +182,9 @@ public class ProductDetailsFragment extends IvyBaseFragment {
     /**
      * Method used to setValue for configs.
      *
-     * @param configureBO
-     * @param productMasterBO
-     * @return
+     * @param configureBO To get configcode
+     * @param productMasterBO To get value
+     * @return value for the configcode
      */
     private String setValue(ConfigureBO configureBO, ProductMasterBO productMasterBO) {
 
@@ -272,8 +264,8 @@ public class ProductDetailsFragment extends IvyBaseFragment {
         if (bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID()) != null) {
             ArrayList<String> value = bmodel.productHelper.getSkuMixtureProductName(productObj.getProductID());
             rootView.findViewById(R.id.ll_sao_view).setVisibility(View.VISIBLE);
-            TextView soaMixtureTitle = (TextView) rootView.findViewById(R.id.sku_mixture_title);
-            soaMixtureTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+            TextView soaMixtureTitle = rootView.findViewById(R.id.sku_mixture_title);
+            soaMixtureTitle.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(rootView.findViewById(
@@ -287,10 +279,10 @@ public class ProductDetailsFragment extends IvyBaseFragment {
                 Commons.printException(e);
             }
 
-            LinearLayout skuMixtureProductName = (LinearLayout) rootView.findViewById(R.id.ll_sku_mixture_product_name);
+            LinearLayout skuMixtureProductName = rootView.findViewById(R.id.ll_sku_mixture_product_name);
             for (int i = 0; i < value.size(); i++) {
                 TextView tv = new TextView(getActivity());
-                tv.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                tv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 tv.setText(value.get(i));
                 tv.setId(i);
                 skuMixtureProductName.addView(tv);
