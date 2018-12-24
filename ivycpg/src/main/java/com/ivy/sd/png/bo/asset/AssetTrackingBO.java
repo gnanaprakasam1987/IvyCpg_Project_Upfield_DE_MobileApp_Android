@@ -70,6 +70,7 @@ public class AssetTrackingBO {
         this.locationName = assetTrackingBO.getLocationName();
         this.imageList = assetTrackingBO.getImageList();
         this.isSelectedReason = assetTrackingBO.isSelectedReason();
+        this.parentHierarchy = assetTrackingBO.getParentHierarchy();
     }
 
     public int getExecutorQty() {

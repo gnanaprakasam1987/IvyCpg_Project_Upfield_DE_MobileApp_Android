@@ -129,4 +129,5 @@
     <string name="movement">Movement</string>
     <string name="label_exceeded_alloc"> exceeded Allocation</string>
     <string name="wsih_label">WSIH</string>
+    <string name="order_will_be_saved_later">Order will be saved when saving the New Retailer</string>
 </resources>

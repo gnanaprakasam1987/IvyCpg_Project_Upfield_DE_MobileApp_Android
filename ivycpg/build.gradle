@@ -159,7 +159,7 @@ android {
 
         sfdc {
             res {
-                srcDirs('src/sfdc/res','src/main/res')
+                srcDirs('src/SFDC/res','src/main/res')
             }
         }
 
