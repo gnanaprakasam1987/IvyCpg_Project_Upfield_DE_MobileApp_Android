@@ -485,6 +485,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
             title = bmodel.configurationMasterHelper
                     .getHomescreentwomenutitle("MENU_STK_ORD");
         }
+        if (title.isEmpty())
+            title = getResources().getString(R.string.order);
 
         setScreenTitle(title);
     }
