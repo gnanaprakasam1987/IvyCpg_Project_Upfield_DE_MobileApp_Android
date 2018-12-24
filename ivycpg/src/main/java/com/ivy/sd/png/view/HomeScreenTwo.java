@@ -66,6 +66,7 @@ import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.displayscheme.DisplaySchemeActivity;
 import com.ivy.cpg.view.displayscheme.DisplaySchemeTrackingActivity;
+import com.ivy.cpg.view.emptyreturn.EmptyReturnActivity;
 import com.ivy.cpg.view.loyality.LoyalityHelper;
 import com.ivy.cpg.view.loyality.LoyaltyPointsFragmentActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
@@ -73,6 +74,7 @@ import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingHelper;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.photocapture.Gallery;
@@ -2420,12 +2422,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(
-                                this,
-                                getResources()
-                                        .getString(
-                                                R.string.no_data_exists),
-                                Toast.LENGTH_SHORT).show();
+                        if(!isFinishing()) {
+                            Toast.makeText(
+                                    this,
+                                    getResources()
+                                            .getString(
+                                                    R.string.no_data_exists),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                         isCreated = false;
                         isClick = false;
                         menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
@@ -2435,11 +2439,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
 
                 } else {
-                    Toast.makeText(
-                            this,
-                            getResources().getString(
-                                    R.string.please_complete_previous_activity),
-                            Toast.LENGTH_SHORT).show();
+                    if(!isFinishing()) {
+                        Toast.makeText(
+                                this,
+                                getResources().getString(
+                                        R.string.please_complete_previous_activity),
+                                Toast.LENGTH_SHORT).show();
+                    }
                     isCreated = false;
                     isClick = false;
                 }

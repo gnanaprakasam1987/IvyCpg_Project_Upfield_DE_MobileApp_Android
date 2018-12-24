@@ -1,25 +1,13 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/TabHost01"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="0dp">
-
-        <LinearLayout
-            android:id="@+id/product_tab_widget"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/dimens_4dp"
-            android:visibility="visible">
+        android:padding="@dimen/dimens_4dp">
 
             <TextView
                 android:id="@+id/product_info_title"
@@ -29,7 +17,9 @@
                 android:background="@android:color/white"
                 android:gravity="center|start"
                 android:paddingStart="@dimen/dimens_4dp"
-                android:text="productname"
+                android:paddingEnd="@dimen/dimens_4dp"
+                android:paddingRight="@dimen/dimens_4dp"
+                android:text="@string/product_name"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
                 android:paddingLeft="@dimen/dimens_4dp" />
@@ -57,6 +47,8 @@
                     android:gravity="center|start"
                     android:tag="sku_mixture_title"
                     android:paddingStart="@dimen/dimens_4dp"
+                    android:paddingEnd="@dimen/dimens_4dp"
+                    android:paddingRight="@dimen/dimens_4dp"
                     android:text="SKU Mixture product name"
                     android:textColor="@android:color/black"
                     android:textStyle="bold"
@@ -70,6 +62,8 @@
                     android:background="@android:color/white"
                     android:gravity="center|start"
                     android:paddingStart="@dimen/dimens_4dp"
+                    android:paddingEnd="@dimen/dimens_4dp"
+                    android:paddingRight="@dimen/dimens_4dp"
                     android:orientation="vertical"
                     android:textColor="@android:color/black"
                     android:paddingLeft="@dimen/dimens_4dp" />
@@ -77,7 +71,4 @@
 
 
         </LinearLayout>
-
-    </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+ </ScrollView>

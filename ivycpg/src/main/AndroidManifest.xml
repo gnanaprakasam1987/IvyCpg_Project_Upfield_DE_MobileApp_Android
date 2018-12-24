@@ -486,7 +486,7 @@
             android:name="com.ivy.cpg.view.salesreturn.SalesReturnActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.EmptyReturnActivity"
+            android:name="com.ivy.cpg.view.emptyreturn.EmptyReturnActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.nonfield.NonFieldActivity"
@@ -525,7 +525,7 @@
             android:name="com.ivy.cpg.view.callanalysis.CallAnalysisActivityKlgs"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.ChangePasswordActivity"
+            android:name="com.ivy.cpg.view.login.password.ChangePasswordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.mvp.MVPActivity"
@@ -585,11 +585,11 @@
             android:name="com.ivy.cpg.view.loyality.LoyaltyPointsFragmentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.CatalogOrder"
+            android:name="com.ivy.cpg.view.order.catalog.CatalogOrder"
             android:configChanges="orientation|keyboardHidden|screenLayout"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.ProductDetailsCatalogActivity"
+            android:name="com.ivy.cpg.view.order.catalog.ProductDetailsCatalogActivity"
             android:configChanges="orientation|keyboardHidden|screenLayout"
             android:screenOrientation="portrait" />
         <activity
@@ -615,7 +615,7 @@
             android:name="com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.ProductSchemeDetailsActivity"
+            android:name="com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity"
             android:label="@string/title_activity_product_scheme_details"
             android:screenOrientation="portrait" />
         <activity

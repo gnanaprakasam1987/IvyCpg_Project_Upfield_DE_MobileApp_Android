@@ -14,6 +14,7 @@ public class SOSKUBO {
 	private int isOwn;
 	private int parentTotal;
 	private int actual;
+	private int tempActualValue;
 	private String gap = "0";
 	private String target = "0";
 	private String percentage = "0";
@@ -85,6 +86,14 @@ public class SOSKUBO {
 
 	public void setActual(int actual) {
 		this.actual = actual;
+	}
+
+	public int getTempActualValue() {
+		return tempActualValue;
+	}
+
+	public void setTempActualValue(int tempActualValue) {
+		this.tempActualValue = tempActualValue;
 	}
 
 	public float getNorm() {
