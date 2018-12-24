@@ -165,7 +165,7 @@ android {
                 srcDirs('src/SFDC/java', 'src/main/java')
             }
             res {
-                srcDirs('src/sfdc/res','src/main/res')
+                srcDirs('src/SFDC/res','src/main/res')
             }
         }
 
