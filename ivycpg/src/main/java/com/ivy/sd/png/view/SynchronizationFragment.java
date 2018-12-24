@@ -1483,23 +1483,22 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         protected void onPostExecute(Boolean result) {
             // result is the value returned from doInBackground
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                if (!result) {
-                    if (!aws) {
-                        bmodel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
-                            @Override
-                            public String onSuccess(String result) {
-                                new UrlDownloadData().execute();
-                                return "Success";
-                            }
+            if (!aws) {
+                bmodel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                    @Override
+                    public String onSuccess(String result) {
+                        new UrlDownloadData().execute();
+                        return "Success";
+                    }
 
-                            @Override
-                            public String onFailure(String errorresult) {
-                                return "Failure";
-                            }
-                        });
-                    } else {
-
+                    @Override
+                    public String onFailure(String errorresult) {
+                        return "Failure";
+                    }
+                });
+            } else {
+                if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (!result) {
                         if (!bmodel.synchronizationHelper.getSecurityKey().equals(""))
                             new UrlDownloadData().execute();
                         else {
@@ -1508,21 +1507,21 @@ public class SynchronizationFragment extends IvyBaseFragment
                             if (alertDialog != null)
                                 alertDialog.dismiss();
                         }
+                    } else {
+                        showAlertOk(
+                                getResources().getString(R.string.update_available),
+                                DataMembers.NOTIFY_AUTOUPDATE_FOUND);
                     }
                 } else {
-                    showAlertOk(
-                            getResources().getString(R.string.update_available),
-                            DataMembers.NOTIFY_AUTOUPDATE_FOUND);
+                    String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                    if (errorMsg != null) {
+                        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                    }
+                    if (alertDialog != null)
+                        alertDialog.dismiss();
                 }
-            } else {
-                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
-                if (errorMsg != null) {
-                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                }
-                if (alertDialog != null)
-                    alertDialog.dismiss();
             }
 
         }
