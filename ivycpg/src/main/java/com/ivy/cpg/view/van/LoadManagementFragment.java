@@ -24,6 +24,8 @@ import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.cpg.view.planogram.PlanoGramActivity;
 import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.cpg.view.reports.ReportActivity;
+import com.ivy.cpg.view.survey.SurveyActivityNew;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.van.damagestock.DamageStockFragmentActivity;
 import com.ivy.cpg.view.van.damagestock.DamageStockHelper;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadActivity;
@@ -73,6 +75,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private final String MENU_TASK_REPORT = "MENU_TASK_REPORT";
     private final String MENU_DASH_DAY = "MENU_DASH_DAY";
     private final String MENU_DAMAGE_STOCK = "MENU_DAMAGE_STOCK";
+    private static final String MENU_SURVEY01_SW = "MENU_SURVEY01_SW";
 
 
     private BusinessModel bmodel;
@@ -317,6 +320,13 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     navigateToActivity(menuItem.getMenuName(), menuItem.getConfigCode(), DashBoardActivity.class);
                 }
                 break;
+            case MENU_SURVEY01_SW:
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
+
+                break;
 
             default:
                 break;
@@ -526,6 +536,18 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         showMessage(getString(R.string.data_not_mapped));
                     }
                     break;
+                case MENU_SURVEY01_SW:
+                    SurveyHelperNew surveyHelperNew=SurveyHelperNew.getInstance(getActivity().getApplicationContext());
+                    if (surveyHelperNew.getSurvey() != null
+                            && surveyHelperNew.getSurvey().size() > 0) {
+                        bmodel.mSelectedActivityName = menuName;
+                        bmodel.mSelectedActivityConfigCode = menuCode;
+                        surveyHelperNew.loadSurveyConfig(MENU_SURVEY01_SW);
+                        navigateToActivity(MENU_SURVEY01_SW, menuName, SurveyActivityNew.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
+                    break;
                 default:
                     break;
             }
@@ -611,6 +633,10 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 case MENU_DAMAGE_STOCK:
                     DamageStockHelper.getInstance(getActivity().getApplicationContext()).loadDamagedProductReport(getActivity());
+                    updateModuleWiseTimeStampDetails(menuCode);
+                    break;
+                case MENU_SURVEY01_SW:
+                    loadSellerSurveyData(menuCode);
                     updateModuleWiseTimeStampDetails(menuCode);
                     break;
             }
@@ -759,4 +785,17 @@ public class LoadManagementFragment extends IvyBaseFragment {
         bmodel.stockProposalModuleHelper.loadPurchased();
     }
 
+    private void loadSellerSurveyData(String menuCode){
+
+            SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
+            surveyHelperNew.setFromHomeScreen(true);
+            surveyHelperNew.downloadModuleId("SPECIAL");
+            surveyHelperNew.downloadQuestionDetails(menuCode);
+
+            if (bmodel.configurationMasterHelper.SHOW_PRODUCT_FILTER_IN_SURVEY) {
+                bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(menuCode));
+                bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
+                        bmodel.productHelper.getRetailerModuleSequenceValues(),false));
+            }
+    }
 }
