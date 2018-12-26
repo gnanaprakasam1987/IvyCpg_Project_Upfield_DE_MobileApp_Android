@@ -205,7 +205,13 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     @OnClick(R.id.btn_save)
     public void setSaveSalesReturn() {
-        showConfirmAlert();
+        if(SalesReturnDeliveryHelper.getInstance().hasDatatoSave(salesReturnDeliveryDataModelsList)) {
+            showConfirmAlert();
+        } else {
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.no_data_tosave),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @OnClick(R.id.btn_cancel)
