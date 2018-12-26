@@ -2348,8 +2348,8 @@ public class BusinessModel extends Application {
             retailer = retailerMaster.get(i);
 
             if (retailer.getRetailerID().equals(retailerId)
-                    && (retailer.getIsToday() == 1 || retailer.getIsDeviated()
-                    .equals("Y"))) {
+                    && (retailer.getIsToday() == 1 || (retailer.getIsDeviated() != null && retailer.getIsDeviated()
+                    .equals("Y")))) {
                 bool = true;
             }
         }
