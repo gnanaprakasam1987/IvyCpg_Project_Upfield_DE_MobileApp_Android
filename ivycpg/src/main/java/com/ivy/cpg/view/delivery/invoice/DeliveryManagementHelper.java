@@ -129,7 +129,7 @@ public class DeliveryManagementHelper {
             db.openDataBase();
 
             String query = "select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID," +
-                    "PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize,PM.sih from invoicedetailuomwise id" +
+                    "PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize,PM.sih,id.HSNCode from invoicedetailuomwise id" +
                     " Inner JOIN ProductMaster PM on PM.PID = id.productid" +
                     " left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid=" +
                     bmodel.QT(invoiceno) + "  order by productid,id.batchid";
@@ -145,6 +145,7 @@ public class DeliveryManagementHelper {
                         invoiceProductBO.setProductID(productid + "");
                         invoiceProductBO.setProductShortName(c.getString(c.getColumnIndex("psname")));
                         invoiceProductBO.setSIH(c.getInt(c.getColumnIndex("sih")));
+                        invoiceProductBO.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
                     } else {
                         invoiceProductBO = invoicedProducts.get(productid);
                     }
@@ -186,11 +187,13 @@ public class DeliveryManagementHelper {
 
     public void saveDeliveryManagement(String invoiceno, String selectedItem, String SignName, String SignPath, String contactName, String contactNo) {
         DBUtil db = null;
+        String invoiceRefNo="0";
         try {
             InvoiceHeaderBO invoiceHeaderBO = null;
             for (InvoiceHeaderBO invoiceBO : mInvoiceList) {
                 if (invoiceno.equals(invoiceBO.getInvoiceNo())) {
                     invoiceHeaderBO = invoiceBO;
+                    invoiceRefNo=invoiceBO.getInvoiceRefNo();
                     break;
                 }
             }
@@ -266,7 +269,7 @@ public class DeliveryManagementHelper {
             }
 
             if (bmodel.configurationMasterHelper.IS_GENERATE_SR_IN_DELIVERY) {
-                saveSalesReturn(invoiceno);
+                saveSalesReturn(invoiceRefNo);
             }
 
             // update SIH
