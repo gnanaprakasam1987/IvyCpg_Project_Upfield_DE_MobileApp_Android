@@ -285,7 +285,9 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
                         mSelectedSerial.equals(assetBO.getSerialNo())) {
                     assetBO.setImageName(imagePath);
                     assetBO.setImgName(mSelectedImageName);
-                    assetBO.getImageList().add(imagePath);
+                    ArrayList<String> imageList = assetBO.getImageList();
+                    imageList.add(imagePath);
+                    assetBO.setImageList(imageList);
                     break;
                 }
             }
