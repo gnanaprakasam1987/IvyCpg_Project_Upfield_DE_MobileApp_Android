@@ -463,10 +463,10 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         Bundle args = new Bundle();
                         args.putString("PID", id);
 
-                        Intent intent = new Intent(getActivity(),NearExpiryDateInputActivity.class);
+                        Intent intent = new Intent(getActivity(), NearExpiryDateInputActivity.class);
                         intent.putExtras(args);
 
-                        startActivityForResult( intent, NEAR_EXPIRY_RESULT_CODE);
+                        startActivityForResult(intent, NEAR_EXPIRY_RESULT_CODE);
                         getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
                     }
@@ -706,6 +706,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             myList.clear();
             // Add the products into list
             for (ProductMasterBO ret : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
 
                 if (ret.getBarCode().equals(strBarCodeSearch)
                         || ret.getCasebarcode().equals(strBarCodeSearch)
@@ -755,6 +757,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             if (mAttributeProducts != null) {
                 if (productId != 0) {
                     for (ProductMasterBO productBO : items) {
+                        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (productBO.getIsSaleable() == 1
                                 && productBO.getParentHierarchy().contains("/" + productId + "/")
                                 && mAttributeProducts.contains(SDUtil.convertToInt(productBO.getProductID()))) {
@@ -765,6 +769,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 } else {
                     for (int pid : mAttributeProducts) {
                         for (ProductMasterBO productBO : items) {
+                            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                                continue;
                             if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                                 myList.add(productBO);
                             }
@@ -773,7 +779,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 }
             } else {
                 for (ProductMasterBO ret : items) {
-
+                    if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (ret.getBarCode().equals(strBarCodeSearch)
                             || ret.getCasebarcode().equals(strBarCodeSearch)
                             || ret.getOuterbarcode().equals(strBarCodeSearch)
@@ -883,7 +890,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == NEAR_EXPIRY_RESULT_CODE && resultCode == 1){
+        if (requestCode == NEAR_EXPIRY_RESULT_CODE && resultCode == 1) {
             mSchedule.notifyDataSetChanged();
         }
     }

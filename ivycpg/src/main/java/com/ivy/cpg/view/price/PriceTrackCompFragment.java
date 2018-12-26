@@ -460,6 +460,8 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
 
 
         for (ProductMasterBO sku : items) {
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
             if ((priceTrackingHelper.mSelectedFilter == sku.getParentid()
                     || priceTrackingHelper.mSelectedFilter == -1) &&
                     (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
@@ -1164,6 +1166,8 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
             ArrayList<ProductMasterBO> tempList = new ArrayList<>();
             if (mSelectedCompanyId != 0) {
                 for (ProductMasterBO productMasterBO : mylist) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productMasterBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (productMasterBO.getCompanyId() == mSelectedCompanyId)
                         tempList.add(productMasterBO);
                 }

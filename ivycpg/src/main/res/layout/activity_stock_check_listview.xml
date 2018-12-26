@@ -41,7 +41,6 @@
                 android:layout_gravity="center"
                 android:ellipsize="marquee"
                 android:gravity="start|center"
-                android:singleLine="true"
                 android:text="@string/product_name" />
 
             <TextView

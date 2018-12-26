@@ -288,20 +288,20 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
 
-        viewFlipper =  getView().findViewById(R.id.view_flipper);
-        productName =  getView().findViewById(R.id.productName);
+        viewFlipper = getView().findViewById(R.id.view_flipper);
+        productName = getView().findViewById(R.id.productName);
 
         mEdt_searchproductName = (EditText) getView().findViewById(
                 R.id.edt_searchproductName);
         mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        mBtn_Search =  getView().findViewById(R.id.btn_search);
+        mBtn_Search = getView().findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
-        mBtn_clear =  getView().findViewById(R.id.btn_clear);
+        mBtn_clear = getView().findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
-        mBtnFilterPopup =  getView().findViewById(R.id.btn_filter_popup);
+        mBtnFilterPopup = getView().findViewById(R.id.btn_filter_popup);
         mBtnFilterPopup.setOnClickListener(this);
-        btnSave =  getView().findViewById(R.id.btn_save);
-       // btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btnSave = getView().findViewById(R.id.btn_save);
+        // btnSave.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         //((TextView) getView().findViewById(R.id.tvTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         mEdt_searchproductName.setOnEditorActionListener(this);
@@ -415,6 +415,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
         if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
             for (ProductMasterBO productBo : getTaggedProducts()) {
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBo.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if ((loadBothSalable
                         ? (productBo.getIsSaleable() == 1 || productBo.getIsSaleable() == 0)
                         : productBo.getIsSaleable() == 1) && productBo.getOwn() == 1)
@@ -422,13 +424,22 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
             for (ProductMasterBO productBo : getTaggedProducts()) {
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBo.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if ((loadBothSalable
                         ? (productBo.getIsSaleable() == 1 || productBo.getIsSaleable() == 0)
                         : productBo.getIsSaleable() == 1) && productBo.getOwn() == 0)
                     items.add(productBo);
             }
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
-            items = getTaggedProducts();
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                for (ProductMasterBO sku : getTaggedProducts()) {
+                    if (!sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
+                    items.add(sku);
+                }
+            else
+                items = getTaggedProducts();
         }
 
 
@@ -596,6 +607,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 //
             if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getBarCode().equals(strBarCodeSearch)
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
@@ -616,6 +629,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 }
             } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getBarCode().equals(strBarCodeSearch)
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
@@ -636,6 +651,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 }
             } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getBarCode().equals(strBarCodeSearch)
                             || sku.getCasebarcode().equals(strBarCodeSearch)
                             || sku.getOuterbarcode().equals(strBarCodeSearch)
@@ -757,13 +774,13 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             R.layout.activity_combined_stock_listview, parent,
                             false);
                     holder = new ViewHolder();
-                    holder.psname =  row
+                    holder.psname = row
                             .findViewById(R.id.stock_and_order_listview_productname);
-                    holder.tvProductCode =  row
+                    holder.tvProductCode = row
                             .findViewById(R.id.tvProductCode);
-                    holder.tvbarcode =  row
+                    holder.tvbarcode = row
                             .findViewById(R.id.tvbarcode);
-                    holder.ivAvailable =  row
+                    holder.ivAvailable = row
                             .findViewById(R.id.ivAvailable);
 
 
@@ -1434,7 +1451,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 stockCheckHelper.saveNearExpiry(getContext().getApplicationContext());
 
                 // Save closing stock
-                stockCheckHelper.saveClosingStock(getContext().getApplicationContext(),false);
+                stockCheckHelper.saveClosingStock(getContext().getApplicationContext(), false);
 
                 // update review plan in DB
                 stockCheckHelper.setReviewPlanInDB(getContext().getApplicationContext());
@@ -1608,6 +1625,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
             for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (levelBO.getProductID() == sku.getParentid()) {
                         if ((loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1619,6 +1638,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
             for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (levelBO.getProductID() == sku.getParentid()) {
                         if ((loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1631,6 +1652,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
             for (LevelBO levelBO : mParentIdList) {
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (levelBO.getProductID() == sku.getParentid()) {
                         if (loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1664,6 +1687,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {// Only own products
             if (mAttributeProducts != null && mFilteredPid != 0) {//Both Product and attribute filter selected
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                         if ((loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1676,6 +1701,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 }
             } else if (mAttributeProducts == null && mFilteredPid != 0) {// product filter alone selected
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                         if ((loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1687,6 +1714,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && mFilteredPid != 0) {// Attribute filter alone selected
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
                             if ((loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1699,6 +1728,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else {
                 if (mFilterText.equals("")) {
                     for (ProductMasterBO sku : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if ((loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                 : sku.getIsSaleable() == 1) && sku.getOwn() == 1)
@@ -1710,6 +1741,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {// Only competitor products
             if (mAttributeProducts != null && mFilteredPid != 0) {//Both Product and attribute filter selected
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                         if ((loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1722,6 +1755,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 }
             } else if (mAttributeProducts == null && mFilteredPid != 0) {// product filter alone selected
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                         if ((loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1733,6 +1768,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && mFilteredPid != 0) {// Attribute filter alone selected
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
                             if ((loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1745,6 +1782,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else {
                 if (mFilterText.equals("")) {
                     for (ProductMasterBO sku : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if ((loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                 : sku.getIsSaleable() == 1) && sku.getOwn() == 0)
@@ -1756,6 +1795,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         } else if (bmodel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {//Both Own and Competitor products
             if (mAttributeProducts != null && mFilteredPid != 0) {//Both Product and attribute filter selected
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                         if (loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1768,6 +1809,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 }
             } else if (mAttributeProducts == null && mFilteredPid != 0) {
                 for (ProductMasterBO sku : items) {// product filter alone selected
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                         if (loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1779,6 +1822,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && mFilteredPid != 0) {
                 for (int pid : mAttributeProducts) {// Attribute filter alone selected
                     for (ProductMasterBO sku : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (pid == SDUtil.convertToInt(sku.getProductID())) {
                             if (loadBothSalable
                                     ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
@@ -1791,6 +1836,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             } else {
                 if (mFilterText.equals("")) {
                     for (ProductMasterBO sku : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadBothSalable
                                 ? (sku.getIsSaleable() == 1 || sku.getIsSaleable() == 0)
                                 : sku.getIsSaleable() == 1)
@@ -1805,6 +1852,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             Vector<ProductMasterBO> temp = new Vector<>();
             String generaltxt = generalbutton;
             for (ProductMasterBO ret : mylist) {
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (isSpecialFilterAppliedProduct(generaltxt, ret))
                     temp.add(ret);
             }
@@ -1954,13 +2003,22 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         if (parentIdList != null && !parentIdList.isEmpty()) {
             for (CompetitorFilterLevelBO mParentBO : parentIdList) {
                 for (ProductMasterBO sku : items) {
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (mParentBO.getProductId() == sku.getCompParentId()) {
                         mylist.add(sku);
                     }
                 }
             }
         } else {
-            mylist.addAll(items);
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                for (ProductMasterBO sku : items) {
+                    if (!sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
+                    mylist.add(sku);
+                }
+            else
+                mylist.addAll(items);
         }
 
         mDrawerLayout.closeDrawers();

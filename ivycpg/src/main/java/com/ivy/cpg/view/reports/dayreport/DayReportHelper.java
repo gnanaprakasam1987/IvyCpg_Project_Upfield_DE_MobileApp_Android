@@ -464,6 +464,16 @@ public class DayReportHelper {
             }
             c.close();
         }
+        sb = new StringBuffer();
+        sb.append("SELECT count(*) FROM RetailerBeatMapping where BeatID in (select distinct beatId from RetailerBeatMapping where isVisited = 'Y') ");
+        c = db.selectSQL(sb.toString());
+        if (c != null) {
+            if (c.moveToNext()) {
+                dailyRep.setTotRouteCalls(c.getString(0));
+            }
+            c.close();
+        }
+
 
 
         db.closeDB();

@@ -478,14 +478,6 @@ public class AssetTrackingHelper {
             sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))");
 
 
-            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append(" and (SBD.Productid = ");
-                sb.append(mBusinessModel.productHelper.getmSelectedGlobalProductId());
-                sb.append(" OR SBD.Productid = 0 )");
-
-                allMasterSb = allMasterSb + ("and (SBD.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
-            }
-
             sb.append(" GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId,SBD.SerialNO ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
             Cursor c = db.selectSQL(sb.toString());
@@ -2238,14 +2230,6 @@ public class AssetTrackingHelper {
             sb.append("left join POSMProductMapping PPM on P.PosmID=PPM.posmid ");
             sb.append("left join Standardlistmaster SDM on SDM.listid=PCM.InStoreLocId and SDM.ListType='PL' ");
             sb.append("left join ProductMaster PM on PM.PID=PPM.Productid ");
-
-
-            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append(" and (PPM.Productid = ");
-                sb.append(mBusinessModel.productHelper.getmSelectedGlobalProductId());
-                sb.append(" OR PPM.Productid = 0 )");
-            }
-
             sb.append(" GROUP BY PCM.RetailerId,PCM.AccountId,PCM.Channelid,PCM.LocationId,PPM.Productid,PGCM.PosmId " +
                     " ORDER BY PCM.RetailerId,PCM.AccountId,PCM.Channelid,PCM.LocationId");
 

@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -146,7 +145,10 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
         int siz = items.size();
         mList = new ArrayList<>();
         for (int i = 0; i < siz; ++i) {
+
             SerializedAssetBO ret = items.elementAt(i);
+            if (bModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
             mList.add(ret);
         }
 

@@ -146,6 +146,8 @@ public class AssetPosmRemoveActivity extends IvyBaseActivityNoActionBar {
         mList = new ArrayList<>();
         for (int i = 0; i < siz; ++i) {
             AssetTrackingBO ret = items.elementAt(i);
+            if (bModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + bModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
             mList.add(ret);
         }
 

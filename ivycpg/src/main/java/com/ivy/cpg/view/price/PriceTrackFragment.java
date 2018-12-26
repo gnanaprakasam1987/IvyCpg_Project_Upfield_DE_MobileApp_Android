@@ -621,6 +621,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         if (parentIdList != null && !parentIdList.isEmpty()) {
             for (CompetitorFilterLevelBO mParentBO : parentIdList) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (mParentBO.getProductId() == sku.getCompParentId()) {
                         mylist.add(sku);
                     }
@@ -722,6 +724,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 0) {
             for (LevelBO levelBO : parentidList) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
                         mylist.add(sku);
                     }
@@ -730,6 +734,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 1) {
             for (LevelBO levelBO : parentidList) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
                         mylist.add(sku);
                     }
@@ -738,6 +744,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 2) {
             for (LevelBO levelBO : parentidList) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1)) {
                         mylist.add(sku);
                     }
@@ -762,6 +770,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 0) {
             if (mAttributeProducts != null && filteredPid != 0) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if ((sku.getParentHierarchy().contains("/" + filteredPid + "/")) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1) &&
                             (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID())))) {
                         mylist.add(sku);
@@ -769,6 +779,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 }
             } else if (mAttributeProducts == null && filteredPid != 0) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if ((sku.getParentHierarchy().contains("/" + filteredPid + "/")) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
                         mylist.add(sku);
                     }
@@ -776,6 +788,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && filteredPid != 0) {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
+                        if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if ((pid == SDUtil.convertToInt(sku.getProductID())) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
                             mylist.add(sku);
                         }
@@ -783,6 +797,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 }
             } else {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getIsSaleable() == 1 && sku.getOwn() == 1) {
                         mylist.add(sku);
                     }
@@ -792,6 +808,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 1) {
             if (mAttributeProducts != null && filteredPid != 0) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if ((sku.getParentHierarchy().contains("/" + filteredPid + "/")) &&
                             (sku.getIsSaleable() == 1 && sku.getOwn() == 0) &&
                             (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID())))) {
@@ -800,6 +818,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 }
             } else if (mAttributeProducts == null && filteredPid != 0) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getParentHierarchy().contains("/" + filteredPid + "/") &&
                             (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
                         mylist.add(sku);
@@ -808,6 +828,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && filteredPid != 0) {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
+                        if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if ((pid == SDUtil.convertToInt(sku.getProductID())) &&
                                 (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
                             mylist.add(sku);
@@ -816,6 +838,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 }
             } else {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getIsSaleable() == 1 && sku.getOwn() == 0) {
                         mylist.add(sku);
                     }
@@ -824,6 +848,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 2) {
             if (mAttributeProducts != null && filteredPid != 0) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if ((sku.getParentHierarchy().contains("/" + filteredPid + "/")) &&
                             (sku.getIsSaleable() == 1) &&
                             (mAttributeProducts.contains(SDUtil.convertToInt(sku.getProductID())))) {
@@ -832,6 +858,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 }
             } else if (mAttributeProducts == null && filteredPid != 0) {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if ((sku.getParentHierarchy().contains("/" + filteredPid + "/")) &&
                             (sku.getIsSaleable() == 1)) {
                         mylist.add(sku);
@@ -840,6 +868,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             } else if (mAttributeProducts != null && filteredPid != 0) {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO sku : items) {
+                        if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if ((pid == SDUtil.convertToInt(sku.getProductID())) &&
                                 (sku.getIsSaleable() == 1)) {
                             mylist.add(sku);
@@ -848,6 +878,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 }
             } else {
                 for (ProductMasterBO sku : items) {
+                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (sku.getIsSaleable() == 1) {
                         mylist.add(sku);
                     }
@@ -876,6 +908,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
         if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 0) {
             for (ProductMasterBO sku : items) {
+                if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if ((priceTrackingHelper.mSelectedFilter == sku.getParentid()
                         || priceTrackingHelper.mSelectedFilter == -1) &&
                         (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
@@ -884,6 +918,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             }
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 1) {
             for (ProductMasterBO sku : items) {
+                if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if ((priceTrackingHelper.mSelectedFilter == sku.getParentid()
                         || priceTrackingHelper.mSelectedFilter == -1) &&
                         (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
@@ -892,6 +928,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             }
         } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 2) {
             for (ProductMasterBO sku : items) {
+                if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if ((priceTrackingHelper.mSelectedFilter == sku.getParentid()
                         || priceTrackingHelper.mSelectedFilter == -1) &&
                         (sku.getIsSaleable() == 1)) {
@@ -1717,14 +1755,13 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 //                        else if (applyProductAndSpecialFilter(ret))
 //                            stockList.add(ret);
                     }
-                }
-                else if (mSelectedFilter.equals(getResources().getString(
+                } else if (mSelectedFilter.equals(getResources().getString(
                         R.string.prod_code))) {
                     if (((ret.getRField1() != null && ret.getRField1()
                             .toLowerCase()
                             .contains(s.toLowerCase())) || (ret.getProductCode() != null
                             && ret.getProductCode().toLowerCase().contains(s.toLowerCase()))) && ret.getIsSaleable() == 1) {
-                            stockList.add(ret);
+                        stockList.add(ret);
                     }
                 } else if (mSelectedFilter.equals(getContext().getResources().getString(
                         R.string.product_name))) {
@@ -1745,12 +1782,12 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             || ret.getOuterbarcode().toLowerCase().
                             contains(s.toLowerCase())) && ret.getIsSaleable() == 1) {
                         stockList.add(ret);
-                    } else  if (((ret.getRField1() != null && ret.getRField1()
+                    } else if (((ret.getRField1() != null && ret.getRField1()
                             .toLowerCase()
                             .contains(s.toLowerCase())) || (ret.getProductCode() != null
                             && ret.getProductCode().toLowerCase().contains(s.toLowerCase()))) && ret.getIsSaleable() == 1) {
                         stockList.add(ret);
-                    } else  if (ret.getProductShortName() != null && ret.getProductShortName()
+                    } else if (ret.getProductShortName() != null && ret.getProductShortName()
                             .toLowerCase()
                             .contains(
                                     s.toLowerCase()) && ret.getIsSaleable() == 1)

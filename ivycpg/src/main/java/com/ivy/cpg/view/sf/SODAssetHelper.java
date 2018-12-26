@@ -272,8 +272,7 @@ public class SODAssetHelper {
             stringBuilder.append(" AND " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + " BETWEEN SF.StartDate AND SF.EndDate");
             stringBuilder.append(" WHERE A.PLID IN (" + mContentLevelId + ")");
-            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                stringBuilder.append(" and A.ParentHierarchy LIKE '%/' ||" + mBModel.productHelper.getmSelectedGlobalProductId() + " || '/%'");
+
 
             if (moduleName.equals(moduleSODAsset)) {
                 SODBO mSOD;
