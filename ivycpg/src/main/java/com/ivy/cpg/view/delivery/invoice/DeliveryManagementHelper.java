@@ -487,7 +487,7 @@ public class DeliveryManagementHelper {
                     + bmodel.retailerMasterBO.getDistParentId() + ","
                     + bmodel.QT("") + ","
                     + bmodel.QT("") + ","
-                    + 0;
+                    + 1; // 1 means Indicative, 0 means normal
 
             values = values + "," + bmodel.QT("") + "," + bmodel.QT("");
 
@@ -648,6 +648,31 @@ public class DeliveryManagementHelper {
         } catch (SQLException e) {
             Commons.printException(e);
         }
+    }
+
+    //To get whether the retailer has sales return or not
+    public boolean hasDeliveryReturn() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT count(uid) from SalesReturnHeader where RetailerID =" + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID());
+            int count = 0;
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    count = c.getInt(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+            return count > 0;
+
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+
+        return false;
     }
 
 }

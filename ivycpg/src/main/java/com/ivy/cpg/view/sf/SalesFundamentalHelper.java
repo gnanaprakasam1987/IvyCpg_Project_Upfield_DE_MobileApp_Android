@@ -391,23 +391,25 @@ public class SalesFundamentalHelper {
             } else if (moduleName.equals(moduleSOSKU)) {
                 cursor = db.selectSQL(sBuffer.toString());
                 if (cursor != null) {
-
+                    lstCompetitiorPids = new ArrayList<>();
                     while (cursor.moveToNext()) {
-                        for (SOSKUBO prodBO : getSOSKUList()) {
+                        if (!lstCompetitiorPids.contains(cursor.getInt(1))) {
+                            for (SOSKUBO prodBO : getSOSKUList()) {
 
-                            if (prodBO.getProductID() == cursor.getInt(0)) {
+                                if (prodBO.getProductID() == cursor.getInt(0)) {
 
-                                SOSKUBO comLevel = new SOSKUBO();
-                                comLevel.setParentID(prodBO.getParentID());
-                                comLevel.setProductID(cursor.getInt(1));
-                                comLevel.setProductName(cursor.getString(2));
-                                comLevel.setIsOwn(cursor.getInt(3));
-                                comLevel.setNorm(cursor.getInt(4));
-                                comLevel.setParentHierarchy(cursor.getString(5));
-                                getSOSKUList().add(comLevel);
-                                break;
+                                    SOSKUBO comLevel = new SOSKUBO();
+                                    comLevel.setParentID(prodBO.getParentID());
+                                    comLevel.setProductID(cursor.getInt(1));
+                                    comLevel.setProductName(cursor.getString(2));
+                                    comLevel.setIsOwn(cursor.getInt(3));
+                                    comLevel.setNorm(cursor.getInt(4));
+                                    lstCompetitiorPids.add(cursor.getInt(1));
+                                    getSOSKUList().add(comLevel);
+                                    break;
+                                }
+
                             }
-
                         }
                     }
                     cursor.close();

@@ -52,6 +52,7 @@ import com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonDialog;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.lib.Utils;
 import com.ivy.sd.camera.CameraActivity;
@@ -72,7 +73,7 @@ import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.AmountSplitUpDialog;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
-import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -158,6 +159,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private DiscountHelper discountHelper;
     private OrderHelper orderHelper;
+    private StockCheckHelper stockCheckHelper;
 
     private LinkedList<ProductMasterBO> mOrderedProductList;
     private Vector<ProductMasterBO> mSortedList;
@@ -211,6 +213,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         discountHelper = DiscountHelper.getInstance(this);
         orderHelper = OrderHelper.getInstance(this);
+        stockCheckHelper = StockCheckHelper.getInstance(this);
         mCalendar = Calendar.getInstance();
         collectionHelper = CollectionHelper.getInstance(this);
 
@@ -1082,7 +1085,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 editOrder();
             }
         } else if (i1 == R.id.menu_delete) {
-            if (orderHelper.isStockCheckMenuEnabled())
+            if (orderHelper.isStockCheckMenuEnabled(OrderSummary.this))
                 showDialog(DIALOG_DELETE_STOCK_AND_ORDER);
             else
                 showDialog(DIALOG_DELETE_ONLY_ORDER);
@@ -2268,7 +2271,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 if (!"MENU_ORDER".equals(screenCode) && bModel.configurationMasterHelper.SHOW_STOCK_IN_SUMMARY) {
 
-                    if (bModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                    if (stockCheckHelper.SHOW_STOCK_SC) {
                         (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
@@ -2285,7 +2288,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         }
 
                     }
-                    if (bModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                    if (stockCheckHelper.SHOW_SHELF_OUTER) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         holder.shelfOuterQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
@@ -2303,7 +2306,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
 
-                    if (bModel.configurationMasterHelper.SHOW_STOCK_SP) {
+                    if (stockCheckHelper.SHOW_STOCK_SP) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
                         holder.shelfPieceQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
@@ -2612,7 +2615,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (!"MENU_ORDER".equals(screenCode) && bModel.configurationMasterHelper.SHOW_STOCK_IN_SUMMARY) {
 
 
-                    if (bModel.configurationMasterHelper.SHOW_STOCK_SC) {
+                    if (stockCheckHelper.SHOW_STOCK_SC) {
                         (row.findViewById(R.id.llShelfCase)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                         holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
@@ -2629,7 +2632,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         }
 
                     }
-                    if (bModel.configurationMasterHelper.SHOW_SHELF_OUTER) {
+                    if (stockCheckHelper.SHOW_SHELF_OUTER) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                         holder.shelfOuterQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));
@@ -2647,7 +2650,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
 
-                    if (bModel.configurationMasterHelper.SHOW_STOCK_SP) {
+                    if (stockCheckHelper.SHOW_STOCK_SP) {
                         (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.LIGHT));
                         holder.shelfPieceQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this,FontUtils.FontType.MEDIUM));

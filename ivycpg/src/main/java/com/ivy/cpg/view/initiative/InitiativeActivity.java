@@ -26,7 +26,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.BatchAllocation;
-import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.utils.FontUtils;

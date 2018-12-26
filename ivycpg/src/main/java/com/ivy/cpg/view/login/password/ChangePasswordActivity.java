@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.login.password;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,12 +23,13 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.FontUtils;
+import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONObject;
 
@@ -39,17 +40,12 @@ import java.util.regex.Pattern;
 public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
 
     private EditText edtNewPswd, edtRePswd, edtCurrPswd;
-    private TextView passwordExpiryTV;
     private BusinessModel bmodel;
-    private Button btnSubmit;//, btnClose;
-    private Intent in;
     private boolean isExpired = false;
     private String mPasswordCreatedDated = "";
     private String Cpassword, Npassword;
     private boolean ifReset = false;
     private boolean isFromSettingScreen = false;
-
-    private TextView btnClose, title_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,27 +56,26 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        in = getIntent();
+        Intent in = getIntent();
         if (in.getExtras() != null) {
             isExpired = in.getExtras().getBoolean("isExpired");
             isFromSettingScreen = in.getExtras().getBoolean("isFromSetting");
             //if change password called from sync flow if the password is reset password required
             ifReset = in.getExtras().getBoolean("resetpassword", false);
         }
-        edtCurrPswd = (EditText) findViewById(R.id.edtCurrentPswd);
-        edtNewPswd = (EditText) findViewById(R.id.edtNewPassword);
-        edtRePswd = (EditText) findViewById(R.id.edtConfirmPassword);
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
-//        btnClose = (Button) findViewById(R.id.btnClose);
-        btnClose = (TextView) findViewById(R.id.btnClose);
-        title_tv = (TextView) findViewById(R.id.title_tv);
+        edtCurrPswd = findViewById(R.id.edtCurrentPswd);
+        edtNewPswd = findViewById(R.id.edtNewPassword);
+        edtRePswd = findViewById(R.id.edtConfirmPassword);
+        Button btnSubmit = findViewById(R.id.btnSubmit);
+        TextView btnClose = findViewById(R.id.btnClose);
+        TextView title_tv = findViewById(R.id.title_tv);
 
-        edtCurrPswd.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        edtNewPswd.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        edtRePswd.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        btnSubmit.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        btnClose.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        title_tv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        edtCurrPswd.setTypeface(FontUtils.getFontRoboto(ChangePasswordActivity.this, FontUtils.FontType.LIGHT));
+        edtNewPswd.setTypeface(FontUtils.getFontRoboto(ChangePasswordActivity.this, FontUtils.FontType.LIGHT));
+        edtRePswd.setTypeface(FontUtils.getFontRoboto(ChangePasswordActivity.this, FontUtils.FontType.LIGHT));
+        btnSubmit.setTypeface(FontUtils.getFontBalooHai(ChangePasswordActivity.this, FontUtils.FontType.REGULAR));
+        btnClose.setTypeface(FontUtils.getFontRoboto(ChangePasswordActivity.this, FontUtils.FontType.LIGHT));
+        title_tv.setTypeface(FontUtils.getFontBalooHai(ChangePasswordActivity.this, FontUtils.FontType.REGULAR));
 
         if (isFromSettingScreen)
             btnClose.setText(getResources().getString(R.string.back));
@@ -91,7 +86,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
             public void onClick(View v) {
 
                 if (!mPasswordCreatedDated.equals("")) {
-                    int result = SDUtil.compareDate(LoginHelper.getInstance(getApplicationContext()).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
+                    int result = SDUtil.compareDate(LoginHelper.getInstance(getApplicationContext()).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.getAppDataProvider().getUser().getDownloadDate(), "yyyy/MM/dd");
                     if (result == -1) {
                         startActivity(new Intent(ChangePasswordActivity.this,
                                 LoginScreen.class));
@@ -151,12 +146,12 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                         edtNewPswd.requestFocus();
                         edtNewPswd.setError(getResources().getString(R.string.numeric_mandatory));
                     } else if (bmodel.configurationMasterHelper.IS_SPECIAL_CASE
-                            && !Pattern.compile("[/,.:<>!~@#$%^&;*()+=?()\"|!\\-_]")
+                            && !Pattern.compile("[/,.:<>!~@#$%^&;*()+=?\"|\\-_]")
                             .matcher(password).find()) {
                         edtNewPswd.requestFocus();
                         edtNewPswd.setError(getResources().getString(R.string.special_case_mandatory));
                     } else if (bmodel.configurationMasterHelper.IS_SAME_LOGIN
-                            && bmodel.userMasterHelper.getUserMasterBO()
+                            && bmodel.getAppDataProvider().getUser()
                             .getLoginName().equals(password)) {
                         edtNewPswd.requestFocus();
                         edtNewPswd.setError(getResources().getString(R.string.password_should_not_be_same));
@@ -167,7 +162,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                         edtRePswd.requestFocus();
                         edtRePswd.setError(getResources().getString(R.string.password_not_matched));
                     } else {
-                        if (bmodel.isOnline()) {
+                        if (NetworkUtils.isNetworkConnected(ChangePasswordActivity.this)) {
                             Cpassword = edtCurrPswd.getText()
                                     .toString();
                             Npassword = edtNewPswd.getText()
@@ -190,11 +185,11 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
 
         mPasswordCreatedDated = LoginHelper.getInstance(this).getPasswordCreatedDate(getApplicationContext());
         if (!mPasswordCreatedDated.equals("")) {
-            int result = SDUtil.compareDate(LoginHelper.getInstance(this).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
+            int result = SDUtil.compareDate(LoginHelper.getInstance(this).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.getAppDataProvider().getUser().getDownloadDate(), "yyyy/MM/dd");
             if (result == -1) {
-                passwordExpiryTV = (TextView) findViewById(R.id.tv_password_expired);
+                TextView passwordExpiryTV = findViewById(R.id.tv_password_expired);
                 passwordExpiryTV.setVisibility(View.VISIBLE);
-                passwordExpiryTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                passwordExpiryTV.setTypeface(FontUtils.getFontRoboto(ChangePasswordActivity.this, FontUtils.FontType.LIGHT));
             }
         }
 
@@ -221,8 +216,8 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                         DeviceUtils.getIMEINumber(ChangePasswordActivity.this));
                 jsonObject.put("VersionCode",
                         AppUtils.getApplicationVersionNumber(ChangePasswordActivity.this));
-                jsonObject.put("UserId", bmodel.userMasterHelper
-                        .getUserMasterBO().getUserid());
+                jsonObject.put("UserId", bmodel.getAppDataProvider()
+                        .getUser().getUserid());
 
                 jsonObject.put("OldPassword", Cpassword);
                 jsonObject.put("NewPassword", Npassword);
@@ -295,8 +290,8 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
                 if (ifReset)
                     deleteUserMaster();
                 bmodel.passwordTemp = edtNewPswd.getText().toString();
-                bmodel.userMasterHelper.changePassword(bmodel.userMasterHelper
-                        .getUserMasterBO().getUserid(), bmodel.passwordTemp);
+                bmodel.userMasterHelper.changePassword(bmodel.getAppDataProvider()
+                        .getUser().getUserid(), bmodel.passwordTemp);
                 onCreateDialog(0, getResources().getString(R.string.password_changed_successfully));
 
             } else if (result == -2) {
@@ -359,8 +354,6 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
 
     @Override
     public void onBackPressed() {
-
-        // super.onBackPressed();
     }
 
     private void deleteUserMaster() {
