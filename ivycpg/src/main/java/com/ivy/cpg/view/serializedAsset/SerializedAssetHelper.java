@@ -506,7 +506,7 @@ public class SerializedAssetHelper {
 
                     String serialNo = detailCursor.getString(4);
                     String conditionId = detailCursor.getString(3);
-
+                    String nfcTagID = detailCursor.getString(5);
 
 
                     setAssetDetails(mContext,
@@ -520,7 +520,7 @@ public class SerializedAssetHelper {
                                     ConfigurationMasterHelper.outDateFormat),
                             DateUtil.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(7),
-                                    ConfigurationMasterHelper.outDateFormat));
+                                    ConfigurationMasterHelper.outDateFormat),nfcTagID);
                 }
             }
             detailCursor.close();
@@ -545,7 +545,7 @@ public class SerializedAssetHelper {
      */
     private void setAssetDetails(Context mcontext, int assetID, int isAvailable,
                                  String mReasonId, String serialNo,
-                                 String conditionId, String installDate, String serviceDate) {
+                                 String conditionId, String installDate, String serviceDate, String nfcTagID) {
 
         SerializedAssetBO assetBO = null;
 
@@ -569,7 +569,8 @@ public class SerializedAssetHelper {
                         } else {
                             assetBO.setSerialNo(Integer.toString(0));
                         }
-                        assetBO.setImageList(getImagesList(mcontext, assetID,assetBO));
+                        assetBO.setNFCTagId(nfcTagID);
+                        assetBO.setImageList(getImagesList(mcontext, assetID, assetBO.getNFCTagId(), assetBO));
 
                     }
 
@@ -580,7 +581,7 @@ public class SerializedAssetHelper {
     }
 
 
-    private ArrayList<String> getImagesList(Context mContext, int assetId,SerializedAssetBO assetBO) {
+    private ArrayList<String> getImagesList(Context mContext, int assetId, String serialNo, SerializedAssetBO assetBO) {
         ArrayList<String> imageList = new ArrayList<>();
         try {
 
@@ -592,7 +593,7 @@ public class SerializedAssetHelper {
             Cursor c;
 
             sql = "select ImageName,imgName from SerializedAssetImageDetails "
-                    + " where AssetID = " + assetId
+                    + " where AssetID = " + assetId + " and serialNumber = " + AppUtils.QT(serialNo)
                     + " AND Upload = " + AppUtils.QT("N");
             c = db.selectSQL(sql);
 
