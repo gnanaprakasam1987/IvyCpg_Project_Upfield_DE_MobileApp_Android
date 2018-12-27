@@ -6,19 +6,26 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Function;
 
 public class TaskDataManagerImpl implements TaskDataManager {
 
     private DBUtil mDbUtil;
     private AppDataProvider appDataProvider;
 
+    @Inject
     public TaskDataManagerImpl(@DataBaseInfo DBUtil mDbUtil, AppDataProvider appDataProvider) {
         this.mDbUtil = mDbUtil;
         this.appDataProvider = appDataProvider;
@@ -149,12 +156,48 @@ public class TaskDataManagerImpl implements TaskDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
+                    mDbUtil.deleteSQL("TaskExecutionDetails", "TaskId=" + taskDataBO.getTaskId() + " and RetailerId = " + retailerId, false);
 
-
-                }catch (Exception e){
+                    return true;
+                } catch (Exception e) {
                     Commons.printException(e);
                 }
-                return null;
+                return false;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        String UID = AppUtils.QT(appDataProvider.getRetailMaster().getRetailerID()
+                                + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                        String columns = "TaskId,RetailerId,Date,UId,Upload";
+                        String values;
+
+                        try {
+                            if (taskDataBO.isChecked()) {
+                                values = taskDataBO.getTaskId() + "," + AppUtils.QT(retailerId) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + UID + ",'N'";
+                                mDbUtil.insertSQL("TaskExecutionDetails", columns, values);
+                                //bmodel.saveModuleCompletion("MENU_TASK");
+                            } else {
+
+                                Cursor c = mDbUtil.selectSQL("Select * from TaskExecutionDetails");
+                                if (c.getCount() == 0) {
+                                    //bmodel.deleteModuleCompletion("MENU_TASK");
+                                    c.close();
+                                }
+                            }
+                            shutDownDb();
+                            return true;
+
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                        }
+                        shutDownDb();
+                        return false;
+                    }
+                });
             }
         });
     }

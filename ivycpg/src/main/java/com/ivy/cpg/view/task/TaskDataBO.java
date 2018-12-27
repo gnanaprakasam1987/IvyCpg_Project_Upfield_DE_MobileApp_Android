@@ -100,7 +100,7 @@ public class TaskDataBO {
         this.taskId = taskId;
     }
 
-    String getTaskId() {
+    public String getTaskId() {
         return taskId;
     }
 
