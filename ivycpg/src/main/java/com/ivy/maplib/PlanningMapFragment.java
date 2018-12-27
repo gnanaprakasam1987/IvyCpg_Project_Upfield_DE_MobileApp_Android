@@ -1472,7 +1472,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
 
             /** Add today'sdeviated retailers. **/
             for (int i = 0; i < siz; i++) {
-                if ("Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                if (bmodel.getRetailerMaster().get(i).getIsDeviated() != null && "Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
                     if (mSelecteRetailerType.equalsIgnoreCase(CODE_DEAD_STORE) && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeadStore())) {
                         continue;
                     } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_GOLDEN_STORE) && bmodel.getRetailerMaster().get(i).getIsGoldStore() != 1) {
@@ -1597,7 +1597,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 }
 
                 if ((bmodel.getRetailerMaster().get(i).getBeatID() == beatId || beatId == 0)
-                        && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                        && (bmodel.getRetailerMaster().get(i).getIsDeviated() != null && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeviated()))) {
 
                     if (filter != null) {
                         if ((bmodel.getRetailerMaster().get(i).getRetailerName()
