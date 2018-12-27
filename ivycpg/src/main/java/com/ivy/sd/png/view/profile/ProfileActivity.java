@@ -1644,7 +1644,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         if (bmodel.configurationMasterHelper.SHOW_RET_SKIP_VALIDATION
-                && !bmodel.retailerMasterBO.getIsDeviated().equalsIgnoreCase("Y")
+                && (bmodel.retailerMasterBO.getIsDeviated() != null && !bmodel.retailerMasterBO.getIsDeviated().equalsIgnoreCase("Y"))
                 && bmodel.getVisitretailerMaster().size() > 0) {
             if (!validateSequenceSkip(bmodel.getRetailerMasterBO()))
                 return;
@@ -2115,7 +2115,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
-                            || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
+                            || (bmodel.getRetailerMasterBO().getIsDeviated() != null && !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
 
                         SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(ProfileActivity.this,
                                 bmodel.userMasterHelper.getUserMasterBO().getUserid(), bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);

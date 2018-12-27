@@ -242,7 +242,7 @@ public class QuickCallFragment extends IvyBaseFragment {
 
 
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
-                            || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
+                            || (bmodel.getRetailerMasterBO().getIsDeviated() != null && !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
 
                         SchemeDetailsMasterHelper.getInstance(getActivity()).initializeScheme(getActivity(),
                                 bmodel.userMasterHelper.getUserMasterBO().getUserid(), bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
