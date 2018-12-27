@@ -92,7 +92,7 @@ public class TaskDataBO {
         return usercreated;
     }
 
-    void setUsercreated(String usercreated) {
+    public void setUsercreated(String usercreated) {
         this.usercreated = usercreated;
     }
 
@@ -145,7 +145,7 @@ public class TaskDataBO {
         return isUpload;
     }
 
-    void setIsUpload(boolean isUpload) {
+    public void setIsUpload(boolean isUpload) {
         this.isUpload = isUpload;
     }
 

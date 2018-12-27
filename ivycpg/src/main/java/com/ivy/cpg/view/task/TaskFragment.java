@@ -463,7 +463,10 @@ public class TaskFragment extends IvyBaseFragment {
                         }
                     } else {
 
-                        if (taskData.getRid() == 0 && taskData.getChannelId() == 0 && (taskData.getUserId() == bmodel.userMasterHelper.getUserMasterBO().getUserid() || taskData.getUserId() == 0)) {
+                        if (taskData.getRid() == 0
+                                && taskData.getChannelId() == 0
+                                && (taskData.getUserId() == bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                || taskData.getUserId() == 0)) {
 
                             if (taskType == 1) { // server
                                 if (taskData.getUsercreated().toUpperCase()
@@ -475,6 +478,7 @@ public class TaskFragment extends IvyBaseFragment {
                                         .equals("1")) {
                                     taskDataBOForAdapter.add(taskData);
                                 }
+
                             } else {
                                 taskDataBOForAdapter.add(taskData);
                             }
