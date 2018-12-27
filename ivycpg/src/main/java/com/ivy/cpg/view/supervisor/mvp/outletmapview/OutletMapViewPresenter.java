@@ -342,7 +342,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
                     retailerMasterBo.setUserName(getSellerName(retailerMasterBo.getUserId()));
                 }
 
-                if (!retailerMasterBo.getIsDeviated() && documentSnapshotBo.getIsDeviated()){
+                if ((!retailerMasterBo.getIsDeviated()) && documentSnapshotBo.getIsDeviated()){
                     retailerMasterBo.setIsDeviated(true);
                 }
 

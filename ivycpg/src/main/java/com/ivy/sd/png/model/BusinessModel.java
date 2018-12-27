@@ -2334,8 +2334,8 @@ public class BusinessModel extends Application {
             retailer = retailerMaster.get(i);
 
             if (retailer.getRetailerID().equals(retailerId)
-                    && (retailer.getIsToday() == 1 || retailer.getIsDeviated()
-                    .equals("Y"))) {
+                    && (retailer.getIsToday() == 1 || (retailer.getIsDeviated() != null && retailer.getIsDeviated()
+                    .equals("Y")))) {
                 bool = true;
             }
         }
@@ -3870,7 +3870,7 @@ public class BusinessModel extends Application {
         try {
             for (RetailerMasterBO tempObj : retailerMaster) {
                 if (tempObj.getIsToday() == 1
-                        || tempObj.getIsDeviated().equals("Y")) {
+                        || (tempObj.getIsDeviated() != null && tempObj.getIsDeviated().equals("Y"))) {
 
                     if (tempObj.getSbdDistributionTarget() > 0) {
 

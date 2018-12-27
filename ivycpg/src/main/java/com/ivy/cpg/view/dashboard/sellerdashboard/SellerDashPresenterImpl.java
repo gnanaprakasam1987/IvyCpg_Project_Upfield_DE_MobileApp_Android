@@ -735,7 +735,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
         } else {
             for (int i = 0; i < size; i++) {
                 if (businessModel.getRetailerMaster().get(i).getIsVisited().equals("Y") ||
-                        businessModel.getRetailerMaster().get(i).getIsDeviated().equalsIgnoreCase("Y")) {
+                        (businessModel.getRetailerMaster().get(i).getIsDeviated() != null && businessModel.getRetailerMaster().get(i).getIsDeviated().equalsIgnoreCase("Y"))) {
                     count++;
                 }
             }

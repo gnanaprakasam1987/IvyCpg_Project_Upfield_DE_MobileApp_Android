@@ -47,7 +47,7 @@ public class DeliveryStockHelper {
                     db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
                     String retailerIds = "";
                     for (RetailerMasterBO retailer : businessModel.getRetailerMaster()) {
-                        if (retailer.getIsToday() == 1 || retailer.getIsDeviated().equalsIgnoreCase("Y")) {
+                        if (retailer.getIsToday() == 1 || (retailer.getIsDeviated() != null && retailer.getIsDeviated().equalsIgnoreCase("Y"))) {
                             if (retailerIds.length() > 1)
                                 retailerIds += "," + retailer.getRetailerID();
                             else

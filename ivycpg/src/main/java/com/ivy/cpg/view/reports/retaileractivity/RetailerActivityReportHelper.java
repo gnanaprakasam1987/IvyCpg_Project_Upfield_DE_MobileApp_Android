@@ -38,7 +38,7 @@ public class RetailerActivityReportHelper {
             db.openDataBase();
 
             for (RetailerMasterBO retailerList : businessModel.getRetailerMaster()) {
-                if (retailerList.getIsToday() == 1 || retailerList.getIsDeviated().equalsIgnoreCase("Y")) {
+                if (retailerList.getIsToday() == 1 || (retailerList.getIsDeviated() != null && retailerList.getIsDeviated().equalsIgnoreCase("Y"))) {
                     retailerBo = new RetailerMasterBO();
                     retailerBo.setRetailerID(retailerList.getRetailerID());
                     retailerBo.setRetailerName(retailerList.getRetailerName());
