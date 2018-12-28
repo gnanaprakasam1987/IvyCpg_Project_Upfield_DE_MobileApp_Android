@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.github.mikephil.charting.charts.LineChart xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chart1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/dimen_20dp"
-    android:paddingEnd="@dimen/dimen_20dp"
-    android:paddingTop="@dimen/dimen_20dp">
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</LinearLayout>
+    android:layout_marginEnd="@dimen/dimen_20dp"
+    android:layout_marginStart="@dimen/dimen_20dp"
+    android:layout_marginTop="@dimen/dimen_20dp" />

@@ -2263,6 +2263,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putString("retid", "0");
                 bndl.putString("type", "ROUTE");
+               // fragment = new SellerDashboardFragment();
+
                 fragment = new SellerDashboardFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,

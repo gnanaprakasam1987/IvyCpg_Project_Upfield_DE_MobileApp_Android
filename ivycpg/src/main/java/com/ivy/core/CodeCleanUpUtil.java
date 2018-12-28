@@ -8,6 +8,9 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 
+import java.util.ArrayList;
+import java.util.Vector;
+
 public class CodeCleanUpUtil {
 
     private static CodeCleanUpUtil instance = null;
@@ -70,18 +73,53 @@ public class CodeCleanUpUtil {
 
     public void setUserId(int userId){
         appDataProvider.getUser().setUserid(userId);
-        bmodel.userMasterHelper.getUserMasterBO().setUserid(0);
+        bmodel.userMasterHelper.getUserMasterBO().setUserid(userId);
     }
 
     public void setGlobalLocationId(int locationId){
         appDataProvider.setGlobalLocationIndex(locationId,true);
     }
 
+    public void setBmodelGlobalLocationId(int locationId){
+        bmodel.productHelper.setmSelectedGlobalProductId(locationId);
+    }
+
     public void setTodayBeatMaster(BeatMasterBO beatMaster){
         appDataProvider.setTodayBeatMaster(beatMaster,true);
     }
 
-    public void setBmodelGlobalLocationId(){
-
+    public void setBModelTodayBeatMaster(BeatMasterBO beatMaster){
+        bmodel.beatMasterHealper.setTodayBeatMasterBO(beatMaster);
     }
+
+    public void setRetailerMaster(Vector<RetailerMasterBO> retailerMasterBOS){
+        ArrayList<RetailerMasterBO> retailerMasterBOArrayList = new ArrayList<>();
+        retailerMasterBOArrayList.addAll(retailerMasterBOS);
+
+        appDataProvider.setRetailerMasters(retailerMasterBOArrayList,true);
+    }
+
+
+    public void setBmodelRetailerMaster(ArrayList<RetailerMasterBO> retailerMasterBOS){
+        Vector<RetailerMasterBO> retailerVector =new Vector<RetailerMasterBO>();
+        retailerVector.addAll(retailerMasterBOS);
+        bmodel.setRetailerMaster(retailerVector);
+    }
+
+
+    public void setSubDMaster(Vector<RetailerMasterBO> subDMaster){
+        ArrayList<RetailerMasterBO> subDMasterList = new ArrayList<>();
+        subDMasterList.addAll(subDMaster);
+
+        appDataProvider.setSubDMasterList(subDMasterList,true);
+    }
+
+
+    public void setBmodelSubDMaster(ArrayList<RetailerMasterBO> subDMaster){
+        Vector<RetailerMasterBO> subDMasterVector =new Vector<RetailerMasterBO>();
+        subDMasterVector.addAll(subDMaster);
+        bmodel.setSubDMaster(subDMasterVector);
+    }
+
+
 }

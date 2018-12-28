@@ -470,6 +470,8 @@ public class CollectionHelper {
 
     /**
      * Method to update in haspayment issue value in Retailermaster object
+     * @deprecated
+     * @See {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#updatePaymentIssue(ArrayList)}
      */
     public void updateHasPaymentIssue() {
         DBUtil db;

@@ -14,6 +14,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.content.FileProvider;
+import android.os.Environment;
+import android.os.StatFs;
+import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -261,11 +264,6 @@ public class AppUtils {
     }
 
 
-    /*
-     * This method will return total acheived value of the seller for the day.
-     * OrderHeader if preseller or InvoiceMaster. Deviated retailer acheived
-     * value will not be considered.
-     */
 
     public static String QT(String data) {
         return "'" + data + "'";
@@ -404,6 +402,7 @@ public class AppUtils {
         return context.getSharedPreferences(HomeScreenActivity.class.getSimpleName(),
                 MODE_PRIVATE);
     }
+
 
     public static boolean validRegex(String pattern, String str) {
 
