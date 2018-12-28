@@ -80,13 +80,15 @@ public class KPIBarChartFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
 
     }
 
     @Override
     public void onStop() {
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
@@ -94,15 +96,16 @@ public class KPIBarChartFragment extends BaseFragment {
     public void onMessageEvent(DashBoardEventData event) {
         if (event.getSource().equalsIgnoreCase(DASHBOARD)) {
             dashboardListData.clear();
+            if (mBarChart.getData() != null) {
+                mBarChart.invalidate();
+                mBarChart.clear();
+            }
             dashboardListData.addAll(event.getEventDataList());
+            setChartData();
+
 
         }
 
-        if (mBarChart.getData() != null) {
-            mBarChart.clear();
-            mBarChart.clearValues();
-        }
-        setChartData();
 
     }
 
