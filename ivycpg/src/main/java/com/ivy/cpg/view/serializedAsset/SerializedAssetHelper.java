@@ -3,9 +3,11 @@ package com.ivy.cpg.view.serializedAsset;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.widget.Toast;
 
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
@@ -466,11 +468,41 @@ public class SerializedAssetHelper {
             c2.close();
             c3.close();
             db.closeDB();
+            mAssetTrackingList = removeMovedAsset(mContext);
         } catch (Exception e) {
             Commons.printException(e);
             db.closeDB();
 
         }
+    }
+
+    public ArrayList<SerializedAssetBO> removeMovedAsset(Context mContext){
+        try {
+            ArrayList<String> mMovedList = getAssetMovementDetails(mContext);
+            ArrayList<Integer> toRemovePos = new ArrayList<>();
+            if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
+                if (mMovedList != null && mMovedList.size() > 0) {
+                    for (int i = 0; i < mMovedList.size(); i++) {
+                        String tempMoved = mMovedList.get(i);
+                        for (int j = 0; j < mAssetTrackingList.size(); j++) {
+                            if (tempMoved.equalsIgnoreCase(String.valueOf(mAssetTrackingList.get(j).getAssetID()) + mAssetTrackingList.get(j).getSerialNo())) {
+                                toRemovePos.add(j);
+                            }
+                        }
+                    }
+                    ArrayList<SerializedAssetBO> assetTrackingList = new ArrayList<>();
+                    for (int i = 0; i < mAssetTrackingList.size(); i++) {
+                        if (!toRemovePos.contains(i)) {
+                            assetTrackingList.add(mAssetTrackingList.get(i));
+                        }
+                    }
+                    mAssetTrackingList = assetTrackingList;
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return mAssetTrackingList;
     }
 
 

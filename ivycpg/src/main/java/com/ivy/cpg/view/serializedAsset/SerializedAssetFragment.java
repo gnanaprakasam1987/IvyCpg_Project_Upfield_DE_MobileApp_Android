@@ -386,10 +386,14 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
             } else {
-                assetPresenter.updateTimeStamp();
-                startActivity(new Intent(getActivity(),
-                        HomeScreenTwo.class));
-                getActivity().finish();
+                if (adapter.isEmpty()) {
+                    save();
+                } else {
+                    assetPresenter.updateTimeStamp();
+                    startActivity(new Intent(getActivity(),
+                            HomeScreenTwo.class));
+                    getActivity().finish();
+                }
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
@@ -720,6 +724,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             }
         } else if (requestCode == MOVEMENT_ASSET) {
             assetTrackingHelper.loadDataForAssetPOSM(getActivity().getApplicationContext(), MENU_SERIALIZED_ASSET);
+            assetPresenter.updateList();
+            adapter.notifyDataSetChanged();
         } else {
 
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
