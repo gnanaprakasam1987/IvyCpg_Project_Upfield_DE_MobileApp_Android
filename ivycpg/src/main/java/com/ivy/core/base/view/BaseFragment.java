@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
@@ -277,6 +278,14 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     public void startActivityAndFinish(Class activity){
         ((BaseActivity)getActivity()).startActivityAndFinish(activity);
+    }
+
+    @Override
+    public void setScreenTitle(String title) {
+        if(getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).setScreenTitle(title);
+        else if(getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).setScreenTitle(title);
     }
 
 }

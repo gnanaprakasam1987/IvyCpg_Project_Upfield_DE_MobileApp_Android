@@ -159,18 +159,18 @@ public class ProductHelper {
     }
 
     /**
-     * @return
-     * @See {@link AppDataProvider#getGlobalLocationIndex()}
      * @deprecated
+     * @See {@link AppDataProvider#getGlobalLocationIndex()}
+     * @return
      */
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
     }
 
     /**
-     * @param mSelectedGLobalLocationIndex
-     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
      * @deprecated
+     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
+     * @param mSelectedGLobalLocationIndex
      */
     public void setmSelectedGLobalLocationIndex(int mSelectedGLobalLocationIndex) {
         this.mSelectedGLobalLocationIndex = mSelectedGLobalLocationIndex;

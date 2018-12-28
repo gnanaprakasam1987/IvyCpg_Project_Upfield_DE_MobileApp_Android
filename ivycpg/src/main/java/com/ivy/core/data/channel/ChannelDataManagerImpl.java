@@ -411,6 +411,72 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
     }
 
     @Override
+    public Single<String> fetchChannelIds() {
+
+
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                String sql;
+                String sql1 = "";
+                String str = "";
+                int channelid = 0;
+
+                try{
+                    initDb();
+
+                    if (appDataProvider.getRetailMaster() != null)
+                        channelid = appDataProvider.getRetailMaster().getSubchannelid();
+
+                    int mChildLevel = 0;
+                    int mContentLevel = 0;
+                    Cursor c = mDbUtil.selectSQL("select min(Sequence) as childlevel,(select Sequence from ChannelLevel cl inner join ChannelHierarchy ch on ch.LevelId=cl.LevelId where ch.ChId=" + channelid + ") as contentlevel  from ChannelLevel");
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            mChildLevel = c.getInt(0);
+                            mContentLevel = c.getInt(1);
+                        }
+                        c.close();
+                    }
+
+                    int loopEnd = mContentLevel - mChildLevel + 1;
+
+                    for (int i = 2; i <= loopEnd; i++) {
+                        sql1 = sql1 + " LM" + i + ".ChId";
+                        if (i != loopEnd)
+                            sql1 = sql1 + ",";
+                    }
+                    sql = "select LM1.ChId," + sql1 + "  from ChannelHierarchy LM1";
+                    for (int i = 2; i <= loopEnd; i++)
+                        sql = sql + " INNER JOIN ChannelHierarchy LM" + i + " ON LM" + (i - 1)
+                                + ".ParentId = LM" + i + ".ChId";
+                    sql = sql + " where LM1.ChId=" + channelid;
+                    c = mDbUtil.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            for (int i = 0; i < c.getColumnCount(); i++) {
+                                str = str + c.getString(i);
+                                if (c.getColumnCount() > 1 && i != c.getColumnCount())
+                                    str = str + ",";
+                            }
+                            if (str.endsWith(","))
+                                str = str.substring(0, str.length() - 1);
+                        }
+                        c.close();
+                    }
+
+                }catch (Exception ignored){
+
+                }
+
+                return str;
+            }
+        });
+
+
+    }
+
+    @Override
     public void tearDown() {
         if (mDbUtil != null)
             mDbUtil.closeDB();

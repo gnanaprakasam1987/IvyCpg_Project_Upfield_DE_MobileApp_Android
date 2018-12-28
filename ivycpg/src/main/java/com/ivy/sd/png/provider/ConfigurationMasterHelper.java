@@ -2932,6 +2932,8 @@ public class ConfigurationMasterHelper {
     }
 
     /**
+     * @deprecated
+     * @See {@link com.ivy.core.data.db.AppDataManagerImpl#fetchNewActivityMenu(String)}
      * This method will download the Menu configured for this particular channel
      * type. This will also download the Menu Name,Number and hasLink attributes
      *

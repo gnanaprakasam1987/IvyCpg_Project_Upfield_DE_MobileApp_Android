@@ -3507,7 +3507,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (!dashList.isEmpty())
                     dashBoardHelper.loadRetailerDashBoard(bmodel.getRetailerMasterBO().getRetailerID() + "", dashList.get(0));
 
-                if (dashBoardHelper.getDashChartDataList() != null && !dashBoardHelper.getDashChartDataList().isEmpty()) {
+                if (dashBoardHelper.getDashboardMasterData() != null && !dashBoardHelper.getDashboardMasterData().isEmpty()) {
                     Intent i = new Intent(this,
                             SellerDashBoardActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

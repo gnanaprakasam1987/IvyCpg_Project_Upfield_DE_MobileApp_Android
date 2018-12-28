@@ -60,7 +60,7 @@ public class KPIStackedBarChartFragment extends IvyBaseFragment {
         BusinessModel bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        dashBoardList = DashBoardHelper.getInstance(getActivity()).getDashListViewList();
+        dashBoardList = DashBoardHelper.getInstance(getActivity()).getDashChartData();
 
         mbarChart = view.findViewById(R.id.stackedbar_chart);
         mbarChart.getAxisLeft().setDrawGridLines(false);
