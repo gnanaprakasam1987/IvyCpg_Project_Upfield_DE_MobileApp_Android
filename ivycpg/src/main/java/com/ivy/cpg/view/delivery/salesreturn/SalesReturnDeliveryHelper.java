@@ -6,6 +6,7 @@ import android.database.DatabaseUtils;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -52,8 +53,7 @@ public class SalesReturnDeliveryHelper {
                             "uid,date,ReturnValue,Lpc,invoiceid,SignaturePath,ImgName,RefModule,RefModuleTId " +
                             "from SalesReturnHeader where retailerId ='" + businessModel.getRetailerMasterBO().getRetailerID() + "' " +
                             "AND upload='X' " +
-                            "AND uid NOT IN (select ifnull(RefUID,0) from salesReturnHeader " +
-                            "where upload='Y'and isCancel != 1) ");
+                            "AND uid NOT IN (select ifnull(RefUID,0) from salesReturnHeader where upload='N' or isCancel == 1) ");
 
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
@@ -591,5 +591,18 @@ public class SalesReturnDeliveryHelper {
 
     public void setSalesReturnDelDataMap(HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> salesReturnDelDataMap) {
         this.salesReturnDelDataMap = salesReturnDelDataMap;
+    }
+
+    public boolean hasDatatoSave(List<SalesReturnDeliveryDataModel> list) {
+        int siz = list.size();
+        if (siz == 0)
+            return false;
+        for (int i = 0; i < siz; ++i) {
+            SalesReturnDeliveryDataModel product = list.get(i);
+            if (product.getActualCaseQuantity() > 0
+                    || product.getActualPieceQuantity() > 0)
+                return true;
+        }
+        return false;
     }
 }

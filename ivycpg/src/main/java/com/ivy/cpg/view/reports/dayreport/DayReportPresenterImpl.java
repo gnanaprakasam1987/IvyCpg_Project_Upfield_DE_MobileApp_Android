@@ -81,7 +81,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 con.setMenuNumber(mBusinessModel.formatValue(SDUtil
                         .convertToDouble(outlet.getTotValues())));
 
-            }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT29")) {
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT29")) {
                 con.setMenuNumber(mBusinessModel.formatValue(SDUtil
                         .convertToDouble(outlet.getKlgsTotValue())));
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT02")) {
@@ -90,20 +90,20 @@ public class DayReportPresenterImpl implements DayReportPresenter {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT30")) {
                 String eff = outlet.getKlgsEffCoverage();
                 con.setMenuNumber(eff);
-            }else if (con.getConfigCode().equalsIgnoreCase("DAYRT03")|| con.getConfigCode().equalsIgnoreCase("DAYRT31")) {
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT03") || con.getConfigCode().equalsIgnoreCase("DAYRT31")) {
                 con.setMenuNumber(visitedcalls + "/" + totalcalls);
 
-            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT04")|| con.getConfigCode().equalsIgnoreCase("DAYRT32")) {
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT04") || con.getConfigCode().equalsIgnoreCase("DAYRT32")) {
                 int productivecalls = 0;
                 if (con.getConfigCode().equalsIgnoreCase("DAYRT04"))
                     productivecalls = dashBoardHelper.getProductiveCallsForTheDay();
                 else if (con.getConfigCode().equalsIgnoreCase("DAYRT32"))
                     productivecalls = dashBoardHelper.getProductiveCallsForTheDayKlgs();
 
-                    con.setMenuNumber(productivecalls + "/" + visitedcalls);
+                con.setMenuNumber(productivecalls + "/" + visitedcalls);
 
 
-            }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT06")) {
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT06")) {
                 con.setMenuNumber(outlet.getTotLines());
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT33")) {
@@ -124,7 +124,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 }
                 con.setMenuNumber(SDUtil.roundIt(avg1, 2));
 
-            }else if (con.getConfigCode().equalsIgnoreCase("DAYRT34")) {
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT34")) {
                 float avg1 = 0;
                 try {
                     float f1 = SDUtil.convertToFloat(outlet.getKlgsTotLines());
@@ -139,10 +139,10 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 }
                 con.setMenuNumber(SDUtil.roundIt(avg1, 2));
 
-            }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT08")) {
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT08")) {
                 int val[] = dayReportHelper.getSDBDistTargteAndAcheived();
                 con.setMenuNumber(val[0] + "/" + val[1]);
-            }  else if (con.getConfigCode().equalsIgnoreCase("DAYRT10")) {
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT10")) {
                 removable_config.add(con);
                 con.setMenuNumber("0");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT11")) {
@@ -348,11 +348,16 @@ public class DayReportPresenterImpl implements DayReportPresenter {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT40")) { //Planogram completed vs Total calls
 
                 con.setMenuNumber(outlet.getPlanogramCount() + "/" + totalcalls);
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT41")) { // Coverage route based
+                con.setMenuNumber(outlet.getTotRouteCalls());
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT42")) { // visited outlet vs Coverage route based
+                con.setMenuNumber(visitedcalls + "/" + outlet.getTotRouteCalls());
+            } else if (con.getConfigCode().equalsIgnoreCase("DAYRT43")) { // productive outlet vs Coverage route based
+                con.setMenuNumber(dashBoardHelper.getProductiveCallsForTheDay() + "/" + outlet.getTotRouteCalls());
             }
         }
 
         mDayList.removeElement(removable_config);
-
 
 
         if (mBusinessModel.configurationMasterHelper.IS_SHOW_DROPSIZE) {

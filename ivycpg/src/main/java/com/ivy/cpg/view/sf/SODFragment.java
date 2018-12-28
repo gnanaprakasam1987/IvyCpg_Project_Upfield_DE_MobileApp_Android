@@ -484,6 +484,8 @@ public class SODFragment extends IvyBaseFragment implements
 
             ArrayList<SODBO> myList = new ArrayList<>();
             for (SODBO temp : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (temp.getParentID() == id || id == -1 && temp.getIsOwn() == 1) {
                     myList.add(temp);
                 }
@@ -516,6 +518,8 @@ public class SODFragment extends IvyBaseFragment implements
         ArrayList<SODBO> myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
             for (SODBO temp : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (temp.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                     if (temp.getIsOwn() == 1)
                         myList.add(temp);

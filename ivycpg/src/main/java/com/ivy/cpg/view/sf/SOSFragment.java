@@ -554,6 +554,8 @@ public class SOSFragment extends IvyBaseFragment implements
 
             List<SOSBO> myList = new ArrayList<>();
             for (SOSBO temp : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (temp.getParentID() == id || id == -1 && temp.getIsOwn() == 1)
                     myList.add(temp);
             }
@@ -585,6 +587,8 @@ public class SOSFragment extends IvyBaseFragment implements
         List<SOSBO> myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
             for (SOSBO temp : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (temp.getParentHierarchy().contains("/" + mFilteredPid + "/") && temp.getIsOwn() == 1) {
                     myList.add(temp);
                 }

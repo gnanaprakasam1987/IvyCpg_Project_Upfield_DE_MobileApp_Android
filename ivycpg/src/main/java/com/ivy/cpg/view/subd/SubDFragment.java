@@ -169,20 +169,15 @@ public class SubDFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Integer... params) {
             try {
                 if (!isCancelled()) {
-                    if (!bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                        GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
-                        if (genericObjectPair != null) {
-                            bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                            bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                        }
-                        bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                        bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                                bmodel.productHelper.getFilterProductLevels(),true));
-
-                    } else {
-                        //to reload product filter if diffrent retailer selected
-                        bmodel.productHelper.setmLoadedGlobalProductId(0);
+                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
+                    if (genericObjectPair != null) {
+                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
                     }
+                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                            bmodel.productHelper.getFilterProductLevels(), true));
+
                     bmodel.configurationMasterHelper
                             .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
                                     .getSubchannelid());

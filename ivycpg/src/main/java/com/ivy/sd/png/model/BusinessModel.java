@@ -2352,8 +2352,8 @@ public class BusinessModel extends Application {
             retailer = retailerMaster.get(i);
 
             if (retailer.getRetailerID().equals(retailerId)
-                    && (retailer.getIsToday() == 1 || retailer.getIsDeviated()
-                    .equals("Y"))) {
+                    && (retailer.getIsToday() == 1 || (retailer.getIsDeviated() != null && retailer.getIsDeviated()
+                    .equals("Y")))) {
                 bool = true;
             }
         }
@@ -3038,24 +3038,14 @@ public class BusinessModel extends Application {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
-        StockCheckHelper stockCheckHelper = null;
+        StockCheckHelper stockCheckHelper = StockCheckHelper.getInstance(ctx);
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
             product = productHelper.getTaggedProductBOById(productid);
-            stockCheckHelper = StockCheckHelper.getInstance(ctx);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
 
-        if (menuCode.equals("MENU_STOCK")) {
-            if (!stockCheckHelper.SHOW_STOCK_SP)
-                shelfpqty = -1;
-            if (!stockCheckHelper.SHOW_STOCK_SC)
-                shelfcqty = -1;
-            if (!stockCheckHelper.SHOW_SHELF_OUTER)
-                shelfoqty = -1;
-            if (!stockCheckHelper.SHOW_STOCK_CB)
-                availability = -1;
-        } else if (menuCode.equals("MENU_COMBINE_STKCHK")) {
+        if (menuCode.equals("MENU_COMBINE_STKCHK")) {
             if (!stockCheckHelper.SHOW_COMB_STOCK_SP)
                 shelfpqty = -1;
             if (!stockCheckHelper.SHOW_COMB_STOCK_SC)
@@ -3065,13 +3055,13 @@ public class BusinessModel extends Application {
             if (!stockCheckHelper.SHOW_COMB_STOCK_CB)
                 availability = -1;
         } else {
-            if (!this.configurationMasterHelper.SHOW_STOCK_SP)
+            if (!stockCheckHelper.SHOW_STOCK_SP)
                 shelfpqty = -1;
-            if (!this.configurationMasterHelper.SHOW_STOCK_SC)
+            if (!stockCheckHelper.SHOW_STOCK_SC)
                 shelfcqty = -1;
-            if (!this.configurationMasterHelper.SHOW_SHELF_OUTER)
+            if (!stockCheckHelper.SHOW_SHELF_OUTER)
                 shelfoqty = -1;
-            if (!this.configurationMasterHelper.SHOW_STOCK_CB)
+            if (!stockCheckHelper.SHOW_STOCK_CB)
                 availability = -1;
         }
 
@@ -4035,7 +4025,7 @@ public class BusinessModel extends Application {
                             lineValue += (productWithMaxTaxRate.getSrp() * schemeProductBO.getQuantitySelected());
                         }
 
-                        lineValue=SDUtil.formatAsPerCalculationConfig(lineValue);
+                        lineValue = SDUtil.formatAsPerCalculationConfig(lineValue);
 
                         schemeProductBO.setLineValue(lineValue);
 

@@ -59,7 +59,7 @@ public class PromotionHelper {
         /*businessModel.productHelper.downloadFiveLevelFilterNonProducts(mMenuCode);*/
         businessModel.productHelper.setFilterProductLevelsRex(businessModel.productHelper.downloadFilterLevel(mMenuCode));
         businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(
-                businessModel.productHelper.getRetailerModuleSequenceValues(),false));
+                businessModel.productHelper.getRetailerModuleSequenceValues(), false));
 
         downloadPromotionMaster(mContext);
         loadPromoEntered(mContext);
@@ -144,9 +144,6 @@ public class PromotionHelper {
                     + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "))"
                     + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.PromoId,PPM.Pid ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId ";
 
-
-            if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                query = query + "and PPM.PId = " + businessModel.productHelper.getmSelectedGlobalProductId();
 
             c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName,PMM.StartDate,PMM.EndDate,P.ParentHierarchy"
                     + "  from PromotionMapping PM"

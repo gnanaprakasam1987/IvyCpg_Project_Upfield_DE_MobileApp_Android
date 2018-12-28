@@ -134,7 +134,7 @@ import java.util.Vector;
 import static com.ivy.cpg.view.order.moq.MOQHighlightActivity.MOQ_RESULT_CODE;
 
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener,FiveLevelFilterCallBack {
+        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -282,6 +282,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private AlertDialog alertDialog;
 
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
+    private StockCheckHelper stockCheckHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -293,6 +294,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         orderHelper = OrderHelper.getInstance(this);
+        stockCheckHelper = StockCheckHelper.getInstance(this);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
@@ -878,10 +880,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (applyLevel.equals("ALL")) {
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
                     for (int j = 0; j < product.getLocations().size(); j++) {
-                        if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() < 0)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() < 0)) {
+                        if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() < 0)
+                                || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() < 0)
+                                || (stockCheckHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() < 0)
+                                || (stockCheckHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() < 0)) {
                             return false;
                         }
                     }
@@ -893,10 +895,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
                     for (int j = 0; j < product.getLocations().size(); j++) {
                         isStockChecked = false;
-                        if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                                || (bmodel.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
+                        if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                                || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                                || (stockCheckHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                                || (stockCheckHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
                             return true;
                         }
                     }
@@ -912,10 +914,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
                         isStockChecked = false;
                         for (int j = 0; j < product.getLocations().size(); j++) {
-                            if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
+                            if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                                    || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                                    || (stockCheckHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                                    || (stockCheckHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
                                 isStockChecked = true;
                             }
                         }
@@ -933,10 +935,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
                         isStockChecked = false;
                         for (int j = 0; j < product.getLocations().size(); j++) {
-                            if ((bmodel.configurationMasterHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
-                                    || (bmodel.configurationMasterHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
+                            if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                                    || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                                    || (stockCheckHelper.SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                                    || (stockCheckHelper.SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)) {
                                 return true;
                             }
                         }
@@ -1465,7 +1467,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_CB
+                if (!stockCheckHelper.SHOW_STOCK_CB
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
                     ((LinearLayout) row.findViewById(R.id.llAvail)).setVisibility(View.GONE);
@@ -1486,7 +1488,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC
+                if (!stockCheckHelper.SHOW_STOCK_SC
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
                     ((LinearLayout) row.findViewById(R.id.llShelfCase)).setVisibility(View.GONE);
@@ -1504,7 +1506,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e + "");
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP
+                if (!stockCheckHelper.SHOW_STOCK_SP
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
                     ((LinearLayout) row.findViewById(R.id.llShelfPc)).setVisibility(View.GONE);
@@ -1522,7 +1524,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         Commons.printException(e + "");
                     }
                 }
-                if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER
+                if (!stockCheckHelper.SHOW_SHELF_OUTER
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
                     ((LinearLayout) row.findViewById(R.id.llShelfOuter)).setVisibility(View.GONE);
@@ -1944,7 +1946,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.imageButton_availability.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (bmodel.configurationMasterHelper.CHANGE_AVAL_FLOW) {
+                        if (stockCheckHelper.CHANGE_AVAL_FLOW) {
                             if (holder.productObj.getLocations()
                                     .get(mSelectedLocationIndex).getAvailability() == -1) {
                                 holder.productObj.getLocations()
@@ -1953,11 +1955,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.RED)));
                                 holder.imageButton_availability.setChecked(true);
 
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                if (stockCheckHelper.SHOW_STOCK_SP)
                                     holder.shelfPcsQty.setText("0");
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                if (stockCheckHelper.SHOW_STOCK_SC)
                                     holder.shelfCaseQty.setText("0");
-                                if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                if (stockCheckHelper.SHOW_SHELF_OUTER)
                                     holder.shelfouter.setText("0");
 
                             } else if (holder.productObj.getLocations()
@@ -1968,11 +1970,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
                                 holder.imageButton_availability.setChecked(false);
 
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                if (stockCheckHelper.SHOW_STOCK_SP)
                                     holder.shelfPcsQty.setText("");
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                if (stockCheckHelper.SHOW_STOCK_SC)
                                     holder.shelfCaseQty.setText("");
-                                if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                if (stockCheckHelper.SHOW_SHELF_OUTER)
                                     holder.shelfouter.setText("");
 
                             } else if (holder.productObj.getLocations()
@@ -1983,11 +1985,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.colorAccent)));
                                 holder.imageButton_availability.setChecked(true);
 
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                if (stockCheckHelper.SHOW_STOCK_SP)
                                     holder.shelfPcsQty.setText("1");
-                                else if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                else if (stockCheckHelper.SHOW_STOCK_SC)
                                     holder.shelfCaseQty.setText("1");
-                                else if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                else if (stockCheckHelper.SHOW_SHELF_OUTER)
                                     holder.shelfouter.setText("1");
 
                             }
@@ -2000,11 +2002,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.colorAccent)));
                                 holder.imageButton_availability.setChecked(true);
 
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                if (stockCheckHelper.SHOW_STOCK_SP)
                                     holder.shelfPcsQty.setText("1");
-                                else if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                else if (stockCheckHelper.SHOW_STOCK_SC)
                                     holder.shelfCaseQty.setText("1");
-                                else if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                else if (stockCheckHelper.SHOW_SHELF_OUTER)
                                     holder.shelfouter.setText("1");
 
                             } else if (holder.productObj.getLocations()
@@ -2015,11 +2017,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.RED)));
                                 holder.imageButton_availability.setChecked(true);
 
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                                if (stockCheckHelper.SHOW_STOCK_SP)
                                     holder.shelfPcsQty.setText("0");
-                                if (bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                                if (stockCheckHelper.SHOW_STOCK_SC)
                                     holder.shelfCaseQty.setText("0");
-                                if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                                if (stockCheckHelper.SHOW_SHELF_OUTER)
                                     holder.shelfouter.setText("0");
 
                             } else if (holder.productObj.getLocations()
@@ -3517,7 +3519,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
             //set store stock qty
-            if (bmodel.configurationMasterHelper.SHOW_STOCK_SC
+            if (stockCheckHelper.SHOW_STOCK_SC
                     || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
                 int strShelfCase = holder.productObj.getLocations()
                         .get(mSelectedLocationIndex).getShelfCase();
@@ -3527,7 +3529,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     holder.shelfCaseQty.setText("");
                 }
             }
-            if (bmodel.configurationMasterHelper.SHOW_STOCK_SP
+            if (stockCheckHelper.SHOW_STOCK_SP
                     || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
                 int strShelfPiece = holder.productObj.getLocations()
                         .get(mSelectedLocationIndex).getShelfPiece();
@@ -3538,7 +3540,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     holder.shelfPcsQty.setText("");
                 }
             }
-            if (bmodel.configurationMasterHelper.SHOW_SHELF_OUTER
+            if (stockCheckHelper.SHOW_SHELF_OUTER
                     || !screenCode.equals(ConfigurationMasterHelper.MENU_ORDER)) {
 
                 int strShelfOuter = holder.productObj.getLocations()
@@ -4089,7 +4091,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     totalWeight = totalWeight + ((ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())) * ret.getWeight());
                     int totalOrderedQty = orderHelper.getTotalOrderedQty(ret);
-                    totalAllQty = (totalOrderedQty != -1)? (totalAllQty + totalOrderedQty) : (totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())));
+                    totalAllQty = (totalOrderedQty != -1) ? (totalAllQty + totalOrderedQty) : (totalAllQty + (ret.getOrderedPcsQty() + (ret.getOrderedCaseQty() * ret.getCaseSize()) + (ret.getOrderedOuterQty() * ret.getOutersize())));
 
                     orderedList.add(ret);
                 }
@@ -4350,7 +4352,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void onnext() {
 
         if (!"MENU_ORDER".equals(screenCode) && bmodel.configurationMasterHelper.IS_MUST_SELL_STK
-                && !bmodel.productHelper.isMustSellFilledStockCheck(false)) {
+                && !bmodel.productHelper.isMustSellFilledStockCheck(false,this)) {
             Toast.makeText(this, R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -4414,7 +4416,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     }
                     if (count > 0) {
-                        Intent intent = new Intent(StockAndOrder.this,MOQHighlightActivity.class);
+                        Intent intent = new Intent(StockAndOrder.this, MOQHighlightActivity.class);
                         ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
                         ActivityCompat.startActivityForResult(this, intent, MOQ_RESULT_CODE, opts.toBundle());
                         count = 0;
@@ -4858,10 +4860,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             mylist = new Vector<>();
                             for (SchemeProductBO schemeProductBO : slabBO.getBuyingProducts()) {
 
-                                if (bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()) != null)
+                                if (bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()) != null) {
+                                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                            !bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()).getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                                        continue;
                                     mylist.add(bmodel.productHelper.getProductMasterBOById(schemeProductBO.getProductId()));
-                                else {
+                                } else {
                                     for (ProductMasterBO productMasterBO : productList) {
+                                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                                !productMasterBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                                            continue;
                                         if (productMasterBO.getParentHierarchy().contains("/" + schemeProductBO.getProductId() + "/"))
                                             mylist.add(productMasterBO);
                                     }
@@ -4881,7 +4889,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (resultCode == 1) {
                 lvwplist.invalidateViews();
             }
-        }else {
+        } else {
             if (result != null) {
                 if (result.getContents() != null) {
                     strBarCodeSearch = result.getContents();
@@ -4911,6 +4919,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mylist = new Vector<>();
             for (int i = 0; i < siz; ++i) {
                 ProductMasterBO ret = items.elementAt(i);
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                        !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
                     continue;
                 if (loadStockedProduct == -1
@@ -5015,6 +5026,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
+                continue;
+
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                    !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                 continue;
 
             if (loadStockedProduct == -1
@@ -5254,6 +5269,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         || ret.getOuterbarcode().equals(strBarCodeSearch)
                         || "ALL".equals(strBarCodeSearch)) {
                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
+                        continue;
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                            !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                         continue;
 
                     if (loadStockedProduct == -1
@@ -6096,6 +6114,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (mFilterText.length() > 0) {
                     count++;
                     for (ProductMasterBO productBO : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6117,6 +6138,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 } else {
                     for (ProductMasterBO productBO : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6140,6 +6164,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6161,7 +6187,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (mProductId != 0) {
                     count++;
                     for (ProductMasterBO productBO : items) {
-
+                        if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                                !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
                         if (loadStockedProduct == -1
                                 || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6180,7 +6208,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             } else {
                 for (ProductMasterBO productBO : items) {
-
+                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                            !productBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (loadStockedProduct == -1
                             || (loadStockedProduct == 1 ? productBO.getSIH() > 0 : productBO.getWSIH() > 0)) {
 
@@ -6205,6 +6235,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             Vector<ProductMasterBO> temp = new Vector<>();
             String generaltxt = generalbutton;
             for (ProductMasterBO ret : mylist) {
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                        !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (generaltxt.equals(GENERAL))//No special filters selected
                 {
                     if (mEdt_searchproductName.getText().length() >= 3) {// User entry filter

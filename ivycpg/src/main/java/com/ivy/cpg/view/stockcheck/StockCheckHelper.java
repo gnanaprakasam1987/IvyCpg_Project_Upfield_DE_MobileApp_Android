@@ -35,6 +35,7 @@ public class StockCheckHelper {
     public boolean SHOW_STOCK_TOTAL;
     public boolean SHOW_STOCK_FC;
     public boolean CHANGE_AVAL_FLOW;
+    public boolean SHOW_STOCK_AVGDAYS;
 
     public boolean SHOW_COMB_STOCK_SC;
     public boolean SHOW_COMB_STOCK_SP;
@@ -80,6 +81,7 @@ public class StockCheckHelper {
         SHOW_STOCK_TOTAL = false;
         SHOW_STOCK_FC = false;
         CHANGE_AVAL_FLOW = false;
+        SHOW_STOCK_AVGDAYS = false;
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -135,6 +137,9 @@ public class StockCheckHelper {
                         break;
                     case "CB01":
                         CHANGE_AVAL_FLOW = true;
+                        break;
+                    case "AVGDAYS":
+                        SHOW_STOCK_AVGDAYS = true;
                         break;
 
 
@@ -704,7 +709,7 @@ public class StockCheckHelper {
                         int rField1 = product.getLocations().get(j).getIsPouring();
                         int rField2 = product.getLocations().get(j).getIsPouring();
                         int rField3 = 0;
-                        if (bmodel.configurationMasterHelper.SHOW_STOCK_AVGDAYS) {
+                        if (SHOW_STOCK_AVGDAYS) {
                             rField1 = product.getQty_klgs();
                             rField2 = product.getRfield1_klgs();
                             rField3 = product.getRfield2_klgs();

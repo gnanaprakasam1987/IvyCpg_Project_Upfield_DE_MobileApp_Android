@@ -77,7 +77,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner {
+public class VisitFragment extends IvyBaseFragment implements BrandDialogInterface, FiveLevelFilterCallBack, SearchView.OnQueryTextListener, SubDSelectionDialog.SubIdSelectionListner, CustomFragment.RetailerSelectionListener {
 
     private static final String CODE_PRODUCTIVE = "Filt_01";
     private static final String CODE_NON_PRODUCTIVE = "Filt_02";
@@ -641,13 +641,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             startActivity(planningIntent);
             return true;
         } else if (i1 == R.id.menu_selection_filter) {
-            FragmentManager fm = getActivity().getSupportFragmentManager();
             CustomFragment dialogFragment = new CustomFragment();
+            dialogFragment.setCallback(this);
             Bundle bundle = new Bundle();
             bundle.putString("title", "Retailer SelectionType");
+            bundle.putSerializable("mylist", mRetailerSelectionList);
             dialogFragment.setArguments(bundle);
-
-            dialogFragment.show(fm, "Sample Fragment");
+            dialogFragment.show(getChildFragmentManager(), "Sample Fragment");
         } else if (i1 == R.id.menu_subd_selection) {
             if (subDSelectionDialog == null) {
                 subDSelectionDialog = new SubDSelectionDialog();
@@ -1162,10 +1162,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     }
 
-    private void updateRetailerSelectionType(String type) {
+    @Override
+    public void updateRetailerSelectionType(String type) {
         mSelecteRetailerType = type;
         loadFilteredData(null);
-
     }
 
     @Override
@@ -1821,72 +1821,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             Commons.printException(e);
         }
         return null;
-    }
-
-    @SuppressLint("ValidFragment")
-    public class CustomFragment extends DialogFragment {
-        private String mTitle = "";
-
-
-        private TextView mTitleTV;
-        private Button mOkBtn;
-        private Button mDismisBtn;
-        private ListView mCountLV;
-
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            mTitle = getArguments().getString("title");
-
-
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.custom_dialog_fragment, container, false);
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            getDialog().setTitle(mTitle);
-            if (getView() != null) {
-                mTitleTV = getView().findViewById(R.id.title);
-                mOkBtn = getView().findViewById(R.id.btn_ok);
-                mDismisBtn = getView().findViewById(R.id.btn_dismiss);
-                mDismisBtn.setText(getActivity().getResources().getString(R.string.cancel));
-                mCountLV = getView().findViewById(R.id.lv_colletion_print);
-            }
-            mTitleTV.setVisibility(View.GONE);
-
-            ArrayAdapter<StandardListBO> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_single_choice, mRetailerSelectionList);
-            mCountLV.setAdapter(adapter);
-            mCountLV.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            if (mSelectedPostion != -1)
-                mCountLV.setItemChecked(mSelectedPostion, true);
-            mCountLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    dismiss();
-                    mSelectedMenuBO = mRetailerSelectionList.get(position);
-                    mSelectedPostion = position;
-                    updateRetailerSelectionType(mSelectedMenuBO.getListCode());
-                }
-            });
-
-
-            //mCountLV.setAdapter(adapter);
-            mOkBtn.setVisibility(View.GONE);
-            mDismisBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
-
-        }
-
     }
 
     private String getTotalVisitActual() {

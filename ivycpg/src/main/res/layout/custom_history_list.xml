@@ -8,7 +8,7 @@
     android:orientation="horizontal">
     <!--android:layout_height="@dimen/profile_history_layout_height"-->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="9.5"
         android:orientation="vertical"
@@ -24,7 +24,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/profile_margin_top_minus"
-            android:weightSum="8"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -401,8 +400,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/profile_margin_top_minus"
-            android:orientation="horizontal"
-            android:weightSum="6">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/del_date_layout"
@@ -725,13 +723,13 @@
 
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/profile_margin_top_minus"
-            android:orientation="horizontal"
-            android:weightSum="4">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/driver_name_layout"
@@ -950,10 +948,11 @@
             </LinearLayout>
 
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="0.5"

@@ -5130,7 +5130,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 return true;
             }
         } else if (i == R.id.menu_order) {
-
+            bmodel.setRetailerMasterBO(new RetailerMasterBO());
             if (isDistributor) {
                 DistributorMasterBO distBo = (DistributorMasterBO) distributorSpinner.getSelectedItem();
                 if (distBo.getDId().equals("0")) {
@@ -5143,7 +5143,10 @@ public class NewOutletFragment extends IvyBaseFragment
                         bmodel.getRetailerMasterBO().setDistributorId(Integer.parseInt(distBo.getDId()));
 
                     bmodel.updatePriceGroupId(false);
-                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
+                }
+            }
+
+            GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
                     if (genericObjectPair != null) {
                         bmodel.productHelper.setProductMaster(genericObjectPair.object1);
                         bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
@@ -5151,8 +5154,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
                             bmodel.productHelper.getFilterProductLevels(),true));
-                }
-            }
+
 
 
             bmodel.configurationMasterHelper.downloadProductDetailsList();

@@ -123,15 +123,15 @@ public class SOSKUFragment extends IvyBaseFragment implements
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
 
-        mDrawerLayout =  view.findViewById(
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
 
         if (view != null) {
-            mListView =  view.findViewById(R.id.list);
+            mListView = view.findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
 
-        FrameLayout drawer =  view.findViewById(R.id.right_drawer);
+        FrameLayout drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -596,6 +596,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
             if (mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOSKU))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
+            menu.findItem(R.id.menu_loc_filter).setVisible(false);
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -660,6 +661,8 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
             myList = new ArrayList<>();
             for (SOSKUBO temp : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (temp.getParentID() == id || id == -1 && temp.getIsOwn() == 1) {
                     myList.add(temp);
                 }
@@ -692,6 +695,8 @@ public class SOSKUFragment extends IvyBaseFragment implements
         myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
             for (SOSKUBO temp : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (temp.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                     if (temp.getIsOwn() == 1)
                         myList.add(temp);

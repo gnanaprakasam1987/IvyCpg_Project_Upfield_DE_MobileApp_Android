@@ -500,6 +500,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         mAssetTrackingList = standardListBO.getAssetTrackingList();
         if (mAssetTrackingList != null) {
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
 
                 if ("ALL".equals(strBarCodeSearch)) {
                     if ("".equals(mCapturedNFCTag)) {
@@ -587,10 +589,12 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                         .findViewById(R.id.tv_target);
                 holder.availQtyET = row
                         .findViewById(R.id.edit_availability_qty);
+                holder.reasonLL = (LinearLayout) row.findViewById(R.id.llReason);
                 holder.reason1Spin = row
                         .findViewById(R.id.spin_reason1);
 
                 holder.reason1Spin.setAdapter(mPOSMReasonSpinAdapter);
+                holder.conditionLL = (LinearLayout) row.findViewById(R.id.llCondition);
                 holder.mConditionSpin = row
                         .findViewById(R.id.spin_condition);
                 holder.mConditionSpin.setAdapter(mPOSMConditionAdapter);
@@ -1070,10 +1074,12 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             }
 
             if (!assetTrackingHelper.SHOW_POSM_REASON) {
-                holder.reason1Spin.setVisibility(View.GONE);
+                holder.reasonLL.setVisibility(View.GONE);
+                //holder.reason1Spin.setVisibility(View.GONE);
             }
             if (!assetTrackingHelper.SHOW_POSM_CONDITION) {
-                holder.mConditionSpin.setVisibility(View.GONE);
+                holder.conditionLL.setVisibility(View.GONE);
+                //holder.mConditionSpin.setVisibility(View.GONE);
             }
             if (!assetTrackingHelper.SHOW_POSM_INSTALL_DATE) {
                 row.findViewById(R.id.ll_install_date).setVisibility(View.GONE);
@@ -1167,7 +1173,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         TextView locationNameTv;
         TextView photoCount;
         CheckBox execQtyCheckBox;
-        LinearLayout executeLL;
+        LinearLayout executeLL, reasonLL, conditionLL;
     }
 
 
@@ -1277,6 +1283,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 + mBModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imgName;
 
         for (AssetTrackingBO assetBO : mAssetTrackingList) {
+            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
             if (assetID == assetBO.getAssetID() && productID == assetBO.getProductId()) {
                 ArrayList<String> imageList = assetBO.getImageList();
                 imageList.add(imagePath);
@@ -1641,21 +1649,22 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         }
 
 
-
         if (mAssetTrackingList == null) {
             mBModel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
             return;
         }
 
-        if (mProductId != 0) {//Both Product and attribute filter selected
+        if (mAttributeProducts != null && mProductId != 0) {//Both Product and attribute filter selected
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (assetBO.getParentHierarchy() != null && assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                     if (ALL.equals(strBarCodeSearch)) {
                         if (mCapturedNFCTag.isEmpty()) {
                             if ((mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId())
-                                    && mAttributeProducts.contains(assetBO.getProductId())) {
+                                    && (mAttributeProducts.contains(assetBO.getProductId()))) {
                                 myList.add(assetBO);
                             }
                         } else if (mCapturedNFCTag.equalsIgnoreCase(assetBO.getNFCTagId().replaceAll(":", ""))) {
@@ -1667,11 +1676,21 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mProductId != 0) {// product filter alone selected
+        } else if (mAttributeProducts == null && mProductId != 0) {// product filter alone selected
             if (mSelectedIdByLevelId.size() == 0 || mBModel.isMapEmpty(mSelectedIdByLevelId)) {
-                myList.addAll(mAssetTrackingList);
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+
+                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                        if (assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            continue;
+                        myList.add(assetBO);
+                    }
+                else
+                    myList.addAll(mAssetTrackingList);
             } else {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                    if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (assetBO.getParentHierarchy() != null && assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
                         if (ALL.equals(strBarCodeSearch)) {
@@ -1689,9 +1708,11 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                     }
                 }
             }
-        } else if (mProductId != 0) {// Attribute filter alone selected
+        } else if (mAttributeProducts != null && mProductId == 0) {// Attribute filter alone selected
             for (int pid : mAttributeProducts) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                    if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
                     if (pid == assetBO.getProductId()) {
 
                         if (ALL.equals(strBarCodeSearch)) {
@@ -1711,6 +1732,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             }
         } else if (mFilterText.length() == 0) {
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (ALL.equals(strBarCodeSearch)) {
                     if (mCapturedNFCTag.isEmpty()) {
                         if (mSelectedLastFilterSelection == -1 || mSelectedLastFilterSelection == assetBO.getProductId()) {
