@@ -20,6 +20,8 @@ public interface TaskContract {
         void setTaskUserListData(ArrayList<UserMasterBO> userList);
 
         void setToolBarTitle(String title);
+
+        void updateListData();
     }
 
 
