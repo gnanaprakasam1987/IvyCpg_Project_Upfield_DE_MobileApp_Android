@@ -66,7 +66,7 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
     protected ArrayList<String> imgPathShare;
     protected ArrayList<String> imgPathDelete;
     protected ArrayList<File> imgFileDelete;
-
+    private int mselectedLocationId = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,14 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
         mPhotoCaptureHelper = PhotoCaptureHelper.getInstance(this);
+
+        if (getIntent().getExtras() != null) {
+            try {
+                mselectedLocationId = getIntent().getIntExtra("selectedLocationID", 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null)
@@ -463,6 +471,9 @@ public class Gallery extends IvyBaseActivityNoActionBar implements OnLongClickLi
                         .findViewById(R.id.type_loc_txt);
                 holder.loc_txt = (TextView) convertView
                         .findViewById(R.id.loc_txt);
+                if(mselectedLocationId == 0)
+                    holder.loc_txt.setVisibility(View.GONE);
+
                 holder.RLCheckBg = (RelativeLayout) convertView.findViewById(R.id.layout_share_select);
                 holder.CBSelect = (CheckBox) convertView.findViewById(R.id.check_share_select);
 

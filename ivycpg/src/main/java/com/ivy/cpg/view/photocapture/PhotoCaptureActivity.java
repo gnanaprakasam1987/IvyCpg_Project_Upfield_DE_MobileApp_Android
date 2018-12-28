@@ -551,6 +551,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
             Intent mIntent = new Intent(PhotoCaptureActivity.this,
                     Gallery.class);
             mIntent.putExtra("from", "photo_cap");
+            mIntent.putExtra("selectedLocationID", mSelectedItem);
             startActivity(mIntent);
             return true;
         } else if (i == R.id.menu_save) {
