@@ -52,7 +52,6 @@ import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.attendance.AttendanceFragment;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
-import com.ivy.cpg.view.attendance.inout.TimeTrackingFragment;
 import com.ivy.cpg.view.backupseller.BackUpSellerFragment;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.IncentiveDashboardFragment;
@@ -111,6 +110,7 @@ import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.ui.attendance.view.TimeTrackingFragment;
 
 import java.io.File;
 import java.util.ArrayList;
