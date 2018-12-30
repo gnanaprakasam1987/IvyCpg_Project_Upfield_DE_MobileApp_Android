@@ -4,8 +4,18 @@ public class StockReportBO {
 
     private String productName, productShortName, productCode = "", barcode,
             rfield1, batchNo = "";
-    private int categoryId, brandId, sih;
+    private int categoryId;
+    private int brandId;
+    private int sih;
+
+
+
+    private int freeSIH;
     private int vanLoadQty;
+
+
+
+    private int vanLoadFreeQty;
     private int soldQty;
     private int freeIssuedQty;
     private int emptyBottleQty;
@@ -286,6 +296,59 @@ public class StockReportBO {
     private int emptyBottleQty_cs, emptyBottleQty_ou, emptyBottleQty_pc;
     private int returnQty_cs, returnQty_ou, returnQty_pc;
     private int replacementQty_cs;
+    private int vanLoadFree_cs;
+    private int vanLoadFree_ou;
+
+    public int getVanLoadFree_cs() {
+        return vanLoadFree_cs;
+    }
+
+    public void setVanLoadFree_cs(int vanLoadFree_cs) {
+        this.vanLoadFree_cs = vanLoadFree_cs;
+    }
+
+    public int getVanLoadFree_ou() {
+        return vanLoadFree_ou;
+    }
+
+    public void setVanLoadFree_ou(int vanLoadFree_ou) {
+        this.vanLoadFree_ou = vanLoadFree_ou;
+    }
+
+    public int getVanLoadFree_pc() {
+        return vanLoadFree_pc;
+    }
+
+    public void setVanLoadFree_pc(int vanLoadFree_pc) {
+        this.vanLoadFree_pc = vanLoadFree_pc;
+    }
+
+    public int getFreeSIH_cs() {
+        return freeSIH_cs;
+    }
+
+    public void setFreeSIH_cs(int freeSIH_cs) {
+        this.freeSIH_cs = freeSIH_cs;
+    }
+
+    public int getFreeSIH_ou() {
+        return freeSIH_ou;
+    }
+
+    public void setFreeSIH_ou(int freeSIH_ou) {
+        this.freeSIH_ou = freeSIH_ou;
+    }
+
+    public int getFreeSIH_pc() {
+        return freeSIH_pc;
+    }
+
+    public void setFreeSIH_pc(int freeSIH_pc) {
+        this.freeSIH_pc = freeSIH_pc;
+    }
+
+    private int vanLoadFree_pc;
+    private int freeSIH_cs, freeSIH_ou, freeSIH_pc;
 
     public int getReplacementQty_pc() {
         return replacementQty_pc;
@@ -531,6 +594,22 @@ public class StockReportBO {
 
     public void setVanUnloadQty_ou(int vanUnloadQty_ou) {
         this.vanUnloadQty_ou = vanUnloadQty_ou;
+    }
+
+    public int getFreeSIH() {
+        return freeSIH;
+    }
+
+    public void setFreeSIH(int freeSIH) {
+        this.freeSIH = freeSIH;
+    }
+
+    public int getVanLoadFreeQty() {
+        return vanLoadFreeQty;
+    }
+
+    public void setVanLoadFreeQty(int vanLoadFreeQty) {
+        this.vanLoadFreeQty = vanLoadFreeQty;
     }
 
 }

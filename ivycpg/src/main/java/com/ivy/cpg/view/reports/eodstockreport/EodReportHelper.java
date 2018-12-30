@@ -118,6 +118,34 @@ public class EodReportHelper {
             }
             c.close();
 
+            // get free SIH qty
+            sb = new StringBuffer();
+            sb.append("SELECT PID,batchid,Qty  FROM FreeStockInHandMaster");
+            c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+
+                    int qty = c.getInt(2);
+                    int batchid = c.getInt(1);
+
+                    for (StockReportBO bo : mEODStockReportList) {
+                        if (batchid == 0) {
+
+                            if (bo.getProductID().equals(c.getString(0))) {
+                                bo.setFreeSIH(bo.getFreeSIH() + qty);
+                            }
+                        } else {
+                            if (bo.getProductID().equals(c.getString(0)) && bo.getBatchId() != null && bo.getBatchId().equals(batchid + "")) {
+
+                                bo.setFreeSIH(bo.getFreeSIH() + qty);
+                            }
+                        }
+                    }
+
+                }
+            }
+            c.close();
+
 
             //load return qty
             sb = new StringBuffer();

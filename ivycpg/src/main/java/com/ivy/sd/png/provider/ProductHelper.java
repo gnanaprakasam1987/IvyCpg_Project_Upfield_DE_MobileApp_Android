@@ -990,6 +990,7 @@ public class ProductHelper {
                     + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,F.ASRP as asrp,"
                     + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
+                    +   (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE?",FSH.qty as freeSIH":",0 as freeSIH")
                     + " from ProductMaster A";
 
             sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = " + bmodel.getRetailerMasterBO().getGroupId()
@@ -998,6 +999,7 @@ public class ProductHelper {
                     + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid=" + bmodel.getRetailerMasterBO().getChannelID()
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
+                    +  (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE?" LEFT JOIN FreeStockInHandMaster FSH ON FSH.pid=A.pid":"")
                     + " WHERE A.PLid IN(" + mContentLevelId + ") ";
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -1023,6 +1025,7 @@ public class ProductHelper {
                     product.setParentid(c.getInt(c.getColumnIndex("parentId")));
                     product.setSIH(c.getInt(c.getColumnIndex("sih")));
                     product.setDSIH(c.getInt(c.getColumnIndex("sih")));
+                    product.setFreeSIH(c.getInt(c.getColumnIndex("freeSIH")));
                     product.setProductShortName(c.getString(c.getColumnIndex("psname")));
                     product.setBarCode(c.getString(c.getColumnIndex("barcode")));
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));

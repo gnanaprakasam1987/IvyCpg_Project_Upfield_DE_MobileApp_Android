@@ -132,4 +132,7 @@
     <string name="order_will_be_saved_later">Order will be saved when saving the New Retailer</string>
 
     <string name="select_destination">Select Destination Outlet</string>
+
+    <string name="loaded_free_stock">Loaded Free Stock</string>
+    <string name="free_sih">Free SIH</string>
 </resources>

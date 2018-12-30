@@ -1193,7 +1193,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN, SHOW_STOCK_NON_SALABLE, SHOW_STOCK_VAN_UNLOAD;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN, SHOW_STOCK_NON_SALABLE, SHOW_STOCK_VAN_UNLOAD,SHOW_FREE_STOCK_LOADED,SHOW_FREE_STOCK_IN_HAND;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -1534,6 +1534,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CHECK_DIGITAL_SIZE = "SYNC12";
     public long DIGITAL_CONTENT_SIZE = -1;
 
+    private static final String CODE_FREE_SIH_AVAILABLE = "FUN75";
+    public boolean IS_FREE_SIH_AVAILABLE;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2669,6 +2671,7 @@ public class ConfigurationMasterHelper {
         // Unload non salable product returns.
         this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
         this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
+        this.IS_FREE_SIH_AVAILABLE = hashMapHHTModuleConfig.get(CODE_FREE_SIH_AVAILABLE) != null ? hashMapHHTModuleConfig.get(CODE_FREE_SIH_AVAILABLE) : false;
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
         this.IS_SR_DELIVERY_SKU_LEVEL = hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) : false;
@@ -4534,6 +4537,8 @@ public class ConfigurationMasterHelper {
         String CODE_STOCK_RETURN = "RET";
         String CODE_STOCK_NON_SALABLE = "NS";
         String CODE_STOCK_VAN_UNLOAD = "UL";
+        String CODE_STOCK_FREE_LOADED = "FSIHL";
+        String CODE_STOCK_FREE_SIH = "FSIH";
         SHOW_STOCK_NON_SALABLE = false;
         SHOW_STOCK_VAN_UNLOAD = false;
         SHOW_STOCK_REPLACE = false;
@@ -4542,6 +4547,9 @@ public class ConfigurationMasterHelper {
         SHOW_STOCK_FREE_ISSUED = false;
         SHOW_STOCK_NON_SALABLE = false;
         SHOW_STOCK_VAN_UNLOAD = false;
+        SHOW_FREE_STOCK_LOADED=false;
+        SHOW_FREE_STOCK_IN_HAND=false;
+
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -4576,6 +4584,10 @@ public class ConfigurationMasterHelper {
                             SHOW_STOCK_NON_SALABLE = true;
                         else if (temp.equals(CODE_STOCK_VAN_UNLOAD))
                             SHOW_STOCK_VAN_UNLOAD = true;
+                        else if (temp.equals(CODE_STOCK_FREE_LOADED))
+                            SHOW_FREE_STOCK_LOADED = true;
+                        else if (temp.equals(CODE_STOCK_FREE_SIH))
+                            SHOW_FREE_STOCK_IN_HAND = true;
                     }
                 }
 
