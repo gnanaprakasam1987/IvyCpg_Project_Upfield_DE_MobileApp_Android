@@ -8,18 +8,20 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 public interface TaskContract {
 
     interface TaskView extends BaseIvyView {
 
-        void setTaskChannelListData(ArrayList<ChannelBO> channelList);
+        void setTaskChannelListData(Vector<ChannelBO> channelList);
 
         void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList);
 
         void setTaskUserListData(ArrayList<UserMasterBO> userList);
 
-        void setToolBarTitle(String title);
+
+        void showUpdatedDialog();
 
         void updateListData();
     }
@@ -32,7 +34,7 @@ public interface TaskContract {
 
         void updateTask(int taskType);
 
-        void saveButtonClick();
+        void onSaveButtonClick(int channelId, String taskTitleDesc, String taskDetailDesc,String mode);
 
         String getSelectedRetailerId();
 

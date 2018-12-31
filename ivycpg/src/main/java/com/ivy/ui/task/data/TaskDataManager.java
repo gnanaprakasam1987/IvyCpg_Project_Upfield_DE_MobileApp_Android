@@ -2,6 +2,7 @@ package com.ivy.ui.task.data;
 
 import com.ivy.core.data.AppDataManagerContract;
 import com.ivy.cpg.view.task.TaskDataBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 
 import java.util.ArrayList;
 
@@ -18,5 +19,7 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Boolean> updateTask(TaskDataBO taskDataBO, String retailerId);
 
-    Single<Boolean> addNewTask(int channelId, String taskTitleDesc, String taskDetailDesc);
+    Single<Boolean> addNewTask(int channelId, String taskTitleDesc, String taskDetailDesc,String mode);
+
+    Observable<ArrayList<RetailerMasterBO>> fetchRetailers();
 }

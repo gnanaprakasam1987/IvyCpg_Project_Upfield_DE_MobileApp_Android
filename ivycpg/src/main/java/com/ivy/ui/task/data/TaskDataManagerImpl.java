@@ -6,11 +6,14 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -203,8 +206,165 @@ public class TaskDataManagerImpl implements TaskDataManager {
     }
 
     @Override
-    public Single<Boolean> addNewTask(int channelId, String taskTitleDesc, String taskDetailDesc) {
-        return null;
+    public Single<Boolean> addNewTask(int channelId, String taskTitleDesc, String taskDetailDesc, String mode) {
+
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                // Remove single quotes
+                String name = taskDetailDesc.replaceAll("'", " ");
+                String title = taskTitleDesc.replaceAll("'", " ");
+
+                // Generate Unique ID
+                String id = AppUtils.QT(appDataProvider.getUser()
+                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+
+                String date = AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                Commons.print("date :: ," + date + "");
+
+                String columns = "taskid,retailerid,usercreated,upload,date,uid,userid";
+                String uID = AppUtils.QT(appDataProvider.getRetailMaster().getRetailerID()
+                        + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                String values;
+
+                try {
+                    // Insert Task into TaskMaster
+                    String columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated";
+
+                    String value_new = id + "," + AppUtils.QT(title) + "," + AppUtils.QT(name) + ","
+                            + "'N'," + AppUtils.QT("self") + ", " + date + ",1";
+
+                    mDbUtil.insertSQL("TaskMaster", columns_new, value_new);
+
+
+                    if (channelId == -1) {// for all channel
+                        String[] chrid = getChannelRetailerId(0);
+                        for (String aChrid : chrid) {
+
+                            values = id + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0";
+                            mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                    columns, values);
+                        }
+
+                    } else if (mode.equals("seller")) {
+
+                        values = id + "," + 0 + "," + "1" + "," + "'N'," + date + "," + uID + "," + channelId;
+                        mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster, columns,
+                                values);
+                    } else if (mode.equals("retailer")) {
+                        if (channelId == -2) {
+                            String[] chrid = getRetailerIdlist();
+                            for (String aChrid : chrid) {
+
+                                values = id + "," + aChrid + "," + "1" + ","
+                                        + "'N'," + date + "," + uID + "," + "0";
+                                mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                        columns, values);
+                            }
+                        } else {
+                            values = id + "," + channelId + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0";
+                            mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                    columns, values);
+                        }
+                    } else {
+
+                        String[] chrid = getChannelRetailerId(channelId);
+                        for (String aChrid : chrid) {
+                            values = id + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0";
+                            mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                    columns, values);
+                        }
+                    }
+
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<RetailerMasterBO>> fetchRetailers() {
+        return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
+            @Override
+            public ArrayList<RetailerMasterBO> call() throws Exception {
+                try {
+                    RetailerMasterBO temp;
+                    ArrayList<RetailerMasterBO> retailerMaster = new ArrayList<>();
+                    int siz = appDataProvider.getRetailerMasters().size();
+                    for (int ii = 0; ii < siz; ii++) {
+                        if (((appDataProvider
+                                .getRetailerMasters().get(ii).getIsToday() == 1)) || appDataProvider.getRetailerMasters().get(ii).getIsDeviated()
+                                .equals("Y")) {
+                            temp = new RetailerMasterBO();
+                            temp.setTretailerId(SDUtil.convertToInt(appDataProvider.getRetailerMasters().get(ii).getRetailerID()));
+                            temp.setTretailerName(appDataProvider.getRetailerMasters().get(ii).getRetailerName());
+                            retailerMaster.add(temp);
+                        }
+                    }
+                    return retailerMaster;
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                return new ArrayList<>();
+            }
+        });
+    }
+
+
+    private String[] getChannelRetailerId(int channelId) {
+        Vector<String> channelRId = new Vector<>();
+        int siz = appDataProvider.getRetailerMasters().size();
+        if (channelId == 0) {
+            for (int ii = 0; ii < siz; ii++) {
+
+                if (((appDataProvider.getRetailerMasters().get(ii).getIsToday() == 1))
+                        || appDataProvider.getRetailerMasters().get(ii).getIsDeviated()
+                        .equals("Y")) {
+                    channelRId.add(appDataProvider.getRetailerMasters().get(ii)
+                            .getRetailerID());
+                }
+            }
+        } else {
+            for (int ii = 0; ii < siz; ii++) {
+                if (((appDataProvider.getRetailerMasters().get(ii).getIsToday() == 1) || appDataProvider
+                        .getRetailerMasters().get(ii).getIsDeviated()
+                        .equals("Y"))
+                        && appDataProvider.getRetailerMasters().get(ii).getChannelID() == channelId) {
+                    channelRId.add(appDataProvider.getRetailerMasters().get(ii)
+                            .getRetailerID());
+                }
+            }
+        }
+        String data[] = new String[channelRId.size()];
+        for (int i = 0; i < channelRId.size(); i++) {
+            data[i] = channelRId.get(i);
+        }
+        return data;
+
+    }
+
+    private String[] getRetailerIdlist() {
+        Vector<String> RId = new Vector<>();
+        int siz = appDataProvider.getRetailerMasters().size();
+        for (int ii = 0; ii < siz; ii++) {
+            if (((appDataProvider.getRetailerMasters().get(ii).getIsToday() == 1))
+                    || appDataProvider.getRetailerMasters().get(ii).getIsDeviated()
+                    .equals("Y")) {
+                RId.add(appDataProvider.getRetailerMasters().get(ii).getRetailerID());
+            }
+        }
+
+        String data[] = new String[RId.size()];
+        for (int i = 0; i < RId.size(); i++) {
+            data[i] = RId.get(i);
+        }
+        return data;
+
     }
 
     @Override

@@ -12,17 +12,19 @@ import com.ivy.core.data.user.UserDataManager;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.UserMasterHelper;
-import com.ivy.ui.profile.edit.di.Profile;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function3;
+import io.reactivex.observers.DisposableObserver;
 
 public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePresenter<V> implements TaskContract.TaskPresenter<V>, LifecycleObserver {
 
@@ -30,13 +32,16 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     private ChannelDataManager mChannelDataManager;
     private ConfigurationMasterHelper mConfigurationMasterHelper;
     private TaskDataManager mTaskDataManager;
+    private ArrayList<UserMasterBO> mUserListBos = new ArrayList<>();
+    private Vector<ChannelBO> mChannelListBos = new Vector<>();
+    private ArrayList<RetailerMasterBO> mRetailerListBos = new ArrayList<>();
 
     public TaskPresenterImpl(DataManager dataManager,
                              SchedulerProvider schedulerProvider,
                              CompositeDisposable compositeDisposable,
                              ConfigurationMasterHelper configurationMasterHelper,
-                             V view,  UserDataManager userDataManager,
-                              ChannelDataManager channelDataManager,
+                             V view, UserDataManager userDataManager,
+                             ChannelDataManager channelDataManager,
                              TaskDataManager taskDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mConfigurationMasterHelper = configurationMasterHelper;
@@ -55,7 +60,50 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     public void fetchData() {
         getIvyView().showLoading();
 
+        getCompositeDisposable().add(Observable.zip(mUserDataManager.fetchAllUsers(),
+                mChannelDataManager.fetchChannels(), mTaskDataManager.fetchRetailers()
+                , new Function3<ArrayList<UserMasterBO>, Vector<ChannelBO>, ArrayList<RetailerMasterBO>, Object>() {
+                    @Override
+                    public Boolean apply(ArrayList<UserMasterBO> userMasterBOS, Vector<ChannelBO> channelBOS, ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
+                        mUserListBos.clear();
+                        mUserListBos.addAll(userMasterBOS);
 
+                        mChannelListBos.clear();
+                        mChannelListBos.addAll(channelBOS);
+
+                        mRetailerListBos.clear();
+                        mRetailerListBos.addAll(retailerMasterBOS);
+
+                        return true;
+                    }
+                }).subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<Object>() {
+                    @Override
+                    public void onNext(Object o) {
+                        if (mUserListBos.size() != 0)
+                            getIvyView().setTaskUserListData(mUserListBos);
+
+                        if (mChannelListBos.size() != 0)
+                            getIvyView().setTaskChannelListData(mChannelListBos);
+
+                        if (mRetailerListBos.size() != 0)
+                            getIvyView().setTaskRetailerListData(mRetailerListBos);
+
+                        getIvyView().hideLoading();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getIvyView().onError("Something went wrong");
+                        getIvyView().hideLoading();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
     }
 
     @Override
@@ -65,8 +113,20 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
 
     @Override
-    public void saveButtonClick() {
-
+    public void onSaveButtonClick(int channelId, String taskTitleDesc, String taskDetailDesc, String mode) {
+        getIvyView().showLoading();
+        getCompositeDisposable().add(mTaskDataManager.addNewTask(channelId
+                , taskTitleDesc, taskDetailDesc, mode).subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean isAdded) throws Exception {
+                        if (isAdded) {
+                            getIvyView().showUpdatedDialog();
+                        }
+                        getIvyView().hideLoading();
+                    }
+                }));
     }
 
     @Override
@@ -93,4 +153,5 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     public ArrayList<UserMasterBO> getTaskUserList() {
         return null;
     }
+
 }
