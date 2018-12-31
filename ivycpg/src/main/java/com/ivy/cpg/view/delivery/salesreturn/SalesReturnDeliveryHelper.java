@@ -6,7 +6,6 @@ import android.database.DatabaseUtils;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -239,9 +238,9 @@ public class SalesReturnDeliveryHelper {
         });
     }
 
-    public boolean cancelSalesReturnDelivery(Context mContext, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo){
+    public boolean cancelSalesReturnDelivery(Context mContext, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo) {
 
-        try{
+        try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.createDataBase();
@@ -249,7 +248,7 @@ public class SalesReturnDeliveryHelper {
 
             BusinessModel businessModel = (BusinessModel) mContext.getApplicationContext();
 
-            String uid =  ("SR"
+            String uid = ("SR"
                     + businessModel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
 
@@ -286,14 +285,14 @@ public class SalesReturnDeliveryHelper {
                     + AppUtils.QT(salesReturnDeliveryDataBo.getSignatureName()) + ","
                     + indicativeFlag + ","
                     + AppUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
-                    + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule())+"," +
-                    AppUtils.QT(salesReturnDeliveryDataBo.getUId())+","+AppUtils.QT("1");
+                    + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + "," +
+                    AppUtils.QT(salesReturnDeliveryDataBo.getUId()) + "," + AppUtils.QT("1");
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
             db.closeDB();
             return true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             Commons.printException(e);
             return false;
         }
@@ -313,11 +312,13 @@ public class SalesReturnDeliveryHelper {
 
             int indicativeFlag = 0;
 
+            int srUserId = 0;
+
             if (businessModel.configurationMasterHelper.IS_INDICATIVE_SR)
                 indicativeFlag = 1;
 
 
-            String sb = "select uid from SalesReturnHeader where RefUID=" + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) +
+            String sb = "select uid,UserID from SalesReturnHeader where RefUID=" + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) +
                     " AND RetailerID=" +
                     AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
                     " AND upload='N'";
@@ -325,6 +326,7 @@ public class SalesReturnDeliveryHelper {
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {
                     String uid = c.getString(0);
+                    srUserId = c.getInt(1);
                     db.deleteSQL(DataMembers.tbl_SalesReturnHeader, "uid="
                             + DatabaseUtils.sqlEscapeString(uid), false);
                     db.deleteSQL(DataMembers.tbl_SalesReturnDetails, "uid="
@@ -518,7 +520,7 @@ public class SalesReturnDeliveryHelper {
                         + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                         + AppUtils.QT(businessModel.retailerMasterBO.getRetailerID()) + ","
                         + businessModel.retailerMasterBO.getBeatID() + ","
-                        + businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                        + srUserId
                         + "," + AppUtils.QT(salesReturnDeliveryDataBo.getReturnValue()) + "," + lpcCount + ","
                         + AppUtils.QT(businessModel.retailerMasterBO.getRetailerCode()) + ","
                         + AppUtils.QT(businessModel.getSaleReturnNote()) + ","
