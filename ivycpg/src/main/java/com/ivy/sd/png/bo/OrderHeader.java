@@ -2,7 +2,11 @@ package com.ivy.sd.png.bo;
 
 public class OrderHeader {
 
+    // Bill Net value
     private double OrderValue;
+    // Bill Original Value
+    private double originalOrderValue;
+
     private int LinesPerCall;
     private double discount;
     private String deliveryDate;
@@ -307,4 +311,14 @@ public class OrderHeader {
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
+
+    public double getOriginalOrderValue() {
+        return originalOrderValue;
+    }
+
+    public void setOriginalOrderValue(double originalOrderValue) {
+        this.originalOrderValue = originalOrderValue;
+    }
+
+
 }

@@ -5177,7 +5177,7 @@ public class BusinessModel extends Application {
                 sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit,supplierTaxLocId from Suppliermaster ");
+                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit,supplierTaxLocId,IsCompositionScheme from Suppliermaster ");
                 sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
                 sb.append(" or rid= 0 order by isPrimary desc");
             }
@@ -5199,6 +5199,10 @@ public class BusinessModel extends Application {
                         supplierMasterBO.setCreditLimit(c.getFloat(5));
 
                     supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
+
+                    if(c.getInt(7)==1)
+                    supplierMasterBO.setCompositeRetailer(true);
+                    else supplierMasterBO.setCompositeRetailer(false);
 
                     mSupplierList.add(supplierMasterBO);
                 }
