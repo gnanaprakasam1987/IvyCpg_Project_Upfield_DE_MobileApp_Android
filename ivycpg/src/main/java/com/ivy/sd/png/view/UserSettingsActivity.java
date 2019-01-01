@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.login.password.ChangePasswordActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.BusinessModel;

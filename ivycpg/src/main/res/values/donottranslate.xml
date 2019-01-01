@@ -126,4 +126,13 @@
     <string name="value_exceeded">Value Exceeded</string>
     <string name="this_may_remove_existing_data">This may remove existing data</string>
     <string name="created_by">Created By</string>
+    <string name="movement">Movement</string>
+    <string name="label_exceeded_alloc"> exceeded Allocation</string>
+    <string name="wsih_label">WSIH</string>
+    <string name="order_will_be_saved_later">Order will be saved when saving the New Retailer</string>
+
+    <string name="select_destination">Select Destination Outlet</string>
+
+    <string name="loaded_free_stock">Loaded Free Stock</string>
+    <string name="free_sih">Free SIH</string>
 </resources>

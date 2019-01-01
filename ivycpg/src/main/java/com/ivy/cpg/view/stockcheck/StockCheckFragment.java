@@ -80,7 +80,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.sd.png.view.ProductSchemeDetailsActivity;
+import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
@@ -270,12 +270,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        viewFlipper = view.findViewById(R.id.view_flipper);
-        productName = view.findViewById(R.id.productName);
+        viewFlipper =  view.findViewById(R.id.view_flipper);
+        productName =  view.findViewById(R.id.productName);
+
 
         mEdt_searchProductName = view.findViewById(
                 R.id.edt_searchproductName);
-        mBtn_Search = view.findViewById(R.id.btn_search);
+
+        mBtn_Search =  view.findViewById(R.id.btn_search);
         mBtn_Search.setOnClickListener(this);
         mBtn_clear = view.findViewById(R.id.btn_clear);
         mBtn_clear.setOnClickListener(this);
@@ -286,7 +288,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
         tv_total_products = view.findViewById(R.id.tv_productsCount);
 
 
-        btn_save = view.findViewById(R.id.btn_save);
+        btn_save =  view.findViewById(R.id.btn_save);
+
         btn_save.setOnClickListener(this);
         mEdt_searchProductName.setOnEditorActionListener(this);
 
@@ -524,9 +527,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                     holder.productCode = row
                             .findViewById(R.id.stock_and_order_listview_produtCode);
-                    holder.ppq = row
+
+                    holder.ppq =  row
                             .findViewById(R.id.stock_and_order_listview_ppq);
-                    holder.psq = row
+
+                    holder.psq =  row
                             .findViewById(R.id.stock_and_order_listview_psq);
 
                     holder.mReason = row.findViewById(R.id.reason);
@@ -537,7 +542,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.stock_and_order_listview_sc_qty);
                     holder.shelfouter = row
                             .findViewById(R.id.stock_and_order_listview_shelfouter_qty);
-                    holder.ll_stkCB = row
+
+
+                    holder.ll_stkCB =  row
                             .findViewById(R.id.ll_stock_and_order_listview_cb);
 
                     holder.imageButton_availability = row
@@ -1711,7 +1718,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
     private void onNextButtonClick() {
         if (businessModel.configurationMasterHelper.IS_MUST_SELL_STK
-                && !businessModel.productHelper.isMustSellFilledStockCheck(true)) {
+                && !businessModel.productHelper.isMustSellFilledStockCheck(true, getActivity())) {
             Toast.makeText(getActivity(), R.string.fill_must_sell, Toast.LENGTH_SHORT).show();
             return;
         }

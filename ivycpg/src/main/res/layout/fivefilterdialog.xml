@@ -1,71 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/screen_bg_color"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
         android:layout_alignParentTop="true"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <ListView
             android:id="@+id/filterlistview"
             android:layout_width="@dimen/filter_level_list_width"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:background="@color/white_box_border"
             android:divider="@null" />
 
         <ListView
             android:id="@+id/filtergridview"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white" />
+            android:background="@color/white"
+            android:dividerHeight="0.5dp" />
 
     </LinearLayout>
+
 
     <RelativeLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/filter_drawer_footer_height"
+        android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:background="?attr/customFooterBackgroundColor"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_1dp"
-            android:layout_alignParentTop="true"
-            android:background="@color/divider_view_color" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/btn_cancel"
+            style="?attr/roundedCustomButtonNormalTransparent"
             android:layout_centerVertical="true"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:layout_margin="@dimen/dimen_4dp"
+            android:adjustViewBounds="true"
+            android:text="@string/clear"
+            android:textAllCaps="false" />
 
-            <Button
-                android:id="@+id/btn_cancel"
-                style="?attr/roundedCustomButtonNormalTransparent"
-                android:layout_margin="@dimen/dimen_4dp"
-                android:adjustViewBounds="true"
-                android:text="@string/clear"
-                android:textAllCaps="false"
-                android:textColor="@color/half_Black" />
-
-            <Button
-                android:id="@+id/btn_ok"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_margin="@dimen/dimen_4dp"
-                android:adjustViewBounds="true"
-                android:text="@string/apply"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_ok"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dimen_4dp"
+            android:layout_toEndOf="@+id/btn_cancel"
+            android:layout_toRightOf="@+id/btn_cancel"
+            android:adjustViewBounds="true"
+            android:text="@string/apply"
+            android:textAllCaps="false" />
     </RelativeLayout>
 
 </RelativeLayout>

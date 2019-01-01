@@ -204,7 +204,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     }
 
     private void saveFunction() {
-        if (validateDesc())
+        if (validateDesc() && validateDestination())
             //if (SpToOutletName.getSelectedItemPosition() != 0 && retailerSelected>0) {
                 if (SpReason.getSelectedItemPosition() != 0) {
 
@@ -239,10 +239,20 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
+
     private boolean validateDesc() {
         if (ETDesc.getText().toString().trim().isEmpty()) {
             Toast.makeText(mBModel, "Add description", Toast.LENGTH_SHORT).show();
             requestFocus(ETDesc);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateDestination() {
+        if (autoCompleteToOutletName.getText().toString().trim().isEmpty()) {
+            Toast.makeText(mBModel, getString(R.string.select_destination), Toast.LENGTH_SHORT).show();
+            requestFocus(autoCompleteToOutletName);
             return false;
         }
         return true;

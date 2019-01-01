@@ -156,18 +156,10 @@ android {
         }
     }
     sourceSets {
-        aws {
-            java {
-                srcDirs('src/AWS', 'src/main/java')
-            }
-        }
 
         sfdc {
-            java {
-                srcDirs('src/SFDC/java', 'src/main/java')
-            }
             res {
-                srcDirs('src/sfdc/res','src/main/res')
+                srcDirs('src/SFDC/res','src/main/res')
             }
         }
 
@@ -283,6 +275,9 @@ dependencies {
     // reactive
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
+
+    implementation "org.greenrobot:eventbus:$rootProject.eventBusVersion"
+
 
     //Chat-Sdk
     implementation 'co.chatsdk.chatsdk:chat-sdk-core:4.1.36'

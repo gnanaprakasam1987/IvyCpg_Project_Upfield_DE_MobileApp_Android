@@ -103,6 +103,8 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
         }
 
         for (AssetTrackingBO assetTrackingBO : mAssetTrackingList) {
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetTrackingBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
 
             if (assetTrackingBO.getAssetID() == assetId && assetTrackingBO.getImageList().size() > 0) {
                 setScreenTitle(assetTrackingBO.getAssetName() + " " + getResources().getString(R.string.tab_text_images));
@@ -116,7 +118,8 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
     public void btnPhotoClick(View view) {
         int count = 0;
         for (AssetTrackingBO assetTrackingBO : mAssetTrackingList) {
-
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetTrackingBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
             if (assetTrackingBO.getAssetID() == assetId) {
                 count = assetTrackingBO.getImageList().size();
                 break;
@@ -281,6 +284,8 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + deleteImageName;
                         assetTrackingHelper.deleteImageProof(PosmGallery.this, path);
                         for (AssetTrackingBO assetTrackingBO : mAssetTrackingList) {
+                            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetTrackingBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                                continue;
                             for (int i = 0; i < assetTrackingBO.getImageList().size(); i++) {
                                 if (assetTrackingBO.getImageList().get(i).equals(path)) {
                                     assetTrackingBO.getImageList().remove(i);
@@ -357,6 +362,8 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
                 + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
 
         for (AssetTrackingBO assetBO : mAssetTrackingList) {
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
             if (assetId == assetBO.getAssetID()) {
                 ArrayList<String> imageList = assetBO.getImageList();
                 imageList.add(imagePath);

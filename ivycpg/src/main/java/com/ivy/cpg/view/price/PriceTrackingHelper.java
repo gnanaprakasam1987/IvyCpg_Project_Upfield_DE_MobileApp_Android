@@ -106,7 +106,6 @@ public class PriceTrackingHelper {
             sb.append(" WHERE retailerid = ");
             sb.append(bmodel.getRetailerMasterBO().getRetailerID());
             sb.append(" AND distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
-
             if (!bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
                 sb.append(" AND date = ");
                 sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
@@ -245,8 +244,8 @@ public class PriceTrackingHelper {
             sql = "SELECT Tid FROM " + mPriceChangeHeader
                     + " WHERE RetailerId = "
                     + bmodel.getRetailerMasterBO().getRetailerID()
-                    + " AND Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                    + " AND upload='N'";
+                    + " AND Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    //+ " AND upload='N'";
 
 
             headerCursor = db.selectSQL(sql);
@@ -294,9 +293,30 @@ public class PriceTrackingHelper {
                         ) {
                     boolean isInserted = false;
 
-                    sku.setPrice_ca(bmodel.checkDecimalValue(sku.getPrice_ca(), 8, 2));
-                    sku.setPrice_oo(bmodel.checkDecimalValue(sku.getPrice_oo(), 8, 2));
-                    sku.setPrice_pc(bmodel.checkDecimalValue(sku.getPrice_pc(), 8, 2));
+                    if(sku.getPrice_ca().trim().equals("."))
+                        sku.setPrice_ca("0.0");
+                    else if(sku.getPrice_ca().trim().equals(".0"))
+                        sku.setPrice_ca("0.0");
+                    else if(sku.getPrice_ca().trim().endsWith(".") && sku.getPrice_ca().trim().length()>1)
+                        sku.setPrice_ca(sku.getPrice_ca()+"0");
+
+                    if(sku.getPrice_pc().trim().equals("."))
+                        sku.setPrice_pc("0.0");
+                    else if(sku.getPrice_pc().trim().equals(".0"))
+                        sku.setPrice_pc("0.0");
+                    else if(sku.getPrice_pc().trim().endsWith(".") && sku.getPrice_pc().trim().length()>1)
+                        sku.setPrice_pc(sku.getPrice_pc()+"0");
+
+                    if(sku.getPrice_oo().trim().equals("."))
+                        sku.setPrice_oo("0.0");
+                    else if(sku.getPrice_oo().trim().equals(".0"))
+                        sku.setPrice_oo("0.0");
+                    else if(sku.getPrice_oo().trim().endsWith(".") && sku.getPrice_oo().trim().length()>1)
+                        sku.setPrice_oo(sku.getPrice_oo()+"0");
+
+                    sku.setPrice_ca(bmodel.checkDecimalValue(sku.getPrice_ca(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+                    sku.setPrice_oo(bmodel.checkDecimalValue(sku.getPrice_oo(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+                    sku.setPrice_pc(bmodel.checkDecimalValue(sku.getPrice_pc(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
 
                     if ((!sku.getPrice_ca().equals("0") && !sku.getPrice_ca().equals("0.0")) || (!sku.getMrp_ca().equals("0") && !sku.getMrp_ca().equals("0.0"))) {
                         values = QT(tid) + "," + sku.getProductID() + ","
@@ -451,7 +471,11 @@ public class PriceTrackingHelper {
         try {
             db.openDataBase();
             String sb = "select tid from PriceCheckHeader where retailerid=" +
-                    bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()) + " and upload='N'";
+                    bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
+
+            if (!bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
+                sb = sb +" and upload='N'";
+            }
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 if (c.moveToFirst())

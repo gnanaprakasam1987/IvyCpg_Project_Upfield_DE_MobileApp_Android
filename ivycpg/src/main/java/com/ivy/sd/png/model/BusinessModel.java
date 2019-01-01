@@ -55,10 +55,13 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
-import com.ivy.core.data.db.DBHelperImpl;
+import com.ivy.core.data.channel.ChannelDataManagerImpl;
+import com.ivy.core.data.db.AppDataManagerImpl;
+import com.ivy.core.data.retailer.RetailerDataManagerImpl;
 import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.module.IvyAppModule;
@@ -95,6 +98,7 @@ import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GuidedSellingBO;
+import com.ivy.sd.png.bo.IndicativeBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -119,7 +123,7 @@ import com.ivy.sd.png.provider.CloseCallHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.EmptyReturnHelper;
+import com.ivy.cpg.view.emptyreturn.EmptyReturnHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
 import com.ivy.cpg.view.initiative.InitiativeHelper;
 import com.ivy.sd.png.provider.JExcelHelper;
@@ -523,6 +527,11 @@ public class BusinessModel extends Application {
         this.ctx = ctx;
     }
 
+    /**
+     * @return
+     * @See {@link RetailerDataManagerImpl#getWeekText()}
+     * @deprecated
+     */
     public String getWeekText() {
         String weekText = "wk1";
         try {
@@ -1208,7 +1217,7 @@ public class BusinessModel extends Application {
 
     /**
      * @return Order Value
-     * @See {@link DBHelperImpl#getOrderValue()}
+     * @See {@link AppDataManagerImpl#getOrderValue()}
      * @deprecated This has been Migrated to MVP pattern
      */
     public double getOrderValue() {
@@ -1297,37 +1306,6 @@ public class BusinessModel extends Application {
     }
 
 
-    public double getAcheived() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-        db.openDataBase();
-        double f = 0;
-        try {
-            Cursor c = null;
-            if (this.configurationMasterHelper.IS_INVOICE)
-                c = db.selectSQL("SELECT sum(invNetAmount) FROM InvoiceMaster");
-                // c =
-                // db.selectSQL("select  sum(i.invNetAmount) from InvoiceMaster i inner join retailermaster r on "
-                // + " i.retailerid=r.retailerid   where r.istoday=1");
-
-            else
-                c = db.selectSQL("select sum (OrderValue) from OrderHeader");
-            // c =
-            // db.selectSQL("select  sum(o.OrderValue) from OrderHeader o inner join retailermaster r on "
-            // + " o.retailerid=r.retailerid   where r.istoday=1");
-
-            if (c != null) {
-                if (c.moveToNext()) {
-                    f = c.getDouble(0);
-
-                }
-                c.close();
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        db.closeDB();
-        return f;
-    }
 
 
     //Anand Asir V
@@ -1400,6 +1378,10 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * @See {@link RetailerDataManagerImpl#fetchRetailers()}
+     * @deprecated
+     */
     public void downloadRetailerMaster() {
         try {
             mRetailerBOByRetailerid = new HashMap<>();
@@ -1642,7 +1624,6 @@ public class BusinessModel extends Application {
                     retailer.setHangingOrder(false);
                     retailer.setIndicateFlag(0);
                     retailer.setIsCollectionView("N");
-
                     if (configurationMasterHelper.IS_HANGINGORDER) {
                         OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer);
                     }
@@ -1663,6 +1644,7 @@ public class BusinessModel extends Application {
             if (getRetailerMaster() != null && getRetailerMaster().size() > 0)
                 getMSLValues();
 
+
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
                 mRetailerHelper.updatePlannedDatesInRetailerObj();
                 mRetailerHelper.getPlannedRetailerFromDate();
@@ -1680,6 +1662,8 @@ public class BusinessModel extends Application {
 
             CollectionHelper.getInstance(ctx).updateHasPaymentIssue();
 
+            /********************************************/
+
             if (configurationMasterHelper.IS_DAY_WISE_RETAILER_WALKINGSEQ)
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
 
@@ -1693,16 +1677,25 @@ public class BusinessModel extends Application {
                     }
 
                 }
+
+                codeCleanUpUtil.setSubDMaster(getSubDMaster());
             }
 
             mRetailerHelper.downloadRetailerTarget("SV");
 
             db.closeDB();
+
+            codeCleanUpUtil.setRetailerMaster(getRetailerMaster());
         } catch (Exception e) {
             Commons.printException("" + e);
         }
     }
 
+    @Deprecated
+    /**
+     * @See
+     * {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#setIsBOMAchieved(RetailerMasterBO)}
+     */
     private void setIsBOMAchieved(RetailerMasterBO Retailer) {
         DBUtil db = null;
         try {
@@ -1929,6 +1922,11 @@ public class BusinessModel extends Application {
     }
 
 
+    /**
+     * @See {@link RetailerDataManagerImpl#getMSLValues(ArrayList)}
+     * @deprecated
+     */
+    @Deprecated
     private void getMSLValues() {
         DBUtil db = null;
         try {
@@ -2022,6 +2020,9 @@ public class BusinessModel extends Application {
     /**
      * Method to use download retailer ,which mapped indicative order and not
      * order taken
+     *
+     * @See {@link RetailerDataManagerImpl#fetchIndicativeRetailers()}
+     * @deprecated
      */
     public void downloadIndicativeOrderedRetailer() {
         DBUtil db = null;
@@ -2157,11 +2158,12 @@ public class BusinessModel extends Application {
     }
 
     /**
-     * update indicative orderflag is 1 in retailer master objet
-     *
      * @param --retailerList
      * @param --retailerid   - mapped indicative ordered retailer
      * @param --flag
+     * @See {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#updateIndicativeOrderedRetailer(RetailerMasterBO, ArrayList)}
+     * update indicative orderflag is 1 in retailer master objet
+     * @deprecated
      */
     public void updateIndicativeOrderedRetailer(RetailerMasterBO retObj) {
         retObj.setIndicateFlag(0);
@@ -2225,6 +2227,9 @@ public class BusinessModel extends Application {
     /**
      * Check the retailer is planned for today by route plan(WeekNo) Update the
      * isToday flag as 1 if planned, Bydefault this flag is 0
+     *
+     * @See {@link RetailerDataManagerImpl#getPlannedRetailers(ArrayList)}
+     * @deprecated
      */
     private void getPlannedRetailer() {
 
@@ -2347,8 +2352,8 @@ public class BusinessModel extends Application {
             retailer = retailerMaster.get(i);
 
             if (retailer.getRetailerID().equals(retailerId)
-                    && (retailer.getIsToday() == 1 || retailer.getIsDeviated()
-                    .equals("Y"))) {
+                    && (retailer.getIsToday() == 1 || (retailer.getIsDeviated() != null && retailer.getIsDeviated()
+                    .equals("Y")))) {
                 bool = true;
             }
         }
@@ -2732,67 +2737,6 @@ public class BusinessModel extends Application {
         return orderIdList;
     }
 
-    public List<TempSchemeBO> loadOrderDetail(String retailerId, int callType,
-                                              String invoiceNo) {
-        DBUtil db = null;
-        List<TempSchemeBO> list = null;
-        try {
-            String OrderHeaderId = "";
-            list = new ArrayList<TempSchemeBO>();
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
-            // Order Header
-            String sql = null;
-            if (callType == 0) {
-                sql = "select OrderID from "
-                        + DataMembers.tbl_orderHeader
-                        + " where upload='N'AND (is_splitted_order = 0 OR is_processed = 0) and RetailerID="
-                        + QT(retailerId) + " and invoiceStatus=0";
-                Cursor orderHeaderCursor = db.selectSQL(sql);
-                if (orderHeaderCursor.getCount() > 0) {
-                    while (orderHeaderCursor.moveToNext()) {
-                        OrderHeaderId = orderHeaderCursor.getString(0);
-                    }
-                }
-                orderHeaderCursor.close();
-            } else {
-                sql = "select orderid from InvoiceMaster where InvoiceNo = "
-                        + QT(invoiceNo);
-
-                Cursor cursor = db.selectSQL(sql);
-
-                if (cursor.getCount() > 0) {
-                    while (cursor.moveToNext()) {
-                        OrderHeaderId = cursor.getString(0);
-                    }
-                    cursor.close();
-                }
-            }
-
-            sql = "select sdPer, sdAmt, schPrice, schID, ProductID from OrderDetail where OrderID = '"
-                    + OrderHeaderId + "'";
-            Cursor orderDetailCursor = db.selectSQL(sql);
-            if (orderDetailCursor.getCount() > 0) {
-                while (orderDetailCursor.moveToNext()) {
-                    TempSchemeBO bo = new TempSchemeBO();
-                    bo.setSchemePercentage(orderDetailCursor.getDouble(0));
-                    bo.setSchemeAmount(orderDetailCursor.getDouble(1));
-                    bo.setSchemePrice(orderDetailCursor.getDouble(2));
-                    bo.setSchemeID(orderDetailCursor.getString(3));
-                    bo.setProductID(orderDetailCursor.getString(4));
-                    list.add(bo);
-                }
-            }
-            orderDetailCursor.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        return list;
-    }
-
     public boolean isOrderTaken() {
         boolean flag = false;
         try {
@@ -3094,24 +3038,14 @@ public class BusinessModel extends Application {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
-        StockCheckHelper stockCheckHelper = null;
+        StockCheckHelper stockCheckHelper = StockCheckHelper.getInstance(ctx);
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
             product = productHelper.getTaggedProductBOById(productid);
-            stockCheckHelper = StockCheckHelper.getInstance(ctx);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
 
-        if (menuCode.equals("MENU_STOCK")) {
-            if (!stockCheckHelper.SHOW_STOCK_SP)
-                shelfpqty = -1;
-            if (!stockCheckHelper.SHOW_STOCK_SC)
-                shelfcqty = -1;
-            if (!stockCheckHelper.SHOW_SHELF_OUTER)
-                shelfoqty = -1;
-            if (!stockCheckHelper.SHOW_STOCK_CB)
-                availability = -1;
-        } else if (menuCode.equals("MENU_COMBINE_STKCHK")) {
+        if (menuCode.equals("MENU_COMBINE_STKCHK")) {
             if (!stockCheckHelper.SHOW_COMB_STOCK_SP)
                 shelfpqty = -1;
             if (!stockCheckHelper.SHOW_COMB_STOCK_SC)
@@ -3121,13 +3055,13 @@ public class BusinessModel extends Application {
             if (!stockCheckHelper.SHOW_COMB_STOCK_CB)
                 availability = -1;
         } else {
-            if (!this.configurationMasterHelper.SHOW_STOCK_SP)
+            if (!stockCheckHelper.SHOW_STOCK_SP)
                 shelfpqty = -1;
-            if (!this.configurationMasterHelper.SHOW_STOCK_SC)
+            if (!stockCheckHelper.SHOW_STOCK_SC)
                 shelfcqty = -1;
-            if (!this.configurationMasterHelper.SHOW_SHELF_OUTER)
+            if (!stockCheckHelper.SHOW_SHELF_OUTER)
                 shelfoqty = -1;
-            if (!this.configurationMasterHelper.SHOW_STOCK_CB)
+            if (!stockCheckHelper.SHOW_STOCK_CB)
                 availability = -1;
         }
 
@@ -3668,17 +3602,13 @@ public class BusinessModel extends Application {
         SharedPreferences pref = this.getSharedPreferences("autoupdate",
                 MODE_PRIVATE);
         String key = pref.getString("isUpdateExist", "False");
-        if (key.equals("False"))
-            return false;
-        else
-            return true;
+        return !key.equals("False");
     }
 
     public String getUpdateURL() {
         SharedPreferences pref = this.getSharedPreferences("autoupdate",
                 MODE_PRIVATE);
-        String key = pref.getString("URL", "");
-        return key;
+        return pref.getString("URL", "");
     }
 
 
@@ -3695,6 +3625,8 @@ public class BusinessModel extends Application {
     }
 
     public void setRetailerMaster(Vector<RetailerMasterBO> retailerMaster) {
+        if (codeCleanUpUtil != null)
+            codeCleanUpUtil.setRetailerMaster(retailerMaster);
         this.retailerMaster = retailerMaster;
     }
 
@@ -4093,7 +4025,7 @@ public class BusinessModel extends Application {
                             lineValue += (productWithMaxTaxRate.getSrp() * schemeProductBO.getQuantitySelected());
                         }
 
-                        lineValue=SDUtil.formatAsPerCalculationConfig(lineValue);
+                        lineValue = SDUtil.formatAsPerCalculationConfig(lineValue);
 
                         schemeProductBO.setLineValue(lineValue);
 
@@ -4166,9 +4098,8 @@ public class BusinessModel extends Application {
         SharedPreferences pref = this.getSharedPreferences("ProductFilter",
                 MODE_PRIVATE);
 
-        String filterType = pref.getString("FilterType", getResources()
+        return pref.getString("FilterType", getResources()
                 .getString(R.string.product_name));
-        return filterType;
 
     }
 
@@ -4817,7 +4748,7 @@ public class BusinessModel extends Application {
     @Deprecated
     /**
      * This has been moved to  Dbhelper
-     * @See {@link DBHelperImpl#saveModuleCompletion(String)}
+     * @See {@link AppDataManagerImpl#saveModuleCompletion(String)}
      */
     public boolean saveModuleCompletion(String menuName) {
         try {
@@ -5594,6 +5525,10 @@ public class BusinessModel extends Application {
         ((Button) dialog.getWindow().getDecorView().findViewById(android.R.id.button3)).setBackgroundResource(R.drawable.tab_selection);*/
     }
 
+    /**
+     * @See {@link RetailerDataManagerImpl#fetchRetailers()}
+     * @deprecated Handled inside the fetchRetailers() method itself
+     */
     public void setWeeknoFoNewRetailer() {
         for (RetailerMasterBO retailer : getRetailerMaster()) {
             if (retailer.getIsNew().equalsIgnoreCase("Y")) {
@@ -5632,28 +5567,6 @@ public class BusinessModel extends Application {
 
     public void setInvoiceDate(String invoiceDate) {
         this.invoiceDate = invoiceDate;
-    }
-
-    class IndicativeBO {
-        private short isIndicative;
-        private String retailerID;
-
-        public short getIsIndicative() {
-            return isIndicative;
-        }
-
-        public void setIsIndicative(short isIndicative) {
-            this.isIndicative = isIndicative;
-        }
-
-        public String getRetailerID() {
-            return retailerID;
-        }
-
-        public void setRetailerID(String retailerID) {
-            this.retailerID = retailerID;
-        }
-
     }
 
 
@@ -6615,6 +6528,10 @@ public class BusinessModel extends Application {
         return retailerAttributeList;
     }
 
+    /**
+     * @deprecated
+     * @See {@link com.ivy.core.data.db.AppDataManagerImpl#fetchNewActivityMenu(String)}
+     */
     public void getAttributeHierarchyForRetailer() {
         retailerAttributeList = "";
         String str = "0";
@@ -7272,6 +7189,11 @@ public class BusinessModel extends Application {
         this.subDMaster = subDMaster;
     }
 
+    /**
+     * @return
+     * @See {@link ChannelDataManagerImpl#fetchChannelIds()}
+     * @deprecated
+     */
     public String getChannelids() {
         String sql;
         String sql1 = "";

@@ -89,3 +89,11 @@ public static java.lang.String TABLENAME;
 
 # If you do not use SQLCipher:
 -dontwarn org.greenrobot.greendao.database.**
+
+#EventBus
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+

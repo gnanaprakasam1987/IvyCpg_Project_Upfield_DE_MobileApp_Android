@@ -1687,25 +1687,16 @@ public class ProductMasterBO {
         return isContains;
     }
 
-    private int csFreeSIH;
+    private int freeSIH;
 
-    public int getCsFreeSIH() {
-        return csFreeSIH;
+    public int getFreeSIH() {
+        return freeSIH;
     }
 
-    public void setCsFreeSIH(int csFreeSIH) {
-        this.csFreeSIH = csFreeSIH;
+    public void setFreeSIH(int freeSIH) {
+        this.freeSIH = freeSIH;
     }
 
-    public int getCsTestSIH() {
-        return csTestSIH;
-    }
-
-    public void setCsTestSIH(int csTestSIH) {
-        this.csTestSIH = csTestSIH;
-    }
-
-    private int csTestSIH;
 
     public double getCsTotal() {
         return csTotal;

@@ -112,6 +112,10 @@ public class DiscountHelper {
                     productBO.setNetValue(productBO.getNetValue() - discountValue);
                 }
 
+                if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                    productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - discountValue);
+                }
+
                 totalDiscountValue = totalDiscountValue + discountValue;
             }
         }
@@ -336,6 +340,11 @@ public class DiscountHelper {
 
                                     storeWiseDiscountBO.setDiscountValue(discountValue);
                                     productBo.setProductLevelDiscountValue(productBo.getProductLevelDiscountValue() + discountValue);
+
+
+                                    if (productBo.getLineValueAfterSchemeApplied() > 0) {
+                                        productBo.setLineValueAfterSchemeApplied(productBo.getLineValueAfterSchemeApplied() - discountValue);
+                                    }
 
                                     totalDiscountValue = totalDiscountValue + discountValue;
 
@@ -987,10 +996,13 @@ public class DiscountHelper {
 
             for (SchemeBO schemeBO : appliedSchemeList) {
                 boolean isFreeProductGiven=false;
-                if (!"".equals(strAppliedSchemes))
-                    strAppliedSchemes = strAppliedSchemes + "\n" + schemeBO.getScheme();
-                else
-                    strAppliedSchemes = schemeBO.getScheme();
+                if (schemeBO.isAmountTypeSelected() || schemeBO.isDiscountPrecentSelected() ||
+                        schemeBO.isQuantityTypeSelected() || schemeBO.isPriceTypeSeleted()) {
+                    if (!"".equals(strAppliedSchemes))
+                        strAppliedSchemes = strAppliedSchemes + "\n" + schemeBO.getScheme();
+                    else
+                        strAppliedSchemes = schemeBO.getScheme();
+                }
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();

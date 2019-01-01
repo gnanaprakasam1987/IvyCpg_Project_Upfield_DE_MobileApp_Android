@@ -205,7 +205,13 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
     @OnClick(R.id.btn_save)
     public void setSaveSalesReturn() {
-        showConfirmAlert();
+        if(SalesReturnDeliveryHelper.getInstance().hasDatatoSave(salesReturnDeliveryDataModelsList)) {
+            showConfirmAlert();
+        } else {
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.no_data_tosave),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @OnClick(R.id.btn_cancel)
@@ -237,18 +243,19 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     private void showConfirConfirmAlert() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setTitle("IvyCpg")
-                .setMessage(getActivity().getString(R.string.do_u_want_to_cancel))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataBo);
-                        if (isSuccess) {
-                            Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
-                            (getActivity()).onBackPressed();
-                        }
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null);
+        .setTitle("IvyCpg")
+        .setMessage(getActivity().getString(R.string.do_u_want_to_cancel))
+        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataBo);
+                if (isSuccess) {
+                    BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
+                    businessModel.saveModuleCompletion(HomeScreenTwo.MENU_SALES_RET_DELIVERY);Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
+                    (getActivity()).onBackPressed();
+                }
+            }
+        })
+        .setNegativeButton(android.R.string.no, null);
         BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
         businessModel.applyAlertDialogTheme(builder);
     }

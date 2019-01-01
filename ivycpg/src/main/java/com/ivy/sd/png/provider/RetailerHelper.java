@@ -3,6 +3,7 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.retailer.RetailerDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DateWisePlanBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -220,7 +221,11 @@ public class RetailerHelper {
 
     /**
      * Method to update planned retailer from date
+     *
+     * @See {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#updatePlannedDatesForRetailer(ArrayList)}
+     * @deprecated
      */
+    @Deprecated
     public void getPlannedRetailerFromDate() {
 
         //Added by Rajkumar
@@ -329,6 +334,10 @@ public class RetailerHelper {
         return routeSelectionDateList;
     }
 
+    /**
+     * @See {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#updatePlannedDatesForRetailer(ArrayList)}
+     * @deprecated
+     */
     public void updatePlannedDatesInRetailerObj() {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         try {
@@ -377,6 +386,9 @@ public class RetailerHelper {
 
     /**
      * Method to download missed  retailer list
+     *
+     * @See {@link RetailerDataManagerImpl#fetchMissedRetailers()}
+     * @deprecated
      */
     public void downloadMissedRetailer() {
         mMissedRetailerList = new ArrayList<>();
@@ -429,6 +441,11 @@ public class RetailerHelper {
         return count;
     }
 
+    /**
+     * @return
+     * @See {@link RetailerDataManagerImpl#fetchMissedRetailers()}
+     * @deprecated
+     */
     public ArrayList<RetailerMissedVisitBO> getMissedRetailerlist() {
         if (mMissedRetailerList != null) {
             return mMissedRetailerList;
@@ -586,6 +603,11 @@ public class RetailerHelper {
         return new ArrayList<>();
     }
 
+    /**
+     * @deprecated
+     * @See {@link RetailerDataManagerImpl#updateWalkingSequenceDayWise(RetailerMasterBO, String)}
+     * @param db
+     */
     public void updateWalkingSequenceDayWise(DBUtil db) {
 
         DateFormat sdf;
@@ -770,17 +792,17 @@ public class RetailerHelper {
         }
     }
 
-    private void setRetailerTarget(){
+    private void setRetailerTarget() {
         double dailyTgt;
         double monthlyTgt;
         double monthlyAch;
 
-        for (RetailerMasterBO masterBO : bmodel.getRetailerMaster()){
+        for (RetailerMasterBO masterBO : bmodel.getRetailerMaster()) {
             dailyTgt = 0;
             monthlyTgt = 0;
             monthlyAch = 0;
             masterBO.setKpiid_day(0);
-            for (RetailerMasterBO retailerMasterBO : getRetailerTargetList()){
+            for (RetailerMasterBO retailerMasterBO : getRetailerTargetList()) {
                 if (masterBO.getRetailerID().equals(retailerMasterBO.getRetailerID())) {
                     if ("DAY".equals(retailerMasterBO.getInterval())) {
                         dailyTgt = retailerMasterBO.getDaily_target();

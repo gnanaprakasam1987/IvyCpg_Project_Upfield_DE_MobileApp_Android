@@ -4,36 +4,44 @@ import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.dashboard.DashBoardBO;
+import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 public interface SellerDashboardContract {
 
     interface SellerDashboardView extends BaseIvyView {
 
-        void updateDashSpinner(ArrayList<String> dashList);
+        void updateDashSpinner(List<String> dashList);
 
-        void setupMultiSelectDistributorSpinner(ArrayList<DistributorMasterBO> distributorMasterBOS);
+        void setupMultiSelectDistributorSpinner(List<DistributorMasterBO> distributorMasterBOS);
 
-        void setUpDistributorSpinner(ArrayList<DistributorMasterBO> distributorMasterBOS);
+        void setUpDistributorSpinner(List<DistributorMasterBO> distributorMasterBOS);
 
-        void setUpUserSpinner(ArrayList<UserMasterBO> userMasterBOS);
+        void setUpUserSpinner(List<UserMasterBO> userMasterBOS);
 
-        void setUpMultiSelectUserSpinner(ArrayList<UserMasterBO> userMasterBOS);
+        void setUpMultiSelectUserSpinner(List<UserMasterBO> userMasterBOS);
 
-        void setDashboardListAdapter(ArrayList<DashBoardBO> dashBoardBOS);
+        void setDashboardListAdapter(List<DashBoardBO> dashBoardBOS, boolean isFromUser);
 
-        void setUpMonthSpinner(ArrayList<String> monthList);
+        void setDashboardListAdapter(List<DashBoardBO> dashBoardBOS);
 
-        void setWeekSpinner(ArrayList<String> weekList, int currentWeek);
+        void setUpMonthSpinner(List<String> monthList);
 
+        void setWeekSpinner(List<String> weekList, int currentWeek);
+
+        void setupRouteSpinner(List<BeatMasterBO> beatMasterBOS);
+
+        void createP3MChartFragment(List<DashBoardBO> dashBoardBOS);
     }
 
 
     interface SellerDashboardPresenter<V extends SellerDashboardContract.SellerDashboardView> extends BaseIvyPresenter<V> {
+
+        void fetchListRowLabels();
 
         void saveModuleCompletion(String menuCode);
 
@@ -41,11 +49,15 @@ public interface SellerDashboardContract {
 
         void fetchSellerDashList(SellerDashboardConstants.DashBoardType dashBoardType);
 
-        void fetchSellerDashboardDataForUser(int selectedUser);
+        void fetchSellerDashboardDataForUser(String selectedUser, boolean isFromDash);
 
-        void fetchSellerDashboardDataForWeek(int selectedUser);
+        void fetchSellerDashboardDataForUser(String selectedUser);
 
-        void fetchSellerDashboardForUserAndInterval(int selectedUser, String interval);
+        void fetchSellerDashboardDataForWeek(String selectedUser);
+
+        void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval);
+
+        void fetchSellerDashboardForUserAndInterval(String selectedUser, String interval, boolean isFromDash);
 
         void fetchRouteDashboardData(String interval);
 
@@ -53,7 +65,11 @@ public interface SellerDashboardContract {
 
         void fetchKpiMonths(boolean isFromRetailer);
 
+        void fetchP3mTrendChartData(String userId);
+
         void fetchWeeks();
+
+        void fetchBeats();
 
         boolean isSMPBasedDash();
 
@@ -65,6 +81,14 @@ public interface SellerDashboardContract {
 
         boolean shouldShowTrendChart();
 
+        boolean shouldShowP3MDash();
+
+        boolean shouldShowSMPDash();
+
+        boolean shouldShowInvoiceDash();
+
+        boolean shouldShowKPIBarChart();
+
         void fetchP3MSellerDashboardData();
 
         void fetchDistributorList(boolean isMultiSelect);
@@ -75,9 +99,12 @@ public interface SellerDashboardContract {
 
         HashMap<String, String> getLabelsMap();
 
-        ArrayList<DashBoardBO> getDashboardListData();
+        List<DashBoardBO> getDashboardListData();
 
         UserMasterBO getCurrentUser();
+
+        void computeDayAchievements();
+
 
     }
 }

@@ -3,6 +3,7 @@ package com.ivy.cpg.view.asset;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,10 +43,10 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
         setContentView(R.layout.activity_asset_movement);
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(getSupportActionBar()!=null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.moveAsset));
@@ -54,7 +55,7 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
         if (getIntent().getExtras() != null) {
             mSelectedLocationIndex = getIntent().getIntExtra("index", -99);
         }
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview_move_asset);
+        recyclerView = findViewById(R.id.recyclerview_move_asset);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
         }
@@ -85,6 +86,7 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
 
     /**
      * update List with asset movement details
+     *
      * @param standardListBO Selected Location Object
      */
     protected void updateList(Context mContext, StandardListBO standardListBO) {
@@ -92,38 +94,33 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
         AssetTrackingHelper assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
         ArrayList<String> mMovedList = assetTrackingHelper.getAssetMovementDetails(mContext);
-        ArrayList<Integer> toRemovePos=new ArrayList<>();
+        ArrayList<Integer> toRemovePos = new ArrayList<>();
         if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
             if (mMovedList != null && mMovedList.size() > 0) {
-                for(int i=0;i<mMovedList.size();i++)
-                {
-                    String tempMoved=mMovedList.get(i);
-                    for(int j=0;j<mAssetTrackingList.size();j++)
-                    {
-                        if(tempMoved.equalsIgnoreCase(String.valueOf(mAssetTrackingList.get(j).getAssetID())))
-                        {
+                for (int i = 0; i < mMovedList.size(); i++) {
+                    String tempMoved = mMovedList.get(i);
+                    for (int j = 0; j < mAssetTrackingList.size(); j++) {
+                        if (tempMoved.equalsIgnoreCase(String.valueOf(mAssetTrackingList.get(j).getAssetID()))) {
                             toRemovePos.add(j);
                         }
                     }
                 }
-                ArrayList<AssetTrackingBO> assetTrackingList=new ArrayList<>();
-                for(int i=0;i<mAssetTrackingList.size();i++)
-                {
-                    if(!toRemovePos.contains(i))
-                    {
+                ArrayList<AssetTrackingBO> assetTrackingList = new ArrayList<>();
+                for (int i = 0; i < mAssetTrackingList.size(); i++) {
+                    if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !mAssetTrackingList.get(i).getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        continue;
+                    if (!toRemovePos.contains(i)) {
                         assetTrackingList.add(mAssetTrackingList.get(i));
                     }
                 }
-                if(assetTrackingList.size()>0)
-                {
-                    mAssetTrackingList=assetTrackingList;
+                if (assetTrackingList.size() > 0) {
+                    mAssetTrackingList = assetTrackingList;
                 }
             }
-            if(mAssetTrackingList.size()>0) {
+            if (mAssetTrackingList.size() > 0) {
                 recyclerAdapter = new RecyclerAdapter(mAssetTrackingList);
                 recyclerView.setAdapter(recyclerAdapter);
-            }
-            else {
+            } else {
                 Toast.makeText(AssetMovementActivity.this, getResources().getString(R.string.no_assets_exists),
                         Toast.LENGTH_SHORT).show();
             }
@@ -167,15 +164,16 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
             this.data = data;
         }
 
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(
                     parent.getContext()).inflate(R.layout.row_asset_movement, parent, false);
             return new MyViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
             holder.assetTrackingBO = data.get(position);
             holder.TVAssetName.setText(holder.assetTrackingBO.getAssetName());
             holder.TVSerialNumber.setText(holder.assetTrackingBO.getSerialNo());
@@ -189,7 +187,7 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
                     args.putString("serialNo", holder.assetTrackingBO.getSerialNo());
                     args.putString("assetName", holder.assetTrackingBO.getAssetName());
                     args.putInt("assetId", holder.assetTrackingBO.getAssetID());
-                    args.putString("brand", holder.assetTrackingBO.getProductId()+"");
+                    args.putString("brand", holder.assetTrackingBO.getProductId() + "");
                     movementAssetDialog.setArguments(args);
                     movementAssetDialog.show(getSupportFragmentManager(), "Asset");
                 }
@@ -208,9 +206,9 @@ public class AssetMovementActivity extends IvyBaseActivityNoActionBar implements
 
             MyViewHolder(View itemView) {
                 super(itemView);
-                TVAssetName = (TextView) itemView.findViewById(R.id.txt_move_assetName);
-                TVSerialNumber = (TextView) itemView.findViewById(R.id.txt_move_serialNumber);
-                IVMoveIcon = (ImageView) itemView.findViewById(R.id.iv_move_icon);
+                TVAssetName = itemView.findViewById(R.id.txt_move_assetName);
+                TVSerialNumber = itemView.findViewById(R.id.txt_move_serialNumber);
+                IVMoveIcon = itemView.findViewById(R.id.iv_move_icon);
             }
         }
     }
