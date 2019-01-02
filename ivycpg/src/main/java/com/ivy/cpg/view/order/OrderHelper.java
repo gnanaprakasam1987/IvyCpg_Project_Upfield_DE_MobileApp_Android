@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
@@ -12,6 +13,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHeader;
@@ -187,8 +189,15 @@ public class OrderHelper {
             if ((!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())||
                 businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
                     businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+
                 businessModel.insertSeqNumber("ORD");
                 uid = AppUtils.QT(businessModel.downloadSequenceNo("ORD"));
+
+                if(uid.length()>16) {
+                    //Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
+                    return false;
+                }
+
             }
 
 
@@ -603,6 +612,10 @@ public class OrderHelper {
                 if (businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
                     businessModel.insertSeqNumber("ORD");
                     uid = AppUtils.QT(businessModel.downloadSequenceNo("ORD"));
+
+                    if(uid.length()>16){
+                        return false;
+                    }
                 }
 
                 // It can be used to show in OrderSummary alert
@@ -1758,7 +1771,7 @@ public class OrderHelper {
      * Invoice details into Invoice Details Table.
      * Saving Invoice will also update the SIH in ProductMaster.
      */
-    public void saveInvoice(Context mContext) {
+    public boolean saveInvoice(Context mContext) {
 
         SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
         salesReturnHelper.getSalesReturnGoods(mContext);
@@ -1800,7 +1813,14 @@ public class OrderHelper {
                 businessModel.insertSeqNumber("INV");
                 seqNo = businessModel.downloadSequenceNo("INV");
                 invoiceId = seqNo;
+
+                if(invoiceId.length()>16) {
+                    Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
+                    return false;
+                }
             }
+
+
 
             String timeStampId = "";
             String query = "select max(VisitID) from OutletTimestamp where retailerid="
@@ -2087,9 +2107,11 @@ public class OrderHelper {
             }
 
         } catch (Exception e) {
-
             Commons.printException(e);
+            return false;
         }
+
+        return true;
     }
 
 

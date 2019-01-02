@@ -628,6 +628,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
 
+
             if (linesPerCall == 0)
                 linesPerCall = mOrderedProductList.size();
 
@@ -698,12 +699,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             // Apply Exclude Item level Tax  in Product
             if (bModel.configurationMasterHelper.SHOW_TAX) {
-                if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
-                    bModel.productHelper.taxHelper.updateProductWiseExcludeTax();
-                else {
-                    double totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
-                    totalOrderValue = totalOrderValue + totalTaxVal;
-                    taxValue = totalTaxVal;
+
+                if(!bModel.configurationMasterHelper.IS_GST || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
+
+                    if(!bModel.configurationMasterHelper.IS_GST
+                            || (!bModel.getRetailerMasterBO().getGSTNumber().equals("-")||totalOrderValue>5000)) {
+
+                        if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
+                            bModel.productHelper.taxHelper.updateProductWiseExcludeTax();
+                        else {
+                            double totalTaxVal = bModel.productHelper.taxHelper.updateProductWiseIncludeTax(mOrderedProductList);
+                            totalOrderValue = totalOrderValue + totalTaxVal;
+                            taxValue = totalTaxVal;
+                        }
+                    }
                 }
             }
 
@@ -3047,6 +3056,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 } catch (Exception e) {
                     Commons.printException(e);
+                }
+            }else if (msg.what == DataMembers.NOTIFY_INVOICE_NOT_SAVED) {
+                try {
+                    alertDialog.dismiss();
+                    Toast.makeText(OrderSummary.this, getResources().getString(R.string.not_able_to_generate_invoice),
+                            Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
                 }
             } else if (msg.what == DataMembers.NOTIFY_ORDER_DELETED) {
                 try {
