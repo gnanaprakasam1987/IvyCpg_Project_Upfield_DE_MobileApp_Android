@@ -1,8 +1,10 @@
 package com.ivy.ui.task.view;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -12,6 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
@@ -21,7 +24,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -39,6 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 
 public class TaskCreationActivity extends BaseActivity implements TaskContract.TaskView {
 
@@ -181,10 +184,75 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     }
 
+    TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+    final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
+    final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorSecondary, 0);
+
     @OnCheckedChanged(R.id.rg)
-    public void onTaskCheckChangedListener(CompoundButton radioBtn,boolean isChecked){
+    public void onTaskCheckChangedListener(CompoundButton radioBtn, boolean isChecked) {
 
+        switch (radioBtn.getId()) {
+            case R.id.seller:
+                seller_rb.setTextColor(color);
+                channelwise_rb.setTextColor(secondary_color);
+                retailerwise_rb.setTextColor(secondary_color);
+                channelSpinner.setSelection(0);
+                channelSpinner.setEnabled(false);
+                retailerSpinner.setSelection(0);
+                retailerSpinner.setEnabled(false);
+                sellerSpinner.setEnabled(true);
+                //  taskHelper.mode = "seller";
+                break;
+            case R.id.Channelwise:
+                seller_rb.setTextColor(secondary_color);
+                channelwise_rb.setTextColor(color);
+                retailerwise_rb.setTextColor(secondary_color);
+                channelSpinner.setEnabled(true);
+                retailerSpinner.setSelection(0);
+                retailerSpinner.setEnabled(false);
+                sellerSpinner.setSelection(0);
+                sellerSpinner.setEnabled(false);
+                //taskHelper.mode = "channel";
+                break;
+            case R.id.Retailerwise:
+                seller_rb.setTextColor(secondary_color);
+                channelwise_rb.setTextColor(secondary_color);
+                retailerwise_rb.setTextColor(color);
+                channelSpinner.setSelection(0);
+                channelSpinner.setEnabled(false);
+                retailerSpinner.setEnabled(true);
+                sellerSpinner.setSelection(0);
+                sellerSpinner.setEnabled(false);
+                // taskHelper.mode = "retailer";
+                break;
+        }
+    }
 
+    @OnItemSelected(R.id.spinner_seller)
+    public void onUserSpinnerSelected(Spinner spinner, int position) {
+        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
+        mSelectedUserId = position;
+    }
+
+    @OnItemSelected(R.id.channel)
+    public void onChannelSpinnerSelected(Spinner spinner, int position) {
+        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
+        ChannelBO chBo = (ChannelBO) spinner.getItemAtPosition(position);
+        if (chBo.getChannelName().equalsIgnoreCase(getResources().getString(R.string.all_channel))) {
+            channelId = -1;
+        } else {
+            channelId = chBo.getChannelId();
+        }
+
+    }
+
+    @OnItemSelected(R.id.retailer)
+    public void onRetailerSpinnerSelected(Spinner spinner, int position) {
+        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
+        RetailerMasterBO reBo = (RetailerMasterBO) spinner.getItemAtPosition(position);
+        if (reBo.getTretailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
+            retailerid = reBo.getTretailerId();
+        }
     }
 
     @Override
