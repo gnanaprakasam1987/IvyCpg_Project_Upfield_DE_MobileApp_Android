@@ -514,7 +514,7 @@ public class SalesReturnDeliveryHelper {
 
             if (isData) {
                 // Preapre and save salesreturn header.
-                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID";
+                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,RetCollectStatus";
 
                 values = AppUtils.QT(uid) + ","
                         + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
@@ -532,8 +532,9 @@ public class SalesReturnDeliveryHelper {
                         + AppUtils.QT(salesReturnDeliveryDataBo.getSignatureName()) + ","
                         + indicativeFlag + ","
                         + AppUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
-                        + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + "," +
-                        AppUtils.QT(salesReturnDeliveryDataBo.getUId());
+                        + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + ","
+                        + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) + ","
+                        + AppUtils.QT("F");
 
                 db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
