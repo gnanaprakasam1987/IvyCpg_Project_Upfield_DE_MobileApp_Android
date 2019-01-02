@@ -46,6 +46,7 @@ public class SerializedAssetHelper {
     private static final String ASSET_REMARK = "ARR";
     private static final String ASSET_CONDITION = "CD";
     private static final String CODE_ASSET_SERVICE = "SAT11";
+    private static final String CODE_NEW_ASSET_PHOTO = "SAT12";
     public boolean SHOW_ASSET_REASON;
     public boolean SHOW_ASSET_PHOTO;
     public boolean SHOW_ASSET_CONDITION;
@@ -62,6 +63,8 @@ public class SerializedAssetHelper {
     public boolean SHOW_MOVE_ASSET;
     public boolean SHOW_SERVICE_ASSET;
     public boolean ASSET_PHOTO_VALIDATION;
+    public boolean NEW_ASSET_PHOTO;
+    public boolean NEW_ASSET_PHOTO_MANDATORY;
 
     //
 
@@ -114,17 +117,17 @@ public class SerializedAssetHelper {
             surveyHelperNew.loadSurveyAnswers(0);
             mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
             mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(
-                    mBusinessModel.productHelper.getRetailerModuleSequenceValues(),false));
+                    mBusinessModel.productHelper.getRetailerModuleSequenceValues(), false));
 
         }
 
         //update configurations
-            downloadConfigs(mContext);
+        downloadConfigs(mContext);
 
         //download filter levels
         mBusinessModel.productHelper.setFilterProductLevelsRex(mBusinessModel.productHelper.downloadFilterLevel(mMenuCode));
         mBusinessModel.productHelper.setFilterProductsByLevelIdRex(mBusinessModel.productHelper.downloadFilterLevelProducts(
-                mBusinessModel.productHelper.getRetailerModuleSequenceValues(),false));
+                mBusinessModel.productHelper.getRetailerModuleSequenceValues(), false));
 
         // Load master records
         downloadAssetMaster(mContext, mMenuCode);
@@ -154,8 +157,10 @@ public class SerializedAssetHelper {
             ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK = false;
             SHOW_MOVE_ASSET = false;
             SHOW_SERVICE_ASSET = false;
-            ASSET_PHOTO_VALIDATION=false;
-            SHOW_NFC_SEARCH_IN_ASSET=false;
+            ASSET_PHOTO_VALIDATION = false;
+            SHOW_NFC_SEARCH_IN_ASSET = false;
+            NEW_ASSET_PHOTO = false;
+            NEW_ASSET_PHOTO_MANDATORY = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
@@ -196,6 +201,11 @@ public class SerializedAssetHelper {
                         ASSET_PHOTO_VALIDATION = true;
                     else if (CODE_ASSET_SERVICE.equalsIgnoreCase(c.getString(0)))
                         SHOW_SERVICE_ASSET = true;
+                    else if (CODE_NEW_ASSET_PHOTO.equalsIgnoreCase(c.getString(0))) {
+                        NEW_ASSET_PHOTO = true;
+                        if ("1".equals(c.getString(1)))
+                            NEW_ASSET_PHOTO_MANDATORY = true;
+                    }
                 }
                 c.close();
             }
@@ -306,7 +316,7 @@ public class SerializedAssetHelper {
      */
     private void downloadAssetMaster(Context mContext, String moduleName) {
 
-        mAllAssetTrackingList=new ArrayList<>();
+        mAllAssetTrackingList = new ArrayList<>();
         mAssetTrackingList = new ArrayList<>();
         mUniqueSerialNo = new HashMap<>();
 
@@ -351,7 +361,6 @@ public class SerializedAssetHelper {
                     }
 
 
-
                     assetTrackingBO.setNFCTagId(c.getString(c.getColumnIndex("NFCNumber")));
                     assetTrackingBO.setParentHierarchy("");
                     assetTrackingBO.setReferenceId(c.getInt(c.getColumnIndex("AllocationRefId")));
@@ -375,8 +384,8 @@ public class SerializedAssetHelper {
             Cursor c2 = db.selectSQL(sb.toString());
             if (c2.getCount() > 0) {
                 while (c2.moveToNext()) {
-                    for(SerializedAssetBO serial : mAssetTrackingList){
-                        if(serial.getAssetID() == c2.getInt(0))
+                    for (SerializedAssetBO serial : mAssetTrackingList) {
+                        if (serial.getAssetID() == c2.getInt(0))
                             serial.setParentHierarchy(c2.getString(1));
                     }
                 }
@@ -385,7 +394,7 @@ public class SerializedAssetHelper {
             //load serial no's into hash map for uniqueness
 
             if (MENU_SERIALIZED_ASSET.equals(moduleName)) {
-                String sb1 = "select SerialNumber from SerializedAssetMapping A INNER JOIN SerializedAssetMaster B ON A.assetId=B.assetId " ;
+                String sb1 = "select SerialNumber from SerializedAssetMapping A INNER JOIN SerializedAssetMaster B ON A.assetId=B.assetId ";
                 c = db.selectSQL(sb1);
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
@@ -396,7 +405,7 @@ public class SerializedAssetHelper {
             }
 
 
-            String sb1 = "select  serialNumber from SerializedAssetTransfer where transfer_type='RTR_WH' and retailerid="+mBusinessModel.getRetailerMasterBO().getRetailerID();
+            String sb1 = "select  serialNumber from SerializedAssetTransfer where transfer_type='RTR_WH' and retailerid=" + mBusinessModel.getRetailerMasterBO().getRetailerID();
             Cursor cursorDelete = db.selectSQL(sb1);
             SerializedAssetBO assetBoDelete = null;
             List<SerializedAssetBO> deletedAssetList = new ArrayList<>();
@@ -412,15 +421,15 @@ public class SerializedAssetHelper {
             }
 
             if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
-                    for (SerializedAssetBO assetDeleteBO : deletedAssetList) {
-                        for (SerializedAssetBO assetBO : mAssetTrackingList) {
-                            if (assetDeleteBO.getSerialNo().equalsIgnoreCase(assetBO.getSerialNo())) {
-                                mAssetTrackingList.remove(assetBO);
-                                break;
-                            }
-
+                for (SerializedAssetBO assetDeleteBO : deletedAssetList) {
+                    for (SerializedAssetBO assetBO : mAssetTrackingList) {
+                        if (assetDeleteBO.getSerialNo().equalsIgnoreCase(assetBO.getSerialNo())) {
+                            mAssetTrackingList.remove(assetBO);
+                            break;
                         }
+
                     }
+                }
 
 
             }
@@ -436,7 +445,6 @@ public class SerializedAssetHelper {
                     } else {
                         assetTrackingBO.setSerialNo(Integer.toString(0));
                     }
-
 
 
                     assetTrackingBO.setNFCTagId(c1.getString(c1.getColumnIndex("NFCNumber")));
@@ -456,8 +464,8 @@ public class SerializedAssetHelper {
             Cursor c3 = db.selectSQL(sb.toString());
             if (c3.getCount() > 0) {
                 while (c3.moveToNext()) {
-                    for(SerializedAssetBO serial : mAllAssetTrackingList){
-                        if(serial.getAssetID() == c3.getInt(0))
+                    for (SerializedAssetBO serial : mAllAssetTrackingList) {
+                        if (serial.getAssetID() == c3.getInt(0))
                             serial.setParentHierarchy(c3.getString(1));
                     }
                 }
@@ -476,7 +484,7 @@ public class SerializedAssetHelper {
         }
     }
 
-    public ArrayList<SerializedAssetBO> removeMovedAsset(Context mContext){
+    public ArrayList<SerializedAssetBO> removeMovedAsset(Context mContext) {
         try {
             ArrayList<String> mMovedList = getAssetMovementDetails(mContext);
             ArrayList<Integer> toRemovePos = new ArrayList<>();
@@ -499,7 +507,7 @@ public class SerializedAssetHelper {
                     mAssetTrackingList = assetTrackingList;
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return mAssetTrackingList;
@@ -560,7 +568,7 @@ public class SerializedAssetHelper {
                                     ConfigurationMasterHelper.outDateFormat),
                             DateUtil.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(7),
-                                    ConfigurationMasterHelper.outDateFormat),nfcTagID);
+                                    ConfigurationMasterHelper.outDateFormat), nfcTagID);
                 }
             }
             detailCursor.close();
@@ -576,12 +584,12 @@ public class SerializedAssetHelper {
     /**
      * Ordered asset record set to AssetTrackingBO object
      *
-     * @param assetID   Asset Id
-     * @param isAvailable       Qty
+     * @param assetID     Asset Id
+     * @param isAvailable Qty
      * @param installDate Installed date
-     * @param mReasonId reason Id
-     * @param serialNo  serial Number
-     * @param serviceDate   service date
+     * @param mReasonId   reason Id
+     * @param serialNo    serial Number
+     * @param serviceDate service date
      */
     private void setAssetDetails(Context mcontext, int assetID, int isAvailable,
                                  String mReasonId, String serialNo,
@@ -677,7 +685,6 @@ public class SerializedAssetHelper {
     }
 
 
-
     /**
      * Method return reason name arrayList
      *
@@ -706,7 +713,7 @@ public class SerializedAssetHelper {
             db.openDataBase();
 
             db.deleteSQL(DataMembers.tbl_AssetImgInfo, "ImageName LIKE"
-                    + AppUtils.QT(ImageName+"%"), false);
+                    + AppUtils.QT(ImageName + "%"), false);
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -764,81 +771,81 @@ public class SerializedAssetHelper {
             String AssetImageInfoColumns = "uid,AssetID,ImageName,serialNumber,imgName";
 
 
-                    for (SerializedAssetBO assetBo : mAssetTrackingList) {
-                        StringBuilder assetDetailValues = new StringBuilder();
-                            if (assetBo.getAvailQty() > 0
-                                    || !assetBo.getReason1ID().equals(Integer.toString(0))) {
+            for (SerializedAssetBO assetBo : mAssetTrackingList) {
+                StringBuilder assetDetailValues = new StringBuilder();
+                if (assetBo.getAvailQty() > 0
+                        || !assetBo.getReason1ID().equals(Integer.toString(0))) {
 
-                                assetDetailValues.append(id);
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getAssetID());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getAvailQty());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(assetBo.getReason1ID());
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(AppUtils.QT(assetBo.getSerialNo()));
-                                if (assetBo.getConditionID() != null && !"null".equals(assetBo.getConditionID())) {
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(AppUtils.QT(assetBo.getConditionID()));
-                                } else {
-                                    assetDetailValues.append(",");
-                                    assetDetailValues.append(AppUtils.QT(""));
-                                }
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(AppUtils.QT(assetBo.getNFCTagId()));
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(DatabaseUtils
-                                        .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
-                                                .getInstallDate() == null || assetBo
-                                                .getInstallDate()
-                                                .length() == 0) ? SDUtil
-                                                .now(SDUtil.DATE_GLOBAL)
-                                                : (DateUtil
-                                                .convertToServerDateFormat(
-                                                        assetBo.getInstallDate(),
-                                                        ConfigurationMasterHelper.outDateFormat)))
-                                                : ""));
-                                assetDetailValues.append(",");
-                                assetDetailValues.append(DatabaseUtils
-                                        .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
-                                                .getServiceDate() == null || assetBo
-                                                .getServiceDate()
-                                                .length() == 0) ? SDUtil
-                                                .now(SDUtil.DATE_GLOBAL)
-                                                : (DateUtil
-                                                .convertToServerDateFormat(
-                                                        assetBo.getServiceDate(),
-                                                        ConfigurationMasterHelper.outDateFormat)))
-                                                : ""));
-
-
-                                db.insertSQL(DataMembers.tbl_SerializedAssetDetail,
-                                        AssetDetailColumns,
-                                        assetDetailValues.toString());
-
-                                if (assetBo.getImageList().size() > 0) {
-                                    for (String imageName : assetBo.getImageList()) {
-                                        StringBuffer assetImgInofValues = new StringBuffer();
-                                        assetImgInofValues.append(id);
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(assetBo.getAssetID());
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(AppUtils.QT(imageName));
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(AppUtils.QT(assetBo.getNFCTagId()));
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(AppUtils.QT(assetBo.getImgName()));
-
-                                        db.insertSQL(DataMembers.tbl_SerializedAssetImageDetail,
-                                                AssetImageInfoColumns,
-                                                assetImgInofValues.toString());
-                                    }
-                                }
-                            }
-
-
+                    assetDetailValues.append(id);
+                    assetDetailValues.append(",");
+                    assetDetailValues.append(assetBo.getAssetID());
+                    assetDetailValues.append(",");
+                    assetDetailValues.append(assetBo.getAvailQty());
+                    assetDetailValues.append(",");
+                    assetDetailValues.append(assetBo.getReason1ID());
+                    assetDetailValues.append(",");
+                    assetDetailValues.append(AppUtils.QT(assetBo.getSerialNo()));
+                    if (assetBo.getConditionID() != null && !"null".equals(assetBo.getConditionID())) {
+                        assetDetailValues.append(",");
+                        assetDetailValues.append(AppUtils.QT(assetBo.getConditionID()));
+                    } else {
+                        assetDetailValues.append(",");
+                        assetDetailValues.append(AppUtils.QT(""));
                     }
+                    assetDetailValues.append(",");
+                    assetDetailValues.append(AppUtils.QT(assetBo.getNFCTagId()));
+                    assetDetailValues.append(",");
+                    assetDetailValues.append(DatabaseUtils
+                            .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
+                                    .getInstallDate() == null || assetBo
+                                    .getInstallDate()
+                                    .length() == 0) ? SDUtil
+                                    .now(SDUtil.DATE_GLOBAL)
+                                    : (DateUtil
+                                    .convertToServerDateFormat(
+                                            assetBo.getInstallDate(),
+                                            ConfigurationMasterHelper.outDateFormat)))
+                                    : ""));
+                    assetDetailValues.append(",");
+                    assetDetailValues.append(DatabaseUtils
+                            .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
+                                    .getServiceDate() == null || assetBo
+                                    .getServiceDate()
+                                    .length() == 0) ? SDUtil
+                                    .now(SDUtil.DATE_GLOBAL)
+                                    : (DateUtil
+                                    .convertToServerDateFormat(
+                                            assetBo.getServiceDate(),
+                                            ConfigurationMasterHelper.outDateFormat)))
+                                    : ""));
+
+
+                    db.insertSQL(DataMembers.tbl_SerializedAssetDetail,
+                            AssetDetailColumns,
+                            assetDetailValues.toString());
+
+                    if (assetBo.getImageList().size() > 0) {
+                        for (String imageName : assetBo.getImageList()) {
+                            StringBuffer assetImgInofValues = new StringBuffer();
+                            assetImgInofValues.append(id);
+                            assetImgInofValues.append(",");
+                            assetImgInofValues.append(assetBo.getAssetID());
+                            assetImgInofValues.append(",");
+                            assetImgInofValues.append(AppUtils.QT(imageName));
+                            assetImgInofValues.append(",");
+                            assetImgInofValues.append(AppUtils.QT(assetBo.getNFCTagId()));
+                            assetImgInofValues.append(",");
+                            assetImgInofValues.append(AppUtils.QT(assetBo.getImgName()));
+
+                            db.insertSQL(DataMembers.tbl_SerializedAssetImageDetail,
+                                    AssetImageInfoColumns,
+                                    assetImgInofValues.toString());
+                        }
+                    }
+                }
+
+
+            }
 
 
             db.closeDB();
@@ -884,19 +891,30 @@ public class SerializedAssetHelper {
                     + AppUtils.QT(assets.getNFCTagId()) + ","
                     + AppUtils.QT(DateUtil.convertToServerDateFormat(assets.getNewInstallDate(), ConfigurationMasterHelper.outDateFormat)) + ","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                    + "'I'"+","
+                    + "'I'" + ","
                     + AppUtils.QT(assets.getReasonId()) + ","
-                    + AppUtils.QT(assets.getRemarks())+","
-                    +mBusinessModel.getRetailerMasterBO().getRetailerID()+","
-                    +"0"+","
-                    +"'WH_RTR'"+","
-                    +0;
+                    + AppUtils.QT(assets.getRemarks()) + ","
+                    + mBusinessModel.getRetailerMasterBO().getRetailerID() + ","
+                    + "0" + ","
+                    + "'WH_RTR'" + ","
+                    + 0;
 
             db.insertSQL(DataMembers.tbl_SerializedAssetTransfer, addAssetColumns,
                     assetAddAndDeleteValues);
 
             //add serial no for uniqueness
             mUniqueSerialNo.put(assets.getSNO(), assets.getSNO());
+
+            if (assets.getImageName() != null && assets.getImageName().length() > 0) {
+                String assetImageColumns = "Uid,ImageName,ImgName";
+
+                String values = id + ","
+                        + AppUtils.QT(assets.getImageName()) + ","
+                        + AppUtils.QT(assets.getImgName());
+
+                db.insertSQL(DataMembers.tbl_SerializedAssetTransferImages, assetImageColumns,
+                        values);
+            }
 
             db.closeDB();
 
@@ -920,7 +938,6 @@ public class SerializedAssetHelper {
 
             db.openDataBase();
             String sb = "select distinct  AssetId,AssetName from SerializedAssetMaster";
-
 
 
             Cursor c = db.selectSQL(sb);
@@ -1129,7 +1146,7 @@ public class SerializedAssetHelper {
             sb.append(" inner join SerializedAssetMapping SAM ON SAM.assetId=P.AssetId");
             sb.append(" where (SAM.SerialNumber  in (select distinct SerialNumber from SerializedAssetTransfer AAD where Transfer_Type!='RTR_WH'");
             sb.append(") or SAM.SerialNumber not in (select distinct SerialNumber from SerializedAssetTransfer AAD1");
-            sb.append(")) and retailerid in (0,"+mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID())+")");
+            sb.append(")) and retailerid in (0," + mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1199,7 +1216,7 @@ public class SerializedAssetHelper {
      * @param moduleName Module Name
      */
     public void deleteAsset(Context mContext, String posmId, String mSno,
-                            String mSbdId, String mBrandId, String reasonId, String moduleName, String NFCId,int refId) {
+                            String mSbdId, String mBrandId, String reasonId, String moduleName, String NFCId, int refId) {
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1214,9 +1231,9 @@ public class SerializedAssetHelper {
             String columns = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
             String values = id + ","
-                    + AppUtils.QT(posmId) + "," + AppUtils.QT(mSno) + ","+AppUtils.QT(NFCId)+","+AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))+","
+                    + AppUtils.QT(posmId) + "," + AppUtils.QT(mSno) + "," + AppUtils.QT(NFCId) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT("T") + ","
-                    + AppUtils.QT(reasonId) + "," + AppUtils.QT("") + "," + mBusinessModel.getRetailerMasterBO().getRetailerID()+","+0 + "," + AppUtils.QT("RTR_WH")+","+refId;
+                    + AppUtils.QT(reasonId) + "," + AppUtils.QT("") + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + 0 + "," + AppUtils.QT("RTR_WH") + "," + refId;
 
             db.insertSQL(DataMembers.tbl_SerializedAssetTransfer, columns,
                     values);
@@ -1266,7 +1283,7 @@ public class SerializedAssetHelper {
         Cursor c = db.selectSQL("SELECT DISTINCT AssetId,serialNumber from " + DataMembers.tbl_SerializedAssetTransfer + " where RequestType='T'");
         if (c != null)
             while (c.moveToNext()) {
-                retailerMovedData.add(c.getString(0)+c.getString(1));
+                retailerMovedData.add(c.getString(0) + c.getString(1));
             }
         return retailerMovedData;
     }
@@ -1274,7 +1291,7 @@ public class SerializedAssetHelper {
     /**
      * Method to save Asset Movement Details in sql table
      */
-    public void saveAssetMovementDetails(Context mContext, String movementType,int referenceId) {
+    public void saveAssetMovementDetails(Context mContext, String movementType, int referenceId) {
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
@@ -1288,10 +1305,10 @@ public class SerializedAssetHelper {
             String columns = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
 
-            String values = id + "," +AppUtils.QT(assets.getPOSM())+"," + AppUtils.QT(assets.getSNO()) + ","
-                    + AppUtils.QT(assets.getNFCTagId()) + "," +AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))+","
-                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT("T") + ","  +
-                    AppUtils.QT(assets.getReasonId()) + "," + AppUtils.QT(assets.getRemarks()) + ","+mBusinessModel.getRetailerMasterBO().getRetailerID()+"," + AppUtils.QT(assets.getToRetailerId())+","+AppUtils.QT(movementType)+","+referenceId;
+            String values = id + "," + AppUtils.QT(assets.getPOSM()) + "," + AppUtils.QT(assets.getSNO()) + ","
+                    + AppUtils.QT(assets.getNFCTagId()) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT("T") + "," +
+                    AppUtils.QT(assets.getReasonId()) + "," + AppUtils.QT(assets.getRemarks()) + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + AppUtils.QT(assets.getToRetailerId()) + "," + AppUtils.QT(movementType) + "," + referenceId;
 
 
             db.insertSQL(DataMembers.tbl_SerializedAssetTransfer, columns,

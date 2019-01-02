@@ -100,7 +100,7 @@
     <string name="free_qty">Free Qty</string>
     <string name="oos">OOS</string>
 
-    <string name ="enter_serial_no">Please Enter Serial No</string>
+    <string name="enter_serial_no">Please Enter Serial No</string>
 
     <string name="fill_photo_and_adherence">Please take photo and fill adherence</string>
 
@@ -123,4 +123,5 @@
     <string name="order_will_be_saved_later">Order will be saved when saving the New Retailer</string>
 
     <string name="select_destination">Select Destination Outlet</string>
+    <string name="asset_image">Asset Image</string>
 </resources>

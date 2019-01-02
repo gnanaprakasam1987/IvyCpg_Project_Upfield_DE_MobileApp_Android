@@ -277,6 +277,9 @@ public class DataMembers {
     public static final String tbl_SerializedAssetTransfer = "SerializedAssetTransfer";
     private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
+    public static final String tbl_SerializedAssetTransferImages = "SerializedAssetTransferImages";
+    private static final String tbl_SerializedAssetTransferImg__cols = "uid,ImageName";
+
     public static final String tbl_HhtModuleMaster = "HhtModuleMaster";
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
 
@@ -847,6 +850,7 @@ public class DataMembers {
         uploadColumn.put(tbl_SerializedAssetDetail, tbl_SerializedAssetDetail_cols);
         uploadColumn.put(tbl_SerializedAssetImageDetail, tbl_SerializedAssetImageDetail_cols);
         uploadColumn.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
+        uploadColumn.put(tbl_SerializedAssetTransferImages, tbl_SerializedAssetTransferImg__cols);
         uploadColumn.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
 
         uploadColumn.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
@@ -990,6 +994,7 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_SerializedAssetDetail, tbl_SerializedAssetDetail_cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetImageDetail, tbl_SerializedAssetImageDetail_cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
+        uploadColumnWithRetailer.put(tbl_SerializedAssetTransferImages, tbl_SerializedAssetTransferImg__cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
 
         uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
