@@ -1,6 +1,9 @@
 package com.ivy.sd.png.bo;
 
-public class SupplierMasterBO {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class SupplierMasterBO implements Parcelable {
     private int supplierID;
     private String supplierName;
     private int supplierType;
@@ -16,6 +19,29 @@ public class SupplierMasterBO {
        this.supplierID=sId;
         this.supplierName=sName;
     }
+
+    protected SupplierMasterBO(Parcel in) {
+        supplierID = in.readInt();
+        supplierName = in.readString();
+        supplierType = in.readInt();
+        isPrimary = in.readInt();
+        distParentID = in.readInt();
+        creditLimit = in.readFloat();
+        supplierTaxLocId = in.readInt();
+    }
+
+    public static final Creator<SupplierMasterBO> CREATOR = new Creator<SupplierMasterBO>() {
+        @Override
+        public SupplierMasterBO createFromParcel(Parcel in) {
+            return new SupplierMasterBO(in);
+        }
+
+        @Override
+        public SupplierMasterBO[] newArray(int size) {
+            return new SupplierMasterBO[size];
+        }
+    };
+
     public int getSupplierID() {
         return supplierID;
     }
@@ -76,5 +102,21 @@ public class SupplierMasterBO {
 
     public void setSupplierTaxLocId(int supplierTaxLocId) {
         this.supplierTaxLocId = supplierTaxLocId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(supplierID);
+        dest.writeString(supplierName);
+        dest.writeInt(supplierType);
+        dest.writeInt(isPrimary);
+        dest.writeInt(distParentID);
+        dest.writeFloat(creditLimit);
+        dest.writeInt(supplierTaxLocId);
     }
 }

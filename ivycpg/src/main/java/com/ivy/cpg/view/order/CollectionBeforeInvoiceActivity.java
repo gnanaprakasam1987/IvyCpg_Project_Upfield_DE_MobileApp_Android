@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -29,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,7 +72,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
     private EditText QUANTITY;
     private Button btnSubmit, btnDot;
     // Views
-    private LinearLayout layoutBankMode, layoutChequeDate, layoutKeypad;
+    private LinearLayout layoutBankMode,  layoutKeypad;
     private RadioGroup rbPaymentType;
     private boolean isClicked, setRadioBtnChecked;
     private EditText collectionamount, chequenumber;
@@ -102,8 +104,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
     private double creditBalance = 0d;
     private String mTransactionPaymentMode = "";
     private PaymentBO pay;
-
-    private LinearLayout ll_keyboard;
+    private RelativeLayout layoutChequeDate,ll_keyboard;
 
     ImageView capturecheque;
     private String mImageName;
@@ -138,6 +139,25 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
         // Initialize Views in the Screen
         initializeView();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        if (toolbar != null ) {
+
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            setScreenTitle(getResources().getString(R.string.Product_details));
+        }
 
         collectionHelper = CollectionHelper.getInstance(this);
 

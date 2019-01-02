@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -466,8 +468,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         Intent intent = new Intent(getActivity(),NearExpiryDateInputActivity.class);
                         intent.putExtras(args);
 
-                        startActivityForResult( intent, NEAR_EXPIRY_RESULT_CODE);
-                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.zoom_enter, R.anim.hold);
+                        ActivityCompat.startActivityForResult(getActivity(), intent, NEAR_EXPIRY_RESULT_CODE, opts.toBundle());
 
                     }
                 });
@@ -884,6 +886,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == NEAR_EXPIRY_RESULT_CODE && resultCode == 1){
+            getActivity().overridePendingTransition(0, R.anim.zoom_exit);
             mSchedule.notifyDataSetChanged();
         }
     }

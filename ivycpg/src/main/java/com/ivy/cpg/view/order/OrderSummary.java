@@ -134,6 +134,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private static final int DISCOUNT_RESULT_CODE = 114;
     private static final int RETURN_PRODUCT_RESULT_CODE = 115;
     private static final int INDICATIVE_ORDER_REASON_RESULT_CODE = 116;
+    private static final int COLLECTION_INVOICE_RESULT_CODE = 120;
 
 
     private static final int FILE_SELECTION = 12;
@@ -151,7 +152,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private AlertDialog alertDialog;
     private AmountSplitUpDialog amountSplitUpDialog;
     private OrderConfirmationDialog orderConfirmationDialog;
-    private CollectionBeforeInvoiceDialog collectionBeforeInvoiceDialog;
     private StoreWiseDiscountDialog mStoreWiseDiscountDialogFragment;
 
     private BusinessModel bModel;
@@ -1215,11 +1215,19 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     .size();
             if (paymentModeSize > 0) {
 
-                collectionBeforeInvoiceDialog = new CollectionBeforeInvoiceDialog(
-                        this, this, collectionbo, totalOrderValue,
-                        minimumAmount, creditBalance);
-                collectionBeforeInvoiceDialog.show();
-                collectionBeforeInvoiceDialog.setCancelable(false);
+                Intent intent = new Intent(OrderSummary.this,CollectionBeforeInvoiceActivity.class);
+
+                Bundle bundle = new Bundle();
+
+                bundle.putDouble("TotalInvoiceAmt",totalOrderValue);
+                bundle.putDouble("OsAmount",minimumAmount);
+                bundle.putDouble("CreditDalance",creditBalance);
+                bundle.putParcelable("Collection",collectionbo);
+
+                intent.putExtras(bundle);
+
+                ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                ActivityCompat.startActivityForResult(this, intent, COLLECTION_INVOICE_RESULT_CODE, opts.toBundle());
 
             } else {
                 Toast.makeText(OrderSummary.this,
@@ -3414,9 +3422,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
     public void numberPressed(View vw) {
-        if (collectionBeforeInvoiceDialog != null && collectionBeforeInvoiceDialog.isShowing()) {
-            collectionBeforeInvoiceDialog.numberPressed(vw);
-        }
+
         if (mStoreWiseDiscountDialogFragment != null && mStoreWiseDiscountDialogFragment.isVisible()) {
             mStoreWiseDiscountDialogFragment.numberPressed(vw);
         }
@@ -3460,6 +3466,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             case INDICATIVE_ORDER_REASON_RESULT_CODE :
+                overridePendingTransition(0, R.anim.zoom_exit);
+                break;
+            case COLLECTION_INVOICE_RESULT_CODE :
                 overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             default:

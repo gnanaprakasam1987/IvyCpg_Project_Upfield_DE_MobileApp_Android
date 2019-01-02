@@ -127,4 +127,6 @@
     <string name="this_may_remove_existing_data">This may remove existing data</string>
     <string name="created_by">Created By</string>
 
+    <string name="please_state_reason_not_visiting_store">Please state reason for not visiting following store</string>
+
 </resources>
