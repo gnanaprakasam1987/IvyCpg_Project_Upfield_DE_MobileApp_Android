@@ -312,13 +312,15 @@ public class SalesReturnDeliveryHelper {
 
             int indicativeFlag = 0;
 
-            int srUserId = 0;
+            String[] invAndUserId = getUserIdAndInvId(db, businessModel);
+            int srUserId = SDUtil.convertToInt(invAndUserId[0]);
+            String invoiceID = invAndUserId[1];
 
             if (businessModel.configurationMasterHelper.IS_INDICATIVE_SR)
                 indicativeFlag = 1;
 
 
-            String sb = "select uid,UserID from SalesReturnHeader where RefUID=" + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) +
+            String sb = "select uid from SalesReturnHeader where RefUID=" + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) +
                     " AND RetailerID=" +
                     AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
                     " AND upload='N'";
@@ -326,7 +328,6 @@ public class SalesReturnDeliveryHelper {
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {
                     String uid = c.getString(0);
-                    srUserId = c.getInt(1);
                     db.deleteSQL(DataMembers.tbl_SalesReturnHeader, "uid="
                             + DatabaseUtils.sqlEscapeString(uid), false);
                     db.deleteSQL(DataMembers.tbl_SalesReturnDetails, "uid="
@@ -514,7 +515,7 @@ public class SalesReturnDeliveryHelper {
 
             if (isData) {
                 // Preapre and save salesreturn header.
-                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,CollectStatus";
+                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,CollectStatus,invoiceid";
 
                 values = AppUtils.QT(uid) + ","
                         + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
@@ -534,7 +535,8 @@ public class SalesReturnDeliveryHelper {
                         + AppUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
                         + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + ","
                         + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) + ","
-                        + AppUtils.QT("F");
+                        + AppUtils.QT("F") + ","
+                        + AppUtils.QT(invoiceID);
 
                 db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
@@ -607,5 +609,27 @@ public class SalesReturnDeliveryHelper {
                 return true;
         }
         return false;
+    }
+
+
+    private String[] getUserIdAndInvId(DBUtil db, BusinessModel businessModel) {
+        try {
+            String[] iD = new String[2];
+            String query = "select UserID,invoiceid from SalesReturnHeader" +
+                    " Where RetailerID=" + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
+                    " AND Upload = 'X'";
+            Cursor c = db.selectSQL(query);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    iD[0] = c.getString(0);
+                    iD[1] = c.getString(1);
+                }
+            }
+            c.close();
+            return iD;
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return null;
     }
 }

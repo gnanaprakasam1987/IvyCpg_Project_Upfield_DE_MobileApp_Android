@@ -404,7 +404,8 @@ public class DeliveryManagementHelper {
         for (ProductMasterBO productMasterBO : mInvoiceDetailsList) {
 
             int pieceQty = 0, caseQty = 0, outerQty = 0;
-            if (status.equalsIgnoreCase("R")) {
+            if (bmodel.configurationMasterHelper.IS_SR_DELIVERY_REJECT
+                    && status.equalsIgnoreCase("R")) {
                 pieceQty = productMasterBO.getOrderedPcsQty();
                 caseQty = productMasterBO.getOrderedCaseQty();
                 outerQty = productMasterBO.getOrderedOuterQty();
@@ -498,7 +499,7 @@ public class DeliveryManagementHelper {
                     + bmodel.retailerMasterBO.getDistParentId() + ","
                     + AppUtils.QT("") + ","
                     + AppUtils.QT("") + ","
-                    + 1 + ",";// 1 means Indicative, 0 means normal
+                    + 1;// 1 means Indicative, 0 means normal
 
             values = values + "," + AppUtils.QT("") + ","
                     + AppUtils.QT("") + ","
