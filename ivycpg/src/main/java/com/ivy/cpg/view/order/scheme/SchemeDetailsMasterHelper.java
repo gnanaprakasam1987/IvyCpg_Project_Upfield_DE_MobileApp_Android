@@ -712,7 +712,9 @@ public class SchemeDetailsMasterHelper {
 
                     //updating stock for free products
                     if (bModel.productHelper.getProductMasterBOById(productBO.getProductId()) != null) {
+                        if(!bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE)
                         productBO.setStock(bModel.productHelper.getProductMasterBOById(productBO.getProductId()).getSIH());
+                        else productBO.setStock(bModel.productHelper.getProductMasterBOById(productBO.getProductId()).getFreeSIH());
                     }
 
                     schemeBO.getFreeProducts().add(productBO);
@@ -2684,10 +2686,15 @@ public class SchemeDetailsMasterHelper {
                                     productMasterBO = mProductMasterBOById.get(schemePdtBO.getProductId());
 
                                     if (productMasterBO != null) {
-                                        stock = productMasterBO.getSIH()
-                                                - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
-                                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
-                                                .getOutersize()) + productMasterBO.getOrderedPcsQty());
+                                        if(bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE){
+                                            stock = productMasterBO.getFreeSIH();
+                                        }
+                                        else {
+                                            stock = productMasterBO.getSIH()
+                                                    - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                                    + (productMasterBO.getOrderedOuterQty() * productMasterBO
+                                                    .getOutersize()) + productMasterBO.getOrderedPcsQty());
+                                        }
                                     }
 
                                     schemePdtBO.setQuantitySelected(0);
@@ -2744,10 +2751,16 @@ public class SchemeDetailsMasterHelper {
                 ProductMasterBO productMasterBO = mProductMasterBOById.get(schemeProductBO.getProductId());
 
                 if (productMasterBO != null) {
-                    int stock = productMasterBO.getSIH()
-                            - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
-                            + (productMasterBO.getOrderedOuterQty() * productMasterBO
-                            .getOutersize()) + productMasterBO.getOrderedPcsQty());
+                    int stock;
+                    if(bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE){
+                        stock = productMasterBO.getFreeSIH();
+                    }
+                    else {
+                        stock = productMasterBO.getSIH()
+                                - ((productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
+                                + (productMasterBO.getOrderedOuterQty() * productMasterBO
+                                .getOutersize()) + productMasterBO.getOrderedPcsQty());
+                    }
                     if (stock > 0)
                         schemeProductBO.setStock(stock);
                     else schemeProductBO.setStock(0);
@@ -2778,8 +2791,13 @@ public class SchemeDetailsMasterHelper {
                     ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
                     if (productBO != null) {
 
-                        int totalQty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
-                        stock = productBO.getSIH() - totalQty;
+                        if(bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE){
+                            stock = productBO.getFreeSIH();
+                        }
+                        else {
+                            int totalQty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                            stock = productBO.getSIH() - totalQty;
+                        }
 
                         int freeProductQty = 0;
                         if (schemeProductBO.getUomID() == productBO.getPcUomid() || schemeProductBO.getUomID() == 0) {
@@ -3564,10 +3582,19 @@ public class SchemeDetailsMasterHelper {
                                     totalFreeQty = schemeProductBO
                                             .getQuantitySelected();
                                 }
-                                int s = productBO.getSIH() > totalFreeQty ? productBO
-                                        .getSIH() - totalFreeQty
-                                        : 0;
-                                productBO.setSIH(s);
+
+                                if(bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE){
+                                    int s = productBO.getFreeSIH() > totalFreeQty ? productBO
+                                            .getFreeSIH() - totalFreeQty
+                                            : 0;
+                                    productBO.setFreeSIH(s);
+                                }
+                                else {
+                                    int s = productBO.getSIH() > totalFreeQty ? productBO
+                                            .getSIH() - totalFreeQty
+                                            : 0;
+                                    productBO.setSIH(s);
+                                }
                                 db.executeQ("update productmaster set sih=(case when  ifnull(sih,0)>"
                                         + totalFreeQty
                                         + " then ifnull(sih,0)-"
@@ -3580,7 +3607,11 @@ public class SchemeDetailsMasterHelper {
                                             schemeProductBO, db);
                                 } else {
 
-                                    db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
+                                    String stockTable="StockInHandMaster";
+                                    if(bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE)
+                                        stockTable="FreeStockInHandMaster";
+
+                                    db.executeQ("update "+stockTable+" set upload='N',qty=(case when  ifnull(qty,0)>"
                                             + totalFreeQty
                                             + " then ifnull(qty,0)-"
                                             + totalFreeQty
@@ -3632,10 +3663,19 @@ public class SchemeDetailsMasterHelper {
                                     totalFreeQty = schemeProductBO
                                             .getQuantitySelected();
                                 }
-                                int s = productBO.getSIH() > totalFreeQty ? productBO
-                                        .getSIH() - totalFreeQty
-                                        : 0;
-                                productBO.setSIH(s);
+                                if(bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE){
+                                    int s = productBO.getFreeSIH() > totalFreeQty ? productBO
+                                            .getFreeSIH() - totalFreeQty
+                                            : 0;
+                                    productBO.setFreeSIH(s);
+                                }
+                                else {
+                                    int s = productBO.getSIH() > totalFreeQty ? productBO
+                                            .getSIH() - totalFreeQty
+                                            : 0;
+                                    productBO.setSIH(s);
+                                }
+
                                 db.executeQ("update productmaster set sih=(case when  ifnull(sih,0)>"
                                         + totalFreeQty
                                         + " then ifnull(sih,0)-"
@@ -3648,7 +3688,11 @@ public class SchemeDetailsMasterHelper {
                                             schemeProductBO, db);
                                 } else {
 
-                                    db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
+                                    String stockTable="StockInHandMaster";
+                                    if(bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE)
+                                        stockTable="FreeStockInHandMaster";
+
+                                    db.executeQ("update "+stockTable+" set upload='N',qty=(case when  ifnull(qty,0)>"
                                             + totalFreeQty
                                             + " then ifnull(qty,0)-"
                                             + totalFreeQty

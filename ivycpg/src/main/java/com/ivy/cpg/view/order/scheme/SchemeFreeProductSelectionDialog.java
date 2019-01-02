@@ -267,7 +267,12 @@ public class SchemeFreeProductSelectionDialog extends Dialog implements View.OnC
                                     // This condition is used if same product is ordered and also it is in scheme free product.
                                     //getting total stock available to give free
                                     //total ordered qty is reduced in SIH
-                                     stock = productBO.getSIH() - totalQty;
+                                    if(bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE){
+                                        stock = productBO.getFreeSIH() - totalQty;
+                                    }
+                                    else {
+                                        stock = productBO.getSIH() - totalQty;
+                                    }
 
 
                                 }
