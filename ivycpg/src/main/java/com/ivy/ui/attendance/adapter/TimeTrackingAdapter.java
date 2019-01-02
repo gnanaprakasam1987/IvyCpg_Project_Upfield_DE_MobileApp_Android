@@ -9,14 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ivy.cpg.view.attendance.inout.TimeTrackingFragment;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -24,15 +22,17 @@ import java.util.StringTokenizer;
 /**
  * Created by mansoor on 27/12/2018
  */
-class TimeTrackingAdapter extends ArrayAdapter<NonFieldTwoBo> {
+public class TimeTrackingAdapter extends ArrayAdapter<NonFieldTwoBo> {
     private ArrayList<NonFieldTwoBo> nonFieldTwoBos;
     private Context context;
     private ConfigurationMasterHelper configurationMasterHelper;
+    private TimeTrackListClickListener timeTrackListClickListener;
 
-    public TimeTrackingAdapter(Context context, ArrayList<NonFieldTwoBo> nonFieldTwoBos, ConfigurationMasterHelper configurationMasterHelper) {
+    public TimeTrackingAdapter(Context context, ArrayList<NonFieldTwoBo> nonFieldTwoBos, TimeTrackListClickListener timeTrackListClickListener) {
         super(context, R.layout.row_nonfield_two, nonFieldTwoBos);
         this.nonFieldTwoBos = nonFieldTwoBos;
         this.context = context;
+        this.timeTrackListClickListener = timeTrackListClickListener;
         configurationMasterHelper = ((BusinessModel) context.getApplicationContext()).getComponent().configurationMasterHelper();
 
     }
@@ -134,12 +134,8 @@ class TimeTrackingAdapter extends ArrayAdapter<NonFieldTwoBo> {
         holder.btInTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (startLocationService(holder.nonFieldTwoBO.getReason())) {
-                    holder.nonFieldTwoBO.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                    attendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO, getActivity());
 
-                    loadNonFieldTwoDetails();
-                }
+                timeTrackListClickListener.onInTimeClick(position);
             }
         });
 
@@ -147,17 +143,12 @@ class TimeTrackingAdapter extends ArrayAdapter<NonFieldTwoBo> {
             @Override
             public void onClick(View v) {
 
-                holder.nonFieldTwoBO.setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                attendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO, getActivity());
-                loadNonFieldTwoDetails();
-
-                stopLocationService(holder.nonFieldTwoBO.getReason());
+                timeTrackListClickListener.onOutTimeClick(position);
 
             }
         });
 
-        holder.tvReason.setText(attendanceHelper
-                .getReasonName(holder.nonFieldTwoBO.getReason(), getActivity()));
+        holder.tvReason.setText(holder.nonFieldTwoBO.getReasonText());
 
         holder.tvRemarks.setText(context.getResources().getString(R.string.remark_hint) + ":" + holder.nonFieldTwoBO.getRemarks());
 

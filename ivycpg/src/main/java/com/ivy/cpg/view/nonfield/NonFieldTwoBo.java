@@ -98,4 +98,14 @@ public class NonFieldTwoBo {
     }
 
     private String ReasonID;
+
+    private String ReasonText;
+
+    public String getReasonText() {
+        return ReasonText;
+    }
+
+    public void setReasonText(String reasonText) {
+        ReasonText = reasonText;
+    }
 }

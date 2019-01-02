@@ -1,17 +1,13 @@
 package com.ivy.ui.attendance.data;
 
-import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.core.data.app.AppDataProvider;
-import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.provider.UserMasterHelper;
-import com.ivy.ui.profile.edit.di.Profile;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
@@ -20,6 +16,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 /**
  * Created by mansoor on 27/12/2018
@@ -76,6 +73,7 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
                                 timeTrackBo.setStatus(context.getResources().getString(R.string.in_partial));
                             }*/
                             timeTrackBo.setReason(c.getString(6));
+                            timeTrackBo.setReasonText(getReasonName(c.getString(6)));
                             timeTrackList.add(timeTrackBo);
 
                         }
@@ -91,6 +89,78 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
             }
         });
     }
+
+    private String getReasonName(String id) {
+        try {
+
+            initDb();
+            Cursor c = mDbUtil.selectSQL("SELECT ListName FROM StandardListMaster"
+                    + " WHERE ListId = " + id);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    return c.getString(0);
+                }
+                c.close();
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        shutDownDb();
+        return "";
+    }
+
+    /**
+     * This Method checks the given Id is Working status
+     *
+     * @param id StandardListMaster ListId
+     * @return returns boolean
+     */
+    public boolean isWorkingStatus(int id) {
+
+        boolean isIdWorking = false;
+        try {
+            initDb();
+
+            Cursor c = mDbUtil.selectSQL("select Listid from StandardListMaster where ListCode='WORKING' and ListId = '" + id + "'");
+            if (c != null && c.getCount() > 0) {
+                c.close();
+                isIdWorking = true;
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        shutDownDb();
+        return isIdWorking;
+    }
+
+    @Override
+    public Single<Boolean> updateTimeTrackDetailsDb(NonFieldTwoBo nonFieldTwoBo) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    initDb();
+
+                    String updateSql = "update AttendanceTimeDetails " +
+                            "SET intime = " + AppUtils.QT(nonFieldTwoBo.getInTime()) +
+                            " , outtime = " + AppUtils.QT(nonFieldTwoBo.getOutTime()) +
+                            ", upload ='N'" +
+                            " WHERE rowid = " + nonFieldTwoBo.getRowid();
+
+                    mDbUtil.updateSQL(updateSql);
+
+                    shutDownDb();
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                shutDownDb();
+                return true;
+            }
+        });
+    }
+
 
     @Override
     public void tearDown() {

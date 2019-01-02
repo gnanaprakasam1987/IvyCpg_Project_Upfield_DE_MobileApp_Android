@@ -14,11 +14,27 @@ public interface TimeTrackingContract {
 
     interface  TimeTrackingView extends BaseIvyView{
         void populateDataToList(ArrayList<NonFieldTwoBo> timeTrackList);
+
+        boolean updateRealTimeIn();
+
+        boolean updateRealTimeOut();
+
+        void uploadAttendance(String IN_OUT, String reasonId );
     }
 
     @PerActivity
     interface  TimeTrackingPresenter<V extends TimeTrackingView> extends BaseIvyPresenter<V>{
         void fetchData();
+
+        boolean checkConfigandWorkStatus(int reasonId);
+
+        boolean startLocationService(String reasonId);
+
+        boolean stopLocationService(String reasonId);
+
+        void updateTimeTrackDetails(NonFieldTwoBo nonFieldTwoBo);
+
+
 
     }
 }
