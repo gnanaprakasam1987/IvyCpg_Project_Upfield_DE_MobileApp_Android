@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +18,6 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -65,7 +66,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == 0) {
             return new DashBoardListViewHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.view_seller_dashboard_list_row, parent, false));
@@ -78,7 +79,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         final int current_position = position;
         final DashBoardBO dashboardData = dashboardList.get(current_position);
@@ -87,12 +88,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             DashBoardListViewHolder dashBoardListViewHolder = (DashBoardListViewHolder) holder;
             dashBoardListViewHolder.factorNameTxtView.setText(dashboardData.getText());
-            dashBoardListViewHolder.factorNameTxtView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dashboardClickListener.onFactorNameClick(current_position);
-                }
-            });
+            dashBoardListViewHolder.factorNameTxtView.setOnClickListener(view -> dashboardClickListener.onFactorNameClick(current_position));
 
 
             if (dashboardData.getSubDataCount() > 0) {
@@ -104,27 +100,22 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.half_Black)), 0,
                         str.length(), 0);
                 dashBoardListViewHolder.skuWiseTxtView.setText(str);
-                dashBoardListViewHolder.skuWiseTxtView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dashboardClickListener.onSkuWiseClick(current_position);
-                    }
-                });
+                dashBoardListViewHolder.skuWiseTxtView.setOnClickListener(view -> dashboardClickListener.onSkuWiseClick(current_position));
             } else {
                 dashBoardListViewHolder.skuGroup.setVisibility(View.GONE);
             }
 
 
             if (dashboardData.getFlex1() == 1) {
-                dashBoardListViewHolder.acheivedTxtView.setText(SDUtil.getWholeNumber(dashboardData.getKpiAcheived()));
+                dashBoardListViewHolder.achievedTxtView.setText(SDUtil.getWholeNumber(dashboardData.getKpiAcheived()));
                 dashBoardListViewHolder.targetTxtView.setText(SDUtil.getWholeNumber(dashboardData.getKpiTarget()));
                 double balanceValue = SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived());
                 dashBoardListViewHolder.balanceTxtView.setText(balanceValue > 0 ? SDUtil.getWholeNumber(getFormattedString(balanceValue)) : "0");
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
-                float temp_ach = 0;
+                float tempAch = 0;
                 if (Float.parseFloat(dashboardData.getKpiTarget()) > 0)
-                    temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
-                if (temp_ach > 0) {
+                    tempAch = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                if (tempAch > 0) {
                     int bonus = Math.round(SDUtil.convertToFloat(dashboardData.getKpiAcheived()) /
                             (SDUtil.convertToFloat(dashboardData.getKpiTarget())) * 100);
                     dashBoardListViewHolder.indexTxtView.setText(SDUtil.roundIt(bonus, 1) + "%");
@@ -137,17 +128,17 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 try {
                     String strKpiAchieved = getFormattedString(SDUtil.convertToDouble(dashboardData.getKpiAcheived()));
-                    dashBoardListViewHolder.acheivedTxtView.setText(strKpiAchieved);
+                    dashBoardListViewHolder.achievedTxtView.setText(strKpiAchieved);
                     String strKpiTarget = getFormattedString(SDUtil.convertToDouble(dashboardData.getKpiTarget()));
                     dashBoardListViewHolder.targetTxtView.setText(strKpiTarget);
                 } catch (Exception e) {
                     Commons.printException(e + "");
                 }
                 String strCalcPercentage = dashboardData.getCalculatedPercentage() + "%";
-                float temp_ach = 0;
+                float tempAch = 0;
                 if (Float.parseFloat(dashboardData.getKpiTarget()) > 0)
-                    temp_ach = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
-                if (temp_ach > 0) {
+                    tempAch = Float.parseFloat(dashboardData.getKpiAcheived()) - Float.parseFloat(dashboardData.getKpiTarget());
+                if (tempAch > 0) {
                     int bonus = Math.round(SDUtil.convertToFloat(dashboardData.getKpiAcheived()) /
                             (SDUtil.convertToFloat(dashboardData.getKpiTarget())) * 100);
                     dashBoardListViewHolder.incentiveTxtView.setText(SDUtil.roundIt(bonus, 1) + "%");
@@ -160,7 +151,6 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 dashBoardListViewHolder.incentiveTxtView.setText(getFormattedString(SDUtil.convertToDouble(dashboardData.getKpiIncentive() + "")));
                 String strKpiScore = dashboardData.getKpiScore() + "";
                 dashBoardListViewHolder.scoreTxtView.setText(strKpiScore);
-                //isSemiCircleChartRequired = true;
             }
 
             if (!configurationMasterHelper.IS_SMP_BASED_DASH) {
@@ -191,7 +181,6 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 l.setDrawInside(false);
                 l.setEnabled(false);
 
-                //if (isSemiCircleChartRequired) {
                 setOffset(dashBoardListViewHolder.pieChart);
                 dashBoardListViewHolder.pieChart.setHoleColor(Color.TRANSPARENT);
                 dashBoardListViewHolder.pieChart.setHoleRadius(50f);
@@ -201,9 +190,8 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 // entry label styling
                 dashBoardListViewHolder.pieChart.setEntryLabelColor(Color.TRANSPARENT);
                 dashBoardListViewHolder.pieChart.setEntryLabelTextSize(0f);
-                //}
 
-                ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+                ArrayList<PieEntry> entries = new ArrayList<>();
 
                 double balanceValue = SDUtil.convertToInt(dashboardData.getKpiTarget()) - SDUtil.convertToInt(dashboardData.getKpiAcheived());
                 entries.add(new PieEntry(SDUtil.convertToFloat(dashboardData.getKpiAcheived())));
@@ -237,12 +225,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             dashBoardListViewHolder.factorNameTxtView.setText(dashboardData.getText());
 
-            dashBoardListViewHolder.factorNameTxtView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dashboardClickListener.onFactorNameClick(current_position);
-                }
-            });
+            dashBoardListViewHolder.factorNameTxtView.setOnClickListener(view -> dashboardClickListener.onFactorNameClick(current_position));
 
             if (dashboardData.getSubDataCount() > 0) {
                 dashBoardListViewHolder.skuWiseTxtView.setVisibility(View.VISIBLE);
@@ -253,19 +236,14 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 str.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.half_Black)), 0,
                         str.length(), 0);
                 dashBoardListViewHolder.skuWiseTxtView.setText(str);
-                dashBoardListViewHolder.skuWiseTxtView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dashboardClickListener.onSkuWiseClick(current_position);
-                    }
-                });
+                dashBoardListViewHolder.skuWiseTxtView.setOnClickListener(view -> dashboardClickListener.onSkuWiseClick(current_position));
             } else {
                 dashBoardListViewHolder.skuWiseTxtView.setVisibility(View.GONE);
             }
 
             if (dashboardData.getFlex1() == 1) {
                 dashBoardListViewHolder.acheivedTxtView.setText(SDUtil.getWholeNumber(dashboardData.getKpiAcheived()));
-            }else {
+            } else {
                 String strKpiAchieved = getFormattedString(SDUtil.convertToDouble(dashboardData.getKpiAcheived()));
                 dashBoardListViewHolder.acheivedTxtView.setText(strKpiAchieved);
             }
@@ -289,8 +267,8 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         int offset = (int) (height * 0.20); /* percent to move */
 
-        RelativeLayout.LayoutParams rlParams =
-                (RelativeLayout.LayoutParams) mChart.getLayoutParams();
+        ConstraintLayout.LayoutParams rlParams =
+                (ConstraintLayout.LayoutParams) mChart.getLayoutParams();
         rlParams.setMargins(0, 10, 0, -offset);
         mChart.setLayoutParams(rlParams);
     }
@@ -311,13 +289,13 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         return dashboardList.size();
     }
 
-    public class MinDashBoardListViewHolder extends RecyclerView.ViewHolder {
+    class MinDashBoardListViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.factorName_dashboard_tv)
         TextView factorNameTxtView;
 
         @BindView(R.id.achived_title)
-        TextView achived_title;
+        TextView achivedTitle;
 
         @BindView(R.id.acheived_dashboard_tv)
         TextView acheivedTxtView;
@@ -329,7 +307,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         TextView skuWiseTxtView;
 
 
-        public MinDashBoardListViewHolder(View itemView) {
+        MinDashBoardListViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -337,51 +315,51 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 achievedGroup.setVisibility(View.GONE);
             } else {
                 achievedGroup.setVisibility(View.VISIBLE);
-                if (labelsMap.containsKey(achived_title.getTag().toString()))
-                    achived_title.setText(labelsMap.get(achived_title.getTag().toString()));
+                if (labelsMap.containsKey(achivedTitle.getTag().toString()))
+                    achivedTitle.setText(labelsMap.get(achivedTitle.getTag().toString()));
             }
 
         }
     }
 
 
-    public class DashBoardListViewHolder extends RecyclerView.ViewHolder {
+    class DashBoardListViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.factorName_dashboard_tv)
         TextView factorNameTxtView;
 
         @BindView(R.id.incentive_title)
-        TextView incentive_title;
+        TextView incentiveTitle;
 
         @BindView(R.id.initiative_dashboard_tv)
         TextView incentiveTxtView;
 
         @BindView(R.id.score_title)
-        TextView score_title;
+        TextView scoreTitle;
 
         @BindView(R.id.score_dashboard_tv)
         TextView scoreTxtView;
 
         @BindView(R.id.achived_title)
-        TextView achived_title;
+        TextView achievedTitle;
 
         @BindView(R.id.acheived_dashboard_tv)
-        TextView acheivedTxtView;
+        TextView achievedTxtView;
 
         @BindView(R.id.balance_title)
-        TextView balance_title;
+        TextView balanceTitle;
 
         @BindView(R.id.balance_dashboard_tv)
         TextView balanceTxtView;
 
         @BindView(R.id.flex_title)
-        TextView flex_title;
+        TextView flexTitle;
 
         @BindView(R.id.flex_dashboard_tv)
         TextView flexTxtView;
 
         @BindView(R.id.target_title)
-        TextView target_title;
+        TextView targetTitle;
 
         @BindView(R.id.target_dashboard_tv)
         TextView targetTxtView;
@@ -419,7 +397,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         @BindView(R.id.incentiveGroup)
         Group incentiveGroup;
 
-        public DashBoardListViewHolder(View itemView) {
+        DashBoardListViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -427,12 +405,12 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 indexTxtView.setVisibility(View.GONE);
             }
 
-            if (configurationMasterHelper.SHOW_TARGET_DASH) {
+            if (!configurationMasterHelper.SHOW_TARGET_DASH) {
                 targetGroup.setVisibility(View.GONE);
             } else {
                 targetGroup.setVisibility(View.VISIBLE);
-                if (labelsMap.containsKey(target_title.getTag().toString())) {
-                    target_title.setText(labelsMap.get(target_title.getTag().toString()));
+                if (labelsMap.containsKey(targetTitle.getTag().toString())) {
+                    targetTitle.setText(labelsMap.get(targetTitle.getTag().toString()));
                 }
             }
 
@@ -440,32 +418,32 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 achievedGroup.setVisibility(View.GONE);
             } else {
                 achievedGroup.setVisibility(View.VISIBLE);
-                if (labelsMap.containsKey(achived_title.getTag().toString()))
-                    achived_title.setText(labelsMap.get(achived_title.getTag().toString()));
+                if (labelsMap.containsKey(achievedTitle.getTag().toString()))
+                    achievedTitle.setText(labelsMap.get(achievedTitle.getTag().toString()));
             }
 
             if (!configurationMasterHelper.SHOW_INCENTIVE_DASH) {
                 incentiveGroup.setVisibility(View.GONE);
             } else {
                 incentiveGroup.setVisibility(View.VISIBLE);
-                if (labelsMap.containsKey(incentive_title.getTag().toString()))
-                    incentive_title.setText(labelsMap.get(incentive_title.getTag().toString()));
+                if (labelsMap.containsKey(incentiveTitle.getTag().toString()))
+                    incentiveTitle.setText(labelsMap.get(incentiveTitle.getTag().toString()));
             }
 
             if (!configurationMasterHelper.SHOW_FLEX_DASH) {
                 flexGroup.setVisibility(View.GONE);
             } else {
                 flexGroup.setVisibility(View.VISIBLE);
-                if (labelsMap.containsKey(flex_title.getTag().toString()))
-                    flex_title.setText(labelsMap.get(flex_title.getTag().toString()));
+                if (labelsMap.containsKey(flexTitle.getTag().toString()))
+                    flexTitle.setText(labelsMap.get(flexTitle.getTag().toString()));
             }
 
             if (!configurationMasterHelper.SHOW_BALANCE_DASH) {
                 balanceGroup.setVisibility(View.GONE);
             } else {
                 balanceGroup.setVisibility(View.VISIBLE);
-                if (labelsMap.containsKey(balance_title.getTag().toString()))
-                    balance_title.setText(labelsMap.get(balance_title.getTag().toString()));
+                if (labelsMap.containsKey(balanceTitle.getTag().toString()))
+                    balanceTitle.setText(labelsMap.get(balanceTitle.getTag().toString()));
             }
 
 
@@ -473,8 +451,8 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 scoreGroup.setVisibility(View.GONE);
             } else {
                 scoreGroup.setVisibility(View.VISIBLE);
-                if (labelsMap.containsKey(score_title.getTag().toString()))
-                    score_title.setText(labelsMap.get(score_title.getTag().toString()));
+                if (labelsMap.containsKey(scoreTitle.getTag().toString()))
+                    scoreTitle.setText(labelsMap.get(scoreTitle.getTag().toString()));
             }
 
             if (configurationMasterHelper.IS_SMP_BASED_DASH) {
@@ -484,4 +462,5 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
     }
+
 }

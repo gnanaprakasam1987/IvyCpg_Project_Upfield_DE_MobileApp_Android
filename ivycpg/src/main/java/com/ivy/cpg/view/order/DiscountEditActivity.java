@@ -357,14 +357,14 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
                     ArrayList<ProductMasterBO> batchList = bmodel.batchAllocationHelper.getBatchlistByProductID().get(ret.getProductID());
                     if (batchList != null) {
                         for (ProductMasterBO batchProductBO : batchList) {
-                            batchProductBO.setNetValue(batchProductBO.getNetValue() + batchProductBO.getApplyValue());
+                            batchProductBO.setLineValueAfterSchemeApplied(batchProductBO.getLineValueAfterSchemeApplied() + batchProductBO.getApplyValue());
                         }
                     }
 
                 } else {
-                    ret.setNetValue(ret.getNetValue() + ret.getApplyValue());
+                    ret.setLineValueAfterSchemeApplied(ret.getLineValueAfterSchemeApplied() + ret.getApplyValue());
                 }
-                totalOrderValue = totalOrderValue + ret.getNetValue();
+                totalOrderValue = totalOrderValue + ret.getLineValueAfterSchemeApplied();
 
                 if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
                     if (ret.getGroupid() == 0 && !ret.isCbsihAvailable()) {
@@ -809,12 +809,12 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
         productBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(totalQty * amount));
         double total = 0;
         if (bmodel.configurationMasterHelper.IS_DISCOUNT_PRICE_PER) {
-            if (productBO.getApplyValue() > productBO.getNetValue() * (bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER / 100))
+            if (productBO.getApplyValue() > productBO.getLineValueAfterSchemeApplied() * (bmodel.configurationMasterHelper.DISCOUNT_PRICE_PER / 100))
                 total = -1;//to avoid entering greater than given percentage value
             else
-                total = productBO.getNetValue() - productBO.getApplyValue();
+                total = productBO.getLineValueAfterSchemeApplied() - productBO.getApplyValue();
         } else {
-            total = productBO.getNetValue() - productBO.getApplyValue();
+            total = productBO.getLineValueAfterSchemeApplied() - productBO.getApplyValue();
         }
 
         updateDiscountedOrderValue();
@@ -837,10 +837,10 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
         }
         /* apply batchwise discount ends */
 
-        double line_total_price = productBO.getNetValue();
+        double line_total_price = productBO.getLineValueAfterSchemeApplied();
         productBO.setApplyValue(SDUtil.formatAsPerCalculationConfig(line_total_price * sum / 100));
 
-        double total = productBO.getNetValue() - productBO.getApplyValue();
+        double total = productBO.getLineValueAfterSchemeApplied() - productBO.getApplyValue();
 
 //		productBO.setNetValue(total);
 
@@ -870,11 +870,11 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
                                     + productBO.getOrderedOuterQty()
                                     * productBO.getOutersize();
                             if (totalQty > 0)
-                                totalProductValue = totalProductValue + (productBO.getNetValue() - productBO.getApplyValue());
+                                totalProductValue = totalProductValue + (productBO.getLineValueAfterSchemeApplied() - productBO.getApplyValue());
                         }
                     }
                 } else {
-                    totalProductValue = ret.getNetValue() - ret.getApplyValue();
+                    totalProductValue = ret.getLineValueAfterSchemeApplied() - ret.getApplyValue();
                 }
 
                 value = value + totalProductValue;

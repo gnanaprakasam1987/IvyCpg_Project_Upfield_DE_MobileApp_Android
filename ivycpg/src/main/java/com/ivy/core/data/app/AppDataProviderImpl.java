@@ -2,11 +2,14 @@ package com.ivy.core.data.app;
 
 import android.content.Context;
 
+import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -39,6 +42,10 @@ public class AppDataProviderImpl implements AppDataProvider {
 
 
     private BeatMasterBO todayBeatMaster;
+
+    private ArrayList<RetailerMasterBO> retailerMasterList;
+
+    private ArrayList<RetailerMasterBO> subDMasterList;
 
     @Override
     public void setInTime(String inTime) {
@@ -131,7 +138,7 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public void setGlobalLocationIndex(int locationIndex) {
         //TODO to be removed post refactoring
-        mContext.codeCleanUpUtil.setGlobalLocationId(locationIndex);
+        mContext.codeCleanUpUtil.setBmodelGlobalLocationId(locationIndex);
 
         this.globalLocationIndex = locationIndex;
     }
@@ -149,7 +156,7 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public void setTodayBeatMaster(BeatMasterBO beatMaster) {
 
-        mContext.codeCleanUpUtil.setTodayBeatMaster(beatMaster);
+        mContext.codeCleanUpUtil.setBModelTodayBeatMaster(beatMaster);
 
         this.todayBeatMaster = beatMaster;
     }
@@ -163,5 +170,39 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public BeatMasterBO getBeatMasterBo() {
         return todayBeatMaster;
+    }
+
+    @Override
+    public void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters) {
+
+        this.retailerMasterList=retailerMasters;
+        mContext.codeCleanUpUtil.setBmodelRetailerMaster(retailerMasters);
+    }
+
+    @Override
+    public void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters, boolean isFromBModel) {
+
+        this.retailerMasterList=retailerMasters;
+    }
+
+    @Override
+    public ArrayList<RetailerMasterBO> getRetailerMasters() {
+        return retailerMasterList;
+    }
+
+    @Override
+    public void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList) {
+        mContext.codeCleanUpUtil.setBmodelSubDMaster(subDMasterList);
+        this.subDMasterList=subDMasterList;
+    }
+
+    @Override
+    public void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList, boolean isFromBModel) {
+        this.subDMasterList =subDMasterList;
+    }
+
+    @Override
+    public ArrayList<RetailerMasterBO> getSubDMasterList() {
+        return subDMasterList;
     }
 }

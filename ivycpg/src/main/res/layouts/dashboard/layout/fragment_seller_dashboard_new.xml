@@ -66,7 +66,9 @@
                 android:background="?mtdDashboardBackground"
                 android:paddingEnd="4dp"
                 android:paddingRight="4dp"
+                android:paddingStart="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginEnd="0dp"
@@ -74,7 +76,7 @@
 
                 <TextView
                     android:id="@+id/resultsHeaderTxt"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginEnd="30dp"
                     android:layout_marginLeft="@dimen/dash_margin"
@@ -90,82 +92,97 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ViewStub
+                <Spinner
                     android:id="@+id/distributorSpinner"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:inflatedId="@+id/distributorSpinner"
-                    android:layout="@layout/view_dashboard_spinner"
-                    android:visibility="visible"
+                    android:background="?mtdDashboardBackground"
+                    android:dropDownSelector="?dashboardSpinnerSelector"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/userSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/resultsHeaderTxt"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ViewStub
+                <Spinner
                     android:id="@+id/userSpinner"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:inflatedId="@+id/userSpinner"
-                    android:layout="@layout/view_dashboard_spinner"
+                    android:background="?mtdDashboardBackground"
+                    android:dropDownSelector="?dashboardSpinnerSelector"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/dashSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/distributorSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ViewStub
+                <Spinner
                     android:id="@+id/dashSpinner"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:inflatedId="@+id/dashSpinner"
-                    android:layout="@layout/view_dashboard_spinner"
+                    android:background="?mtdDashboardBackground"
+                    android:dropDownSelector="?dashboardSpinnerSelector"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/monthSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/userSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ViewStub
+                <Spinner
                     android:id="@+id/monthSpinner"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:inflatedId="@+id/monthSpinner"
-                    android:layout="@layout/view_dashboard_spinner"
+                    android:background="?mtdDashboardBackground"
+                    android:dropDownSelector="?dashboardSpinnerSelector"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/weekSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/dashSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ViewStub
+                <Spinner
                     android:id="@+id/weekSpinner"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout="@layout/view_dashboard_spinner"
+                    android:background="?mtdDashboardBackground"
+                    android:dropDownSelector="?dashboardSpinnerSelector"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/routeSpinner"
-                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toStartOf="@+id/barrier"
                     app:layout_constraintStart_toEndOf="@+id/monthSpinner"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ViewStub
+                <Spinner
                     android:id="@+id/routeSpinner"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:inflatedId="@+id/routeSpinner"
-                    android:layout="@layout/view_dashboard_spinner"
+                    android:background="?mtdDashboardBackground"
+                    android:dropDownSelector="?dashboardSpinnerSelector"
+                    android:gravity="center"
+                    android:overlapAnchor="false"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/weekSpinner"
+                    app:layout_constraintStart_toEndOf="@+id/barrier"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <android.support.constraint.Barrier
+                    android:id="@+id/barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="start"
+                    app:constraint_referenced_ids="routeSpinner" />
 
                 <android.support.constraint.Group
                     android:id="@+id/dashSpinnerGroup"
@@ -182,8 +199,8 @@
                 android:layout_marginEnd="@dimen/dash_margin"
                 android:layout_marginStart="@dimen/dash_margin"
                 android:background="?mtdDashboardBackground"
-                android:visibility="gone"
                 android:layout="@layout/view_multi_spinner"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/dashboardLv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

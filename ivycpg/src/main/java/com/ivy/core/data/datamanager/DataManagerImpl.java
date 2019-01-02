@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.ivy.core.data.app.AppDataProvider;
-import com.ivy.core.data.db.DbHelper;
+import com.ivy.core.data.db.AppDataManager;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.IndicativeBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -16,24 +18,26 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class DataManagerImpl implements DataManager {
 
 
     private SharedPreferenceHelper mSharedPreferenceHelper;
-    private DbHelper dbHelper;
+    private AppDataManager appDataManager;
     private AppDataProvider appDataProvider;
     private ConfigurationMasterHelper configurationMasterHelper;
     private Context mContext;
 
     @Inject
-    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, DbHelper dbHelper, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
+    public DataManagerImpl(@ApplicationContext Context context, SharedPreferenceHelper sharedPreferenceHelper, AppDataManager appDataManager, AppDataProvider appDataProvider, ConfigurationMasterHelper configurationMasterHelper) {
         this.mSharedPreferenceHelper = sharedPreferenceHelper;
-        this.dbHelper = dbHelper;
+        this.appDataManager = appDataManager;
         this.appDataProvider = appDataProvider;
         this.configurationMasterHelper = configurationMasterHelper;
         this.mContext = context;
@@ -81,27 +85,27 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public Single<String> getThemeColor() {
-        return dbHelper.getThemeColor();
+        return appDataManager.getThemeColor();
     }
 
     @Override
     public Single<String> getFontSize() {
-        return dbHelper.getFontSize();
+        return appDataManager.getFontSize();
     }
 
     @Override
     public Single<Double> getOrderValue() {
-        return dbHelper.getOrderValue();
+        return appDataManager.getOrderValue();
     }
 
     @Override
     public Single<Boolean> updateModuleTime(String moduleName) {
-        return dbHelper.updateModuleTime(moduleName);
+        return appDataManager.updateModuleTime(moduleName);
     }
 
     @Override
     public Single<Boolean> saveModuleCompletion(String menuName) {
-        return dbHelper.saveModuleCompletion(menuName);
+        return appDataManager.saveModuleCompletion(menuName);
     }
 
     @Override
@@ -205,6 +209,42 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters) {
+        appDataProvider.setRetailerMasters(retailerMasters);
+    }
+
+    @Override
+    public void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters, boolean isFromBModel) {
+        appDataProvider.setRetailerMasters(retailerMasters,isFromBModel);
+    }
+
+    @Override
+    public ArrayList<RetailerMasterBO> getRetailerMasters() {
+        return appDataProvider.getRetailerMasters();
+    }
+
+    @Override
+    public void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList) {
+        appDataProvider.setSubDMasterList(subDMasterList);
+    }
+
+    @Override
+    public void setSubDMasterList(ArrayList<RetailerMasterBO> subDMasterList, boolean isFromBModel) {
+        appDataProvider.setSubDMasterList(subDMasterList, isFromBModel);
+
+    }
+
+    @Override
+    public ArrayList<RetailerMasterBO> getSubDMasterList() {
+        return appDataProvider.getSubDMasterList();
+    }
+
+    @Override
+    public Observable<ArrayList<ConfigureBO>> fetchNewActivityMenu(String menuName) {
+        return appDataManager.fetchNewActivityMenu(menuName);
+    }
+
+    @Override
     public int getSavedImageCount() {
 
         int imageSize = 0;
@@ -240,7 +280,24 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public String getMenuName(String menuCode) {
+        String menuName = "";
+        try {
+
+            for (ConfigureBO configureBO : configurationMasterHelper.getConfig()) {
+                if (configureBO.getConfigCode().equals(menuCode)) {
+                    menuName = configureBO.getMenuName();
+                }
+
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return menuName;
+    }
+
+    @Override
     public void tearDown() {
-        dbHelper.tearDown();
+        appDataManager.tearDown();
     }
 }

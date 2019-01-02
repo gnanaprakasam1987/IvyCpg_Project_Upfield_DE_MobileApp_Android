@@ -14,6 +14,7 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -158,18 +159,18 @@ public class ProductHelper {
     }
 
     /**
-     * @return
-     * @See {@link AppDataProvider#getGlobalLocationIndex()}
      * @deprecated
+     * @See {@link AppDataProvider#getGlobalLocationIndex()}
+     * @return
      */
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
     }
 
     /**
-     * @param mSelectedGLobalLocationIndex
-     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
      * @deprecated
+     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
+     * @param mSelectedGLobalLocationIndex
      */
     public void setmSelectedGLobalLocationIndex(int mSelectedGLobalLocationIndex) {
         this.mSelectedGLobalLocationIndex = mSelectedGLobalLocationIndex;
@@ -232,6 +233,7 @@ public class ProductHelper {
         mTaggedProducts = null;
         mTaggedProductById = null;
         productMasterById = null;
+        mSelectedGlobalProductId = 0;
         System.gc();
     }
 
@@ -840,7 +842,7 @@ public class ProductHelper {
                 String query = "SELECT DISTINCT PM.PID, PM.PName,PM.ParentHierarchy,PM.PLid,PM.ParentId FROM ProductMaster PM "
                         + " WHERE PM.PLid in (" + pLIds + ") ";
 
-                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
+                if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && mSelectedGlobalProductId != 0)
                     query = query + " and PM.ParentHierarchy LIKE '%/' || " + mSelectedGlobalProductId + " || '/%'";
 
                 query = query + " Order By PM.RowId";
@@ -988,6 +990,7 @@ public class ProductHelper {
                     + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,F.ASRP as asrp,"
                     + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
+                    +   (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE?",FSH.qty as freeSIH":",0 as freeSIH")
                     + " from ProductMaster A";
 
             sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = " + bmodel.getRetailerMasterBO().getGroupId()
@@ -996,6 +999,7 @@ public class ProductHelper {
                     + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid=" + bmodel.getRetailerMasterBO().getChannelID()
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
+                    +  (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE?" LEFT JOIN FreeStockInHandMaster FSH ON FSH.pid=A.pid":"")
                     + " WHERE A.PLid IN(" + mContentLevelId + ") ";
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -1005,8 +1009,6 @@ public class ProductHelper {
                     sql = sql + " and A.pid in(" + pdQuery + ")";
                 }
             }
-            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
-                sql = sql + " and A.ParentHierarchy LIKE '%/' || " + mSelectedGlobalProductId + " || '/%'";
 
             sql = sql + " group by A.pid ORDER BY " + filter + " A.rowid";
 
@@ -1023,6 +1025,7 @@ public class ProductHelper {
                     product.setParentid(c.getInt(c.getColumnIndex("parentId")));
                     product.setSIH(c.getInt(c.getColumnIndex("sih")));
                     product.setDSIH(c.getInt(c.getColumnIndex("sih")));
+                    product.setFreeSIH(c.getInt(c.getColumnIndex("freeSIH")));
                     product.setProductShortName(c.getString(c.getColumnIndex("psname")));
                     product.setBarCode(c.getString(c.getColumnIndex("barcode")));
                     product.setVat(c.getFloat(c.getColumnIndex("vat")));
@@ -1911,7 +1914,7 @@ public class ProductHelper {
         return true;
     }
 
-    public boolean isMustSellFilledStockCheck(boolean isTaggedProducts) {
+    public boolean isMustSellFilledStockCheck(boolean isTaggedProducts,Context context) {
 
         boolean isSkuFilled = true;
 
@@ -1948,7 +1951,7 @@ public class ProductHelper {
                             break loop;
                         }
                     } else {
-                        if (product.getLocations().get(j).getAvailability() == 0 && bmodel.configurationMasterHelper.SHOW_STOCK_RSN && product.getLocations().get(j).getReasonId() == 0) {
+                        if (product.getLocations().get(j).getAvailability() == 0 && StockCheckHelper.getInstance(context).SHOW_STOCK_RSN && product.getLocations().get(j).getReasonId() == 0) {
                             isSkuFilled = false;
                             break loop;
                         } else {
@@ -4369,7 +4372,7 @@ public class ProductHelper {
         sb = new StringBuffer();
         sb.append("update invoiceMaster set schemeAmount=" + totSchemeAmountValue);
         sb.append(",discount=" + totDiscVaue + ",taxAmount=" + totTaxValue + ",priceoffAmount=" + totPriceOffValue);
-        sb.append(",invoiceAmount=" + bmodel.QT(bmodel.formatValue(totalInvoiceAmount)));
+        sb.append(",invoiceAmount=" + totalInvoiceAmount);
         sb.append(" where invoiceno=" + bmodel.QT(invoiceid));
         db.updateSQL(sb.toString());
 

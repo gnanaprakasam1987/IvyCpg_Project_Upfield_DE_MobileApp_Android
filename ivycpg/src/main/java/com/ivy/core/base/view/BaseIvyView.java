@@ -58,6 +58,8 @@ public interface BaseIvyView {
 
     void pauseNFCManager();
 
+    void setScreenTitle(String title);
+
 
 
 }

@@ -19,7 +19,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
@@ -662,7 +662,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_REPLACED_QTY_PC;
     public boolean SHOW_REPLACED_QTY_CS;
     public boolean SHOW_REPLACED_QTY_OU;
-    public boolean SHOW_STOCK_AVGDAYS;
 
     // Outer & case conversion
     public boolean CONVERT_STOCK_SIH_PS;
@@ -856,7 +855,6 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_END_JOURNEY;
     public boolean SHOW_RETAILER_SELECTION_VALID;
     public boolean SHOW_CLOSE_DAY_VALID;
-    public boolean SHOW_SHELF_OUTER;
     public boolean SHOW_ZEBRA_ATS;
     public boolean SHOW_INTERMEC_ATS;
     //public boolean SHOW_SRP_EDIT;
@@ -887,7 +885,6 @@ public class ConfigurationMasterHelper {
     public boolean HIDE_STOCK_APPLY_BUTTON;
     public boolean SHOW_UNIT_PRICE;
     // Added in 45 version
-    public boolean SHOW_STOCK_TOTAL;
     public boolean SHOW_GOLD_STORE_DISCOUNT;
     public boolean ISUPLOADUSERLOC = false;
     public boolean IS_SHOW_DROPSIZE = false;
@@ -1196,7 +1193,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN, SHOW_STOCK_NON_SALABLE, SHOW_STOCK_VAN_UNLOAD;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN, SHOW_STOCK_NON_SALABLE, SHOW_STOCK_VAN_UNLOAD,SHOW_FREE_STOCK_LOADED,SHOW_FREE_STOCK_IN_HAND;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -1537,6 +1534,8 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CHECK_DIGITAL_SIZE = "SYNC12";
     public long DIGITAL_CONTENT_SIZE = -1;
 
+    private static final String CODE_FREE_SIH_AVAILABLE = "FUN75";
+    public boolean IS_FREE_SIH_AVAILABLE;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2672,6 +2671,7 @@ public class ConfigurationMasterHelper {
         // Unload non salable product returns.
         this.SHOW_NON_SALABLE_UNLOAD = hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) != null ? hashMapHHTModuleConfig.get(CODE_NON_SALABLE_UNLOAD) : false;
         this.SHOW_GLOBAL_NO_ORDER_REASON = hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) != null ? hashMapHHTModuleConfig.get(CODE_GLOBAL_SHOW_NO_ORDER_REASON) : false;
+        this.IS_FREE_SIH_AVAILABLE = hashMapHHTModuleConfig.get(CODE_FREE_SIH_AVAILABLE) != null ? hashMapHHTModuleConfig.get(CODE_FREE_SIH_AVAILABLE) : false;
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
         this.IS_SR_DELIVERY_SKU_LEVEL = hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) : false;
@@ -2935,6 +2935,8 @@ public class ConfigurationMasterHelper {
     }
 
     /**
+     * @deprecated
+     * @See {@link com.ivy.core.data.db.AppDataManagerImpl#fetchNewActivityMenu(String)}
      * This method will download the Menu configured for this particular channel
      * type. This will also download the Menu Name,Number and hasLink attributes
      *
@@ -3861,8 +3863,6 @@ public class ConfigurationMasterHelper {
             SHOW_STOCK_CB = false;
             CHANGE_AVAL_FLOW = false;
             SHOW_STOCK_RSN = false;
-            SHOW_STOCK_TOTAL = false;
-            SHOW_SHELF_OUTER = false;
             SHOW_ORDER_CASE = false;
             SHOW_ORDER_PCS = false;
             SHOW_FOC = false;
@@ -3904,7 +3904,6 @@ public class ConfigurationMasterHelper {
             SHOW_REPLACED_QTY_PC = false;
             SHOW_REPLACED_QTY_CS = false;
             SHOW_REPLACED_QTY_OU = false;
-            SHOW_STOCK_AVGDAYS = false;
 
             SHOW_VANLOAD_OC = false;
             SHOW_VANLOAD_OO = false;
@@ -3967,34 +3966,24 @@ public class ConfigurationMasterHelper {
             if (codeValue != null) {
 
                 String codeSplit[] = codeValue.split(",");
-                for (String temp : codeSplit) {
-                    if (temp.equals("SP"))
-                        SHOW_STOCK_SP = true;
-                    else if (temp.equals("SC"))
-                        SHOW_STOCK_SC = true;
-                    else if (temp.equals("CB"))
-                        SHOW_STOCK_CB = true;
-                    else if (temp.equals("REASON"))
-                        SHOW_STOCK_RSN = true;
-                    else if (temp.equals("SHO"))
-                        SHOW_SHELF_OUTER = true;
-                    else if (temp.equals("TOTAL"))
-                        SHOW_STOCK_TOTAL = true;
-                    else if (temp.equals("REPPC"))
-                        SHOW_REPLACED_QTY_PC = true;
-                    else if (temp.equals("REPCS"))
-                        SHOW_REPLACED_QTY_CS = true;
-                    else if (temp.equals("REPOO"))
-                        SHOW_REPLACED_QTY_OU = true;
-                    else if (temp.equals("AVGDAYS"))
-                        SHOW_STOCK_AVGDAYS = true;
-                    else if (temp.equals("CSTK"))
-                        IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
-                    else if (temp.equals("SR"))
-                        SHOW_SALES_RETURN_IN_ORDER = true;
-                    else if (temp.equals("CB01"))
-                        CHANGE_AVAL_FLOW = true;
-                }
+                for (String temp : codeSplit)
+                    switch (temp) {
+                        case "REPPC":
+                            SHOW_REPLACED_QTY_PC = true;
+                            break;
+                        case "REPCS":
+                            SHOW_REPLACED_QTY_CS = true;
+                            break;
+                        case "REPOO":
+                            SHOW_REPLACED_QTY_OU = true;
+                            break;
+                        case "CSTK":
+                            IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
+                            break;
+                        case "SR":
+                            SHOW_SALES_RETURN_IN_ORDER = true;
+                            break;
+                    }
             }
 
 
@@ -4550,6 +4539,8 @@ public class ConfigurationMasterHelper {
         String CODE_STOCK_RETURN = "RET";
         String CODE_STOCK_NON_SALABLE = "NS";
         String CODE_STOCK_VAN_UNLOAD = "UL";
+        String CODE_STOCK_FREE_LOADED = "FSIHL";
+        String CODE_STOCK_FREE_SIH = "FSIH";
         SHOW_STOCK_NON_SALABLE = false;
         SHOW_STOCK_VAN_UNLOAD = false;
         SHOW_STOCK_REPLACE = false;
@@ -4558,6 +4549,9 @@ public class ConfigurationMasterHelper {
         SHOW_STOCK_FREE_ISSUED = false;
         SHOW_STOCK_NON_SALABLE = false;
         SHOW_STOCK_VAN_UNLOAD = false;
+        SHOW_FREE_STOCK_LOADED=false;
+        SHOW_FREE_STOCK_IN_HAND=false;
+
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
                 DataMembers.DB_PATH);
         try {
@@ -4592,6 +4586,10 @@ public class ConfigurationMasterHelper {
                             SHOW_STOCK_NON_SALABLE = true;
                         else if (temp.equals(CODE_STOCK_VAN_UNLOAD))
                             SHOW_STOCK_VAN_UNLOAD = true;
+                        else if (temp.equals(CODE_STOCK_FREE_LOADED))
+                            SHOW_FREE_STOCK_LOADED = true;
+                        else if (temp.equals(CODE_STOCK_FREE_SIH))
+                            SHOW_FREE_STOCK_IN_HAND = true;
                     }
                 }
 
@@ -6200,7 +6198,7 @@ public class ConfigurationMasterHelper {
         return title;
     }
 
-    public void getDigitalContentSize(){
+    public void getDigitalContentSize() {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -6215,7 +6213,7 @@ public class ConfigurationMasterHelper {
             }
 
             db.closeDB();
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
     }

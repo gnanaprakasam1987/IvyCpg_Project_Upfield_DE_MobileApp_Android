@@ -446,7 +446,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
 
 
-
+    @Override
     public void setScreenTitle(String title) {
         this.screenTitle = title;
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);

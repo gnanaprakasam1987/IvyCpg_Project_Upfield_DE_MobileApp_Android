@@ -8,21 +8,29 @@ import android.content.Context;
 import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
+import com.ivy.core.data.beat.BeatDataManager;
+import com.ivy.core.data.beat.BeatDataManagerImpl;
+import com.ivy.core.data.channel.ChannelDataManager;
+import com.ivy.core.data.channel.ChannelDataManagerImpl;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.datamanager.DataManagerImpl;
-import com.ivy.core.data.db.DBHelperImpl;
-import com.ivy.core.data.db.DbHelper;
+import com.ivy.core.data.db.AppDataManagerImpl;
+import com.ivy.core.data.db.AppDataManager;
 import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.core.data.distributor.DistributorDataManagerImpl;
 import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.label.LabelsDataManagerImpl;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
+import com.ivy.core.data.retailer.RetailerDataManager;
+import com.ivy.core.data.retailer.RetailerDataManagerImpl;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelperImpl;
 import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.core.di.scope.ApplicationContext;
+import com.ivy.core.di.scope.BeatInfo;
+import com.ivy.core.di.scope.ChannelInfo;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.DistributorInfo;
 import com.ivy.core.di.scope.LabelMasterInfo;
@@ -31,8 +39,6 @@ import com.ivy.core.di.scope.PreferenceInfo;
 import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.location.LocationUtil;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
@@ -83,7 +89,7 @@ public class IvyAppModule {
 
     @Provides
     @Singleton
-    protected DbHelper providesDbHelper(DBHelperImpl dbHelper) {
+    protected AppDataManager providesDbHelper(AppDataManagerImpl dbHelper) {
         return dbHelper;
     }
 
@@ -124,6 +130,11 @@ public class IvyAppModule {
         return ((BusinessModel) mContext).labelsMasterHelper;
     }
 
+    @Provides
+    @BeatInfo
+    protected BeatDataManager providesBeatDataManager(BeatDataManagerImpl beatDataManager){
+        return beatDataManager;
+    }
 
     @Provides
     @LabelMasterInfo
@@ -192,5 +203,16 @@ public class IvyAppModule {
         return distributorDataManager;
     }
 
+    @Provides
+    @RetailerInfo
+    RetailerDataManager providesRetailerDataManager(RetailerDataManagerImpl retailerDataManager){
+        return retailerDataManager;
+    }
+
+    @Provides
+    @ChannelInfo
+    ChannelDataManager providesChannelDataManager(ChannelDataManagerImpl channelDataManager){
+        return channelDataManager;
+    }
 
 }

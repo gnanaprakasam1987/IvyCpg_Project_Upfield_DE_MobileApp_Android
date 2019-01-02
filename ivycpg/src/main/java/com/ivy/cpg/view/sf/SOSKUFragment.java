@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -124,15 +123,15 @@ public class SOSKUFragment extends IvyBaseFragment implements
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
 
-        mDrawerLayout =  view.findViewById(
+        mDrawerLayout = view.findViewById(
                 R.id.drawer_layout);
 
         if (view != null) {
-            mListView =  view.findViewById(R.id.list);
+            mListView = view.findViewById(R.id.list);
             mListView.setCacheColorHint(0);
         }
 
-        FrameLayout drawer =  view.findViewById(R.id.right_drawer);
+        FrameLayout drawer = view.findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
@@ -597,6 +596,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
             if (mBModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_SOSKU))
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
 
+            menu.findItem(R.id.menu_loc_filter).setVisible(false);
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -661,6 +661,8 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
             myList = new ArrayList<>();
             for (SOSKUBO temp : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (temp.getParentID() == id || id == -1 && temp.getIsOwn() == 1) {
                     myList.add(temp);
                 }
@@ -693,6 +695,8 @@ public class SOSKUFragment extends IvyBaseFragment implements
         myList = new ArrayList<>();
         if (mFilterText.length() > 0) {
             for (SOSKUBO temp : items) {
+                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    continue;
                 if (temp.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                     if (temp.getIsOwn() == 1)
                         myList.add(temp);
@@ -935,6 +939,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
                                     long parentTotal = soskuBO.getParentTotal();
                                     float mNorm = soskuBO.getNorm();
+                                    soskuBO.setActual(soskuBO.getTempActualValue());
                                     float actual = soskuBO.getActual();
 
                                     float target = (parentTotal * mNorm) / 100;
@@ -964,6 +969,9 @@ public class SOSKUFragment extends IvyBaseFragment implements
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                for(SOSKUBO soSKUBO : mCategoryForDialog){
+                    soSKUBO.setTempActualValue(0);
+                }
                 dialog.dismiss();
                 mListView.invalidateViews();
                 dialog = null;
@@ -1033,14 +1041,14 @@ public class SOSKUFragment extends IvyBaseFragment implements
                                 holder.et.setSelection(s.toString().length());
 
                             try {
-                                holder.soskuBO.setActual(SDUtil.convertToInt(s
+                                holder.soskuBO.setTempActualValue(SDUtil.convertToInt(s
                                         .toString()));
                             } catch (Exception e) {
-                                holder.soskuBO.setActual(0);
+                                holder.soskuBO.setTempActualValue(0);
                                 Commons.printException("" + e);
                             }
                         } else {
-                            holder.soskuBO.setActual(0);
+                            holder.soskuBO.setTempActualValue(0);
                         }
                         updateTotal();
                     }
@@ -1102,7 +1110,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
             for (int i = 0; i < mCategoryForDialog.size(); i++) {
 
                 SOSKUBO soskuBO = mCategoryForDialog.get(i);
-                tot = tot + (soskuBO.getActual());
+                tot = tot + (soskuBO.getTempActualValue());
             }
             String strTotal = tot + "";
             mParentTotal.setText(strTotal);

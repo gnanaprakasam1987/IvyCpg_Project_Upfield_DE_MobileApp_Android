@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.reports.promotion.RetailerNamesBO;
+import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -40,6 +41,7 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
     private ClosingStockReportsHelper closingStockReportsHelper;
     private HashMap<String, ArrayList<ClosingStockReportBo>> retailerWiseClosingStock;
     private CompositeDisposable compositeDisposable;
+    private StockCheckHelper stockCheckHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +55,7 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         closingStockReportsHelper = new ClosingStockReportsHelper(getContext());
+        stockCheckHelper = StockCheckHelper.getInstance(getActivity());
 
 
         linearLayout = view.findViewById(R.id.orderScreenListRow);
@@ -147,22 +150,22 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
     }
 
     private void hideAndSeek(View view) {
-        if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER
-                && !bmodel.configurationMasterHelper.SHOW_STOCK_SP
-                && !bmodel.configurationMasterHelper.SHOW_STOCK_SC) {
+        if (!stockCheckHelper.SHOW_SHELF_OUTER
+                && !stockCheckHelper.SHOW_STOCK_SP
+                && !stockCheckHelper.SHOW_STOCK_SC) {
             view.findViewById(R.id.case_qty).setVisibility(View.GONE);
             view.findViewById(R.id.piece_qty).setVisibility(View.GONE);
             view.findViewById(R.id.outer_qty).setVisibility(View.GONE);
 
         }
 
-        if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+        if (!stockCheckHelper.SHOW_SHELF_OUTER)
             view.findViewById(R.id.outer_qty).setVisibility(View.GONE);
 
-        if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+        if (!stockCheckHelper.SHOW_STOCK_SP)
             view.findViewById(R.id.piece_qty).setVisibility(View.GONE);
 
-        if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+        if (!stockCheckHelper.SHOW_STOCK_SC)
             view.findViewById(R.id.case_qty).setVisibility(View.GONE);
     }
 
@@ -252,22 +255,22 @@ public class ClosingStockReportFragment extends IvyBaseFragment {
                 holder.outerQty = row.findViewById(R.id.outer_qty);
                 holder.prodcode = row.findViewById(R.id.skucode);
 
-                if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER
-                        && !bmodel.configurationMasterHelper.SHOW_STOCK_SP
-                        && !bmodel.configurationMasterHelper.SHOW_STOCK_SC) {
+                if (!stockCheckHelper.SHOW_SHELF_OUTER
+                        && !stockCheckHelper.SHOW_STOCK_SP
+                        && !stockCheckHelper.SHOW_STOCK_SC) {
                     holder.caseQty.setVisibility(View.GONE);
                     holder.pieceQty.setVisibility(View.GONE);
                     holder.outerQty.setVisibility(View.GONE);
 
                 }
 
-                if (!bmodel.configurationMasterHelper.SHOW_SHELF_OUTER)
+                if (!stockCheckHelper.SHOW_SHELF_OUTER)
                     holder.outerQty.setVisibility(View.GONE);
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SP)
+                if (!stockCheckHelper.SHOW_STOCK_SP)
                     holder.pieceQty.setVisibility(View.GONE);
 
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SC)
+                if (!stockCheckHelper.SHOW_STOCK_SC)
                     holder.caseQty.setVisibility(View.GONE);
 
 

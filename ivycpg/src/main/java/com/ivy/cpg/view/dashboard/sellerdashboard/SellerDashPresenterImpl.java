@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
-import com.ivy.cpg.view.dashboard.olddashboard.DashboardContractor;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -12,6 +11,7 @@ import com.ivy.sd.png.commons.KeyPairBoolData;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.dashboard.presenter.SellerDashboardPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +100,7 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
         DailyReportBO dailrp = dashBoardHelper.getNoOfInvoiceAndValue();
         DailyReportBO dailyrp_order = dashBoardHelper.getNoOfOrderAndValue();
 
-        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashListViewList()) {
+        for (DashBoardBO dashBoardBO : dashBoardHelper.getDashChartData()) {
             if (dashBoardBO.getCode().equalsIgnoreCase(CODE1)) {
                 dashBoardBO.setKpiAcheived(outlet.getTotValues());
 
@@ -698,6 +698,13 @@ public class SellerDashPresenterImpl implements SellerDashboardContractor.Seller
         }
     }
 
+    /**
+     * @deprecated
+     * @See {@link SellerDashboardPresenterImp#getVisitedRetailerCount()
+     * @link  SellerDashboardPresenterImp#getTodayRetailerCount()} ()}
+     * @param flag
+     * @return
+     */
     private int getRetailerDetail(String flag) {
         int size = businessModel.getRetailerMaster().size();
         int count = 0;

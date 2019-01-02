@@ -112,6 +112,10 @@ public class DiscountHelper {
                     productBO.setNetValue(productBO.getNetValue() - discountValue);
                 }
 
+                if (productBO.getLineValueAfterSchemeApplied() > 0) {
+                    productBO.setLineValueAfterSchemeApplied(productBO.getLineValueAfterSchemeApplied() - discountValue);
+                }
+
                 totalDiscountValue = totalDiscountValue + discountValue;
             }
         }
@@ -336,6 +340,11 @@ public class DiscountHelper {
 
                                     storeWiseDiscountBO.setDiscountValue(discountValue);
                                     productBo.setProductLevelDiscountValue(productBo.getProductLevelDiscountValue() + discountValue);
+
+
+                                    if (productBo.getLineValueAfterSchemeApplied() > 0) {
+                                        productBo.setLineValueAfterSchemeApplied(productBo.getLineValueAfterSchemeApplied() - discountValue);
+                                    }
 
                                     totalDiscountValue = totalDiscountValue + discountValue;
 

@@ -21,7 +21,8 @@
             android:layout_width="@dimen/catalog_details_image"
             android:layout_height="@dimen/catalog_details_image"
             android:layout_gravity="center"
-            tools:src="@drawable/no_image_available" />
+            tools:src="@drawable/no_image_available"
+            android:contentDescription="@drawable/no_image_available" />
 
     </LinearLayout>
 

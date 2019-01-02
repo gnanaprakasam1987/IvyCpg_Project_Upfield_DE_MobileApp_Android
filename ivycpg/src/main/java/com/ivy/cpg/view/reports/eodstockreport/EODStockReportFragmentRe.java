@@ -99,6 +99,12 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
         if (bmodel.configurationMasterHelper.SHOW_STOCK_REPLACE)
             view.findViewById(R.id.ll_replacement).setVisibility(View.VISIBLE);
 
+        if (bmodel.configurationMasterHelper.SHOW_FREE_STOCK_LOADED)
+            view.findViewById(R.id.ll_loadedFreeStock).setVisibility(View.VISIBLE);
+
+        if (bmodel.configurationMasterHelper.SHOW_FREE_STOCK_IN_HAND)
+            view.findViewById(R.id.ll_freeSIH).setVisibility(View.VISIBLE);
+
         if (bmodel.configurationMasterHelper.SHOW_STOCK_EMPTY)
             view.findViewById(R.id.ll_empty).setVisibility(View.VISIBLE);
 
@@ -167,6 +173,12 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
         view.findViewById(R.id.tv_return_cs_title).setVisibility(View.GONE);
         view.findViewById(R.id.tv_return_ou_title).setVisibility(View.GONE);
 
+        view.findViewById(R.id.loading_free_stock_cs_title).setVisibility(View.GONE);
+        view.findViewById(R.id.loading_free_stock_ou_title).setVisibility(View.GONE);
+
+        view.findViewById(R.id.tv_free_sih_cs_title).setVisibility(View.GONE);
+        view.findViewById(R.id.tv_free_sih_ou_title).setVisibility(View.GONE);
+
         view.findViewById(R.id.tv_sold_stock_cs_title).setVisibility(View.GONE);
         view.findViewById(R.id.tv_sold_stock_ou_title).setVisibility(View.GONE);
 
@@ -200,6 +212,8 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
         view.findViewById(R.id.tv_sold_stock_pc_title).setVisibility(visible);
         view.findViewById(R.id.tv_nonsalable_pc_title).setVisibility(visible);
         view.findViewById(R.id.tv_unload_pc_title).setVisibility(visible);
+        view.findViewById(R.id.loading_free_stock_pc_title).setVisibility(visible);
+        view.findViewById(R.id.tv_free_sih_pc_title).setVisibility(visible);
     }
 
     private void setUpEOD_SIH_CSViews(View view, int visible) {
@@ -213,6 +227,8 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
         view.findViewById(R.id.tv_sold_stock_cs_title).setVisibility(visible);
         view.findViewById(R.id.tv_nonsalable_cs_title).setVisibility(visible);
         view.findViewById(R.id.tv_unload_cs_title).setVisibility(visible);
+        view.findViewById(R.id.loading_free_stock_cs_title).setVisibility(visible);
+        view.findViewById(R.id.tv_free_sih_cs_title).setVisibility(visible);
     }
 
     private void setUpEOD_SIH_OUViews(View view, int visible) {
@@ -226,6 +242,8 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
         view.findViewById(R.id.tv_sold_stock_ou_title).setVisibility(visible);
         view.findViewById(R.id.tv_nonsalable_ou_title).setVisibility(visible);
         view.findViewById(R.id.tv_unload_ou_title).setVisibility(visible);
+        view.findViewById(R.id.loading_free_stock_ou_title).setVisibility(visible);
+        view.findViewById(R.id.tv_free_sih_ou_title).setVisibility(visible);
     }
 
     @Override

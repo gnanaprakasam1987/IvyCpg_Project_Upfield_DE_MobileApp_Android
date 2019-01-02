@@ -78,6 +78,51 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_loadedFreeStock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TextViewListTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/screen_title_height"
+                            android:text="@string/loaded_free_stock" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/loading_free_stock_cs_title"
+                                style="@style/TextViewListTitle"
+                                android:layout_width="@dimen/price_value"
+                                android:layout_height="wrap_content"
+                                android:text="CS"
+                                android:textSize="@dimen/text_size_primary" />
+
+                            <TextView
+                                android:id="@+id/loading_free_stock_ou_title"
+                                style="@style/TextViewListTitle"
+                                android:layout_width="@dimen/price_value"
+                                android:layout_height="wrap_content"
+                                android:text="OU"
+                                android:textSize="@dimen/text_size_primary" />
+
+                            <TextView
+                                android:id="@+id/loading_free_stock_pc_title"
+                                style="@style/TextViewListTitle"
+                                android:layout_width="@dimen/price_value"
+                                android:layout_height="wrap_content"
+                                android:text="PC"
+                                android:textSize="@dimen/text_size_primary" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
                         android:id="@+id/ll_returnQty"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -341,6 +386,50 @@
                                 android:text="PC"
                                 android:textSize="@dimen/text_size_primary" />
                         </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_freeSIH"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TextViewListTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/screen_title_height"
+                            android:text="@string/free_sih" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_free_sih_cs_title"
+                                style="@style/TextViewListTitle"
+                                android:layout_width="@dimen/price_value"
+                                android:layout_height="wrap_content"
+                                android:text="CS"
+                                android:textSize="@dimen/text_size_primary" />
+
+                            <TextView
+                                android:id="@+id/tv_free_sih_ou_title"
+                                style="@style/TextViewListTitle"
+                                android:layout_width="@dimen/price_value"
+                                android:layout_height="wrap_content"
+                                android:text="OU"
+                                android:textSize="@dimen/text_size_primary" />
+
+                            <TextView
+                                android:id="@+id/tv_free_sih_pc_title"
+                                style="@style/TextViewListTitle"
+                                android:layout_width="@dimen/price_value"
+                                android:layout_height="wrap_content"
+                                android:text="PC"
+                                android:textSize="@dimen/text_size_primary" />
+                        </LinearLayout>
+
                     </LinearLayout>
 
                     <LinearLayout

@@ -43,7 +43,8 @@
                     android:nestedScrollingEnabled="false"
                     android:scrollbars="none"
                     card_view:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    tools:ignore="UnusedAttribute"></android.support.v7.widget.RecyclerView>
+                    tools:ignore="UnusedAttribute">
+                </android.support.v7.widget.RecyclerView>
 
                 <LinearLayout
                     android:id="@+id/bottom_layout"

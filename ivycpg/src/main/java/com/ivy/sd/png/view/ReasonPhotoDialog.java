@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -27,7 +27,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.io.File;
@@ -48,7 +47,7 @@ public class ReasonPhotoDialog extends DialogFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         if (getDialog() != null) {
@@ -66,11 +65,10 @@ public class ReasonPhotoDialog extends DialogFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        btnCancel = (Button) v.findViewById(R.id.closeBTN);
-        btnSave = (Button) v.findViewById(R.id.saveBTN);
-        ms_reason = (Spinner) v.findViewById(R.id.sp_reason);
-        ivReason = (ImageView) v.findViewById(R.id.reason_image_view);
-        ((TextView) v.findViewById(R.id.header_text)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        btnCancel = v.findViewById(R.id.closeBTN);
+        btnSave = v.findViewById(R.id.saveBTN);
+        ms_reason = v.findViewById(R.id.sp_reason);
+        ivReason = v.findViewById(R.id.reason_image_view);
 
 
         return v;
@@ -78,10 +76,7 @@ public class ReasonPhotoDialog extends DialogFragment {
 
 
     public boolean isShowing() {
-        if (getDialog() != null) {
-            return true;
-        }
-        return false;
+        return getDialog() != null;
     }
 
 

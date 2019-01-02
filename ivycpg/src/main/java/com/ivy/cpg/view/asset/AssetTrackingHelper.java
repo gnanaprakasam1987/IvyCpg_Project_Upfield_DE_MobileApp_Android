@@ -47,6 +47,7 @@ public class AssetTrackingHelper {
 
     public int mSelectedAssetID = 0;
     public String mSelectedImageName = "";
+    public int mSelectedProductID = 0;
 
     // Asset configuration
     private static final String CODE_ASSET_COLUMNS = "AT01";
@@ -476,14 +477,6 @@ public class AssetTrackingHelper {
             sb.append(" OR Channelid in (0,");
             sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))");
 
-
-            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append(" and (SBD.Productid = ");
-                sb.append(mBusinessModel.productHelper.getmSelectedGlobalProductId());
-                sb.append(" OR SBD.Productid = 0 )");
-
-                allMasterSb = allMasterSb + ("and (SBD.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
-            }
 
             sb.append(" GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId,SBD.SerialNO ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
 
@@ -1686,7 +1679,7 @@ public class AssetTrackingHelper {
                                         assetImgInofValues.append(",");
                                         assetImgInofValues.append(assetBo.getProductId());
                                         assetImgInofValues.append(",");
-                                        assetImgInofValues.append(assetBo.getLocationID());
+                                        assetImgInofValues.append((MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM) ? assetBo.getLocationID():standardListBO.getListID());
                                         db.insertSQL(DataMembers.tbl_AssetImgInfo,
                                                 AssetImageInfoColumns,
                                                 assetImgInofValues.toString());
@@ -1922,7 +1915,7 @@ public class AssetTrackingHelper {
                         if (SHOW_LOCATION_POSM)
                             assetBO.setLocationID(locId);
 
-                        assetBO.setImageList(getImagesList(mcontext, assetID, locId));
+                        assetBO.setImageList(getImagesList(mcontext, assetID, locId, pid));
 
                     }
 
@@ -1976,7 +1969,7 @@ public class AssetTrackingHelper {
         return retailerMovedData;
     }
 
-    public ArrayList<String> getImagesList(Context mContext, int assetId, int locId) {
+    public ArrayList<String> getImagesList(Context mContext, int assetId, int locId, int pid) {
         ArrayList<String> imageList = new ArrayList<>();
         try {
 
@@ -1988,7 +1981,7 @@ public class AssetTrackingHelper {
             Cursor c;
 
             sql = "select ImageName from AssetImageDetails "
-                    + " where AssetID = " + assetId + " AND LocId = " + locId
+                    + " where AssetID = " + assetId + " AND LocId = " + locId + " AND PID = " + pid
                     + " AND Upload = " + QT("N");
             c = db.selectSQL(sql);
 
@@ -2237,14 +2230,6 @@ public class AssetTrackingHelper {
             sb.append("left join POSMProductMapping PPM on P.PosmID=PPM.posmid ");
             sb.append("left join Standardlistmaster SDM on SDM.listid=PCM.InStoreLocId and SDM.ListType='PL' ");
             sb.append("left join ProductMaster PM on PM.PID=PPM.Productid ");
-
-
-            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                sb.append(" and (PPM.Productid = ");
-                sb.append(mBusinessModel.productHelper.getmSelectedGlobalProductId());
-                sb.append(" OR PPM.Productid = 0 )");
-            }
-
             sb.append(" GROUP BY PCM.RetailerId,PCM.AccountId,PCM.Channelid,PCM.LocationId,PPM.Productid,PGCM.PosmId " +
                     " ORDER BY PCM.RetailerId,PCM.AccountId,PCM.Channelid,PCM.LocationId");
 

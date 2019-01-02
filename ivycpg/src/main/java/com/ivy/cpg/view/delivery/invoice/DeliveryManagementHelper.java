@@ -129,7 +129,7 @@ public class DeliveryManagementHelper {
             db.openDataBase();
 
             String query = "select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID," +
-                    "PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize,PM.sih from invoicedetailuomwise id" +
+                    "PM.dUomId as caseUomId,PM.dUomQty as caseSize, PM.dOuomid as outerUomId,PM.dOuomQty as outerSize,PM.sih,id.HSNCode from invoicedetailuomwise id" +
                     " Inner JOIN ProductMaster PM on PM.PID = id.productid" +
                     " left join batchmaster bm  on bm.pid=productid and bm.batchid=id.batchid  where invoiceid=" +
                     bmodel.QT(invoiceno) + "  order by productid,id.batchid";
@@ -145,6 +145,7 @@ public class DeliveryManagementHelper {
                         invoiceProductBO.setProductID(productid + "");
                         invoiceProductBO.setProductShortName(c.getString(c.getColumnIndex("psname")));
                         invoiceProductBO.setSIH(c.getInt(c.getColumnIndex("sih")));
+                        invoiceProductBO.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
                     } else {
                         invoiceProductBO = invoicedProducts.get(productid);
                     }
@@ -186,11 +187,13 @@ public class DeliveryManagementHelper {
 
     public void saveDeliveryManagement(String invoiceno, String selectedItem, String SignName, String SignPath, String contactName, String contactNo) {
         DBUtil db = null;
+        String invoiceRefNo="0";
         try {
             InvoiceHeaderBO invoiceHeaderBO = null;
             for (InvoiceHeaderBO invoiceBO : mInvoiceList) {
                 if (invoiceno.equals(invoiceBO.getInvoiceNo())) {
                     invoiceHeaderBO = invoiceBO;
+                    invoiceRefNo=invoiceBO.getInvoiceRefNo();
                     break;
                 }
             }
@@ -266,7 +269,7 @@ public class DeliveryManagementHelper {
             }
 
             if (bmodel.configurationMasterHelper.IS_GENERATE_SR_IN_DELIVERY) {
-                saveSalesReturn(invoiceno);
+                saveSalesReturn(invoiceRefNo);
             }
 
             // update SIH
@@ -487,7 +490,7 @@ public class DeliveryManagementHelper {
                     + bmodel.retailerMasterBO.getDistParentId() + ","
                     + bmodel.QT("") + ","
                     + bmodel.QT("") + ","
-                    + 0;
+                    + 1; // 1 means Indicative, 0 means normal
 
             values = values + "," + bmodel.QT("") + "," + bmodel.QT("");
 
@@ -648,6 +651,31 @@ public class DeliveryManagementHelper {
         } catch (SQLException e) {
             Commons.printException(e);
         }
+    }
+
+    //To get whether the retailer has sales return or not
+    public boolean hasDeliveryReturn() {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.openDataBase();
+            String s = "SELECT count(uid) from SalesReturnHeader where RetailerID =" + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID());
+            int count = 0;
+            Cursor c = db.selectSQL(s);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    count = c.getInt(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+            return count > 0;
+
+        } catch (SQLException e) {
+            Commons.printException(e);
+        }
+
+        return false;
     }
 
 }

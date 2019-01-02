@@ -19,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
@@ -42,7 +41,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.BatchAllocation;
-import com.ivy.sd.png.view.CatalogOrder;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.utils.FontUtils;
@@ -78,7 +77,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
     HashMap<Integer, SchemeBO> preSchemeList;
     HashMap<Integer, SchemeBO> currentSchemeList;
     HashMap<Integer, SchemeBO> nextSchemeList;
-    List<SchemeBO> schemeIDList;
+    List<SchemeBO> schemeIDList = new ArrayList<>();
     HashMap<Integer, SchemeBO> parentSchemeList;
 
     @Override
@@ -153,8 +152,7 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         nextSchemeList = new HashMap<>();
         mSchemeDoneList = new ArrayList<>();
         schemeHelper.resetSchemeQPSList();
-        //For setting Ordered SKUs and check Slab in the object.
-        schemeIDList = schemeHelper.getSchemeList();
+
         new SchemeApplyAsync().execute();
 
         if (!schemeHelper.IS_SCHEME_EDITABLE)
@@ -186,6 +184,14 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
+                //For setting Ordered SKUs and check Slab in the object.
+                List<SchemeBO> tempList = schemeHelper.getSchemeList();
+                for (SchemeBO schemeBO : tempList) {
+                    if (schemeHelper.getmSchemaQPSAchHistoryList() != null) {
+                        if (schemeHelper.getmSchemaQPSAchHistoryList().get(schemeBO.getParentId() + "") != null)
+                            schemeIDList.add(schemeBO);
+                    }
+                }
                 checkSlabandsetProduct();
                 mSchemeDoneList = buildListView();
                 return true;
