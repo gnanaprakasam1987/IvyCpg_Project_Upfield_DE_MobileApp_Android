@@ -20,6 +20,7 @@ public interface TaskContract {
 
         void setTaskUserListData(ArrayList<UserMasterBO> userList);
 
+        String getTaskMode();
 
         void showUpdatedDialog();
 
@@ -34,11 +35,9 @@ public interface TaskContract {
 
         void updateTask(int taskType);
 
-        void onSaveButtonClick(int channelId, String taskTitleDesc, String taskDetailDesc,String mode);
+        void onSaveButtonClick(int channelId, String taskTitleDesc, String taskDetailDesc);
 
         String getSelectedRetailerId();
-
-        String getTaskMode();
 
         ArrayList<ChannelBO> getTaskChannelList();
 

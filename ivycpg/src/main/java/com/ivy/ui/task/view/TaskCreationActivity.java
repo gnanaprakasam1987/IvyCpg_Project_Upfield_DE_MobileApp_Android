@@ -24,6 +24,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -54,10 +55,10 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private boolean fromHomeScreen = false;
     private boolean isRetailerTask = false;
     private String screenTitle = "";
+    private String mode = "seller";
 
 
     private int taskChannelId;
-    private String taskTitleDec, taskDetailDesc;
     private int mSelectedUserId = 0;
 
     @BindView(R.id.taskView)
@@ -184,6 +185,11 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     }
 
+    @Override
+    public String getTaskMode() {
+        return mode;
+    }
+
     TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
     final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
     final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorSecondary, 0);
@@ -201,7 +207,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 retailerSpinner.setSelection(0);
                 retailerSpinner.setEnabled(false);
                 sellerSpinner.setEnabled(true);
-                //  taskHelper.mode = "seller";
+                mode = "seller";
                 break;
             case R.id.Channelwise:
                 seller_rb.setTextColor(secondary_color);
@@ -212,7 +218,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 retailerSpinner.setEnabled(false);
                 sellerSpinner.setSelection(0);
                 sellerSpinner.setEnabled(false);
-                //taskHelper.mode = "channel";
+                mode = "channel";
                 break;
             case R.id.Retailerwise:
                 seller_rb.setTextColor(secondary_color);
@@ -223,7 +229,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 retailerSpinner.setEnabled(true);
                 sellerSpinner.setSelection(0);
                 sellerSpinner.setEnabled(false);
-                // taskHelper.mode = "retailer";
+                mode = "retailer";
                 break;
         }
     }
@@ -262,10 +268,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             public void onPositiveButtonClick() {
                 taskView.setText("");
                 taskTitle.setText("");
-                taskTitleDec = "";
-                taskDetailDesc = "";
                 taskChannelId = 0;
-                // taskPresenter.getTaskMode() = "seller";
+                mode = "seller";
                 if (fromHomeScreen)
                     startActivity(new Intent(TaskCreationActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
@@ -287,13 +291,13 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @OnClick(R.id.saveTask)
     public void onSaveClickBtn() {
-        taskDetailDesc = AppUtils.validateInput(taskView.getText().toString());
-        taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
+        String taskDetailDesc = AppUtils.validateInput(taskView.getText().toString());
+        String taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
 
         if (!validate())
             return;
 
-       /* switch (taskPresenter.getTaskMode()) {
+/*        switch (mode) {
             case "seller":
                 if (mSelectedUserId == 0)
                     taskChannelId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
@@ -310,9 +314,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             default:
                 taskChannelId = channelId;
                 break;
-        }
-*/
-        taskPresenter.onSaveButtonClick(channelId, taskTitleDec, taskDetailDesc, taskPresenter.getTaskMode());
+        }*/
+        taskPresenter.onSaveButtonClick(channelId, taskTitleDec, taskDetailDesc);
     }
 
 

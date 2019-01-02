@@ -113,10 +113,10 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
 
     @Override
-    public void onSaveButtonClick(int channelId, String taskTitleDesc, String taskDetailDesc, String mode) {
+    public void onSaveButtonClick(int channelId, String taskTitleDesc, String taskDetailDesc) {
         getIvyView().showLoading();
         getCompositeDisposable().add(mTaskDataManager.addNewTask(channelId
-                , taskTitleDesc, taskDetailDesc, mode).subscribeOn(getSchedulerProvider().io())
+                , taskTitleDesc, taskDetailDesc, getIvyView().getTaskMode()).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
@@ -131,11 +131,6 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
     @Override
     public String getSelectedRetailerId() {
-        return null;
-    }
-
-    @Override
-    public String getTaskMode() {
         return null;
     }
 
