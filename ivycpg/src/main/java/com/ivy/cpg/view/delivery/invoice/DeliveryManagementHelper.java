@@ -481,9 +481,11 @@ public class DeliveryManagementHelper {
         if (isData) {
             //get Sales Return User id by calling Inv No
 
-            int srUserID = getSalesRtnUserID(invoiceno, db);
+            String[] invAndUserId = getSalesRtnUserID(invoiceno, db);
+            int srUserID = SDUtil.convertToInt(invAndUserId[0]);
+            String invoiceID = invAndUserId[1];
 
-            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,CollectStatus";
+            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,CollectStatus,invoiceid";
             String values = id + ","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -503,7 +505,8 @@ public class DeliveryManagementHelper {
 
             values = values + "," + AppUtils.QT("") + ","
                     + AppUtils.QT("") + ","
-                    + AppUtils.QT(status);// update delivery status
+                    + AppUtils.QT(status) + ","// update delivery status
+                    + AppUtils.QT(invoiceID);
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
@@ -690,23 +693,24 @@ public class DeliveryManagementHelper {
     }
 
 
-    private int getSalesRtnUserID(String invoiceno, DBUtil db) {
+    private String[] getSalesRtnUserID(String invoiceno, DBUtil db) {
         try {
-            int userID = 0;
-            String query = "select UserID from InvoiceDeliveryMaster" +
+            String[] iD = new String[2];
+            String query = "select UserID,invoiceno from InvoiceDeliveryMaster" +
                     " Where InvoiceRefNo=" + AppUtils.QT(invoiceno);
             Cursor c = db.selectSQL(query);
             if (c != null) {
                 if (c.moveToNext()) {
-                    userID = c.getInt(0);
+                    iD[0] = c.getString(0);
+                    iD[1] = c.getString(1);
                 }
+                c.close();
             }
-            c.close();
-            return userID;
+            return iD;
         } catch (Exception e) {
             Commons.printException(e);
         }
-        return 0;
+        return null;
     }
 
 }
