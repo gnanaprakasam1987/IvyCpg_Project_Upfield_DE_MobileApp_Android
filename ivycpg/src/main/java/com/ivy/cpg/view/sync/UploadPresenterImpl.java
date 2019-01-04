@@ -158,6 +158,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         if (mBModel.configurationMasterHelper.CALCULATE_UNLOAD) {
             mVanUnloadHelper.vanUnloadAutomatically(mContext.getApplicationContext());
             mVanUnloadHelper.vanUnloadNonSalableAutomatically(mContext.getApplicationContext());
+            mVanUnloadHelper.vanUnloadFreeSiHAutomatically(mContext.getApplicationContext());
         }
     }
 

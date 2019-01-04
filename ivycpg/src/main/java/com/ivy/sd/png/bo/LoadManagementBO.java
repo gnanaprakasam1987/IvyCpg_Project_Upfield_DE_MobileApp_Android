@@ -16,6 +16,7 @@ public class LoadManagementBO {
     private Vector<LoadManagementBO> batchlist;
     private String parentHierarchy;
     private String productCode = "";
+    private int isFree;
 
     public Vector<LoadManagementBO> getBatchlist() {
         return batchlist;
@@ -635,5 +636,13 @@ public class LoadManagementBO {
 
     public void setTransactionId(String transactionId) {
         TransactionId = transactionId;
+    }
+
+    public int getIsFree() {
+        return isFree;
+    }
+
+    public void setIsFree(int isFree) {
+        this.isFree = isFree;
     }
 }

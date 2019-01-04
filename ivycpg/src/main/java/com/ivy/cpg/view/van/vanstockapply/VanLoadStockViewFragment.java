@@ -460,7 +460,7 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                     x += 30;
 
                     printItem.append("T 5 0 10 ").append(x).append(" ");
-                    printItem.append(productBO.getProductName().toLowerCase()).append("\r\n");
+                    printItem.append("(" + getActivity().getResources().getString(R.string.free) + ")" + productBO.getProductName().toLowerCase()).append("\r\n");
 
                     x += 30;
                     if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
@@ -752,6 +752,15 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
 
             tv = product.getProductShortName();
             holder.psname.setText(tv);
+
+            if (product.getIsFree() == 1)
+                holder.psname.setTextColor(ContextCompat.getColor(getActivity().getApplicationContext(),
+                        R.color.colorAccent));
+            else
+                holder.psname.setTextColor(ContextCompat.getColor(getActivity().getApplicationContext(),
+                        android.R.color.black));
+
+
             tv = product.getCaseQuantity() + "";
             holder.caseqty.setText(tv);
             tv = product.getPieceQuantity() + "";
@@ -765,24 +774,34 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                     * product.getBasePrice();
             tv = bmodel.formatValue(unitprice) + "";
             holder.unitprice.setText(tv);
-            if (product.getBatchNumber() != null) {
+            if (product.getBatchNumber() != null)
+
+            {
                 tv = getResources().getString(
                         R.string.batch_no)
                         + ": " + product.getBatchNumber() + "";
                 holder.batchid.setText(tv);
-            } else {
+            } else
+
+            {
                 holder.batchid.setText("");
             }
-            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
+
+            {
                 String prodCode = getResources().getString(R.string.prod_code)
                         + ": " + product.getProductCode() + " ";
                 holder.productCode.setText(prodCode);
             }
 
 
-            if (position % 2 == 0) {
+            if (position % 2 == 0)
+
+            {
                 row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_even_item_bg));
-            } else {
+            } else
+
+            {
                 row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_odd_item_bg));
             }
             return row;
