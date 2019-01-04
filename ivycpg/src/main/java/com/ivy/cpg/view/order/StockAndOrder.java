@@ -77,6 +77,7 @@ import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.moq.MOQHighlightActivity;
 import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsActivity;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.order.scheme.UpSellingActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
@@ -5607,6 +5608,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         menu.findItem(R.id.menu_loc_filter).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_barcode).setVisible(!drawerOpen);
         menu.findItem(R.id.menu_refresh).setVisible(!drawerOpen);
+        menu.findItem(R.id.menu_scheme).setVisible(!drawerOpen);
 
         if (bmodel.configurationMasterHelper.SHOW_ORD_CALC)
             menu.findItem(R.id.menu_calculator).setVisible(true);
@@ -5632,6 +5634,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         menu.findItem(R.id.menu_survey).setVisible(bmodel.configurationMasterHelper.floating_Survey);
         menu.findItem(R.id.menu_reason).setVisible(bmodel.configurationMasterHelper.floating_np_reason_photo);
         menu.findItem(R.id.menu_barcode).setVisible(bmodel.configurationMasterHelper.IS_BAR_CODE);
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        menu.findItem(R.id.menu_scheme).setVisible(schemeHelper.IS_SHOW_ALL_SCHEMES_ORDER);
 
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
@@ -5810,6 +5814,22 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         getResources()
                                 .getString(R.string.no_network_connection), 0);
             }
+        } else if (i == R.id.menu_scheme) {
+            SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+
+                if (schemeHelper
+                        .getSchemeList() == null
+                        || schemeHelper
+                        .getSchemeList().size() == 0) {
+                    Toast.makeText(StockAndOrder.this,
+                            R.string.scheme_not_available,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(StockAndOrder.this, SchemeDetailsActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+
         }
         return super.onOptionsItemSelected(item);
     }
