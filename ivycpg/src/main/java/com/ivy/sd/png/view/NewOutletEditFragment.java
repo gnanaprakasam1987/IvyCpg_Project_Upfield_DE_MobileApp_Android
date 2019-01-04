@@ -196,7 +196,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                     i.putExtra("screenMode", 1);
                     i.putExtra("retailerId", retailer.getRetailerId());
                     startActivity(i);
-                    getActivity().finish();
+                    //getActivity().finish();
                 }
             });
 
@@ -247,8 +247,10 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
 
             if (bmodel.configurationMasterHelper.IS_NEW_RETAILER_EDIT)
                 holder.ib_edit.setVisibility(View.VISIBLE);
-            else
+            else {
+                holder.viewDivider.setVisibility(View.GONE);
                 holder.ib_edit.setVisibility(View.GONE);
+            }
 
         }
 
@@ -261,22 +263,22 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView retailer_name, retailer_address;
             ImageButton ib_edit, ib_delete;
+            View viewDivider;
             LinearLayout ll_retailer;
 
             public ViewHolder(View v) {
                 super(v);
-                retailer_name = (TextView) v.findViewById(R.id.tv_retailername);
-                retailer_address = (TextView) v.findViewById(R.id.tv_retaileraddress);
-                ib_edit = (ImageButton) v.findViewById(R.id.iv_edit);
-                ib_delete = (ImageButton) v.findViewById(R.id.delete);
-                ll_retailer = (LinearLayout) v.findViewById(R.id.ll_retailer_name);
+                retailer_name = v.findViewById(R.id.tv_retailername);
+                retailer_address =  v.findViewById(R.id.tv_retaileraddress);
+                ib_edit =  v.findViewById(R.id.iv_edit);
+                ib_delete =  v.findViewById(R.id.delete);
+                ll_retailer =  v.findViewById(R.id.ll_retailer_name);
+                viewDivider =  v.findViewById(R.id.view_divider);
 
                 retailer_name.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 retailer_address.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
             }
-
-
         }
     }
 
@@ -384,7 +386,6 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
 //                bmodel.mSelectedActivityName = menuItem.getMenuName();
                 mChannelList = bmodel.newOutletHelper.getChannelList();
                 if (mChannelList != null && mChannelList.size() > 0) {
-                    FragmentManager fm = getActivity().getSupportFragmentManager();
                     dialogFragment = new ChannelSelectionDialog(getActivity(), mChannelList, bmodel.newOutletHelper.getLevelame());
                     dialogFragment.setChannelSelectionListener(this);
                     dialogFragment.show();
@@ -398,7 +399,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             }
         } else if (i == R.id.menu_sort) {
             if (retailerEditList.size() > 0) {
-                sortDialog = new NewOutletEditSortDialog(getActivity(), "nonVisit", retailerEditList, lastCheckedPosition);
+                sortDialog = new NewOutletEditSortDialog(getActivity(),  retailerEditList, lastCheckedPosition);
                 sortDialog.setChannelSelectionListener(this);
                 sortDialog.show();
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();

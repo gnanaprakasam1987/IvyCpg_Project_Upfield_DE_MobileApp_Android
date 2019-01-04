@@ -22,18 +22,15 @@ import java.util.ArrayList;
  */
 
 public class ChannelSelectionDialog extends Dialog {
-    private String mTitle = "";
+    private String mTitle;
     private String mMenuName = "";
 
-    private TextView mTitleTV;
-    private Button mOkBtn, mDismisBtn;
-    private ListView mChannelLV;
     private ArrayList<ChannelBO> mChannelList;
     private ChannelSelectionListener channelSelectionListener;
     Context mcontext;
 
 
-    public ChannelSelectionDialog(Context context, ArrayList<ChannelBO> ChannelList, String title) {
+    ChannelSelectionDialog(Context context, ArrayList<ChannelBO> ChannelList, String title) {
         super(context);
         this.mcontext = context;
         this.mChannelList = ChannelList;
@@ -48,14 +45,14 @@ public class ChannelSelectionDialog extends Dialog {
         mMenuName = mcontext.getResources().getString(R.string.new_retailer);
         setContentView(R.layout.custom_dialog_fragment);
 
-        mTitleTV = (TextView) findViewById(R.id.title);
-        mOkBtn = (Button) findViewById(R.id.btn_ok);
+        TextView mTitleTV =  findViewById(R.id.title);
+        Button mOkBtn = findViewById(R.id.btn_ok);
         mOkBtn.setVisibility(View.GONE);
-        mDismisBtn = (Button) findViewById(R.id.btn_dismiss);
-        mChannelLV = (ListView) findViewById(R.id.lv_colletion_print);
+        Button mDismisBtn =  findViewById(R.id.btn_dismiss);
+        ListView mChannelLV =  findViewById(R.id.lv_colletion_print);
 
         mTitleTV.setText(mTitle);
-        ArrayAdapter<ChannelBO> adapter = new ArrayAdapter<ChannelBO>(mcontext, android.R.layout.simple_list_item_single_choice, mChannelList);
+        ArrayAdapter<ChannelBO> adapter = new ArrayAdapter<>(mcontext, android.R.layout.simple_list_item_single_choice, mChannelList);
         mChannelLV.setAdapter(adapter);
         mChannelLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -66,18 +63,18 @@ public class ChannelSelectionDialog extends Dialog {
 
             }
         });
+
         mOkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
         mDismisBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
-
-
             }
         });
 

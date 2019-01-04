@@ -80,7 +80,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     private MyAdapter mSchedule;
     private ManualVanLoadHelper manualVanLoadHelper;
 
-    public static final int VAN_RETURN_PRODUCT_RESULT_CODE = 116;
+    public static final int VAN_RETURN_PRODUCT_RESULT_CODE = 118;
 
     android.content.DialogInterface.OnDismissListener vanloadDismissListener = new android.content.DialogInterface.OnDismissListener() {
         @Override

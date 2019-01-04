@@ -1,48 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/background_noise">
-    <LinearLayout
-        android:id="@+id/LL_titleBar"
-        style="?attr/dialogTitleStyle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true">
+    android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/titlebar"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:padding="8dp"
-            android:tag="@string/Order_Summary_dialog_header"
-            android:text="@string/reason_req_for_indicative_order"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/font_small"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/okButton"
-            android:layout_width="@dimen/info_icon"
-            android:layout_height="@dimen/info_icon"
-            android:layout_gravity="right|center"
-            android:layout_margin="@dimen/list_margin"
-            android:background="@drawable/icon_close"
-            android:gravity="right"
-            android:text="" />
-    </LinearLayout>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
 
     <ListView
-        android:layout_below="@+id/LL_titleBar"
         android:id="@+id/lv_products"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:cacheColorHint="@null"
         android:divider="@android:color/white"
         android:dividerHeight="1dp"
+        android:labelFor="@+id/toolbar"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/footer"
         android:fitsSystemWindows="true"/>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/customFooterBackgroundColor">
+
+        <Button
+            android:id="@+id/btn_next"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/keypad"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/done"
+            android:textAllCaps="false" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

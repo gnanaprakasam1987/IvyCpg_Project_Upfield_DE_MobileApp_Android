@@ -92,8 +92,6 @@ public class NearExpiryDateInputActivity extends IvyBaseActivityNoActionBar impl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_nearexpiry);
 
-        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
-
         mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
 
         mBModel = (BusinessModel) getApplicationContext();
@@ -243,7 +241,6 @@ public class NearExpiryDateInputActivity extends IvyBaseActivityNoActionBar impl
             if (isflag) {
                 setResult(1);
                 finish();
-                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
         }
     }

@@ -3,6 +3,7 @@ package com.ivy.sd.png.view;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -55,5 +56,14 @@ public class NewOutlet extends IvyBaseActivityNoActionBar {
     protected void passData(AppCompatEditText editText[],Bundle instate) {
         bmodel.newOutletHelper.setEditText(editText);
         this.instate=instate;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

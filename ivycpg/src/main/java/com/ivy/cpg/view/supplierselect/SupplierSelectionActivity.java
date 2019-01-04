@@ -1,14 +1,11 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.supplierselect;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.util.TypedValue;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
@@ -16,6 +13,7 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SupplierMasterBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
@@ -23,45 +21,43 @@ import com.ivy.utils.FontUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rajkumar.s on 11/30/2016.
- */
-
-class SupplierSelectionDialog extends Dialog {
+public class SupplierSelectionActivity extends IvyBaseActivityNoActionBar {
 
     private ExpandableListView lstSupplier;
     private BusinessModel bmodel;
-    private ArrayList<SupplierMasterBO> mSupplierList;
+    private ArrayList<SupplierMasterBO> mSupplierList = new ArrayList<>();
     private ArrayList<String> lst_group;
     private ArrayList<List<SupplierMasterBO>> lst_child;
-    private UpdateSupplierName updateSupplierName;
-    private Context mContext;
 
-    public interface UpdateSupplierName {
-        void updateSupplierName(String supplierName);
-    }
-
-    SupplierSelectionDialog(final Context context, ArrayList<SupplierMasterBO> supplierList) {
-        super(context);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        if (getWindow() != null)
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setCancelable(false);
-
-        this.mContext = context;
-        this.mSupplierList = supplierList;
-
-        bmodel = (BusinessModel) mContext.getApplicationContext();
-
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.supplier_selection_dialog);
 
-        updateSupplierName = (UpdateSupplierName) context;
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
-        ((TextView) findViewById(R.id.titlebar)).setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
+        if (toolbar != null ) {
+
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            setScreenTitle(getResources().getString(R.string.select_supplier));
+        }
+
+        bmodel = (BusinessModel) getApplicationContext();
+
+        mSupplierList = getIntent().getParcelableArrayListExtra("SupplierList");
+
         lstSupplier = findViewById(R.id.lst_supplier);
-
         //Prepare Data
 
         try {
@@ -87,11 +83,11 @@ class SupplierSelectionDialog extends Dialog {
                 lst_child = new ArrayList<>();
 
                 if (primarySupplier.size() > 0) {
-                    lst_group.add(context.getString(R.string.primary_supplier));
+                    lst_group.add(getString(R.string.primary_supplier));
                     lst_child.add(primarySupplier);
                 }
                 if (secondarySupplier.size() > 0) {
-                    lst_group.add(context.getString(R.string.secondary_supplier));
+                    lst_group.add(getString(R.string.secondary_supplier));
                     lst_child.add(secondarySupplier);
                 }
 
@@ -137,11 +133,11 @@ class SupplierSelectionDialog extends Dialog {
                 row = inflater.inflate(R.layout.row_supplier_selection,
                         parent, false);
                 childHolder = new ChildViewHolder();
-                childHolder.tv_supplier =  row.findViewById(R.id.tv_supplier);
-                childHolder.chk =  row.findViewById(R.id.chk_selected);
+                childHolder.tv_supplier = row.findViewById(R.id.tv_supplier);
+                childHolder.chk = row.findViewById(R.id.chk_selected);
                 childHolder.chk.setClickable(false);
 
-                childHolder.tv_supplier.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
+                childHolder.tv_supplier.setTypeface(FontUtils.getFontRoboto(SupplierSelectionActivity.this, FontUtils.FontType.MEDIUM));
 
                 childHolder.tv_supplier.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -152,11 +148,10 @@ class SupplierSelectionDialog extends Dialog {
                         bmodel.getRetailerMasterBO().setDistributorId(childHolder.childList.get(childHolder.childPosition).getSupplierID());
                         bmodel.getRetailerMasterBO().setDistParentId(childHolder.childList.get(childHolder.childPosition).getDistParentID());
                         bmodel.getRetailerMasterBO().setSupplierTaxLocId(childHolder.childList.get(childHolder.childPosition).getSupplierTaxLocId());
-                        bmodel.updateRetailerWiseSupplierType(childHolder.childList.get(childHolder.childPosition)
-                                .getSupplierID());
-                        updateSupplierName.updateSupplierName(childHolder.childList.get(childHolder.childPosition)
-                                .getSupplierName());
-                        dismiss();
+                        bmodel.updateRetailerWiseSupplierType(childHolder.childList.get(childHolder.childPosition).getSupplierID());
+
+                        setResult(1,getIntent().putExtra("SupplierName",childHolder.childList.get(childHolder.childPosition).getSupplierName()));
+                        finish();
                     }
                 });
 
@@ -190,16 +185,10 @@ class SupplierSelectionDialog extends Dialog {
                 row = inflater.inflate(R.layout.row_supplier_selection_header,
                         viewGroup, false);
                 groupHolder = new GroupViewHolder();
-                groupHolder.tv_header =  row.findViewById(R.id.tv_header);
-                groupHolder.tv_supplier =  row.findViewById(R.id.tv_supplier);
-                groupHolder.chk =  row.findViewById(R.id.chk_selected);
+                groupHolder.tv_header = row.findViewById(R.id.tv_header);
+                groupHolder.tv_supplier = row.findViewById(R.id.tv_supplier);
+                groupHolder.chk = row.findViewById(R.id.chk_selected);
                 groupHolder.chk.setClickable(false);
-
-                groupHolder.tv_header.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.REGULAR));
-                groupHolder.tv_supplier.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.REGULAR));
-
-                groupHolder.tv_header.setTextColor(ContextCompat.getColor(mContext, R.color.black_bg1));
-                groupHolder.tv_header.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContext.getResources().getDimension(R.dimen.font_large));
 
                 if (!bmodel.configurationMasterHelper.IS_SUPPLIER_NOT_AVAILABLE
                         && mSupplierList.size() > 0
@@ -221,9 +210,9 @@ class SupplierSelectionDialog extends Dialog {
                         bmodel.getRetailerMasterBO().setSupplierTaxLocId(mSupplierList.get(position).getSupplierTaxLocId());
                         bmodel.updateRetailerWiseSupplierType(mSupplierList.get(position)
                                 .getSupplierID());
-                        updateSupplierName.updateSupplierName(mSupplierList.get(position)
-                                .getSupplierName());
-                        dismiss();
+
+                        setResult(1,getIntent().putExtra("SupplierName",mSupplierList.get(position).getSupplierName()));
+                        finish();
                     }
                 });
                 row.setTag(groupHolder);
@@ -284,7 +273,6 @@ class SupplierSelectionDialog extends Dialog {
     class GroupViewHolder {
         TextView tv_header, tv_supplier;
         CheckBox chk;
-
     }
 
     class ChildViewHolder {
@@ -292,7 +280,17 @@ class SupplierSelectionDialog extends Dialog {
         List<SupplierMasterBO> childList;
         CheckBox chk;
         int childPosition;
-
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int i1 = item.getItemId();
+        if (i1 == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

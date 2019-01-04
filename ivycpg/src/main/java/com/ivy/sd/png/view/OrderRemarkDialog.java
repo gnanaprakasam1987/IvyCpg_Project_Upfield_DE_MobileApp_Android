@@ -18,12 +18,10 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.StringTokenizer;
 
 public class OrderRemarkDialog extends Dialog implements OnClickListener {
@@ -34,21 +32,20 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
     private EditText mEdtRemark;
     private Button mBtnDate, mBtnClose;
 
-    Date date;
     private String mnextDate;
-    public String mdate_selected;
+    private String mdate_selected;
     private Context con;
-    private boolean isFrmDelivery = false;
+    private boolean isFrmDelivery;
 
     public OrderRemarkDialog(Context context, boolean isFromDelivery) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_order_remarks);
 
-        mEdtPO = (EditText) findViewById(R.id.edt_po);
-        mEdtRemark = (EditText) findViewById(R.id.edt_remark);
-        mBtnDate = (Button) findViewById(R.id.Btn_deliveryDate);
-        mBtnClose = (Button) findViewById(R.id.closeButton);
+        mEdtPO =  findViewById(R.id.edt_po);
+        mEdtRemark =  findViewById(R.id.edt_remark);
+        mBtnDate = findViewById(R.id.Btn_deliveryDate);
+        mBtnClose = findViewById(R.id.closeButton);
 
         InputFilter filter = new InputFilter() {
             @Override
@@ -81,7 +78,6 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
                         .setText(bmodel.labelsMasterHelper
                                 .applyLabels(findViewById(R.id.txt_po)
                                         .getTag()));
-            ((TextView) findViewById(R.id.txt_po)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                     R.id.textView5).getTag()) != null)
@@ -89,7 +85,6 @@ public class OrderRemarkDialog extends Dialog implements OnClickListener {
                         .setText(bmodel.labelsMasterHelper
                                 .applyLabels(findViewById(R.id.textView5)
                                         .getTag()));
-            ((TextView) findViewById(R.id.textView5)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
             String rField = bmodel.configurationMasterHelper.LOAD_ORDER_SUMMARY_REMARKS_FIELD_STRING;
             StringTokenizer stringtokenizer = new StringTokenizer(rField, ",");
