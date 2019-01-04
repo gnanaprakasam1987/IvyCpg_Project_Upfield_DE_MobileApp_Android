@@ -23,7 +23,7 @@
         ivydist:showAsAction="always" />
     <item
         android:id="@+id/menu_sales_selection"
-        android:icon="@drawable/sal"
+        android:icon="@drawable/switch_pre_van"
         android:orderInCategory="4"
         android:title="VanSales"
         ivydist:showAsAction="always" />
@@ -46,7 +46,7 @@
         ivydist:showAsAction="always" />
     <item
         android:id="@+id/menu_order_type"
-        android:icon="@drawable/supplier"
+        android:icon="@drawable/order_type_icon"
         android:orderInCategory="8"
         android:title="Order type"
         ivydist:showAsAction="always" />

@@ -294,7 +294,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_LEAVE_APR, R.drawable.ic_vector_out_of_trade);
         menuIcons.put(MENU_EXPENSE, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NEWRET_EDT, R.drawable.ic_new_retailer_icon);
-        menuIcons.put(MENU_TASK_NEW, R.drawable.ic_new_task);
+        menuIcons.put(MENU_TASK_NEW, R.drawable.task);
         menuIcons.put(MENU_SURVEY_SW, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_SURVEY01_SW, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);

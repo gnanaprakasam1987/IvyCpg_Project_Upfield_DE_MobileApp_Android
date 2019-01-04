@@ -415,7 +415,7 @@ public class DataMembers {
     private static final String tbl_stock_apply = "StockApply";
     private static final String tbl_stock_apply_cols = "uid,date,Status";
     public static final String tbl_vanunload_details = "VanUnloadDetails";
-    private static final String tbl_vanunload_details_cols = "uid,pid,batchid,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type,SubDepotId,TypeID,LineValue,Price,RefId,LiableQty";
+    private static final String tbl_vanunload_details_cols = "uid,pid,batchid,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type,SubDepotId,TypeID,LineValue,Price,RefId,LiableQty,isFree";
     public static final String tbl_SIH = "StockInHandMaster";
     private static final String tbl_SIH_cols = "pid,batchid,qty,adjusted_qty";
     public static final String tbl_ExcessStockInHand = "ExcessStockInHand";
@@ -425,6 +425,9 @@ public class DataMembers {
     private static final String tbl_NEWOUTLETIMAGE_cols = "RetailerID,ListId,ImageName";
     public static final String tbl_outlet_time_stamp_detail = "OutletTimeStampDetail";
     public static final String tbl_outlet_time_stamp_detail_cols = "UID,ModuleCode,TimeIn,TimeOut,RetailerID";
+
+    public static final String tbl_Free_SIH = "FreeStockInHandMaster";
+    private static final String tbl_Free_SIH_cols = "pid,batchid,qty";
 
     // For Asean IS Upload Table Columns
     private static final String tbl_splitted_order = "SplittedOrder";
@@ -723,6 +726,7 @@ public class DataMembers {
         uploadColumn.put(tbl_AssetDetail, tbl_AssetDetail_Cols);
         uploadColumn.put(tbl_AssetImgInfo, tbl_AssetImgInfo_Cols);
         uploadColumn.put(tbl_SIH, tbl_SIH_cols);
+        uploadColumn.put(tbl_Free_SIH, tbl_Free_SIH_cols);
         uploadColumn.put(tbl_NewOutletImage, tbl_NEWOUTLETIMAGE_cols);
 
         uploadColumn.put(tbl_splitted_order, tbl_splitted_order_cols);
@@ -1009,6 +1013,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_vanunload_details,
                 tbl_vanunload_details_cols);
         uploadColumnWithOutRetailer.put(tbl_SIH, tbl_SIH_cols);
+        uploadColumnWithOutRetailer.put(tbl_Free_SIH, tbl_Free_SIH_cols);
         uploadColumnWithOutRetailer.put(tbl_DailyTargetPlanned,
                 tbl_DailyTargetPlanned_cols);
         uploadColumnWithOutRetailer.put(tbl_TaskConfigurationMaster,
@@ -1092,6 +1097,8 @@ public class DataMembers {
                 tbl_ExcessStockInHand_cols);
         uploadSIHTable.put(tbl_NonSalableSIHMaster,
                 tbl_NonSalableSIHMaster_cols);
+        uploadSIHTable.put(tbl_Free_SIH,
+                tbl_Free_SIH_cols);
 
     }
 

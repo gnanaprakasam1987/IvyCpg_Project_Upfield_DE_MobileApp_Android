@@ -43,7 +43,7 @@ public class VanUnLoadModuleHelper {
             db.createDataBase();
             db.openDataBase();
             LoadManagementBO vanunloadbo;
-            String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type";
+            String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type,isFree";
             String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
             transactionId = uid;
@@ -82,7 +82,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + AppUtils.QT(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
-                            + 1;
+                            + 1 + "," + vanunloadbo.getIsFree();
                     db.insertSQL(DataMembers.tbl_vanunload_details, columns,
                             values);
                 }
@@ -276,17 +276,26 @@ public class VanUnLoadModuleHelper {
                 int sih = (product.getOuterQty() * product.getOuterSize())
                         + (product.getPieceqty())
                         + (product.getCaseqty() * product.getCaseSize());
-                String sql = "update StockInHandMaster set upload='N',qty=qty-" + sih
-                        + " where pid=" + product.getProductid()
-                        + " and batchid=" + product.getBatchId();
+                if (product.getIsFree() != 1) {
+                    String sql = "update StockInHandMaster set upload='N',qty=qty-" + sih
+                            + " where pid=" + product.getProductid()
+                            + " and batchid=" + product.getBatchId();
 
-                db.executeQ(sql);
-                String sql1 = "update ProductMaster set sih=sih- " + sih
-                        + " where PID = " + product.getProductid();
-                db.executeQ(sql1);
-                String sql2 = "update ExcessStockInHand set qty=qty- " + sih
-                        + ",Upload='N' where PID = " + product.getProductid();
-                db.executeQ(sql2);
+                    db.executeQ(sql);
+                    String sql1 = "update ProductMaster set sih=sih- " + sih
+                            + " where PID = " + product.getProductid();
+                    db.executeQ(sql1);
+                    String sql2 = "update ExcessStockInHand set qty=qty- " + sih
+                            + ",Upload='N' where PID = " + product.getProductid();
+                    db.executeQ(sql2);
+                } else {
+                    String sql = "update FreeStockInHandMaster set upload='N',qty=qty-" + sih
+                            + " where pid=" + product.getProductid()
+                            + " and batchid=" + product.getBatchId();
+
+                    db.executeQ(sql);
+                }
+
             }
 
         }
@@ -500,6 +509,77 @@ public class VanUnLoadModuleHelper {
     }
 
     /**
+     * Automatically Unload the free products while day close if STKPRO20
+     * Configuration enable
+     */
+    public void vanUnloadFreeSiHAutomatically(Context context) {
+        String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type";
+        String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                + SDUtil.now(SDUtil.DATE_TIME_ID);
+
+        try {
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("select sih.pid,p.PName,sih.batchid,bt.batchNum,sih.qty,p.dUomQty,p.dOuomQty,p.dUomId,p.dOuomid,p.piece_uomid from FreeStockInHandMaster sih left join BatchMaster bt on bt.batchid=sih.batchid and sih.pid=bt.pid left join productmaster p on p.PID=sih.pid"
+                            + " where P.IsSalable=1");
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    String values = AppUtils.QT(uid)
+                            + ","
+                            + c.getInt(0)
+                            + ","
+                            + DatabaseUtils.sqlEscapeString(c.getString(1))
+                            + ","
+                            + c.getInt(2)
+                            + ","
+                            + AppUtils.QT(c.getString(3))
+                            + ","
+                            + c.getInt(4)
+                            + ","
+                            + 0
+                            + ","
+                            + c.getInt(4)
+                            + ","
+                            + 0
+                            + ","
+                            + c.getInt(5)
+                            + ","
+                            + c.getInt(6)
+                            + ","
+                            + c.getInt(7)
+                            + ","
+                            + c.getInt(8)
+                            + ","
+                            + AppUtils.QT(bmodel.userMasterHelper
+                            .getUserMasterBO().getDownloadDate()) + ","
+                            + 1;
+
+                    db.insertSQL(DataMembers.tbl_vanunload_details, columns,
+                            values);
+
+                    String sql = "update FreeStockInHandMaster set upload='N',qty= qty-"
+                            + c.getInt(4) + " where pid=" + c.getInt(0)
+                            + " and batchid=" + c.getInt(2);
+
+                    db.executeQ(sql);
+
+                }
+
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+    }
+
+    /**
      * Method used to get non salable return products.
      *
      * @param mylist
@@ -576,7 +656,7 @@ public class VanUnLoadModuleHelper {
                     "VUD.pname,VUD.pcsqty,VUD.caseqty,VUD.outerqty,PM.baseprice," +
                     "IFNULL(SLM.ListName," + bmodel.QT(context.getString(R.string.salable)) + ")as ListName," +
                     "IFNULL(SLM.ListId,0)as ListID" +
-                    ",PM.dUomQty,PM.dOuomQty" +
+                    ",PM.dUomQty,PM.dOuomQty,VUD.isFree" +
                     " from VanUnloadDetails VUD" +
                     " LEFT JOIN StandardListMaster SLM ON" +
                     " VUD.TypeID = SLM.ListId" +
@@ -593,7 +673,12 @@ public class VanUnLoadModuleHelper {
 
                     reasonName = c.getString(5);
                     bo = new LoadManagementBO();
-                    bo.setProductname(c.getString(0));
+
+                    if (c.getInt(0) == 1)
+                        bo.setProductname("(" + context.getResources().getString(R.string.free) + ")" + c.getString(0));
+                    else
+                        bo.setProductname(c.getString(0));
+
                     bo.setOrderedPcsQty(c.getInt(1));
                     bo.setOrderedCaseQty(c.getInt(2));
                     bo.setOuterOrderedCaseQty(c.getInt(3));
@@ -608,12 +693,9 @@ public class VanUnLoadModuleHelper {
                     } else {
                         vanUnLoadListHashMap.get(reasonName).add(bo);
                     }
-
-
                 }
                 c.close();
             }
-
 
             return vanUnLoadListHashMap;
         } catch (Exception e) {
