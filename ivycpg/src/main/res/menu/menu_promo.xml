@@ -29,7 +29,7 @@
         ivydist:showAsAction="always" />
     <item
         android:id="@+id/menu_add"
-        android:icon="@drawable/ic_new_task"
+        android:icon="@drawable/task"
         android:orderInCategory="95"
         android:title="@string/addpromo"
         ivydist:showAsAction="always"/>

@@ -288,12 +288,13 @@
     <ListView
         android:id="@+id/lv_creditnote"
         android:layout_below="@+id/collectionAmount"
-        android:layout_above="@+id/keypad"
+        android:layout_above="@+id/keypad_foot"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:visibility="gone"/>
 
     <include
+        android:id="@+id/keypad_foot"
         layout="@layout/keypad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

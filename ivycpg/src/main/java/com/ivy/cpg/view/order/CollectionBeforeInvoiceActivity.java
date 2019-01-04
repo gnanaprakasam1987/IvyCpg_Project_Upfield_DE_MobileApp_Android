@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +72,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
     private String append = "";
     // Views
     private EditText QUANTITY;
-    private Button btnSubmit, btnDot;
+    private Button btnSubmit;
     // Views
     private LinearLayout layoutBankMode,  layoutKeypad;
     private RadioGroup rbPaymentType;
@@ -104,7 +106,8 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
     private double creditBalance = 0d;
     private String mTransactionPaymentMode = "";
     private PaymentBO pay;
-    private RelativeLayout layoutChequeDate,ll_keyboard;
+    private RelativeLayout layoutChequeDate;
+    private CardView ll_keyboard;
 
     ImageView capturecheque;
     private String mImageName;
@@ -871,13 +874,13 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
             chequedate = findViewById(R.id.collectionDate);
             Bank = findViewById(R.id.bankName);
             Branch = findViewById(R.id.bankArea);
-            btnDot = findViewById(R.id.calcdot);
+            Button btnDot = findViewById(R.id.calcdot);
             btnDot.setVisibility(View.VISIBLE);
             btnSubmit.setOnClickListener(this);
             tvMinimumAmount = findViewById(R.id.tv_minimum_amount);
             img_min_amount = findViewById(R.id.img_min_amount);
             mCreditNoteLV = findViewById(R.id.lv_creditnote);
-            ll_keyboard = findViewById(R.id.footer);
+            ll_keyboard = findViewById(R.id.keypad_foot);
 
             ((TextView) findViewById(R.id.productName2)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
             ((TextView) findViewById(R.id.minimumamount)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
@@ -1325,5 +1328,18 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                 creditNoteListBO.setChecked(false);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i1 = item.getItemId();
+        if (i1 == android.R.id.home) {
+
+            setResult(1);
+            finish();
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
