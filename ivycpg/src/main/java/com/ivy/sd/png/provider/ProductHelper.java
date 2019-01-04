@@ -5477,7 +5477,7 @@ public class ProductHelper {
                 + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
                 + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
                 + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable"
-                + ",IFNULL(BM.batchNum,'') as batchNum,SIH.qty as qty,SIH.batchid"
+                + ",IFNULL(BM.batchNum,'') as batchNum,SIH.qty as qty,SIH.batchid as batchid"
                 + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
                 + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou,PM.pCode as ProCode,"
                 + "  PM.ParentHierarchy as ParentHierarchy "
@@ -5551,6 +5551,8 @@ public class ProductHelper {
                 productlist.add(bo);
 
             }
+
+            c.close();
         }
 
     }
