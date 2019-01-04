@@ -922,25 +922,23 @@ public class SurveyHelperNew {
     }
 
     public boolean isAnsweredTypeEmail() {
-        boolean flag=false;
+        invalidEmails = new StringBuilder();
         for (SurveyBO sBO : getSurvey()) {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
                 for (QuestionBO qus : mParentQuestions) {
-                    if (qus.getQuestionType().equals("EMAIL") && qus.getSelectedAnswer().size() == 0){
-                        flag=true;
-                      break;
-                    }else {
-                        if (qus.getQuestionType().equals("EMAIL")) {
-                            if (qus.getSelectedAnswer().size() > 0 && isValidEmail(qus.getSelectedAnswer().get(0))) {
-                                flag=true;
+                    if (qus.getQuestionType().equals("EMAIL")) {
+                            if (qus.getSelectedAnswer().size() > 0
+                                    && qus.getSelectedAnswer().get(0).length()!=0
+                                    && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                                invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                                invalidEmails.append("\n");
                             }
-                        }
                     }
                 }
             }
         }
-        return flag;
+        return invalidEmails.toString().length() <= 0;
     }
 
     private boolean isInRange(float a, float b, float c) {

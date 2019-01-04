@@ -564,13 +564,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (view == saveButton) {
             if (!checkClicked) {
                 checkClicked = true;
-                if (surveyHelperNew.hasDataToSave())
-                {
+                if (surveyHelperNew.hasDataToSave()) {
 
-                    if (surveyHelperNew.IS_SURVEY_ANSWER_ALL)
-                    {
-                        if (surveyHelperNew.isAllAnswered())
-                        {
+                    if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
+
+                        if (surveyHelperNew.isAllAnswered()) {
+
                             if (surveyHelperNew.hasPhotoToSave())
                                 new SaveSurveyTask().execute();
                             else {
@@ -579,8 +578,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 questionsRv.setAdapter(rvAdapter);
                                 checkClicked = false;
                             }
-                        }
-                        else {
+                        } else {
 
                             if (surveyHelperNew.getInvalidEmails().length() > 0) {
                                 bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
@@ -593,9 +591,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             }
                             checkClicked = false;
                         }
-                    }
-                    else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY)
-                    {
+                    } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
+
                         if (surveyHelperNew.isMandatoryQuestionAnswered()) {
                             if (surveyHelperNew.hasPhotoToSave())
                                 new SaveSurveyTask().execute();
@@ -621,9 +618,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             }
                             checkClicked = false;
                         }
-                    }
-                    else {
+
+                    } else {
                         if(surveyHelperNew.isAnsweredTypeEmail()){
+
                             if (surveyHelperNew.hasPhotoToSave())
                                 new SaveSurveyTask().execute();
                             else {
@@ -632,6 +630,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 questionsRv.setAdapter(rvAdapter);
                                 checkClicked = false;
                             }
+
                         }else{
                             checkClicked = false;
                             bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
