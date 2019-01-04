@@ -16,6 +16,7 @@ public class VanLoadStockApplyBO {
     private String date;
     private int isManualVanload;
     private String ProductCode;
+    private int isFree;
 
     public int getBatchId() {
         return BatchId;
@@ -175,5 +176,13 @@ public class VanLoadStockApplyBO {
 
     public String getProductCode() {
         return ProductCode;
+    }
+
+    public int getIsFree() {
+        return isFree;
+    }
+
+    public void setIsFree(int isFree) {
+        this.isFree = isFree;
     }
 }

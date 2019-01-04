@@ -155,11 +155,17 @@ android {
             }
         }
     }
-    sourceSets {
 
+    sourceSets {
+        aws {
+            java {
+                srcDirs('src/AWS/java', 'src/main/java')
+            }
+        }
         sfdc {
             res {
-                srcDirs('src/SFDC/res','src/main/res')
+                srcDirs('src/SFDC/java', 'src/main/java')
+
             }
         }
 

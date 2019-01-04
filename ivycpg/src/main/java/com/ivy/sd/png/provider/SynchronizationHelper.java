@@ -2509,10 +2509,10 @@ SynchronizationHelper {
         } else if (tableName.equalsIgnoreCase("temp_vanload")) {
             if (IsDataAvailableInTable("temp_vanload")) {
                 sb = new StringBuffer();
-                sb.append("insert into vanload(uid,pid,pcsqty,caseqty,outerqty,date,duomqty,duomid,douomqty,douomid,batchid,loadNo) ");
+                sb.append("insert into vanload(uid,pid,pcsqty,caseqty,outerqty,date,duomqty,duomid,douomqty,douomid,batchid,loadNo,isFree) ");
                 sb.append("select pm.uid,pm.pid,a.qty as pieceqty,b.qty as caseqty,c.qty as outerqty,");
                 sb.append("ifnull(a.date,ifnull(b.date,ifnull(c.date,0))) as date,b.uomcount as duomqty,b.uomid as duomid,");
-                sb.append("c.uomcount as douomqty,c.uomid as douomid,ifnull(a.batchid,ifnull(b.batchid,ifnull(c.batchid,0))) as batchid,pm.loadRefNo from temp_vanload pm");
+                sb.append("c.uomcount as douomqty,c.uomid as douomid,ifnull(a.batchid,ifnull(b.batchid,ifnull(c.batchid,0))) as batchid,pm.loadRefNo,pm.isFree from temp_vanload pm");
                 sb.append(" left join temp_vanload as a on pm.pid=a.pid and pm.uid=a.uid and a.uomCode="
                         + bmodel.QT(PIECE_TYPE) + "and a.batchid = pm.batchid");
                 sb.append(" left join temp_vanload as b on pm.pid=b.pid and pm.uid =b.uid and b.uomcode="
