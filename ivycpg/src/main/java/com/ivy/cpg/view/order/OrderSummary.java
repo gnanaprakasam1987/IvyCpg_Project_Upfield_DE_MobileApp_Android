@@ -1535,6 +1535,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         if (bModel.getOrderHeaderBO() != null) {
                                             // clear scheme free products
                                             bModel.getOrderHeaderBO().setIsSignCaptured(false);
+
                                             if (bModel.getOrderHeaderBO().getSignatureName() != null)
                                                 bModel.synchronizationHelper.deleteFiles(
                                                         PHOTO_PATH, bModel.getOrderHeaderBO().getSignatureName());
