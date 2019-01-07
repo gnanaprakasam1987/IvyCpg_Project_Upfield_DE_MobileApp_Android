@@ -485,6 +485,8 @@ public class SerializedAssetHelper {
                     for (int i = 0; i < mMovedList.size(); i++) {
                         String tempMoved = mMovedList.get(i);
                         for (int j = 0; j < mAssetTrackingList.size(); j++) {
+                            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !mAssetTrackingList.get(j).getParentHierarchy().contains("/" + mBusinessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                                continue;
                             if (tempMoved.equalsIgnoreCase(String.valueOf(mAssetTrackingList.get(j).getAssetID()) + mAssetTrackingList.get(j).getSerialNo())) {
                                 toRemovePos.add(j);
                             }
