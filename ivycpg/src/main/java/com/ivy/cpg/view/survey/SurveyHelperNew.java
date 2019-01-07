@@ -803,12 +803,14 @@ public class SurveyHelperNew {
                             && (qus.getSelectedAnswerIDs().isEmpty() || qus.getSelectedAnswerIDs().contains(-1))) {
                         return false;
                     }
+
                     if (qus.getQuestionType().equals("EMAIL")) {
                         if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
                             invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                             invalidEmails.append("\n");
                         }
                     }
+
                     if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
                         if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
                             if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
@@ -887,12 +889,15 @@ public class SurveyHelperNew {
                             }
                         }
                     }
+
+
                     if (qus.getQuestionType().equals("EMAIL")) {
                         if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
                             invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                             invalidEmails.append("\n");
                         }
                     }
+
                     if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
                         if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
                             if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
@@ -915,6 +920,26 @@ public class SurveyHelperNew {
             return false;
         }
         return returnFlag;
+    }
+
+    public boolean isAnsweredTypeEmail() {
+        invalidEmails = new StringBuilder();
+        for (SurveyBO sBO : getSurvey()) {
+            if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
+                ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
+                for (QuestionBO qus : mParentQuestions) {
+                    if (qus.getQuestionType().equals("EMAIL")) {
+                            if (qus.getSelectedAnswer().size() > 0
+                                    && qus.getSelectedAnswer().get(0).length()!=0
+                                    && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                                invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                                invalidEmails.append("\n");
+                            }
+                    }
+                }
+            }
+        }
+        return invalidEmails.toString().length() <= 0;
     }
 
     private boolean isInRange(float a, float b, float c) {
@@ -1004,18 +1029,12 @@ public class SurveyHelperNew {
                 }
             }
         }
-        if (invalidEmails.toString().isEmpty() && isEmail) {
-            return true;
-        }
-        if (notInRange.toString().isEmpty() && isNum) {
-            return true;
-        }
-        return false;
+
+        if (invalidEmails.toString().isEmpty() && isEmail) return true;
+        return notInRange.toString().isEmpty() && isNum;
     }
 
     public boolean hasPhotoToSave() {
-
-
         for (SurveyBO sBO : getSurvey()) {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
@@ -1030,7 +1049,6 @@ public class SurveyHelperNew {
                 }
             }
         }
-
         return true;
     }
 

@@ -2063,6 +2063,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (bmodel.isEdit()) {
                             orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                     .getRetailerID(), null);
+                            OrderHelper.getInstance(this).selectedOrderId = orderHelper.getOrderId();
                             orderHelper.loadSerialNo(this);
                             enableSchemeModule();
                         }
@@ -5183,6 +5184,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             if (bmodel.isEdit()) {//doubt
                                 orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                         .getRetailerID(), null);
+                                OrderHelper.getInstance(this).selectedOrderId = orderHelper.getOrderId();
                                 orderHelper.loadSerialNo(this);
                                 enableSchemeModule();
                             } else {

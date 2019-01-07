@@ -100,7 +100,7 @@
     <string name="free_qty">Free Qty</string>
     <string name="oos">OOS</string>
 
-    <string name ="enter_serial_no">Please Enter Serial No</string>
+    <string name="enter_serial_no">Please Enter Serial No</string>
 
     <string name="fill_photo_and_adherence">Please take photo and fill adherence</string>
 
@@ -138,4 +138,6 @@
 
     <string name="loaded_free_stock">Loaded Free Stock</string>
     <string name="free_sih">Free SIH</string>
+
+    <string name="asset_image">Asset Image</string>
 </resources>

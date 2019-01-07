@@ -792,7 +792,7 @@ public class ProductHelper {
             db.openDataBase();
 
             Cursor listCursor = db
-                    .selectSQL(" SELECT PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
+                    .selectSQL(" SELECT distinct PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
                             + " INNER JOIN ConfigActivityFilter CA  ON "
                             + " PL.LevelID =CA.ProductFilter1 OR  "
                             + " PL.LevelID =CA.ProductFilter2 OR  "
@@ -828,6 +828,7 @@ public class ProductHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+
 
             if (filterProductLevels != null) {
 

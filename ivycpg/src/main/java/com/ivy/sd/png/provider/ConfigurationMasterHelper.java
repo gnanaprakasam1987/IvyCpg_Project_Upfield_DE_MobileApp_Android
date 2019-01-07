@@ -1026,6 +1026,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SALES_RETURN_DELIVERY_SKU_LEVEL = "SR23";
     public boolean IS_SR_DELIVERY_SKU_LEVEL;
 
+    private static final String CODE_REJECT_SALES_RETURN_DELIVERY = "DEL01";
+    public boolean IS_SR_DELIVERY_REJECT;
+
     //int ROUND_DECIMAL_COUNT = 0;
     public boolean IS_CREDIT_NOTE_CREATION;
     private Context context;
@@ -2675,6 +2678,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_FIREBASE_CHAT_ENABLED = hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) != null ? hashMapHHTModuleConfig.get(CODE_MENU_FIREBASE_CHAT) : false;
         this.IS_SR_DELIVERY_SKU_LEVEL = hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SALES_RETURN_DELIVERY_SKU_LEVEL) : false;
+        this.IS_SR_DELIVERY_REJECT = hashMapHHTModuleConfig.get(CODE_REJECT_SALES_RETURN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_REJECT_SALES_RETURN_DELIVERY) : false;
         this.IS_SHOW_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_OOS) : false;
         this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
     }
@@ -3967,23 +3971,22 @@ public class ConfigurationMasterHelper {
 
                 String codeSplit[] = codeValue.split(",");
                 for (String temp : codeSplit)
-                    switch (temp) {
-                        case "REPPC":
-                            SHOW_REPLACED_QTY_PC = true;
-                            break;
-                        case "REPCS":
-                            SHOW_REPLACED_QTY_CS = true;
-                            break;
-                        case "REPOO":
-                            SHOW_REPLACED_QTY_OU = true;
-                            break;
-                        case "CSTK":
-                            IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
-                            break;
-                        case "SR":
-                            SHOW_SALES_RETURN_IN_ORDER = true;
-                            break;
-                    }
+                   switch (temp) {
+                        case"REPPC":
+                        SHOW_REPLACED_QTY_PC = true;
+                    break;
+                        case"REPCS":
+                        SHOW_REPLACED_QTY_CS = true;
+                    break;
+                        case"REPOO":
+                        SHOW_REPLACED_QTY_OU = true;
+                    break;
+                        case"CSTK":
+                        IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
+                    break;
+                        case"SR":
+                        SHOW_SALES_RETURN_IN_ORDER = true;
+                break;}
             }
 
 

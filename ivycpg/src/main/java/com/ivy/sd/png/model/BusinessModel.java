@@ -3747,6 +3747,101 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
+    /**
+     * Get Gold Store acheived count from retailer master and Total number of
+     * retailer planned for today. Value used to display in VisitActivity Screen
+     *
+     * @return String goldStores/TotalStore
+     */
+
+    public double getStrikeRateValue() {
+
+        double strikeValue = 0, planned = 0, storesInvoiced = 0;
+
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
+                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                            + " WHERE (RMI.isToday=1)");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    c.moveToNext();
+                    planned = c.getFloat(0);
+                }
+            }
+            c.close();
+
+
+            Cursor c1 = null;
+            if (configurationMasterHelper.IS_INVOICE) {
+                c1 = db.selectSQL("select  COUNT(distinct RETAILERID)  from InvoiceMaster");
+            } else {
+                c1 = db.selectSQL("select  COUNT(distinct RETAILERID)  from OrderHeader");
+            }
+            if (c1 != null) {
+                if (c1.getCount() > 0) {
+                    c1.moveToNext();
+                    storesInvoiced = c1.getFloat(0);
+                }
+            }
+            c1.close();
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        strikeValue = (storesInvoiced / planned);
+        return strikeValue;
+    }
+
+    /**
+     * this method will count number of today's retailer for which SBD Dist is
+     * Mapped vs number of retailers where SBDDistributionActual is equals to
+     * SBDDistributionTarget
+     *
+     * @return SBDDistributionActual/SBDDistributionTarget
+     */
+    public int[] getSDBDistTargteAndAcheived() {
+
+        int i[] = new int[2];
+        int target = 0;
+        int acheived = 0;
+        try {
+            for (RetailerMasterBO tempObj : retailerMaster) {
+                if (tempObj.getIsToday() == 1
+                        || (tempObj.getIsDeviated() != null && tempObj.getIsDeviated().equals("Y"))) {
+
+                    if (tempObj.getSbdDistributionTarget() > 0) {
+
+                        target = target + 1;
+
+                        float sbdDistTarget = (float) tempObj
+                                .getSbdDistributionTarget()
+                                * configurationMasterHelper
+                                .getSbdDistTargetPCent() / 100;
+                        Commons.print("Business model," +
+                                tempObj.getSbdDistributionAchieve()
+                                + "target : " + sbdDistTarget);
+                        if (tempObj.getSbdDistributionAchieve() != 0)
+                            if (sbdDistTarget <= (float) tempObj
+                                    .getSbdDistributionAchieve())
+                                acheived = acheived + 1;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        i[0] = acheived;
+        i[1] = target;
+        return i;
+    }
 
     /* ******* Invoice Number To Print End ******* */
 

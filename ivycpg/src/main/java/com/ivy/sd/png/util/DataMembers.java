@@ -278,6 +278,9 @@ public class DataMembers {
     public static final String tbl_SerializedAssetTransfer = "SerializedAssetTransfer";
     private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
+    public static final String tbl_SerializedAssetTransferImages = "SerializedAssetTransferImages";
+    private static final String tbl_SerializedAssetTransferImg__cols = "uid,ImageName";
+
     public static final String tbl_HhtModuleMaster = "HhtModuleMaster";
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
 
@@ -400,7 +403,7 @@ public class DataMembers {
 
     private static final String tbl_NonProductiveTable_cols = "UID,retailerid,RouteID,Date,ReasonID,ReasonTypes,DistributorID,ImagePath,remarks";
     private static final String tbl_NonProductiveModuleTable_cols = "Tid,RetailerID,ModuleCode,ReasonID,ImagePath";
-    private static final String tbl_SalesReturnHeader_cols = "uid,date,RetailerID,ReturnValue,Lpc,remark,latitude,longitude,credit_flag,unload,IsCreditNoteApplicable,ReplacedValue,Distributorid,DistParentID,SignaturePath,imgName,RefModule,RefModuleTId,IFlag,invoiceid,isCancel";
+    private static final String tbl_SalesReturnHeader_cols = "uid,date,RetailerID,ReturnValue,Lpc,remark,latitude,longitude,credit_flag,unload,IsCreditNoteApplicable,ReplacedValue,Distributorid,DistParentID,SignaturePath,imgName,RefModule,RefModuleTId,IFlag,invoiceid,isCancel,CollectStatus,UserID";
     private static final String tbl_SalesReturnDetails_cols = "uid,outerQty,dOuomQty,dOuomid,Cqty,duomQty,duomid,Pqty,batchid,Condition,mfgdate,expdate,oldmrp,ProductID,invoiceno,srpedited,totalQty,reason_type,LotNumber,piece_uomid,HsnCode";
     private static final String tbl_AnswerHeader_cols = "surveyid,retailerid,uid,date,ModuleID,SupervisiorId,Remark,achScore,tgtScore,AchBonusPoint,MaxBonusPoint,type,counterid,refid,DistributorID,userid";
     private static final String tbl_AnswerDetail_cols = "answerid,qid,answer,qtype,uid,score,isExcluded";
@@ -852,6 +855,7 @@ public class DataMembers {
         uploadColumn.put(tbl_SerializedAssetDetail, tbl_SerializedAssetDetail_cols);
         uploadColumn.put(tbl_SerializedAssetImageDetail, tbl_SerializedAssetImageDetail_cols);
         uploadColumn.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
+        uploadColumn.put(tbl_SerializedAssetTransferImages, tbl_SerializedAssetTransferImg__cols);
         uploadColumn.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
 
         uploadColumn.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
@@ -995,6 +999,7 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_SerializedAssetDetail, tbl_SerializedAssetDetail_cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetImageDetail, tbl_SerializedAssetImageDetail_cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
+        uploadColumnWithRetailer.put(tbl_SerializedAssetTransferImages, tbl_SerializedAssetTransferImg__cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
 
         uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);

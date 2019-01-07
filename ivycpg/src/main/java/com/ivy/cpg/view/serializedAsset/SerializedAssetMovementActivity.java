@@ -75,47 +75,16 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
      */
     protected void updateList(Context mContext) {
         SerializedAssetHelper assetTrackingHelper = SerializedAssetHelper.getInstance(this);
-        mAssetTrackingList=assetTrackingHelper.getAssetTrackingList();
+        //mAssetTrackingList=assetTrackingHelper.getAssetTrackingList();
+        assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), "MENU_SERIALIZED_ASSET");
+        mAssetTrackingList = assetTrackingHelper.removeMovedAsset(this);
 
-        ArrayList<String> mMovedList = assetTrackingHelper.getAssetMovementDetails(mContext);
-        ArrayList<Integer> toRemovePos=new ArrayList<>();
-        if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
-            if (mMovedList != null && mMovedList.size() > 0) {
 
-                for(int i=0;i<mMovedList.size();i++)
-                {
-                    String tempMoved=mMovedList.get(i);
-                    for(int j=0;j<mAssetTrackingList.size();j++)
-                    {
-                        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !mAssetTrackingList.get(j).getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
-                            continue;
-                        if(tempMoved.equalsIgnoreCase(String.valueOf(mAssetTrackingList.get(j).getAssetID())+mAssetTrackingList.get(j).getSerialNo()))
-                        {
-                            toRemovePos.add(j);
-                        }
-                    }
-                }
-                ArrayList<SerializedAssetBO> assetTrackingList=new ArrayList<>();
-                for(int i=0;i<mAssetTrackingList.size();i++)
-                {
-                    if(!toRemovePos.contains(i))
-                    {
-                        assetTrackingList.add(mAssetTrackingList.get(i));
-                    }
-                }
-
-                mAssetTrackingList=assetTrackingList;
-
-            }
-            if(mAssetTrackingList.size()>0) {
-                recyclerAdapter = new RecyclerAdapter(mAssetTrackingList);
-                recyclerView.setAdapter(recyclerAdapter);
-            }
-            else {
-                Toast.makeText(SerializedAssetMovementActivity.this, getResources().getString(R.string.no_assets_exists),
-                        Toast.LENGTH_SHORT).show();
-            }
-        } else {
+        if(mAssetTrackingList != null && mAssetTrackingList.size()>0) {
+            recyclerAdapter = new RecyclerAdapter(mAssetTrackingList);
+            recyclerView.setAdapter(recyclerAdapter);
+        }
+        else {
             Toast.makeText(SerializedAssetMovementActivity.this, getResources().getString(R.string.no_assets_exists),
                     Toast.LENGTH_SHORT).show();
         }
