@@ -71,7 +71,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private final String MENU_TASK_REPORT = "MENU_TASK_REPORT";
     private final String MENU_DASH_DAY = "MENU_DASH_DAY";
     private final String MENU_DAMAGE_STOCK = "MENU_DAMAGE_STOCK";
-
+    private String fromScreen = "";
 
     private BusinessModel bmodel;
     private AlertDialog alertDialog;
@@ -111,9 +111,19 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 getActivity().finish();
             }
 
+            if (getArguments() != null) {
+                fromScreen = getArguments().getString("from");
+            }
 
-            Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
-                    .downloadLoadManagementMenu();
+            Vector<ConfigureBO> menuDB = new Vector<>();
+
+            if(fromScreen.equals("MENU_PLANNING_SUB")){
+                menuDB = bmodel.configurationMasterHelper
+                        .downloadPlanningSubMenu();
+            } else {
+                menuDB = bmodel.configurationMasterHelper
+                        .downloadLoadManagementMenu();
+            }
 
 
             ListView listView = view.findViewById(R.id.listView1);
