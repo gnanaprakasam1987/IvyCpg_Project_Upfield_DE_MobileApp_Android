@@ -114,7 +114,7 @@ public class MissedVisitFragment extends android.support.v4.app.Fragment {
                             retailerMissedBO.getRetailerId())
                             && retailerMasterBO.getBeatID() == retailerMissedBO
                             .getBeatId()
-                            && "N".equals(retailerMasterBO.getIsDeviated())) {
+                            && (retailerMasterBO.getIsDeviated() != null &&  "N".equals(retailerMasterBO.getIsDeviated()))) {
                         mUpdateMissedRetailerList.add(retailerMissedBO);
                         break;
                     }

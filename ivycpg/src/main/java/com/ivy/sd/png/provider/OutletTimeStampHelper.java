@@ -268,7 +268,7 @@ public class OutletTimeStampHelper {
                     + "," + getBatteryPercentage(context)
                     + "," + QT(LocationUtil.mProviderName)
                     + "," + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
-                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()== null ? "": bmodel.retailerMasterBO.getIsDeviated()))
                     + "," + QT(String.valueOf(bmodel.getOrderValue()))
                     + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
 
@@ -323,7 +323,7 @@ public class OutletTimeStampHelper {
                     + ", gpsAccuracy = " + QT(LocationUtil.accuracy + "")
                     + ", Battery = " + getBatteryPercentage(context)
                     + ", IsLocationEnabled = " + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
-                    + ", IsDeviated = " + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+                    + ", IsDeviated = " + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()==null?"":bmodel.retailerMasterBO.getIsDeviated()))
                     + ", lpc = " + bmodel.retailerMasterBO.getTotalLines()
                     + "  WHERE RetailerID = '"
                     + bmodel.retailerMasterBO.getRetailerID()

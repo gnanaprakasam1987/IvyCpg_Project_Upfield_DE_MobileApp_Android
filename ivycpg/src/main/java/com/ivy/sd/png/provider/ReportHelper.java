@@ -699,7 +699,7 @@ public class ReportHelper {
             TaskReportBo outlet;
             for (RetailerMasterBO retailerMasterBO : bmodel.getRetailerMaster()) {
                 if (retailerMasterBO.getIsToday() == 1
-                        || retailerMasterBO.getIsDeviated().equals("Y")) {
+                        || (retailerMasterBO.getIsDeviated() != null && retailerMasterBO.getIsDeviated().equals("Y"))) {
                     outlet = new TaskReportBo();
                     outlet.setmRetailerId(SDUtil.convertToInt(retailerMasterBO.getRetailerID()));
                     outlet.setmRetailerName(retailerMasterBO.getRetailerName());

@@ -789,7 +789,7 @@ public class ProductHelper {
             db.openDataBase();
 
             Cursor listCursor = db
-                    .selectSQL(" SELECT PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
+                    .selectSQL(" SELECT distinct PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
                             + " INNER JOIN ConfigActivityFilter CA  ON "
                             + " PL.LevelID =CA.ProductFilter1 OR  "
                             + " PL.LevelID =CA.ProductFilter2 OR  "
@@ -825,6 +825,18 @@ public class ProductHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+
+            int contentLevelId = 0;
+
+            Cursor seqCur = db
+                    .selectSQL("SELECT distinct IFNULL(PL.LevelId,0) "
+                            + "FROM ConfigActivityFilter CF "
+                            // Left join is to ensure configured level id is valid.
+                            + "LEFT JOIN ProductLevel PL ON PL.LevelId = CF.ProductContent "
+                            + "WHERE  CF.ActivityCode= '" + moduleName + "'");
+            if (seqCur.moveToNext()) {
+                contentLevelId = seqCur.getInt(0);
+            }
 
             if (filterProductLevels != null) {
 
@@ -1774,6 +1786,7 @@ public class ProductHelper {
                     product.getLocations().get(z).setWHPiece(0);
                     product.getLocations().get(z).setFacingQty(0);
                 }
+                //product.setTotalStockQty(0);
 
                 //clear delivered qty
                 product.setDeliveredCaseQty(0);
