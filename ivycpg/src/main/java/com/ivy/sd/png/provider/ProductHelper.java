@@ -371,18 +371,14 @@ public class ProductHelper {
                     else
                         p.setmDeadProduct(0);
 
-                    String value = hashMap
-                            .get(p.getProductID());
+                    String p4Qty = hashMap.get(p.getProductID());
+                    p.setRetailerWiseProductWiseP4Qty(p4Qty != null ? p4Qty : "0,0,0,0");
 
-                    if (value != null) {
-                        p.setRetailerWiseProductWiseP4Qty(value);
-                        p.setRetailerWiseP4StockQty(hashMap1.get(p.getProductID()));
-                        p.setOos(oosMap.get(p.getProductID()));
-                    } else {
-                        p.setRetailerWiseProductWiseP4Qty("0,0,0,0");
-                        p.setRetailerWiseP4StockQty("0,0,0,0");
-                        p.setOos(-2);
-                    }
+                    String stockQty = hashMap1.get(p.getProductID());
+                    p.setRetailerWiseP4StockQty(stockQty != null ? stockQty : "0,0,0,0");
+
+                    int oosQty = oosMap.get(p.getProductID());
+                    p.setOos(oosQty != 0 ? oosQty : -2);
                 }
             }
         } catch (Exception e) {
