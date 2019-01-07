@@ -826,17 +826,6 @@ public class ProductHelper {
                     DataMembers.DB_PATH);
             db.openDataBase();
 
-            int contentLevelId = 0;
-
-            Cursor seqCur = db
-                    .selectSQL("SELECT distinct IFNULL(PL.LevelId,0) "
-                            + "FROM ConfigActivityFilter CF "
-                            // Left join is to ensure configured level id is valid.
-                            + "LEFT JOIN ProductLevel PL ON PL.LevelId = CF.ProductContent "
-                            + "WHERE  CF.ActivityCode= '" + moduleName + "'");
-            if (seqCur.moveToNext()) {
-                contentLevelId = seqCur.getInt(0);
-            }
 
             if (filterProductLevels != null) {
 
@@ -1786,7 +1775,6 @@ public class ProductHelper {
                     product.getLocations().get(z).setWHPiece(0);
                     product.getLocations().get(z).setFacingQty(0);
                 }
-                //product.setTotalStockQty(0);
 
                 //clear delivered qty
                 product.setDeliveredCaseQty(0);
