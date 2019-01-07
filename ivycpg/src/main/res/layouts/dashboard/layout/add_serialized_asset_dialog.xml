@@ -164,7 +164,7 @@
         android:padding="@dimen/dimens_16dp">
 
         <TextView
-            style="@style/TextViewCaption"
+            style="@style/TextViewCaptionNormal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_10dp"
