@@ -140,6 +140,9 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
                     schemeTitleTV.setWidth(outMetrics.widthPixels);
                     prepareView(rootView, mProductID, productMasterBO, "0");
                 }
+            } else if ("0".equals(mProductID)) {
+                rootView.findViewById(R.id.layout_title).setVisibility(View.GONE);
+                prepareView(rootView, mProductID, null, mSelectedSlabId);
             }
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -190,7 +193,7 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
         ArrayList<Integer> parentIdList = null;
         if (schemeHelper.getParentIdListByProductId().get(mProductId) != null) {
             parentIdList = schemeHelper.getParentIdListByProductId().get(mProductId);
-        } else {
+        } else if (productMasterBO != null){
             for (String productId : schemeHelper.getParentIdListByProductId().keySet()) {
                 if (productId.equals(productMasterBO.getProductID())|| productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
                     parentIdList = schemeHelper.getParentIdListByProductId().get(productId);
@@ -198,7 +201,8 @@ public class SchemeDetailsFragment extends IvyBaseFragment {
 
             }
         }
-
+        if ("0".equals(mProductId))
+            parentIdList = schemeHelper.getmParentIDList();
 
         if (parentIdList != null) {
             for (Integer parentId : parentIdList) {

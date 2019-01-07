@@ -871,6 +871,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.supplierselect.SupplierSelectionActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
