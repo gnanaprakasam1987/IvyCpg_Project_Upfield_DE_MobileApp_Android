@@ -935,6 +935,7 @@ public class ProfileFragment extends IvyBaseFragment {
             }
             case "PROFILE25": {
                 String text = retailerObj.getCreditDays() + "";
+                text = text.equalsIgnoreCase("-1") ? "0" : text;
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);
