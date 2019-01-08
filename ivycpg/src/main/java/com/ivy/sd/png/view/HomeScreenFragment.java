@@ -1286,6 +1286,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     bmodel.mSelectedActivityName = menuItem.getMenuName();
                     bmodel.mSelectedActivityConfigCode = menuItem
                             .getConfigCode();
+                    surveyHelperNew.loadSurveyConfig(MENU_SURVEY01_SW);
                     switchFragment(MENU_SURVEY01_SW, menuItem.getMenuName());
                 } else {
 
