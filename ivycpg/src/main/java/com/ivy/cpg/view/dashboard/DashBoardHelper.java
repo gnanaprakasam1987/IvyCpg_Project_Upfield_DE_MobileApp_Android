@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.PriorityBo;
 import com.ivy.sd.png.bo.RetailerKPIBO;
@@ -14,6 +15,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -4186,5 +4188,40 @@ public class DashBoardHelper {
         return totalWeight;
     }
 
+    public String getLastDownloadDate(){
+        String downloadDate ="";
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select timestamp from SellerKPIDetail order by TimeStamp desc limit 1");
+            if (c != null && c.getCount() > 0 && c.moveToNext()) {
+                downloadDate = c.getString(0);
+                c.close();
+            }
+
+            db.closeDB();
+
+            if (downloadDate != null && !downloadDate.equals("")){
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
+                        Locale.ENGLISH);
+                Date date = sdf.parse(downloadDate);
+                sdf = new SimpleDateFormat(ConfigurationMasterHelper.outDateFormat +" HH:mm:ss", Locale.ENGLISH);
+
+                downloadDate = mContext.getResources().getString(R.string.last_download_on)
+                        +" "+sdf.format(date);
+
+            }
+
+        } catch (Exception e) {
+            Commons.printException(
+                    "Error at getLastDownloadDate In Dashboard.", e);
+        }
+
+        return downloadDate;
+    }
 
 }
