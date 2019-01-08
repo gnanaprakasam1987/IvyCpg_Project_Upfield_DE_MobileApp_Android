@@ -1476,6 +1476,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
+                                        createOrderPrintFile(true);
+
                                         Intent i = new Intent(OrderSummary.this,
                                                 HomeScreenTwo.class);
                                         Bundle extras = getIntent().getExtras();
@@ -3131,6 +3133,25 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     };
 
+    private void createOrderPrintFile(boolean isPrepareData){
+
+        if (isPrepareData) {
+            if ("1".equalsIgnoreCase(bModel.retailerMasterBO.getRField4()))
+                bModel.productHelper.updateDistributorDetails();
+
+            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
+
+            final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
+            Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
+
+            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null, null);
+
+        }
+        bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
+                StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH + "/");
+
+    }
+
 
     private void printOrder() {
 
@@ -3187,6 +3208,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 finish();
 
             } else {
+
+                createOrderPrintFile(false);
+
                 i = new Intent(OrderSummary.this,
                         CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);

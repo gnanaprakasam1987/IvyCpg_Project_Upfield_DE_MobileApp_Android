@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
@@ -117,7 +118,8 @@ public class VanUnloadHistoryActivity extends IvyBaseActivityNoActionBar {
                             || bmodel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
 
                         // Print file already saved.so not need to reload the object.we can get the object from print text file
-                        bmodel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_UNLOAD + historyBo.getTransactionId() + ".txt");
+                        bmodel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_UNLOAD + historyBo.getTransactionId() + ".txt",
+                                DataMembers.PRINT_FILE_PATH);
 
                         Intent intent = new Intent(VanUnloadHistoryActivity.this,
                                 CommonPrintPreviewActivity.class);
