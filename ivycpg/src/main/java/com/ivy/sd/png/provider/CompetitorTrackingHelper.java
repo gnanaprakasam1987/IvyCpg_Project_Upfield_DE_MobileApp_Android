@@ -207,17 +207,16 @@ public class CompetitorTrackingHelper {
      * Save the competitor details using Company wise Header and Details.
      */
     public void saveCompetitor() {
-        CompetitorBO competitor = null;
-        DBUtil db = null;
+        CompetitorBO competitor;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String headerColumns = "Tid,Date,RetailerID,CompetitorID,Feedback,ImageName,TimeZone,pid,Remark,CounterId,imgName,distributorid";
+            String headerColumns = "Tid,Date,RetailerID,CompetitorID,Feedback,ImageName,TimeZone,pid,Remark,CounterId,imgName,distributorid,ridSF,VisitId";
             String detailColumns = "TiD,TrackingListid,pid,RetailerID,FromDate,ToDate,Feedback,ImageName,imgName,qty,reasonID";
 
             String competitorReturnID = "CT"
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + bmodel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             Cursor orderDetailCursor = db.selectSQL("select tid from "
@@ -276,13 +275,17 @@ public class CompetitorTrackingHelper {
                             + ","
                             + competitor.getCompetitorpid()
                             + ","
-                            + bmodel.QT(bmodel.getNote())
+                            + QT(bmodel.getNote())
                             + ","
                             + bmodel.getCounterId()
                             + ","
                             + QT(competitor.getImageName())
                             + ","
-                            + bmodel.retailerMasterBO.getDistributorId();
+                            + bmodel.retailerMasterBO.getDistributorId()
+                            + ","
+                            + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF())
+                            + ","
+                            + bmodel.getAppDataProvider().getUniqueId();
 
                     db.insertSQL(DataMembers.tbl_CompetitorHeader,
                             headerColumns, values);
@@ -299,18 +302,18 @@ public class CompetitorTrackingHelper {
                                 + ","
                                 + competitor.getCompetitorpid()
                                 + ","
-                                + QT(bmodel.getRetailerMasterBO()
+                                + QT(bmodel.getAppDataProvider().getRetailMaster()
                                 .getRetailerID())
                                 + ","
                                 + QT(DateUtil
                                 .convertToServerDateFormat(
                                         temp.getFromDate(),
-                                        bmodel.configurationMasterHelper.outDateFormat))
+                                        ConfigurationMasterHelper.outDateFormat))
                                 + ","
                                 + QT(DateUtil
                                 .convertToServerDateFormat(
                                         temp.getToDate(),
-                                        bmodel.configurationMasterHelper.outDateFormat))
+                                        ConfigurationMasterHelper.outDateFormat))
                                 + ","
                                 + QT(temp.getFeedBack())
                                 + ","

@@ -206,6 +206,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int kpi_param_month;
     private int retailerTaxLocId;
     private int supplierTaxLocId;
+    private String ridSF;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1582,5 +1583,13 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public int getSupplierTaxLocId() {
         return supplierTaxLocId;
+    }
+
+    public String getRidSF() {
+        return ridSF;
+    }
+
+    public void setRidSF(String ridSF) {
+        this.ridSF = ridSF;
     }
 }

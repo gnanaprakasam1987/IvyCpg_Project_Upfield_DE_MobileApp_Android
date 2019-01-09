@@ -231,19 +231,19 @@ public class PriceTrackingHelper {
             String sql;
             Cursor headerCursor;
 
-            String headerColumns = "Tid, RetailerId, Date, TimeZone,distributorid";
+            String headerColumns = "Tid, RetailerId, Date, TimeZone,distributorid,ridSF,VisitId";
             String detailColumns = "Tid, PId, Changed, Price, Compliance, ReasonId, Own, RetailerId,uomID,mrp,mop,price_change_reasonid";
 
             String values;
 
-            tid = bmodel.userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + bmodel.getRetailerMasterBO().getRetailerID() + ""
+            tid = bmodel.getAppDataProvider().getUser().getUserid() + ""
+                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + ""
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // delete transaction if exist
             sql = "SELECT Tid FROM " + mPriceChangeHeader
                     + " WHERE RetailerId = "
-                    + bmodel.getRetailerMasterBO().getRetailerID()
+                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                     + " AND Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
                     //+ " AND upload='N'";
 
@@ -261,17 +261,19 @@ public class PriceTrackingHelper {
 
             //Weightage Calculation
             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                bmodel.fitscoreHelper.getWeightage(bmodel.getRetailerMasterBO().getRetailerID(), DataMembers.FIT_PRICE);
+                bmodel.fitscoreHelper.getWeightage(bmodel.getAppDataProvider().getRetailMaster().getRetailerID(), DataMembers.FIT_PRICE);
             }
 
             // save header
-            int moduleWeightage = 0, productWeightage = 0, sum = 0;
+            int productWeightage, sum = 0;
 
             values = QT(tid) + ","
-                    + bmodel.getRetailerMasterBO().getRetailerID() + ","
+                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
                     + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + QT(bmodel.getTimeZone()) + ","
-                    + bmodel.retailerMasterBO.getDistributorId();
+                    + bmodel.retailerMasterBO.getDistributorId() + ","
+                    + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                    + bmodel.getAppDataProvider().getUniqueId();
 
             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 detailColumns = detailColumns + ",Score";
@@ -324,7 +326,7 @@ public class PriceTrackingHelper {
                                 + QT(sku.getPrice_ca())
                                 + "," + sku.getPriceCompliance() + ","
                                 + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
+                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + sku.getCaseUomId() + "," + sku.getMrp_ca() + "," + sku.getPriceMOP()+","+sku.getPriceChangeReasonID();
 
                         if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
@@ -342,7 +344,7 @@ public class PriceTrackingHelper {
                                 + QT(sku.getPrice_pc())
                                 + "," + sku.getPriceCompliance() + ","
                                 + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
+                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + sku.getPcUomid() + "," + sku.getMrp_pc() + "," + sku.getPriceMOP()+","+sku.getPriceChangeReasonID();
 
                         if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
@@ -360,7 +362,7 @@ public class PriceTrackingHelper {
                                 + QT(sku.getPrice_oo())
                                 + "," + sku.getPriceCompliance() + ","
                                 + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
+                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + sku.getOuUomid() + "," + sku.getMrp_ou() + "," + sku.getPriceMOP()+","+sku.getPriceChangeReasonID();
 
                         if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
@@ -379,7 +381,7 @@ public class PriceTrackingHelper {
                                 + QT(sku.getPrice_pc())
                                 + "," + sku.getPriceCompliance() + ","
                                 + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
+                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + 0 + "," + sku.getMrp_ou() + "," + sku.getPriceMOP() +","+ sku.getPriceChangeReasonID();
 
                         if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {

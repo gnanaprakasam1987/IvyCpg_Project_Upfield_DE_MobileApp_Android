@@ -471,9 +471,10 @@ public class ReasonHelper {
 
             String uid = SDUtil.now(SDUtil.DATE_TIME_ID);
             String values = QT(uid) + "," + retailerid + ","
-                    + QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate())
-                    + "," + reasonMaster.getReasonID() + "," + beatid + "," + bmodel.getRetailerMasterBO().getDistributorId() + "," + QT(remarks);
-            sql = "insert into deviateReasontable (uid,retailerid,date,reasonid,beatid,distributorID,remarks) values("
+                    + QT(bmodel.getAppDataProvider().getUser().getDownloadDate())
+                    + "," + reasonMaster.getReasonID() + "," + beatid + "," + bmodel.getAppDataProvider().getRetailMaster().getDistributorId() + "," + QT(remarks)
+                    + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+            sql = "insert into deviateReasontable (uid,retailerid,date,reasonid,beatid,distributorID,remarks,ridSF) values("
                     + values + ")";
 
             db.executeQ(sql);

@@ -396,7 +396,7 @@ public class DeliveryManagementHelper {
         db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         db.openDataBase();
 
-        String id = bmodel.QT("SR" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+        String id = AppUtils.QT("SR" + bmodel.getAppDataProvider().getUser().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
         boolean isData = false;
         double totalReturnValue = 0;
         int lpc = 0;
@@ -439,9 +439,9 @@ public class DeliveryManagementHelper {
                         + ","
                         + 0
                         + ","
-                        + bmodel.QT("")
+                        + AppUtils.QT("")
                         + ","
-                        + bmodel.QT("")
+                        + AppUtils.QT("")
                         + ","
                         + outerQty
                         + ","
@@ -455,7 +455,7 @@ public class DeliveryManagementHelper {
                         .getOldBatchIDByMfd(productMasterBO
                                 .getProductID())
                         + ","
-                        + bmodel.QT((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
+                        + AppUtils.QT((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
                         + ","
                         + 0
                         + ","
@@ -463,10 +463,10 @@ public class DeliveryManagementHelper {
                         + ","
                         + totalValue
                         + ","
-                        + bmodel.QT(bmodel.retailerMasterBO
+                        + AppUtils.QT(bmodel.retailerMasterBO
                         .getRetailerID()) + ","
-                        + 1 + "," + bmodel.QT("") + "," + productMasterBO.getPcUomid()
-                        + "," + bmodel.QT("") + "," + bmodel.QT(productMasterBO.getHsnCode());
+                        + 1 + "," + AppUtils.QT("") + "," + productMasterBO.getPcUomid()
+                        + "," + AppUtils.QT("") + "," + AppUtils.QT(productMasterBO.getHsnCode());
 
                 db.insertSQL(
                         DataMembers.tbl_SalesReturnDetails,
@@ -485,7 +485,7 @@ public class DeliveryManagementHelper {
             int srUserID = SDUtil.convertToInt(invAndUserId[0]);
             String invoiceID = invAndUserId[1];
 
-            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,CollectStatus,invoiceid";
+            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,CollectStatus,invoiceid,ridSF,VisitId";
             String values = id + ","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -506,7 +506,9 @@ public class DeliveryManagementHelper {
             values = values + "," + AppUtils.QT("") + ","
                     + AppUtils.QT("") + ","
                     + AppUtils.QT(status) + ","// update delivery status
-                    + AppUtils.QT(invoiceID);
+                    + AppUtils.QT(invoiceID) + ","
+                    + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                    + bmodel.getAppDataProvider().getUniqueId();
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 

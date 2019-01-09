@@ -1485,7 +1485,7 @@ public class AssetTrackingHelper {
                 }
             }
             String query = "select uid,refid from AssetHeader where retailerid ="
-                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID())
+                    + QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                     + " and TypeLovid=" + typeListId;
             query += " and (upload='N' OR refid!=0)";
 
@@ -1504,16 +1504,16 @@ public class AssetTrackingHelper {
 
             double productWeightAge, sum = 0;
 
-            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid,distributorid";
+            String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid,distributorid,ridSF,VisitId";
             StringBuilder assetHeaderValues = new StringBuilder();
             assetHeaderValues.append(id);
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             assetHeaderValues.append(",");
-            assetHeaderValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
+            assetHeaderValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(mBusinessModel.getAssetRemark()));
             assetHeaderValues.append(",");
@@ -1633,7 +1633,7 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getCompetitorQty());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
                                 assetDetailValues.append(",");
                                 if (MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM)
                                     assetDetailValues.append(assetBo.getLocationID());
@@ -1772,7 +1772,7 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getCompetitorQty());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
                                 assetDetailValues.append(",");
                                 if (MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM)
                                     assetDetailValues.append(assetBo.getLocationID());
@@ -1836,6 +1836,10 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(QT(refId));
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(mBusinessModel.retailerMasterBO.getDistributorId() + ""));
+            assetHeaderValues.append(",");
+            assetHeaderValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF()));
+            assetHeaderValues.append(",");
+            assetHeaderValues.append(mBusinessModel.getAppDataProvider().getUniqueId());
 
             db.insertSQL(DataMembers.tbl_AssetHeader, assetHeaderColumns,
                     assetHeaderValues.toString());

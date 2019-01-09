@@ -301,15 +301,16 @@ public class TaskHelper {
         db.createDataBase();
         db.openDataBase();
 
-        String UID = QT(bmodel.getRetailerMasterBO().getRetailerID()
+        String UID = QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                 + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
-        String columns = "TaskId,RetailerId,Date,UId,Upload";
+        String columns = "TaskId,RetailerId,Date,UId,Upload,ridSF";
         String values;
 
         db.deleteSQL("TaskExecutionDetails", "TaskId=" + QT(taskBO.getTaskId()) + " and RetailerId = " + QT(retailerid), false);
 
         if (taskBO.isChecked()) {
-            values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + UID + ",'N'";
+            values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + UID + ",'N'" + ","
+                     + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
             db.insertSQL("TaskExecutionDetails", columns, values);
             bmodel.saveModuleCompletion("MENU_TASK");
         } else {

@@ -255,7 +255,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                     public Boolean call() throws Exception {
 
                         String columns = "uid,date,phototypeid,pid,imagepath,retailerid,RetailerName,ImageCount4Retailer,FromDate,ToDate,LocId," +
-                                "sku_name,abv,lot_code,seq_num,DistributorID,feedback,imgName";
+                                "sku_name,abv,lot_code,seq_num,DistributorID,feedback,imgName,ridSF,VisitId";
 
                         String uid = QT(appDataProvider.getUser()
                                 .getDistributorid()
@@ -305,7 +305,11 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                                         "," +
                                         QT(photoCaptureLocationBO.getFeedback()) +
                                         "," +
-                                        QT(photoCaptureLocationBO.getImageName());
+                                        QT(photoCaptureLocationBO.getImageName()) +
+                                        "," +
+                                        QT(appDataProvider.getRetailMaster().getRidSF()) +
+                                        "," +
+                                        appDataProvider.getUniqueId();
 
                                 mDbUtil.insertSQL(DataMembers.actPhotocapture, columns,
                                         sBuffer);
