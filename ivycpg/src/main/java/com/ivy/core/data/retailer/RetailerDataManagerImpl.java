@@ -123,7 +123,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                                                     + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                                                     + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
-                                                    + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId" : "0 as SupplierTaxLocId,")
+                                                    + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
                                                     + "ridSF FROM RetailerMaster A"
 
                                                     + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
