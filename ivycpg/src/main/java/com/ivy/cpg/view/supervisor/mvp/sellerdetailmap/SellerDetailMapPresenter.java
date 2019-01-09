@@ -633,7 +633,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return planeDate;
     }
 
-    ArrayList<RetailerBo> getVisitedRetailers() {
+    public ArrayList<RetailerBo> getVisitedRetailers() {
 
         ArrayList<RetailerBo> retailerBos = new ArrayList<>();
 
@@ -643,7 +643,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         return retailerBos;
     }
 
-    ArrayList<RetailerBo> getRetailerVisitDetailsByRId(int userId) {
+    public ArrayList<RetailerBo> getRetailerVisitDetailsByRId(int userId) {
         return retailerVisitDetailsByRId.get(userId);
     }
 

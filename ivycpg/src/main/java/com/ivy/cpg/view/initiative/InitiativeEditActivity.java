@@ -1,9 +1,6 @@
 package com.ivy.cpg.view.initiative;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -12,21 +9,18 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -36,52 +30,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class InitiativeDialog extends Dialog implements
-        OnClickListener {
+public class InitiativeEditActivity extends IvyBaseActivityNoActionBar {
 
     private BusinessModel bmodel;
-    private Context context;
     private TextView productName;
     private ListView lvwplist;
     private ArrayList<ProductMasterBO> mylist;
     private EditText QUANTITY;
     private String append = "";
     private Vector<String> initiativeProductIds;
-    private InitiativeActivity initAct;
     private TextView initQty, initValue;
     private String strInitQty = "", strValue = "";
 
-    public InitiativeDialog(Context context, InitiativeHeaderBO initHeaderBO,
-                            InitiativeActivity init) {
-        super(context);
-        this.context = context;
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if (getWindow() != null)
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_initiative);
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        Window window = getWindow();
-        lp.copyFrom(window.getAttributes());
-        // This makes the dialog take up the full width
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        window.setAttributes(lp);
-        initAct = init;
+        bmodel = (BusinessModel) getApplicationContext();
 
-        RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
-                .inflate(R.layout.dialog_initiative, null);
-        setContentView(ll);
-        this.getWindow().setLayout(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT);
+        InitiativeHeaderBO initHeaderBO = null;
 
-        setCancelable(true);
+        if (getIntent().getExtras() != null)
+            initHeaderBO = getIntent().getParcelableExtra("INITIATIVE_BO");
 
-        bmodel = (BusinessModel) context.getApplicationContext();
+        if (initHeaderBO == null) {
+            finish();
+            return;
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
-        mScreenTitleTV.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
+        mScreenTitleTV.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
         mScreenTitleTV.setText(initHeaderBO.getDescription());
         toolbar.setTitle("");
         Button btn_done = findViewById(R.id.btn_done);
@@ -89,8 +69,7 @@ public class InitiativeDialog extends Dialog implements
             @Override
             public void onClick(View v) {
                 updateBatchItem();
-                InitiativeDialog.this.initAct.onResume();
-                dismiss();
+                finish();
             }
         });
 
@@ -102,17 +81,17 @@ public class InitiativeDialog extends Dialog implements
         initQty = findViewById(R.id.initQty);
 
         TextView initLabel = findViewById(R.id.widget63);
-        String strLabel = context.getResources().getString(R.string.init_qty) + "/" +
-                            context.getResources().getString(R.string.tot_qty);
+        String strLabel = getResources().getString(R.string.init_qty) + "/" +
+                getResources().getString(R.string.tot_qty);
         initLabel.setText(strLabel);
 
         TextView initValueLabel = findViewById(R.id.initvalue_title);
-        String strValueLabel = context.getResources().getString(R.string.init_value) + "/" +
-                                context.getResources().getString(R.string.total_value);
+        String strValueLabel = getResources().getString(R.string.init_value) + "/" +
+                getResources().getString(R.string.total_value);
         initValueLabel.setText(strValueLabel);
 
         productName = findViewById(R.id.productName2);
-        productName.setOnTouchListener(new OnTouchListener() {
+        productName.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 int inType = productName.getInputType();
                 productName.setInputType(InputType.TYPE_NULL);
@@ -262,17 +241,12 @@ public class InitiativeDialog extends Dialog implements
         updateOrderTable();
     }
 
-    public void onBackPressed() {
-
-    }
-
-
     private void updateOrderTable() {
 
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (items == null) {
             bmodel.showAlert(
-                    context.getResources().getString(
+                    getResources().getString(
                             R.string.no_products_exists), 0);
             return;
         }
@@ -293,7 +267,7 @@ public class InitiativeDialog extends Dialog implements
         private ArrayList<ProductMasterBO> items;
 
         public MyAdapter(ArrayList<ProductMasterBO> items) {
-            super(context, R.layout.dialog_initiative_listrow, items);
+            super(InitiativeEditActivity.this, R.layout.dialog_initiative_listrow, items);
             this.items = items;
         }
 
@@ -370,8 +344,8 @@ public class InitiativeDialog extends Dialog implements
                             } else {
                                 /* Show Toast **/
                                 Toast.makeText(
-                                        context,
-                                        String.format(context.getResources()
+                                        InitiativeEditActivity.this,
+                                        String.format(getResources()
                                                         .getString(R.string.exceed),
                                                 holder.productObj.getSIH()),
                                         Toast.LENGTH_SHORT).show();
@@ -455,9 +429,9 @@ public class InitiativeDialog extends Dialog implements
                                     } else {
                                         /* Show Toast **/
                                         Toast.makeText(
-                                                context,
+                                                InitiativeEditActivity.this,
                                                 String.format(
-                                                        context.getResources()
+                                                        getResources()
                                                                 .getString(
                                                                         R.string.exceed),
                                                         holder.productObj
@@ -539,8 +513,8 @@ public class InitiativeDialog extends Dialog implements
                             } else {
                                 /* Show Toast **/
                                 Toast.makeText(
-                                        context,
-                                        String.format(context.getResources()
+                                        InitiativeEditActivity.this,
+                                        String.format(getResources()
                                                         .getString(R.string.exceed),
                                                 holder.productObj.getSIH()),
                                         Toast.LENGTH_SHORT).show();
@@ -587,7 +561,7 @@ public class InitiativeDialog extends Dialog implements
                     }
                 });
                 holder.caseqtyEditText
-                        .setOnTouchListener(new OnTouchListener() {
+                        .setOnTouchListener(new View.OnTouchListener() {
                             public boolean onTouch(View v, MotionEvent event) {
                                 productName.setText(holder.pname);
                                 QUANTITY = holder.caseqtyEditText;
@@ -603,7 +577,7 @@ public class InitiativeDialog extends Dialog implements
                             }
                         });
 
-                holder.pieceqty.setOnTouchListener(new OnTouchListener() {
+                holder.pieceqty.setOnTouchListener(new View.OnTouchListener() {
                     public boolean onTouch(View v, MotionEvent event) {
                         productName.setText(holder.pname);
                         QUANTITY = holder.pieceqty;
@@ -616,7 +590,7 @@ public class InitiativeDialog extends Dialog implements
                         return true;
                     }
                 });
-                holder.outerQty.setOnTouchListener(new OnTouchListener() {
+                holder.outerQty.setOnTouchListener(new View.OnTouchListener() {
 
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
@@ -755,7 +729,7 @@ public class InitiativeDialog extends Dialog implements
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
             bmodel.showAlert(
-                    context.getResources().getString(
+                    getResources().getString(
                             R.string.please_select_item), 0);
         } else {
             int id = vw.getId();
@@ -771,12 +745,6 @@ public class InitiativeDialog extends Dialog implements
             }
         }
         updateValue();
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        // TODO Auto-generated method stub
-
     }
 
     private void updateBatchItem() {
@@ -801,5 +769,4 @@ public class InitiativeDialog extends Dialog implements
             }
         }
     }
-
 }

@@ -360,7 +360,7 @@ public class StockCheckHelper {
                 Locale.ENGLISH);
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_YEAR, 30);
-        DBUtil db = null;
+        DBUtil db;
         try {
             db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.openDataBase();
@@ -370,20 +370,20 @@ public class StockCheckHelper {
             Cursor headerCursor;
             String refId = "0";
 
-            String headerColumns = "Tid, RetailerId, Date, TimeZone, RefId";
+            String headerColumns = "Tid, RetailerId, Date, TimeZone, RefId,ridSF,VisitId";
             String detailColumns = "Tid, PId,LocId, UOMId, UOMQty,expdate,retailerid,isOwn";
 
             String values;
             boolean isData;
 
-            tid = bmodel.userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + bmodel.getRetailerMasterBO().getRetailerID() + ""
+            tid = bmodel.getAppDataProvider().getUser().getUserid() + ""
+                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + ""
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // delete transaction if exist
             sql = "SELECT Tid, RefId FROM NearExpiry_Tracking_Header"
                     + " WHERE RetailerId = "
-                    + bmodel.getRetailerMasterBO().getRetailerID();
+                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID();
 
             headerCursor = db.selectSQL(sql);
 
@@ -420,7 +420,7 @@ public class StockCheckHelper {
                                 + ","
                                 + AppUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
                                 .getTime()))) + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
+                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + skubo.getOwn();
 
                         db.insertSQL("NearExpiry_Tracking_Detail",
@@ -443,7 +443,7 @@ public class StockCheckHelper {
                                 + ","
                                 + AppUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
                                 .getTime()))) + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID()
+                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                 + "," + skubo.getOwn();
 
                         db.insertSQL("NearExpiry_Tracking_Detail",
@@ -466,7 +466,7 @@ public class StockCheckHelper {
                                 + ","
                                 + AppUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
                                 .getTime()))) + ","
-                                + bmodel.getRetailerMasterBO().getRetailerID() + "," + skubo.getOwn();
+                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + skubo.getOwn();
                         db.insertSQL("NearExpiry_Tracking_Detail",
                                 detailColumns, values);
                         isData = true;
@@ -496,7 +496,7 @@ public class StockCheckHelper {
                                         + ","
                                         + AppUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
                                         .getTime()))) + ","
-                                        + bmodel.getRetailerMasterBO().getRetailerID()
+                                        + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                         + "," + skubo.getOwn();
 
                                 db.insertSQL("NearExpiry_Tracking_Detail",
@@ -519,7 +519,7 @@ public class StockCheckHelper {
                                         + ","
                                         + AppUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
                                         .getTime()))) + ","
-                                        + bmodel.getRetailerMasterBO().getRetailerID()
+                                        + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                                         + "," + skubo.getOwn();
 
                                 db.insertSQL("NearExpiry_Tracking_Detail",
@@ -542,7 +542,7 @@ public class StockCheckHelper {
                                         + ","
                                         + AppUtils.QT(changeMonthNameToNoyyyymmdd(df.format(c
                                         .getTime()))) + ","
-                                        + bmodel.getRetailerMasterBO().getRetailerID() + "," + skubo.getOwn();
+                                        + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + skubo.getOwn();
                                 db.insertSQL("NearExpiry_Tracking_Detail",
                                         detailColumns, values);
                                 isData = true;
@@ -555,9 +555,11 @@ public class StockCheckHelper {
 
             // Saving Transaction Header if There is Any Detail
             if (isData) {
-                values = AppUtils.QT(tid) + "," + bmodel.getRetailerMasterBO().getRetailerID()
+                values = AppUtils.QT(tid) + "," + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                         + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                        + AppUtils.QT(getTimeZone()) + "," + AppUtils.QT(refId);
+                        + AppUtils.QT(getTimeZone()) + "," + AppUtils.QT(refId) + ","
+                        + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                        + bmodel.getAppDataProvider().getUniqueId();
 
                 db.insertSQL("NearExpiry_Tracking_Header", headerColumns,
                         values);
@@ -632,12 +634,12 @@ public class StockCheckHelper {
             db.openDataBase();
 
             boolean isData;
-            String id = AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = AppUtils.QT(bmodel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
             if (bmodel.isEditStockCheck()) {
                 Cursor closingStockCursor = db
                         .selectSQL("select StockID from ClosingStockHeader where RetailerID="
-                                + bmodel.getRetailerMasterBO().getRetailerID() + "");
+                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + "");
 
                 if (closingStockCursor.getCount() > 0) {
                     closingStockCursor.moveToNext();
@@ -654,12 +656,12 @@ public class StockCheckHelper {
 
             //Weightage Calculation
             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                FitScoreHelper.getInstance(context).getWeightage(bmodel.getRetailerMasterBO().getRetailerID(), DataMembers.FIT_STOCK);
+                FitScoreHelper.getInstance(context).getWeightage(bmodel.getAppDataProvider().getRetailMaster().getRetailerID(), DataMembers.FIT_STOCK);
             }
 
             String columns, values;
 
-            int moduleWeightage = 0, productWeightage = 0, sum = 0;
+            int productWeightage, sum = 0;
 
             ProductMasterBO product;
 
@@ -773,12 +775,12 @@ public class StockCheckHelper {
 
             // ClosingStock Header entry
             if (isData) {
-                columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID,AvailabilityShare";
+                columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID,AvailabilityShare,ridSF,VisitId";
 
                 values = (id) + ", " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
-                        + ", " + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ", "
-                        + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerCode()) + ","
-                        + AppUtils.QT(bmodel.getStockCheckRemark()) + "," + bmodel.getRetailerMasterBO().getDistributorId();
+                        + ", " + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) + ", "
+                        + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerCode()) + ","
+                        + AppUtils.QT(bmodel.getStockCheckRemark()) + "," + bmodel.getAppDataProvider().getRetailMaster().getDistributorId();
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
                     String availabilityShare = (bmodel.getAvailablilityShare() == null ||
@@ -787,6 +789,9 @@ public class StockCheckHelper {
                 } else {
                     values = values + "," + AppUtils.QT("0.0");
                 }
+
+                values = values + "," + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                        + bmodel.getAppDataProvider().getUniqueId();
 
                 db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
 

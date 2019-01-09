@@ -214,12 +214,11 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
 
 
         try {
-            LastSyncTimeHelper lastSyncTimeHelper = new LastSyncTimeHelper(getActivity());
+
+            String download = dashBoardHelper.getLastDownloadDate() ;
+
             TextView last_sync = view.findViewById(R.id.text_last_sync);
-            String download = getResources().getString(R.string.last_download_on) +" "+
-                    DateUtil.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastDownloadDate(),
-                            ConfigurationMasterHelper.outDateFormat)
-                    + " " + lastSyncTimeHelper.getLastDownloadTime();
+
             last_sync.setText(download);
         }catch (Exception e){
             Commons.printException(e);

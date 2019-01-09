@@ -49,6 +49,14 @@
         android:orderInCategory="96"
         android:title="@string/barcode"
         ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_scheme"
+        android:icon="@drawable/scheme"
+        android:title="Scheme"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+
     <item
         android:id="@+id/menu_loc_filter"
         android:icon="@drawable/ic_action_location_place"

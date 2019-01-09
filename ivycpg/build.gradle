@@ -155,23 +155,17 @@ android {
             }
         }
     }
+
     sourceSets {
-
         aws {
-            java {
-                srcDirs('src/AWS/java', 'src/main/java')
-            }
-        }
+            java.srcDirs = ['src/AWS/java', 'src/main/java']
 
+        }
         sfdc {
-            java {
-                srcDirs('src/SFDC/java', 'src/main/java')
-            }
-            res {
-                srcDirs('src/SFDC/res','src/main/res')
-            }
-        }
 
+            java.srcDirs = ['src/SFDC/java', 'src/main/java']
+            res.srcDirs = ['src/SFDC/res', 'src/main/res']
+        }
 
         main {
             // res.srcDirs = getLayoutList("ivycpg/src/main/res/layouts/")
@@ -287,7 +281,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
 
     implementation "org.greenrobot:eventbus:$rootProject.eventBusVersion"
-
 
     //Chat-Sdk
     implementation 'co.chatsdk.chatsdk:chat-sdk-core:4.1.36'

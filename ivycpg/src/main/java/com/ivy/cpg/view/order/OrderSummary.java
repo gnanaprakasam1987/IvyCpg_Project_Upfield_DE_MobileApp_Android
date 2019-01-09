@@ -48,7 +48,7 @@ import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
-import com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonDialog;
+import com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonActivity;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
@@ -134,6 +134,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private static final int DISCOUNT_RESULT_CODE = 114;
     private static final int RETURN_PRODUCT_RESULT_CODE = 115;
+    private static final int INDICATIVE_ORDER_REASON_RESULT_CODE = 116;
+    private static final int COLLECTION_INVOICE_RESULT_CODE = 120;
 
 
     private static final int FILE_SELECTION = 12;
@@ -151,7 +153,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private AlertDialog alertDialog;
     private AmountSplitUpDialog amountSplitUpDialog;
     private OrderConfirmationDialog orderConfirmationDialog;
-    private CollectionBeforeInvoiceDialog collectionBeforeInvoiceDialog;
     private StoreWiseDiscountDialog mStoreWiseDiscountDialogFragment;
 
     private BusinessModel bModel;
@@ -1099,8 +1100,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             else
                 showDialog(DIALOG_DELETE_ONLY_ORDER);
         } else if (i1 == R.id.menu_indicative_order_reason) {
-            IndicativeOrderReasonDialog indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bModel);
-            indicativeReasonDialog.show();
+
+            Intent intent = new Intent(OrderSummary.this,IndicativeOrderReasonActivity.class);
+            ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+            ActivityCompat.startActivityForResult(this, intent, INDICATIVE_ORDER_REASON_RESULT_CODE, opts.toBundle());
+
         } else if (i1 == R.id.menu_capture) {
             if (bModel.isExternalStorageAvailable()) {
                 mImageName = "ORD_"
@@ -1225,11 +1229,19 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     .size();
             if (paymentModeSize > 0) {
 
-                collectionBeforeInvoiceDialog = new CollectionBeforeInvoiceDialog(
-                        this, this, collectionbo, totalOrderValue,
-                        minimumAmount, creditBalance);
-                collectionBeforeInvoiceDialog.show();
-                collectionBeforeInvoiceDialog.setCancelable(false);
+                Intent intent = new Intent(OrderSummary.this,CollectionBeforeInvoiceActivity.class);
+
+                Bundle bundle = new Bundle();
+
+                bundle.putDouble("TotalInvoiceAmt",totalOrderValue);
+                bundle.putDouble("OsAmount",minimumAmount);
+                bundle.putDouble("CreditDalance",creditBalance);
+                bundle.putParcelable("Collection",collectionbo);
+
+                intent.putExtras(bundle);
+
+                ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                ActivityCompat.startActivityForResult(this, intent, COLLECTION_INVOICE_RESULT_CODE, opts.toBundle());
 
             } else {
                 Toast.makeText(OrderSummary.this,
@@ -1464,6 +1476,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
+                                        createOrderPrintFile(true);
+
                                         Intent i = new Intent(OrderSummary.this,
                                                 HomeScreenTwo.class);
                                         Bundle extras = getIntent().getExtras();
@@ -1552,6 +1566,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                         if (bModel.getOrderHeaderBO() != null) {
                                             // clear scheme free products
                                             bModel.getOrderHeaderBO().setIsSignCaptured(false);
+
                                             if (bModel.getOrderHeaderBO().getSignatureName() != null)
                                                 bModel.synchronizationHelper.deleteFiles(
                                                         PHOTO_PATH, bModel.getOrderHeaderBO().getSignatureName());
@@ -1783,7 +1798,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
     private void saveOrder() {
 
-        IndicativeOrderReasonDialog indicativeReasonDialog;
         isFromOrder = true;
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE && mSortedList != null)
@@ -1809,8 +1823,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 if ((bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || bModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !orderHelper.isReasonProvided(mOrderedProductList)) {
 
-                    indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bModel);
-                    indicativeReasonDialog.show();
+                    Intent intent = new Intent(OrderSummary.this,IndicativeOrderReasonActivity.class);
+                    ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                    ActivityCompat.startActivityForResult(this, intent, INDICATIVE_ORDER_REASON_RESULT_CODE, opts.toBundle());
+
                     isClick = false;
 
                 } else {
@@ -1863,7 +1879,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     private void saveInvoice() {
 
         isFromOrder = false;
-        IndicativeOrderReasonDialog indicativeReasonDialog;
 
         if (bModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE && mSortedList != null)
             orderHelper.setSortedOrderedProducts(mSortedList);
@@ -1962,8 +1977,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                         if ((bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || bModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !orderHelper.isReasonProvided(mOrderedProductList)) {
 
-                            indicativeReasonDialog = new IndicativeOrderReasonDialog(this, bModel);
-                            indicativeReasonDialog.show();
+                            Intent intent = new Intent(OrderSummary.this,IndicativeOrderReasonActivity.class);
+                            ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(this, R.anim.zoom_enter, R.anim.hold);
+                            ActivityCompat.startActivityForResult(this, intent, INDICATIVE_ORDER_REASON_RESULT_CODE, opts.toBundle());
+
                             isClick = false;
 
                         } else {
@@ -3116,6 +3133,25 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     };
 
+    private void createOrderPrintFile(boolean isPrepareData){
+
+        if (isPrepareData) {
+            if ("1".equalsIgnoreCase(bModel.retailerMasterBO.getRField4()))
+                bModel.productHelper.updateDistributorDetails();
+
+            SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(OrderSummary.this);
+
+            final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
+            Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
+
+            bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null, null);
+
+        }
+        bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
+                StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH + "/");
+
+    }
+
 
     private void printOrder() {
 
@@ -3172,6 +3208,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 finish();
 
             } else {
+
+                createOrderPrintFile(false);
+
                 i = new Intent(OrderSummary.this,
                         CommonPrintPreviewActivity.class);
                 i.putExtra("IsFromOrder", true);
@@ -3430,9 +3469,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     }
 
     public void numberPressed(View vw) {
-        if (collectionBeforeInvoiceDialog != null && collectionBeforeInvoiceDialog.isShowing()) {
-            collectionBeforeInvoiceDialog.numberPressed(vw);
-        }
+
         if (mStoreWiseDiscountDialogFragment != null && mStoreWiseDiscountDialogFragment.isVisible()) {
             mStoreWiseDiscountDialogFragment.numberPressed(vw);
         }
@@ -3473,6 +3510,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             case RETURN_PRODUCT_RESULT_CODE :
+                overridePendingTransition(0, R.anim.zoom_exit);
+                break;
+            case INDICATIVE_ORDER_REASON_RESULT_CODE :
+                overridePendingTransition(0, R.anim.zoom_exit);
+                break;
+            case COLLECTION_INVOICE_RESULT_CODE :
                 overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             default:

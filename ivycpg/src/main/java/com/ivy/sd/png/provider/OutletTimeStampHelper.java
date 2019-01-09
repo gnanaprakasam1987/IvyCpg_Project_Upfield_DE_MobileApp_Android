@@ -16,6 +16,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.utils.DeviceUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -226,7 +227,7 @@ public class OutletTimeStampHelper {
      */
     public boolean saveTimeStamp(String date, String timeIn, float distance, String folderPath, String fName, String mVisitMode, String mNFCREasonId) {
 
-        ArrayList<UserMasterBO> joinCallList = bmodel.userMasterHelper.getUserMasterBO().getJoinCallUserList();
+        ArrayList<UserMasterBO> joinCallList = bmodel.getAppDataProvider().getUser().getJoinCallUserList();
         boolean sucessFlag=true;
         try {
 		try {
@@ -238,7 +239,7 @@ public class OutletTimeStampHelper {
 			float dist = 0f;
             try {
                 dist =LocationUtil.calculateDistance(
-					bmodel.getRetailerMasterBO().getLatitude(), bmodel.getRetailerMasterBO().getLongitude());} catch (Exception e) {
+					bmodel.getAppDataProvider().getRetailMaster().getLatitude(), bmodel.getAppDataProvider().getRetailMaster().getLongitude());} catch (Exception e) {
                 Commons.printException(e);
             }
 
@@ -248,7 +249,7 @@ public class OutletTimeStampHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc";
+            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc,ridSF";
 
 
             String values = getUid() + ","
@@ -262,15 +263,16 @@ public class OutletTimeStampHelper {
                     + joinCallFlag + ","
                     + QT(LocationUtil.accuracy + "") + ","
                     + QT(distance + "") + ","
-                    + (dist < bmodel.getRetailerMasterBO().getGpsDistance() ? 1 : 0) + ","
-                    + (getLastRetailerId() == SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID()) ? getLastRetailerSequence() : (getLastRetailerSequence() + 1))
+                    + (dist < bmodel.getAppDataProvider().getRetailMaster().getGpsDistance() ? 1 : 0) + ","
+                    + (getLastRetailerId() == SDUtil.convertToInt(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) ? getLastRetailerSequence() : (getLastRetailerSequence() + 1))
                     + "," + bmodel.retailerMasterBO.getDistributorId()
-                    + "," + getBatteryPercentage(context)
+                    + "," + DeviceUtils.getBatteryPercentage(context)
                     + "," + QT(LocationUtil.mProviderName)
                     + "," + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
-                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()== null ? "": bmodel.retailerMasterBO.getIsDeviated()))
                     + "," + QT(String.valueOf(bmodel.getOrderValue()))
-                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
+                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()))
+                    + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
 			db.insertSQL("OutletTimestamp", columns, values);
 
@@ -323,7 +325,7 @@ public class OutletTimeStampHelper {
                     + ", gpsAccuracy = " + QT(LocationUtil.accuracy + "")
                     + ", Battery = " + getBatteryPercentage(context)
                     + ", IsLocationEnabled = " + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
-                    + ", IsDeviated = " + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()))
+                    + ", IsDeviated = " + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()==null?"":bmodel.retailerMasterBO.getIsDeviated()))
                     + ", lpc = " + bmodel.retailerMasterBO.getTotalLines()
                     + "  WHERE RetailerID = '"
                     + bmodel.retailerMasterBO.getRetailerID()

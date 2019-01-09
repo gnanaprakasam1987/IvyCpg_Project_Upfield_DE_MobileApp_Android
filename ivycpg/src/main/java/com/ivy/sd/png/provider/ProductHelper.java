@@ -43,6 +43,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 
+import org.greenrobot.greendao.DbUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,18 +161,18 @@ public class ProductHelper {
     }
 
     /**
-     * @deprecated
-     * @See {@link AppDataProvider#getGlobalLocationIndex()}
      * @return
+     * @See {@link AppDataProvider#getGlobalLocationIndex()}
+     * @deprecated
      */
     public int getmSelectedGLobalLocationIndex() {
         return mSelectedGLobalLocationIndex;
     }
 
     /**
-     * @deprecated
-     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
      * @param mSelectedGLobalLocationIndex
+     * @See {@link AppDataProvider#setGlobalLocationIndex(int)}
+     * @deprecated
      */
     public void setmSelectedGLobalLocationIndex(int mSelectedGLobalLocationIndex) {
         this.mSelectedGLobalLocationIndex = mSelectedGLobalLocationIndex;
@@ -369,18 +371,14 @@ public class ProductHelper {
                     else
                         p.setmDeadProduct(0);
 
-                    String value = hashMap
-                            .get(p.getProductID());
+                    String p4Qty = hashMap.get(p.getProductID());
+                    p.setRetailerWiseProductWiseP4Qty(p4Qty != null ? p4Qty : "0,0,0,0");
 
-                    if (value != null) {
-                        p.setRetailerWiseProductWiseP4Qty(value);
-                        p.setRetailerWiseP4StockQty(hashMap1.get(p.getProductID()));
-                        p.setOos(oosMap.get(p.getProductID()));
-                    } else {
-                        p.setRetailerWiseProductWiseP4Qty("0,0,0,0");
-                        p.setRetailerWiseP4StockQty("0,0,0,0");
-                        p.setOos(-2);
-                    }
+                    String stockQty = hashMap1.get(p.getProductID());
+                    p.setRetailerWiseP4StockQty(stockQty != null ? stockQty : "0,0,0,0");
+
+                    int oosQty = oosMap.get(p.getProductID());
+                    p.setOos(oosQty != 0 ? oosQty : -2);
                 }
             }
         } catch (Exception e) {
@@ -790,7 +788,7 @@ public class ProductHelper {
             db.openDataBase();
 
             Cursor listCursor = db
-                    .selectSQL(" SELECT PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
+                    .selectSQL(" SELECT distinct PL.LevelID , PL.LevelName ,  PL.Sequence FROM ProductLevel  PL "
                             + " INNER JOIN ConfigActivityFilter CA  ON "
                             + " PL.LevelID =CA.ProductFilter1 OR  "
                             + " PL.LevelID =CA.ProductFilter2 OR  "
@@ -826,6 +824,7 @@ public class ProductHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
                     DataMembers.DB_PATH);
             db.openDataBase();
+
 
             if (filterProductLevels != null) {
 
@@ -990,7 +989,7 @@ public class ProductHelper {
                     + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,F.ASRP as asrp,"
                     + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
-                    +   (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE?",FSH.qty as freeSIH":",0 as freeSIH")
+                    + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? ",FSH.qty as freeSIH" : ",0 as freeSIH")
                     + " from ProductMaster A";
 
             sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = " + bmodel.getRetailerMasterBO().getGroupId()
@@ -999,7 +998,7 @@ public class ProductHelper {
                     + " left join SbdDistributionMaster sbd on A.pid=sbd.productid and sbd.channelid=" + bmodel.getRetailerMasterBO().getChannelID()
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
-                    +  (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE?" LEFT JOIN FreeStockInHandMaster FSH ON FSH.pid=A.pid":"")
+                    + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? " LEFT JOIN FreeStockInHandMaster FSH ON FSH.pid=A.pid" : "")
                     + " WHERE A.PLid IN(" + mContentLevelId + ") ";
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -1914,7 +1913,7 @@ public class ProductHelper {
         return true;
     }
 
-    public boolean isMustSellFilledStockCheck(boolean isTaggedProducts,Context context) {
+    public boolean isMustSellFilledStockCheck(boolean isTaggedProducts, Context context) {
 
         boolean isSkuFilled = true;
 
@@ -3320,11 +3319,19 @@ public class ProductHelper {
                 }
 
                 bo.setBatchlist(list);
+                bo.setIsFree(0); // loaded free sih
                 mLoadManagementBOByProductId.put(bo.getProductid(), bo);
 
                 productlist.add(bo);
 
             }
+
+            //freeStockInHandMaster
+            if (batchmenucode.equals("MENU_MANUAL_VAN_LOAD")
+                    || batchmenucode.equals("MENU_VAN_UNLOAD")
+                    || batchmenucode.equals("MENU_CUR_STK_BATCH")
+                    || batchmenucode.equals("MENU_STOCK_ADJUSTMENT"))
+                loadDataFromFreeSIHMaster(db, moduleCode);
 
             c.close();
         }
@@ -5457,6 +5464,95 @@ public class ProductHelper {
         return clone;
     }
 
+    //to load data from free sih master to unload free qty separate in Van unlaod screen
+    //Mansoor
+    private void loadDataFromFreeSIHMaster(DBUtil db, String moduleCode) {
+
+        String query = "SELECT PM.ParentId, PM.PID, PM.PName,"
+                + " (select qty from StockProposalNorm PSQ  where uomid =PM.piece_uomid and PM.PID = PSQ.PID) as sugpcs,"
+                + " PM.psname, PM.dUomQty,"
+                + " PM.sih, PWHS.Qty, PM.IsAlloc, PM.mrp, PM.barcode, PM.RField1, PM.dOuomQty,"
+                + " PM.isMust, PM.maxQty,(select qty from ProductStandardStockMaster PSM  where uomid =PM.piece_uomid and PM.PID = PSM.PID) as stdpcs,(select qty from ProductStandardStockMaster PSM where uomid =PM.dUomId and PM.PID = PSM.PID) as stdcase,(select qty from ProductStandardStockMaster PSM where uomid =PM.dOuomid and PM.PID = PSM.PID) as stdouter, PM.dUomId, PM.dOuomid,"
+                + " PM.baseprice, PM.piece_uomid, PM.PLid, PM.pCode, PM.msqQty, PM.issalable"
+                + ",IFNULL(BM.batchNum,'') as batchNum,SIH.qty as qty,SIH.batchid as batchid"
+                + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
+                + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou,PM.pCode as ProCode,"
+                + "  PM.ParentHierarchy as ParentHierarchy "
+                + " FROM ProductMaster PM"
+                + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
+                + " INNER JOIN FreeStockInHandMaster SIH ON SIH.pid=PM.PID"
+                + "  LEFT JOIN BatchMaster BM ON (SIH.batchid = BM.batchid AND PM.pid=BM.pid)"
+                + " WHERE PM.PLid IN"
+                + " (SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = "
+                + bmodel.QT(moduleCode) + ")";
+
+        Cursor c = db.selectSQL(query);
+        if (c != null) {
+            while (c.moveToNext()) {
+                LoadManagementBO bo = new LoadManagementBO();
+
+                bo.setParentid(c.getInt(0));
+                bo.setProductid(c.getInt(1));
+                bo.setProductname(c.getString(2));
+                bo.setProductCode(c.getString(c.getColumnIndex("ProCode")));
+                bo.setSuggestqty(c.getInt(c.getColumnIndex("sugpcs")) +
+                        (c.getInt(c.getColumnIndex("sugcs")) * c.getInt(5)) +
+                        (c.getInt(c.getColumnIndex("sugou")) * c.getInt(12)));
+                bo.setProductshortname(c.getString(4));
+                bo.setCaseSize(c.getInt(5));
+                bo.setSih(c.getInt(c.getColumnIndex("qty"))); //  for freeproduct sih is from product master not considered
+                bo.setWsih(c.getInt(7));
+                bo.setIsalloc(c.getInt(8));
+                bo.setMrp(c.getDouble(9));
+                bo.setBarcode(c.getString(10));
+                bo.setRField1(c.getString(11));
+                bo.setOuterSize(c.getInt(12));
+                bo.setIsMust(c.getInt(13));
+                bo.setMaxQty(c.getInt(14));
+                bo.setStdpcs(c.getInt(15));
+                bo.setStdcase(c.getInt(16));
+                bo.setStdouter(c.getInt(17));
+                bo.setdUomid(c.getInt(18));
+                bo.setdOuonid(c.getInt(19));
+                bo.setBaseprice(c.getDouble(20));
+                bo.setPiece_uomid(c.getInt(21));
+                bo.setPLid(c.getInt(22));
+                bo.setpCode(c.getString(23));
+                bo.setMsqQty(c.getInt(24));
+                bo.setIssalable(c.getInt(25));
+                bo.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                bo.setBatchNo(c.getString(c.getColumnIndex("batchNum")));
+                bo.setStocksih(c.getInt(c.getColumnIndex("qty")));
+                bo.setBatchId(c.getString(c.getColumnIndex("batchid")));
+
+                Vector<LoadManagementBO> list = new Vector<>();
+                LoadManagementBO ret;
+
+                for (int i = 0; i < 3; ++i) {
+                    ret = new LoadManagementBO();
+                    ret.setProductid(c.getInt(0));
+                    ret.setCaseqty(0);
+                    ret.setPieceqty(0);
+                    ret.setOuterQty(0);
+                    ret.setBatchNo("");
+                    list.add(ret);
+                }
+
+                bo.setBatchlist(list);
+
+                bo.setIsFree(1); // loaded free sih
+
+                if (mLoadManagementBOByProductId.get(bo.getProductid()) == null)
+                    mLoadManagementBOByProductId.put(bo.getProductid(), bo);
+
+                productlist.add(bo);
+
+            }
+
+            c.close();
+        }
+
+    }
 }
 
 

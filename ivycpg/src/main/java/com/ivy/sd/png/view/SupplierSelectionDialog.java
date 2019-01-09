@@ -27,13 +27,13 @@ import java.util.List;
  * Created by rajkumar.s on 11/30/2016.
  */
 
-public class SupplierSelectionDialog extends Dialog {
+class SupplierSelectionDialog extends Dialog {
 
-    ExpandableListView lstSupplier;
-    BusinessModel bmodel;
-    ArrayList<SupplierMasterBO> mSupplierList, primarySupplier, secondarySupplier;
-    ArrayList<String> lst_group;
-    ArrayList<List<SupplierMasterBO>> lst_child;
+    private ExpandableListView lstSupplier;
+    private BusinessModel bmodel;
+    private ArrayList<SupplierMasterBO> mSupplierList;
+    private ArrayList<String> lst_group;
+    private ArrayList<List<SupplierMasterBO>> lst_child;
     private UpdateSupplierName updateSupplierName;
     private Context mContext;
 
@@ -41,10 +41,12 @@ public class SupplierSelectionDialog extends Dialog {
         void updateSupplierName(String supplierName);
     }
 
-    public SupplierSelectionDialog(final Context context, ArrayList<SupplierMasterBO> supplierList) {
+    SupplierSelectionDialog(final Context context, ArrayList<SupplierMasterBO> supplierList) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+
+        if (getWindow() != null)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setCancelable(false);
 
@@ -58,7 +60,7 @@ public class SupplierSelectionDialog extends Dialog {
         updateSupplierName = (UpdateSupplierName) context;
 
         ((TextView) findViewById(R.id.titlebar)).setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
-        lstSupplier = (ExpandableListView) findViewById(R.id.lst_supplier);
+        lstSupplier = findViewById(R.id.lst_supplier);
 
         //Prepare Data
 
@@ -67,8 +69,8 @@ public class SupplierSelectionDialog extends Dialog {
                     && mSupplierList.size() > 0
                     && mSupplierList.get(0).getIsPrimary() == 1) {
 
-                primarySupplier = new ArrayList<>();
-                secondarySupplier = new ArrayList<>();
+                ArrayList<SupplierMasterBO> primarySupplier = new ArrayList<>();
+                ArrayList<SupplierMasterBO> secondarySupplier = new ArrayList<>();
 
                 for (int i = 0; i < mSupplierList.size(); i++) {
 
@@ -109,12 +111,10 @@ public class SupplierSelectionDialog extends Dialog {
         }
     }
 
-
     private void refreshView() {
         Myadapter adapter = new Myadapter();
         lstSupplier.setAdapter(adapter);
     }
-
 
     private class Myadapter extends BaseExpandableListAdapter {
         @Override
@@ -137,8 +137,8 @@ public class SupplierSelectionDialog extends Dialog {
                 row = inflater.inflate(R.layout.row_supplier_selection,
                         parent, false);
                 childHolder = new ChildViewHolder();
-                childHolder.tv_supplier = (TextView) row.findViewById(R.id.tv_supplier);
-                childHolder.chk = (CheckBox) row.findViewById(R.id.chk_selected);
+                childHolder.tv_supplier =  row.findViewById(R.id.tv_supplier);
+                childHolder.chk =  row.findViewById(R.id.chk_selected);
                 childHolder.chk.setClickable(false);
 
                 childHolder.tv_supplier.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
@@ -190,9 +190,9 @@ public class SupplierSelectionDialog extends Dialog {
                 row = inflater.inflate(R.layout.row_supplier_selection_header,
                         viewGroup, false);
                 groupHolder = new GroupViewHolder();
-                groupHolder.tv_header = (TextView) row.findViewById(R.id.tv_header);
-                groupHolder.tv_supplier = (TextView) row.findViewById(R.id.tv_supplier);
-                groupHolder.chk = (CheckBox) row.findViewById(R.id.chk_selected);
+                groupHolder.tv_header =  row.findViewById(R.id.tv_header);
+                groupHolder.tv_supplier =  row.findViewById(R.id.tv_supplier);
+                groupHolder.chk =  row.findViewById(R.id.chk_selected);
                 groupHolder.chk.setClickable(false);
 
                 groupHolder.tv_header.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.REGULAR));

@@ -855,6 +855,27 @@
         <activity
             android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
             android:screenOrientation="portrait" />
+
+        <service
+            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name="com.ivy.cpg.view.initiative.InitiativeEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.order.CollectionBeforeInvoiceActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.supplierselect.SupplierSelectionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
+            android:screenOrientation="portrait" />
         <activity android:name="com.ivy.ui.task.view.TaskActivity" />
         <activity android:name="com.ivy.ui.task.view.TaskCreationActivity"></activity>
     </application>

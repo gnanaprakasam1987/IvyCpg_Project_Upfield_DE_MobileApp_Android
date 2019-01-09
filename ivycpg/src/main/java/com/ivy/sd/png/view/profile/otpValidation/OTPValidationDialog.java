@@ -30,6 +30,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.AppUtils;
 
 public class OTPValidationDialog extends Dialog implements OnClickListener {
 
@@ -301,40 +302,41 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
 
                 String id;
 
-                String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID";
+                String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
-                id = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
+                id = AppUtils.QT(bmodel.getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + bmodel.getAppDataProvider().getUser().getUserid()
                         + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
 
                 values = id
                         + ","
-                        + bmodel.QT(mRetailerBO.getRetailerID())
+                        + AppUtils.QT(mRetailerBO.getRetailerID())
                         + ","
                         + mRetailerBO.getBeatID()
                         + ","
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + ","
                         + ((SpinnerBO) reason.getSelectedItem()).getId()
                         + ","
-                        + bmodel.QT(bmodel
+                        + AppUtils.QT(bmodel
                         .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
-                        + "," + bmodel.QT("N")
-                        + "," + mRetailerBO.getDistributorId();
+                        + "," + AppUtils.QT("N")
+                        + "," + mRetailerBO.getDistributorId()
+                        + "," + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
                 db.deleteSQL(
                         "Nonproductivereasonmaster",
                         "RetailerID="
-                                + bmodel.QT(mRetailerBO.getRetailerID())
+                                + AppUtils.QT(mRetailerBO.getRetailerID())
                                 + " and DistributorId="
                                 + mRetailerBO.getDistributorId()
                                 + " and ReasonTypes="
-                                + bmodel.QT(bmodel
+                                + AppUtils.QT(bmodel
                                 .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
                                 + " and Date="
-                                + bmodel.QT(SDUtil.now(SDUtil.DATE)), false);
+                                + AppUtils.QT(SDUtil.now(SDUtil.DATE)), false);
 
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
 

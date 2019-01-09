@@ -323,7 +323,7 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
 
             // Add today'sdeviated retailers.
             for (int i = 0; i < siz; i++) {
-                if (("Y").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                if (bmodel.getRetailerMaster().get(i).getIsDeviated() != null && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
                     if (filter != null) {
                         if ((bmodel.getRetailerMaster().get(i)
                                 .getRetailerName().toLowerCase())

@@ -1430,8 +1430,8 @@ public class BusinessModel extends Application {
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId" : "0 as SupplierTaxLocId")
-                            + " FROM RetailerMaster A"
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
+                            + "ridSF FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -1619,6 +1619,7 @@ public class BusinessModel extends Application {
                     retailer.setSbdPercent(c.getFloat(c.getColumnIndex("sbdDistPercent"))); // updated sbd percentage from history and ordered details
                     retailer.setRetailerTaxLocId(c.getInt(c.getColumnIndex("RetailerTaxLocId")));
                     retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
+                    retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -2522,22 +2523,23 @@ public class BusinessModel extends Application {
 
             String id;
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
             for (int i = 0; i < retailers.size(); i++) {
-                id = QT(userMasterHelper.getUserMasterBO().getDistributorid()
-                        + "" + userMasterHelper.getUserMasterBO().getUserid()
+                id = AppUtils.QT(getAppDataProvider().getUser().getDistributorid()
+                        + "" + getAppDataProvider().getUser().getUserid()
                         + "" + SDUtil.now(SDUtil.DATE_TIME_ID) + i);
 
                 NonproductivereasonBO outlet = retailers.get(i);
 
                 if (!outlet.getReasonid().equals("0")) {
                     bool = true;
-                    values = id + "," + QT(outlet.getRetailerid()) + ","
-                            + outlet.getBeatId() + "," + QT(outlet.getDate())
-                            + "," + QT(outlet.getReasonid()) + ","
-                            + QT(getStandardListId(outlet.getReasontype()))
-                            + "," + QT("N") + "," + outlet.getDistributorID();
+                    values = id + "," + AppUtils.QT(outlet.getRetailerid()) + ","
+                            + outlet.getBeatId() + "," + AppUtils.QT(outlet.getDate())
+                            + "," + AppUtils.QT(outlet.getReasonid()) + ","
+                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
+                            + "," + AppUtils.QT("N") + "," + outlet.getDistributorID()
+                            + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
                     db.insertSQL("Nonproductivereasonmaster", columns, values);
                 }
@@ -2575,49 +2577,50 @@ public class BusinessModel extends Application {
 
             db.deleteSQL(
                     "Nonproductivereasonmaster",
-                    "RetailerID=" + QT(getRetailerMasterBO().getRetailerID())
+                    "RetailerID=" + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + QT(getStandardListId(outlet.getReasontype()))
+                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
                             + " and RouteID="
-                            + getRetailerMasterBO().getBeatID(), false);
+                            + getAppDataProvider().getRetailMaster().getBeatID(), false);
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + QT(getRetailerMasterBO().getRetailerID())
+                            + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + QT(getStandardListId(outlet
+                            + AppUtils.QT(getStandardListId(outlet
                             .getCollectionReasonType()))
                             + " and RouteID="
-                            + getRetailerMasterBO().getBeatID(), false);
+                            + getAppDataProvider().getRetailMaster().getBeatID(), false);
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks,ridSF";
 
-            values = id + "," + QT(getRetailerMasterBO().getRetailerID()) + ","
-                    + getRetailerMasterBO().getBeatID() + ","
-                    + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
-                    + "," + QT(getStandardListId(outlet.getReasontype())) + ","
-                    + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
+            values = id + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
+                    + getAppDataProvider().getRetailMaster().getBeatID() + ","
+                    + AppUtils.QT(outlet.getDate()) + "," + AppUtils.QT(outlet.getReasonid())
+                    + "," + AppUtils.QT(getStandardListId(outlet.getReasontype())) + ","
+                    + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks);
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (!outlet.getCollectionReasonID().equals("0")) {
-                String uid = QT(userMasterHelper.getUserMasterBO()
+                String uid = AppUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
-                        + userMasterHelper.getUserMasterBO().getUserid()
+                        + getAppDataProvider().getUser().getUserid()
                         + ""
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
                 values = uid
                         + ","
-                        + QT(getRetailerMasterBO().getRetailerID())
+                        + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                         + ","
-                        + getRetailerMasterBO().getBeatID()
+                        + getAppDataProvider().getRetailMaster().getBeatID()
                         + ","
-                        + QT(outlet.getDate())
+                        + AppUtils.QT(outlet.getDate())
                         + ","
-                        + QT(outlet.getCollectionReasonID())
+                        + AppUtils.QT(outlet.getCollectionReasonID())
                         + ","
-                        + QT(getStandardListId(outlet.getCollectionReasonType()))
-                        + "," + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
+                        + AppUtils.QT(getStandardListId(outlet.getCollectionReasonType()))
+                        + "," + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks)
+                        + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
             }
 
@@ -3747,6 +3750,101 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
+    /**
+     * Get Gold Store acheived count from retailer master and Total number of
+     * retailer planned for today. Value used to display in VisitActivity Screen
+     *
+     * @return String goldStores/TotalStore
+     */
+
+    public double getStrikeRateValue() {
+
+        double strikeValue = 0, planned = 0, storesInvoiced = 0;
+
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
+                    DataMembers.DB_PATH);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db
+                    .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
+                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
+                            + " WHERE (RMI.isToday=1)");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    c.moveToNext();
+                    planned = c.getFloat(0);
+                }
+            }
+            c.close();
+
+
+            Cursor c1 = null;
+            if (configurationMasterHelper.IS_INVOICE) {
+                c1 = db.selectSQL("select  COUNT(distinct RETAILERID)  from InvoiceMaster");
+            } else {
+                c1 = db.selectSQL("select  COUNT(distinct RETAILERID)  from OrderHeader");
+            }
+            if (c1 != null) {
+                if (c1.getCount() > 0) {
+                    c1.moveToNext();
+                    storesInvoiced = c1.getFloat(0);
+                }
+            }
+            c1.close();
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        strikeValue = (storesInvoiced / planned);
+        return strikeValue;
+    }
+
+    /**
+     * this method will count number of today's retailer for which SBD Dist is
+     * Mapped vs number of retailers where SBDDistributionActual is equals to
+     * SBDDistributionTarget
+     *
+     * @return SBDDistributionActual/SBDDistributionTarget
+     */
+    public int[] getSDBDistTargteAndAcheived() {
+
+        int i[] = new int[2];
+        int target = 0;
+        int acheived = 0;
+        try {
+            for (RetailerMasterBO tempObj : retailerMaster) {
+                if (tempObj.getIsToday() == 1
+                        || (tempObj.getIsDeviated() != null && tempObj.getIsDeviated().equals("Y"))) {
+
+                    if (tempObj.getSbdDistributionTarget() > 0) {
+
+                        target = target + 1;
+
+                        float sbdDistTarget = (float) tempObj
+                                .getSbdDistributionTarget()
+                                * configurationMasterHelper
+                                .getSbdDistTargetPCent() / 100;
+                        Commons.print("Business model," +
+                                tempObj.getSbdDistributionAchieve()
+                                + "target : " + sbdDistTarget);
+                        if (tempObj.getSbdDistributionAchieve() != 0)
+                            if (sbdDistTarget <= (float) tempObj
+                                    .getSbdDistributionAchieve())
+                                acheived = acheived + 1;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        i[0] = acheived;
+        i[1] = target;
+        return i;
+    }
 
     /* ******* Invoice Number To Print End ******* */
 

@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.van.stockview;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
         String proid = String.valueOf(this.listDataHeader.get(groupPosition).getProductid());
+        if (this.listDataHeader.get(groupPosition).getIsFree() == 1)
+            proid = proid + "F";
         return this.listDataChild.get(proid)
                 .size();
     }
@@ -54,6 +57,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         String keyPid = this.listDataHeader.get(groupPosition).getProductid() + "";
+        if (this.listDataHeader.get(groupPosition).getIsFree() == 1)
+            keyPid = keyPid + "F";
         return this.listDataChild.get(keyPid)
                 .get(childPosition);
     }
@@ -127,6 +132,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         holder.psname.setText(groupBoObj.getProductshortname());
+
+        if (groupBoObj.getIsFree() == 1)
+            holder.psname.setTextColor(ContextCompat.getColor(context,
+                    R.color.colorAccent));
+        else
+            holder.psname.setTextColor(ContextCompat.getColor(context,
+                    android.R.color.black));
+
         holder.pname = groupBoObj.getProductname();
         if (bModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
             String prodCode = context.getString(R.string.prod_code) + ": " +

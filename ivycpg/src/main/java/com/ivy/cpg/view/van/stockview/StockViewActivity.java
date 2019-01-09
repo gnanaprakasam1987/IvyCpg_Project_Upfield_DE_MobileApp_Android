@@ -464,6 +464,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                     childList.add(childBO);
             }
             String pid = String.valueOf(parentBo.getProductid());
+            if(parentBo.getIsFree()==1) //  if free product to have unique key
+                pid = pid+"F";
             listDataChild.put(pid, childList);//load child batch List data
         }
 
@@ -479,7 +481,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         for (int i = 0; i < temp.size(); i++) {
 
             for (int j = i + 1; j < temp.size(); j++) {
-                if (temp.get(i).getProductid() == temp.get(j).getProductid()) {
+                if (temp.get(i).getProductid() == temp.get(j).getProductid() &&
+                        temp.get(i).getIsFree() ==temp.get(j).getIsFree()) {
                     temp.remove(j);
                     j--;
                 }
@@ -552,7 +555,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                                     mEdt_searchproductName.getText()
                                             .toString().toLowerCase()) || (ret.getProductCode() != null &&
                             ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
-                            .toLowerCase())))
+                                    .toLowerCase())))
                         temp.add(ret);
                 }
 
@@ -615,7 +618,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         for (int i = 0; i < temp.size(); i++) {
 
             for (int j = i + 1; j < temp.size(); j++) {
-                if (temp.get(i).getProductid() == temp.get(j).getProductid()) {
+                if (temp.get(i).getProductid() == temp.get(j).getProductid()&& temp.get(i).getIsFree() ==temp.get(j).getIsFree()) {
                     temp.remove(j);
                     j--;
                 }
@@ -691,7 +694,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         for (int i = 0; i < filterlist.size(); i++) {
 
             for (int j = i + 1; j < filterlist.size(); j++) {
-                if (filterlist.get(i).getProductid() == filterlist.get(j).getProductid()) {
+                if (filterlist.get(i).getProductid() == filterlist.get(j).getProductid() &&
+                        filterlist.get(i).getIsFree() ==filterlist.get(j).getIsFree()) {
                     filterlist.remove(j);
                     j--;
                 }

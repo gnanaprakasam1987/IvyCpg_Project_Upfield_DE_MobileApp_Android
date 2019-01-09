@@ -2310,8 +2310,8 @@ public class CommonPrintHelper {
      *
      * @param fileName
      */
-    public void readBuilder(String fileName) {
-        String path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.PRINT_FILE_PATH + "/";
+    public void readBuilder(String fileName,String folder) {
+        String path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + folder + "/";
         File file = new File(path + fileName);
         StringBuilder sb = new StringBuilder();
         BufferedReader br = null;

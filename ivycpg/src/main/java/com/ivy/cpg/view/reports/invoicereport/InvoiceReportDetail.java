@@ -37,6 +37,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.print.BtService;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
@@ -348,7 +349,8 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
                     || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
                 // Print file already saved.so not need to reload the object.we can get the object from print text file
-                businessModel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE + businessModel.invoiceNumber + ".txt");
+                businessModel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_INVOICE + businessModel.invoiceNumber + ".txt",
+                        DataMembers.PRINT_FILE_PATH);
                 intent.setClass(InvoiceReportDetail.this,
                         CommonPrintPreviewActivity.class);
                 intent.putExtra("IsUpdatePrintCount", true);

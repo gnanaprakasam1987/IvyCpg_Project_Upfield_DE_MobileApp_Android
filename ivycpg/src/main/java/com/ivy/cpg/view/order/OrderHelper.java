@@ -150,7 +150,7 @@ public class OrderHelper {
             db.openDataBase();
 
             if (businessModel.configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
-                db.deleteSQL("TempOrderDetail", "RetailerID=" + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()),
+                db.deleteSQL("TempOrderDetail", "RetailerID=" + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()),
                         false);
             }
 
@@ -169,24 +169,23 @@ public class OrderHelper {
             }
 
             String query = "select max(VisitID) from OutletTimestamp where retailerid="
-                    + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID());
+                    + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID());
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {
                     timeStampId = c.getString(0);
 
-                    if (businessModel.outletTimeStampHelper.isJointCall(businessModel.userMasterHelper
-                            .getUserMasterBO().getJoinCallUserList())) {
+                    if (businessModel.outletTimeStampHelper.isJointCall(businessModel.getAppDataProvider().getUser().getJoinCallUserList())) {
                         flag = 1;
                     }
                 }
             }
 
-            String id = businessModel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = businessModel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
             uid = AppUtils.QT(id);
 
-            if ((!hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())||
+            if ((!hasAlreadyOrdered(mContext, businessModel.getAppDataProvider().getRetailMaster().getRetailerID())||
                 businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
                     businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
 
@@ -202,7 +201,7 @@ public class OrderHelper {
 
 
             // Deleting existing order
-            if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
+            if (hasAlreadyOrdered(mContext, businessModel.getAppDataProvider().getRetailMaster().getRetailerID())) {
                 uid = deleteOrderTransactions(db, isVanSales, uid, mContext);
             }
 
@@ -233,20 +232,20 @@ public class OrderHelper {
                     "stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime," +
                     "FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath," +
                     "RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath," +
-                    "totalamount,AddressId";
+                    "totalamount,AddressId,ridSF,VisitId";
 
             String printFilePath = "";
             if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
-                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + businessModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
-                        + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" +
+                printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + businessModel.getAppDataProvider().getUser().getDownloadDate().replace("/", "") + "/"
+                        + businessModel.getAppDataProvider().getUser().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_ORDER + businessModel.invoiceNumber + ".txt";
             }
             String orderImagePath = "";
             if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE || businessModel.configurationMasterHelper.IS_SHOW_ORDER_ATTACH_FILE) {
                 if (businessModel.getOrderHeaderBO().getOrderImageName().length() > 0)
-                    orderImagePath = businessModel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                    orderImagePath = businessModel.getAppDataProvider().getUser().getDownloadDate()
                             .replace("/", "") + "/"
-                            + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + businessModel.getOrderHeaderBO().getOrderImageName();
+                            + businessModel.getAppDataProvider().getUser().getUserid() + "/" + businessModel.getOrderHeaderBO().getOrderImageName();
             }
 
 
@@ -254,26 +253,26 @@ public class OrderHelper {
                     + ","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                     + ","
-                    + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID())
+                    + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                     + ","
                     + AppUtils.QT(businessModel.formatBasedOnCurrency(businessModel.getOrderHeaderBO().getOrderValue()))
                     + ","
-                    + businessModel.getRetailerMasterBO().getBeatID()
+                    + businessModel.getAppDataProvider().getRetailMaster().getBeatID()
                     + ","
                     + businessModel.getOrderHeaderBO().getLinesPerCall()
 
                     + ","
                     + AppUtils.QT(DateUtil.convertToServerDateFormat(businessModel.getOrderHeaderBO().getDeliveryDate(), "yyyy/MM/dd"))
                     + ","
-                    + (businessModel.getRetailerMasterBO().getIsToday())
+                    + (businessModel.getAppDataProvider().getRetailMaster().getIsToday())
                     + ","
-                    + DatabaseUtils.sqlEscapeString(businessModel.getRetailerMasterBO()
+                    + DatabaseUtils.sqlEscapeString(businessModel.getAppDataProvider().getRetailMaster()
                     .getRetailerCode())
                     + ","
-                    + DatabaseUtils.sqlEscapeString(businessModel.getRetailerMasterBO()
+                    + DatabaseUtils.sqlEscapeString(businessModel.getAppDataProvider().getRetailMaster()
                     .getRetailerName())
                     + ","
-                    + AppUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getDownloadDate())
+                    + AppUtils.QT(businessModel.getAppDataProvider().getUser().getDownloadDate())
                     + ","
                     + AppUtils.QT(businessModel.getOrderHeaderBO().getPO())
                     + ","
@@ -300,9 +299,9 @@ public class OrderHelper {
                     + ","
                     + indicativeFlag
                     + ","
-                    + businessModel.getRetailerMasterBO().getDistributorId()
+                    + businessModel.getAppDataProvider().getRetailMaster().getDistributorId()
                     + ","
-                    + businessModel.getRetailerMasterBO().getDistParentId()
+                    + businessModel.getAppDataProvider().getRetailMaster().getDistParentId()
                     + ","
                     + supplierBO.getSupplierType() + "," + isVanSales
                     + "," + AppUtils.QT(businessModel.getOrderHeaderBO().getSignaturePath())
@@ -324,18 +323,20 @@ public class OrderHelper {
                     + "," + AppUtils.QT(orderImagePath)
                     + "," + businessModel.formatBasedOnCurrency(getOrderTotalValue())
                     + "," + (businessModel.getOrderHeaderBO().getAddressID() == -1
-                    ? 0 : businessModel.getOrderHeaderBO().getAddressID());
+                    ? 0 : businessModel.getOrderHeaderBO().getAddressID())
+                    + "," + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF())
+                    + "," + businessModel.getAppDataProvider().getUniqueId();
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
-            businessModel.getRetailerMasterBO().setIndicateFlag(0);
+            businessModel.getAppDataProvider().getRetailMaster().setIndicateFlag(0);
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(mContext, businessModel.getRetailerMasterBO());
+                updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster());
             }
 
-            businessModel.getRetailerMasterBO()
+            businessModel.getAppDataProvider().getRetailMaster()
                     .setTotalLines(businessModel.getOrderHeaderBO().getLinesPerCall());
 
 
@@ -502,20 +503,20 @@ public class OrderHelper {
 
             // update SBD Distribution Percentage based on its history and ordered detail's
             SBDHelper.getInstance(mContext).calculateSBDDistribution(mContext.getApplicationContext());
-            int sbdTgt = businessModel.getRetailerMasterBO()
+            int sbdTgt = businessModel.getAppDataProvider().getRetailMaster()
                     .getSbdDistributionTarget();
             double sbdPercent = 0;
             if (sbdTgt > 0)
-                sbdPercent = (businessModel.getRetailerMasterBO().getSbdDistributionAchieve() * 100) / sbdTgt;
-            businessModel.getRetailerMasterBO().setSbdPercent(sbdPercent);
-            db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getRetailerMasterBO().getSbdPercent()
-                    + " where retailerid =" + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()));
+                sbdPercent = (businessModel.getAppDataProvider().getRetailMaster().getSbdDistributionAchieve() * 100) / sbdTgt;
+            businessModel.getAppDataProvider().getRetailMaster().setSbdPercent(sbdPercent);
+            db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getAppDataProvider().getRetailMaster().getSbdPercent()
+                    + " where retailerid =" + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
 
             this.invoiceDiscount = businessModel.getOrderHeaderBO().getDiscount() + "";
 
             try {
                 // if (!businessModel.configurationMasterHelper.IS_INVOICE)
-                businessModel.getRetailerMasterBO().setVisit_Actual(
+                businessModel.getAppDataProvider().getRetailMaster().setVisit_Actual(
                         (float) getRetailerOrderValue(mContext, businessModel.retailerMasterBO
                                 .getRetailerID()));
             } catch (Exception e) {
@@ -525,7 +526,7 @@ public class OrderHelper {
             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
 
             if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION
-                    && businessModel.retailerMasterBO.getRpTypeCode().equals(salesReturnHelper.CREDIT_TYPE))
+                    && businessModel.retailerMasterBO.getRpTypeCode().equals(SalesReturnHelper.CREDIT_TYPE))
                 updateCreditNoteprintList();
 
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
@@ -568,7 +569,7 @@ public class OrderHelper {
                 db.openDataBase();
 
                 if (businessModel.configurationMasterHelper.IS_TEMP_ORDER_SAVE) {
-                    db.deleteSQL("TempOrderDetail", "RetailerID=" + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()),
+                    db.deleteSQL("TempOrderDetail", "RetailerID=" + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()),
                             false);
                 }
 
@@ -587,25 +588,24 @@ public class OrderHelper {
                 }
 
                 String query = "select max(VisitID) from OutletTimestamp where retailerid="
-                        + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID());
+                        + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID());
                 Cursor c = db.selectSQL(query);
                 if (c.getCount() > 0) {
                     if (c.moveToFirst()) {
                         timeStampId = c.getString(0);
 
-                        if (businessModel.outletTimeStampHelper.isJointCall(businessModel.userMasterHelper
-                                .getUserMasterBO().getJoinCallUserList())) {
+                        if (businessModel.outletTimeStampHelper.isJointCall(businessModel.getAppDataProvider().getUser().getJoinCallUserList())) {
                             flag = 1;
                         }
                     }
                 }
 
                 // Deleting existing order
-                if (hasAlreadyOrdered(mContext, businessModel.getRetailerMasterBO().getRetailerID())) {
+                if (hasAlreadyOrdered(mContext, businessModel.getAppDataProvider().getRetailMaster().getRetailerID())) {
                     uid = deleteOrderTransactions(db, isVanSales, uid, mContext);
                 }
 
-                String id = businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                String id = businessModel.getAppDataProvider().getUser().getUserid()
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS);
                 uid = AppUtils.QT(id);
 
@@ -639,17 +639,17 @@ public class OrderHelper {
 
                 String printFilePath = "";
                 if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
-                    printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + businessModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
-                            + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" +
+                    printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + businessModel.getAppDataProvider().getUser().getDownloadDate().replace("/", "") + "/"
+                            + businessModel.getAppDataProvider().getUser().getUserid() + "/" +
                             StandardListMasterConstants.PRINT_FILE_ORDER + businessModel.invoiceNumber + ".txt";
                 }
 
                 String orderImagePath = "";
                 if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
                     if (businessModel.getOrderHeaderBO().getOrderImageName().length() > 0)
-                        orderImagePath = businessModel.userMasterHelper.getUserMasterBO().getDownloadDate()
+                        orderImagePath = businessModel.getAppDataProvider().getUser().getDownloadDate()
                                 .replace("/", "") + "/"
-                                + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + businessModel.getOrderHeaderBO().getOrderImageName();
+                                + businessModel.getAppDataProvider().getUser().getUserid() + "/" + businessModel.getOrderHeaderBO().getOrderImageName();
                 }
 
 
@@ -748,7 +748,7 @@ public class OrderHelper {
                                         + ","
                                         + product.getCaseUomId()
                                         + ","
-                                        + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID())
+                                        + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                                         + ", "
                                         + product.getMSQty()
                                         + ","
@@ -815,7 +815,7 @@ public class OrderHelper {
                                         + ","
                                         + product.getCaseUomId()
                                         + ","
-                                        + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID())
+                                        + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                                         + ", "
                                         + product.getMSQty()
                                         + ","
@@ -852,31 +852,31 @@ public class OrderHelper {
                 }
 
                 columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath,AddressId";
+                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath,AddressId,ridSF,VisitId";
                 values = uid
                         + ","
                         + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + ","
-                        + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID())
+                        + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                         + ","
                         + AppUtils.QT(businessModel.formatBasedOnCurrency(mOrderValue))
                         + ","
-                        + businessModel.getRetailerMasterBO().getBeatID()
+                        + businessModel.getAppDataProvider().getRetailMaster().getBeatID()
                         + ","
                         + mOrderedProductList.size()
 
                         + ","
                         + AppUtils.QT(DateUtil.convertToServerDateFormat(businessModel.getOrderHeaderBO().getDeliveryDate(), "yyyy/MM/dd"))
                         + ","
-                        + (businessModel.getRetailerMasterBO().getIsToday())
+                        + (businessModel.getAppDataProvider().getRetailMaster().getIsToday())
                         + ","
-                        + DatabaseUtils.sqlEscapeString(businessModel.getRetailerMasterBO()
+                        + DatabaseUtils.sqlEscapeString(businessModel.getAppDataProvider().getRetailMaster()
                         .getRetailerCode())
                         + ","
-                        + DatabaseUtils.sqlEscapeString(businessModel.getRetailerMasterBO()
+                        + DatabaseUtils.sqlEscapeString(businessModel.getAppDataProvider().getRetailMaster()
                         .getRetailerName())
                         + ","
-                        + AppUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getDownloadDate())
+                        + AppUtils.QT(businessModel.getAppDataProvider().getUser().getDownloadDate())
                         + ","
                         + AppUtils.QT(businessModel.getOrderHeaderBO().getPO())
                         + ","
@@ -903,9 +903,9 @@ public class OrderHelper {
                         + ","
                         + indicativeFlag
                         + ","
-                        + businessModel.getRetailerMasterBO().getDistributorId()
+                        + businessModel.getAppDataProvider().getRetailMaster().getDistributorId()
                         + ","
-                        + businessModel.getRetailerMasterBO().getDistParentId()
+                        + businessModel.getAppDataProvider().getRetailMaster().getDistParentId()
                         + ","
                         + supplierBO.getSupplierType() + "," + isVanSales
                         + "," + AppUtils.QT(businessModel.getOrderHeaderBO().getSignaturePath())
@@ -921,18 +921,20 @@ public class OrderHelper {
                         + "," + AppUtils.QT(businessModel.getOrderHeaderBO().getOrderImageName())
                         + "," + AppUtils.QT(orderImagePath)
                         + "," + (businessModel.getOrderHeaderBO().getAddressID() == -1
-                        ? 0 : businessModel.getOrderHeaderBO().getAddressID());
+                        ? 0 : businessModel.getOrderHeaderBO().getAddressID())
+                        + "," + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF())
+                        + "," + businessModel.getAppDataProvider().getUniqueId();
 
 
                 db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
-                businessModel.getRetailerMasterBO().setIndicateFlag(0);
+                businessModel.getAppDataProvider().getRetailMaster().setIndicateFlag(0);
 
 
                 if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                    updateHangingOrder(mContext, businessModel.getRetailerMasterBO());
+                    updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster());
                 }
 
-                businessModel.getRetailerMasterBO()
+                businessModel.getAppDataProvider().getRetailMaster()
                         .setTotalLines(businessModel.getOrderHeaderBO().getLinesPerCall());
 
 
@@ -1018,14 +1020,14 @@ public class OrderHelper {
 
                 // update SBD Distribution Percentage based on its history and ordered detail's
                 SBDHelper.getInstance(mContext).calculateSBDDistribution(mContext.getApplicationContext());
-                int sbdTgt = businessModel.getRetailerMasterBO()
+                int sbdTgt = businessModel.getAppDataProvider().getRetailMaster()
                         .getSbdDistributionTarget();
                 double sbdPercent = 0;
                 if (sbdTgt > 0)
-                    sbdPercent = (businessModel.getRetailerMasterBO().getSbdDistributionAchieve() * 100) / sbdTgt;
-                businessModel.getRetailerMasterBO().setSbdPercent(sbdPercent);
-                db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getRetailerMasterBO().getSbdPercent()
-                        + " where retailerid =" + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()));
+                    sbdPercent = (businessModel.getAppDataProvider().getRetailMaster().getSbdDistributionAchieve() * 100) / sbdTgt;
+                businessModel.getAppDataProvider().getRetailMaster().setSbdPercent(sbdPercent);
+                db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getAppDataProvider().getRetailMaster().getSbdPercent()
+                        + " where retailerid =" + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
 
                 db.closeDB();
 
@@ -1033,7 +1035,7 @@ public class OrderHelper {
 
                 try {
                     if (!businessModel.configurationMasterHelper.IS_INVOICE)
-                        businessModel.getRetailerMasterBO().setVisit_Actual(
+                        businessModel.getAppDataProvider().getRetailMaster().setVisit_Actual(
                                 (float) getRetailerOrderValue(mContext, businessModel.retailerMasterBO
                                         .getRetailerID()));
                 } catch (Exception e) {
@@ -1043,7 +1045,7 @@ public class OrderHelper {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(mContext);
 
                 if (businessModel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION
-                        && businessModel.retailerMasterBO.getRpTypeCode().equals(salesReturnHelper.CREDIT_TYPE))
+                        && businessModel.retailerMasterBO.getRpTypeCode().equals(SalesReturnHelper.CREDIT_TYPE))
                     updateCreditNoteprintList();
 
                 if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
@@ -1803,7 +1805,7 @@ public class OrderHelper {
 
             String invoiceId;
             // Normally Generating Invoice ID
-            invoiceId = businessModel.userMasterHelper.getUserMasterBO().getUserid()
+            invoiceId = businessModel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // If this Configuration on, Invoice ID generation differently
@@ -1824,7 +1826,7 @@ public class OrderHelper {
 
             String timeStampId = "";
             String query = "select max(VisitID) from OutletTimestamp where retailerid="
-                    + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID());
+                    + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID());
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {
@@ -1837,7 +1839,7 @@ public class OrderHelper {
             String printFilePath = "";
             if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE)
                 printFilePath = StandardListMasterConstants.PRINT_FILE_PATH + businessModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "") + "/"
-                        + businessModel.userMasterHelper.getUserMasterBO().getUserid() + "/" +
+                        + businessModel.getAppDataProvider().getUser().getUserid() + "/" +
                         StandardListMasterConstants.PRINT_FILE_INVOICE + businessModel.invoiceNumber + ".txt";
 
             // Save invoice header
@@ -1847,7 +1849,7 @@ public class OrderHelper {
                     "discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned," +
                     "LinesPerCall,IsPreviousInvoice,totalWeight,SalesType,sid,SParentID,stype," +
                     "imgName,creditPeriod,PrintFilePath,timestampid,RemarksType,RField1,RField2," +
-                    "RField3,totalamount,AddressId,DocStatus";
+                    "RField3,totalamount,AddressId,DocStatus,ridSF,VisitId";
             StringBuilder sb = new StringBuilder();
             sb.append(AppUtils.QT(invoiceId) + ",");
             sb.append(AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
@@ -1860,7 +1862,7 @@ public class OrderHelper {
             sb.append(AppUtils.QT(businessModel.getOrderHeaderBO().getSignaturePath())
                     + ",");
             sb.append(AppUtils.QT("N") + ",");
-            sb.append(businessModel.getRetailerMasterBO().getBeatID() + ",");
+            sb.append(businessModel.getAppDataProvider().getRetailMaster().getBeatID() + ",");
             sb.append(businessModel.getOrderHeaderBO().getDiscount() + ",");
             sb.append(businessModel.formatBasedOnCurrency(orderValue) + ",");
             double discountedAmount;
@@ -1912,11 +1914,11 @@ public class OrderHelper {
                 supplierBO = new SupplierMasterBO();
 
             }
-            sb.append("," + businessModel.getRetailerMasterBO().getDistributorId());
-            sb.append("," + businessModel.getRetailerMasterBO().getDistParentId());
+            sb.append("," + businessModel.getAppDataProvider().getRetailMaster().getDistributorId());
+            sb.append("," + businessModel.getAppDataProvider().getRetailMaster().getDistParentId());
             sb.append("," + supplierBO.getSupplierType());
             sb.append("," + AppUtils.QT(businessModel.getOrderHeaderBO().getSignatureName()));
-            sb.append("," + businessModel.getRetailerMasterBO().getCreditDays());
+            sb.append("," + businessModel.getAppDataProvider().getRetailMaster().getCreditDays());
             sb.append("," + AppUtils.QT(printFilePath));
             sb.append("," + AppUtils.QT(timeStampId));
             sb.append("," + AppUtils.QT(businessModel.getRemarkType()));
@@ -1927,6 +1929,10 @@ public class OrderHelper {
             sb.append("," + (businessModel.getOrderHeaderBO().getAddressID() == -1
                     ? 0 : businessModel.getOrderHeaderBO().getAddressID()));
             sb.append("," + AppUtils.QT("COL"));
+            sb.append(",");
+            sb.append(AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF()));
+            sb.append(",");
+            sb.append(businessModel.getAppDataProvider().getUniqueId());
 
             db.insertSQL(DataMembers.tbl_InvoiceMaster, invoiceHeaderColumns,
                     sb.toString());
@@ -1977,25 +1983,25 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1) {
                 db.executeQ("update SalesReturnHeader set invoicecreated=1 where upload!='X' and RetailerID="
-                        + businessModel.getRetailerMasterBO().getRetailerID());
+                        + businessModel.getAppDataProvider().getRetailMaster().getRetailerID());
             }
             // update credit not flag in sales return header **/
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_INVOICE
                     && isCreditNoteCreated != 1
                     && salesReturnHelper.isValueReturned(mContext)) {
                 db.executeQ("update SalesReturnHeader set credit_flag=2 where upload!='X' and RetailerID="
-                        + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()));
+                        + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
             }
             // update credit balance
             if (businessModel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE
-                    && businessModel.getRetailerMasterBO().getCredit_balance() != -1) {
-                double creditBalance = businessModel.getRetailerMasterBO()
+                    && businessModel.getAppDataProvider().getRetailMaster().getCredit_balance() != -1) {
+                double creditBalance = businessModel.getAppDataProvider().getRetailMaster()
                         .getCredit_balance() - businessModel.getOrderHeaderBO().getOrderValue();
                 db.executeQ("update retailermaster set rfield1="
                         + creditBalance + " where retailerid="
-                        + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()));
-                businessModel.getRetailerMasterBO().setCredit_balance(creditBalance);
-                businessModel.getRetailerMasterBO().setRField1("" + creditBalance);
+                        + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
+                businessModel.getAppDataProvider().getRetailMaster().setCredit_balance(creditBalance);
+                businessModel.getAppDataProvider().getRetailMaster().setRField1("" + creditBalance);
 
             }
 
@@ -2086,7 +2092,7 @@ public class OrderHelper {
             // not allowed to edit again.
             String sql = "update " + DataMembers.tbl_orderHeader
                     + " set invoiceStatus=1  where RetailerID="
-                    + AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID())
+                    + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                     + " and orderid=" + this.getOrderId();
             db.executeQ(sql);
 
@@ -2099,7 +2105,7 @@ public class OrderHelper {
             db.closeDB();
 
             try {
-                businessModel.getRetailerMasterBO().setVisit_Actual(
+                businessModel.getAppDataProvider().getRetailMaster().setVisit_Actual(
                         (float) getRetailerOrderValue(mContext, businessModel.retailerMasterBO.getRetailerID()));
             } catch (Exception e) {
 

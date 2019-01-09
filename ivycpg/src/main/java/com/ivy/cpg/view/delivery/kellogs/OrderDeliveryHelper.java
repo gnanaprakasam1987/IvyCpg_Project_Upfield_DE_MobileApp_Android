@@ -689,12 +689,13 @@ public class OrderDeliveryHelper {
                     String invoiceHeaderQry = "Insert into InvoiceMaster (invoiceno,invoicedate,beatid,retailerId,invNetamount,discountedAmount," +
                             "orderid,ImageName,invoiceAmount,latitude,longitude,return_amt," +
                             "LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
-                            "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,totalamount,paidamount)" +
+                            "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,totalamount,paidamount,ridSF,VisitId)" +
                             " select " + invoiceId + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," +
                             (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + "," + (totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount())) + ",orderid," +
                             "imagename," + (totalOrderValue) + ",latitude,longitude,ReturnValue," + linesPerCall + ",totalWeight,SalesType," +
                             "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," + AppUtils.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 +
-                            "," + totalAmount + ",0 from OrderHeader where OrderId = " + AppUtils.QT(orderId);
+                            "," + totalAmount + ",0," + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF())  +
+                            "," + businessModel.getAppDataProvider().getUniqueId() + " from OrderHeader where OrderId = " + AppUtils.QT(orderId);
 
 
                     db.executeQ(invoiceHeaderQry);
@@ -705,12 +706,13 @@ public class OrderDeliveryHelper {
                 String invoiceHeaderQry = "Insert into InvoiceMaster (invoiceno,invoicedate,beatid,retailerId,invNetamount," +
                         "orderid,ImageName,discount,invoiceAmount,latitude,longitude,return_amt," +
                         "discount_type,LinesPerCall,totalWeight,SalesType,sid,SParentID,stype," +
-                        "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount,totalamount,paidamount)" +
+                        "imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,upload,TaxAmount,salesreturned,creditPeriod,IsPreviousInvoice,discountedAmount,totalamount,paidamount,ridSF,VisitId)" +
                         " select " + invoiceId + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",RouteId,retailerid," + AppUtils.QT(businessModel.formatBasedOnCurrency(totalOrderValue + SDUtil.convertToDouble(getOrderDeliveryTaxAmount()))) +
                         ",orderid,imagename,discount," + AppUtils.QT(getOrderDeliveryTotalValue()) + ",latitude,longitude,ReturnValue,discount_type,LinesPerCall,totalWeight,SalesType," +
                         "sid,SParentID,stype,imgName,PrintFilePath,timestampid,RemarksType,RField1,RField2,RField3,'N'," +
                         AppUtils.QT(getOrderDeliveryTaxAmount()) + " , " + salesReturned + " , " + businessModel.getRetailerMasterBO().getCreditDays() + " , " + 0 + " , " + AppUtils.QT(businessModel.formatBasedOnCurrency(discountedAmount)) +
-                        "," + totalAmount + ",0 from OrderHeader where OrderId = " + AppUtils.QT(orderId);
+                        "," + totalAmount + ",0," + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF())  +
+                        "," + businessModel.getAppDataProvider().getUniqueId() + " from OrderHeader where OrderId = " + AppUtils.QT(orderId);
 
                 db.executeQ(invoiceHeaderQry);
 

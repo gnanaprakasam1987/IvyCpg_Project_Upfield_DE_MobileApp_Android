@@ -332,6 +332,14 @@ public class VanUnloadAdaptor extends BaseAdapter {
         holder.productBO = product;
         holder.pname = product.getProductname();
         holder.psname.setText(product.getProductshortname());
+
+        if (product.getIsFree() == 1)
+            holder.psname.setTextColor(ContextCompat.getColor(mContext,
+                    R.color.colorAccent));
+        else
+            holder.psname.setTextColor(ContextCompat.getColor(mContext,
+                    android.R.color.black));
+
         tv = product.getStocksih() + "";
         holder.sih.setText(tv);
         tv = product.getCaseqty() + "";

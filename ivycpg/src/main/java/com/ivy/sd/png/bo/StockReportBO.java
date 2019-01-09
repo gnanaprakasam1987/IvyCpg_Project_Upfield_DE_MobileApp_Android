@@ -71,6 +71,14 @@ public class StockReportBO {
         this.sih_cs = bo.sih_cs;
         this.sih_ou = bo.sih_ou;
         this.sih_pc = bo.sih_pc;
+        this.freeSIH = bo.freeSIH;
+        this.vanLoadFreeQty = bo.vanLoadFreeQty;
+        this.vanLoadFree_cs = bo.vanLoadFree_cs;
+        this.vanLoadFree_ou = bo.vanLoadFree_ou;
+        this.vanLoadFree_pc = bo.vanLoadFree_pc;
+        this.freeSIH_cs = bo.freeSIH_cs;
+        this.freeSIH_ou = bo.freeSIH_ou;
+        this.freeSIH_pc = bo.freeSIH_pc;
     }
 
     public String getBatchId() {
@@ -296,8 +304,12 @@ public class StockReportBO {
     private int emptyBottleQty_cs, emptyBottleQty_ou, emptyBottleQty_pc;
     private int returnQty_cs, returnQty_ou, returnQty_pc;
     private int replacementQty_cs;
+    private int replacementQty_pc;
+    private int replacemnetQty_ou;
     private int vanLoadFree_cs;
     private int vanLoadFree_ou;
+    private int vanLoadFree_pc;
+    private int freeSIH_cs, freeSIH_ou, freeSIH_pc;
 
     public int getVanLoadFree_cs() {
         return vanLoadFree_cs;
@@ -347,9 +359,6 @@ public class StockReportBO {
         this.freeSIH_pc = freeSIH_pc;
     }
 
-    private int vanLoadFree_pc;
-    private int freeSIH_cs, freeSIH_ou, freeSIH_pc;
-
     public int getReplacementQty_pc() {
         return replacementQty_pc;
     }
@@ -358,8 +367,7 @@ public class StockReportBO {
         this.replacementQty_pc = replacementQty_pc;
     }
 
-    private int replacementQty_pc;
-    private int replacemnetQty_ou;
+
 
 
 

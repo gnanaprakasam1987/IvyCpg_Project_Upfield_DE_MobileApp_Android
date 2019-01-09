@@ -292,11 +292,12 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
                                     break;
                                 }
                             }
-                            if (assetTrackingBO.getImageList().size() > 0) {
+                           /* if (assetTrackingBO.getImageList().size() > 0) {
                                 imgGrid.setAdapter(new MyAdapter(assetTrackingBO.getImageList()));
                                 break;
                             } else
-                                finish();
+                                finish();*/
+                           finish();
                         }
 
                     }

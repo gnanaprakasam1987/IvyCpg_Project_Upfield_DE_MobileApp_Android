@@ -173,7 +173,7 @@ public class PhotoCaptureHelper {
         Cursor cursor;
         try {
             String columns = "uid,date,phototypeid,pid,imagepath,retailerid,RetailerName,ImageCount4Retailer,FromDate,ToDate,LocId," +
-                    "sku_name,abv,lot_code,seq_num,DistributorID,feedback,imgName";
+                    "sku_name,abv,lot_code,seq_num,DistributorID,feedback,imgName,ridSF,VisitId";
             db.createDataBase();
             db.openDataBase();
             // delete transaction if exist
@@ -256,6 +256,10 @@ public class PhotoCaptureHelper {
                             sBuffer.append(QT(lbo.getFeedback()));
                             sBuffer.append(",");
                             sBuffer.append(QT(lbo.getImageName()));
+                            sBuffer.append(",");
+                            sBuffer.append(QT(mBModel.getAppDataProvider().getRetailMaster().getRidSF()));
+                            sBuffer.append(",");
+                            sBuffer.append(mBModel.getAppDataProvider().getUniqueId());
                             db.insertSQL(DataMembers.actPhotocapture, columns,
                                     sBuffer.toString());
                         }

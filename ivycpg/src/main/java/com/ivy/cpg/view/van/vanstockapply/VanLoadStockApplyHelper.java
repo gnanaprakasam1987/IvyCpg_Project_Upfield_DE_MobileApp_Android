@@ -46,7 +46,7 @@ public class VanLoadStockApplyHelper {
             db.openDataBase();
             String query = "select A.pid,sum(A.caseQty),SUM(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,"
                     + " A.uid,A.outerQty,B.dOuomQty,A.BatchId,o.isstarted,C.batchId,C.batchNum, B.baseprice,"
-                    + " A.Flag,IFNULL(A.LoadNo,A.uid),A.date,B.pCode from VanLoad A inner join productmaster B on A.pid=B.pid"
+                    + " A.Flag,IFNULL(A.LoadNo,A.uid),A.date,B.pCode,A.isFree from VanLoad A inner join productmaster B on A.pid=B.pid"
                     + " LEFT JOIN BatchMaster C on A.BatchId=C.batchid  AND C.Pid = B.pid"
                     + " left join Odameter o"
                     + " where B.IsSalable=1 OR B.IsSalable=0 GROUP BY A.uid,A.pid,C.batchid ORDER BY B.rowid";
@@ -76,6 +76,7 @@ public class VanLoadStockApplyHelper {
                     stock.setLoadNO(c.getString(16));
                     stock.setDate(c.getString(17));
                     stock.setProductCode(c.getString(18));
+                    stock.setIsFree(c.getInt(19));
                     stockReportMaster.add(stock);
                     if (c.getInt(11) == 1)
                         bmodel.startjourneyclicked = true;
@@ -109,7 +110,7 @@ public class VanLoadStockApplyHelper {
      * @param uid
      * @param flag         1- manuval vanload 0 - normal vanload
      *                     <p>
-     *                     method to use update stock in productmaster and stockinhandmaster,while stock apply
+     *                     method to use update stock in productmaster, stockinhandmaster and freeStockInHandMaster,while stock apply
      */
     public void updateSIHMaster(Vector<VanLoadStockApplyBO> mylist,
                                 Vector<String> SIHApplyById, String uid, int flag) {
@@ -123,7 +124,7 @@ public class VanLoadStockApplyHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct A.pid,A.caseQty,A.pcsQty,B.pname,B.psname,B.mrp,B.dUomQty,A.uid,A.outerQty,B.dOuomQty,");
-            sb.append("A.BatchId,o.isstarted from VanLoad A inner join productmaster B on A.pid=B.pid  ");
+            sb.append("A.BatchId,o.isstarted,A.isFree from VanLoad A inner join productmaster B on A.pid=B.pid  ");
             sb.append(" left join Odameter o where A.uid=" + AppUtils.QT(uid)
                     + " and A.upload='N'");
 
@@ -132,23 +133,37 @@ public class VanLoadStockApplyHelper {
                 while (c.moveToNext()) {
                     int totalQty = c.getInt(1) * c.getInt(6) + c.getInt(2)
                             + c.getInt(8) * c.getInt(9);
+                    if (c.getInt(12) != 1) {
+                        if (isAlreadyStockAvailable(c.getString(0), c.getString(10), db)) {
+                            String sql = "update StockInHandMaster set upload='N',qty=qty+"
+                                    + totalQty + " where pid=" + c.getString(0)
+                                    + " and batchid=" + AppUtils.QT(c.getString(10));
+                            db.executeQ(sql);
+                        } else {
+                            String columns = "pid,batchid,qty";
+                            String values = c.getString(0) + "," + c.getString(10)
+                                    + "," + totalQty;
+                            db.insertSQL("StockInHandMaster", columns, values);
 
-                    if (isAlreadyStockAvailable(c.getString(0), c.getString(10), db)) {
-                        String sql = "update StockInHandMaster set upload='N',qty=qty+"
-                                + totalQty + " where pid=" + c.getString(0)
-                                + " and batchid=" + AppUtils.QT(c.getString(10));
+                        }
+                        // update product master
+                        String sql = "update ProductMaster set sih= sih+"
+                                + totalQty + " where PID = " + c.getString(0);
                         db.executeQ(sql);
                     } else {
-                        String columns = "pid,batchid,qty";
-                        String values = c.getString(0) + "," + c.getString(10)
-                                + "," + totalQty;
-                        db.insertSQL("StockInHandMaster", columns, values);
+                        if (isAlreadyFreeStockAvailable(c.getString(0), c.getString(10), db)) {
+                            String sql = "update FreeStockInHandMaster set upload='N',qty=qty+"
+                                    + totalQty + " where pid=" + c.getString(0)
+                                    + " and batchid=" + AppUtils.QT(c.getString(10));
+                            db.executeQ(sql);
+                        } else {
+                            String columns = "pid,batchid,qty";
+                            String values = c.getString(0) + "," + c.getString(10)
+                                    + "," + totalQty;
+                            db.insertSQL("FreeStockInHandMaster", columns, values);
 
+                        }
                     }
-                    // update product master
-                    String sql = "update ProductMaster set sih= sih+"
-                            + totalQty + " where PID = " + c.getString(0);
-                    db.executeQ(sql);
 
                     batchIDList.add(c.getInt(10));
 
@@ -158,26 +173,43 @@ public class VanLoadStockApplyHelper {
             if (batchIDList.size() == 0) {
                 for (VanLoadStockApplyBO stockReport : mylist) {
                     if (uid.equals(stockReport.getUid())) {
-                        if (!isAlreadyStockAvailable(stockReport.getProductId() + "", stockReport.getBatchId() + "", db)) {
-                            String columns = "pid,qty,batchid";
-                            String values = stockReport.getProductId() + ","
-                                    + stockReport.getTotalQty() + ","
-                                    + stockReport.getBatchId();
+                        if (stockReport.getIsFree() != 1) {
+                            if (!isAlreadyStockAvailable(stockReport.getProductId() + "", stockReport.getBatchId() + "", db)) {
+                                String columns = "pid,qty,batchid";
+                                String values = stockReport.getProductId() + ","
+                                        + stockReport.getTotalQty() + ","
+                                        + stockReport.getBatchId();
 
-                            db.insertSQL("StockInHandMaster", columns, values);
-                        } else {
-                            String sql = "update StockInHandMaster set upload='N',qty=qty+"
-                                    + stockReport.getTotalQty() + " where pid="
-                                    + stockReport.getProductId() + " and batchid="
-                                    + stockReport.getBatchId();
+                                db.insertSQL("StockInHandMaster", columns, values);
+                            } else {
+                                String sql = "update StockInHandMaster set upload='N',qty=qty+"
+                                        + stockReport.getTotalQty() + " where pid="
+                                        + stockReport.getProductId() + " and batchid="
+                                        + stockReport.getBatchId();
+                                db.executeQ(sql);
+                            }
+                            //update product master
+
+                            String sql = "update ProductMaster set sih= sih+"
+                                    + stockReport.getTotalQty() + " where PID = "
+                                    + stockReport.getProductId();
                             db.executeQ(sql);
-                        }
-                        //update product master
+                        } else {
+                            if (!isAlreadyFreeStockAvailable(stockReport.getProductId() + "", stockReport.getBatchId() + "", db)) {
+                                String columns = "pid,qty,batchid";
+                                String values = stockReport.getProductId() + ","
+                                        + stockReport.getTotalQty() + ","
+                                        + stockReport.getBatchId();
 
-                        String sql = "update ProductMaster set sih= sih+"
-                                + stockReport.getTotalQty() + " where PID = "
-                                + stockReport.getProductId();
-                        db.executeQ(sql);
+                                db.insertSQL("FreeStockInHandMaster", columns, values);
+                            } else {
+                                String sql = "update FreeStockInHandMaster set upload='N',qty=qty+"
+                                        + stockReport.getTotalQty() + " where pid="
+                                        + stockReport.getProductId() + " and batchid="
+                                        + stockReport.getBatchId();
+                                db.executeQ(sql);
+                            }
+                        }
 
                     }
                 }
@@ -265,6 +297,28 @@ public class VanLoadStockApplyHelper {
 
     private boolean isAlreadyStockAvailable(String productid, String batchid, DBUtil db) {
         String query = "select count(pid) from Stockinhandmaster where pid=" + productid
+                + " and batchid=" + batchid;
+        Cursor c = db.selectSQL(query);
+        if (c.getCount() > 0) {
+            if (c.moveToNext()) {
+                int count = c.getInt(0);
+                if (count > 0) {
+                    c.close();
+                    return true;
+                } else {
+                    c.close();
+                    return false;
+                }
+            }
+        }
+        c.close();
+        return false;
+
+    }
+
+
+    private boolean isAlreadyFreeStockAvailable(String productid, String batchid, DBUtil db) {
+        String query = "select count(pid) from FreeStockInHandMaster where pid=" + productid
                 + " and batchid=" + batchid;
         Cursor c = db.selectSQL(query);
         if (c.getCount() > 0) {
