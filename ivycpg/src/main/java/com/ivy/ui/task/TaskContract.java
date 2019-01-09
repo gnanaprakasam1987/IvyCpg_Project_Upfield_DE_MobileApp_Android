@@ -39,10 +39,26 @@ public interface TaskContract {
 
         String getSelectedRetailerId();
 
+        void updateModuleTime();
+
         ArrayList<ChannelBO> getTaskChannelList();
 
         ArrayList<RetailerMasterBO> getTaskRetailerList();
 
         ArrayList<UserMasterBO> getTaskUserList();
+
+        int getUserID();
+
+        int getRetailerID();
+
+        boolean isShowServerTaskOnly();
+
+        boolean isNewTask();
+
+        boolean isMoveNextActivity();
+
+        boolean isNoTaskReason();
+
+        String outDateFormat();
     }
 }

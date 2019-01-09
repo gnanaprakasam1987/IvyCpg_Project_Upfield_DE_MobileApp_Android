@@ -6,12 +6,15 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 
 import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.channel.ChannelDataManager;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.user.UserDataManager;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
@@ -32,6 +35,8 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     private ChannelDataManager mChannelDataManager;
     private ConfigurationMasterHelper mConfigurationMasterHelper;
     private TaskDataManager mTaskDataManager;
+    private AppDataProvider appDataProvider;
+    private OutletTimeStampDataManager mOutletTimeStampDataManager;
     private ArrayList<UserMasterBO> mUserListBos = new ArrayList<>();
     private Vector<ChannelBO> mChannelListBos = new Vector<>();
     private ArrayList<RetailerMasterBO> mRetailerListBos = new ArrayList<>();
@@ -42,12 +47,14 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                              ConfigurationMasterHelper configurationMasterHelper,
                              V view, UserDataManager userDataManager,
                              ChannelDataManager channelDataManager,
-                             TaskDataManager taskDataManager) {
+                             TaskDataManager taskDataManager, AppDataProvider appDataProvider,OutletTimeStampDataManager mOutletTimeStampDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mConfigurationMasterHelper = configurationMasterHelper;
         this.mUserDataManager = userDataManager;
         this.mChannelDataManager = channelDataManager;
         this.mTaskDataManager = taskDataManager;
+        this.appDataProvider = appDataProvider;
+        this.mOutletTimeStampDataManager = mOutletTimeStampDataManager;
 
         if (view instanceof LifecycleOwner) {
             ((LifecycleOwner) view).getLifecycle().addObserver(this);
@@ -135,6 +142,19 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
+    public void updateModuleTime() {
+        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(SDUtil
+                .now(SDUtil.TIME)).subscribeOn(getSchedulerProvider().io())
+        .observeOn(getSchedulerProvider().ui())
+        .subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) {
+
+            }
+        }));
+    }
+
+    @Override
     public ArrayList<ChannelBO> getTaskChannelList() {
         return null;
     }
@@ -147,6 +167,41 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     @Override
     public ArrayList<UserMasterBO> getTaskUserList() {
         return null;
+    }
+
+    @Override
+    public int getUserID() {
+        return appDataProvider.getUser().getUserid();
+    }
+
+    @Override
+    public int getRetailerID() {
+        return SDUtil.convertToInt(appDataProvider.getRetailMaster().getRetailerID());
+    }
+
+    @Override
+    public boolean isShowServerTaskOnly() {
+        return mConfigurationMasterHelper.IS_SHOW_ONLY_SERVER_TASK;
+    }
+
+    @Override
+    public boolean isNewTask() {
+        return mConfigurationMasterHelper.IS_NEW_TASK;
+    }
+
+    @Override
+    public boolean isMoveNextActivity() {
+        return mConfigurationMasterHelper.MOVE_NEXT_ACTIVITY;
+    }
+
+    @Override
+    public boolean isNoTaskReason() {
+        return mConfigurationMasterHelper.floating_np_reason_photo;
+    }
+
+    @Override
+    public String outDateFormat() {
+        return mConfigurationMasterHelper.outDateFormat;
     }
 
 }

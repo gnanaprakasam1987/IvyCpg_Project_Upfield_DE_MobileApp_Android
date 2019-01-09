@@ -372,6 +372,7 @@ public class TaskFragment extends IvyBaseFragment {
         } else if (i1 == R.id.menu_new_task) {
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                     .now(SDUtil.TIME));
+
             Intent i = new Intent(getActivity(), TaskCreation.class);
             i.putExtra("fromHomeScreen", fromHomeScreen);
             i.putExtra("IsRetailerwisetask", IsRetailerwisetask);

@@ -7,10 +7,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -24,7 +27,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.view.HomeScreenActivity;
@@ -46,7 +48,6 @@ import butterknife.OnItemSelected;
 
 public class TaskCreationActivity extends BaseActivity implements TaskContract.TaskView {
 
-
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
@@ -56,9 +57,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private boolean isRetailerTask = false;
     private String screenTitle = "";
     private String mode = "seller";
-
-
-    private int taskChannelId;
     private int mSelectedUserId = 0;
 
     @BindView(R.id.taskView)
@@ -94,6 +92,12 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.applicable_tv)
+    TextView applicableTV;
+
+    @BindView(R.id.spinner_layout)
+    LinearLayout spinnerLayout;
+
     private ArrayAdapter<UserMasterBO> userMasterArrayAdapter;
 
     private ArrayAdapter<ChannelBO> channelArrayAdapter;
@@ -114,7 +118,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     public void initializeDi() {
         DaggerTaskComponent.builder()
-                .taskModule(new TaskModule(this))
                 .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
                 .build()
                 .inject(this);
@@ -140,7 +143,14 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
         setUpToolBar();
+        //allow only create task only for retailer if not from seller Task
         if (!isRetailerTask) {
+
+            radioGroup.setVisibility(View.GONE);
+            spinnerLayout.setVisibility(View.GONE);
+            applicableTV.setVisibility(View.GONE);
+            mode = "retailer";
+
             setUpUserAdapter();
             setUpChannelAdapter();
             setUpRetailerAdapter();
@@ -151,16 +161,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void setTaskChannelListData(Vector<ChannelBO> channelList) {
 
         channelArrayAdapter.clear();
-       /* channelArrayAdapter.addAll(channelList);
-        ChannelBO channelBO = new ChannelBO();
-        channelBO.setChannelId(0);
-        channelBO.setChannelName(getString(R.string.all_channel));
-        channelArrayAdapter.insert(channelBO, 0);*/
-
         channelArrayAdapter.add(new ChannelBO(0, getString(R.string.all_channel)));
-        for (ChannelBO channelBO : channelList) {
-            channelArrayAdapter.add(channelBO);
-        }
+        channelArrayAdapter.addAll(channelList);
         channelArrayAdapter.notifyDataSetChanged();
     }
 
@@ -168,9 +170,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList) {
         retailerMasterArrayAdapter.clear();
         retailerMasterArrayAdapter.add(new RetailerMasterBO(0, getString(R.string.all_retailer)));
-        for (RetailerMasterBO masterBO : retailerList) {
-            retailerMasterArrayAdapter.add(masterBO);
-        }
+        retailerMasterArrayAdapter.addAll(retailerList);
         retailerMasterArrayAdapter.notifyDataSetChanged();
     }
 
@@ -178,9 +178,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void setTaskUserListData(ArrayList<UserMasterBO> userList) {
         userMasterArrayAdapter.clear();
         userMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
-        for (UserMasterBO userMasterBO : userList) {
-            userMasterArrayAdapter.add(userMasterBO);
-        }
+        userMasterArrayAdapter.addAll(userList);
         userMasterArrayAdapter.notifyDataSetChanged();
 
     }
@@ -241,9 +239,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @OnItemSelected(R.id.channel)
-    public void onChannelSpinnerSelected(Spinner spinner, int position) {
+    public void onChannelSpinnerSelected(AdapterView<?> parent, Spinner spinner) {
         ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
-        ChannelBO chBo = (ChannelBO) spinner.getItemAtPosition(position);
+        ChannelBO chBo = (ChannelBO) parent.getSelectedItem();
         if (chBo.getChannelName().equalsIgnoreCase(getResources().getString(R.string.all_channel))) {
             channelId = -1;
         } else {
@@ -255,7 +253,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @OnItemSelected(R.id.retailer)
     public void onRetailerSpinnerSelected(Spinner spinner, int position) {
         ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
-        RetailerMasterBO reBo = (RetailerMasterBO) spinner.getItemAtPosition(position);
+        RetailerMasterBO reBo = (RetailerMasterBO) spinner.getSelectedItem();
         if (reBo.getTretailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
             retailerid = reBo.getTretailerId();
         }
@@ -268,7 +266,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             public void onPositiveButtonClick() {
                 taskView.setText("");
                 taskTitle.setText("");
-                taskChannelId = 0;
                 mode = "seller";
                 if (fromHomeScreen)
                     startActivity(new Intent(TaskCreationActivity.this,
@@ -293,14 +290,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void onSaveClickBtn() {
         String taskDetailDesc = AppUtils.validateInput(taskView.getText().toString());
         String taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
+        int taskChannelId;
 
         if (!validate())
             return;
 
-/*        switch (mode) {
+        switch (mode) {
             case "seller":
                 if (mSelectedUserId == 0)
-                    taskChannelId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+                    taskChannelId = taskPresenter.getUserID();
                 else
                     taskChannelId = userMasterArrayAdapter.getItem(mSelectedUserId).getUserid();
 
@@ -309,13 +307,13 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 if (fromHomeScreen)
                     taskChannelId = retailerid;
                 else
-                    taskChannelId = SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID());
+                    taskChannelId = taskPresenter.getRetailerID();
                 break;
             default:
                 taskChannelId = channelId;
                 break;
-        }*/
-        taskPresenter.onSaveButtonClick(channelId, taskTitleDec, taskDetailDesc);
+        }
+        taskPresenter.onSaveButtonClick(taskChannelId, taskTitleDec, taskDetailDesc);
     }
 
 
