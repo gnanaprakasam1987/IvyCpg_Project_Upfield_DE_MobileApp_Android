@@ -430,12 +430,12 @@ public class SalesReturnHelper {
             boolean isData;
 
             setSalesReturnID(QT("SR"
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + bmodel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID)));
 
             if (isSplitOrder)
                 setSalesReturnID(QT("SR"
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + bmodel.getAppDataProvider().getUser().getUserid()
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS)));
 
             // To generate Seqno based Sales Return Id
@@ -458,7 +458,7 @@ public class SalesReturnHelper {
             // transaction before saving new one.
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                 String sb = "select uid from SalesReturnHeader where RetailerID=" +
-                        AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
+                        AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) +
                         " and upload='N' and distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
                         " and RefModule != 'ORDER'";
                 Cursor c = db.selectSQL(sb);
@@ -671,7 +671,7 @@ public class SalesReturnHelper {
 
             if (isData) {
                 // Preapre and save salesreturn header.
-                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule";
+                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,ridSF,VisitId";
 
                 if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
                     columns = columns + ",invoiceid";
@@ -680,7 +680,7 @@ public class SalesReturnHelper {
                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                         + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
                         + bmodel.retailerMasterBO.getBeatID() + ","
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + bmodel.getAppDataProvider().getUser().getUserid()
                         + "," + QT(SDUtil.format(returnValue,
                         bmodel.configurationMasterHelper.PERCENT_PRECISION_COUNT, 0)) + "," + lpcValue + ","
                         + QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
@@ -697,6 +697,9 @@ public class SalesReturnHelper {
                     values = values + "," + orderId + "," + QT(module);
                 else
                     values = values + "," + QT("") + "," + QT("");
+
+               values = values + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                        + bmodel.getAppDataProvider().getUniqueId();
 
                 if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
                     values = values + "," + QT(getInvoiceId());

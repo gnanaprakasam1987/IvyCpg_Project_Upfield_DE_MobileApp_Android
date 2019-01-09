@@ -9,6 +9,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -164,38 +165,38 @@ public class CloseCallHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String id = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
+            String id = AppUtils.QT(bmodel.getAppDataProvider().getUser()
                     .getDistributorid()
                     + ""
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + bmodel.getAppDataProvider().getUser().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
 
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + bmodel.QT(bmodel.getRetailerMasterBO()
+                            + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster()
                             .getRetailerID())
                             + " and DistributorID="
-                            +bmodel.getRetailerMasterBO()
+                            +bmodel.getAppDataProvider().getRetailMaster()
                             .getDistributorId()
                             + " and ReasonTypes="
-                            + bmodel.QT(getStandardListId(outlet
+                            + AppUtils.QT(getStandardListId(outlet
                             .getReasontype())) + " and RouteID="
-                            + bmodel.getRetailerMasterBO().getBeatID(), false);
+                            + bmodel.getAppDataProvider().getRetailMaster().getBeatID(), false);
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
             values = id + ","
-                    + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID())
-                    + "," + bmodel.getRetailerMasterBO().getBeatID() + ","
-                    + bmodel.QT(outlet.getDate()) + ","
-                    + bmodel.QT(outlet.getReasonid()) + ","
-                    + bmodel.QT(getStandardListId(outlet.getReasontype()))
-                    + "," + bmodel.QT("N")+ "," +outlet.getDistributorID();
+                    + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())
+                    + "," + bmodel.getAppDataProvider().getRetailMaster().getBeatID() + ","
+                    + AppUtils.QT(outlet.getDate()) + ","
+                    + AppUtils.QT(outlet.getReasonid()) + ","
+                    + AppUtils.QT(getStandardListId(outlet.getReasontype()))
+                    + "," + AppUtils.QT("N")+ "," +outlet.getDistributorID()
+                    + "," + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             db.closeDB();
         } catch (Exception e) {
-            // TODO: handle exception
             Commons.printException(e);
         }
     }

@@ -1325,7 +1325,7 @@ public class SurveyHelperNew {
                         // update joint call
                         bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
-                        String headerColumns = "uid, surveyid, date, retailerid,DistributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency";
+                        String headerColumns = "uid, surveyid, date, retailerid,DistributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,ridSF,VisitId";
 
                         mAllQuestions.addAll(sBO.getQuestions());
                         questionSize = mAllQuestions.size();
@@ -1458,7 +1458,9 @@ public class SurveyHelperNew {
                                             + "," + sBO.getMaxBonusScore()
                                             + "," + QT(remarkDone) + "," + QT(type) + ",0,''"
                                             + "," + userid
-                                            + "," + QT(sBO.getSurveyFreq());
+                                            + "," + QT(sBO.getSurveyFreq())
+                                            + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF())
+                                            + "," + bmodel.getAppDataProvider().getUniqueId();
 
                                     db.insertSQL("AnswerHeader", headerColumns, headerValues);
                                 }

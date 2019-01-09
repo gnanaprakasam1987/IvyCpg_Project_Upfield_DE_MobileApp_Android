@@ -199,16 +199,16 @@ public class PromotionHelper {
     void savePromotionDetails(Context mContext) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
         StringBuilder sbuffer = new StringBuilder();
-        String headerColumns = "UiD,Date,RetailerId,Remark,distributorid";
+        String headerColumns = "UiD,Date,RetailerId,Remark,distributorid,ridSF,VisitId";
         String detailColumns = "Uid,PromotionId,BrandId,IsExecuted,RetailerId,ImageName,reasonid,flag,MappingId,Locid,ExecRatingLovId,PromoQty,imgName,HasAnnouncer,fromDate,toDate";
         try {
             db.openDataBase();
-            String uid = businessModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
+            String uid = businessModel.getAppDataProvider().getUser().getUserid() + SDUtil
                     .now(SDUtil.DATE_TIME_ID);
 
             Cursor cursor = db
                     .selectSQL("select Uid from PromotionHeader  Where RetailerId="
-                            + QT(businessModel.getRetailerMasterBO().getRetailerID())
+                            + QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and Date= "
                             + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                             + " and upload='N'");
@@ -223,18 +223,21 @@ public class PromotionHelper {
             }
             cursor.close();
 
-            int moduleWeightage = 0;
             double productWeightage, sum = 0;
 
             sbuffer.append(QT(uid));
             sbuffer.append(",");
             sbuffer.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             sbuffer.append(",");
-            sbuffer.append(businessModel.getRetailerMasterBO().getRetailerID());
+            sbuffer.append(businessModel.getAppDataProvider().getRetailMaster().getRetailerID());
             sbuffer.append(",");
             sbuffer.append(QT(businessModel.getNote()));
             sbuffer.append(",");
-            sbuffer.append(businessModel.getRetailerMasterBO().getDistributorId());
+            sbuffer.append(businessModel.getAppDataProvider().getRetailMaster().getDistributorId());
+            sbuffer.append(",");
+            sbuffer.append(QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF()));
+            sbuffer.append(",");
+            sbuffer.append(businessModel.getAppDataProvider().getUniqueId());
 
 
             db.insertSQL("PromotionHeader", headerColumns, sbuffer.toString());
@@ -256,7 +259,7 @@ public class PromotionHelper {
                                     "," + promotion.getPromoId() +
                                     "," + promotion.getProductId() +
                                     "," + promotion.getIsExecuted() +
-                                    "," + businessModel.getRetailerMasterBO().getRetailerID() +
+                                    "," + businessModel.getAppDataProvider().getRetailMaster().getRetailerID() +
                                     "," + QT(promotion.getImagePath()) +
                                     "," + promotion.getReasonID() +
                                     "," + QT(promotion.getFlag()) +
@@ -266,8 +269,8 @@ public class PromotionHelper {
                                     "," + promotion.getPromoQty() +
                                     "," + QT(promotion.getImageName()) +
                                     "," + promotion.getHasAnnouncer() +
-                                    "," + businessModel.QT(fromDate == null ? "" : fromDate) +
-                                    "," + businessModel.QT(toDate == null ? "" : toDate);
+                                    "," + QT(fromDate == null ? "" : fromDate) +
+                                    "," + QT(toDate == null ? "" : toDate);
 
                             if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                                 sbDetails = sbDetails + "," + ((promotion.getPromoQty() > 0 || promotion.getIsExecuted() > 0) ? productWeightage : "0");

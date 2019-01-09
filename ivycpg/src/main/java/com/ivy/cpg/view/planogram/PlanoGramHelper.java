@@ -483,40 +483,40 @@ public class PlanoGramHelper {
             String tid;
             Cursor headerCursor;
 
-            String headerColumns = "TiD, RetailerId, Date, timezone, uid, RefId,Type,CounterId,DistributorID";
+            String headerColumns = "TiD, RetailerId, Date, timezone, uid, RefId,Type,CounterId,DistributorID,ridSF,VisitId";
             String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,Audit,CounterId";
 
             String values;
             boolean isData;
             String refId = "0";
-            String imagePath = "Planogram" + "/" + mBModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+            String imagePath = "Planogram" + "/" + mBModel.getAppDataProvider().getUser().getDownloadDate().replace("/", "")
                     + "/"
-                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + mBModel.getAppDataProvider().getUser().getUserid()
                     + "/";
 
-            tid = mBModel.userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + mBModel.getRetailerMasterBO().getRetailerID() + ""
+            tid = mBModel.getAppDataProvider().getUser().getUserid() + ""
+                    + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ""
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // delete transaction if exist
             headerCursor = db
                     .selectSQL("SELECT Tid, RefId FROM PlanogramHeader"
                             + " WHERE RetailerId = "
-                            + mBModel.getRetailerMasterBO().getRetailerID()
+                            + mBModel.getAppDataProvider().getRetailMaster().getRetailerID()
                             + " AND DistributorID = "
-                            + mBModel.getRetailerMasterBO().getDistributorId()
+                            + mBModel.getAppDataProvider().getRetailMaster().getDistributorId()
                             + " AND CounterId = 0"
                             + " AND Date = "
-                            + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
                 db.deleteSQL("PlanogramHeader",
-                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + QT(headerCursor.getString(0)), false);
                 db.deleteSQL("PlanogramDetails",
-                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + QT(headerCursor.getString(0)), false);
                 db.deleteSQL("PlanogramImageDetails",
-                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + QT(headerCursor.getString(0)), false);
                 refId = headerCursor.getString(1);
                 headerCursor.close();
             }
@@ -534,7 +534,7 @@ public class PlanoGramHelper {
                             + QT(planogram.getPlanogramCameraImgName()) + ","
                             + QT(imagePath) + ","
                             + QT(planogram.getAdherence()) + ","
-                            + QT(mBModel.getRetailerMasterBO().getRetailerID())
+                            + QT(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
                             + "," + planogram.getReasonID() + ","
                             + planogram.getLocationID() + ","
                             + planogram.getAudit() + ",0";
@@ -552,12 +552,14 @@ public class PlanoGramHelper {
             // Save Header if There is Data in Details
             if (isData) {
                 values = QT(tid) + ","
-                        + mBModel.getRetailerMasterBO().getRetailerID() + ","
+                        + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                         + QT(mBModel.getTimeZone()) + ","
-                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                        + mBModel.getAppDataProvider().getUser().getUserid()
                         + "," + QT(refId) + ","
-                        + QT("") + ",0" + "," + mBModel.getRetailerMasterBO().getDistributorId();
+                        + QT("") + ",0" + "," + mBModel.getAppDataProvider().getRetailMaster().getDistributorId()
+                        + "," + QT(mBModel.getAppDataProvider().getRetailMaster().getRidSF())
+                        + "," + mBModel.getAppDataProvider().getUniqueId();
 
 
                 db.insertSQL("PlanogramHeader", headerColumns, values);

@@ -1430,8 +1430,8 @@ public class BusinessModel extends Application {
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId" : "0 as SupplierTaxLocId")
-                            + " FROM RetailerMaster A"
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId" : "0 as SupplierTaxLocId,")
+                            + "ridSF FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -1619,6 +1619,7 @@ public class BusinessModel extends Application {
                     retailer.setSbdPercent(c.getFloat(c.getColumnIndex("sbdDistPercent"))); // updated sbd percentage from history and ordered details
                     retailer.setRetailerTaxLocId(c.getInt(c.getColumnIndex("RetailerTaxLocId")));
                     retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
+                    retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -2522,22 +2523,23 @@ public class BusinessModel extends Application {
 
             String id;
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
             for (int i = 0; i < retailers.size(); i++) {
-                id = QT(userMasterHelper.getUserMasterBO().getDistributorid()
-                        + "" + userMasterHelper.getUserMasterBO().getUserid()
+                id = AppUtils.QT(getAppDataProvider().getUser().getDistributorid()
+                        + "" + getAppDataProvider().getUser().getUserid()
                         + "" + SDUtil.now(SDUtil.DATE_TIME_ID) + i);
 
                 NonproductivereasonBO outlet = retailers.get(i);
 
                 if (!outlet.getReasonid().equals("0")) {
                     bool = true;
-                    values = id + "," + QT(outlet.getRetailerid()) + ","
-                            + outlet.getBeatId() + "," + QT(outlet.getDate())
-                            + "," + QT(outlet.getReasonid()) + ","
-                            + QT(getStandardListId(outlet.getReasontype()))
-                            + "," + QT("N") + "," + outlet.getDistributorID();
+                    values = id + "," + AppUtils.QT(outlet.getRetailerid()) + ","
+                            + outlet.getBeatId() + "," + AppUtils.QT(outlet.getDate())
+                            + "," + AppUtils.QT(outlet.getReasonid()) + ","
+                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
+                            + "," + AppUtils.QT("N") + "," + outlet.getDistributorID()
+                            + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
                     db.insertSQL("Nonproductivereasonmaster", columns, values);
                 }
@@ -2575,49 +2577,50 @@ public class BusinessModel extends Application {
 
             db.deleteSQL(
                     "Nonproductivereasonmaster",
-                    "RetailerID=" + QT(getRetailerMasterBO().getRetailerID())
+                    "RetailerID=" + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + QT(getStandardListId(outlet.getReasontype()))
+                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
                             + " and RouteID="
-                            + getRetailerMasterBO().getBeatID(), false);
+                            + getAppDataProvider().getRetailMaster().getBeatID(), false);
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + QT(getRetailerMasterBO().getRetailerID())
+                            + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + QT(getStandardListId(outlet
+                            + AppUtils.QT(getStandardListId(outlet
                             .getCollectionReasonType()))
                             + " and RouteID="
-                            + getRetailerMasterBO().getBeatID(), false);
+                            + getAppDataProvider().getRetailMaster().getBeatID(), false);
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks,ridSF";
 
-            values = id + "," + QT(getRetailerMasterBO().getRetailerID()) + ","
-                    + getRetailerMasterBO().getBeatID() + ","
-                    + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
-                    + "," + QT(getStandardListId(outlet.getReasontype())) + ","
-                    + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
+            values = id + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
+                    + getAppDataProvider().getRetailMaster().getBeatID() + ","
+                    + AppUtils.QT(outlet.getDate()) + "," + AppUtils.QT(outlet.getReasonid())
+                    + "," + AppUtils.QT(getStandardListId(outlet.getReasontype())) + ","
+                    + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks);
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (!outlet.getCollectionReasonID().equals("0")) {
-                String uid = QT(userMasterHelper.getUserMasterBO()
+                String uid = AppUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
-                        + userMasterHelper.getUserMasterBO().getUserid()
+                        + getAppDataProvider().getUser().getUserid()
                         + ""
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
                 values = uid
                         + ","
-                        + QT(getRetailerMasterBO().getRetailerID())
+                        + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                         + ","
-                        + getRetailerMasterBO().getBeatID()
+                        + getAppDataProvider().getRetailMaster().getBeatID()
                         + ","
-                        + QT(outlet.getDate())
+                        + AppUtils.QT(outlet.getDate())
                         + ","
-                        + QT(outlet.getCollectionReasonID())
+                        + AppUtils.QT(outlet.getCollectionReasonID())
                         + ","
-                        + QT(getStandardListId(outlet.getCollectionReasonType()))
-                        + "," + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
+                        + AppUtils.QT(getStandardListId(outlet.getCollectionReasonType()))
+                        + "," + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks)
+                        + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
             }
 

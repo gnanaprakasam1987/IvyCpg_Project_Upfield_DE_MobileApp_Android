@@ -87,7 +87,7 @@ public class EmptyReturnHelper {
 			String tid;
 			String values;
 			double lineValue, returnValue = 0;
-			String headerColumns = "orderid,orderdate,retailerid,ReturnValue,OFlag";
+			String headerColumns = "orderid,orderdate,retailerid,ReturnValue,OFlag,ridSF,VisitId";
 			String returncolumns = "OrderID,Pid,ReturnQty,Price,UomID,TypeID,LineValue,RetailerID,LiableQty,Qty";
 
 			tid = QT(bmodel.getAppDataProvider().getUser().getUserid()
@@ -164,7 +164,8 @@ public class EmptyReturnHelper {
 			// save header with total line value
 			values = tid + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
 					+ QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) + ","
-					+ QT(returnValue + "") + "," + 0;
+					+ QT(returnValue + "") + "," + 0 + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+					+ bmodel.getAppDataProvider().getUniqueId();
 
 			db.insertSQL(DataMembers.tbl_orderHeader, headerColumns, values);
 
