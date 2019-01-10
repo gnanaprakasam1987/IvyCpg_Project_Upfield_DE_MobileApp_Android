@@ -82,7 +82,7 @@ public class EmptyReconciliationHelper {
 
 	public void downloadReturnProductsTypeNew() {
 
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+		DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 		try {
 			db.openDataBase();
 			String sb = "SELECT DISTINCT O.Pid,P.Pname,IFNULL(O.QTY,0) As OQty,IFNULL(D.QTY,0)  AS VQty From ProductMaster P "+
@@ -124,7 +124,7 @@ public class EmptyReconciliationHelper {
 	}
 
 	public void downloadProducts() {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+		DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 		try {
 			db.openDataBase();
 			String sb = "SELECT A.PID, A.PName, A.barcode, A.TypeID, A.Pname, A.baseprice, A.piece_uomid FROM ProductMaster A"+
@@ -159,7 +159,7 @@ public class EmptyReconciliationHelper {
 	 * BomMaster Table
 	 */
 	public void downloadNonGenericProductID() {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+		DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 		try {
 			db.openDataBase();
 			Cursor cur = db
@@ -224,7 +224,7 @@ public class EmptyReconciliationHelper {
 	 * Save Tracking Detail in Detail Table
 	 */
 	public void saveTransaction() {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+		DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 		try {
 			db.openDataBase();
 			String tid;
@@ -299,7 +299,7 @@ public class EmptyReconciliationHelper {
 	}
 
 	private boolean checkProductID(String productID) {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+		DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 		try {
 			db.openDataBase();
 			Cursor cursor = db
@@ -325,7 +325,7 @@ public class EmptyReconciliationHelper {
 	 * Save SKU Return Products Detail Group by All SKU in Day wise Record
 	 */
 	public void saveSKUWiseTransaction() {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+		DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 		try {
 			db.openDataBase();
 			String tid;
@@ -447,7 +447,7 @@ public class EmptyReconciliationHelper {
 	 * Save Tracking Detail in Detail Table
 	 */
 	public void updateEmptyReconilationTable() {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+		DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 		try {
             ArrayList<BomReturnBO> returnProducts = bmodel.productHelper
                     .getBomReturnProducts();
@@ -508,7 +508,7 @@ public class EmptyReconciliationHelper {
 	 * Delete the Today's Empty Reconciliation Order while deleting the Order
 	 */
 	public void deleteEmptyReconciliationOrder() {
-		DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+		DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 		try {
 			db.openDataBase();
 			// delete transaction if exist
@@ -542,8 +542,8 @@ public class EmptyReconciliationHelper {
 	// default to X
 	public void updateTable() {
 		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.createDataBase();
 			db.openDataBase();
 			db.updateSQL("UPDATE " + DataMembers.tbl_EmptyReconciliationHeader
@@ -563,7 +563,7 @@ public class EmptyReconciliationHelper {
 	private boolean isProductAvailableinSIHmaster(String productId) {
 		DBUtil db = null;
 		try {
-			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db = new DBUtil(context, DataMembers.DB_NAME);
 			db.openDataBase();
 			Cursor c = db.selectSQL("select qty from StockInHandMaster where pid=" + productId);
 			if (c != null) {

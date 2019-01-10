@@ -43,8 +43,8 @@ public class DynamicReportHelper {
 
     public void downloadDynamicReport(String menucode) {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         dynamicReportHeaderBOs = new ArrayList<DynamicReportHeaderBO>();
@@ -127,8 +127,8 @@ public class DynamicReportHelper {
 
     private void downloadRetailerList(int reportId) {
         retailerList = new ArrayList<SpinnerBO>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         try {
@@ -153,8 +153,8 @@ public class DynamicReportHelper {
     }
 
     public void downloadRetailerReport(int RetailerId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
 
         dynamicReportDetailBO = new DynamicReportDetailBO();
 

@@ -38,8 +38,8 @@ public class EodReportHelper {
         mEODReportBOByProductID = new HashMap<>();
         try {
             StockReportBO stockReportBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
@@ -267,8 +267,8 @@ public class EodReportHelper {
     public HashMap<String, ArrayList<ProductMasterBO>> downloadBatchList() {
         HashMap<String, ArrayList<ProductMasterBO>> mBatchListByproductID = new HashMap<>();
         ProductMasterBO productBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -412,8 +412,8 @@ public class EodReportHelper {
 
     public void updateBaseUOM(String activity, int reportType) {
         //reportType(1)-EOD, reportType(2)-currentStock, reportType(3)-CurrentStockBatchwise
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         try {
@@ -452,8 +452,8 @@ public class EodReportHelper {
 
     private void updateProductMapping(String productId, int pLevelId, int uomId, int contentLevel,
                                       int contentLevelId, int reportType) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 

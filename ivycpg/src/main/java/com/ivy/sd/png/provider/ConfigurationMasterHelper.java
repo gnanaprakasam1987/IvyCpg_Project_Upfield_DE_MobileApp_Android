@@ -1581,7 +1581,7 @@ public class ConfigurationMasterHelper {
      * Method will download configuration related to retailer profile view.
      */
     public void downloadProfileModuleConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             SharedPreferences sharedPrefs = PreferenceManager
                     .getDefaultSharedPreferences(context);
@@ -1734,8 +1734,8 @@ public class ConfigurationMasterHelper {
             String sql = "select hhtCode, flag, RField,menu_type from "
                     + DataMembers.tbl_HhtModuleMaster + " Where ForSwitchSeller = 0";
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             config = new Vector<>();
 
@@ -1782,8 +1782,8 @@ public class ConfigurationMasterHelper {
             String sql = "select hhtCode, flag, RField,menu_type from "
                     + DataMembers.tbl_HhtModuleMaster + " Where ForSwitchSeller = 1";
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
 
@@ -1850,8 +1850,8 @@ public class ConfigurationMasterHelper {
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='SOBUFFER' and ForSwitchSeller = 0";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
@@ -1875,8 +1875,8 @@ public class ConfigurationMasterHelper {
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='TAX02' and ForSwitchSeller = 0";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
@@ -1903,8 +1903,8 @@ public class ConfigurationMasterHelper {
                     + " where  flag=1 and MenuType=" + bmodel.QT(menutype)
                     + " and hhtCode=" + bmodel.QT("VST11")
                     + " and lang=" + bmodel.QT(language) + " order by RField";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
@@ -1930,8 +1930,8 @@ public class ConfigurationMasterHelper {
         try {
             String sql = "select RField6 from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT(moduleCode);
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
@@ -1964,8 +1964,8 @@ public class ConfigurationMasterHelper {
         try {
             String sql = "select Regex from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT(moduleCode);
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
@@ -2685,8 +2685,8 @@ public class ConfigurationMasterHelper {
 
     private boolean isInOutModule() {
         boolean isInOutModule = false;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             Cursor c = db.selectSQL("select RField from HhtMenuMaster where hhtCode='MENU_IN_OUT'");
@@ -2707,8 +2707,8 @@ public class ConfigurationMasterHelper {
             SHOW_DELIVERY_DATE_IN_ORDER_RPT = false;
 
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -2745,8 +2745,8 @@ public class ConfigurationMasterHelper {
 
             IS_ORDER_STATUS_REPORT = false;
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -2773,8 +2773,8 @@ public class ConfigurationMasterHelper {
      */
     public void loadDashboardUserFilter() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -2794,8 +2794,8 @@ public class ConfigurationMasterHelper {
 
     public void loadLicenseValidationConfig() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -2820,8 +2820,8 @@ public class ConfigurationMasterHelper {
     private void getTaxModel(String hhtCode) {
 
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             Cursor c = db.selectSQL("select RField from HhtModuleMaster where hhtCode='" + hhtCode + "' and  ForSwitchSeller = 0");
@@ -2854,8 +2854,8 @@ public class ConfigurationMasterHelper {
     private void getTaxModelSwitchUser(String hhtCode) {
 
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             Cursor c = db.selectSQL("select RField from HhtModuleMaster where hhtCode='" + hhtCode + "' and  ForSwitchSeller = 1 ");
@@ -2885,8 +2885,8 @@ public class ConfigurationMasterHelper {
     private void getLocationTaxGSTModel(String hhtCode) {
 
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             Cursor c = db.selectSQL("select RField from HhtModuleMaster where hhtCode='" + hhtCode + "' and  ForSwitchSeller = 0");
@@ -2916,8 +2916,8 @@ public class ConfigurationMasterHelper {
     private boolean isAttributeMenu(String hhtCode) {
 
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             Cursor c = db.selectSQL("select RField from HhtModuleMaster where hhtCode='" + hhtCode + "'  and  ForSwitchSeller = 0");
@@ -2986,8 +2986,8 @@ public class ConfigurationMasterHelper {
                         + " order by MNumber";
             }
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             IS_ORDER_STOCK = false;
@@ -3065,8 +3065,8 @@ public class ConfigurationMasterHelper {
                         + " order by MNumber";
             }
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
 
@@ -3124,8 +3124,8 @@ public class ConfigurationMasterHelper {
         String language = sharedPrefs.getString("languagePref",
                 ApplicationConfigs.LANGUAGE);
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select distinct hhtCode, flag, RField,MName,RField1,hasLink,MNumber from "
@@ -3175,8 +3175,8 @@ public class ConfigurationMasterHelper {
                 ApplicationConfigs.LANGUAGE);
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select hhtCode, flag, RField,MName, hasLink from "
@@ -3215,8 +3215,8 @@ public class ConfigurationMasterHelper {
                 ApplicationConfigs.LANGUAGE);
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select hhtCode, flag, RField,MName from "
@@ -3256,8 +3256,8 @@ public class ConfigurationMasterHelper {
                 ApplicationConfigs.LANGUAGE);
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select hhtCode, flag, RField,MName from "
@@ -3296,8 +3296,8 @@ public class ConfigurationMasterHelper {
         String language = sharedPrefs.getString("languagePref",
                 ApplicationConfigs.LANGUAGE);
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select hhtCode,MName,MNumber from "
@@ -3337,8 +3337,8 @@ public class ConfigurationMasterHelper {
                 ApplicationConfigs.LANGUAGE);
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select hhtCode,MName from "
@@ -3376,8 +3376,8 @@ public class ConfigurationMasterHelper {
                 ApplicationConfigs.LANGUAGE);
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select hhtCode, MName from "
@@ -3405,8 +3405,8 @@ public class ConfigurationMasterHelper {
 
     public void downloadCompetitorFilterLevels() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select RField from "
@@ -3436,8 +3436,8 @@ public class ConfigurationMasterHelper {
             SHOW_COMP_FEEDBACK = false;
 
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -3488,8 +3488,8 @@ public class ConfigurationMasterHelper {
             SHOW_SALES_RETURN_IN_DELIVERY = false;
 
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -3550,8 +3550,8 @@ public class ConfigurationMasterHelper {
             SHOW_ORDER_HISTORY_DETAILS = false;
 
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -3642,8 +3642,8 @@ public class ConfigurationMasterHelper {
             SHOW_INVOICE_HISTORY_DETAIL = false;
 
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -3712,8 +3712,8 @@ public class ConfigurationMasterHelper {
         try {
 
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -3775,8 +3775,8 @@ public class ConfigurationMasterHelper {
         try {
 
             String codeValue;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -3803,8 +3803,8 @@ public class ConfigurationMasterHelper {
         try {
 
             String codeValue;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -3829,8 +3829,8 @@ public class ConfigurationMasterHelper {
     public void loadProductDistributionConfig() {
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select RField from "
@@ -3936,8 +3936,8 @@ public class ConfigurationMasterHelper {
             SELLER_SKU_WISE_KPI_CODES = "";
 
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -4555,8 +4555,8 @@ public class ConfigurationMasterHelper {
         SHOW_FREE_STOCK_LOADED=false;
         SHOW_FREE_STOCK_IN_HAND=false;
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             if (IS_EOD_COLUMNS_AVALIABLE) {
@@ -4650,8 +4650,8 @@ public class ConfigurationMasterHelper {
         SHOW_ORD_SUMMARY_CASH_DISCOUNT = false;
         SHOW_ORD_SUMMARY_TAX = false;
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                 + " where hhtCode='ORDB06' and Flag=1 and ForSwitchSeller = 0";
@@ -4704,8 +4704,8 @@ public class ConfigurationMasterHelper {
                 ApplicationConfigs.LANGUAGE);
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select hhtCode,MName,MNumber,hasLink,RField1 from "
@@ -4741,8 +4741,8 @@ public class ConfigurationMasterHelper {
 
     public int getSbdDistTargetPCent() {
         int targetPercent = 0;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         String sql = "select MNumber from HhtMenuMaster where hhtCode='CallA13' or hhtCode='CallA14' and Flag=1";
         Cursor c = db.selectSQL(sql);
@@ -4761,8 +4761,8 @@ public class ConfigurationMasterHelper {
     }
 
     public int getSbdMerchTargetPCent() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         String sql = "select MNumber from HhtMenuMaster where hhtCode='CallA6' and Flag=1";
         Cursor c = db.selectSQL(sql);
@@ -4778,8 +4778,8 @@ public class ConfigurationMasterHelper {
     }
 
     public int getSOLogic() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         String sql = "select Rfield from HhtModuleMaster where hhtCode="
                 + bmodel.QT(CODE_SUGGESTED_ORDER_LOGIC) + " and  ForSwitchSeller = 0";
@@ -4798,7 +4798,7 @@ public class ConfigurationMasterHelper {
     }
 
     public void setAmazonS3Credentials() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String sql = "Select ListCode,ListName from StandardListMaster where ListType='Amazon_Configuration'";
@@ -4833,8 +4833,8 @@ public class ConfigurationMasterHelper {
 
         ArrayList<ConfigureBO> lanList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select * from standardListMaster where ListType='LANGUAGE_TYPE'";
@@ -4943,8 +4943,8 @@ public class ConfigurationMasterHelper {
     private void getDateFormat() {
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "SELECT RField FROM HhtModuleMaster where hhtCode = '"
                     + CODE_DATE_FORMAT + "' and flag='1' and  ForSwitchSeller = 0";
@@ -4965,8 +4965,8 @@ public class ConfigurationMasterHelper {
     public ArrayList<ConfigureBO> getPrinterList() {
         ArrayList<ConfigureBO> printerList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select * from standardListMaster where ListType='PRINTER_TYPE'";
@@ -5084,8 +5084,8 @@ public class ConfigurationMasterHelper {
     public Vector<String> downloadSIHAppliedById() {
         SIHApplyById = new Vector<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select uid from StockApply ");
 
@@ -5112,8 +5112,8 @@ public class ConfigurationMasterHelper {
                     .getDefaultSharedPreferences(context);
             String language = sharedPrefs.getString("languagePref",
                     ApplicationConfigs.LANGUAGE);
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select hht.flag,o.isended,o.isstarted from HhtMenuMaster hht  " +
@@ -5149,8 +5149,8 @@ public class ConfigurationMasterHelper {
 
         String codeValue = null;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster + " where hhtCode="
@@ -5196,8 +5196,8 @@ public class ConfigurationMasterHelper {
             String language = sharedPrefs.getString("languagePref",
                     ApplicationConfigs.LANGUAGE);
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select MName from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT("MENU_JOINT_CALL")
@@ -5225,8 +5225,8 @@ public class ConfigurationMasterHelper {
     }
 
     public int getsbddistpostwihtouthistory() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c;
@@ -5270,8 +5270,8 @@ public class ConfigurationMasterHelper {
         setProductDetails(new Vector<ConfigureBO>());
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String language = sharedPrefs.getString("languagePref",
                     ApplicationConfigs.LANGUAGE);
@@ -5316,7 +5316,7 @@ public class ConfigurationMasterHelper {
 
     public void downloadRetailerProperty() {
         mRetailerProperty = new ArrayList<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String sb = "select  hhtCode  from hhtmodulemaster where menu_type='RETAILER_PROPERTY'" +
@@ -5359,7 +5359,7 @@ public class ConfigurationMasterHelper {
 
 
     public void loadRouteConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 
         try {
             db.openDataBase();
@@ -5387,7 +5387,7 @@ public class ConfigurationMasterHelper {
     }
 
     public void checkCollectionDocConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 
         try {
             db.openDataBase();
@@ -5417,7 +5417,7 @@ public class ConfigurationMasterHelper {
     }
 
     public void checkSalesReturnValidateConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 
         try {
             db.openDataBase();
@@ -5438,7 +5438,7 @@ public class ConfigurationMasterHelper {
     }
 
     public void checkSalesReturnSignConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 
         try {
             db.openDataBase();
@@ -5463,8 +5463,8 @@ public class ConfigurationMasterHelper {
      */
     public void downloadPasswordPolicy() {
         IS_SAME_LOGIN = false;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
 
         try {
             db.openDataBase();
@@ -5548,8 +5548,8 @@ public class ConfigurationMasterHelper {
 
     public int getMVPTheme() {
         // MVPTheme = R.style.MVPTheme_Blue;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
 
         try {
             db.createDataBase();
@@ -5640,8 +5640,8 @@ public class ConfigurationMasterHelper {
 
 
     public void downloadIndicativeOrderConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
 
         try {
             db.createDataBase();
@@ -5694,8 +5694,8 @@ public class ConfigurationMasterHelper {
         String language = sharedPrefs.getString("languagePref",
                 ApplicationConfigs.LANGUAGE);
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select hhtCode, flag, RField1, hasLink from "
@@ -5742,8 +5742,8 @@ public class ConfigurationMasterHelper {
 
     public boolean isDistributorWiseDownload() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             Cursor c = db.selectSQL("select Flag from HhtModuleMaster where hhtcode='FUN35' and  ForSwitchSeller = 0");
@@ -5767,8 +5767,8 @@ public class ConfigurationMasterHelper {
 
     public boolean downloadConfigForLoadLastVisit() {
         boolean flag = false;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         StringBuffer sb;
         try {
             db.openDataBase();
@@ -5862,8 +5862,8 @@ public class ConfigurationMasterHelper {
     }
 
     public int getActivtyType(String code) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         String query = "select listid from standardlistmaster where listtype='OTP_ACTIVITY_CMN_TYPE' and ListCode=" + bmodel.QT(code);
         Cursor c = db.selectSQL(query);
@@ -5894,8 +5894,8 @@ public class ConfigurationMasterHelper {
                     + " where hhtCode=" + bmodel.QT(CODE_SHOW_ONLY_INDICATIVE_ORDER)
                     + " and flag=1 and ForSwitchSeller = 0";
             IS_SHOW_ORDER_REASON = false;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(sql);
@@ -5920,8 +5920,8 @@ public class ConfigurationMasterHelper {
             COMPUTE_DUE_DAYS = true;
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='SR01' and ForSwitchSeller = 0";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(sql);
@@ -5994,8 +5994,8 @@ public class ConfigurationMasterHelper {
     private void getUserLevel(String hhtCode) {
 
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String codeValue = null;
@@ -6037,8 +6037,8 @@ public class ConfigurationMasterHelper {
 
         try {
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -6076,8 +6076,8 @@ public class ConfigurationMasterHelper {
 
         try {
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -6114,8 +6114,8 @@ public class ConfigurationMasterHelper {
 
         try {
             String codeValue = null;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
@@ -6184,7 +6184,7 @@ public class ConfigurationMasterHelper {
         String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                 + " where hhtCode=" + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_SALES_VALUE_DR) + " and Flag=1 and ForSwitchSeller = 0";
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
 
         String title = "";
@@ -6203,7 +6203,7 @@ public class ConfigurationMasterHelper {
 
     public void getDigitalContentSize() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor c = db.selectSQL("select RField from " + DataMembers.tbl_HhtModuleMaster

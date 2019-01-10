@@ -48,8 +48,8 @@ public class TaskReportHelper {
 
     Vector<TaskDataBO> loadTaskReportRetailerList() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -87,8 +87,8 @@ public class TaskReportHelper {
     }
 
     Vector<TaskDataBO> loadTaskReport() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -139,8 +139,8 @@ public class TaskReportHelper {
     }
 
     Vector<TaskDataBO> loadRetailerPlannedDate() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -181,8 +181,8 @@ public class TaskReportHelper {
 
         Vector<TaskDataBO> taskDataBOS = new Vector<>();
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -235,8 +235,8 @@ public class TaskReportHelper {
 
         Vector<TaskDataBO> taskDataBO = new Vector<>();
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 

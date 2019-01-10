@@ -56,8 +56,8 @@ public class NonFieldHelper {
         try {
             reasonBOByreasonID = new SparseArray<>();
             nonFieldReasonList.clear();
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListId,ListCode,ListName,isRequired,ParentId from StandardListMaster where ListType='ATTENDANCE_TYPE'");
             setNonFieldReasonList(new ArrayList<NonFieldBO>());
@@ -128,8 +128,8 @@ public class NonFieldHelper {
     public void downLeaveTypes(Context context) {
         try {
             leaveTypeByID = new SparseArray<>();
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListId,ListName,Flex1 from StandardListMaster where ListType='LEAVE_TYPE'");
 
@@ -174,8 +174,8 @@ public class NonFieldHelper {
     public void dynamicRadioButtton(Context context) {
         try {
             lstRadioBtn.clear();
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT ListId,ListName,ListCode FROM StandardListMaster WHERE ListType='NONFIELD_SESSION_TYPE'");
@@ -245,8 +245,8 @@ public class NonFieldHelper {
      */
     public void saveNonFieldWorkDetails(Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = "Tid, DateIn,Atd_ID,ReasonID, FromDate, ToDate, Session, Remarks,Timezone,Status,jointUserId,LeaveType_LovId,TotalDays,TimeSpent,userid";
@@ -291,8 +291,8 @@ public class NonFieldHelper {
         getMonthList(context);
         try {
             nonFieldList.clear();
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct AD.FromDate,AD.ToDate,AD.Session,AD.Remarks,AD.Atd_ID,AD.Tid,Status,AD.LeaveType_LovId," +
@@ -366,8 +366,8 @@ public class NonFieldHelper {
         String date = "";
 
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT Fromdate FROM AttendanceDetail ORDER BY Fromdate  asc LIMIT 1");
 
@@ -397,8 +397,8 @@ public class NonFieldHelper {
         String date = "";
 
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT Fromdate FROM AttendanceDetail ORDER BY Fromdate  desc LIMIT 1");
 
@@ -468,7 +468,7 @@ public class NonFieldHelper {
      */
     public void deleteNonfield(Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             for (NonFieldBO nonFeildBo : getNonFieldList()) {
@@ -490,8 +490,8 @@ public class NonFieldHelper {
     public LeaveRuleBO checkRule(int lovId, String fromDate, Context context) {
         LeaveRuleBO leaveRuleBO = new LeaveRuleBO();
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT EffectiveTo,NoticeDays from LeaveRule " +
                     "where LeaveType_LovId = " + lovId + " AND " +
@@ -518,8 +518,8 @@ public class NonFieldHelper {
     public boolean isHoliday(String date, Context context) {
         boolean isHoliday = false;
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT Description from HolidayMaster " +
                     "where Date  = " + bmodel.QT(date));
@@ -566,8 +566,8 @@ public class NonFieldHelper {
 
     public void downWeekOffs(Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT WeekOff from AppVariables");
             if (c != null) {
@@ -587,8 +587,8 @@ public class NonFieldHelper {
     public void computeLeaves(int lovId, String fromDate, String toDate, int flag, int session, Context context) {
         leavesBo = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT LeaveType_LovId,FrequencyType,EffectiveFrom,EffectiveTo,AllowedDays,NoticeDays,IsAutoApproval from LeaveRule " +
                     "where LeaveType_LovId = " + lovId + " AND " +
@@ -682,8 +682,8 @@ public class NonFieldHelper {
         float leaves = 0;
 
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT AD.Tid, LD.ApplyDays from AttendanceDetail AD " +
                     "inner join LeaveDetail LD on LD.Tid  = AD.Tid " +
@@ -712,8 +712,8 @@ public class NonFieldHelper {
      */
     public void saveLeaveDetails(double totaldays, int lovid, Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = "Tid, DateIn,Atd_ID,ReasonID,FromDate,ToDate,Session,Remarks,Timezone,Status,jointUserId,LeaveType_LovId,TotalDays,userid";
@@ -774,8 +774,8 @@ public class NonFieldHelper {
         String sesCode = "";
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT Tid from AttendanceDetail " +
                     "where userid=" + userid + " AND (" +

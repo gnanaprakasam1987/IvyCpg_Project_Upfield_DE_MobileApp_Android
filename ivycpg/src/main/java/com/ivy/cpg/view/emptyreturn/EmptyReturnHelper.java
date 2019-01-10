@@ -46,7 +46,7 @@ public class EmptyReturnHelper {
 		try {
 			mProductType = new Vector<>();
 
-			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db = new DBUtil(context, DataMembers.DB_NAME);
 			db.openDataBase();
 			String sb = "Select Distinct PM.Pid,PM.Pname,PM.piece_uomid From ProductMaster PM INNER JOIN StandardListMaster SLM on PM.TypeId = SLM.ListId"
 					+ " WHERE PM.isReturnable =1 and SLM.ListCode ='GENERIC' ORDER BY PM.Pid";
@@ -81,7 +81,7 @@ public class EmptyReturnHelper {
 	public void saveEmptyReturn() {
 		DBUtil db = null;
 		try {
-			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db = new DBUtil(context, DataMembers.DB_NAME);
 			db.openDataBase();
 
 			String tid;
@@ -214,7 +214,7 @@ public class EmptyReturnHelper {
 	private void saveTotalOrderReturnQty() {
 		DBUtil db = null;
 		try {
-			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db = new DBUtil(context, DataMembers.DB_NAME);
 			db.openDataBase();
 			String sql, values;
 			Cursor cursor;

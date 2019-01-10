@@ -27,8 +27,8 @@ public class SalesReturnReportHelper {
         try {
 
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
 
@@ -71,7 +71,7 @@ public class SalesReturnReportHelper {
 
 
                     Vector<SalesReturnDetailsReportBo> returnDeliveryDataModelVector = new Vector<>();
-                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME);
                     dbUtil.openDataBase();
 
                     Cursor cursor = dbUtil
@@ -120,8 +120,8 @@ public class SalesReturnReportHelper {
 
     public int getTotalReturnValueHeader(Context context){
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c = db.selectSQL("select sum (ReturnValue) from SalesReturnHeader where date=" + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
         int totalVal = 0;

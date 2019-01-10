@@ -10,13 +10,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.provider.Settings;
@@ -34,7 +31,6 @@ import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -333,8 +329,8 @@ public class LocationServiceHelper {
 
         UserMasterBO userMasterBO = null;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select " + DataMembers.tbl_userMaster_cols
@@ -380,7 +376,7 @@ public class LocationServiceHelper {
     public void saveUserLocation(Context ctx, LocationDetailBO locationDetailBO, UserMasterBO userMasterBO) {
         DBUtil db;
         try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
 
             String columns = "Tid,Date,Latitude,Longtitude,Accuracy,Activity,Battery,LocationProvider,IsLocationEnabled";
@@ -409,7 +405,7 @@ public class LocationServiceHelper {
         DBUtil db ;
         boolean isAvail = false;
         try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor c = db.selectSQL("SELECT count(*) FROM "+tableName+"  where upload = 'N'");
@@ -436,7 +432,7 @@ public class LocationServiceHelper {
 
             SynchronizationHelper synchronizationHelper = SynchronizationHelper.getInstance(ctx);
 
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -597,7 +593,7 @@ public class LocationServiceHelper {
     public void saveUserRealtimeLocation(Context ctx, LocationDetailBO locationDetailBO, UserMasterBO userMasterBO) {
         DBUtil db;
         try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
 
             String columns = "userid,latitude,longitude,date_time";
@@ -621,7 +617,7 @@ public class LocationServiceHelper {
 
             SynchronizationHelper synchronizationHelper = SynchronizationHelper.getInstance(ctx);
 
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 

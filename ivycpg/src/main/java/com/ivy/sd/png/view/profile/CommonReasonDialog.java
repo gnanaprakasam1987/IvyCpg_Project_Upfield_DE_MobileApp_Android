@@ -302,8 +302,8 @@ public class CommonReasonDialog extends Dialog {
 
     // Used to Reason Not Applicable for Others LOV
     private boolean isReasonRemarksNA() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         String sql = "SELECT hhtCode, RField FROM "

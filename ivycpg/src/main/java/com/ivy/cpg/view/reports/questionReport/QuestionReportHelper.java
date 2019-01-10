@@ -40,8 +40,8 @@ public class QuestionReportHelper {
                 QuestionReportBO chkReportBo;
                 ArrayList<QuestionReportBO> questionReport = new ArrayList<>();
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     Cursor c = db
                             .selectSQL("SELECT Text, V1,V2,V3,V4 FROM L3SuperwiserAuditReport ");

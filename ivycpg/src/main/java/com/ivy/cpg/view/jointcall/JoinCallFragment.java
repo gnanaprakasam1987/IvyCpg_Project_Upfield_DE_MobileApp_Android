@@ -311,8 +311,8 @@ public class JoinCallFragment extends IvyBaseFragment {
      */
     private void updateJoinDetails(int value) {
         try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.updateSQL("update usermaster set isJointCall=" + value
@@ -325,8 +325,8 @@ public class JoinCallFragment extends IvyBaseFragment {
 
     private void insertJoinCallDetails(String remarks) {
         try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -358,8 +358,8 @@ public class JoinCallFragment extends IvyBaseFragment {
 
     private void updateJoinCallDetails() {
         try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 

@@ -44,7 +44,7 @@ public class SBDHelper {
      */
     public void loadSBDFocusData(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -113,8 +113,8 @@ public class SBDHelper {
             HashMap<String, String> mParentHierarchyByProductId = new HashMap<>();
             HashMap<String, String> mProductNameByProductId = new HashMap<>();
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -377,8 +377,8 @@ public class SBDHelper {
     public void saveDayTarget(int kpiid, double target,Context mContext){
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select kpiid from RetailerKPIModifiedDetail where kpiid =" + kpiid);

@@ -37,8 +37,8 @@ public class OfflinePlanHelper {
 
 
     void downloadOfflinePlanList() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         if (mHashMapData != null && mHashMapData.size() > 0) {
             mHashMapData.clear();
         }
@@ -113,7 +113,7 @@ public class OfflinePlanHelper {
 
 
     void savePlan(Context mContext, OfflineDateWisePlanBO offlineDateWisePlanBO) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -136,7 +136,7 @@ public class OfflinePlanHelper {
     }
 
     void updatePlan(Context mContext, OfflineDateWisePlanBO offlineDateWisePlanBO) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -161,8 +161,8 @@ public class OfflinePlanHelper {
         Vector<NonFieldBO> nonFieldList = new Vector<>();
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListId,ListCode,ListName,isRequired,ParentId from StandardListMaster where ListType='FIELD_PLAN_TYPE'");
             if (c != null) {

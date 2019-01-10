@@ -26,8 +26,8 @@ public class PromotionTrackingReportsHelper {
         ArrayList<PromotionTrackingReportBO> reportordbooking = null;
         try {
             PromotionTrackingReportBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("SELECT D.PSName as PSName, A.PromoName, Case When (B.IsExecuted =1) then 'YES' else 'NO' End as IsExecuted, Case When (B.HasAnnouncer =1) then ");
@@ -67,8 +67,8 @@ public class PromotionTrackingReportsHelper {
         ArrayList<RetailerNamesBO> retailerNamesList = null;
         try {
             RetailerNamesBO retailerNamesBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("Select distinct A.RetailerID, A.RetailerName from RetailerMaster A " +

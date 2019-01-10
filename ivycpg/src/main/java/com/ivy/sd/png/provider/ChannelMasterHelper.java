@@ -11,7 +11,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import java.util.Vector;
 
@@ -88,8 +87,8 @@ public class ChannelMasterHelper {
     public void downloadChannel() {
         try {
             ChannelBO temp;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select levelid from channellevel order by Sequence desc limit 2");
             int leveid = 0;
@@ -145,8 +144,8 @@ public class ChannelMasterHelper {
     public String getChannelHierarchyForDiscount(int channelId, Context mContext) {
         String sql, sql1 = "", str = "";
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;
@@ -207,8 +206,8 @@ public class ChannelMasterHelper {
     public String getChannelHierarchy(int channelId, Context mContext) {
         String sql, sql1 = "", str = "";
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;
@@ -280,8 +279,8 @@ public class ChannelMasterHelper {
     public String getLocationHierarchy(Context mContext) {
         String sql, sql1 = "", str = bmodel.getRetailerMasterBO().getLocationId() + ",";
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;

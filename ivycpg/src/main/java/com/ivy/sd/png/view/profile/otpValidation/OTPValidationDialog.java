@@ -11,7 +11,6 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -191,8 +190,8 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
     public void loadOTPReason() {
         try {
             SpinnerBO reason;
-            DBUtil db = new DBUtil(activityCtxt, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(activityCtxt, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.OTP_REASON_TYPE));
             if (c != null) {
@@ -294,8 +293,8 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
         private String saveReason() {
 
             try {
-                DBUtil db = new DBUtil(activityCtxt, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(activityCtxt, DataMembers.DB_NAME
+                );
                 String values;
                 db.createDataBase();
                 db.openDataBase();

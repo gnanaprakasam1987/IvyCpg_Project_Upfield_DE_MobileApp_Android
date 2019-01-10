@@ -42,8 +42,8 @@ public class UserMasterHelper {
      */
     public void downloadUserDetails() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select " + DataMembers.tbl_userMaster_cols
@@ -123,8 +123,8 @@ public class UserMasterHelper {
      */
 
     public boolean getSyncStatus() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -198,8 +198,8 @@ public class UserMasterHelper {
         UserMasterBO userBO;
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -304,8 +304,8 @@ public class UserMasterHelper {
      * @deprecated
      */
     public void downloadDistributionDetails() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -347,8 +347,8 @@ public class UserMasterHelper {
      */
     public boolean changePassword(int UserID, String pwd) {
         LoginHelper.getInstance(context).loadPasswordConfiguration(context);
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -383,8 +383,8 @@ public class UserMasterHelper {
      */
     public void updateDistributorId(String distid, String parentId, String distname) {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -411,8 +411,8 @@ public class UserMasterHelper {
      */
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -452,8 +452,8 @@ public class UserMasterHelper {
     public ArrayList<UserMasterBO> downloadAdHocUserList() {
         ArrayList<UserMasterBO> userList = null;
         String codeChild = "CHILD";
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -486,8 +486,8 @@ public class UserMasterHelper {
      */
     public ArrayList<UserMasterBO> downloadUserList(int distributorId) {
         ArrayList<UserMasterBO> userList = null;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -520,8 +520,8 @@ public class UserMasterHelper {
      */
     public ArrayList<UserMasterBO> downloadUserList(String distributorId) {
         ArrayList<UserMasterBO> userList = null;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
 
             db.createDataBase();
@@ -550,8 +550,8 @@ public class UserMasterHelper {
 
     public boolean hasProfileImagePath(UserMasterBO userMasterBO) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT Value FROM UserEditDetail  where Code='ProfileImagePath' AND UserID=" + userMasterBO.getUserid());
@@ -579,8 +579,8 @@ public class UserMasterHelper {
      */
     public void saveUserProfile(UserMasterBO userMasterBO) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + bmodel.getRetailerMasterBO().getRetailerID()
@@ -606,8 +606,8 @@ public class UserMasterHelper {
 
     private void deleteQuery(int uid) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_UserEditDetail, " Code =" + bmodel.QT("ProfileImagePath") + "and UserID=" + uid, false);
             db.closeDB();
@@ -624,8 +624,8 @@ public class UserMasterHelper {
     public ArrayList<UserMasterBO> downloadAllUser() {
         ArrayList<UserMasterBO> userList = null;
         String codeChild = "CHILD";
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -668,8 +668,8 @@ public class UserMasterHelper {
      */
     public void downloadBackupSeller() {
         String codeChild = "CHILD";
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();

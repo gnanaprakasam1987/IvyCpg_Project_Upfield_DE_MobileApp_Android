@@ -61,8 +61,8 @@ public class LeaveApprovalHelper {
                 try {
                     saveStatusTransaction(leavePending);
 
-                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.createDataBase();
                     db.openDataBase();
                     String sql;
@@ -164,7 +164,7 @@ public class LeaveApprovalHelper {
     public void saveStatusTransaction(ArrayList<LeaveApprovalBO> leaves) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
 

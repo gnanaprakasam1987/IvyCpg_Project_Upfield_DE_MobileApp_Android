@@ -79,7 +79,7 @@ public class ProfileHelper {
 
     public float getP4AvgOrderValue() {
         float i = 0;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db
                 .selectSQL("SELECT avg(ordervalue) from P4OrderHistoryMaster where retailerid="
@@ -96,7 +96,7 @@ public class ProfileHelper {
 
     public int getP4AvgOrderLines() {
         int i = 0;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db
                 .selectSQL("SELECT avg(lpc) from P4OrderHistoryMaster where retailerid="
@@ -113,7 +113,7 @@ public class ProfileHelper {
 
     public float getP4AvgInvoiceValue() {
         float i = 0;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db
                 .selectSQL("SELECT avg(invoicevalue) from P4InvoiceHistoryMaster where retailerid="
@@ -130,7 +130,7 @@ public class ProfileHelper {
 
     public int getP4AvgInvoiceLines() {
         int i = 0;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db
                 .selectSQL("SELECT avg(lpc) from P4InvoiceHistoryMaster where retailerid="
@@ -146,7 +146,7 @@ public class ProfileHelper {
     }
 
     public void getOSAmtandInvoiceCount(String retailerid, String retailercode) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         float osAmt = 0, osAmt1 = 0;
         int billsCount = 0;
@@ -231,8 +231,8 @@ public class ProfileHelper {
     public void downloadOrderHistory() {
         try {
             OrderHistoryBO orderHistory;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             historyList = new Vector<>();
@@ -366,8 +366,8 @@ public class ProfileHelper {
 
     public void downloadAssetHistory(String retailerId) {
         AssetHistoryBO assetHistoryBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         assetHistoryList = new Vector<>();
 
@@ -430,8 +430,8 @@ public class ProfileHelper {
     public void downloadInvoiceHistory() {
         try {
             OrderHistoryBO invoiceHistory;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             invoiceHistoryList = new Vector<>();
@@ -614,8 +614,8 @@ public class ProfileHelper {
         planningoutletlist = new ArrayList<>();
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             PlanningOutletBO pbo, pbo1;
             Cursor c = db
@@ -670,8 +670,8 @@ public class ProfileHelper {
         planningoutletlist = new ArrayList<>();
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             PlanningOutletBO pbo, pbo1;
             for (int i = 0; i < pids.size(); i++) {
@@ -736,8 +736,8 @@ public class ProfileHelper {
      */
     public boolean isRetailerEditDetailAvailable(String retailerId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT RH.tid FROM RetailerEditDetail RD inner join RetailerEditHeader RH on RH .tid=  RD.tid where RH.retailerid=" + retailerId);
@@ -757,8 +757,8 @@ public class ProfileHelper {
 
     public boolean isDeActivated(String retailerId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT tid FROM RetailerEditDetail  where code='PRO23' AND retailerid=" + retailerId);
@@ -778,8 +778,8 @@ public class ProfileHelper {
 
     public void deleteRetailerEditRecords(String retailerId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.deleteSQL("RetailerEditHeader", "RetailerId=" + retailerId, false);
             db.deleteSQL("RetailerEditDetail", "RetailerId=" + retailerId, false);
@@ -793,8 +793,8 @@ public class ProfileHelper {
 
     public void deActivateRetailer(String retailerId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + bmodel.getRetailerMasterBO().getRetailerID()
@@ -828,7 +828,7 @@ public class ProfileHelper {
      */
     public boolean hasProfileImagePath(RetailerMasterBO ret) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT value FROM RetailerEditDetail  where code='PROFILE60' AND retailerid=" + ret.getRetailerID());
             if (c != null) {
@@ -922,8 +922,8 @@ public class ProfileHelper {
 
                 String sqlLabel = "Select LevelName from ProductLevel where Sequence=" + givenLevelId;
 
-                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+                );
                 db.openDataBase();
                 Cursor c = db.selectSQL(finalSql.toString());
                 Cursor c1 = db.selectSQL(sqlLabel);
@@ -966,8 +966,8 @@ public class ProfileHelper {
     private int getProductGroupingLevel(String giveLevelID) {
         try {
             String sql = "Select Max(Sequence) from ProductLevel ";
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c1 = db.selectSQL(sql);
             String prodLevel = "0";
@@ -987,8 +987,8 @@ public class ProfileHelper {
 
     private RetailerMasterBO getProductBrand(String parentId, String givenLevelId, RetailerMasterBO retailerMasterBO) {
         String sql = "Select pid, pname, psname, plid, parentid from object1 where pid=" + parentId;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c = db.selectSQL(sql);
         if (c != null) {
@@ -1015,8 +1015,8 @@ public class ProfileHelper {
     private String getGivenLovId() {
         String givenLovId = "";
         String sql = " Select RField from HhtModuleMaster where hhtCode = " + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL) + " and flag =1 and ForSwitchSeller = 0";
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c = db.selectSQL(sql);
         if (c != null) {
@@ -1037,8 +1037,8 @@ public class ProfileHelper {
 
                 try {
                     String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + bmodel.QT("RETAILER_CONTACT") + " and flag =1";
-                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     Cursor c = db.selectSQL(sql);
                     if (c != null) {
@@ -1072,8 +1072,8 @@ public class ProfileHelper {
                             + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
                             + " Where RC.RetailerId =" + bmodel.QT(retailerID);
 
-                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     Cursor c = db.selectSQL(sql);
                     if (c != null) {
@@ -1168,7 +1168,7 @@ public class ProfileHelper {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<ConfigureBO>> subscriber) throws Exception {
                 ArrayList<ConfigureBO> contactConfig = new ArrayList<>();
-                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
                 try {
 
                     SharedPreferences sharedPrefs = PreferenceManager

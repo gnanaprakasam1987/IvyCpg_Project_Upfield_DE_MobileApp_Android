@@ -7,7 +7,6 @@ import android.widget.Toast;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -17,8 +16,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Vector;
 
 public class SODAssetHelper {
     private static SODAssetHelper instance = null;
@@ -58,7 +55,7 @@ public class SODAssetHelper {
         String uid;
         String moduleName = modName.replaceAll("MENU_", "");
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             mBModel.setNote("");
             sql = "SELECT Uid,Remark FROM " + moduleName + "_Tracking_Header"
@@ -222,7 +219,7 @@ public class SODAssetHelper {
         DBUtil db = null;
         try {
             Cursor cursor;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             int mContentLevelId = 0;
 
@@ -312,7 +309,7 @@ public class SODAssetHelper {
         DBUtil db;
         try {
             Cursor cursor;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("SELECT DISTINCT PM.pid ,CP.CPID, CP.CPName,0,0 FROM CompetitorProductMaster CP");
@@ -373,8 +370,8 @@ public class SODAssetHelper {
             String assertColumns = "Uid,AssetID,Actual,ReasonID,LocationID,Retailerid,ProductId,isPromo,isDisplay,Target";
 
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String uid = (mBModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
@@ -515,8 +512,8 @@ public class SODAssetHelper {
 
     private int getRetailerLevel(String mMenuCode) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select IsAccount,IsRetailer,IsClass,LocLevelId,ChLevelId from ConfigActivityFilter where ActivityCode=" + mBModel.QT(mMenuCode));
             if (c != null) {
@@ -568,8 +565,8 @@ public class SODAssetHelper {
 
             mLocationList = new ArrayList<>();
             SFLocationBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
