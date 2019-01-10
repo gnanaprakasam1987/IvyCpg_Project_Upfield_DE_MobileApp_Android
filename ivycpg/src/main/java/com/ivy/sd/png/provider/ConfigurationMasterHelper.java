@@ -1540,6 +1540,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_FREE_SIH_AVAILABLE = "FUN75";
     public boolean IS_FREE_SIH_AVAILABLE;
 
+    private static final String CODE_SKIP_SCHEME_APPLY = "SCH12";
+    public boolean IS_SKIP_SCHEME_APPLY;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2681,6 +2684,8 @@ public class ConfigurationMasterHelper {
         this.IS_SR_DELIVERY_REJECT = hashMapHHTModuleConfig.get(CODE_REJECT_SALES_RETURN_DELIVERY) != null ? hashMapHHTModuleConfig.get(CODE_REJECT_SALES_RETURN_DELIVERY) : false;
         this.IS_SHOW_OOS = hashMapHHTModuleConfig.get(CODE_SHOW_OOS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_OOS) : false;
         this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
+
+        this.IS_SKIP_SCHEME_APPLY = hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) : false;
     }
 
     private boolean isInOutModule() {

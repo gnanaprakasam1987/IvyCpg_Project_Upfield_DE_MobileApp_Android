@@ -147,21 +147,35 @@ public class DeliveryManagementHelper {
                     } else {
                         invoiceProductBO = invoicedProducts.get(productid);
                     }
+                    int pcsQty =0 ,csQtyinPieces = 0, ouQtyinPieces = 0;
+
                     if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("pieceUomID"))) {
-                        invoiceProductBO.setOrderedPcsQty(c.getInt(1));
+                        pcsQty = c.getInt(1);
                         invoiceProductBO.setPcUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderPieceqty(c.getInt(1));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("caseUomId"))) {
-                        invoiceProductBO.setOrderedCaseQty(c.getInt(1));
+                        csQtyinPieces = c.getInt(1) * invoiceProductBO.getCaseSize();
                         invoiceProductBO.setCaseUomId(c.getInt(2));
                         invoiceProductBO.setLocalOrderCaseqty(c.getInt(1));
-                        invoiceProductBO.setCaseSize(c.getInt(c.getColumnIndex("caseSize")));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("outerUomId"))) {
-                        invoiceProductBO.setOrderedOuterQty(c.getInt(1));
+                        ouQtyinPieces = c.getInt(1) * invoiceProductBO.getOutersize();
                         invoiceProductBO.setOuUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderOuterQty(c.getInt(1));
-                        invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
                     }
+
+                    invoiceProductBO.setCaseSize(c.getInt(c.getColumnIndex("caseSize")));
+                    invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
+
+                    int totalqty = pcsQty + csQtyinPieces + ouQtyinPieces;
+                    int caseQty = invoiceProductBO.getCaseSize() != 0 ? totalqty / invoiceProductBO.getCaseSize() : totalqty;
+                    int QtyRemaining = totalqty - (caseQty * invoiceProductBO.getCaseSize());
+                    int outerQty = invoiceProductBO.getOutersize() != 0 ? QtyRemaining / invoiceProductBO.getOutersize() : QtyRemaining;
+                    int pieceQty = QtyRemaining - (outerQty * invoiceProductBO.getOutersize());
+
+                    invoiceProductBO.setOrderedPcsQty(pieceQty);
+                    invoiceProductBO.setOrderedCaseQty(invoiceProductBO.getCaseSize() != 0 ? caseQty : 0);
+                    invoiceProductBO.setOrderedOuterQty(invoiceProductBO.getOutersize() != 0 ? outerQty : 0);
+
                     invoicedProducts.put(productid, invoiceProductBO);
                 }
 
