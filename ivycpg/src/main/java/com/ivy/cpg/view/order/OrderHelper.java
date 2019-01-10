@@ -140,8 +140,8 @@ public class OrderHelper {
      * @param mContext current context
      */
     public boolean saveOrder(Context mContext, boolean isInvoice) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         int isVanSales = 1;
         String uid = null;
         try {
@@ -563,8 +563,8 @@ public class OrderHelper {
         String uid = null;
         try {
             if (productList.size() > 0) {
-                db = new DBUtil(mContext, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
+                db = new DBUtil(mContext, DataMembers.DB_NAME
+                );
                 db.createDataBase();
                 db.openDataBase();
 
@@ -1233,8 +1233,8 @@ public class OrderHelper {
     public boolean hasAlreadyOrdered(Context mContext, String retailerId) {
         boolean isEdit;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1284,8 +1284,8 @@ public class OrderHelper {
      */
     public void deleteStockAndOrder(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1316,8 +1316,8 @@ public class OrderHelper {
      */
     public void deleteOrder(Context context, String retailerId) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String orderId = "";
@@ -1394,8 +1394,8 @@ public class OrderHelper {
     public void loadOrderedProducts(Context mContext, String retailerId, String orderId) {
         businessModel.productHelper.clearOrderTableForInitiative();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             OrderHeader ordHeadBO = new OrderHeader();
@@ -1796,8 +1796,8 @@ public class OrderHelper {
 
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -2289,7 +2289,7 @@ public class OrderHelper {
      * @return total order value
      */
     private double getRetailerOrderValue(Context mContext, String retailerId) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         double f = 0;
         try {
@@ -2399,7 +2399,7 @@ public class OrderHelper {
     public void updateHangingOrder(Context mContext, RetailerMasterBO retObj) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String retailerId = retObj.getRetailerID();
@@ -2452,7 +2452,7 @@ public class OrderHelper {
      * @param invoiceNumber invoice number
      */
     public void loadInvoiceProducts(Context context, String invoiceNumber) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
 
@@ -2506,7 +2506,7 @@ public class OrderHelper {
         DBUtil db;
         try {
             mSerialNoListByProductId = new SparseArray<>();
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select productid,fromNo,toNo,scannedQty from temp_serialno ");
@@ -2697,7 +2697,7 @@ public class OrderHelper {
     public void saveSerialNoTemp(Context mContext) {
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             db.deleteSQL("temp_serialno", "retailerid=" + businessModel.getRetailerMasterBO().getRetailerID(), false);
 
@@ -2744,8 +2744,8 @@ public class OrderHelper {
 
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -3238,8 +3238,8 @@ public class OrderHelper {
      */
     public int getPrintedCountForCurrentInvoice(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select print_count from InvoiceMaster where invoiceNo='" + businessModel.invoiceNumber + "'");
             if (c != null) {
@@ -3288,8 +3288,8 @@ public class OrderHelper {
 
     public boolean isOverDueAvail(Context mContext) {
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         boolean isDuePassed = false;
         try {
@@ -3490,8 +3490,8 @@ public class OrderHelper {
     public void updateWareHouseStock(Context mContext) {
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 

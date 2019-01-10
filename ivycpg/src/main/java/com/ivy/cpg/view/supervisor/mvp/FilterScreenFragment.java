@@ -262,8 +262,8 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
         Vector<LevelBO> channelBo = new Vector<>();
         try {
             LevelBO temp;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select levelid from channellevel order by Sequence DESC limit 2");
             int leveid = 0;
@@ -298,8 +298,8 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
     private String getChannelToShow(String date){
         String chIds ="";
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select GROUP_CONCAT(distinct channelId) from supRetailerMaster where date ='"+date+"'");
             if (c.getCount() > 0) {
@@ -320,8 +320,8 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
         Vector<LevelBO> channelBo = new Vector<>();
         try {
             LevelBO temp;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT distinct pid,PName from ProductMaster where pid in( "+productIds+" ) and PLid ='103'");
 

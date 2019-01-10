@@ -32,8 +32,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ivy.core.data.datamanager.DataManagerImpl;
-import com.ivy.core.data.datamanager.DataManagerImpl;
-import com.google.gson.JsonObject;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -47,7 +45,6 @@ import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -319,8 +316,8 @@ SynchronizationHelper {
 
         int imageCount = 0;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -416,8 +413,8 @@ SynchronizationHelper {
      */
     public void closeDay(int status) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_DayClose, null, true);
             db.insertSQL(DataMembers.tbl_DayClose,
@@ -439,8 +436,8 @@ SynchronizationHelper {
     public boolean isDayClosed() {
         int i = 0;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select  status  from DayClose");
             if (c != null) {
@@ -627,8 +624,8 @@ SynchronizationHelper {
     private void updateOrderStatus() {
         //Update RetailerMaster set isVisited = 'Y', isOrdered = 'Y' where RetailerID in(Select RetailerID from OrderHeader)
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -644,7 +641,7 @@ SynchronizationHelper {
     }
 
     public boolean checkSIHTable() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
             db.openDataBase();
@@ -673,7 +670,7 @@ SynchronizationHelper {
     }
 
     public boolean checkStockTable() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
             db.openDataBase();
@@ -702,7 +699,7 @@ SynchronizationHelper {
     }
 
     public boolean checkLoyaltyPoints() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
             db.openDataBase();
@@ -732,7 +729,7 @@ SynchronizationHelper {
 
 
     public boolean checkPickListData() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
             db.openDataBase();
@@ -811,8 +808,8 @@ SynchronizationHelper {
         }
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -904,8 +901,8 @@ SynchronizationHelper {
      */
     public boolean isDataAvailable() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c;
         String tableName = "";
@@ -959,8 +956,8 @@ SynchronizationHelper {
 
     public boolean checkDataForSync() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             int count;
@@ -1090,8 +1087,8 @@ SynchronizationHelper {
         List<SyncRetailerBO> isVisitedRetailerList = null;
         try {
             isVisitedRetailerList = new ArrayList<>();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT DISTINCT OT.RetailerID, RM.RetailerName FROM OutletTimestamp OT INNER JOIN RetailerMaster RM ON OT.RetailerID = RM.RetailerID Where OT.upload = 'N' ORDER BY RM.RetailerName");
@@ -1225,8 +1222,8 @@ SynchronizationHelper {
             if (valuesList.size() > 0) {
                 inserRecords(tablename, columns, valuesList, false);
 
-                DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+                );
                 db.openDataBase();
                 updateTable("temp_vanload", db);
                 db.closeDB();
@@ -1239,8 +1236,8 @@ SynchronizationHelper {
     }
 
     public void deleteUrlDownloadMaster() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         db.deleteSQL("UrlDownloadMaster", null, true);
         db.closeDB();
@@ -1254,7 +1251,7 @@ SynchronizationHelper {
      */
     private void inserRecords(String tablename, String columns,
                               ArrayList<String> valueList, boolean isDeleteTable) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2284,7 +2281,7 @@ SynchronizationHelper {
     public void loadMasterUrlFromDB(boolean isCommonTableDownload) {
         mDownloadUrlList = new ArrayList<>();
         mMandatoryByUrl = new HashMap<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2317,7 +2314,7 @@ SynchronizationHelper {
     public void downloadMasterUrlFromDBRetailerWise() {
         mDownloadUrlList = new ArrayList<>();
         mMandatoryByUrl = new HashMap<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2344,7 +2341,7 @@ SynchronizationHelper {
     public void downloadTransactionUrl() {
         mDownloadUrlList = new ArrayList<>();
         mMandatoryByUrl = new HashMap<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2531,7 +2528,7 @@ SynchronizationHelper {
      */
 
     public void updateProductAndRetailerMaster() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2556,7 +2553,7 @@ SynchronizationHelper {
     }
 
     public void updatetempTablesWithRetailerMaster() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -3044,8 +3041,8 @@ SynchronizationHelper {
     public String getUploadUrl(String code) {
         String url = "";
         if (!code.equals("")) {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             try {
                 db.createDataBase();
                 db.openDataBase();
@@ -3075,7 +3072,7 @@ SynchronizationHelper {
 
     public void downloadNewRetailerUrl() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -3132,7 +3129,7 @@ SynchronizationHelper {
 
     public void downloadUserRetailerTranUrl() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -3191,7 +3188,7 @@ SynchronizationHelper {
     }
 
     public boolean checkAlreadySIHAvailable() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -3235,7 +3232,7 @@ SynchronizationHelper {
     public String getSIHUrl() {
         String appendUrl = "";
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "select url from UrlDownloadMaster where TypeCode='SYNMAS' and mastername='STOCKINHANDMASTER'";
@@ -3258,7 +3255,7 @@ SynchronizationHelper {
 
     public String downloadWareHouseStockURL() {
         mJsonObjectResponseByTableName = new HashMap<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         String downloadUrl = "";
         try {
             db.openDataBase();
@@ -3304,7 +3301,7 @@ SynchronizationHelper {
 
         mJsonObjectResponseByTableName = new HashMap<>();
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         String downloadurl = "";
         try {
             db.openDataBase();
@@ -3359,7 +3356,7 @@ SynchronizationHelper {
 
         mJsonObjectResponseByTableName = new HashMap<>();
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         String downloadurl = "";
         try {
             db.openDataBase();
@@ -3566,7 +3563,7 @@ SynchronizationHelper {
     private boolean IsDataAvailableInTable(String tablename) {
         DBUtil db;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "select * from " + tablename;
@@ -3588,8 +3585,8 @@ SynchronizationHelper {
     public int validateSalesReturn(ProductMasterBO productMasterBO) {
         responceMessage = 2;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -3719,7 +3716,7 @@ SynchronizationHelper {
     public void downloadCustomerSearch(String phoneNum) {
 
         String url = "";
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         StringBuffer sb;
         mJsonObjectResponseByTableName = new HashMap<>();
         try {
@@ -3873,7 +3870,7 @@ SynchronizationHelper {
      */
     private void updateLastVisitPrice() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -3902,7 +3899,7 @@ SynchronizationHelper {
     }
 
     public void updateLastVisitStock() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -3941,7 +3938,7 @@ SynchronizationHelper {
     }
 
     private void updateLastVisitNearExpiry() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -3971,7 +3968,7 @@ SynchronizationHelper {
     }
 
     public void updateLastVisitPromotion() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -4001,7 +3998,7 @@ SynchronizationHelper {
     }
 
     private void updateLastVisitSurvey() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -4047,7 +4044,7 @@ SynchronizationHelper {
     }
 
     private void updateLastVisitSOS() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -4098,7 +4095,7 @@ SynchronizationHelper {
         int count = 0;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -4119,7 +4116,7 @@ SynchronizationHelper {
 
         ArrayList<RetailerMasterBO> retailerIdList = new ArrayList<>();
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 
         try {
             db.createDataBase();
@@ -4247,8 +4244,8 @@ SynchronizationHelper {
     public void setEncryptType() {
         try {
             String type = SPF_PSWD_ENCRYPT_TYPE_MD5;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select PwdEncryptType from AppVariables");
@@ -4464,7 +4461,7 @@ SynchronizationHelper {
         try {
 
 
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "SELECT Orderdate from OrderHeader where upload!='X' ORDER BY Orderdate DESC";
@@ -4542,7 +4539,7 @@ SynchronizationHelper {
      * @deprecated This has been Migrated to MVP pattern
      */
     public String generateOtpUrl() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         String downloadurl = "";
         try {
             db.openDataBase();
@@ -4563,7 +4560,7 @@ SynchronizationHelper {
 
     public void verifyMobileOrEmail(String value) {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         String downloadurl = "";
         try {
             db.openDataBase();
@@ -4602,7 +4599,7 @@ SynchronizationHelper {
      * @return
      */
     public boolean checkOrderDeliveryStatusTable() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         boolean hasData = false;
         try {
             db.openDataBase();
@@ -4663,7 +4660,7 @@ SynchronizationHelper {
         ArrayList<String> pickListIds = new ArrayList<>();
         HashMap<String, String> pickListIdMap = new HashMap<>();
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 

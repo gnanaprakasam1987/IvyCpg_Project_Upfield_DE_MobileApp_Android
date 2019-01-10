@@ -41,8 +41,8 @@ public class VanLoadStockApplyHelper {
         DBUtil db = null;
         try {
             VanLoadStockApplyBO stock, stock1;
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String query = "select A.pid,sum(A.caseQty),SUM(A.pcsQty),B.pname,B.psname,B.mrp,B.dUomQty,"
                     + " A.uid,A.outerQty,B.dOuomQty,A.BatchId,o.isstarted,C.batchId,C.batchNum, B.baseprice,"
@@ -118,8 +118,8 @@ public class VanLoadStockApplyHelper {
         ArrayList<Integer> batchIDList = new ArrayList<Integer>();
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -241,8 +241,8 @@ public class VanLoadStockApplyHelper {
      */
     public void updateVanload(String uid) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.updateSQL("update vanload set upload='N' where uid=" + AppUtils.QT(uid));
@@ -257,8 +257,8 @@ public class VanLoadStockApplyHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select A.pid,S.batchid from productmaster A inner join Stockinhandmaster S on A.pid=s.pid");
@@ -341,8 +341,8 @@ public class VanLoadStockApplyHelper {
     public int getNoProductsCount(String uid) {
         int tot = 0;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select count(distinct pid) from VanLoad" +
@@ -372,8 +372,8 @@ public class VanLoadStockApplyHelper {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String upload = "N";
             if (flag == 1) { // //if flag is 1 ,it is reject manuval vanload, This stock Apply records not needed to send server.

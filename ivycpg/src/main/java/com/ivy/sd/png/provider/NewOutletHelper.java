@@ -215,8 +215,8 @@ public class NewOutletHelper {
         NewOutletBO retailerType;
         retailerTypeList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_TYPE'");
@@ -245,8 +245,8 @@ public class NewOutletHelper {
         NewOutletBO contactTitle;
         contactTitleList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTACT_TITLE_TYPE'");
@@ -275,8 +275,8 @@ public class NewOutletHelper {
         NewOutletBO contactStatus;
         contractStatusList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTRACT_STATUS'");
@@ -300,7 +300,7 @@ public class NewOutletHelper {
      */
     public void updateRetailer() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -1366,8 +1366,8 @@ public class NewOutletHelper {
      * @deprecated This has been Migrated to MVP pattern
      */
     public void getPreviousProfileChanges(String retailerid) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         mPreviousProfileChangesList = new HashMap<>();
         try {
             db.openDataBase();
@@ -1412,8 +1412,8 @@ public class NewOutletHelper {
 
     public ArrayList<NewOutletBO> getNewRetailers() {
         ArrayList<NewOutletBO> lst = new ArrayList<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             Cursor c;
@@ -1569,7 +1569,7 @@ public class NewOutletHelper {
      */
     private void deleteQuery(String query, String rid) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + bmodel.QT(query) + "and RetailerId=" + rid, false);
             db.closeDB();
@@ -1580,8 +1580,8 @@ public class NewOutletHelper {
 
     public void deleteRetailerEdit(String rid) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_retailerMaster, " RetailerId=" + bmodel.QT(rid), false);
             db.deleteSQL("RetailerContact", " RetailerId=" + bmodel.QT(rid), false);
@@ -1624,8 +1624,8 @@ public class NewOutletHelper {
 
         try {
             String rid = tblName.equals("NearByRetailers") ? "rid" : "RetailerId";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL("Select * from " + tblName
@@ -1654,8 +1654,8 @@ public class NewOutletHelper {
 
         try {
             profileConfig = new Vector<>();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c;
@@ -1717,8 +1717,8 @@ public class NewOutletHelper {
     public void loadImageType() {
         imageTypeList.clear();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_IMAGE_TYPE'");
@@ -1753,7 +1753,7 @@ public class NewOutletHelper {
         mLocationListByLevelId = new LinkedHashMap<>();
 
         LocationBO locationBo;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -1816,8 +1816,8 @@ public class NewOutletHelper {
 
     public boolean isRetailerAlreadyAvailable(String retailerName, String pincode) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db
@@ -1845,8 +1845,8 @@ public class NewOutletHelper {
     public ArrayList<String> getNearbyRetailerIds(String retailerId) {
         ArrayList<String> lst = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT nearbyrid from NearByRetailers where rid='" + retailerId + "' and upload='Y'");
@@ -1886,8 +1886,8 @@ public class NewOutletHelper {
     public void getNearbyRetailersEditRequest(int retailerId) {
         lstEditRequests.clear();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT nearbyrid,status from RrtNearByEditRequest where rid=" + retailerId + " and upload='N'");
@@ -1907,8 +1907,8 @@ public class NewOutletHelper {
 
     public ArrayList<StandardListBO> downloadTaxType() {
         ArrayList<StandardListBO> taxTypeList = new ArrayList<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String sb = "select listid,listname from standardlistmaster where listtype='CERTIFICATE_TYPE'";
@@ -1934,8 +1934,8 @@ public class NewOutletHelper {
 
     public ArrayList<StandardListBO> downloadClaasType() {
         ArrayList<StandardListBO> classTypeList = new ArrayList<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String sb = "select listid,listname from standardlistmaster where listtype='CLASS_TYPE'";
@@ -1961,8 +1961,8 @@ public class NewOutletHelper {
 
     public ArrayList<StandardListBO> downloadPriorityProducts() {
         ArrayList<StandardListBO> priorityproductList = null;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String sb = "select  priorityproductid,pname,ProductLevelId from PriorityProducts  pp inner join productmaster pm " +
@@ -1996,8 +1996,8 @@ public class NewOutletHelper {
      */
     public ArrayList<String> downloadPriorityProductsForRetailer(String retailerId) {
         ArrayList<String> priorityproductList = null;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + bmodel.QT(retailerId);
@@ -2019,8 +2019,8 @@ public class NewOutletHelper {
 
     public ArrayList<String> downloadPriorityProductsForRetailerEdit(String retailerId) {
         ArrayList<String> priorityproductList = null;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String sql = "select ProductId from RetailerEditPriorityProducts where status = 'N' and retailerId=" + bmodel.QT(retailerId);
@@ -2042,8 +2042,8 @@ public class NewOutletHelper {
 
     public ArrayList<String> downloadNearbyRetailers(String retailerId) {
         ArrayList<String> nearByRetailers = null;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String sql = "select  nearbyrid from NearByRetailers where rid=" + bmodel.QT(retailerId);
@@ -2066,8 +2066,8 @@ public class NewOutletHelper {
 
     public String getListName(int listid, String type) {
         String name = "";
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String sb = "select listname from standardlistmaster " +
@@ -2094,8 +2094,8 @@ public class NewOutletHelper {
 
     public ArrayList<ChannelBO> getChannelList() {
         ArrayList<ChannelBO> channelList = new ArrayList<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             String sql = "SELECT ChName,ChId,cl.levelname FROM ChannelHierarchy ch"
@@ -2122,8 +2122,8 @@ public class NewOutletHelper {
     }
 
     private void savePriorityProducts(NewOutletBO newOutletBO) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2163,8 +2163,8 @@ public class NewOutletHelper {
 
     public boolean saveNewOutlet(boolean isEdit) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String column, value;
@@ -2480,8 +2480,8 @@ public class NewOutletHelper {
             mLinkRetailerList = new Vector<>();
             mLinkRetailerListByDistributorId = new SparseArray<>();
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sb = "select Distributorid ,retailerid,name,latitude,longitude,pincode from linkretailermaster " +
                     "order by Distributorid ";
@@ -2566,7 +2566,7 @@ public class NewOutletHelper {
         ArrayList<String> mRetailerIds = new ArrayList<>();
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String sb = "select distinct rid from Suppliermaster " +
@@ -2595,7 +2595,7 @@ public class NewOutletHelper {
         ArrayList<StandardListBO> mLst = new ArrayList<>();
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String sb = "select listid,listname from StandardListMaster " +
@@ -2627,7 +2627,7 @@ public class NewOutletHelper {
         HashMap<String, AddressBO> lst = new HashMap<>();
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -2675,8 +2675,8 @@ public class NewOutletHelper {
      * @deprecated This has been Migrated to MVP pattern
      */
     public ArrayList<RetailerFlexBO> downloadRetailerFlexValues(String type) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();
         try {
             db.openDataBase();
@@ -2716,8 +2716,8 @@ public class NewOutletHelper {
         StandardListBO contactTitle;
         ArrayList<StandardListBO> contactTitleList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_CONTACT_TITLE_TYPE'");

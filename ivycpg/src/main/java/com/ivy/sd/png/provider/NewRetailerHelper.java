@@ -75,8 +75,8 @@ public class NewRetailerHelper {
    
 		try {
 			profileConfig = new Vector<ConfigureBO>();
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.createDataBase();
 			db.openDataBase();
 			Cursor c = null;
@@ -110,8 +110,8 @@ public class NewRetailerHelper {
 	public boolean hasMandatoryField() {
 		boolean check = false;
 		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.createDataBase();
 			db.openDataBase();
 
@@ -140,8 +140,8 @@ public class NewRetailerHelper {
 	public void loadImageType() {
 		imageTypeList.clear();
 		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.openDataBase();
 			Cursor c = db
 					.selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='RETAILER_IMAGE_TYPE'");

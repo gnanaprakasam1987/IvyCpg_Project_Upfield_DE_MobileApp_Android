@@ -3,14 +3,11 @@ package com.ivy.cpg.view.serializedAsset;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.widget.Toast;
 
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -162,8 +159,8 @@ public class SerializedAssetHelper {
             NEW_ASSET_PHOTO = false;
             NEW_ASSET_PHOTO_MANDATORY = false;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
@@ -271,8 +268,8 @@ public class SerializedAssetHelper {
 
         }
         ReasonMaster reasonBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -322,8 +319,8 @@ public class SerializedAssetHelper {
 
         SerializedAssetBO assetTrackingBO;
         StringBuilder sb = new StringBuilder();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -516,8 +513,8 @@ public class SerializedAssetHelper {
      */
     private void loadAssetData(Context mContext, String mRetailerId, String moduleName) {
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
 
@@ -627,8 +624,8 @@ public class SerializedAssetHelper {
         ArrayList<String> imageList = new ArrayList<>();
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -702,8 +699,8 @@ public class SerializedAssetHelper {
 
     public void deleteImageProof(Context mContext, String ImageName) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             db.deleteSQL(DataMembers.tbl_AssetImgInfo, "ImageName LIKE"
@@ -721,8 +718,8 @@ public class SerializedAssetHelper {
      */
     public void saveAsset(Context mContext, String moduleName) {
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -868,8 +865,8 @@ public class SerializedAssetHelper {
             mUniqueSerialNo = new HashMap<>();
 
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -926,8 +923,8 @@ public class SerializedAssetHelper {
     public void downloadUniqueAssets(Context mContext, String moduleName) {
 
         AssetAddDetailBO assetBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -992,8 +989,8 @@ public class SerializedAssetHelper {
 
         AssetAddDetailBO assetBO;
         mBrandSpinner = new Vector<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1126,8 +1123,8 @@ public class SerializedAssetHelper {
         SerializedAssetBO assetBO;
 
         mRemovableAssets = new Vector<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1212,8 +1209,8 @@ public class SerializedAssetHelper {
     public void deleteAsset(Context mContext, String posmId, String mSno,
                             String mSbdId, String mBrandId, String reasonId, String moduleName, String NFCId, int refId) {
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1246,8 +1243,8 @@ public class SerializedAssetHelper {
      * @param mSno SNO
      */
     public void deleteAssetTransaction(Context mContext, String mSno) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1270,8 +1267,8 @@ public class SerializedAssetHelper {
      * Method to check the movement Asset in sql table
      */
     public ArrayList<String> getAssetMovementDetails(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         ArrayList<String> retailerMovedData = new ArrayList<>();
         Cursor c = db.selectSQL("SELECT DISTINCT AssetId,serialNumber from " + DataMembers.tbl_SerializedAssetTransfer + " where RequestType='T'");
@@ -1287,8 +1284,8 @@ public class SerializedAssetHelper {
      */
     public void saveAssetMovementDetails(Context mContext, String movementType, int referenceId) {
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1321,8 +1318,8 @@ public class SerializedAssetHelper {
         SerializedAssetBO assetBO;
 
         assetServiceList = new Vector<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1425,8 +1422,8 @@ public class SerializedAssetHelper {
     }
 
     public void deleteServiceTable(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1443,8 +1440,8 @@ public class SerializedAssetHelper {
         if (mUniqueSerialNo == null)
             mUniqueSerialNo = new HashMap<>();
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();

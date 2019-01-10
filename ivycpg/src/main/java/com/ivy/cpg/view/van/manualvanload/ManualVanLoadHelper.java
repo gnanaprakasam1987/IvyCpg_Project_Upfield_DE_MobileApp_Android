@@ -96,7 +96,7 @@ public class ManualVanLoadHelper {
         DBUtil db = null;
         Cursor c;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             c = db.selectSQL("SELECT Pid,(SUM(QTY)) FROM EmptyReconciliationDetail GROUP BY Pid");
             if (c != null) {
@@ -153,7 +153,7 @@ public class ManualVanLoadHelper {
         LoadManagementBO product;
         int mPaymentTypeId = 0;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -336,8 +336,8 @@ public class ManualVanLoadHelper {
     private String getbatchid(int pid, String batchno) {
         String batchid = null;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT batchid from BatchMaster where batchNum="
@@ -424,8 +424,8 @@ public class ManualVanLoadHelper {
 
     public void saveBatch(LoadManagementBO product) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             String values;
             db.createDataBase();
             db.openDataBase();

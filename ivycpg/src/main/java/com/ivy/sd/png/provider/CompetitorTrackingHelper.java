@@ -47,7 +47,7 @@ public class CompetitorTrackingHelper {
         DBUtil db = null;
         try {
             CompanyBO competitor;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct CM.CompanyID,CM.CompanyName FROM CompanyMaster CM"
@@ -82,7 +82,7 @@ public class CompetitorTrackingHelper {
         DBUtil db = null;
         try {
             CompanyBO competitor;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct CM.CompanyID,CM.CompanyName FROM CompanyMaster CM"
@@ -116,7 +116,7 @@ public class CompetitorTrackingHelper {
         DBUtil db = null;
         try {
             CompetitorBO competitorBo;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = null;
 
@@ -164,7 +164,7 @@ public class CompetitorTrackingHelper {
         CompetetorPOSMBO reasonbo;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("Select listid,ListName from StandardListMaster where ListType  ='COMPETITOR_TRACKING_TYPE'");
@@ -208,7 +208,7 @@ public class CompetitorTrackingHelper {
      */
     public void saveCompetitor() {
         CompetitorBO competitor;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);;
         try {
             db.createDataBase();
             db.openDataBase();
@@ -344,8 +344,8 @@ public class CompetitorTrackingHelper {
      */
     public void loadcompetitors() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String orderID = new String();
@@ -492,8 +492,8 @@ public class CompetitorTrackingHelper {
     }
 
     public void deleteImageName(String imgName) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         if (bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR)

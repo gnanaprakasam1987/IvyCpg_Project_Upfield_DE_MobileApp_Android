@@ -119,8 +119,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         DBUtil db = null;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -169,8 +169,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         DBUtil db = null;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -199,8 +199,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             String sql = "select flag from "
                     + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='REALTIME02'";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.moveToNext()) {
@@ -468,8 +468,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         DBUtil db = null;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -556,8 +556,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='REALTIME03' and flag = 1";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
@@ -880,7 +880,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     private String getDownloadUrl(){
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         String downloadurl = "";
         try {
             db.openDataBase();

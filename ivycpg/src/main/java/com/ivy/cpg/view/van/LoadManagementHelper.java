@@ -3,13 +3,10 @@ package com.ivy.cpg.view.van;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.database.SQLException;
 import android.text.TextUtils;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -21,15 +18,10 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonObject;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.BomBO;
-import com.ivy.sd.png.bo.BomMasterBO;
-import com.ivy.sd.png.bo.BomReturnBO;
-import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -41,13 +33,10 @@ import com.ivy.sd.png.util.DataMembers;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.CookieHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
@@ -88,7 +77,7 @@ public class LoadManagementHelper {
         DBUtil db = null;
         Cursor cursor;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             db.createDataBase();
 
@@ -147,8 +136,8 @@ public class LoadManagementHelper {
     public VanLoadMasterBO downloadOdameter() {
         VanLoadMasterBO temp = null;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT o.uid,o.date,o.start,o.end,o.isended,o.isstarted,o.starttime,o.endtime,IFNULL(o.startImage,''),IFNULL(O.endImage,'') FROM Odameter o");
@@ -191,7 +180,7 @@ public class LoadManagementHelper {
         ArrayList<VanLoadMasterBO> mUidList = new ArrayList<>();
         VanLoadMasterBO vanBo;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor cursor = db
                     .selectSQL("SELECT Distinct Uid FROM VanLoad ORDER BY Uid");
@@ -231,7 +220,7 @@ public class LoadManagementHelper {
         DBUtil db = null;
         Cursor cursor;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             db.createDataBase();
             for (SubDepotBo bo : getDistributorList()) {
@@ -264,7 +253,7 @@ public class LoadManagementHelper {
     public float checkIsAllowed(String menuString) {
         try {
             DBUtil db = new DBUtil(context,
-                    DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -416,7 +405,7 @@ public class LoadManagementHelper {
 
     private String getDownloadUrl(Context mContext) {
         String url = "";
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             db.createDataBase();

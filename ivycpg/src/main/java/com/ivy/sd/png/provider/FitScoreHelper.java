@@ -79,8 +79,8 @@ public class FitScoreHelper {
         HHTModuleBO hhtModuleBO;
         hhtModuleList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -105,8 +105,8 @@ public class FitScoreHelper {
         ProductTaggingBO productTaggingBO;
         weightageList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -138,8 +138,8 @@ public class FitScoreHelper {
     public int getModuleWeightage(String Module) {
         int weightage = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -199,8 +199,8 @@ public class FitScoreHelper {
         fitScoreList = new ArrayList<>();
         FitScoreBO weightageBO;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String Qry = "", PID = "";
@@ -249,8 +249,8 @@ public class FitScoreHelper {
         fitScoreList = new ArrayList<>();
         FitScoreBO weightageBO;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String Qry = "", PID = "";
@@ -299,8 +299,8 @@ public class FitScoreHelper {
         fitScoreList = new ArrayList<>();
         FitScoreBO weightageBO;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String ListCode = "";
@@ -343,8 +343,8 @@ public class FitScoreHelper {
         fitScoreList = new ArrayList<>();
         FitScoreBO weightageBO;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -379,8 +379,8 @@ public class FitScoreHelper {
         fitScoreChartList = new ArrayList<>();
         double weightage = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Double target = 0.0;
@@ -434,8 +434,8 @@ public class FitScoreHelper {
 
     public double getFitScoreAverage() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("Select sum(0+Score)/count(RetailerID) from RetailerScoreHeader where Date ="

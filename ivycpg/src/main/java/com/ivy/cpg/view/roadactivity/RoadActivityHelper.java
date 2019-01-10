@@ -49,8 +49,8 @@ public class RoadActivityHelper {
             roadBO.setName(context.getResources().getString(R.string.select));
             loadType.add(roadBO);
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -81,8 +81,8 @@ public class RoadActivityHelper {
             roadBO.setName(context.getResources().getString(R.string.select));
             loadProduct.add(roadBO);
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -131,8 +131,8 @@ public class RoadActivityHelper {
 
     public void loadLocationNames() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -161,8 +161,8 @@ public class RoadActivityHelper {
             roadBO.setName(context.getResources().getString(R.string.select));
             loadloc1.add(roadBO);
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -204,8 +204,8 @@ public class RoadActivityHelper {
             roadBO.setName(context.getResources().getString(R.string.select));
             loadloc2.add(roadBO);
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -239,8 +239,8 @@ public class RoadActivityHelper {
 
             String headerColumns = "Uid ,TypeId, PId, LocationId, Remarks";
             String detailColumns = "Uid,ImgName";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String uid = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
@@ -275,7 +275,7 @@ public class RoadActivityHelper {
 
         HashMap adhocGalleryDetails = new HashMap<String, PhotoCaptureProductBO>();
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
 
@@ -323,7 +323,7 @@ public class RoadActivityHelper {
 
     public boolean getAdhocTransCount(String imgName) {
         boolean hasonlyOne = false;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db.selectSQL("select uid  from RoadActivityTransactiondetail where imgname = " + bmodel.QT("RoadActivity" + "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
                 + "/" + bmodel.userMasterHelper.getUserMasterBO().getUserid()

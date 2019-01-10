@@ -2686,7 +2686,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String language = sharedPrefs.getString("languagePref", ApplicationConfigs.LANGUAGE);
 
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor c = db.selectSQL("select * from "

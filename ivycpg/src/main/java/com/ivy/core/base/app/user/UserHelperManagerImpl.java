@@ -24,8 +24,8 @@ public class UserHelperManagerImpl implements UserHelperManager {
             public void subscribe(final ObservableEmitter<UserMasterBO> subscriber) throws Exception {
                 UserMasterBO userMasterBO = null;
                 try {
-                    DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.createDataBase();
                     db.openDataBase();
                     Cursor c = db.selectSQL("select " + DataMembers.tbl_userMaster_cols

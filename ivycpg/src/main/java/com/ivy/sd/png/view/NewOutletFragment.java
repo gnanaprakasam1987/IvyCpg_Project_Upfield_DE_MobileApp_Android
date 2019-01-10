@@ -6486,8 +6486,8 @@ public class NewOutletFragment extends IvyBaseFragment
 
     private void deleteNewRetailer() {
         try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Set<String> keys = DataMembers.uploadNewRetailerColumn.keySet();

@@ -43,8 +43,8 @@ public class CollectionReportHelper {
             childPaymentList = new ArrayList<>();
 
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -209,8 +209,8 @@ public class CollectionReportHelper {
     private HashMap<String, ArrayList<PaymentBO>> lstPaymentBObyGroupId;
 
     private void downloadAdvancePaymentForReport() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         ArrayList<PaymentBO> lstAdvancePayment = null;
         try {
             db.openDataBase();

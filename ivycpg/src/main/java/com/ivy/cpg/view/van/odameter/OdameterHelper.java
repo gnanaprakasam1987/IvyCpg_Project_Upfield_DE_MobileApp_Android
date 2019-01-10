@@ -34,8 +34,8 @@ public class OdameterHelper {
 
     public void saveOdameter(VanLoadMasterBO mylist) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.executeQ("DELETE from Odameter");
@@ -103,7 +103,7 @@ public class OdameterHelper {
 
     public void UpdateOdaMeter(VanLoadMasterBO mylist) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select  count(uid) from Odameter");

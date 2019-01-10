@@ -28,8 +28,8 @@ public class OrderReportHelper {
     public int getavglinesfororderbooking(String tableName) {
         int tot = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(linespercall) from "
@@ -50,8 +50,8 @@ public class OrderReportHelper {
     public int getorderbookingCount(String tableName) {
         int tot = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select count (distinct retailerid) from "
@@ -73,8 +73,8 @@ public class OrderReportHelper {
     public int getTotalQtyfororder(String orderId) {
         int tot = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(qty) from OrderDetail where orderId='"
@@ -95,8 +95,8 @@ public class OrderReportHelper {
 
     public double getTotValues(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select ifnull(sum(ordervalue),0) from "
                     + DataMembers.tbl_orderHeader);
@@ -120,8 +120,8 @@ public class OrderReportHelper {
     public void downloadOrderReportToExport() {
         ArrayList<ArrayList<String>> rows = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct DM.dname," +
@@ -198,8 +198,8 @@ public class OrderReportHelper {
 
     public void downloadOrderEmailAccountCredentials() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListName FROM StandardListMaster where listcode='ORDER_EMAIL' and listtype='ORDER_MAIL'";
 

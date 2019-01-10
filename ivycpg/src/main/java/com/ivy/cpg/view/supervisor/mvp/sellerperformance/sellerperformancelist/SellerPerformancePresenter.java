@@ -70,8 +70,8 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
         DBUtil db = null;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -231,8 +231,8 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='REALTIME03' and flag = 1";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
