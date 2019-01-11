@@ -549,7 +549,8 @@ public class AssetAdapter extends BaseAdapter {
                 holder.availQtyRB.setChecked(false);
             }
             if ((assetTrackingHelper.SHOW_ASSET_BARCODE && holder.assetBO.getSerialNo().equals(""))
-                    || (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && holder.assetBO.getNFCTagId().isEmpty())) {
+                    || (mBModel.configurationMasterHelper.SHOW_NFC_SEARCH_IN_ASSET && holder.assetBO.getNFCTagId() != null
+                    && holder.assetBO.getNFCTagId().isEmpty())) {
                 holder.availQtyRB.setEnabled(true);
             } else {
                 holder.availQtyRB.setEnabled(false);
