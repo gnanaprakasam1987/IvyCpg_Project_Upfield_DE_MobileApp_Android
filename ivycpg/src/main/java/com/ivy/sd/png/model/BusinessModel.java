@@ -3279,6 +3279,7 @@ public class BusinessModel extends Application {
                     Intent intent = new Intent();
                     frm.setResult(frm.RESULT_OK, intent);
                     frm.finish();
+                    loadActivity(ctx, DataMembers.actHomeScreenTwo);
 
                 } else if (idd == DataMembers.NOTIFY_INVOICE_SAVED) {
                     if (ctx.getClass().getSimpleName()
