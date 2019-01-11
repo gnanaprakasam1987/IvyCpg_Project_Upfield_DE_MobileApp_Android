@@ -701,9 +701,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             // Apply Exclude Item level Tax  in Product
             if (bModel.configurationMasterHelper.SHOW_TAX) {
 
-                if(!bModel.configurationMasterHelper.IS_GST || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
+                boolean isGSTEnabled= bModel.configurationMasterHelper.IS_GST||bModel.configurationMasterHelper.IS_GST_HSN;
 
-                    if(!bModel.configurationMasterHelper.IS_GST
+                if(!isGSTEnabled || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
+
+                    if(!isGSTEnabled
                             || (!bModel.getRetailerMasterBO().getGSTNumber().equals("-")||totalOrderValue>5000)) {
 
                         if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
