@@ -1234,6 +1234,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY = "ORDB28";
     public boolean IS_STOCK_AVAILABLE_PRODUCTS_ONLY;
+    public boolean IS_STOCK_AVAILABLE_PRODUCTS_ONLY_MASTER;
 
     private static final String CODE_BAR_CODE = "ORDB09";
     private static final String CODE_BAR_CODE_STOCK_CHECK = "CSSTK05";
@@ -1779,6 +1780,7 @@ public class ConfigurationMasterHelper {
             this.SHOW_TOTAL_DISCOUNT_EDITTEXT = false;
             this.IS_WSIH = false;
             this.IS_INVOICE = false;
+            this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY = false;
 
             ConfigureBO con;
 
@@ -1829,6 +1831,8 @@ public class ConfigurationMasterHelper {
                         this.IS_INVOICE = true;
                     if (configureBO.getConfigCode().equals(CODE_SR_INDICATIVE))
                         this.IS_INDICATIVE_SR = true;
+                    if (configureBO.getConfigCode().equals(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY))
+                        this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY = true;
                 }
 
             }
@@ -2421,6 +2425,7 @@ public class ConfigurationMasterHelper {
         this.IS_NEW_RETAILER_EDIT = hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_EDIT) != null ? hashMapHHTModuleConfig.get(CODE_IS_NEW_RETAILER_EDIT) : false;
         this.IS_EOD_STOCK_SPLIT = hashMapHHTModuleConfig.get(CODE_EOD_STOCK_SPLIT) != null ? hashMapHHTModuleConfig.get(CODE_EOD_STOCK_SPLIT) : false;
         this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY = hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) : false;
+        this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY_MASTER = hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_AVAILABLE_PRODUCTS_ONLY) : false;
         this.IS_LOYALTY_AUTO_PAYOUT = hashMapHHTModuleConfig.get(CODE_LOYALTY_AUTO_PAYOUT) != null ? hashMapHHTModuleConfig.get(CODE_LOYALTY_AUTO_PAYOUT) : false;
         this.IS_BAR_CODE = hashMapHHTModuleConfig.get(CODE_BAR_CODE) != null ? hashMapHHTModuleConfig.get(CODE_BAR_CODE) : false;
         if (IS_BAR_CODE && hashMapHHTModuleOrder.get(CODE_BAR_CODE) == 1) {
@@ -6156,29 +6161,30 @@ public class ConfigurationMasterHelper {
      */
     public void updateConfigurationSelectedSellerType(boolean switchToPreSeller) {
         if (switchToPreSeller) {
-            bmodel.configurationMasterHelper.downloadSwitchConfig();
-
-            bmodel.configurationMasterHelper.IS_INDICATIVE_SR = true;
-            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH = false;
-            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION = false;
+            downloadSwitchConfig();
+            this.IS_INDICATIVE_SR = true;
+            this.SHOW_UPDATE_SIH = false;
+            this.IS_CREDIT_NOTE_CREATION = false;
 
         } else {
             SchemeDetailsMasterHelper schemeDetailsMasterHelper = SchemeDetailsMasterHelper.getInstance(context);
-            bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
-            bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
+            this.IS_SIH_VALIDATION = this.IS_SIH_VALIDATION_MASTER;
+            this.IS_STOCK_IN_HAND = this.IS_STOCK_IN_HAND_MASTER;
             schemeDetailsMasterHelper.IS_SCHEME_ON = schemeDetailsMasterHelper.IS_SCHEME_ON_MASTER;
             schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN = schemeDetailsMasterHelper.IS_SCHEME_SHOW_SCREEN_MASTER;
-            bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
-            bmodel.configurationMasterHelper.IS_GST = bmodel.configurationMasterHelper.IS_GST_MASTER;
-            bmodel.configurationMasterHelper.IS_GST_HSN = bmodel.configurationMasterHelper.IS_GST_HSN_MASTER;
-            bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG = bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
-            bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT = bmodel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
-            bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
-            bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+            this.SHOW_TAX = this.SHOW_TAX_MASTER;
+            this.IS_GST = this.IS_GST_MASTER;
+            this.IS_GST_HSN = this.IS_GST_HSN_MASTER;
+            this.SHOW_STORE_WISE_DISCOUNT_DLG = this.SHOW_STORE_WISE_DISCOUNT_DLG_MASTER;
+            this.SHOW_TOTAL_DISCOUNT_EDITTEXT = this.SHOW_TOTAL_DISCOUNT_EDITTEXT_MASTER;
+            this.IS_WSIH = this.IS_WSIH_MASTER;
+            this.IS_INVOICE = this.IS_INVOICE_MASTER;
 
-            bmodel.configurationMasterHelper.IS_INDICATIVE_SR = bmodel.configurationMasterHelper.IS_INDICATIVE_MASTER;
-            bmodel.configurationMasterHelper.SHOW_UPDATE_SIH = true;
-            bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION = true;
+            this.IS_INDICATIVE_SR = this.IS_INDICATIVE_MASTER;
+            this.SHOW_UPDATE_SIH = true;
+            this.IS_CREDIT_NOTE_CREATION = true;
+
+            this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY = this.IS_STOCK_AVAILABLE_PRODUCTS_ONLY_MASTER;
         }
 
     }
