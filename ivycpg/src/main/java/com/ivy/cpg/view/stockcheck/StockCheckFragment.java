@@ -1318,6 +1318,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                 holder.psname.setText(holder.productObj.getProductShortName());
                 if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                    holder.productCode.setVisibility(View.VISIBLE);
                     String prodCode = getResources().getString(R.string.prod_code) + ": " +
                             holder.productObj.getProductCode() + " ";
                     holder.productCode.setText(prodCode);
