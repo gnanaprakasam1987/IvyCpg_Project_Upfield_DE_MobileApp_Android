@@ -77,6 +77,7 @@ import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -865,7 +866,14 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     holder.tvProductCode.setText(prodCode);
                 }
 
-                holder.tvbarcode.setText(holder.productObj.getBarCode());
+                if(!AppUtils.isEmptyString(holder.productObj.getBarCode())){
+                    holder.tvbarcode.setVisibility(View.VISIBLE);
+                    String parCode =" "+getResources().getString(R.string.barcode) + ": " +
+                            holder.productObj.getBarCode() + " ";
+                    holder.tvbarcode.setText(parCode);
+                }else{
+                    holder.tvbarcode.setText(View.GONE);
+                }
 
                 if ((holder.productObj.getLocations()
                         .get(mSelectedLocationIndex)
