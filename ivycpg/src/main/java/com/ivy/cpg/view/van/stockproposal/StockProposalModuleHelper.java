@@ -38,8 +38,8 @@ public class StockProposalModuleHelper {
 			String invid = bmodel.userMasterHelper.getUserMasterBO()
 					.getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.createDataBase();
 			db.openDataBase();
 			LoadManagementBO product;
@@ -101,8 +101,8 @@ public class StockProposalModuleHelper {
 
 	public void loadSBDData() {
 		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.createDataBase();
 			db.openDataBase();
 
@@ -153,8 +153,8 @@ public class StockProposalModuleHelper {
 
 	public void loadInitiative() {
 		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.openDataBase();
 			Vector<Integer> init = new Vector<Integer>();
 			Cursor c1 = db
@@ -185,8 +185,8 @@ public class StockProposalModuleHelper {
 
 	public void loadPurchased() {
 		try {
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.createDataBase();
 			db.openDataBase();
 			SparseArray<Integer> hashMap = new SparseArray<Integer>();

@@ -4266,8 +4266,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private void updateRetailerwiseSellertype(int flag) {
         try {
 
-            DBUtil db = new DBUtil(HomeScreenTwo.this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(HomeScreenTwo.this, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String query = "update retailermasterinfo set is_vansales=" + flag
                     + " where retailerid="

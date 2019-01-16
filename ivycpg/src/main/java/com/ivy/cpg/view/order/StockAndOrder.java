@@ -3398,31 +3398,32 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
-                        if (bmodel.configurationMasterHelper.IS_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-                            if (schemeHelper
-                                    .getSchemeList() == null
-                                    || schemeHelper
-                                    .getSchemeList().size() == 0) {
-                                Toast.makeText(StockAndOrder.this,
-                                        R.string.scheme_not_available,
-                                        Toast.LENGTH_SHORT).show();
-                            }
+                        //if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
+                        if (schemeHelper
+                                .getSchemeList() == null
+                                || schemeHelper
+                                .getSchemeList().size() == 0) {
+                            Toast.makeText(StockAndOrder.this,
+                                    R.string.scheme_not_available,
+                                    Toast.LENGTH_SHORT).show();
+                        }
 
-                            //This objects reference is used only in Product Detail screen.
-                            // This should be removed while cleaning product detail screen
-                            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
-                            bmodel.productHelper.setPdname(holder.pname);
-                            bmodel.productHelper.setProdId(holder.productId);
-                            bmodel.productHelper.setProductObj(holder.productObj);
-                            bmodel.productHelper.setFlag(1);
-                            bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
+                        //This objects reference is used only in Product Detail screen.
+                        // This should be removed while cleaning product detail screen
+                        bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
+                        bmodel.productHelper.setPdname(holder.pname);
+                        bmodel.productHelper.setProdId(holder.productId);
+                        bmodel.productHelper.setProductObj(holder.productObj);
+                        bmodel.productHelper.setFlag(1);
+                        bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
-                            Intent intent = new Intent(StockAndOrder.this, ProductSchemeDetailsActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("productId", holder.productId);
-                            startActivity(intent);
+                        Intent intent = new Intent(StockAndOrder.this, ProductSchemeDetailsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("productId", holder.productId);
+                        startActivity(intent);
 
-                        } else {
+                        //}
+                        /*else {
                             bmodel.productHelper.setPdname(holder.pname);
                             bmodel.productHelper.setProdId(holder.productId);
                             bmodel.productHelper.setProductObj(holder.productObj);
@@ -3436,7 +3437,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
                             FragmentManager fm = getSupportFragmentManager();
                             sc.show(fm, "");
-                        }
+                        }*/
                     }
                 });
                 row.setTag(holder);

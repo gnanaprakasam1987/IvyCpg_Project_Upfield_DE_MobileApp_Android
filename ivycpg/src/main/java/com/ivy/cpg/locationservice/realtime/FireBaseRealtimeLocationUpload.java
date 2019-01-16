@@ -238,7 +238,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         DBUtil db;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 

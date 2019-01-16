@@ -50,8 +50,8 @@ public class NearExpiryTrackingHelper {
     public void loadNearExpiryConfig(Context context) {
         SHOW_BATCH_NO = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -72,7 +72,7 @@ public class NearExpiryTrackingHelper {
     }
 
     public void loadLastVisitSKUTracking(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -120,8 +120,8 @@ public class NearExpiryTrackingHelper {
 
     public boolean hasAlreadySKUTrackingDone(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select tid from "
@@ -149,7 +149,7 @@ public class NearExpiryTrackingHelper {
      * Load SKU from Detail Table
      */
     public void loadSKUTracking(Context mContext, boolean isTaggedProduct) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             k = -1;
@@ -275,7 +275,7 @@ public class NearExpiryTrackingHelper {
      * Save Tracking Detail in Detail Table
      */
     public void saveSKUTracking(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 

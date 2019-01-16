@@ -51,8 +51,8 @@ public class PendingInvoiceHelper {
                 DBUtil db = null;
                 ArrayList<PndInvoiceReportBo> invoiceHeader = new ArrayList<>();
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
 
                     StringBuffer sb = new StringBuffer();

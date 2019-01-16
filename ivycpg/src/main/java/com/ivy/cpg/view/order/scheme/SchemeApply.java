@@ -170,7 +170,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
     @Override
     protected void onResume() {
         super.onResume();
-
+        if(bModel.configurationMasterHelper.IS_SKIP_SCHEME_APPLY){
+            Intent i = new Intent(SchemeApply.this, OrderSummary.class);
+            i.putExtra("ScreenCode", screenCode);
+            startActivity(i);
+        }
     }
 
 

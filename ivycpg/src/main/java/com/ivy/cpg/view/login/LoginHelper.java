@@ -93,8 +93,8 @@ public class LoginHelper {
 
     public void loadPasswordConfiguration(Context mContext) {
         DBUtil db;
-        db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -169,8 +169,8 @@ public class LoginHelper {
     }
 
     public String getSupportNo(Context mContext) {
-        DBUtil db = new DBUtil(mContext.getApplicationContext(), DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext.getApplicationContext(), DataMembers.DB_NAME
+        );
         String support_no = "";
 
         try {
@@ -298,8 +298,8 @@ public class LoginHelper {
         boolean isRealTimeConfigAvail =false;
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor moduleCursor = db.selectSQL("select hhtcode from HhtModuleMaster where hhtCode = 'REALTIME01' OR hhtCode = 'CHAT02' OR hhtCode = 'UPLOADATTENDANCE'");
@@ -321,8 +321,8 @@ public class LoginHelper {
         boolean isSupervisorMenuAvail =false;
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor menuCursor = db.selectSQL("select hhtcode from HhtMenuMaster where hhtcode = 'MENU_SUPERVISOR_ACTIVITY'");
@@ -356,8 +356,8 @@ public class LoginHelper {
         String rootPath ="";
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select DomainName from AppVariables");
@@ -380,8 +380,8 @@ public class LoginHelper {
     private String getFCMTopicName(Context context){
         StringBuilder topicName = new StringBuilder();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select ListCode from StandardListMaster where ListType='PUSH_TOPICS'");
@@ -448,8 +448,8 @@ public class LoginHelper {
         int posId = 0 ;
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select UserPositionId from usermaster where userid =" + AppUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getUserid()+""));
@@ -566,8 +566,8 @@ public class LoginHelper {
     public boolean isPasswordReset(Context mContext) {
         boolean isReset = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select IsResetPassword from usermaster where loginid ='" + businessModel.userNameTemp + "' COLLATE NOCASE");
@@ -586,8 +586,8 @@ public class LoginHelper {
 
     public void deleteUserMaster(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_userMaster, null, true);
@@ -655,7 +655,7 @@ public class LoginHelper {
     }
 
     public String getPasswordCreatedDate(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         String date = "";
         try {
             db.createDataBase();

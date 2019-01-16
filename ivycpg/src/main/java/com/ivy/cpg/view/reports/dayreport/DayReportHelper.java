@@ -43,8 +43,8 @@ public class DayReportHelper {
         ArrayList<OrderReportBO> reportordbooking = null;
         try {
             OrderReportBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT OrderHeader.OrderID ,OrderHeader.RetailerID , RetailerMaster.RetailerName,"
@@ -101,8 +101,8 @@ public class DayReportHelper {
         Vector<InvoiceReportBO> invoiceReportVector = null;
         try {
             InvoiceReportBO invoiceReport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuffer sb = new StringBuffer();
@@ -149,8 +149,8 @@ public class DayReportHelper {
         ArrayList<OrderDetail> reportOrderDetBooking = null;
         try {
             OrderDetail orderDetReport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db
@@ -186,7 +186,7 @@ public class DayReportHelper {
      * @return
      */
     public ArrayList<ConfigureBO> downloadDailyReportDropSize(int orderType) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         ArrayList<ConfigureBO> categoryDropSizeBO = new ArrayList<ConfigureBO>();
 
@@ -266,7 +266,7 @@ public class DayReportHelper {
     }
 
     public void downloadDailyReport() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         StringBuffer sb = new StringBuffer();
         dailyRep = new DailyReportBO();
@@ -483,7 +483,7 @@ public class DayReportHelper {
      * kellogs specific
      */
     public void downloadDailyReportKellogs() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         StringBuffer sb = new StringBuffer();
         Cursor c = null;
@@ -587,8 +587,8 @@ public class DayReportHelper {
         double strikeValue = 0, planned = 0, storesInvoiced = 0;
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -633,8 +633,8 @@ public class DayReportHelper {
         DBUtil db = null;
         int totQty = 0;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -657,8 +657,8 @@ public class DayReportHelper {
 
     public double getFITscoreForAllRetailers() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
@@ -681,8 +681,8 @@ public class DayReportHelper {
 
     public int getGreenFITscoreRetailersCount() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             int count = 0;
             Cursor c = db

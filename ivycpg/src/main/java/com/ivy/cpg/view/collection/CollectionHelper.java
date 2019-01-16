@@ -95,8 +95,8 @@ public class CollectionHelper {
         try {
             paymentModes = new ArrayList<>();
             paymentModes.clear();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -123,8 +123,8 @@ public class CollectionHelper {
         boolean isCreditNoteAvailable = false;
         mPaymentList = new ArrayList<>();
         mPaymentBOByMode = new HashMap<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c = db
@@ -175,8 +175,8 @@ public class CollectionHelper {
         try {
             creditNoteList = new ArrayList<>();
             creditNoteList.clear();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -271,8 +271,8 @@ public class CollectionHelper {
         DBUtil db;
         Cursor c;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -302,8 +302,8 @@ public class CollectionHelper {
 
     public void collectionBeforeInvoice() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,ridSF,VisitId";
@@ -416,8 +416,8 @@ public class CollectionHelper {
         boolean flag = true;
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -448,8 +448,8 @@ public class CollectionHelper {
         DBUtil db;
         int listid = 0;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -478,8 +478,8 @@ public class CollectionHelper {
     public void updateHasPaymentIssue() {
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -509,8 +509,8 @@ public class CollectionHelper {
         ArrayList<PaymentBO> paymentData = new ArrayList<>();
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -551,8 +551,8 @@ public class CollectionHelper {
         ArrayList<String> billNumberList = new ArrayList<>();
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -957,8 +957,8 @@ public class CollectionHelper {
 
     public void saveCollection(ArrayList<InvoiceHeaderBO> invoiceList, ArrayList<PaymentBO> paymentList) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = "uid,BillNumber,ReceiptDate,InvoiceAmount,Balance,CashMode,ChequeNumber,Amount,RetailerID,BeatID,UserID,BankID,BranchCode,ChequeDate,Date,payType,ImageName,groupId,StatusLovId,totalDiscount,distributorid,DistParentID,ReceiptNo,datetime,refid,refno,PrintFilePath,BankName,BranchName,ridSF,VisitId";
@@ -1295,8 +1295,8 @@ public class CollectionHelper {
     }
 
     public void updateCreditNoteACtualAmt() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         String query = "update creditnote set Actualamount=amount where Actualamount==0";
@@ -1309,7 +1309,7 @@ public class CollectionHelper {
      */
     public void downloadBankDetails() {
         BankMasterBO inv;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db.selectSQL("SELECT ListName, ListId FROM StandardListMaster WHERE ListType = 'BANK_TYPE'");
         if (c != null) {
@@ -1330,7 +1330,7 @@ public class CollectionHelper {
      */
     public void downloadRetailerAccountDetails() {
         RetailerWiseBankDetailsBO retailerBankBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db.selectSQL("SELECT retailer_id, bank_account_no FROM RetailerWiseBankInfo");
         if (c != null) {
@@ -1351,7 +1351,7 @@ public class CollectionHelper {
      */
     public void downloadBranchDetails() {
         BranchMasterBO inv;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db.selectSQL("SELECT ListId, Parentid, ListName, ListCode FROM StandardListMaster WHERE ListType = 'BANK_BRANCH_TYPE'");
         if (c != null) {
@@ -1390,8 +1390,8 @@ public class CollectionHelper {
         DiscontSlabBO discountSlabBO;
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1453,8 +1453,8 @@ public class CollectionHelper {
     public void updateInvoiceDiscountedAmount() {
         InvoiceHeaderBO invoiceHeaderBO;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -1484,8 +1484,8 @@ public class CollectionHelper {
     public void updateInvoiceDiscountAmount() {
         InvoiceHeaderBO invoiceHeaderBO;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -1520,8 +1520,8 @@ public class CollectionHelper {
             double discountedAmount;
             double invoiceAmount;
             String updateQuery;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             // configuration for discount slab apply or not
@@ -1643,8 +1643,8 @@ public class CollectionHelper {
 
     public void saveAdvancePayment(PaymentBO paymentBO) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             final boolean isCreditBalanceCheck = isCreditBalancebalance(paymentBO.getCashMode());
@@ -1770,8 +1770,8 @@ public class CollectionHelper {
 
     public void loadCollectionReference() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -1821,8 +1821,8 @@ public class CollectionHelper {
 
     public void saveCollectionReference(ArrayList<InvoiceHeaderBO> collectionRefList) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath,IsDoc,Signatureimage";
@@ -1887,8 +1887,8 @@ public class CollectionHelper {
 
         ArrayList<NoCollectionReasonBo> mInvioceList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt," +

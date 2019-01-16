@@ -52,8 +52,8 @@ public class DamageReturenReportHelper {
                 ArrayList<PendingDeliveryBO> pandingDeliveryBOS = new ArrayList<>();
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     Cursor c = db
                             .selectSQL("select distinct InvoiceNo,InvoiceDate,invNetamount,RM.RetailerName,ifnull(vh.status,'') as status,InvoiceRefNo from InvoiceDeliveryMaster idm inner join RetailerMaster RM  on RM.RetailerID=idm.Retailerid left join VanDeliveryHeader  vh on vh.invoiceid=idm.InvoiceNo  group by idm.InvoiceNo");
@@ -96,7 +96,7 @@ public class DamageReturenReportHelper {
                 try {
                     String sql;
                     ArrayList<DeliveryStockBo> mDeliveryStocks = new ArrayList<>();
-                    db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
 
                     db.openDataBase();
 

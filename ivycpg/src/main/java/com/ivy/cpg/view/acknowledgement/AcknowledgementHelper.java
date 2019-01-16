@@ -50,8 +50,8 @@ public class AcknowledgementHelper {
         try {
             acknowledgementList = new ArrayList<>();
             acknowledgementList.clear();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -84,8 +84,8 @@ public class AcknowledgementHelper {
         try {
             acknowledgementCountList = new ArrayList<>();
             acknowledgementCountList.clear();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -107,8 +107,8 @@ public class AcknowledgementHelper {
     }
 
     public void updateAcknowledgement(String userID, String refID, String status) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             db.updateSQL("Update " + DataMembers.tbl_jointcallacknowledgement + " set upload = " + QT(status) + " , Ack_Date ="

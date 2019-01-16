@@ -24,8 +24,8 @@ public class UploadStatusHelper {
         try {
             SyncStatusBO syncStatusBO;
             String id = "0";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select ID,TableName,LineCount from SyncStatus_Internal order by ID desc";

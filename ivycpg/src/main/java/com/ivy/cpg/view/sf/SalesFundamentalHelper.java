@@ -83,8 +83,8 @@ public class SalesFundamentalHelper {
             String sql = "select hhtCode, RField,menu_type from "
                     + DataMembers.tbl_HhtModuleMaster + " where menu_type='COMMON' and flag=1 and ForSwitchSeller = 0";
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(sql);
@@ -130,7 +130,7 @@ public class SalesFundamentalHelper {
     public void setTotalPopUpConfig() {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT COUNT(HHTCode) FROM HhtModuleMaster"
                     + " WHERE HHTCode='VISUALSF' AND Flag='1' and  ForSwitchSeller = 0");
@@ -189,7 +189,7 @@ public class SalesFundamentalHelper {
         DBUtil db = null;
         try {
             Cursor cursor;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             int mContentLevelId = 0;
 
@@ -324,7 +324,7 @@ public class SalesFundamentalHelper {
         ArrayList<Integer> lstCompetitiorPids;
         try {
             Cursor cursor;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuffer sBuffer = new StringBuffer();
             sBuffer.append("SELECT DISTINCT PM.pid ,CP.CPID, CP.CPName,0,0,PM.ParentHierarchy FROM CompetitorProductMaster CP");
@@ -447,8 +447,8 @@ public class SalesFundamentalHelper {
             String mBlockDetailColumns = "Uid,PId,ChildPid,SubCellId,CellId,Retailerid,LocId";
             String mBlockDetailValues;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String uid = (mBModel.getAppDataProvider().getUser().getUserid() + SDUtil
@@ -1382,7 +1382,7 @@ public class SalesFundamentalHelper {
         HashMap<String, ShelfShareBO> mBrandsDetailsHashMap = new HashMap<>();
 
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             StringBuffer sb = new StringBuffer();
@@ -1455,7 +1455,7 @@ public class SalesFundamentalHelper {
         String uid;
         String moduleName = mModuleName.replaceAll("MENU_", "");
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             mBModel.setNote("");
             sql = "SELECT Uid,Remark FROM " + moduleName + "_Tracking_Header"
@@ -1828,7 +1828,7 @@ public class SalesFundamentalHelper {
         HashMap<String, ShelfShareBO> mBrandsDetailsHashMap = new HashMap<>();
 
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             StringBuffer sb = new StringBuffer();
@@ -1911,7 +1911,7 @@ public class SalesFundamentalHelper {
         try {
             downloadSOS_PRJSpecific_Attributes();
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuilder str = new StringBuilder();
             str.append("select  DISTINCT SD.SOSgroupid,groupName,SD.pid,SD.plid,isown,inTarget," +
@@ -1967,7 +1967,7 @@ public class SalesFundamentalHelper {
     private void downloadSOS_PRJSpecific_Attributes() {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             StringBuilder str = new StringBuilder();
@@ -1998,7 +1998,7 @@ public class SalesFundamentalHelper {
      * Save SOS project specific transactions
      */
     public void saveSOS_PRJSpecific_Transaction() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -2052,7 +2052,7 @@ public class SalesFundamentalHelper {
     public void downloadSOSProjTransactions() {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             StringBuilder str = new StringBuilder();
@@ -2133,8 +2133,8 @@ public class SalesFundamentalHelper {
      */
     private int getMappingLevels(String mMenuCode) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select IsAccount,IsRetailer,IsClass,LocLevelId,ChLevelId from ConfigActivityFilter where ActivityCode=" + mBModel.QT(mMenuCode));
             if (c != null) {
@@ -2185,8 +2185,8 @@ public class SalesFundamentalHelper {
 
             mLocationList = new ArrayList<>();
             SFLocationBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql1 = "SELECT Distinct SL.ListId, SL.ListName"

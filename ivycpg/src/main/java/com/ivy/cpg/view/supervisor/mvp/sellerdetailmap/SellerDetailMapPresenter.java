@@ -12,7 +12,6 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -30,7 +29,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
@@ -108,8 +106,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     public void downloadSellerOutletAWS(int userId, String selectedDate) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -261,8 +259,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             String sql = "select flag from "
                     + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode='REALTIME02'";
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
             if (c != null && c.moveToNext()) {

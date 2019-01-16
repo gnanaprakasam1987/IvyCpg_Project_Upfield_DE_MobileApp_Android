@@ -36,8 +36,8 @@ public class ClosingStockReportsHelper {
 
                 ArrayList<RetailerNamesBO> retailerMaster = new ArrayList<>();
 
-                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+                );
                 db.openDataBase();
                 try {
                     RetailerNamesBO temp;
@@ -75,8 +75,8 @@ public class ClosingStockReportsHelper {
 
                 HashMap<String, ArrayList<ClosingStockReportBo>> closingStkReportByRetailId = new HashMap<>();
 
-                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+                );
                 db.openDataBase();
 
                 try {

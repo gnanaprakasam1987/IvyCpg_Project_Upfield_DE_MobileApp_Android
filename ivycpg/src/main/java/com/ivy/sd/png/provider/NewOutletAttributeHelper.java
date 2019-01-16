@@ -59,8 +59,8 @@ public class NewOutletAttributeHelper {
     public void downloadRetailerAttributeChildList() {
         try {
             NewOutletAttributeBO temp;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             mAttributeBOArrayListChild = new ArrayList<>();
             Cursor c = db
@@ -112,8 +112,8 @@ public class NewOutletAttributeHelper {
         try {
             mAttributeParentList = new ArrayList<>();
             NewOutletAttributeBO temp;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT attributeid, attributename, isSystemComputed,IsMandatory FROM entityattributemaster where parentid =0 order by sequence");
@@ -170,7 +170,7 @@ public class NewOutletAttributeHelper {
 
         HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = null;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT EAM.attributeid,CriteriaId,ECT.isMandatory,AttributeName FROM entityattributemaster EAM inner join EntityCriteriaType ECT ON EAM.attributeId=ECT.attributeId where parentid =0 and criteriaType='CHANNEL' and IsSystemComputed=0 order by sequence");
@@ -233,8 +233,8 @@ public class NewOutletAttributeHelper {
      */
     public void downloadCommonAttributeList() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT attributeid FROM entityattributemaster where parentid =0 and attributeid not in(select attributeid from EntityCriteriaType) and IsSystemComputed=0 and IsCriteriaMapped=0 order by sequence");
@@ -286,7 +286,7 @@ public class NewOutletAttributeHelper {
      */
     public ArrayList<NewOutletAttributeBO> getEditAttributeList(String retailerID) {
         ArrayList<NewOutletAttributeBO> attributeBOArrayList = new ArrayList<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             Cursor cursor = db.selectSQL("select attributeid, levelid, status from retailereditattribute where retailerid = " + retailerID + " and upload='N'");

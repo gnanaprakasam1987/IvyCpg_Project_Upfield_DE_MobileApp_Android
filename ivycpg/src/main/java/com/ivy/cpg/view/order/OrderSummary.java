@@ -701,9 +701,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             // Apply Exclude Item level Tax  in Product
             if (bModel.configurationMasterHelper.SHOW_TAX) {
 
-                if(!bModel.configurationMasterHelper.IS_GST || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
+                boolean isGSTEnabled= bModel.configurationMasterHelper.IS_GST||bModel.configurationMasterHelper.IS_GST_HSN;
 
-                    if(!bModel.configurationMasterHelper.IS_GST
+                if(!isGSTEnabled || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
+
+                    if(!isGSTEnabled
                             || (!bModel.getRetailerMasterBO().getGSTNumber().equals("-")||totalOrderValue>5000)) {
 
                         if (bModel.configurationMasterHelper.IS_EXCLUDE_TAX)
@@ -1810,16 +1812,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (mOrderedProductList.size() > 0) {
 
-                if ((bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN) && !orderHelper.isTaxAvailableForAllOrderedProduct(mOrderedProductList)) {
-                    // If GST enabled then, every ordered product should have tax
-                    bModel.showAlert(
-                            getResources()
-                                    .getString(
-                                            R.string.tax_not_availble_for_some_product),
-                            0);
-                    isClick = false;
-                    return;
-                }
+                if (isTaxRequiredforAllProducts()) return;
 
                 if ((bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || bModel.configurationMasterHelper.IS_SHOW_ORDER_REASON) && !orderHelper.isReasonProvided(mOrderedProductList)) {
 
@@ -1876,6 +1869,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     }
 
+    private boolean isTaxRequiredforAllProducts() {
+        if (bModel.configurationMasterHelper.IS_INVOICE && ((bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN) && !orderHelper.isTaxAvailableForAllOrderedProduct(mOrderedProductList))) {
+            // If GST enabled then, every ordered product should have tax
+            bModel.showAlert(
+                    getResources()
+                            .getString(
+                                    R.string.tax_not_availble_for_some_product),
+                    0);
+            isClick = false;
+            return true;
+        }
+        return false;
+    }
+
     private void saveInvoice() {
 
         isFromOrder = false;
@@ -1884,16 +1891,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             orderHelper.setSortedOrderedProducts(mSortedList);
 
 
-        if ((bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN) && !orderHelper.isTaxAvailableForAllOrderedProduct(mOrderedProductList)) {
-            // If GST enabled then, every ordered product should have tax
-            bModel.showAlert(
-                    getResources()
-                            .getString(
-                                    R.string.tax_not_availble_for_some_product),
-                    0);
-            isClick = false;
-            return;
-        }
+        if (isTaxRequiredforAllProducts()) return;
 
         if (!isClick) {
             isClick = true;

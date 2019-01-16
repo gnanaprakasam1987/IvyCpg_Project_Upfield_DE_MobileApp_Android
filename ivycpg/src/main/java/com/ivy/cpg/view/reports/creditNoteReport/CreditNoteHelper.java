@@ -30,8 +30,8 @@ public class CreditNoteHelper {
     public ArrayList<CreditNoteListBO> loadCreditNote(Context context) {
         ArrayList<CreditNoteListBO> creditNoteList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db

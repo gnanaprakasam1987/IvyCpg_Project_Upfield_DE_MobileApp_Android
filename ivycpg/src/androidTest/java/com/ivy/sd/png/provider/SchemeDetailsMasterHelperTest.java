@@ -11,9 +11,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 
-import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -29,7 +27,7 @@ public class SchemeDetailsMasterHelperTest {
     public void initialize(){
         mContext = InstrumentationRegistry.getContext();
 
-        db=new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db=new DBUtil(mContext, DataMembers.DB_NAME);
         schemeDetailsMasterHelper=SchemeDetailsMasterHelper.getInstance(mContext);
 
     }

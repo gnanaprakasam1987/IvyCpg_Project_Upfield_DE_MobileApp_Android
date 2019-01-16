@@ -3,7 +3,6 @@ package com.ivy.cpg.primarysale.provider;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.lib.existing.DBUtil;
@@ -56,8 +55,8 @@ public class DistributorMasterHelper {
         distributors = new ArrayList<>();
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select DISTINCT DId,DName, ParentID, IFNULL(GroupId,'') as GroupId from "
@@ -95,8 +94,8 @@ public class DistributorMasterHelper {
 
     public boolean hasAlreadyDistributorStockChecked(String distributorId) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -119,8 +118,8 @@ public class DistributorMasterHelper {
 
     public boolean hasAlreadyDistributorOrdered(String distributorId) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -143,8 +142,8 @@ public class DistributorMasterHelper {
 
     public void saveDistributorClosingStock() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -213,8 +212,8 @@ public class DistributorMasterHelper {
 
     public void saveDistributorOrder() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -284,8 +283,8 @@ public class DistributorMasterHelper {
 
     public Boolean hasDistributorOrder(String distid) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             // Order Header
@@ -312,8 +311,8 @@ public class DistributorMasterHelper {
 
     public void loadDistributedStockCheckedProducts(String distributorId) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String stockID = new String();
@@ -382,8 +381,8 @@ public class DistributorMasterHelper {
 
     public void loadDistributedOrderedProducts(String distributorId, String uID) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String orderID = new String();
@@ -464,7 +463,7 @@ public class DistributorMasterHelper {
     }
 
     public String getDeliveryDate() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
         String date = "";
@@ -539,8 +538,8 @@ public class DistributorMasterHelper {
     public Vector<DistributorMasterBO> getDistributorProfileList(){
         Vector<DistributorMasterBO> distributorMasterBOs  = new Vector<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 

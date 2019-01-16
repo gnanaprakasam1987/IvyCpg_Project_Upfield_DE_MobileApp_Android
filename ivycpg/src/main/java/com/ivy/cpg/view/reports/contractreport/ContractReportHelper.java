@@ -43,8 +43,8 @@ public class ContractReportHelper {
                 ArrayList<ContractBO> contractBOArrayList = new ArrayList<>();
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     Cursor c = db
                             .selectSQL("Select Distinct RM.RetailerID, RM.RetailerCode, RM.RetailerName, (select ch.ChName from channelhierarchy ch where ch.chid = RM.subchannelid) AS SubChannel, RC.ContractDesc, RC.StartDate, RC.EndDate,RC.ContractId  from RetailerMaster RM inner join  RetailerContract RC where RM.RetailerID = RC.RetailerId");

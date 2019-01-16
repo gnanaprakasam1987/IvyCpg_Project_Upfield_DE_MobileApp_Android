@@ -57,7 +57,7 @@ public class RetailerContractHelper {
         RetailerContractBO mRetailerContractBO;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String sb ="select contractid,ContractDesc,ContractType,StartDate,EndDate,RetailerId,Status,templateid,typelovid,cs_id " +
@@ -93,7 +93,7 @@ public class RetailerContractHelper {
     private RetailerContractBO checkAlreadyRenwed(RetailerContractBO mRetailerContractBO) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String sb ="select upload from RetailerContractRenewalDetails  " +
@@ -123,7 +123,7 @@ public class RetailerContractHelper {
         RetailerContractBO mRetailerContractBO;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String sb = "select RetailerId,ContractId,Tid,startdate,enddate,description,typelovid,ContractType "
@@ -156,8 +156,8 @@ public class RetailerContractHelper {
 
     private void saveRetailersContract(RetailerContractBO retailerContractBO) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -187,8 +187,8 @@ public class RetailerContractHelper {
 
     private void deleteRenewal(String Tid) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 

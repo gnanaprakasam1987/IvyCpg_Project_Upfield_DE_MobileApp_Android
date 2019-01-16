@@ -43,8 +43,8 @@ public class SalesVolumeReportHelper {
     public void downloadProductReportsWithFiveLevelFilter() {
         try {
             SalesVolumeBo product;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
 
@@ -145,8 +145,8 @@ public class SalesVolumeReportHelper {
         try {
 
             LevelBO levelBo;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
 

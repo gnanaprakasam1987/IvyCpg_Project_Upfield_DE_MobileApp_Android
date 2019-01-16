@@ -391,8 +391,8 @@ public class DiscountHelper {
 
             StoreWiseDiscountBO discountBO;
             mBillWiseDiscountList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c;
 
@@ -478,8 +478,8 @@ public class DiscountHelper {
 
     public void loadExistingBillWiseRangeDiscount(Context mContext) {
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         StringBuffer sb = new StringBuffer();
@@ -708,8 +708,8 @@ public class DiscountHelper {
 
             StoreWiseDiscountBO discountBO;
             mBillWisePaytTermDiscountList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c;
 
@@ -778,8 +778,8 @@ public class DiscountHelper {
 
             StoreWiseDiscountBO discountBO;
             mBillWiseWithHoldDiscountList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c;
 
@@ -838,8 +838,8 @@ public class DiscountHelper {
 
             StoreWiseDiscountBO discountBO;
             mBillWisePaytTermDiscountList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             int applyLevelID = 0;
             Cursor c;
@@ -1309,7 +1309,7 @@ public class DiscountHelper {
         DBUtil db = null;
         HashMap<String,Double> mDiscountsApplied=new HashMap<>();
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();

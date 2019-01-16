@@ -36,8 +36,8 @@ public class UserLogReport {
                 ArrayList<LogReportBO> mLogReportList = new ArrayList<>();
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     StringBuffer sb = new StringBuffer();
 

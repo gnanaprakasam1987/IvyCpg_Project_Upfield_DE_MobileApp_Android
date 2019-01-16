@@ -52,8 +52,8 @@ public class AttendanceHelper {
         reasonList.clear();
         try {
             AttendanceBO reason;
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT ListId,ListCode,ListName,isRequired,ParentId from StandardListMaster where ListType='ATTENDANCE_TYPE'");
@@ -88,8 +88,8 @@ public class AttendanceHelper {
         try {
             String sessionType = "";
             String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
             if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
@@ -148,7 +148,7 @@ public class AttendanceHelper {
 
     public boolean loadAttendanceMaster(Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -176,8 +176,8 @@ public class AttendanceHelper {
                                       String fromDate, String toDate,
                                       String atdCode, Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -201,8 +201,8 @@ public class AttendanceHelper {
     public String getReasonName(String id, Context context) {
         try {
 
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListName FROM StandardListMaster"
                     + " WHERE ListId = " + id);
@@ -221,7 +221,7 @@ public class AttendanceHelper {
 
     public boolean checkMenuInOut(Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -250,7 +250,7 @@ public class AttendanceHelper {
 
         int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -288,7 +288,7 @@ public class AttendanceHelper {
 
         if (nonFieldTwoBo != null && nonFieldTwoBo.getId() != null) {
             try {
-                DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
                 db.createDataBase();
                 db.openDataBase();
 
@@ -322,7 +322,7 @@ public class AttendanceHelper {
 
         if (nonFieldTwoBo != null && nonFieldTwoBo.getRowid() > 0) {
             try {
-                DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
                 db.createDataBase();
                 db.openDataBase();
 
@@ -369,7 +369,7 @@ public class AttendanceHelper {
                 uid = getNonFieldTwoBoList().get(i).getId();
 
 
-        DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
 
@@ -386,8 +386,8 @@ public class AttendanceHelper {
         ArrayList<StandardListBO> childUserBOs = new ArrayList<>();
         StandardListBO childUserBO;
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT userid, username FROM UserMaster WHERE  isDeviceUser=0 and Relationship = 'CHILD'");
@@ -421,7 +421,7 @@ public class AttendanceHelper {
         DBUtil db;
         boolean isIdWorking = false;
         try {
-            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -442,7 +442,7 @@ public class AttendanceHelper {
         DBUtil db;
         boolean check = true;
         try {
-            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 

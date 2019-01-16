@@ -3,8 +3,6 @@ package com.ivy.cpg.view.denomination;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.view.reports.damageReturn.PendingDeliveryBO;
-import com.ivy.cpg.view.reports.deliveryStockReport.DeliveryStockBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
@@ -12,15 +10,12 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 
 /**
  * Created by murugan on 2/8/18.
@@ -48,8 +43,8 @@ public class DenominationHelper {
                 ArrayList<DenominationBO> denominationBOS = new ArrayList<>();
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     Cursor cursor = db.selectSQL("Select * from DenominationMaster");
 
@@ -86,8 +81,8 @@ public class DenominationHelper {
                 ArrayList<DenominationUpdateBO> denominationUpdateBOArrayList = new ArrayList<>();
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     Cursor cursor = db.selectSQL("Select * from DenominationDetails");
 
@@ -125,8 +120,8 @@ public class DenominationHelper {
                 String initialTotalAmount = "";
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     Cursor cursor = db.selectSQL("SELECT ifnull(sum(amount),0) FROM Payment pt inner join StandardListMaster sd on sd.ListId = pt.CashMode where sd.ListCode = 'CA'");
                     if (cursor != null) {
@@ -153,7 +148,7 @@ public class DenominationHelper {
                 boolean insertDenomination = false;
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME);
                     db.openDataBase();
                     db.deleteSQL("DenominationDetails", "", true);
                     db.deleteSQL("DenominationHeader", "", true);
