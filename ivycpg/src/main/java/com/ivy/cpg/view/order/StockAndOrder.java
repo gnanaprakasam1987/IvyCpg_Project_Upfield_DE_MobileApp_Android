@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,9 @@ import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -135,7 +139,7 @@ import java.util.Vector;
 import static com.ivy.cpg.view.order.moq.MOQHighlightActivity.MOQ_RESULT_CODE;
 
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack {
+        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack,RecognitionListener {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -285,6 +289,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
     private StockCheckHelper stockCheckHelper;
 
+    private final int REQ_CODE_SPEECH_INPUT = 1012;
+
+    private SpeechRecognizer speechRecognizer;
+    private SpeechToVoiceDialog speechToVoiceDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -380,6 +389,20 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mBtnGuidedSelling_prev = (Button) findViewById(R.id.btn_guided_selling_prev);
         mBtnGuidedSelling_next.setOnClickListener(this);
         mBtnGuidedSelling_prev.setOnClickListener(this);
+
+        findViewById(R.id.btn_speech).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptSpeechInput(true);
+            }
+        });
+
+        findViewById(R.id.img_speech).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptSpeechInput(false);
+            }
+        });
 
         mBtn_Search.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
@@ -637,6 +660,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
         searchAsync = new SearchAsync();
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        speechRecognizer.setRecognitionListener(this);
     }
 
     private void prepareScreen() {
@@ -4890,7 +4916,16 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (resultCode == 1) {
                 lvwplist.invalidateViews();
             }
-        } else {
+        }
+        else if (requestCode == REQ_CODE_SPEECH_INPUT){
+            if (resultCode == RESULT_OK && null != data) {
+
+                ArrayList<String> speechResult = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                mEdt_searchproductName.setText(speechResult.get(0));
+            }
+        }
+        else {
             if (result != null) {
                 if (result.getContents() != null) {
                     strBarCodeSearch = result.getContents();
@@ -7203,5 +7238,122 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         return false;
+    }
+
+
+    /**
+     * Showing google speech input dialog
+     * */
+    private void promptSpeechInput(boolean isViewFlip) {
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null && getCurrentFocus() != null)
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+        if (isViewFlip)
+            viewFlipper.showNext();
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
+        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.speech_prompt));
+        try {
+
+            if (SpeechRecognizer.isRecognitionAvailable(this)) {
+                speechRecognizer.startListening(intent);
+
+                speechToVoiceDialog = new SpeechToVoiceDialog();
+                speechToVoiceDialog.setCancelable(true);
+                speechToVoiceDialog.show(getSupportFragmentManager(), "SPEECH_TO_VOICE");
+
+            }
+            else
+                Toast.makeText(getApplicationContext(),
+                        getString(R.string.speech_not_supported),
+                        Toast.LENGTH_SHORT).show();
+
+            //startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (Exception a) {
+           Commons.printException(a);
+        }
+    }
+
+    @Override
+    public void onReadyForSpeech(Bundle params) {
+
+    }
+
+    @Override
+    public void onBeginningOfSpeech() {
+
+    }
+
+    @Override
+    public void onRmsChanged(float rmsdB) {
+
+    }
+
+    @Override
+    public void onBufferReceived(byte[] buffer) {
+
+    }
+
+    @Override
+    public void onEndOfSpeech() {
+        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
+            speechToVoiceDialog.dismiss();
+    }
+
+    @Override
+    public void onError(int error) {
+        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
+            speechToVoiceDialog.dismiss();
+    }
+
+    @Override
+    public void onResults(Bundle results) {
+        ArrayList<String> speechResult = results
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+        if (speechResult != null && speechResult.size() > 0)
+            mEdt_searchproductName.setText(speechResult.get(0));
+
+        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
+            speechToVoiceDialog.dismiss();
+    }
+
+    @Override
+    public void onPartialResults(Bundle partialResults) {
+        ArrayList<String> speechResult = partialResults
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+        if (speechResult != null && speechResult.size() > 0)
+            speechResultListener.updateSpeechResult(speechResult.get(0));
+    }
+
+    @Override
+    public void onEvent(int eventType, Bundle params) {
+
+        ArrayList<String> speechResult = params
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+        if (speechResult != null && speechResult.size() > 0) {
+            speechResultListener.updateSpeechResult(speechResult.get(0));
+
+            Toast.makeText(this, "onEvent speechResult " + speechResult, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private SpeechResultListener speechResultListener;
+
+    public void setFragment(SpeechResultListener speechResultListener){
+        this.speechResultListener = speechResultListener;
+    }
+
+    public interface SpeechResultListener{
+        void updateSpeechResult(String result);
     }
 }

@@ -135,4 +135,7 @@
     <color name="chart_horizontal_line_color">#33ffffff</color>
 
 
+    <color name="rippelColor">#0099CC</color>
+
+
 </resources>
