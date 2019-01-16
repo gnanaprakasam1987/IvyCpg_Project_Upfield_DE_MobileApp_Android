@@ -873,6 +873,10 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.Planorama.NewVisitActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
