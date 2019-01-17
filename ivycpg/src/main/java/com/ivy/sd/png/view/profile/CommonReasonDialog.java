@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.tradeCoverage.deviation.DeviationHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
@@ -38,14 +39,16 @@ import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
  */
 
 public class CommonReasonDialog extends Dialog {
+
     private BusinessModel bmodel;
     private Context context;
-    private String listLoad;
-    private TextView reasonVisitTxt, headerText;
-    private Button addReason, cancelReason, addReason1;
+
+    private Button addReason;
+    private Button addReason1;
     private AddNonVisitListener addNonVisitListener;
+
     private ReasonMaster temp;
-    private boolean isdialog = false;
+    private DeviationHelper deviationHelper;
 
     public CommonReasonDialog(Context context) {
         super(context);
@@ -56,27 +59,22 @@ public class CommonReasonDialog extends Dialog {
         super(context);
 
         this.context = context;
-        this.listLoad = listLoad;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        bmodel = (BusinessModel) context.getApplicationContext();
-        /*rl = (RelativeLayout) LayoutInflater.from(context)
-                .inflate(R.layout.dialog_order_processing, null);*/
-        setContentView(R.layout.custom_dialog_nonvisit_reason);
-        int sizeLarge = SCREENLAYOUT_SIZE_LARGE; // For 7inch" tablet
-        if (sizeLarge == 3)
-            isdialog = true;
 
-        if (isdialog)
-            getWindow().setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
-        else if (!isdialog)
-            getWindow().setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bmodel = (BusinessModel) context.getApplicationContext();
+
+        setContentView(R.layout.custom_dialog_nonvisit_reason);
+
+        deviationHelper = new DeviationHelper(bmodel);
+
+        getWindow().setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setCancelable(false);
 
-        reasonVisitTxt = (TextView) findViewById(R.id.reason_text);
-        headerText = (TextView) findViewById(R.id.textView9);
-        addReason = (Button) findViewById(R.id.add_reason);
-        addReason1 = (Button) findViewById(R.id.add_reason1);
-        cancelReason = (Button) findViewById(R.id.cancel_reason);
+        TextView reasonVisitTxt = findViewById(R.id.reason_text);
+        TextView headerText = findViewById(R.id.textView9);
+        addReason = findViewById(R.id.add_reason);
+        addReason1 = findViewById(R.id.add_reason1);
+        Button cancelReason = findViewById(R.id.cancel_reason);
 
         //set typface
         reasonVisitTxt.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -120,13 +118,13 @@ public class CommonReasonDialog extends Dialog {
                         } else {
                             if (bmodel.mRetailerHelper.deviateRetailerList != null) {
                                 for (RetailerMasterBO masterBO : bmodel.mRetailerHelper.deviateRetailerList)
-                                    bmodel.reasonHelper.setDeviate(masterBO.getRetailerID(),
+                                    deviationHelper.setDeviate(masterBO.getRetailerID(),
                                             selected_reason, masterBO.getBeatID(), remarks);
 
                                 addNonVisitListener.addReatailerReason();
                                 bmodel.mRetailerHelper.deviateRetailerList = null;
                             } else {
-                                bmodel.reasonHelper.setDeviate(bmodel.retailerMasterBO.getRetailerID(),
+                                deviationHelper.setDeviate(bmodel.retailerMasterBO.getRetailerID(),
                                         selected_reason, bmodel.retailerMasterBO.getBeatID(), remarks);
                                 addNonVisitListener.addReatailerReason();
                             }
@@ -142,7 +140,7 @@ public class CommonReasonDialog extends Dialog {
             }
         });
 
-        RecyclerView reason_recycler = (RecyclerView) findViewById(R.id.reason_recycler);
+        RecyclerView reason_recycler = findViewById(R.id.reason_recycler);
         reason_recycler.setLayoutManager(new GridLayoutManager(context, 2));
         if (listLoad.equals("nonVisit")) {
             headerText.setText(context.getResources().getString(R.string.reason_non_visit));
@@ -265,19 +263,10 @@ public class CommonReasonDialog extends Dialog {
 
             public ViewHolder(View v) {
                 super(v);
-                reason_radio_btn = (AppCompatRadioButton) v.findViewById(R.id.reason_radio_btn);
+                reason_radio_btn = v.findViewById(R.id.reason_radio_btn);
                 reason_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                edt_other_remarks = (EditText) v.findViewById(R.id.edt_other_remarks);
-//                mState1 = new StateListDrawable();
-//
-//                mState1.addState(new int[]{android.R.attr.state_pressed},
-//                        context.getResources().getDrawable(R.drawable.radiobutton_green));
-//                mState1.addState(new int[]{android.R.attr.state_focused},
-//                        context.getResources().getDrawable(R.drawable.radiobutton_green));
-//                mState1.addState(new int[]{android.R.attr.state_checked},
-//                        context.getResources().getDrawable(R.drawable.radiobutton_green));
-//                mState1.addState(new int[]{},
-//                        context.getResources().getDrawable(R.drawable.radiobutton_grey));
+                edt_other_remarks = v.findViewById(R.id.edt_other_remarks);
+
             }
         }
     }
@@ -302,8 +291,7 @@ public class CommonReasonDialog extends Dialog {
 
     // Used to Reason Not Applicable for Others LOV
     private boolean isReasonRemarksNA() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
-        );
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
 
         String sql = "SELECT hhtCode, RField FROM "
@@ -313,7 +301,6 @@ public class CommonReasonDialog extends Dialog {
         if (c != null && c.getCount() != 0) {
             while (c.moveToNext()) {
                 if (c.getString(1).equalsIgnoreCase("1")) {
-                    // bmodel.configurationMasterHelper.IS_DEVIATION_REASON_NA = true;
                     return true;
                 }
             }

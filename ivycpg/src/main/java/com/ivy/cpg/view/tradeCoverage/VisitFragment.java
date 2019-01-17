@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.tradeCoverage;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -61,6 +61,8 @@ import com.ivy.cpg.view.order.tax.TaxGstHelper;
 import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CustomFragment;
+import com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 
 import org.json.JSONException;
