@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -505,6 +506,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                 holder.productCode = row.findViewById(R.id.sales_return_prod_code);
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.total = row.findViewById(R.id.total);
+                holder.totalLL = row.findViewById(R.id.ll_total);
 
                 holder.total.setPaintFlags(holder.total.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
@@ -523,7 +525,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                     }
                 });
 
-                holder.total.setOnClickListener(new OnClickListener() {
+                holder.totalLL.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
                         View vChild = lvwplist.getChildAt(0);
                         int holderPosition = lvwplist.getFirstVisiblePosition();
@@ -567,6 +569,7 @@ public class SalesReturnFragment extends IvyBaseFragment implements
         private String pname;
         private TextView psname, productCode;
         private TextView total;
+        private LinearLayout totalLL;
     }
 
     private void updateValue() {
