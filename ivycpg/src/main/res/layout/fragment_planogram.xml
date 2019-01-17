@@ -14,12 +14,12 @@
             android:id="@+id/plano_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/footerLine"
+            android:layout_above="@+id/footer"
             android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/plano_list_left_margin"
-            android:layout_marginEnd="@dimen/plano_list_right_margin"
-            android:layout_marginTop="@dimen/plano_list_top_margin"
             android:layout_marginLeft="@dimen/plano_list_left_margin"
+            android:layout_marginTop="@dimen/plano_list_top_margin"
+            android:layout_marginEnd="@dimen/plano_list_right_margin"
             android:layout_marginRight="@dimen/plano_list_right_margin" />
 
         <LinearLayout
@@ -99,23 +99,25 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <View
-            android:id="@+id/footerLine"
+        <RelativeLayout
+            android:id="@+id/footer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/plano_list_footer_line"
-            android:layout_above="@+id/saveButton"
-            android:layout_marginBottom="@dimen/plano_save_padding"
-            android:background="@color/divider_view_color" />
-
-        <Button
-            android:id="@+id/saveButton"
-            style="?attr/roundedCustomButtonSmall"
+            android:layout_height="@dimen/footer_height"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="@dimen/dimen_10dp"
-            android:layout_marginTop="@dimen/dimen_2dp"
-            android:gravity="center"
-            android:text="@string/save" />
+            android:background="?attr/customFooterBackgroundColor"
+            android:orientation="vertical"
+            android:padding="@dimen/footer_padding">
+
+            <Button
+                android:id="@+id/saveButton"
+                style="?attr/roundedCustomButtonSmall"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/save"
+                android:textAllCaps="false" />
+        </RelativeLayout>
+
 
         <LinearLayout
             android:id="@+id/image_capturing_linear_layout"
@@ -167,8 +169,8 @@
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingStart="10dp"
-                        android:visibility="gone"
-                        android:paddingLeft="10dp">
+                        android:paddingLeft="10dp"
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/adherence_text_view"
@@ -202,8 +204,8 @@
                         android:layout_gravity="center"
                         android:orientation="horizontal"
                         android:paddingStart="20dp"
-                        android:visibility="gone"
-                        android:paddingLeft="20dp">
+                        android:paddingLeft="20dp"
+                        android:visibility="gone">
 
                         <TextView
                             style="?textFieldStyle"
