@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.task.Task;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
@@ -29,10 +30,8 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
-import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.di.DaggerTaskComponent;
-import com.ivy.ui.task.di.TaskModule;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
@@ -292,7 +291,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         String taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
         int taskChannelId;
 
-        if (!validate())
+        if (!taskPresenter.isValidate(taskTitle.getText().toString(),taskView.getText().toString()))
             return;
 
         switch (mode) {
@@ -317,21 +316,21 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
 
-    private boolean validate() {
+    /*private boolean validate() {
 
         if (taskTitle.getText().toString().equals("")) {
             Toast.makeText(this,
                     getResources().getString(R.string.enter_task_title),
                     Toast.LENGTH_SHORT).show();
-           return false;
+            return false;
         } else if (taskView.getText().toString().equals("")) {
             Toast.makeText(this,
                     getResources().getString(R.string.enter_task_description),
                     Toast.LENGTH_SHORT).show();
-             return false;
+            return false;
         }
         return true;
-    }
+    }*/
 
     private void setUpToolBar() {
         setSupportActionBar(toolbar);

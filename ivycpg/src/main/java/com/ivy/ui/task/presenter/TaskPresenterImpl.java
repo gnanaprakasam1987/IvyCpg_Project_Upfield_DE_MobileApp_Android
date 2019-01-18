@@ -11,6 +11,7 @@ import com.ivy.core.data.channel.ChannelDataManager;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.user.UserDataManager;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -47,7 +48,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                              ConfigurationMasterHelper configurationMasterHelper,
                              V view, UserDataManager userDataManager,
                              ChannelDataManager channelDataManager,
-                             TaskDataManager taskDataManager, AppDataProvider appDataProvider,OutletTimeStampDataManager mOutletTimeStampDataManager) {
+                             TaskDataManager taskDataManager, AppDataProvider appDataProvider, OutletTimeStampDataManager mOutletTimeStampDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mConfigurationMasterHelper = configurationMasterHelper;
         this.mUserDataManager = userDataManager;
@@ -145,13 +146,13 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     public void updateModuleTime() {
         getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(SDUtil
                 .now(SDUtil.TIME)).subscribeOn(getSchedulerProvider().io())
-        .observeOn(getSchedulerProvider().ui())
-        .subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) {
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) {
 
-            }
-        }));
+                    }
+                }));
     }
 
     @Override
@@ -202,6 +203,18 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     @Override
     public String outDateFormat() {
         return mConfigurationMasterHelper.outDateFormat;
+    }
+
+    @Override
+    public boolean isValidate(String taskTitle, String taskView) {
+        if (taskTitle.equals("")) {
+            getIvyView().showMessage(R.string.enter_task_title);
+            return false;
+        } else if (taskView.equals("")) {
+            getIvyView().showMessage(R.string.enter_task_description);
+            return false;
+        }
+        return true;
     }
 
 }

@@ -60,5 +60,7 @@ public interface TaskContract {
         boolean isNoTaskReason();
 
         String outDateFormat();
+
+        boolean isValidate(String taskTitle,String taskView);
     }
 }
