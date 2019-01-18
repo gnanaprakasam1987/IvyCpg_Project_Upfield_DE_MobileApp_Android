@@ -318,20 +318,19 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
 
     private boolean validate() {
-        boolean ok = true;
 
         if (taskTitle.getText().toString().equals("")) {
             Toast.makeText(this,
                     getResources().getString(R.string.enter_task_title),
                     Toast.LENGTH_SHORT).show();
-            ok = false;
+           return false;
         } else if (taskView.getText().toString().equals("")) {
             Toast.makeText(this,
                     getResources().getString(R.string.enter_task_description),
                     Toast.LENGTH_SHORT).show();
-            ok = false;
+             return false;
         }
-        return ok;
+        return true;
     }
 
     private void setUpToolBar() {
