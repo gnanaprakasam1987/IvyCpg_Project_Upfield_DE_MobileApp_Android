@@ -93,6 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/header_layout"
+            android:layout_above="@+id/ll_keypad"
             android:cacheColorHint="@null"
             android:divider="@color/light_gray"
             android:dividerHeight="0.5dp"
@@ -100,45 +101,34 @@
             android:scrollbarAlwaysDrawHorizontalTrack="true"
             android:scrollbarAlwaysDrawVerticalTrack="true" />
 
+        <LinearLayout
+            android:id="@+id/ll_keypad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footer"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/keypad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/footer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/footer_height"
             android:layout_alignParentBottom="true"
+            android:background="?attr/customFooterBackgroundColor"
+            android:padding="@dimen/footer_padding"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/ll_keypad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include
-                    layout="@layout/keypad"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <View
-                android:id="@+id/line"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimens_1dp"
-                android:layout_above="@id/btn_save"
-                android:layout_below="@+id/ll_keypad"
-                android:background="@color/light_gray"
-                android:orientation="horizontal" />
 
             <Button
                 android:id="@+id/btn_save"
                 style="?attr/roundedCustomButtonSmall"
-                android:layout_below="@+id/ll_keypad"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/activity_margin1"
-                android:layout_marginEnd="@dimen/activity_margin1"
-                android:layout_marginRight="@dimen/activity_margin1"
-                android:layout_marginBottom="@dimen/activity_margin1"
+                android:layout_centerVertical="true"
                 android:text="@string/save"
                 android:textAllCaps="false" />
         </RelativeLayout>

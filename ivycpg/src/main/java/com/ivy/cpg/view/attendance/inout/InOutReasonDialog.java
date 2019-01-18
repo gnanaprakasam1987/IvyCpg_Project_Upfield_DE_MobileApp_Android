@@ -88,8 +88,8 @@ public class InOutReasonDialog extends Dialog {
     private void loadInOutReason() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'REASON'"

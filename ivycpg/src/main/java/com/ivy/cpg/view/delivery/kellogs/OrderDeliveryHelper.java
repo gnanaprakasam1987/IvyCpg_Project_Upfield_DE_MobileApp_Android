@@ -113,8 +113,8 @@ public class OrderDeliveryHelper {
 
         orderHeaders = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sb = ("select OD.OrderID,OrderValue,LinesPerCall,OrderDate,invoicestatus,OD.rfield3,ODS.status from "
@@ -152,8 +152,8 @@ public class OrderDeliveryHelper {
 
     void downloadOrderDeliveryDetail(Context mContext, String orderId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -406,8 +406,8 @@ public class OrderDeliveryHelper {
 
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             SchemeProductBO schemeProductBO;
@@ -448,7 +448,7 @@ public class OrderDeliveryHelper {
             setOrderDeliveryDiscountAmount("0");
             setOrderDeliveryTotalValue("0");
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -563,7 +563,7 @@ public class OrderDeliveryHelper {
     boolean updateTableValues(Context context, String orderId, boolean isEdit, String menuCode, String referenceId) {
         boolean status = true;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -878,8 +878,8 @@ public class OrderDeliveryHelper {
     private int isCreditNoteCreated(Context mContext, String orderId) {
         int flag = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select credit_flag from SalesReturnHeader where upload = 'X' and RefModuleTId =" + AppUtils.QT(orderId) + " and RetailerID="
@@ -900,8 +900,8 @@ public class OrderDeliveryHelper {
     private boolean isValueReturned(Context mContext, String orderId) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select invoicecreated from SalesReturnHeader where upload ='X' and RefModuleTId =" + AppUtils.QT(orderId) + " and Retailerid="
@@ -1007,8 +1007,8 @@ public class OrderDeliveryHelper {
     /*Update Excess stock QTY in Product master SIH. Works only inside this module*/
     public void updateProductWithExcessStock(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor cur = db.selectSQL("Select pid,qty from ExcessStockInHand");
@@ -1039,8 +1039,8 @@ public class OrderDeliveryHelper {
     Vector<ProductMasterBO> preparePrintData(Context context, String orderId) {
         Vector<ProductMasterBO> mInvoiceDetailsList = new Vector<>();
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1153,8 +1153,8 @@ public class OrderDeliveryHelper {
     ArrayList<SchemeProductBO> downloadSchemeFreePrint(Context context, String orderId) {
 
         ArrayList<SchemeProductBO> schemeProductBOS = new ArrayList<>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -1323,8 +1323,8 @@ public class OrderDeliveryHelper {
 
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1348,7 +1348,7 @@ public class OrderDeliveryHelper {
     //OrderDelivery status insertion
     public void updateRejectedOrder(Context context,String orderId,String referenceId){
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
 
@@ -1371,7 +1371,7 @@ public class OrderDeliveryHelper {
     }
 
     public void updateDiscountInLineValue(Context context,String orderId){
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
 
@@ -1406,7 +1406,7 @@ public class OrderDeliveryHelper {
     }
 
     public void updateTaxInLineValue(Context context,String orderId){
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
 

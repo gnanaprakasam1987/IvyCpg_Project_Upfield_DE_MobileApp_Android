@@ -198,7 +198,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
     private void totalValue(String uId) {
 
         try {
-            DBUtil dbUtil = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil dbUtil = new DBUtil(this, DataMembers.DB_NAME);
             dbUtil.openDataBase();
             Cursor cursor = dbUtil
                     .selectSQL("SELECT totalQty,srpedited from SalesReturnDetails "

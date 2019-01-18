@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.homescreen;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -110,6 +110,17 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.About;
+import com.ivy.sd.png.view.ChannelSelectionDialog;
+import com.ivy.sd.png.view.DeviceStatusActivity;
+import com.ivy.sd.png.view.NewOutletEditFragment;
+import com.ivy.sd.png.view.NewoutletContainerFragment;
+import com.ivy.sd.png.view.PlanDeviationFragment;
+import com.ivy.sd.png.view.SynchronizationFragment;
+import com.ivy.sd.png.view.TLAttendanceActivity;
+import com.ivy.sd.png.view.UserFeedbackActivity;
+import com.ivy.sd.png.view.UserSettingsActivity;
+import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
 
 import java.io.File;
@@ -122,21 +133,16 @@ import java.util.Vector;
 
 public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener
         , PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
+
     private BusinessModel bmodel;
 
     //used to save the photo
     public static File folder;
-
     public static String photoPath;
-
     public static boolean fromHomeScreen = false;
 
     private static final String MENU_PLANNING_CONSTANT = "Day Planning";
     private static final String MENU_VISIT_CONSTANT = "Trade Coverage";
-
-    private Intent stockpropintent;
-    private Intent vanUnloadStockAdjustmentIntent = null;
-    private Intent planningIntent;
 
     private static final String MENU_PLANNING = "MENU_PLANNING";
     private static final String MENU_VISIT = "MENU_VISIT";
@@ -181,9 +187,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_ACTIVITY";
     private static final String MENU_DENOMINATION = "MENU_DENOMINATION";
     private static final String MENU_ROUTE_KPI = "MENU_ROUTE_KPI";
-//    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
-
-    //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
     private static final String MENU_NON_FIELD = "MENU_NON_FIELD";
     private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET"; //Deleiver Management
@@ -217,7 +220,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     private ActionBar actionBar;
 
-    private homeScreenItemClickedListener mHomeScreenItemClickedListener;
+    private HomeScreenItemClickedListener mHomeScreenItemClickedListener;
 
     LinearLayout ll_logout, ll_about;
     ImageView settingView;
@@ -2686,7 +2689,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String language = sharedPrefs.getString("languagePref", ApplicationConfigs.LANGUAGE);
 
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor c = db.selectSQL("select * from "
@@ -2746,12 +2749,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
-    public interface homeScreenItemClickedListener {
-        void onListItemSelected();
-
-    }
-
-    void setmHomeScreenItemClickedListener(homeScreenItemClickedListener mListener) {
+    public void setmHomeScreenItemClickedListener(HomeScreenItemClickedListener mListener) {
         mHomeScreenItemClickedListener = mListener;
     }
 

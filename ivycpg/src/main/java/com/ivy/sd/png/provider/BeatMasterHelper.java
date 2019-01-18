@@ -104,8 +104,7 @@ public class BeatMasterHelper {
     public void downloadBeats() {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             String beatCols = "BeatID,BeatDescription,today,UserId,BeatCode";
             BeatMasterBO beat;
             db.openDataBase();
@@ -147,8 +146,8 @@ public class BeatMasterHelper {
         ArrayList<BeatMasterBO> beatList = new ArrayList<>();
         try {
             BeatMasterBO beat;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL("SELECT distinct " + DataMembers.tbl_beatMaster_cols
@@ -183,8 +182,8 @@ public class BeatMasterHelper {
         ArrayList<BeatMasterBO> beatList = new ArrayList<>();
         try {
             BeatMasterBO beat;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL("select distinct RBM.BeatID, BM.BeatDescription,BM.today from RetailerBeatMapping RBM inner join BeatMaster BM on BM.beatID = RBM.BeatID");

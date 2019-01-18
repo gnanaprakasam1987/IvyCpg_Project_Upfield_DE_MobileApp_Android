@@ -96,8 +96,8 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         DBUtil db = null;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -142,8 +142,8 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             selectedSeller.setTargetLines(0);
             selectedSeller.setAchievedLines(0);
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -197,8 +197,8 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     public void downloadSellerOutletAWS(int userId,String date) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -554,7 +554,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
 
     void checkDownloadSelerKPIData(int sellerId,String date){
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         String kpiParams ="";
         try {
             db.openDataBase();
@@ -746,7 +746,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     }
 
     private String getDownloadUrl(String masterName){
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         String downloadurl = "";
         try {
             db.openDataBase();

@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 

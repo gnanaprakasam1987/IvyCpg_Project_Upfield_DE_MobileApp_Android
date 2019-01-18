@@ -35,8 +35,8 @@ public class SalesFGReportHelper {
                 DBUtil db = null;
                 try {
                     SalesFundamentalGapReportBO salesFundamentalGapReportBO;
-                    db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
 
                     String tableName = "", pm = "";

@@ -60,8 +60,8 @@ public class ExpenseSheetHelper {
         String CODE_EXPENSE_LIST_TYPE = "EXPENSE_TYPE";
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -161,8 +161,8 @@ public class ExpenseSheetHelper {
         String tid = "";
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -193,8 +193,8 @@ public class ExpenseSheetHelper {
         int count = 0;
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -222,8 +222,8 @@ public class ExpenseSheetHelper {
         double total = 0;
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -256,8 +256,8 @@ public class ExpenseSheetHelper {
 
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -297,8 +297,8 @@ public class ExpenseSheetHelper {
 
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -339,8 +339,8 @@ public class ExpenseSheetHelper {
         ArrayList<String> imageList = new ArrayList<>();
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -372,7 +372,7 @@ public class ExpenseSheetHelper {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
                 try {
                     db.openDataBase();
 
@@ -428,7 +428,7 @@ public class ExpenseSheetHelper {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
                 try {
                     db.openDataBase();
 
@@ -486,8 +486,8 @@ public class ExpenseSheetHelper {
 
     public void deleteImageProof(String ImageName) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             //For adding server ref path to image name
             String path = "Expense/"
@@ -510,8 +510,8 @@ public class ExpenseSheetHelper {
             @Override
             public Boolean call() {
                 try {
-                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     String sql;
                     db.deleteSQL(DataMembers.tbl_expensedetails, "Refid="
@@ -541,8 +541,8 @@ public class ExpenseSheetHelper {
     // Delete header if all transcation got deleted
     public void deleteHeader(String Tid) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_expenseheader, "Tid ="
                     + QT(Tid), false);

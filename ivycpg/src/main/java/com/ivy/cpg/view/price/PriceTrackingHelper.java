@@ -78,7 +78,7 @@ public class PriceTrackingHelper {
      */
     public void loadPriceTransaction(Context mContext) {
         String mLastVisitPrice = "LastVisitPrice";
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -223,7 +223,7 @@ public class PriceTrackingHelper {
      * Save Tracking Detail in Detail Table
      */
     public void savePriceTransaction(Context mContext, List<ProductMasterBO> productList) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -469,7 +469,7 @@ public class PriceTrackingHelper {
     //to update visited status for price check module icon
     public boolean isPriceCheckDone(Context mContext) {
         boolean flag = false;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String sb = "select tid from PriceCheckHeader where retailerid=" +
@@ -525,8 +525,8 @@ public class PriceTrackingHelper {
             SHOW_PRICE_LASTVP = false;
 
             String codeValue = null;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster

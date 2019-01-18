@@ -33,8 +33,8 @@ public class RetailerActivityReportHelper {
             RetailerMasterBO retailerBo, ret;
             ret = new RetailerMasterBO();
 
-            DBUtil db = new DBUtil(businessModel, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(businessModel, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             for (RetailerMasterBO retailerList : businessModel.getRetailerMaster()) {

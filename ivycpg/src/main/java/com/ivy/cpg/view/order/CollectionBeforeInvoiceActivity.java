@@ -55,7 +55,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.utils.FontUtils;
 
 import java.math.BigDecimal;
@@ -74,7 +74,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
     private EditText QUANTITY;
     private Button btnSubmit;
     // Views
-    private LinearLayout layoutBankMode,  layoutKeypad;
+    private LinearLayout layoutBankMode, layoutKeypad;
     private RadioGroup rbPaymentType;
     private boolean isClicked, setRadioBtnChecked;
     private EditText collectionamount, chequenumber;
@@ -133,11 +133,11 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            mTotalInvoiceAmount = bundle.getDouble("TotalInvoiceAmt",0);
-            invoiceamount = bundle.getDouble("InvoiceAmt",0);
+            mTotalInvoiceAmount = bundle.getDouble("TotalInvoiceAmt", 0);
+            invoiceamount = bundle.getDouble("InvoiceAmt", 0);
             collectionbo = bundle.getParcelable("Collection");
-            osamount = bundle.getDouble("OsAmount",0);
-            this.creditBalance = bundle.getDouble("CreditDalance",0);
+            osamount = bundle.getDouble("OsAmount", 0);
+            this.creditBalance = bundle.getDouble("CreditDalance", 0);
         }
 
         // Initialize Views in the Screen
@@ -145,7 +145,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
-        if (toolbar != null ) {
+        if (toolbar != null) {
 
             setSupportActionBar(toolbar);
 
@@ -164,7 +164,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
         collectionHelper = CollectionHelper.getInstance(this);
 
-        inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
     }
@@ -761,6 +761,10 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                     mTransactionPaymentMode, "");
 
         }
+
+        Intent intent = new Intent();
+        intent.putExtra("Collection", collectionbo);
+        setResult(1, intent);
     }
 
     private void setPaymentObject(double invoiceAmt, double paidAmt,
@@ -882,19 +886,19 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
             mCreditNoteLV = findViewById(R.id.lv_creditnote);
             ll_keyboard = findViewById(R.id.keypad_foot);
 
-            ((TextView) findViewById(R.id.productName2)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
-            ((TextView) findViewById(R.id.minimumamount)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
-            ((TextView) findViewById(R.id.tv_branch_title)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.REGULAR));
-            ((TextView) findViewById(R.id.tv_bank_title)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.REGULAR));
-            ((TextView) findViewById(R.id.totalLabel)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.REGULAR));
-            ((TextView) findViewById(R.id.payTotal)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
-            ((RadioButton) findViewById(R.id.cashRadioButton)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.REGULAR));
-            ((RadioButton) findViewById(R.id.chequeRadioButton)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.REGULAR));
-            ((RadioButton) findViewById(R.id.creditNoteRadioButton)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.REGULAR));
-            tvMinimumAmount.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
-            tvAmount.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
+            ((TextView) findViewById(R.id.productName2)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.minimumamount)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.tv_branch_title)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((TextView) findViewById(R.id.tv_bank_title)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((TextView) findViewById(R.id.totalLabel)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((TextView) findViewById(R.id.payTotal)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
+            ((RadioButton) findViewById(R.id.cashRadioButton)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((RadioButton) findViewById(R.id.chequeRadioButton)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((RadioButton) findViewById(R.id.creditNoteRadioButton)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            tvMinimumAmount.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
+            tvAmount.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
 
-            btnSubmit.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+            btnSubmit.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
             if (bmodel.configurationMasterHelper.COLL_CHEQUE_MODE) {
                 chequenumber.setInputType(InputType.TYPE_CLASS_TEXT);
             }
@@ -1019,7 +1023,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
         builder.setNegativeButton(getResources().getString(R.string.no),
                 new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which){
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         return;
                     }

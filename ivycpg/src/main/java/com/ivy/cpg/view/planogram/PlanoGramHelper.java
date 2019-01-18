@@ -54,8 +54,8 @@ public class PlanoGramHelper {
 
             IS_LOCATION_WISE_PLANOGRAM = false;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
@@ -87,7 +87,7 @@ public class PlanoGramHelper {
      * @param retailerId RetaILER iD
      */
     public void downloadLevels(Context mContext, String moduleName, String retailerId) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -268,7 +268,7 @@ public class PlanoGramHelper {
      * @param moduleName Module Name
      */
     public void downloadPlanoGram(Context mContext, String moduleName) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             PlanoGramBO planogram;
             db.openDataBase();
@@ -346,7 +346,7 @@ public class PlanoGramHelper {
      * @param retailerId Retailer Id
      */
     public void loadPlanoGramInEditMode(Context mContext, String retailerId) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String tid = "";
@@ -425,7 +425,7 @@ public class PlanoGramHelper {
 
         ArrayList<String> planogramImagList = new ArrayList<>();
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -477,7 +477,7 @@ public class PlanoGramHelper {
      * @return Is Saved
      */
     boolean savePlanoGram(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String tid;
@@ -626,8 +626,8 @@ public class PlanoGramHelper {
      * @param imgName Image name
      */
     void deleteImageName(Context mContext, String imgName) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -651,8 +651,8 @@ public class PlanoGramHelper {
 
             mLocationList = new Vector<>();
             StandardListBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql1 = "SELECT Distinct SL.ListId, SL.ListName"

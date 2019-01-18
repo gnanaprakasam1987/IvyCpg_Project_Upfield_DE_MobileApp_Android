@@ -1699,8 +1699,8 @@ public class PrintHelper {
         ArrayList<Float> taxRateList = new ArrayList<>();
         ArrayList<String> taxNameList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "Select TM.taxrate,SLM.ListName from TaxMaster TM INNER JOIN  standardlistmaster  SLM on TM.TaxType = SLM.ListID where applylevelid in (select listid from standardlistmaster where  listcode='BILL') limit 2";

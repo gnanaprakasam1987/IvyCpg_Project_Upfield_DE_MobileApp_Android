@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.homescreen;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -26,7 +26,7 @@ import java.util.HashMap;
  * Created by rajkumar.s on 12/30/2016.
  */
 
-public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements HomeScreenFragment.homeScreenItemClickedListener,
+public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements HomeScreenItemClickedListener,
         BrandDialogInterface, FiveLevelFilterCallBack {
 
     private DrawerLayout mDrawerLayout;
@@ -36,6 +36,7 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
 

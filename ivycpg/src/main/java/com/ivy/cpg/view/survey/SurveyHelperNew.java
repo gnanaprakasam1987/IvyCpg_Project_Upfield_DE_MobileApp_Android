@@ -12,7 +12,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -119,8 +119,8 @@ public class SurveyHelperNew {
      * @param surveyType STANDARD|SPECIAL|NEW_RETAILER
      */
     public void downloadModuleId(String surveyType) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c = db.selectSQL("SELECT ListId FROM StandardListMaster"
                 + " WHERE ListCode = " + QT(surveyType)
@@ -196,7 +196,7 @@ public class SurveyHelperNew {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
 
@@ -236,7 +236,7 @@ public class SurveyHelperNew {
         String surveyIds = "";
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
             // Attribute Groupid will be validated seprately after validating other citeria type.
@@ -335,7 +335,7 @@ public class SurveyHelperNew {
     public void getSurveyValidateOptions() {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
 
@@ -391,8 +391,8 @@ public class SurveyHelperNew {
             }
 
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuilder sb = new StringBuilder();
@@ -684,8 +684,8 @@ public class SurveyHelperNew {
             int optionIndex = -1;
 
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct A.QId, A.QText, A.QType, IFNULL(E.ListCode,''), A.IsMand,"
@@ -1058,8 +1058,8 @@ public class SurveyHelperNew {
      */
     public void saveAnswer(String menuCode) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1619,8 +1619,8 @@ public class SurveyHelperNew {
 
 
     public void loadSurveyAnswers(int supervisiorId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -1863,8 +1863,8 @@ public class SurveyHelperNew {
     }
 
     public void loadNewRetailerSurveyAnswers(String retailerId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -1927,8 +1927,8 @@ public class SurveyHelperNew {
     }
 
     public void loadCSSurveyAnswers(int supervisiorId, String referenceId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -2050,8 +2050,8 @@ public class SurveyHelperNew {
     }
 
     public void loadSuperVisorSurveyAnswers(int supervisiorId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -2180,8 +2180,8 @@ public class SurveyHelperNew {
                 channelid = bmodel.getRetailerMasterBO().getSubchannelid();
 
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;
@@ -2236,8 +2236,8 @@ public class SurveyHelperNew {
      */
     public void saveAnswerNewRetailer(String menuCode, int screenMode) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -2482,8 +2482,8 @@ public class SurveyHelperNew {
     public boolean isSurveyAvaliable(String retailerId) {
         boolean isavailable = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -2509,8 +2509,8 @@ public class SurveyHelperNew {
 
     public void deleteNewRetailerSurvey(String retailerID) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             db.deleteSQL("NewRetailerSurveyResultDetail", "retailerid ="
@@ -2552,7 +2552,7 @@ public class SurveyHelperNew {
             this.IS_SURVEY_ANSWER_MANDATORY = false;
 
             DBUtil db;
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY07'and menu_type="
@@ -2645,7 +2645,7 @@ public class SurveyHelperNew {
 
         try {
             DBUtil db;
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ParentHierarchy from ProductMaster where PID=" + productId);

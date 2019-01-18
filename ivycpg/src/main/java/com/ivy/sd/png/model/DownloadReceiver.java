@@ -6,9 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ivy.cpg.view.login.LoginBaseActivity;
-import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.sd.png.view.AdhocPlanningFragment;
+import com.ivy.cpg.view.tradeCoverage.adhocPlanning.AdhocPlanningFragment;
 import com.ivy.sd.png.view.NewOutletFragment.NewRetailerReceiver;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.sd.png.view.TLAttendanceActivity;

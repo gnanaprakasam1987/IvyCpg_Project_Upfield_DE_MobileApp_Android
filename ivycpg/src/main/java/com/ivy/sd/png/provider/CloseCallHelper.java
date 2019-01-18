@@ -44,8 +44,8 @@ public class CloseCallHelper {
     public String getStandardListId(String listCode) {
         String listID = "";
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListId from StandardListMaster where ListCode='"
@@ -74,8 +74,8 @@ public class CloseCallHelper {
 
         boolean valid = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select  RefId from RetailerVerification where RetailerId = "
@@ -110,8 +110,8 @@ public class CloseCallHelper {
 
         boolean valid = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select  count(RefId) from RetailerVerification where RetailerId = "
@@ -140,8 +140,8 @@ public class CloseCallHelper {
 
     public void updateOtp() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.updateSQL("UPDATE RetailerVerification SET IsValidated='1' where RefId = " + RefId);
                         /*	+ bmodel.QT(bmodel.getRetailerMasterBO()
@@ -159,8 +159,8 @@ public class CloseCallHelper {
 
     public void saveCloseCallreason(NonproductivereasonBO outlet) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             String values;
             db.createDataBase();
             db.openDataBase();
@@ -204,8 +204,8 @@ public class CloseCallHelper {
     public boolean isNonProductiveCloaseCallDone() {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             String values;
             db.createDataBase();
             db.openDataBase();

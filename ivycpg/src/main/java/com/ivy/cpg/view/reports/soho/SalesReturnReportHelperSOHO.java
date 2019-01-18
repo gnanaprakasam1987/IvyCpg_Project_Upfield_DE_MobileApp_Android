@@ -26,8 +26,8 @@ public class SalesReturnReportHelperSOHO {
     public ArrayList<SalesReturnReasonBO> getSalesReturnRetailerList() {
         ArrayList<SalesReturnReasonBO> salesReturnReasonBOs = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct srd.ProductId as ProductId,srd.retailerId as RetailerID," +
@@ -55,8 +55,8 @@ public class SalesReturnReportHelperSOHO {
     public ArrayList<SalesReturnReasonBO> getSalesReturnList(String productId, String retailerId) {
         ArrayList<SalesReturnReasonBO> salesReturnReasonBOs = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct A.ListName as reasonDesc,srd .* from SalesReturnDetails srd"

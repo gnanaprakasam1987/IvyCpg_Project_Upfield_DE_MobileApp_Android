@@ -3,7 +3,6 @@ package com.ivy.cpg.view.webview;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -22,7 +21,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
-import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.HashMap;
 import java.util.Locale;

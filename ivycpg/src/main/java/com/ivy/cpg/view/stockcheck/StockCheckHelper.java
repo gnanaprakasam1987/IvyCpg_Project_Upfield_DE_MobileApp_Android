@@ -83,8 +83,8 @@ public class StockCheckHelper {
         CHANGE_AVAL_FLOW = false;
         SHOW_STOCK_AVGDAYS = false;
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         String codeValue = null;
         String sql = "select RField from "
@@ -171,8 +171,8 @@ public class StockCheckHelper {
         SHOW_STOCK_NEAREXPIRY_CS = false;
         SHOW_STOCK_NEAREXPIRY_OU = false;
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         String codeValue = null;
         String sql = "select RField from "
@@ -362,7 +362,7 @@ public class StockCheckHelper {
         c.add(Calendar.DAY_OF_YEAR, 30);
         DBUtil db;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
             String tid;
@@ -612,8 +612,8 @@ public class StockCheckHelper {
      */
     public void setReviewPlanInDB(Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.executeQ("update " + DataMembers.tbl_retailerMaster
@@ -628,8 +628,8 @@ public class StockCheckHelper {
 
     public void saveClosingStock(Context context, boolean isFromOrder) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -808,8 +808,8 @@ public class StockCheckHelper {
 
     private void updateIsStockCheck(Context context) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.updateSQL("Update RetailerBeatMapping set isProductive='Y' where RetailerID ="
                     + bmodel.getRetailerMasterBO().getRetailerID() + " and BeatID=" + bmodel.getRetailerMasterBO().getBeatID());

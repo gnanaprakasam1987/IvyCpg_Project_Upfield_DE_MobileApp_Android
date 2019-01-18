@@ -62,7 +62,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.ScreenOrientation;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.SyncRetailerSelectActivity;
 import com.ivy.sd.png.view.SyncVisitedRetailer;
@@ -1094,8 +1094,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     public boolean isClosingStockDone() {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(CallAnalysisActivity.this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(CallAnalysisActivity.this, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select stockid from "
                     + DataMembers.tbl_closingstockheader + " where retailerid="
@@ -1459,8 +1459,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     public void loadCollectionReason() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.COLLECTION_REASON_TYPE));
@@ -1483,8 +1483,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     private void loadFeedbackReason() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.FEEDBACK_TYPE));
             if (c != null) {
@@ -1504,8 +1504,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     public boolean hasInvoice() {
         try {
-            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select InvoiceNo from "
                     + DataMembers.tbl_InvoiceMaster + " where Retailerid='"

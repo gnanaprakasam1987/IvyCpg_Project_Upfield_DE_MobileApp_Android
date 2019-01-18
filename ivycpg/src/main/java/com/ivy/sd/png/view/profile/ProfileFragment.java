@@ -51,6 +51,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -126,9 +127,9 @@ public class ProfileFragment extends IvyBaseFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (isData) {
-                    bmodel.profilehelper.deleteRetailerEditRecords(bmodel.getRetailerMasterBO().getRetailerID());
+                    bmodel.profilehelper.deleteRetailerEditRecords(bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
                 }
-                bmodel.profilehelper.deActivateRetailer(bmodel.getRetailerMasterBO().getRetailerID());
+                bmodel.profilehelper.deActivateRetailer(bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
                 btn_Deactivate.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.button_rounded_corner_red, null));
             }
         });
@@ -138,7 +139,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 btn_Deactivate.setChecked(false);
             }
         });
-        builder.show();
+        bmodel.applyAlertDialogTheme(builder);
     }
 
     @Override
@@ -274,12 +275,12 @@ public class ProfileFragment extends IvyBaseFragment {
 
     private void updateRetailerStatus() {
         if (bmodel.configurationMasterHelper.IS_DEACTIVATE_RETAILER) {
-            LinearLayout ll_status = (LinearLayout) view.findViewById(R.id.ll_Deactivate);
+            LinearLayout ll_status = view.findViewById(R.id.ll_Deactivate);
             ll_status.setVisibility(View.VISIBLE);
 
-            btn_Deactivate = (ToggleButton) view.findViewById(R.id.btn_Deactivate);
-            btn_Deactivate.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            if (bmodel.profilehelper.isDeActivated(bmodel.getRetailerMasterBO().getRetailerID())) {
+            btn_Deactivate = view.findViewById(R.id.btn_Deactivate);
+            btn_Deactivate.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+            if (bmodel.profilehelper.isDeActivated(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())) {
                 btn_Deactivate.setChecked(true);
             } else
                 btn_Deactivate.setChecked(false);
@@ -288,7 +289,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 @Override
                 public void onClick(View view) {
                     if (btn_Deactivate.isChecked()) {
-                        if (bmodel.profilehelper.isRetailerEditDetailAvailable(bmodel.getRetailerMasterBO().getRetailerID()))
+                        if (bmodel.profilehelper.isRetailerEditDetailAvailable(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()))
                             showDeActivateAlert(getResources().getString(R.string.retailer_edit_records_available), true);
                         else {
                             showDeActivateAlert(getResources().getString(R.string.do_you_want_to_deactivate_retailer), false);
@@ -302,10 +303,7 @@ public class ProfileFragment extends IvyBaseFragment {
                             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                bmodel.profilehelper.deleteRetailerEditRecords(bmodel.getRetailerMasterBO().getRetailerID());
-//                                if (bmodel.configurationMasterHelper.SHOW_PROFILE_EDIT) {
-//                                    //edit.setVisibility(View.VISIBLE);
-//                                }
+                                bmodel.profilehelper.deleteRetailerEditRecords(bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
                                 btn_Deactivate.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.button_rounded_corner_orange, null));
                             }
                         });
@@ -315,7 +313,7 @@ public class ProfileFragment extends IvyBaseFragment {
                                 btn_Deactivate.setChecked(true);
                             }
                         });
-                        builder.show();
+                        bmodel.applyAlertDialogTheme(builder);
 
                     }
                 }

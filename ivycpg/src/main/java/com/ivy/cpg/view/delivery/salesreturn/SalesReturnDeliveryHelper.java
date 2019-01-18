@@ -45,7 +45,7 @@ public class SalesReturnDeliveryHelper {
                     loadConfigurations(context);
                     BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
                     Vector<SalesReturnDeliveryDataBo> returnDeliveryDataModelVector = new Vector<>();
-                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME);
 
                     dbUtil.openDataBase();
                     Cursor cursor = dbUtil.selectSQL("Select " +
@@ -95,7 +95,7 @@ public class SalesReturnDeliveryHelper {
                     Vector<SalesReturnDeliveryDataModel> returnDeliveryDataModelVector = new Vector<>();
                     ArrayList<SalesReturnDeliveryDataModel> skuLevelReturnData;
                     HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> srdDataModelMap = new HashMap<>();
-                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME);
                     dbUtil.openDataBase();
 
                     Cursor cursor = dbUtil
@@ -241,8 +241,8 @@ public class SalesReturnDeliveryHelper {
     public boolean cancelSalesReturnDelivery(Context mContext, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo) {
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -305,8 +305,8 @@ public class SalesReturnDeliveryHelper {
         try {
 
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             boolean isData;
@@ -564,8 +564,8 @@ public class SalesReturnDeliveryHelper {
             SHOW_SALES_RET_CASE = false;
             SHOW_SALES_RET_PCS = false;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster

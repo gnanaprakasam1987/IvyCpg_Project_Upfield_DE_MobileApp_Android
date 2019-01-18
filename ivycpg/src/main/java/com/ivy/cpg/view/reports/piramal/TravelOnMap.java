@@ -453,8 +453,8 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
 
         try {
             String today = SDUtil.now(SDUtil.DATE_GLOBAL);
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT DISTINCT RetailerID,latitude,longitude FROM OutletTimestamp WHERE latitude > 0.0 AND longitude > 0.0 AND VisitDate = '" + today + "' ORDER BY rowid");
@@ -481,8 +481,8 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
     public void downloadTravelMapReport() {
 
         try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT RM.RetailerID, RM.RetailerName, RA.latitude, RA.longitude FROM RetailerMasterInfo RMI "

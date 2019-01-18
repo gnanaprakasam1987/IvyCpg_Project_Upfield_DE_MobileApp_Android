@@ -43,8 +43,8 @@ public class UserFeedBackHelper {
         try {
             ReasonMaster reason;
             mFeedBackType = new ArrayList<ReasonMaster>();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             reason = new ReasonMaster();
             reason.setReasonID("-1");
@@ -73,8 +73,8 @@ public class UserFeedBackHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String columns = "UId, DateTime, TypeLovId, Feedback, Rating";

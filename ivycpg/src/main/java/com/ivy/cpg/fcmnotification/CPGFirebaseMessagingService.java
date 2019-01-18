@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,7 +22,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

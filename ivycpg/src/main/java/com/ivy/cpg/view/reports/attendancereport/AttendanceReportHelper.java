@@ -38,8 +38,8 @@ public class AttendanceReportHelper {
                 ArrayList<AttendanceReportBo> attendanceList = new ArrayList<>();
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.createDataBase();
                     db.openDataBase();
                     Cursor c = db
@@ -81,8 +81,8 @@ public class AttendanceReportHelper {
                 DBUtil db = null;
                 ArrayList<String> attendanceMonth = new ArrayList<>();
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.createDataBase();
                     db.openDataBase();
                     Cursor c = db.selectSQL("SELECT distinct Month from AttendanceReport where " +

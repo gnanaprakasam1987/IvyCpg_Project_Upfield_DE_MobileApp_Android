@@ -212,37 +212,37 @@ public class OrderHistoryFragment extends IvyBaseFragment {
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                invViewLayout =  itemView.findViewById(R.id.inv_view_layout);
-                due_date_layout =  itemView.findViewById(R.id.due_date_layout);
-                listBgLayout =  itemView.findViewById(R.id.list_background);
+                invViewLayout = itemView.findViewById(R.id.inv_view_layout);
+                due_date_layout = itemView.findViewById(R.id.due_date_layout);
+                listBgLayout = itemView.findViewById(R.id.list_background);
 
 
-                orderId =  itemView.findViewById(R.id.order_id_val);
-                orderDate =  itemView.findViewById(R.id.date_val);
-                totLines =  itemView.findViewById(R.id.tota_lines_val);
-                totVal =  itemView.findViewById(R.id.tot_val);
-                totVol =  itemView.findViewById(R.id.tot_vol);
+                orderId = itemView.findViewById(R.id.order_id_val);
+                orderDate = itemView.findViewById(R.id.date_val);
+                totLines = itemView.findViewById(R.id.tota_lines_val);
+                totVal = itemView.findViewById(R.id.tot_val);
+                totVol = itemView.findViewById(R.id.tot_vol);
 
-                del_date_val =  itemView.findViewById(R.id.del_date_val);
-                invoice_date_val =  itemView.findViewById(R.id.invoice_date_val);
-                invoice_qty_val =  itemView.findViewById(R.id.invoice_qty_val);
-                del_rep_code_val =  itemView.findViewById(R.id.del_rep_code_val);
-                due_date_val =  itemView.findViewById(R.id.due_date_val);
+                del_date_val = itemView.findViewById(R.id.del_date_val);
+                invoice_date_val = itemView.findViewById(R.id.invoice_date_val);
+                invoice_qty_val = itemView.findViewById(R.id.invoice_qty_val);
+                del_rep_code_val = itemView.findViewById(R.id.del_rep_code_val);
+                due_date_val = itemView.findViewById(R.id.due_date_val);
 
 
-                del_date_layout =  itemView.findViewById(R.id.del_date_layout);
-                invoice_date_layout =  itemView.findViewById(R.id.invoice_date_layout);
-                invoice_qty_layout =  itemView.findViewById(R.id.invoice_qty_layout);
-                del_rep_code_layout =  itemView.findViewById(R.id.del_rep_code_layout);
-                tot_val_layout =  itemView.findViewById(R.id.tot_val_layout);
-                tot_vol_layout =  itemView.findViewById(R.id.tot_vol_layout);
-                del_status_layout =  itemView.findViewById(R.id.del_status_layout);
-                start_date_layout =  itemView.findViewById(R.id.date_layout);
-                deliveryStatus_val =  itemView.findViewById(R.id.deliveryStatusValue);
-                paid_amt_layout =  itemView.findViewById(R.id.paid_amt_layout);
-                paidAmtVal =  itemView.findViewById(R.id.paid_amt_val);
-                bal_amt_layout =  itemView.findViewById(R.id.bal_amt_layout);
-                balAmtVal =  itemView.findViewById(R.id.bal_amt_val);
+                del_date_layout = itemView.findViewById(R.id.del_date_layout);
+                invoice_date_layout = itemView.findViewById(R.id.invoice_date_layout);
+                invoice_qty_layout = itemView.findViewById(R.id.invoice_qty_layout);
+                del_rep_code_layout = itemView.findViewById(R.id.del_rep_code_layout);
+                tot_val_layout = itemView.findViewById(R.id.tot_val_layout);
+                tot_vol_layout = itemView.findViewById(R.id.tot_vol_layout);
+                del_status_layout = itemView.findViewById(R.id.del_status_layout);
+                start_date_layout = itemView.findViewById(R.id.date_layout);
+                deliveryStatus_val = itemView.findViewById(R.id.deliveryStatusValue);
+                paid_amt_layout = itemView.findViewById(R.id.paid_amt_layout);
+                paidAmtVal = itemView.findViewById(R.id.paid_amt_val);
+                bal_amt_layout = itemView.findViewById(R.id.bal_amt_layout);
+                balAmtVal = itemView.findViewById(R.id.bal_amt_val);
 
                 driver_name_layout = itemView.findViewById(R.id.driver_name_layout);
                 del_docno_layout = itemView.findViewById(R.id.del_docno_layout);
@@ -306,6 +306,40 @@ public class OrderHistoryFragment extends IvyBaseFragment {
                                         .applyLabels(itemView.findViewById(
                                                 R.id.del_docno_txt)
                                                 .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.del_date_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.del_date_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.del_date_txt)
+                                                .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.invoice_date_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.invoice_date_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.invoice_date_txt)
+                                                .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.invoice_qty_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.invoice_qty_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.invoice_qty_txt)
+                                                .getTag()));
+
+                    if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
+                            R.id.del_rep_code_txt).getTag()) != null)
+                        ((TextView) itemView.findViewById(R.id.del_rep_code_txt))
+                                .setText(bmodel.labelsMasterHelper
+                                        .applyLabels(itemView.findViewById(
+                                                R.id.del_rep_code_txt)
+                                                .getTag()));
+
+
                     if (bmodel.labelsMasterHelper.applyLabels(itemView.findViewById(
                             R.id.delivery_date_txt).getTag()) != null)
                         ((TextView) itemView.findViewById(R.id.delivery_date_txt))

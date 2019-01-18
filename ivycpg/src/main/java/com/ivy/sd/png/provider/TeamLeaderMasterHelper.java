@@ -90,8 +90,8 @@ public class TeamLeaderMasterHelper {
         mTaskAbsenteesListBymerchandiserID = new HashMap<String, ArrayList<TaskAssignBO>>();
         try {
             TaskAssignBO taskAssignBO;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 
             db.createDataBase();
             db.openDataBase();
@@ -170,8 +170,8 @@ public class TeamLeaderMasterHelper {
         mMerchandiserNameByUserID = new HashMap<String, String>();
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 
             db.createDataBase();
             db.openDataBase();
@@ -209,8 +209,8 @@ public class TeamLeaderMasterHelper {
 
 
     public void deleTLtable() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
 
         db.createDataBase();
         db.openDataBase();
@@ -225,8 +225,8 @@ public class TeamLeaderMasterHelper {
     public void downloadUserDetails(){
         mUserList=new ArrayList<>();
         TeamLeadBO teamLeadBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -262,8 +262,8 @@ public class TeamLeaderMasterHelper {
     }
 
     public void saveReAllocation(ArrayList<String> presentList,HashMap<String,ArrayList<TaskAssignBO>> assignedTaskListByUserId){
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();

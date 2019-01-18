@@ -82,7 +82,7 @@ public class DigitalContentHelper {
             channelId = "," + getChannelid(mContext);
         }
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             sb.append("SELECT Distinct DigitalContent.imgid,DigitalContent.GroupId," +
@@ -161,8 +161,8 @@ public class DigitalContentHelper {
         DigitalContentBO product;
         String mMappedImageIds;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sBuffer = new StringBuilder();
             if ("SELLER".equals(value))
@@ -268,7 +268,7 @@ public class DigitalContentHelper {
      * Update digital content availability in Db
      */
     public void setDigitalContentInDB(Context mAppContext) {
-        DBUtil db = new DBUtil(mAppContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mAppContext, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
         db.executeQ("update " + DataMembers.tbl_retailerMaster
@@ -287,8 +287,8 @@ public class DigitalContentHelper {
                 channelid = mBModel.getRetailerMasterBO().getSubchannelid();
 
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;
@@ -338,8 +338,8 @@ public class DigitalContentHelper {
     public void saveDigitalContentDetails(Context context,String digiContentId,String productID,String startTime,String endTime,
                                           boolean isFastForward){
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         try {

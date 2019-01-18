@@ -45,8 +45,8 @@ public class InitiativeHelper {
      */
     public void downloadInitiativeHeader(int subChannelId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -90,8 +90,8 @@ public class InitiativeHelper {
             String initId) {
         InitiativeHeaderBO initHeader = new InitiativeHeaderBO();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -394,8 +394,8 @@ public class InitiativeHelper {
             InitiativeHeaderBO initId, String retailerId, int subChannelId) {
         Vector<InitiativeDetailBO> initiativeDetailBO = new Vector<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -465,8 +465,8 @@ public class InitiativeHelper {
             String initId) {
         Vector<InitiativeDetailBO> initiativeDetailBO = new Vector<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -511,8 +511,8 @@ public class InitiativeHelper {
      */
     public void loadLocalOrdersQty(String retailerID) {
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c;
@@ -607,8 +607,8 @@ public class InitiativeHelper {
      */
     private void storeInitiativePrecentageInDB(String percent, float achieved) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.executeQ("update " + DataMembers.tbl_retailerMaster
@@ -630,8 +630,8 @@ public class InitiativeHelper {
     private void updateInitiativeCoverageReport(String retailerId,
                                                boolean calculateBalance) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.executeQ("delete from InitiativeCoverageReport where retailerid="
@@ -703,8 +703,8 @@ public class InitiativeHelper {
      */
     public void generateInitiativeCoverageReport() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             Cursor c = db
