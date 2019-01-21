@@ -4485,10 +4485,7 @@ public class BusinessModel extends Application {
                                 ();
                         Runtime.getRuntime().exec(cmd).waitFor();
                     } else if (i == 2) {
-                        String currentDBPath =
-                                "data/com.ivy.sd.png.asean.view/databases/" + DataMembers.DB_NAME;
-                        File data = Environment.getDataDirectory();
-                        File currentDB = new File(data, currentDBPath);
+                        File currentDB = new File(this.getDatabasePath(DataMembers.DB_NAME).getPath());
                         InputStream input = new FileInputStream(currentDB);
                         byte dataa[] = new byte[input.available()];
                         input.read(dataa);
