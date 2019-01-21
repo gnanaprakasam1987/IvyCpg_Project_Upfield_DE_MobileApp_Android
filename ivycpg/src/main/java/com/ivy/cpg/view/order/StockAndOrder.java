@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,13 +19,9 @@ import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -77,8 +72,10 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.moq.MOQHighlightActivity;
+import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
 import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsActivity;
@@ -117,19 +114,17 @@ import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.sd.png.view.MustSellReasonDialog;
 import com.ivy.sd.png.view.OrderDiscount;
-import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.sd.png.view.SchemeDialog;
 import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -139,7 +134,7 @@ import java.util.Vector;
 import static com.ivy.cpg.view.order.moq.MOQHighlightActivity.MOQ_RESULT_CODE;
 
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack,RecognitionListener {
+        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack,SpeechResultListener {
 
     private ListView lvwplist;
     private Button mBtn_Search;
@@ -289,9 +284,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
     private StockCheckHelper stockCheckHelper;
 
-    private final int REQ_CODE_SPEECH_INPUT = 1012;
-
-    private SpeechRecognizer speechRecognizer;
     private SpeechToVoiceDialog speechToVoiceDialog;
 
     @Override
@@ -390,17 +382,22 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mBtnGuidedSelling_next.setOnClickListener(this);
         mBtnGuidedSelling_prev.setOnClickListener(this);
 
+        if (bmodel.configurationMasterHelper.IS_VOICE_TO_TEXT)
+            findViewById(R.id.btn_speech).setVisibility(View.GONE);
+
         findViewById(R.id.btn_speech).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                promptSpeechInput(true);
-            }
-        });
 
-        findViewById(R.id.img_speech).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                promptSpeechInput(false);
+                isSpeechOn = true;
+
+                speechToVoiceDialog = new SpeechToVoiceDialog();
+                speechToVoiceDialog.setCancelable(true);
+                speechToVoiceDialog.show(getSupportFragmentManager(), "SPEECH_TO_TEXT");
+
+                if (viewFlipper.getDisplayedChild() == 0) {
+                    viewFlipper.showNext();
+                };
             }
         });
 
@@ -623,7 +620,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
                 public void afterTextChanged(Editable s) {
                     if (s.length() >= 3) {
-                        searchAsync = new SearchAsync();
+                        searchAsync = new SearchAsync(!isSpeechOn);
                         searchAsync.execute();
                     }
                 }
@@ -659,10 +656,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
-        searchAsync = new SearchAsync();
+        searchAsync = new SearchAsync(true);
 
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        speechRecognizer.setRecognitionListener(this);
     }
 
     private void prepareScreen() {
@@ -4918,14 +4913,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 lvwplist.invalidateViews();
             }
         }
-        else if (requestCode == REQ_CODE_SPEECH_INPUT){
-            if (resultCode == RESULT_OK && null != data) {
-
-                ArrayList<String> speechResult = data
-                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                mEdt_searchproductName.setText(speechResult.get(0));
-            }
-        }
         else {
             if (result != null) {
                 if (result.getContents() != null) {
@@ -5019,6 +5006,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private class SearchAsync extends
             AsyncTask<Integer, Integer, Boolean> {
 
+        private boolean isFromEditText;
+
+        public SearchAsync(boolean isFromEditText){
+            this.isFromEditText = isFromEditText;
+        }
+
 
         protected void onPreExecute() {
 
@@ -5030,7 +5023,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         @Override
         protected Boolean doInBackground(Integer... params) {
-            loadSearchedList();
+
+            if (isFromEditText)
+                loadSearchedList();
+            else
+                loadVoiceSearchedList();
 
             return true;
         }
@@ -5188,6 +5185,179 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
             getProductBySequence();
 
+    }
+
+    private void loadVoiceSearchedList() {
+
+        Vector<ProductMasterBO> items = productList;
+        if (items == null) {
+            bmodel.showAlert(
+                    getResources().getString(R.string.no_products_exists),
+                    0);
+            return;
+        }
+        int siz = items.size();
+        mylist = new Vector<>();
+        String mSelectedFilter = bmodel.getProductFilter();
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO ret = items.elementAt(i);
+            // For breaking search..
+            if (searchAsync.isCancelled()) {
+                break;
+            }
+
+            if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
+                continue;
+
+            if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                    !ret.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
+                continue;
+
+            if (loadStockedProduct == -1
+                    || (loadStockedProduct == 1 ? ret.getSIH() > 0 : ret.getWSIH() > 0)) {
+                if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
+                    if (mSelectedFilter.equals(getResources().getString(
+                            R.string.order_dialog_barcode))) {
+
+                        if (ret.getBarCode() != null
+                                && (ret.getBarCode().toLowerCase()
+                                .contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                || ret.getCasebarcode().toLowerCase().
+                                contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                || ret.getOuterbarcode().toLowerCase().
+                                contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND)) {//No filters selected
+                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                    if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
+                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
+                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
+                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                    }
+                                }
+                                mylist.add(ret);
+                            } else if (applyProductAndSpecialFilter(ret)) {
+                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                    if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
+                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
+                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
+                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                    }
+                                }
+                                mylist.add(ret);
+                            }
+                        }
+                    } else if (mSelectedFilter.equals(getResources().getString(
+                            R.string.prod_code))) {
+                        if (((ret.getRField1() != null && ret.getRField1()
+                                .toLowerCase()
+                                .contains(mEdt_searchproductName.getText().toString()
+                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase()))) && ret.getIsSaleable() == 1) {
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                mylist.add(ret);
+                            else if (applyProductAndSpecialFilter(ret))
+                                mylist.add(ret);
+                        }
+                    } else if (mSelectedFilter.equals(getResources().getString(
+                            R.string.product_name))) {
+                        if (ret.getProductShortName() != null && ret.getProductShortName()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()) && ret.getIsSaleable() == 1)
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                mylist.add(ret);
+                            else if (applyProductAndSpecialFilter(ret))
+                                mylist.add(ret);
+                    } else {
+                        if (ret.getBarCode() != null
+                                && (ret.getBarCode().toLowerCase()
+                                .contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                || ret.getCasebarcode().toLowerCase().
+                                contains(mEdt_searchproductName.getText().toString().toLowerCase())
+                                || ret.getOuterbarcode().toLowerCase().
+                                contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND)) {//No filters selected
+                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                    if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
+                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
+                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
+                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                    }
+                                }
+                                mylist.add(ret);
+                            } else if (applyProductAndSpecialFilter(ret)) {
+                                if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
+                                    if (mEdt_searchproductName.getText().toString().equals(ret.getBarCode())) {
+                                        ret.setOrderedPcsQty(ret.getOrderedPcsQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getCasebarcode())) {
+                                        ret.setOrderedCaseQty(ret.getOrderedCaseQty() + 1);
+                                    } else if (mEdt_searchproductName.getText().toString().equals(ret.getOuterbarcode())) {
+                                        ret.setOrderedOuterQty(ret.getOrderedOuterQty() + 1);
+                                    }
+                                }
+                                mylist.add(ret);
+                            }
+                        } else if (((ret.getRField1() != null && ret.getRField1()
+                                .toLowerCase()
+                                .contains(mEdt_searchproductName.getText().toString()
+                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
+                                .toLowerCase()))) && ret.getIsSaleable() == 1) {
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                mylist.add(ret);
+                            else if (applyProductAndSpecialFilter(ret))
+                                mylist.add(ret);
+                        } else if (ret.getProductShortName() != null && ret.getProductShortName()
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()) && ret.getIsSaleable() == 1) {
+                            if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
+                                mylist.add(ret);
+                            else if (applyProductAndSpecialFilter(ret))
+                                mylist.add(ret);
+                        }
+                    }
+                }
+            }
+        }
+        if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
+            getProductBySequence();
+
+    }
+
+    private boolean isVoiceMatchedString(String searctTxt,String listTxt){
+
+        String[] searchStrSplit = searctTxt.split(" ");
+
+        listTxt = listTxt.toLowerCase();
+
+        String[] nameStrSplit = listTxt.split(" ");
+
+        if (listTxt.equals(searctTxt)){
+            return true;
+        }else if (searchStrSplit.length == 1){
+            return listTxt.contains(searctTxt);
+        }else if (searchStrSplit.length > 1){
+
+            int score = 0;
+            for (String srchSplittedStr : searchStrSplit){
+                if (Arrays.asList(nameStrSplit).contains(srchSplittedStr)) {
+                    score = score + 1;
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private boolean applyProductAndSpecialFilter(ProductMasterBO ret) {
@@ -5987,7 +6157,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
         if (arg1 == EditorInfo.IME_ACTION_DONE) {
             if (mEdt_searchproductName.getText().length() >= 3) {
-                searchAsync = new SearchAsync();
+                searchAsync = new SearchAsync(true);
                 searchAsync.execute();
             } else {
                 Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
@@ -7241,120 +7411,27 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         return false;
     }
 
+    private boolean isSpeechOn = false;
+    @Override
+    public void updateSpeechResult(String result) {
 
-    /**
-     * Showing google speech input dialog
-     * */
-    private void promptSpeechInput(boolean isViewFlip) {
-
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        if (imm != null && getCurrentFocus() != null)
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-
-        if (isViewFlip)
-            viewFlipper.showNext();
-
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
-        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                getString(R.string.speech_prompt));
-        try {
-
-            if (SpeechRecognizer.isRecognitionAvailable(this)) {
-                speechRecognizer.startListening(intent);
-
-                speechToVoiceDialog = new SpeechToVoiceDialog();
-                speechToVoiceDialog.setCancelable(true);
-                speechToVoiceDialog.show(getSupportFragmentManager(), "SPEECH_TO_VOICE");
-
-            }
-            else
-                Toast.makeText(getApplicationContext(),
-                        getString(R.string.speech_not_supported),
-                        Toast.LENGTH_SHORT).show();
-
-            //startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-        } catch (Exception a) {
-           Commons.printException(a);
-        }
+        mEdt_searchproductName.setText(result);
+        dismissDialog();
+        isSpeechOn = false;
     }
 
     @Override
-    public void onReadyForSpeech(Bundle params) {
+    public void updateSpeechPartialResult(String result) {
 
     }
 
     @Override
-    public void onBeginningOfSpeech() {
-
-    }
-
-    @Override
-    public void onRmsChanged(float rmsdB) {
-
-    }
-
-    @Override
-    public void onBufferReceived(byte[] buffer) {
-
-    }
-
-    @Override
-    public void onEndOfSpeech() {
-        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
-            speechToVoiceDialog.dismiss();
-    }
-
-    @Override
-    public void onError(int error) {
-        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
-            speechToVoiceDialog.dismiss();
-    }
-
-    @Override
-    public void onResults(Bundle results) {
-        ArrayList<String> speechResult = results
-                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-
-        if (speechResult != null && speechResult.size() > 0)
-            mEdt_searchproductName.setText(speechResult.get(0));
+    public void dismissDialog() {
 
         if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
             speechToVoiceDialog.dismiss();
+
+        isSpeechOn = false;
     }
 
-    @Override
-    public void onPartialResults(Bundle partialResults) {
-        ArrayList<String> speechResult = partialResults
-                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-
-        if (speechResult != null && speechResult.size() > 0)
-            speechResultListener.updateSpeechResult(speechResult.get(0));
-    }
-
-    @Override
-    public void onEvent(int eventType, Bundle params) {
-
-        ArrayList<String> speechResult = params
-                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-
-        if (speechResult != null && speechResult.size() > 0) {
-            speechResultListener.updateSpeechResult(speechResult.get(0));
-
-            Toast.makeText(this, "onEvent speechResult " + speechResult, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private SpeechResultListener speechResultListener;
-
-    public void setFragment(SpeechResultListener speechResultListener){
-        this.speechResultListener = speechResultListener;
-    }
-
-    public interface SpeechResultListener{
-        void updateSpeechResult(String result);
-    }
 }
