@@ -6,6 +6,7 @@ import com.ivy.lib.Logs;
 import com.ivy.lib.base64.Base64;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -381,12 +382,10 @@ public class SDUtil {
 
     public static String getWithoutExponential(String value) {
 
-        if (value == null)
+        if (AppUtils.isEmptyString(value))
             value = "0";
         else if(value.contains("E"))
             value = df.format(new BigDecimal(value));
-        else if (value.isEmpty())
-            value = "0";
 
         return value;
 
