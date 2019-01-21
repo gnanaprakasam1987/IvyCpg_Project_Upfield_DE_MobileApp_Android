@@ -129,6 +129,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
     }
 
 
