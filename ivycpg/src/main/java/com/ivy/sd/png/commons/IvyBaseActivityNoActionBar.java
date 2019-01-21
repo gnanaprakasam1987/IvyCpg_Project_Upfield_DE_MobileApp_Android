@@ -110,6 +110,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         listPermissionsNeededGroupName.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, getResources().getString(R.string.permission_storage));
         listPermissionsNeededGroupName.put(Manifest.permission.CAMERA, getResources().getString(R.string.permission_camera));
         listPermissionsNeededGroupName.put(Manifest.permission.ACCESS_FINE_LOCATION, getResources().getString(R.string.permission_location));
+        listPermissionsNeededGroupName.put(Manifest.permission.RECORD_AUDIO, getResources().getString(R.string.record_audio));
     }
 
     @Override
@@ -131,6 +132,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             if (nfcManager != null)
                 nfcManager.onActivityPause();
         }
+
     }
 
     public void setScreenTitle(String title) {
@@ -197,6 +199,22 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
                 if (bmodel.configurationMasterHelper.checkLocationConfiguration()) {
                     listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+                }
+            }
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                ActivityCompat.requestPermissions(IvyBaseActivityNoActionBar.this,
+                        listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),
+                        3);
+                return false;
+            }
+        }
+        else if (mGroup == 4) {
+            permissionStatus = ContextCompat.checkSelfPermission(IvyBaseActivityNoActionBar.this,
+                    Manifest.permission.RECORD_AUDIO);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                if (bmodel.configurationMasterHelper.checkLocationConfiguration()) {
+                    listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
                 }
             }
 

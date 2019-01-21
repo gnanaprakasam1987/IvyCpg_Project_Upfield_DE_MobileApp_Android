@@ -301,6 +301,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
 
+        if (!bmodel.configurationMasterHelper.IS_VOICE_TO_TEXT)
+            checkAndRequestPermissionAtRunTime(4);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         Bundle extras = getIntent().getExtras();
         OrderedFlag = "MENU_STK_ORD";
@@ -389,15 +392,29 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             @Override
             public void onClick(View v) {
 
-                isSpeechOn = true;
+                int permissionStatus = ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.RECORD_AUDIO);
+                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
 
-                speechToVoiceDialog = new SpeechToVoiceDialog();
-                speechToVoiceDialog.setCancelable(true);
-                speechToVoiceDialog.show(getSupportFragmentManager(), "SPEECH_TO_TEXT");
+                    isSpeechOn = true;
 
-                if (viewFlipper.getDisplayedChild() == 0) {
-                    viewFlipper.showNext();
-                };
+                    speechToVoiceDialog = new SpeechToVoiceDialog();
+                    speechToVoiceDialog.setCancelable(true);
+                    speechToVoiceDialog.show(getSupportFragmentManager(), "SPEECH_TO_TEXT");
+
+                    if (viewFlipper.getDisplayedChild() == 0) {
+                        viewFlipper.showNext();
+                    };
+
+
+                } else {
+                    Toast.makeText(StockAndOrder.this,
+                            getResources().getString(R.string.permission_enable_msg)
+                                    + " " + getResources().getString(R.string.record_audio)
+                            , Toast.LENGTH_LONG).show();
+                }
+
+
             }
         });
 
@@ -5024,9 +5041,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         @Override
         protected Boolean doInBackground(Integer... params) {
 
-            if (isFromEditText)
-                loadSearchedList();
-            else
+//            if (isFromEditText)
+//                loadSearchedList();
+//            else
                 loadVoiceSearchedList();
 
             return true;
@@ -5220,12 +5237,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             R.string.order_dialog_barcode))) {
 
                         if (ret.getBarCode() != null
-                                && (ret.getBarCode().toLowerCase()
-                                .contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                                || ret.getCasebarcode().toLowerCase().
-                                contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                                || ret.getOuterbarcode().toLowerCase().
-                                contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+                                && (isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getBarCode())
+                                || isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getCasebarcode())
+                                || isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getOuterbarcode()))
+                                && ret.getIsSaleable() == 1) {
 
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND)) {//No filters selected
                                 if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
@@ -5253,11 +5268,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     } else if (mSelectedFilter.equals(getResources().getString(
                             R.string.prod_code))) {
-                        if (((ret.getRField1() != null && ret.getRField1()
-                                .toLowerCase()
-                                .contains(mEdt_searchproductName.getText().toString()
-                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
-                                .toLowerCase()))) && ret.getIsSaleable() == 1) {
+                        if (((ret.getRField1() != null && isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getRField1()))
+                                || (ret.getProductCode() != null && isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getProductCode())))
+                                && ret.getIsSaleable() == 1) {
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                                 mylist.add(ret);
                             else if (applyProductAndSpecialFilter(ret))
@@ -5265,23 +5278,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         }
                     } else if (mSelectedFilter.equals(getResources().getString(
                             R.string.product_name))) {
-                        if (ret.getProductShortName() != null && ret.getProductShortName()
-                                .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText().toString()
-                                                .toLowerCase()) && ret.getIsSaleable() == 1)
+                        if (ret.getProductShortName() != null && isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getProductShortName())
+                                && ret.getIsSaleable() == 1)
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                                 mylist.add(ret);
                             else if (applyProductAndSpecialFilter(ret))
                                 mylist.add(ret);
                     } else {
                         if (ret.getBarCode() != null
-                                && (ret.getBarCode().toLowerCase()
-                                .contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                                || ret.getCasebarcode().toLowerCase().
-                                contains(mEdt_searchproductName.getText().toString().toLowerCase())
-                                || ret.getOuterbarcode().toLowerCase().
-                                contains(mEdt_searchproductName.getText().toString().toLowerCase())) && ret.getIsSaleable() == 1) {
+                                && (isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getBarCode())
+                                || isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getCasebarcode())
+                                || isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getOuterbarcode()))
+                                && ret.getIsSaleable() == 1) {
 
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND)) {//No filters selected
                                 if (bmodel.configurationMasterHelper.IS_QTY_INCREASE) {
@@ -5306,20 +5314,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 }
                                 mylist.add(ret);
                             }
-                        } else if (((ret.getRField1() != null && ret.getRField1()
-                                .toLowerCase()
-                                .contains(mEdt_searchproductName.getText().toString()
-                                        .toLowerCase())) || (ret.getProductCode() != null && ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
-                                .toLowerCase()))) && ret.getIsSaleable() == 1) {
+                        } else if (((ret.getRField1() != null && isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getRField1()))
+                                || (ret.getProductCode() != null && isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getProductCode())))
+                                && ret.getIsSaleable() == 1) {
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                                 mylist.add(ret);
                             else if (applyProductAndSpecialFilter(ret))
                                 mylist.add(ret);
-                        } else if (ret.getProductShortName() != null && ret.getProductShortName()
-                                .toLowerCase()
-                                .contains(
-                                        mEdt_searchproductName.getText().toString()
-                                                .toLowerCase()) && ret.getIsSaleable() == 1) {
+                        } else if (ret.getProductShortName() != null && isVoiceMatchedString(mEdt_searchproductName.getText().toString(),ret.getProductShortName())
+                                && ret.getIsSaleable() == 1) {
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
                                 mylist.add(ret);
                             else if (applyProductAndSpecialFilter(ret))
@@ -5336,23 +5339,26 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private boolean isVoiceMatchedString(String searctTxt,String listTxt){
 
+        searctTxt = searctTxt.toLowerCase();
         String[] searchStrSplit = searctTxt.split(" ");
 
         listTxt = listTxt.toLowerCase();
 
         String[] nameStrSplit = listTxt.split(" ");
 
-        if (listTxt.equals(searctTxt)){
+        if (listTxt.trim().equals(searctTxt.trim())){
             return true;
         }else if (searchStrSplit.length == 1){
-            return listTxt.contains(searctTxt);
+            return listTxt.trim().contains(searctTxt.trim());
         }else if (searchStrSplit.length > 1){
 
             int score = 0;
             for (String srchSplittedStr : searchStrSplit){
-                if (Arrays.asList(nameStrSplit).contains(srchSplittedStr)) {
-                    score = score + 1;
-                    return true;
+                if (srchSplittedStr.trim().length() >= 3) {
+                    if (Arrays.asList(nameStrSplit).contains(srchSplittedStr.trim())) {
+                        score = score + 1;
+                        return true;
+                    }
                 }
             }
         }
@@ -7434,4 +7440,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         isSpeechOn = false;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
+            speechToVoiceDialog.dismiss();
+    }
 }
