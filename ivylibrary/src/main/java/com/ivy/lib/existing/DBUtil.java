@@ -32,6 +32,13 @@ public class DBUtil extends SQLiteOpenHelper {
         this.DB_PATH = myContext.getDatabasePath(DB_NAME).getPath();
     }
 
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        db.disableWriteAheadLogging();
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
@@ -168,10 +175,8 @@ public class DBUtil extends SQLiteOpenHelper {
     private void copyDataBase() throws IOException {
         // Open your local db as the input stream
         InputStream myInput = myContext.getAssets().open(DB_NAME);
-        // Path to the just created empty db
-        String outFileName = DB_PATH + DB_NAME;
         // Open the empty db as the output stream
-        OutputStream myOutput = new FileOutputStream(outFileName);
+        OutputStream myOutput = new FileOutputStream(DB_PATH);
         // transfer bytes from the inputfile to the outputfile
         byte[] buffer = new byte[1024];
         int length;
@@ -187,10 +192,8 @@ public class DBUtil extends SQLiteOpenHelper {
     }
 
     public void openDataBase() throws SQLException {
-        // Open the database
-        String myPath = DB_PATH + DB_NAME;
         if (!isEncrypted)
-            db = SQLiteDatabase.openDatabase(myPath, null,
+            db = SQLiteDatabase.openDatabase(DB_PATH, null,
                     SQLiteDatabase.OPEN_READWRITE);
         else {
             net.sqlcipher.database.SQLiteDatabase.loadLibs(myContext);
