@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/audit"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
         </LinearLayout>
 

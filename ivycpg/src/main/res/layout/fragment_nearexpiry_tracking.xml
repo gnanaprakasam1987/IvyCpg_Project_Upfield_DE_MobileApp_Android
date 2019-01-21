@@ -91,18 +91,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:background="?attr/customFooterBackgroundColor"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:layout_centerVertical="true"
                 android:orientation="vertical">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/activity_divider_height"
-                    android:background="@color/divider_view_color" />
 
                 <Button
                     android:id="@+id/btn_save"

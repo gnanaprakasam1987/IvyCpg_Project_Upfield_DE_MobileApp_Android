@@ -57,7 +57,7 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;

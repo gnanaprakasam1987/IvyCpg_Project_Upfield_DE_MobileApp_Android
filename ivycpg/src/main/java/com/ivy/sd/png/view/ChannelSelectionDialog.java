@@ -30,7 +30,7 @@ public class ChannelSelectionDialog extends Dialog {
     Context mcontext;
 
 
-    ChannelSelectionDialog(Context context, ArrayList<ChannelBO> ChannelList, String title) {
+    public ChannelSelectionDialog(Context context, ArrayList<ChannelBO> ChannelList, String title) {
         super(context);
         this.mcontext = context;
         this.mChannelList = ChannelList;

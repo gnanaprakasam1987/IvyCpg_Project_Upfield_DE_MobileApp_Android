@@ -393,7 +393,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (!stockCheckHelper.SHOW_SHELF_OUTER
                     && !stockCheckHelper.SHOW_STOCK_SP
                     && !stockCheckHelper.SHOW_STOCK_SC) {
-                view.findViewById(R.id.shelf_layout).setVisibility(View.GONE);
+                view.findViewById(R.id.shelfCaseTitle).setVisibility(View.GONE);
+                view.findViewById(R.id.shelfPcsTitle).setVisibility(View.GONE);
+                view.findViewById(R.id.shelfOuterTitle).setVisibility(View.GONE);
+               // view.findViewById(R.id.shelf_layout).setVisibility(View.GONE);
 
             }
 
@@ -1824,7 +1827,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     if (view.getTag().toString().equalsIgnoreCase("ALL")) {
                         updateGeneralText("");
                     } else {
-                        updateBrandText(BRAND, -1);
+                        updateGeneralText(view.getTag().toString());
                     }
                     if (businessModel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         selectedTabTag = view.getTag();

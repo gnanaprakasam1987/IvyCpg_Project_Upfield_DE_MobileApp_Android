@@ -270,7 +270,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PlanningActivity"
+            android:name="com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -304,7 +304,7 @@
             android:name="com.ivy.cpg.view.orderfullfillment.PartialFullfillment"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.HomeScreenActivity"
+            android:name="com.ivy.cpg.view.homescreen.HomeScreenActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="sensorPortrait">
