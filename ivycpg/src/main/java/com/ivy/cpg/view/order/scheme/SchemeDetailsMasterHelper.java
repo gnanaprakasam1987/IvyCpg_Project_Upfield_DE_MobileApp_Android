@@ -369,8 +369,6 @@ public class SchemeDetailsMasterHelper {
                 return true;
             }
             c.close();
-            db.closeDB();
-
         } catch (Exception ex) {
 
             Commons.printException(ex);
