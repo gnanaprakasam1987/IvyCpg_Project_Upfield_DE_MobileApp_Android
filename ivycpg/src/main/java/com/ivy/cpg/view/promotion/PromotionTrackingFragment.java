@@ -832,6 +832,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                             holder.reasonSpin.setEnabled(true);
                             holder.etPromoQty.setEnabled(false);
                             holder.etPromoQty.setText("0");
+                            QUANTITY = null;
                         } else {
                             holder.rbExecuted.setChecked(true);
                             holder.mPromotionMasterBO.setIsExecuted(1);
