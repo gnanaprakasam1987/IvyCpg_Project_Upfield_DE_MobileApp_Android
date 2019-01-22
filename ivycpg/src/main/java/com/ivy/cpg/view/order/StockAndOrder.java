@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -73,8 +72,10 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
+import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.moq.MOQHighlightActivity;
+import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
 import com.ivy.cpg.view.order.scheme.QPSSchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsActivity;
@@ -113,13 +114,10 @@ import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.sd.png.view.MustSellReasonDialog;
 import com.ivy.sd.png.view.OrderDiscount;
-import com.ivy.cpg.view.order.productdetails.ProductSchemeDetailsActivity;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.sd.png.view.SchemeDialog;
 import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.utils.FontUtils;
@@ -1901,6 +1899,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 holder.uom_qty.setText(qty + "");
                             else
                                 holder.uom_qty.setText("0");
+
+                            updateValue();
                         } else
                             Toast.makeText(
                                     StockAndOrder.this,

@@ -375,7 +375,10 @@ public class ProductHelper {
                     String stockQty = hashMap1.get(p.getProductID());
                     p.setRetailerWiseP4StockQty(stockQty != null ? stockQty : "0,0,0,0");
 
-                    int oosQty = oosMap.get(p.getProductID());
+                    int oosQty = 0;
+                    if (oosMap.get(p.getProductID()) != null)
+                        oosQty = oosMap.get(p.getProductID());
+
                     p.setOos(oosQty != 0 ? oosQty : -2);
                 }
             }

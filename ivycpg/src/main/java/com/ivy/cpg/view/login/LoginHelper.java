@@ -66,7 +66,7 @@ public class LoginHelper {
     private static final String CODE_FORGET_PWD = "PWD02";
 
     private final String SENDER_ID = "534457766184";
-//    private GoogleCloudMessaging gcm;
+    //    private GoogleCloudMessaging gcm;
     private static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String PROPERTY_IS_REG_ID_NEW = "registration_id_upload";
@@ -199,7 +199,7 @@ public class LoginHelper {
         final SharedPreferences prefs = AppUtils.getSharedPreferences(mContext);
         boolean registrationId = prefs.getBoolean(PROPERTY_IS_REG_ID_NEW, false);
 
-        if (checkPlayServices(mContext.getApplicationContext()) ) {
+        if (checkPlayServices(mContext.getApplicationContext())) {
 
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -274,7 +274,6 @@ public class LoginHelper {
                     });
 
 
-
             //Subscribe Topic Name
             final String topicName = getFCMTopicName(mContext);
             if (topicName != null && !topicName.equals("")) {
@@ -294,8 +293,8 @@ public class LoginHelper {
         }
     }
 
-    private boolean isRealTimeConfigAvail(Context context){
-        boolean isRealTimeConfigAvail =false;
+    private boolean isRealTimeConfigAvail(Context context) {
+        boolean isRealTimeConfigAvail = false;
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -317,8 +316,8 @@ public class LoginHelper {
 
     }
 
-    private boolean isSupervisorMenuAvail(Context context){
-        boolean isSupervisorMenuAvail =false;
+    private boolean isSupervisorMenuAvail(Context context) {
+        boolean isSupervisorMenuAvail = false;
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -341,7 +340,7 @@ public class LoginHelper {
     }
 
     //Validating Topic Name to match the regex
-    private boolean validateTopicName(final String name){
+    private boolean validateTopicName(final String name) {
 
         Pattern pattern = Pattern.compile("[a-zA-Z0-9-_.~%]{1,900}");
 
@@ -352,8 +351,8 @@ public class LoginHelper {
 
 
     //Get Domain Name to make base node in Firebase Database
-    private String getDomainName(Context context){
-        String rootPath ="";
+    private String getDomainName(Context context) {
+        String rootPath = "";
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -372,12 +371,12 @@ public class LoginHelper {
             Commons.printException(e);
         }
 
-        return rootPath==null?"":rootPath;
+        return rootPath == null ? "" : rootPath;
     }
 
 
     //Get Fcm Topic Names to Subscribe
-    private String getFCMTopicName(Context context){
+    private String getFCMTopicName(Context context) {
         StringBuilder topicName = new StringBuilder();
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -385,8 +384,8 @@ public class LoginHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select ListCode from StandardListMaster where ListType='PUSH_TOPICS'");
-            if(c.getCount()>0){
-                while(c.moveToNext()) {
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
 
                     topicName.append(",").append(c.getString(0));
                 }
@@ -400,7 +399,7 @@ public class LoginHelper {
         }
 
 
-        return topicName.length()>0?topicName.substring(1):"";
+        return topicName.length() > 0 ? topicName.substring(1) : "";
     }
 
 
@@ -408,10 +407,10 @@ public class LoginHelper {
      * Stores the FIREBASE_ROOT_PATH and the FIREBASE_EMAIL in the application's
      * {@code SharedPreferences}.
      *
-     * @param context application's context.
+     * @param context    application's context.
      * @param domainName FIREBASE_ROOT_PATH
      */
-    private void storeFireBaseCredentials(Context context, String email,String domainName) {
+    private void storeFireBaseCredentials(Context context, String email, String domainName) {
 
         final SharedPreferences prefs = AppUtils.getSharedPreferences(context);
         int appVersion = getAppVersion(context);
@@ -423,7 +422,7 @@ public class LoginHelper {
     }
 
     //Set User Fcm Registration Id in Firestore Database Node
-    private void updateTokenInFirebase(Context context,String token,String rootPath){
+    private void updateTokenInFirebase(Context context, String token, String rootPath) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -438,21 +437,21 @@ public class LoginHelper {
         db.collection(rootPath)
                 .document(USERS)
                 .collection(USER_INFO)
-                .document(positionId+"")
+                .document(positionId + "")
                 .set(userInfo);
     }
 
 
     //Get User Position Id to save Users Fcm Reg id (Notification Purpose)
-    private int getUserPositionId(Context context){
-        int posId = 0 ;
+    private int getUserPositionId(Context context) {
+        int posId = 0;
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
             db.createDataBase();
             db.openDataBase();
-            Cursor c = db.selectSQL("select UserPositionId from usermaster where userid =" + AppUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getUserid()+""));
+            Cursor c = db.selectSQL("select UserPositionId from usermaster where userid =" + AppUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getUserid() + ""));
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
                     posId = c.getInt(0);
@@ -606,11 +605,8 @@ public class LoginHelper {
     public boolean reStoreDB(Context mContext) {
         try {
             File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
             if (sd.canRead()) {
-                String currentDBPath = "data/com.ivy.sd.png.asean.view/databases/"
-                        + DataMembers.DB_NAME;
-                File currentDB = new File(data, currentDBPath);
+                File currentDB = new File(mContext.getDatabasePath(DataMembers.DB_NAME).getPath());
                 File backupDB = new File(
                         mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                                 + "/pandg/" + DataMembers.DB_NAME);

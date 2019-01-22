@@ -2364,6 +2364,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     finish();
                 } else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
                     Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     i.putExtra("isPlanningSub", true);
                     startActivity(i);
                     finish();
