@@ -80,6 +80,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.security.KeyFactory;
 import java.security.KeyManagementException;
 import java.security.MessageDigest;
@@ -465,9 +466,7 @@ SynchronizationHelper {
      */
     public void backUpDB() {
         if (!ApplicationConfigs.withActivation) {
-            String currentDBPath = "data/com.ivy.sd.png.asean.view/databases/"
-                    + DataMembers.DB_NAME;
-            File data = Environment.getDataDirectory();
+
 
             if (isExternalStorageAvailable()) {
                 File folder;
@@ -485,17 +484,14 @@ SynchronizationHelper {
                     SDPath.mkdir();
                 }
                 try {
-                    File currentDB = new File(data, currentDBPath);
-                    InputStream input = new FileInputStream(currentDB);
-                    byte dataa[] = new byte[input.available()];
-                    input.read(dataa);
+                    File currentDB = new File(context.getDatabasePath(DataMembers.DB_NAME).getPath());
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(path + "/"
+                            + DataMembers.DB_NAME).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
 
-                    OutputStream out = new FileOutputStream(path + "/"
-                            + DataMembers.DB_NAME);
-                    out.write(dataa);
-                    out.flush();
-                    out.close();
-                    input.close();
                 } catch (Exception e) {
                     Commons.printException("exception," + e + "");
                 }

@@ -335,7 +335,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     promotionHelper
                             .onSaveImageName(mSelectedStandardListBO.getListID(),
                                     promotionHelper.mSelectedPromoID,
-                                    mImageName, mImagePath);
+                                    mImageName, mImagePath,promotionHelper.mSelectedProductId);
                 }
             } else {
                 Commons.print(businessModel.mSelectedActivityName
@@ -832,6 +832,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                             holder.reasonSpin.setEnabled(true);
                             holder.etPromoQty.setEnabled(false);
                             holder.etPromoQty.setText("0");
+                            QUANTITY = null;
                         } else {
                             holder.rbExecuted.setChecked(true);
                             holder.mPromotionMasterBO.setIsExecuted(1);
@@ -939,15 +940,17 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                                     + businessModel.getRetailerMasterBO()
                                     .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
                                     + holder.mPromotionMasterBO.getPromoId()
+                                    +"_"+holder.mPromotionMasterBO.getProductId()
                                     + "_" + Commons.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
-                            promotionHelper.mSelectedPromoID = holder.mPromotionMasterBO
-                                    .getPromoId();
+                            promotionHelper.mSelectedPromoID = holder.mPromotionMasterBO.getPromoId();
+                            promotionHelper.mSelectedProductId = holder.mPromotionMasterBO.getProductId();
                             String fNameStarts = "PT_"
                                     + businessModel.getRetailerMasterBO()
                                     .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
                                     + holder.mPromotionMasterBO.getPromoId()
+                                    +"_"+holder.mPromotionMasterBO.getProductId()
                                     + "_" + Commons.now(Commons.DATE);
 
                             boolean nFilesThere = businessModel

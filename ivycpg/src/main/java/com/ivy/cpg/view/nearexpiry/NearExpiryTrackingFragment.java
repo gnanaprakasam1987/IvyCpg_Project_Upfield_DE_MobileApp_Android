@@ -407,7 +407,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         .findViewById(R.id.barcode);
 
                 holder.mSKU = row.findViewById(R.id.sku);
-
+                holder.mSKU.setMaxLines(mBModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.rlCalendar = row
                         .findViewById(R.id.rl_calendar);
 
@@ -779,16 +779,29 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     }
                 }
             } else {
-                for (ProductMasterBO ret : items) {
+                if (productId == 0) {
+                    for (ProductMasterBO ret : items) {
+
+                        if (ret.getBarCode().equals(strBarCodeSearch)
+                                || ret.getCasebarcode().equals(strBarCodeSearch)
+                                || ret.getOuterbarcode().equals(strBarCodeSearch)
+                                || "ALL".equals(strBarCodeSearch)
+                                && ret.getIsSaleable() == 1) {
+                            myList.add(ret);
+                        }
+                    }
+                } else {
+                    for (ProductMasterBO ret : items) {
                     if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                         continue;
-                    if (ret.getBarCode().equals(strBarCodeSearch)
-                            || ret.getCasebarcode().equals(strBarCodeSearch)
-                            || ret.getOuterbarcode().equals(strBarCodeSearch)
-                            || "ALL".equals(strBarCodeSearch)
-                            && (ret.getParentHierarchy().contains("/" + productId + "/"))
-                            && ret.getIsSaleable() == 1) {
-                        myList.add(ret);
+                        if (ret.getBarCode().equals(strBarCodeSearch)
+                                || ret.getCasebarcode().equals(strBarCodeSearch)
+                                || ret.getOuterbarcode().equals(strBarCodeSearch)
+                                || "ALL".equals(strBarCodeSearch)
+                                && (ret.getParentHierarchy().contains("/" + productId + "/"))
+                                && ret.getIsSaleable() == 1) {
+                            myList.add(ret);
+                        }
                     }
                 }
             }

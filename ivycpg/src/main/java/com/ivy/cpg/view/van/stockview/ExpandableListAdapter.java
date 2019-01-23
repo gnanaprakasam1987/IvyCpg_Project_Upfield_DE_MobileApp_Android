@@ -93,6 +93,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             holder = new GroupViewHolder();
 
             holder.psname = (TextView) row.findViewById(R.id.orderPRODNAME);
+            holder.psname.setMaxLines(bModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
             holder.sihCase = (TextView) row.findViewById(R.id.sih_case);
             holder.sihOuter = (TextView) row.findViewById(R.id.sih_outer);
             holder.sih = (TextView) row.findViewById(R.id.sih);

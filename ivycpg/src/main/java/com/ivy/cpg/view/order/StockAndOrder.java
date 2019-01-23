@@ -1942,6 +1942,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 holder.uom_qty.setText(qty + "");
                             else
                                 holder.uom_qty.setText("0");
+
+                            updateValue();
                         } else
                             Toast.makeText(
                                     StockAndOrder.this,
