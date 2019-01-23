@@ -2589,6 +2589,8 @@ SynchronizationHelper {
         mErrorMessageByErrorCode.put("E27", context.getResources().getString(R.string.error_e27));
         mErrorMessageByErrorCode.put("E31", context.getResources().getString(R.string.error_e31));
         mErrorMessageByErrorCode.put("E32", context.getResources().getString(R.string.error_e32));
+        //sfdc
+        mErrorMessageByErrorCode.put("E100", context.getResources().getString(R.string.error_e100));
     }
 
     public HashMap<String, String> getErrormessageByErrorCode() {
