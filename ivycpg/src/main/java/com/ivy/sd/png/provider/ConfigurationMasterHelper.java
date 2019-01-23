@@ -1545,7 +1545,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SKIP_SCHEME_APPLY;
 
     private static final String CODE_VOICE_TO_TEXT = "VOICETXT";
-    public boolean IS_VOICE_TO_TEXT;
+    public int IS_VOICE_TO_TEXT = -1;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2695,7 +2695,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_SKIP_SCHEME_APPLY = hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) : false;
 
-        this.IS_VOICE_TO_TEXT = hashMapHHTModuleConfig.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleConfig.get(CODE_VOICE_TO_TEXT) : false;
+        this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : 0;
     }
 
     private boolean isInOutModule() {

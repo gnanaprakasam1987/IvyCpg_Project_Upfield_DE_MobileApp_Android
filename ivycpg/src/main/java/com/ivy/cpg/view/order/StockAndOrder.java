@@ -301,7 +301,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
 
-        if (!bmodel.configurationMasterHelper.IS_VOICE_TO_TEXT)
+        if (bmodel.configurationMasterHelper.IS_VOICE_TO_TEXT > -1 )
             checkAndRequestPermissionAtRunTime(4);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -385,7 +385,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         mBtnGuidedSelling_next.setOnClickListener(this);
         mBtnGuidedSelling_prev.setOnClickListener(this);
 
-        if (bmodel.configurationMasterHelper.IS_VOICE_TO_TEXT)
+        if (bmodel.configurationMasterHelper.IS_VOICE_TO_TEXT == -1)
             findViewById(R.id.btn_speech).setVisibility(View.GONE);
 
         findViewById(R.id.btn_speech).setOnClickListener(new OnClickListener() {
@@ -640,6 +640,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         searchAsync = new SearchAsync(!isSpeechOn);
                         searchAsync.execute();
                     }
+
+
+                    isSpeechOn = false;
                 }
 
                 @Override
@@ -5041,9 +5044,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         @Override
         protected Boolean doInBackground(Integer... params) {
 
-//            if (isFromEditText)
-//                loadSearchedList();
-//            else
+            if (isFromEditText && bmodel.configurationMasterHelper.IS_VOICE_TO_TEXT <=0)
+                loadSearchedList();
+            else
                 loadVoiceSearchedList();
 
             return true;
@@ -5339,25 +5342,35 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private boolean isVoiceMatchedString(String searctTxt,String listTxt){
 
-        searctTxt = searctTxt.toLowerCase();
+        searctTxt = searctTxt.toLowerCase().trim();
         String[] searchStrSplit = searctTxt.split(" ");
 
-        listTxt = listTxt.toLowerCase();
+        listTxt = listTxt.toLowerCase().trim();
 
         String[] nameStrSplit = listTxt.split(" ");
 
-        if (listTxt.trim().equals(searctTxt.trim())){
+        if (!listTxt.isEmpty() && listTxt.equals(searctTxt)){
             return true;
-        }else if (searchStrSplit.length == 1){
-            return listTxt.trim().contains(searctTxt.trim());
-        }else if (searchStrSplit.length > 1){
+        }else if (searchStrSplit.length == 1 && nameStrSplit.length == 1){
+            if ( (!searchStrSplit[0].isEmpty() && !nameStrSplit[0].isEmpty())
+                    && (nameStrSplit[0].contains(searchStrSplit[0]) || searchStrSplit[0].contains(nameStrSplit[0]))){
+                return true;
+            }
+        }else if (searchStrSplit.length > 1 || nameStrSplit.length > 1){
 
             int score = 0;
             for (String srchSplittedStr : searchStrSplit){
-                if (srchSplittedStr.trim().length() >= 3) {
-                    if (Arrays.asList(nameStrSplit).contains(srchSplittedStr.trim())) {
-                        score = score + 1;
-                        return true;
+                srchSplittedStr = srchSplittedStr.trim();
+                if (srchSplittedStr.length() >= 3) {
+                    for (String nameStr : nameStrSplit) {
+                        nameStr = nameStr.trim();
+                        if ((!nameStr.isEmpty())
+                                && (nameStr.contains(srchSplittedStr)
+                                || srchSplittedStr.contains(nameStr))
+                                ) {
+                            score = score + 1;
+                            return true;
+                        }
                     }
                 }
             }
@@ -7423,7 +7436,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         mEdt_searchproductName.setText(result);
         dismissDialog();
-        isSpeechOn = false;
     }
 
     @Override
@@ -7436,13 +7448,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
             speechToVoiceDialog.dismiss();
-
-        isSpeechOn = false;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+        isSpeechOn = false;
 
         if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
             speechToVoiceDialog.dismiss();
