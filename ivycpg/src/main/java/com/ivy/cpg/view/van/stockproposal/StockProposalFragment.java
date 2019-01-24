@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.van.stockproposal;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -9,9 +10,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -39,19 +40,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.SpecialFilterFragment;
-import com.ivy.utils.FontUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
-import static com.ivy.sd.png.asean.view.R.id.sihTitle;
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * Created by hanifa.m on 5/5/2017.
@@ -135,14 +134,14 @@ public class StockProposalFragment extends IvyBaseFragment implements
     private int calculatedCaseQty, calculatedPieceQty, calculatedOuterQty;
     private double calculatedTotalvalue = 0;
     private LoadManagementBO stock;
-    private String sihTitel, hvp3mTitlel, distInvTitle;
+    private String sihTitel = "", hvp3mTitlel = "", distInvTitle = "";
 
     SearchAsync searchAsync;
     Bundle bundle = null;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_stock_proposal, container, false);
 
@@ -156,29 +155,23 @@ public class StockProposalFragment extends IvyBaseFragment implements
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.END);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
 
         viewFlipper = (ViewFlipper) view.findViewById(R.id.view_flipper);
 
-        mEdt_searchproductName = (EditText) view.findViewById(R.id.edt_searchproductName);
-        Button mBtn_Search = (Button) view.findViewById(R.id.btn_search);
-        Button mBtnFilterPopup = (Button) view.findViewById(R.id.btn_filter_popup);
-        Button mBtn_clear = (Button) view.findViewById(R.id.btn_clear);
-        Button saveBtn = (Button) view.findViewById(R.id.btn_next);
+        mEdt_searchproductName = view.findViewById(R.id.edt_searchproductName);
+        Button mBtn_Search = view.findViewById(R.id.btn_search);
+        Button mBtnFilterPopup = view.findViewById(R.id.btn_filter_popup);
+        Button mBtn_clear = view.findViewById(R.id.btn_clear);
+        Button saveBtn = view.findViewById(R.id.btn_next);
         saveBtn.setText(getResources().getString(R.string.save));
-        ((TextView) view.findViewById(R.id.productname)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.itemcasetitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.outeritemcasetitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.itempiecetitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unitpricetitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+
         mBtn_Search.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
         mBtn_clear.setOnEditorActionListener(this);
         saveBtn.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
-
-        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
         getOverflowMenu();
@@ -224,22 +217,10 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
-        totalValueText = (TextView) view.findViewById(R.id.totalValue);
-        lpcText = (TextView) view.findViewById(R.id.lcp);
+        totalValueText = view.findViewById(R.id.totalValue);
+        lpcText = view.findViewById(R.id.lcp);
 
-        lpcText.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
-        totalValueText.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
-        ((TextView) view.findViewById(R.id.tv_unload_sih)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
-        ((TextView) view.findViewById(R.id.tv_unload_total_case)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
-        ((TextView) view.findViewById(R.id.tv_unload_total_outer)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
-        ((TextView) view.findViewById(R.id.tv_unload_total_piece)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.THIN));
-        ((TextView) view.findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unload_total_sihTxt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unload_total_caseTxt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unload_total_outerTxt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.unload_total_pieceTxt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        productName = (TextView) view.findViewById(R.id.productName);
+        productName = view.findViewById(R.id.productName);
         productName.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 int inType = productName.getInputType();
@@ -250,70 +231,10 @@ public class StockProposalFragment extends IvyBaseFragment implements
             }
         });
 
-        lvwplist = (ListView) view.findViewById(R.id.list);
+        lvwplist = view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         // On/Off order case and pcs
-        if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-            if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                view.findViewById(R.id.sihCaseTitle).setVisibility(View.GONE);
-            } else {
-                try {
-                    if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                            R.id.sihCaseTitle).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.sihCaseTitle))
-                                .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(view.findViewById(
-                                                R.id.sihCaseTitle).getTag()));
-                } catch (Exception e) {
-                    Log.i("e", e.getMessage());
-                }
-            }
-
-            if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                view.findViewById(R.id.sihOuterTitle).setVisibility(View.GONE);
-            } else {
-                try {
-                    if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                            R.id.sihOuterTitle).getTag()) != null)
-                        ((TextView) view.findViewById(R.id.sihOuterTitle))
-                                .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(view.findViewById(
-                                                R.id.sihOuterTitle).getTag()));
-                } catch (Exception e) {
-                    Log.i("e", e.getMessage());
-                }
-            }
-
-            if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                view.findViewById(sihTitle).setVisibility(View.GONE);
-            } else {
-                try {
-                    if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                            sihTitle).getTag()) != null)
-                        ((TextView) view.findViewById(sihTitle))
-                                .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(view.findViewById(sihTitle)
-                                                .getTag()));
-                } catch (Exception e) {
-                    Log.i("e", e.getMessage());
-                }
-            }
-        } else {
-            view.findViewById(R.id.sihCaseTitle).setVisibility(View.GONE);
-            view.findViewById(R.id.sihOuterTitle).setVisibility(View.GONE);
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                        sihTitle).getTag()) != null)
-                    ((TextView) view.findViewById(sihTitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(view.findViewById(sihTitle)
-                                            .getTag()));
-            } catch (Exception e) {
-                Log.i("e", e.getMessage());
-            }
-        }
-
         if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
             view.findViewById(R.id.outeritemcasetitle).setVisibility(View.GONE);
         } else {
@@ -356,33 +277,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 Log.i("e", e.getMessage());
             }
         }
-        if (!bmodel.configurationMasterHelper.SHOW_STOCK_SO)
-            view.findViewById(R.id.hvp3mtitle).setVisibility(View.GONE);
-        else
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                        R.id.hvp3mtitle).getTag()) != null)
-                    ((TextView) view.findViewById(R.id.hvp3mtitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(view.findViewById(R.id.hvp3mtitle)
-                                            .getTag()));
-            } catch (Exception e) {
-                Log.i("e", e.getMessage());
-            }
-        if (!bmodel.configurationMasterHelper.STOCK_DIST_INV)
-            view.findViewById(R.id.distinvTitle).setVisibility(View.GONE);
-        else
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                        R.id.distinvTitle).getTag()) != null)
-                    ((TextView) view.findViewById(R.id.distinvTitle))
-                            .setText(bmodel.labelsMasterHelper
-                                    .applyLabels(view.findViewById(R.id.distinvTitle)
-                                            .getTag()));
-            } catch (Exception e) {
-                Log.i("e", e.getMessage());
-            }
-
 
         if (!bmodel.configurationMasterHelper.SHOW_UNIT_PRICE)
             view.findViewById(R.id.unitpricetitle).setVisibility(View.GONE);
@@ -457,7 +351,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                     public boolean onEditorAction(TextView v, int actionId,
                                                   KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(),
                                     InputMethodManager.RESULT_UNCHANGED_SHOWN);
@@ -473,7 +367,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                     public boolean onEditorAction(TextView v, int actionId,
                                                   KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(
                                     mEdt_searchproductName.getWindowToken(),
                                     InputMethodManager.RESULT_UNCHANGED_SHOWN);
@@ -541,7 +435,8 @@ public class StockProposalFragment extends IvyBaseFragment implements
             return items.size();
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             stockProposalBO = items.get(position);
             View row = convertView;
@@ -551,52 +446,21 @@ public class StockProposalFragment extends IvyBaseFragment implements
                         false);
                 holder = new ViewHolder();
 
-                holder.pname = (TextView) row.findViewById(R.id.closePRODNAME);
-                holder.newProposalQty = (EditText) row
+                holder.pname = row.findViewById(R.id.closePRODNAME);
+                holder.newProposalQty = row
                         .findViewById(R.id.productqtyCases);
-                holder.newproposalpcsQty = (EditText) row
+                holder.newproposalpcsQty = row
                         .findViewById(R.id.productqtyPieces);
-                holder.proposalQty = (TextView) row
+                holder.proposalQty = row
                         .findViewById(R.id.proposalQty);
-                holder.outerQty = (EditText) row
+                holder.outerQty = row
                         .findViewById(R.id.outerproductqtyCases);
 
-                holder.sih = (TextView) row
-                        .findViewById(R.id.stock_and_order_listview_sih);
-                holder.sihCase = (TextView) row
-                        .findViewById(R.id.stock_and_order_listview_sih_case);
-                holder.sihOuter = (TextView) row
-                        .findViewById(R.id.stock_and_order_listview_sih_outer);
-                holder.unitprice = (TextView) row.findViewById(R.id.unitprice);
+                holder.unitprice = row.findViewById(R.id.unitprice);
 
-                holder.distinv = (TextView) row
-                        .findViewById(R.id.stock_and_order_listview_distinv);
 
                 holder.pname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
-                holder.pname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.newProposalQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.newproposalpcsQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.proposalQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.outerQty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.sih.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.sihCase.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.sihOuter.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.unitprice.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.distinv.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-
-
-                if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-                    if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                        holder.sihCase.setVisibility(View.GONE);
-                    if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                        holder.sihOuter.setVisibility(View.GONE);
-                    if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                        holder.sih.setVisibility(View.GONE);
-                } else {
-                    holder.sihCase.setVisibility(View.GONE);
-                    holder.sihOuter.setVisibility(View.GONE);
-                }
 
                 // On/Off order case and pce
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
@@ -606,12 +470,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
                     holder.outerQty.setVisibility(View.GONE);
 
-
-                if (!bmodel.configurationMasterHelper.SHOW_STOCK_SO)
-                    holder.proposalQty.setVisibility(View.GONE);
-
-                if (!bmodel.configurationMasterHelper.STOCK_DIST_INV)
-                    holder.distinv.setVisibility(View.GONE);
 
                 if (!bmodel.configurationMasterHelper.SHOW_UNIT_PRICE)
                     holder.unitprice.setVisibility(View.GONE);
@@ -655,9 +513,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         + holder.spbo.getStkpropcsqty()
                                         + (holder.spbo.getStkproouterqty() * holder.spbo
                                         .getOuterSize());
-                                holder.unitprice.setText(bmodel.formatValue(sum
-                                        * holder.spbo.getBaseprice())
-                                        + "");
                                 if ((bmodel.configurationMasterHelper.STOCK_MAX_VALID || bmodel.configurationMasterHelper.SHOW_VALIDATION_DIST_INV)) {
 
                                     if ((bmodel.configurationMasterHelper.STOCK_MAX_VALID && sum > holder.spbo
@@ -688,16 +543,25 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                     .substring(0,
                                                             qty.length() - 1)
                                                     : "0");
+
                                         } catch (Exception e) {
                                             holder.spbo.setStkproouterqty(0);
                                             holder.outerQty.setText("0");
                                         }
-                                        updateValue();
+
                                         holder.outerQty
                                                 .addTextChangedListener(this);
                                     } else {
                                         holder.spbo.setStkproouterqty(SDUtil
                                                 .convertToInt(qty));
+                                        int totalQty = (holder.spbo.getStkprocaseqty() * holder.spbo
+                                                .getCaseSize())
+                                                + holder.spbo.getStkpropcsqty()
+                                                + (holder.spbo.getStkproouterqty() * holder.spbo
+                                                .getOuterSize());
+                                        holder.unitprice.setText(bmodel.formatValue(totalQty
+                                                * holder.spbo.getBaseprice())
+                                                + "");
                                     }
                                 } else {
                                     holder.spbo.setStkproouterqty(SDUtil
@@ -733,23 +597,29 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         } else {
                                             isCreditLimitExceedToast = true;
                                         }
-                                        updateValue();
                                         holder.outerQty
                                                 .addTextChangedListener(this);
 
                                     } else {
                                         holder.spbo.setStkproouterqty(SDUtil
                                                 .convertToInt(qty));
-                                        updateValue();
-
                                     }
                                 } else {
                                     holder.spbo.setStkproouterqty(SDUtil
                                             .convertToInt(qty));
-                                    updateValue();
                                 }
 
                             }
+
+                            int totalQty = (holder.spbo.getStkprocaseqty() * holder.spbo
+                                    .getCaseSize())
+                                    + holder.spbo.getStkpropcsqty()
+                                    + (holder.spbo.getStkproouterqty() * holder.spbo
+                                    .getOuterSize());
+                            holder.unitprice.setText(bmodel.formatValue(totalQty
+                                    * holder.spbo.getBaseprice())
+                                    + "");
+                            updateValue();
                         } catch (Exception e) {
                             Log.i("e", e.getMessage());
                         }
@@ -758,6 +628,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
                 holder.outerQty.setOnTouchListener(new View.OnTouchListener() {
 
+                    @SuppressLint("ClickableViewAccessibility")
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         productName.setText(holder.Pname);
@@ -813,9 +684,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         + holder.spbo.getStkpropcsqty()
                                         + (holder.spbo.getStkproouterqty() * holder.spbo
                                         .getOuterSize());
-                                holder.unitprice.setText(bmodel.formatValue(sum
-                                        * holder.spbo.getBaseprice())
-                                        + "");
+
                                 if ((bmodel.configurationMasterHelper.STOCK_MAX_VALID || bmodel.configurationMasterHelper.SHOW_VALIDATION_DIST_INV)) {
 
                                     if ((bmodel.configurationMasterHelper.STOCK_MAX_VALID && sum > holder.spbo
@@ -847,16 +716,26 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                     .substring(0,
                                                             qty.length() - 1)
                                                     : "0");
+
                                         } catch (Exception e) {
                                             holder.spbo.setStkprocaseqty(0);
                                             holder.newProposalQty.setText("0");
+                                            holder.unitprice.setText("0");
                                         }
-                                        updateValue();
+
                                         holder.newProposalQty
                                                 .addTextChangedListener(this);
                                     } else {
                                         holder.spbo.setStkprocaseqty(SDUtil
                                                 .convertToInt(qty));
+                                        int totalQty = (holder.spbo.getStkprocaseqty() * holder.spbo
+                                                .getCaseSize())
+                                                + holder.spbo.getStkpropcsqty()
+                                                + (holder.spbo.getStkproouterqty() * holder.spbo
+                                                .getOuterSize());
+                                        holder.unitprice.setText(bmodel.formatValue(totalQty
+                                                * holder.spbo.getBaseprice())
+                                                + "");
                                     }
                                 } else {
                                     holder.spbo.setStkprocaseqty(SDUtil
@@ -891,22 +770,30 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                         } else {
                                             isCreditLimitExceedToast = true;
                                         }
-                                        updateValue();
+                                        //  updateValue();
                                         holder.newProposalQty
                                                 .addTextChangedListener(this);
 
                                     } else {
                                         holder.spbo.setStkprocaseqty(SDUtil
                                                 .convertToInt(qty));
-                                        updateValue();
                                     }
                                 } else {
                                     holder.spbo.setStkprocaseqty(SDUtil
                                             .convertToInt(qty));
-                                    updateValue();
                                 }
 
                             }
+
+                            int totalQty = (holder.spbo.getStkprocaseqty() * holder.spbo
+                                    .getCaseSize())
+                                    + holder.spbo.getStkpropcsqty()
+                                    + (holder.spbo.getStkproouterqty() * holder.spbo
+                                    .getOuterSize());
+                            holder.unitprice.setText(bmodel.formatValue(totalQty
+                                    * holder.spbo.getBaseprice())
+                                    + "");
+                            updateValue();
                         } catch (Exception e) {
                             Log.i("e", e.getMessage());
                         }
@@ -967,11 +854,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                 + (holder.spbo
                                                 .getStkproouterqty() * holder.spbo
                                                 .getOuterSize());
-                                        holder.unitprice.setText(bmodel
-                                                .formatValue(sum
-                                                        * holder.spbo
-                                                        .getBaseprice())
-                                                + "");
                                         if ((bmodel.configurationMasterHelper.STOCK_MAX_VALID || bmodel.configurationMasterHelper.SHOW_VALIDATION_DIST_INV)) {
 
                                             if ((bmodel.configurationMasterHelper.STOCK_MAX_VALID && sum > holder.spbo
@@ -1005,6 +887,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                             .length() > 1 ? qty.substring(
                                                             0, qty.length() - 1)
                                                             : "0");
+
                                                     Commons.print("PCS QTY"
                                                             + holder.spbo
                                                             .getStkpropcsqty());
@@ -1013,16 +896,18 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                             .setStkpropcsqty(0);
                                                     holder.newproposalpcsQty
                                                             .setText("0");
+                                                    holder.unitprice.setText("0");
                                                     Commons.print("PCS QTY e"
                                                             + holder.spbo
                                                             .getStkpropcsqty());
                                                 }
-                                                updateValue();
+
                                                 holder.newproposalpcsQty
                                                         .addTextChangedListener(this);
                                             } else {
                                                 holder.spbo.setStkpropcsqty(SDUtil
                                                         .convertToInt(qty));
+
                                             }
                                         } else {
                                             holder.spbo.setStkpropcsqty(SDUtil
@@ -1055,6 +940,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                             .setStkpropcsqty(0);
                                                     holder.newproposalpcsQty
                                                             .setText("0");
+                                                    holder.unitprice.setText("0");
                                                     Commons.print("PCS QTY E"
                                                             + holder.spbo
                                                             .getStkpropcsqty());
@@ -1064,22 +950,30 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                                 } else {
                                                     isCreditLimitExceedToast = true;
                                                 }
-                                                updateValue();
+                                                //updateValue();
                                                 holder.newproposalpcsQty
                                                         .addTextChangedListener(this);
 
                                             } else {
                                                 holder.spbo.setStkpropcsqty(SDUtil
                                                         .convertToInt(qty));
-                                                updateValue();
                                             }
                                         } else {
                                             holder.spbo.setStkpropcsqty(SDUtil
                                                     .convertToInt(qty));
-                                            updateValue();
                                         }
 
                                     }
+
+                                    int totalQty = (holder.spbo.getStkprocaseqty() * holder.spbo
+                                            .getCaseSize())
+                                            + holder.spbo.getStkpropcsqty()
+                                            + (holder.spbo.getStkproouterqty() * holder.spbo
+                                            .getOuterSize());
+                                    holder.unitprice.setText(bmodel.formatValue(totalQty
+                                            * holder.spbo.getBaseprice())
+                                            + "");
+                                    updateValue();
                                 } catch (Exception e) {
                                     Log.i("e", e.getMessage());
                                 }
@@ -1167,164 +1061,13 @@ public class StockProposalFragment extends IvyBaseFragment implements
             holder.Pname = holder.spbo.getProductname();
             holder.pname.setText(holder.spbo.getProductshortname());
 
+            getBottomValues(holder);
+            holder.proposalQty.setText(holder.bottomStrTxt);
 
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(holder.sih.getTag()) != null)
-                    sihTitel = bmodel.labelsMasterHelper
-                            .applyLabels(holder.sih.getTag()).toString();
-                else
-                    sihTitel = getResources().getString(R.string.sih);
-            } catch (Exception e) {
-                Log.i("e", e.getMessage());
-                sihTitel = getResources().getString(R.string.sih);
-            }
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(holder.proposalQty.getTag()) != null)
-                    hvp3mTitlel = bmodel.labelsMasterHelper
-                            .applyLabels(holder.proposalQty.getTag()).toString();
-
-                else
-                    hvp3mTitlel = getResources().getString(R.string.hvp3m);
-
-            } catch (Exception e) {
-                Log.i("e", e.getMessage());
-                hvp3mTitlel = getResources().getString(R.string.hvp3m);
-            }
-            try {
-                if (bmodel.labelsMasterHelper.applyLabels(holder.distinv.getTag()) != null)
-                    distInvTitle = bmodel.labelsMasterHelper
-                            .applyLabels(holder.distinv.getTag()).toString();
-                else
-                    distInvTitle = getResources().getString(R.string.dist_inv);
-
-            } catch (Exception e) {
-                Log.i("e", e.getMessage());
-                distInvTitle = getResources().getString(R.string.dist_inv);
-            }
-            holder.proposalQty.setText(hvp3mTitlel + ": " + holder.spbo.getSuggestqty() + "");
-            if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT)
-
-            {
-                if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (holder.spbo.getSih() == 0) {
-                        holder.sihCase.setText(sihTitle + ": 0");
-                        holder.sihOuter.setText("/0");
-                        holder.sih.setText("/0");
-                    } else if (holder.spbo.getCaseSize() == 0) {
-                        holder.sihCase.setText(sihTitle + ":0");
-                        if (holder.spbo.getOuterSize() == 0) {
-                            holder.sihOuter.setText("/0");
-                            holder.sih.setText("/" + holder.spbo.getSih() + "");
-                        } else {
-                            holder.sihOuter.setText("/" + holder.spbo.getSih()
-                                    / holder.spbo.getOuterSize() + "");
-                            holder.sih.setText("/" + holder.spbo.getSih()
-                                    % holder.spbo.getOuterSize() + "");
-                        }
-                    } else {
-                        holder.sihCase.setText(sihTitel + ": " + holder.spbo.getSih()
-                                / holder.spbo.getCaseSize() + "");
-                        if (holder.spbo.getOuterSize() > 0
-                                && (holder.spbo.getSih() % holder.spbo
-                                .getCaseSize()) >= holder.spbo
-                                .getOuterSize()) {
-                            holder.sihOuter
-                                    .setText("/" + (holder.spbo.getSih() % holder.spbo
-                                            .getCaseSize())
-                                            / holder.spbo.getOuterSize() + "");
-                            holder.sih
-                                    .setText("/" + (holder.spbo.getSih() % holder.spbo
-                                            .getCaseSize())
-                                            % holder.spbo.getOuterSize() + "");
-                        } else {
-                            holder.sihOuter.setText("/0");
-                            holder.sih.setText("/" + holder.spbo.getSih()
-                                    % holder.spbo.getCaseSize() + "");
-                        }
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    if (holder.spbo.getSih() == 0) {
-                        holder.sihCase.setText(sihTitel + ": 0");
-                        holder.sihOuter.setText("/0");
-                    } else if (holder.spbo.getCaseSize() == 0) {
-                        holder.sihCase.setText(sihTitel + ": 0");
-                        if (holder.spbo.getOuterSize() == 0)
-                            holder.sihOuter.setText("/0");
-                        else
-                            holder.sihOuter.setText("/ " + holder.spbo.getSih()
-                                    / holder.spbo.getOuterSize() + "");
-                    } else {
-                        holder.sihCase.setText(sihTitel + ": " + holder.spbo.getSih()
-                                / holder.spbo.getCaseSize() + "");
-                        if (holder.spbo.getOuterSize() > 0
-                                && (holder.spbo.getSih() % holder.spbo
-                                .getCaseSize()) >= holder.spbo
-                                .getOuterSize()) {
-                            holder.sihOuter
-                                    .setText("/" + (holder.spbo.getSih() % holder.spbo
-                                            .getCaseSize())
-                                            / holder.spbo.getOuterSize() + "");
-                        } else {
-                            holder.sihOuter.setText("/0");
-                        }
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (holder.spbo.getSih() == 0) {
-                        holder.sih.setText("/0");
-                        holder.sihOuter.setText("/0");
-                    } else if (holder.spbo.getOuterSize() == 0) {
-                        holder.sih.setText("/" + holder.spbo.getSih() + "");
-                        holder.sihOuter.setText("/0");
-                    } else {
-                        holder.sihOuter.setText("/" + holder.spbo.getSih()
-                                / holder.spbo.getOuterSize() + "");
-                        holder.sih.setText("/" + holder.spbo.getSih()
-                                % holder.spbo.getOuterSize() + "");
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    if (holder.spbo.getSih() == 0) {
-                        holder.sih.setText("/0");
-                        holder.sihCase.setText(sihTitel + ": 0");
-                    } else if (holder.spbo.getCaseSize() == 0) {
-                        holder.sih.setText("/" + holder.spbo.getSih() + "");
-                        holder.sihCase.setText(sihTitel + ": 0");
-                    } else {
-                        holder.sihCase.setText(sihTitel + ": " + holder.spbo.getSih()
-                                / holder.spbo.getCaseSize() + "");
-                        holder.sih.setText("/" + holder.spbo.getSih()
-                                % holder.spbo.getCaseSize() + "");
-                    }
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                    if (holder.spbo.getSih() == 0)
-                        holder.sihCase.setText(sihTitel + ": 0");
-                    else if (holder.spbo.getCaseSize() == 0)
-                        holder.sihCase.setText(sihTitel + ": 0");
-                    else
-                        holder.sihCase.setText(sihTitel + ": " + holder.spbo.getSih()
-                                / holder.spbo.getCaseSize() + "");
-                } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                    if (holder.spbo.getSih() == 0)
-                        holder.sihOuter.setText("/0");
-                    else if (holder.spbo.getOuterSize() == 0)
-                        holder.sihOuter.setText("/0");
-                    else
-                        holder.sihOuter.setText("/" + holder.spbo.getSih()
-                                / holder.spbo.getOuterSize() + "");
-                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                    holder.sih.setText("/" + holder.spbo.getSih() + "");
-                }
-            } else
-                holder.sih.setText("/" + holder.spbo.getSih() + "");
             holder.newProposalQty.setText(holder.spbo.getStkprocaseqty() + "");
             holder.newproposalpcsQty
                     .setText(holder.spbo.getStkpropcsqty() + "");
             holder.outerQty.setText(holder.spbo.getStkproouterqty() + "");
-            holder.distinv.setText(distInvTitle + ": " + holder.spbo.getWsih() + "");
             double unitprice = ((holder.spbo.getStkprocaseqty() * holder.spbo
                     .getCaseSize()) + holder.spbo.getStkpropcsqty() + (holder.spbo
                     .getStkproouterqty() * holder.spbo.getOuterSize()))
@@ -1360,23 +1103,195 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 holder.outerQty.setEnabled(true);
             }
 
-            if (position % 2 == 0) {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_even_item_bg));
-            } else {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_odd_item_bg));
-            }
             return (row);
         }
     }
 
     class ViewHolder {
         private LoadManagementBO spbo;
-        private TextView pname, proposalQty, sih, sihCase, sihOuter, unitprice,
-                distinv;
+        private TextView pname, proposalQty, unitprice;
         private EditText newProposalQty, newproposalpcsQty, outerQty;
         private String Pname;
+        private String bottomStrTxt = "";
     }
 
+
+    private void getBottomValues(ViewHolder holder) {
+        holder.bottomStrTxt = "";
+
+        if (bmodel.configurationMasterHelper.SHOW_STOCK_SO) {
+
+            if (hvp3mTitlel.isEmpty())//to avoid multiple call's
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels("so") != null)
+                        hvp3mTitlel = bmodel.labelsMasterHelper
+                                .applyLabels("so") + ": ";
+
+                    else
+                        hvp3mTitlel = getResources().getString(R.string.hvp3m) + ": ";
+
+                } catch (Exception e) {
+                    Log.i("e", e.getMessage());
+                    hvp3mTitlel = getResources().getString(R.string.hvp3m) + ": ";
+                }
+
+            holder.bottomStrTxt += (hvp3mTitlel + holder.spbo.getSuggestqty() + "   ");
+        }
+
+        if (bmodel.configurationMasterHelper.STOCK_DIST_INV) {
+            if (distInvTitle.isEmpty())//to avoid multiple call's
+                try {
+                    if (bmodel.labelsMasterHelper.applyLabels("dist_inv") != null)
+                        distInvTitle = bmodel.labelsMasterHelper
+                                .applyLabels("dist_inv") + ": ";
+                    else
+                        distInvTitle = getResources().getString(R.string.dist_inv) + ": ";
+
+                } catch (Exception e) {
+                    Log.i("e", e.getMessage());
+                    distInvTitle = getResources().getString(R.string.dist_inv) + ": ";
+                }
+
+            holder.bottomStrTxt += (distInvTitle + holder.spbo.getWsih() + "   ");
+        }
+
+        getSIHValues(holder);
+
+    }
+
+    private void getSIHValues(ViewHolder holder) {
+
+        if (sihTitel.isEmpty())
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels("sih_piece") != null)
+                    sihTitel = bmodel.labelsMasterHelper
+                            .applyLabels("sih_piece") + ": ";
+                else
+                    sihTitel = getResources().getString(R.string.sih) + ": ";
+            } catch (Exception e) {
+                Log.i("e", e.getMessage());
+                sihTitel = getResources().getString(R.string.sih) + ": ";
+            }
+
+        String sihCaseStr = "";
+        String sihOuterStr = "";
+        String sihPieceStr = "";
+
+        //Update SIH Value
+        if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
+            if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                    && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
+                    && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (holder.spbo.getSih() == 0) {
+                    sihCaseStr = "0";
+                    sihOuterStr = "/0";
+                    sihPieceStr = "/0";
+                } else if (holder.spbo.getCaseSize() == 0) {
+                    sihCaseStr = "0";
+                    if (holder.spbo.getOuterSize() == 0) {
+                        sihOuterStr = "/0";
+                        sihPieceStr = ("/" + holder.spbo.getSih());
+                    } else {
+                        sihOuterStr = ("/" + holder.spbo.getSih()
+                                / holder.spbo.getOuterSize() + "");
+                        sihPieceStr = ("/" + holder.spbo.getSih()
+                                % holder.spbo.getOuterSize() + "");
+                    }
+                } else {
+                    sihCaseStr = (holder.spbo.getSih()
+                            / holder.spbo.getCaseSize() + "");
+                    if (holder.spbo.getOuterSize() > 0
+                            && (holder.spbo.getSih() % holder.spbo
+                            .getCaseSize()) >= holder.spbo
+                            .getOuterSize()) {
+                        sihOuterStr = ("/" + (holder.spbo.getSih() % holder.spbo
+                                .getCaseSize())
+                                / holder.spbo.getOuterSize() + "");
+                        sihPieceStr = ("/" + (holder.spbo.getSih() % holder.spbo
+                                .getCaseSize())
+                                % holder.spbo.getOuterSize() + "");
+                    } else {
+                        sihOuterStr = "/0";
+                        sihPieceStr = ("/" + holder.spbo.getSih()
+                                % holder.spbo.getCaseSize() + "");
+                    }
+                }
+            } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                    && bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (holder.spbo.getSih() == 0) {
+                    sihCaseStr = "0";
+                    sihOuterStr = "/0";
+                } else if (holder.spbo.getCaseSize() == 0) {
+                    sihCaseStr = "0";
+                    if (holder.spbo.getOuterSize() == 0)
+                        sihOuterStr = "/0";
+                    else
+                        sihOuterStr = ("/" + holder.spbo.getSih()
+                                / holder.spbo.getOuterSize() + "");
+
+                } else {
+                    sihCaseStr = (holder.spbo.getSih()
+                            / holder.spbo.getCaseSize() + "");
+                    if (holder.spbo.getOuterSize() > 0
+                            && (holder.spbo.getSih() % holder.spbo
+                            .getCaseSize()) >= holder.spbo
+                            .getOuterSize()) {
+                        sihOuterStr = ("/" + (holder.spbo.getSih() % holder.spbo
+                                .getCaseSize())
+                                / holder.spbo.getOuterSize());
+                    } else {
+                        sihOuterStr = "/0";
+                    }
+                }
+            } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE
+                    && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (holder.spbo.getSih() == 0) {
+                    sihPieceStr = "/0";
+                    sihOuterStr = "/0";
+                } else if (holder.spbo.getOuterSize() == 0) {
+                    sihPieceStr = ("/" + holder.spbo.getSih());
+                    sihOuterStr = "/0";
+                } else {
+                    sihOuterStr = ("/" + holder.spbo.getSih() / holder.spbo.getOuterSize());
+                    sihPieceStr = ("/" + holder.spbo.getSih() % holder.spbo.getOuterSize());
+                }
+            } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                    && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                if (holder.spbo.getSih() == 0) {
+                    sihPieceStr = "/0";
+                    sihCaseStr = "0";
+                } else if (holder.spbo.getCaseSize() == 0) {
+                    sihPieceStr = "/" + holder.spbo.getSih();
+                    sihCaseStr = "0";
+                } else {
+                    sihCaseStr = (holder.spbo.getSih()
+                            / holder.spbo.getCaseSize() + "");
+                    sihPieceStr = ("/" + holder.spbo.getSih()
+                            % holder.spbo.getCaseSize());
+                }
+            } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                if (holder.spbo.getSih() == 0 || holder.spbo.getCaseSize() == 0)
+                    sihCaseStr = "0";
+                else
+                    sihCaseStr = (holder.spbo.getSih()
+                            / holder.spbo.getCaseSize() + "");
+            } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                if (holder.spbo.getSih() == 0 || holder.spbo.getOuterSize() == 0)
+                    sihOuterStr = "/0";
+                else
+                    sihOuterStr = (holder.spbo.getSih()
+                            / holder.spbo.getOuterSize() + "");
+            } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                sihPieceStr = ("/" + holder.spbo.getSih());
+            }
+        } else
+            sihPieceStr = ("/" + holder.spbo.getSih());
+
+        holder.bottomStrTxt += (sihTitel + sihCaseStr + sihOuterStr + sihPieceStr);
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
     class SaveStockProposal extends AsyncTask<Integer, Integer, Boolean> {
 
         private AlertDialog.Builder builder;
@@ -1511,10 +1426,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
     }
 
 
-    private Vector<ProductMasterBO> getProducts() {
-        return bmodel.productHelper.getProductMaster();
-    }
-
+    @SuppressLint("StaticFieldLeak")
     private class SearchAsync extends
             AsyncTask<Integer, Integer, Boolean> {
 
@@ -1623,7 +1535,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
             viewFlipper.setOutAnimation(getActivity(), R.anim.out_to_right);
             viewFlipper.showNext();
             mEdt_searchproductName.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
             imm.showSoftInput(mEdt_searchproductName,
                     InputMethodManager.SHOW_FORCED);
         } else if (vw == R.id.btn_filter_popup) {
@@ -1671,6 +1583,11 @@ public class StockProposalFragment extends IvyBaseFragment implements
             mSelectedFilterMap.put("Brand", "All");
             mSelectedFilterMap.put("Category", "All");
             getActivity().supportInvalidateOptionsMenu();
+            try {
+                inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
             updateGeneralText(GENERAL);
         } else if (vw == R.id.btn_next) {
@@ -2014,7 +1931,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
                     QUANTITY.setText(s);
                 }
             } else {
-                Button ed = (Button) view.findViewById(vw.getId());
+                Button ed = view.findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }
@@ -2459,6 +2376,8 @@ public class StockProposalFragment extends IvyBaseFragment implements
                                 && ret.isAllocation() == 1) {
                             stockPropMylist.add(ret);
                         } else if (generaltxt.equals(mPromo) && ret.isPromo()) {
+                            stockPropMylist.add(ret);
+                        } else if (generaltxt.equalsIgnoreCase(msih) && ret.getSih() > 0) {
                             stockPropMylist.add(ret);
                         }
                     }
