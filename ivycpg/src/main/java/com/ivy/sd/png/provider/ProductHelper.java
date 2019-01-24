@@ -11,8 +11,11 @@ import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
 import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.cpg.view.loyality.LoyaltyBO;
+import com.ivy.cpg.view.loyality.LoyaltyBenifitsBO;
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.tax.TaxInterface;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.lib.existing.DBUtil;
@@ -28,8 +31,6 @@ import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
-import com.ivy.cpg.view.loyality.LoyaltyBO;
-import com.ivy.cpg.view.loyality.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -38,7 +39,6 @@ import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.view.order.tax.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
@@ -3200,6 +3200,7 @@ public class ProductHelper {
             String moduleCode, String batchmenucode) {
         mLoadManagementBOByProductId = new SparseArray<>();
         String sql = "", sql1 = "", sql2 = "", sql3 = "", sql4 = "";
+        String nSIHColumn = "";
         productlist = new Vector<>();
         LoadManagementBO bo;
         Vector<LoadManagementBO> list;
@@ -3218,6 +3219,7 @@ public class ProductHelper {
 
             // Unload non salable qty from NonSalableSIHMaster
             sql4 = " left join ( select pid, SUM(qty) as nsihqty from NonSalableSIHMaster group by pid) as NSIH ON NSIH.pid = PM.PID";
+            nSIHColumn = ",NSIH.nsihqty";
         } else {
             sql = "";
             sql1 = "";
@@ -3241,7 +3243,7 @@ public class ProductHelper {
                 + sql1
                 + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
                 + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou,PM.pCode as ProCode,"
-                + "  PM.ParentHierarchy as ParentHierarchy,NSIH.nsihqty "
+                + "  PM.ParentHierarchy as ParentHierarchy" + nSIHColumn
                 + " FROM ProductMaster PM"
                 + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                 + sql2
@@ -3284,13 +3286,15 @@ public class ProductHelper {
                 bo.setMsqQty(c.getInt(24));
                 bo.setIssalable(c.getInt(25));
                 bo.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
-                bo.setNonSalableQty(c.getInt(c.getColumnIndex("nsihqty")));
+
                 if (batchmenucode.equals("MENU_STOCK_PROPOSAL")
                         || batchmenucode.equals("MENU_STK_PRO")) {
                     bo.setStkprototalQty(c.getInt(c.getColumnIndex("qty")));
                     bo.setStkpropcsqty(c.getInt(c.getColumnIndex("pcsQty")));
                     bo.setStkprocaseqty(c.getInt(c.getColumnIndex("caseQty")));
                     bo.setStkproouterqty(c.getInt(c.getColumnIndex("outerQty")));
+                } else {
+                    bo.setNonSalableQty(c.getInt(c.getColumnIndex("nsihqty")));
                 }
                 if (batchmenucode.equals("MENU_MANUAL_VAN_LOAD")
                         || batchmenucode.equals("MENU_VAN_UNLOAD")
