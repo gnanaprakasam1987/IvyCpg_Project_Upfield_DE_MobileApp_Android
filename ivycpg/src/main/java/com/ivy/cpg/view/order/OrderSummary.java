@@ -1479,7 +1479,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
-                                        createOrderPrintFile(true);
+                                        createOrderPrintFile(true,orderHelper.getOrderId());
 
                                         Intent i = new Intent(OrderSummary.this,
                                                 HomeScreenTwo.class);
@@ -1652,6 +1652,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
+
+                                        if (bModel.configurationMasterHelper.SHOW_PRINT_ORDER)
+                                            createOrderPrintFile(true,orderHelper.getOrderId());
 
                                         bModel.productHelper.clearOrderTableChecked();
                                         Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
@@ -3132,8 +3135,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     };
 
-    private void createOrderPrintFile(boolean isPrepareData) {
+    private void createOrderPrintFile(boolean isPrepareData,String orderId) {
 
+        orderId= orderId.replace("\'", "");
         if (isPrepareData) {
             if ("1".equalsIgnoreCase(bModel.retailerMasterBO.getRField4()))
                 bModel.productHelper.updateDistributorDetails();
@@ -3147,7 +3151,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         }
         bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
-                StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH + "/");
+                StandardListMasterConstants.PRINT_FILE_ORDER + orderId, "/" + DataMembers.IVYDIST_PATH + "/");
 
     }
 
@@ -3208,7 +3212,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             } else {
 
-                createOrderPrintFile(false);
+                createOrderPrintFile(false,orderHelper.getOrderId());
 
                 i = new Intent(OrderSummary.this,
                         CommonPrintPreviewActivity.class);
@@ -3272,6 +3276,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             final List<ProductMasterBO> orderListWithReplace = salesReturnHelper.updateReplaceQtyWithOutTakingOrder(mOrderedProductList);
             Vector<ProductMasterBO> orderList = new Vector<>(orderListWithReplace);
+
+            if (bModel.configurationMasterHelper.SHOW_PRINT_ORDER) {
+                bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null, null);
+                createOrderPrintFile(false,orderHelper.getOrderId());
+            }
+
             bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName, null, null);
 
 
