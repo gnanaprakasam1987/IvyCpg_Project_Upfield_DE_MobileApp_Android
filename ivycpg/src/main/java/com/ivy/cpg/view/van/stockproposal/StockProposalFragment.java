@@ -1402,7 +1402,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
     private class SearchAsync extends
             AsyncTask<Integer, Integer, Boolean> {
 
-        private WeakReference<StockProposalFragment> weakReference;
+        private WeakReference<StockProposalFragment> weakReference;//To avoid memory leaks
 
         public SearchAsync(StockProposalFragment context) {
             this.weakReference = new WeakReference<>(context);
