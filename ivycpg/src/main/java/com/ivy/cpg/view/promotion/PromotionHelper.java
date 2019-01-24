@@ -23,6 +23,7 @@ public class PromotionHelper {
     private final BusinessModel businessModel;
     private static PromotionHelper instance = null;
     int mSelectedPromoID = 0;
+    int mSelectedProductId=0;
     private ArrayList<PromotionBO> mPromotionList;
     private ArrayList<StandardListBO> mRatingList;
     boolean SHOW_PROMO_TYPE;
@@ -481,7 +482,7 @@ public class PromotionHelper {
      * @param mPromoID promotion id
      * @param imgName  image name
      */
-    void onSaveImageName(String locationId, int mPromoID, String imgName, String imagePath) {
+    void onSaveImageName(String locationId, int mPromoID, String imgName, String imagePath,int productId) {
         try {
             for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
                 if (locationId.equals(standardListBO.getListID())) {
@@ -490,7 +491,7 @@ public class PromotionHelper {
                     if (promotionList != null) {
                         for (PromotionBO promotionBO : promotionList) {
 
-                            if (promotionBO.getPromoId() == mPromoID) {
+                            if (promotionBO.getPromoId() == mPromoID && promotionBO.getProductId() ==productId) {
                                 promotionBO.setImageName(imgName);
                                 promotionBO.setImagePath(imagePath);
 

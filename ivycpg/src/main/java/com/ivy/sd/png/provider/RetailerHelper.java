@@ -400,8 +400,8 @@ public class RetailerHelper {
             String sb = "select distinct RMV.Retailerid,RM.RetailerName,RV.PlannedVisitCount,RBM.beatid from RetailerMissedVisit RMV" +
                     " inner join RetailerMaster RM on RM.RetailerId=RMV.RetailerId " +
                     " inner join RetailerBeatMapping RBM on RBM.RetailerID = RM.RetailerID" +
-                    " LEFT JOIN RetailerVisit RV ON RV.RetailerID = RMV.RetailerID" +
-                    " Group by RMV.MissedDate";
+                    " LEFT JOIN RetailerVisit RV ON RV.RetailerID = RMV.RetailerID";
+                    //" Group by RMV.MissedDate";
             ;
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {

@@ -562,7 +562,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
     public boolean floating_Survey = false;
-    public boolean floating_np_reason_photo = true;
+    public boolean floating_np_reason_photo = false;
     public boolean IS_NEW_TASK;
     public boolean IS_SUGGESTED_ORDER; // used order screen to hid SO colom
     public boolean IS_SUGGESTED_ORDER_LOGIC;//used order screen to calculate so column
@@ -1967,7 +1967,7 @@ public class ConfigurationMasterHelper {
      * boolean true - npReasonwith photo is required.
      */
     public void downloadFloatingNPReasonWithPhoto(String moduleCode) {
-        floating_np_reason_photo = true;
+        floating_np_reason_photo = false;
         try {
             String sql = "select Regex from " + DataMembers.tbl_HhtMenuMaster
                     + " where hhtCode=" + bmodel.QT(moduleCode);
@@ -1978,7 +1978,7 @@ public class ConfigurationMasterHelper {
             if (c != null && c.getCount() != 0) {
                 while (c.moveToNext()) {
                     if (c.getInt(0) == 1) {
-                        floating_np_reason_photo = false;
+                        floating_np_reason_photo = true;
                     }
 
                 }
