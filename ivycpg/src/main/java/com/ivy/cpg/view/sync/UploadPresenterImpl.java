@@ -143,7 +143,11 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             // And image count is > 0 then
             uploadImages();
         } else {
-            view.showAlertNoUnSubmittedOrder();
+            if (isDayCloseChecked) { // To give space for Image upload we are moving this part here...
+                doDayCloseUpdates();
+                upload();
+            } else
+                view.showAlertNoUnSubmittedOrder();
         }
     }
 
