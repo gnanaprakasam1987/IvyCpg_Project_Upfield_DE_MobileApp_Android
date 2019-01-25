@@ -1,100 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/header_list"
-    android:layout_width="fill_parent"
-    android:layout_height="@dimen/retake_img_wd_ht"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
-
-    <LinearLayout
-        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingStart="@dimen/list_padding_left_n_right"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/list_padding_left_n_right">
-
-        <android.support.v7.widget.AppCompatRadioButton
-            android:id="@+id/stock_apply_listview_cb"
-            android:layout_width="@dimen/order_stock_list_item_width_small"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="start|center" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/margin_minus20dp"
-            android:gravity="start|center"
-            android:orientation="vertical"
-            android:layout_marginLeft="@dimen/margin_minus20dp">
-
-            <TextView
-                android:id="@+id/vanLoad_no_list"
-                style="@style/TextViewListItemPrimary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:gravity="start|center"
-                android:text="@string/zero"
-                android:layout_weight="1"
-                android:maxLines="1" />
-
-            <TextView
-                android:id="@+id/vanLoad_date"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:gravity="start|center"
-                android:text=" " />
-
-        </LinearLayout>
-    </LinearLayout>
+    android:minHeight="@dimen/list_item_height_double_line"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingTop="@dimen/target_top_margin"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingBottom="@dimen/target_top_margin">
 
 
-    <LinearLayout
-        android:id="@+id/inv_view_layout"
-        android:layout_width="@dimen/list_item_width_medium"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/stock_apply_listview_cb"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:gravity="start|center" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="7"
+        android:gravity="start|center"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/total_lines_txt"
+            android:id="@+id/vanLoad_no_list"
             style="@style/TextViewListItemPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:textColor="@color/list_item_secondary_text_color"
-            android:gravity="center"
-            android:text="@string/zero"
-            android:visibility="visible" />
+            android:layout_gravity="start|center"
+            android:gravity="start|center"
+            android:maxLines="1"
+            android:text="@string/zero" />
 
+        <TextView
+            android:id="@+id/vanLoad_date"
+            style="@style/TextViewListItemSecondaryHighlight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center"
+            android:gravity="start|center"
+            android:text="@string/date_label" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="@dimen/list_item_width_medium"
-        android:layout_height="wrap_content"
+
+    <TextView
+        android:id="@+id/total_lines_txt"
+        style="@style/TextViewListItemValues"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:gravity="end|center"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:text="@string/zero"
+        android:visibility="visible" />
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        >
+        android:gravity="end|center"
+        android:orientation="horizontal">
+
         <ImageView
             android:id="@+id/inv_view_btn"
             android:layout_width="@dimen/profile_history_20dp"
             android:layout_height="@dimen/profile_history_25dp"
             android:layout_gravity="end|center"
             android:layout_marginEnd="@dimen/profile_history_10dp"
-            android:src="@drawable/activity_icon_next"
-            android:tint="@color/light_gray"
+            android:layout_marginRight="@dimen/profile_history_10dp"
             android:gravity="end|center"
-            android:layout_marginRight="@dimen/profile_history_10dp" />
+            android:src="@drawable/activity_icon_next"
+            android:tint="@color/light_gray" />
     </LinearLayout>
 
 </LinearLayout>

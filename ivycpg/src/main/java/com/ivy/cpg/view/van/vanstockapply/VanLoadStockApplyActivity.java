@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatRadioButton;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +25,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.FontUtils;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -52,21 +52,12 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView toolbarTxt = (TextView) findViewById(R.id.tv_toolbar_title);
-        TextView labelTxt1 = (TextView) findViewById(R.id.tv_van_loadNo);
-        TextView labelTxt2 = (TextView) findViewById(R.id.total_linesTitle);
-        Button applybtn = (Button) findViewById(R.id.van_btn_accept);
-        Button rejectbtn = (Button) findViewById(R.id.van_btn_reject);
-        RecyclerView stockApplyListView = (RecyclerView) findViewById(R.id.list);
-        LinearLayout bottomLayout = (LinearLayout) findViewById(R.id.bottom_layout);
-
-        toolbarTxt.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
-        labelTxt1.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        labelTxt2.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        applybtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
-        rejectbtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTxt = findViewById(R.id.tv_toolbar_title);
+        Button applybtn = findViewById(R.id.van_btn_accept);
+        Button rejectbtn = findViewById(R.id.van_btn_reject);
+        RecyclerView stockApplyListView = findViewById(R.id.list);
+        LinearLayout bottomLayout = findViewById(R.id.bottom_layout);
 
         setSupportActionBar(toolbar);
 
@@ -80,7 +71,12 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
 
         screenTitle = getIntent().getStringExtra("screentitle");
         stockApplyListView.setHasFixedSize(true);
-        stockApplyListView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        stockApplyListView.setLayoutManager(mLayoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(stockApplyListView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        stockApplyListView.addItemDecoration(dividerItemDecoration);
 
         SIHApplyById = bmodel.configurationMasterHelper.getSIHApplyById();
         applybtn.setOnClickListener(this);
@@ -187,23 +183,18 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             this.items = items;
         }
 
+        @NonNull
         @Override
-        public StockApplyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public StockApplyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_van_load_stock_listitem, parent, false);
 
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(StockApplyAdapter.ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull StockApplyAdapter.ViewHolder holder, final int position) {
 
             final VanLoadStockApplyBO projObj = items.get(position);
-
-            if (position % 2 == 0)
-                holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-            else
-                holder.listBgLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-
 
             int proTotLine = bmodel.stockreportmasterhelper.getNoProductsCount(projObj.getUid());
             holder.vanLoadNoTxt.setText(projObj.getLoadNO());
@@ -274,15 +265,11 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                listBgLayout = (LinearLayout) itemView.findViewById(R.id.header_list);
+                listBgLayout = itemView.findViewById(R.id.header_list);
                 radioButtonList = itemView.findViewById(R.id.stock_apply_listview_cb);
-                vanLoadNoTxt = (TextView) itemView.findViewById(R.id.vanLoad_no_list);
-                vanLoadDateTxt = (TextView) itemView.findViewById(R.id.vanLoad_date);
-                totalLineTxt = (TextView) itemView.findViewById(R.id.total_lines_txt);
-
-                vanLoadNoTxt.setTypeface(FontUtils.getFontRoboto(VanLoadStockApplyActivity.this, FontUtils.FontType.MEDIUM));
-                vanLoadDateTxt.setTypeface(FontUtils.getFontRoboto(VanLoadStockApplyActivity.this, FontUtils.FontType.LIGHT));
-                totalLineTxt.setTypeface(FontUtils.getFontRoboto(VanLoadStockApplyActivity.this, FontUtils.FontType.LIGHT));
+                vanLoadNoTxt = itemView.findViewById(R.id.vanLoad_no_list);
+                vanLoadDateTxt = itemView.findViewById(R.id.vanLoad_date);
+                totalLineTxt = itemView.findViewById(R.id.total_lines_txt);
 
             }
         }
