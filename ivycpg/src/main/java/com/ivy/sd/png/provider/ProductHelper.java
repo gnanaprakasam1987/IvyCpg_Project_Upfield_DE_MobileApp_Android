@@ -3296,6 +3296,7 @@ public class ProductHelper {
                 } else {
                     bo.setNonSalableQty(c.getInt(c.getColumnIndex("nsihqty")));
                 }
+
                 if (batchmenucode.equals("MENU_MANUAL_VAN_LOAD")
                         || batchmenucode.equals("MENU_VAN_UNLOAD")
                         || batchmenucode.equals("MENU_CUR_STK_BATCH")
