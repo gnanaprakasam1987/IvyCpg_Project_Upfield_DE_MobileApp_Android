@@ -90,7 +90,7 @@ public class SalesReturnDeliveryFragment extends IvyBaseFragment implements Recy
         this.salesReturnDeliveryDataModelsList = salesReturnDeliveryDataModels;
 
         SalesReturnDeliveryAdapter salesReturnDeliveryAdapter =
-                new SalesReturnDeliveryAdapter(getActivity().getApplicationContext(), SalesReturnDeliveryFragment.this,
+                new SalesReturnDeliveryAdapter(SalesReturnDeliveryFragment.this,
                         salesReturnDeliveryDataModels);
         recyclerView.setAdapter(salesReturnDeliveryAdapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
