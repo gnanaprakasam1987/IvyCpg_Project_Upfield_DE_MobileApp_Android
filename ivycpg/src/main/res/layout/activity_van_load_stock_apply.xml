@@ -3,178 +3,118 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
-    android:background="@color/bottom_bg">
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/tolllayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar" />
-    </RelativeLayout>
-
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/parent_cardview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/close_call_btn_width"
-        android:layout_marginStart="@dimen/profile_history_10dp"
-        android:layout_marginEnd="@dimen/profile_history_10dp"
-        android:layout_below="@+id/tolllayout"
-        android:layout_marginTop="@dimen/profile_history_20dp"
-        android:orientation="vertical"
-        app:cardCornerRadius="@dimen/dimen_2dp"
-        app:cardElevation="@dimen/dimen_4dp">
-
-        <RelativeLayout
-            android:id="@+id/prod"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/ll_list_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/ll_keypad"
-                android:layout_alignParentTop="true"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/ListHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/list_header_height"
-                    android:background="@color/list_title_bg_color"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/list_padding_left_n_right"
-                    android:paddingEnd="@dimen/list_padding_left_n_right"
-                    >
-
-                    <LinearLayout
-                        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:gravity="start|center"
-                        android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_van_loadNo"
-                        style="@style/TextViewListTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="start|center"
-                        android:text="@string/loading_no"
-                        android:textStyle="bold" />
-                    </LinearLayout>
-
-
-                        <TextView
-                            android:id="@+id/total_linesTitle"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="@dimen/list_item_width_medium"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:layout_weight="1"
-                            android:tag="sih_piece"
-                            android:text="@string/tot_line"
-                            android:textStyle="bold" />
-
-
-                        <TextView
-                            android:id="@+id/view_linesTitle"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="@dimen/list_item_width_medium"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text=" "
-                            />
-
-
-
-                </LinearLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:cacheColorHint="@null"
-                    android:divider="@android:color/white"
-                    android:dividerHeight="1dp"
-                    android:fitsSystemWindows="true" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_keypad"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="vertical"
-                android:visibility="gone"></LinearLayout>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
-
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
 
     <LinearLayout
-        android:id="@+id/bottom_layout"
+        android:id="@+id/ListHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:layout_height="@dimen/list_header_height"
+        android:layout_below="@+id/toolbar"
+        android:background="?customListTitleBackgroundColor"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/list_padding_left_n_right"
+        android:paddingEnd="@dimen/list_padding_left_n_right">
 
-        <View
-            android:id="@+id/reason_view"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_above="@+id/reason_btns"
+        <TextView
+            android:id="@+id/dummy_text1"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@color/light_gray"
-            android:src="@drawable/downloadsuccess" />
+            android:layout_weight="1"
+            android:gravity="center" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/footer_height"
-            android:layout_alignParentBottom="true"
-            android:background="@color/bottom_bg"
-            android:gravity="bottom|center"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_van_loadNo"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_weight="7"
+            android:gravity="start|center"
+            android:text="@string/loading_no" />
 
 
-            <Button
-                android:id="@+id/van_btn_reject"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_margin="@dimen/profile_history_10dp"
-                android:visibility="gone"
-                android:textAllCaps="false"
-                android:onClick="onClick"
-                android:textStyle="bold"
-                android:text="@string/reject" />
+        <TextView
+            android:id="@+id/total_linesTitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:tag="sih_piece"
+            android:text="@string/tot_line" />
 
-            <Button
-                android:id="@+id/van_btn_accept"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/profile_history_10dp"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:textAllCaps="false"
-                android:onClick="onClick"
-                android:text="@string/Apply"
-                android:visibility="visible" />
+        <TextView
+            android:id="@+id/dummy_text2"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center" />
+    </LinearLayout>
 
-        </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer_layout"
+        android:layout_below="@id/ListHeader"
+        android:cacheColorHint="@null"
+        android:fitsSystemWindows="true"
+        app:divider="@color/light_gray" />
+
+
+    <View
+        android:id="@+id/reason_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@color/light_gray"
+        android:src="@drawable/downloadsuccess"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:background="?attr/customFooterBackgroundColor"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/van_btn_reject"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/target_top_margin"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="@string/reject"
+            android:textAllCaps="false"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/van_btn_accept"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/target_top_margin"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="@string/Apply"
+            android:textAllCaps="false"
+            android:visibility="visible" />
+
     </LinearLayout>
 </RelativeLayout>

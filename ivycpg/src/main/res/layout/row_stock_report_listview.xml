@@ -1,85 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/header_listlty"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/profile_history_10dp" >
+    android:minHeight="@dimen/list_item_height_double_line"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingTop="@dimen/target_top_margin"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingBottom="@dimen/target_top_margin">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_weight="1"
-        android:layout_marginStart="@dimen/skuwise_right_margin"
-        android:layout_marginLeft="@dimen/skuwise_right_margin">
+        android:layout_weight="5"
+        android:layout_gravity="center"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/productname"
-            android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
             style="@style/TextViewListItemPrimary"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/profile_history_25dp"
             android:gravity="start|center"
             android:text="@string/product_name" />
+
         <TextView
             android:id="@+id/product_code"
-            style="@style/TextViewListItemCaption"
+            style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/productname"
-            android:layout_marginRight="@dimen/dimens_4dp"
             android:gravity="start|center"
-            android:textStyle="bold"
-            android:text="@string/prod_code" />
+            android:text="@string/prod_code"
+            />
+
         <TextView
             android:id="@+id/batchid"
-            style="@style/TextViewListItemCaption"
+            style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/product_code"
             android:gravity="start|center"
-            android:layout_marginRight="@dimen/dimens_4dp"
-            android:textStyle="bold"
-            android:text="@string/batch_no" />
+            android:text="@string/batch_no"
+            />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/caseqty"
-        style="@style/TextViewListItemPrimary"
-        android:layout_width="@dimen/list_item_width_medium"
+        style="@style/TextViewListItemValues"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_gravity="center"
+        android:layout_weight="1.5"
         android:gravity="center"
         android:text="@string/zero" />
 
     <TextView
         android:id="@+id/outerqty"
-        android:layout_width="@dimen/list_item_width_medium"
+        style="@style/TextViewListItemValues"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_gravity="center"
-        style="@style/TextViewListItemPrimary"
+        android:layout_weight="1.5"
         android:gravity="center"
         android:text="@string/zero" />
 
     <TextView
         android:id="@+id/pieceqty"
-        android:layout_width="@dimen/list_item_width_medium"
+        style="@style/TextViewListItemValues"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        style="@style/TextViewListItemPrimary"
         android:layout_gravity="center"
+        android:layout_weight="1.5"
         android:gravity="center"
         android:text="@string/zero" />
 
     <TextView
         android:id="@+id/unitprice"
-        android:layout_width="@dimen/list_item_width_medium"
+        style="@style/TextViewListItemValues"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        style="@style/TextViewListItemPrimary"
-         android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="center"
         android:text="@string/zero" />
 
