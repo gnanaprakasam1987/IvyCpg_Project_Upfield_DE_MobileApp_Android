@@ -1,7 +1,6 @@
 package com.ivy.cpg.view.delivery.salesreturn;
 
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.utils.FontUtils;
 
 import java.util.List;
 import java.util.Vector;
@@ -18,20 +16,17 @@ import java.util.Vector;
 public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturnDeliveryAdapter.SalesReturnDeliveryViewHolder> {
     private RecyclerViewItemClickListener recyclerViewItemClickListener;
     private List<SalesReturnDeliveryDataBo> salesReturnDeliveryDataModelsList;
-    private Context mContext;
 
     /**
      * Initialize the values
      *
-     * @param context                       : context reference
      * @param recyclerViewItemClickListener : callBack Of ClickListener
      * @param salesReturnDeliveryDataModels : data
      */
 
-    public SalesReturnDeliveryAdapter(Context context, RecyclerViewItemClickListener recyclerViewItemClickListener,
+    public SalesReturnDeliveryAdapter(RecyclerViewItemClickListener recyclerViewItemClickListener,
                                       Vector<SalesReturnDeliveryDataBo> salesReturnDeliveryDataModels) {
         this.recyclerViewItemClickListener = recyclerViewItemClickListener;
-        mContext = context;
         this.salesReturnDeliveryDataModelsList = salesReturnDeliveryDataModels;
     }
 
@@ -61,9 +56,6 @@ public class SalesReturnDeliveryAdapter extends RecyclerView.Adapter<SalesReturn
         holder.relativeLayout.setVisibility(View.VISIBLE);
         holder.uId.setText(("UId : ") + salesReturnDeliveryDataModelsList.get(position).getUId());
         holder.dateReturn.setText("Date : " + salesReturnDeliveryDataModelsList.get(position).getDate());
-
-        holder.uId.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-        holder.dateReturn.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
     }
 
     @Override
