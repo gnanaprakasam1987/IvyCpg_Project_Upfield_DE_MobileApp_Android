@@ -29,8 +29,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.utils.FontUtils;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +54,6 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     RecyclerView recyclerView;
 
     private SalesReturnDeliveryDataBo salesReturnDeliveryDataBo = null;
-    private String data;
     private BusinessModel bmodel;
     private int mSelectedPos = 0;
     private SalesReturnDeliveryAdapter salesReturnDeliveryAdapter;
@@ -77,7 +74,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
 
         setLabelMaserValue(view);
         if (getArguments() != null) {
-            data = getArguments().getString("DATA");
+            String data = getArguments().getString("DATA");
             salesReturnDeliveryDataBo =
                     new Gson().fromJson(data, SalesReturnDeliveryDataBo.class);
             //  uId = salesReturnDeliveryDataBo.getUId();
@@ -126,13 +123,6 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         .setText(businessModel.labelsMasterHelper
                                 .applyLabels(view.findViewById(R.id.actual_PcQty)
                                         .getTag()));
-
-            ((TextView) view.findViewById(R.id.cqty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-            ((TextView) view.findViewById(R.id.piececqty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-            ((TextView) view.findViewById(R.id.actual_caseQty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-            ((TextView) view.findViewById(R.id.actual_PcQty)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-
-            ((TextView) view.findViewById(R.id.btn_save)).setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
             if (!salesReturnDeliveryHelper.SHOW_SALES_RET_PCS) {
                 (view.findViewById(R.id.piececqty)).setVisibility(View.GONE);
@@ -477,13 +467,6 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                     returnPieceQuantity = itemView.findViewById(R.id.txt_returnPieceQuantity);
                     actualCaseQuantity = itemView.findViewById(R.id.txt_actualCaseQuantity);
                     actualPieceQuantity = itemView.findViewById(R.id.txt_actualPieceQuantity);
-
-                    productName.setTypeface(FontUtils.getProductNameFont(mContext));
-                    reason.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                    returnCaseQuantity.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                    returnPieceQuantity.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                    actualCaseQuantity.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-                    actualPieceQuantity.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
 
                     SalesReturnDeliveryHelper salesReturnDeliveryHelper = SalesReturnDeliveryHelper.getInstance();
                     if (!salesReturnDeliveryHelper.SHOW_SALES_RET_PCS) {

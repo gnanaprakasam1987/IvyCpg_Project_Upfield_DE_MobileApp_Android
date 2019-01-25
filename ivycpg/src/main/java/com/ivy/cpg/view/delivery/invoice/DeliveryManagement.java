@@ -20,7 +20,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -147,16 +146,6 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
                 holder.invoiceDateTV = convertView.findViewById(R.id.tv_invoice_date);
                 holder.totalLinesTV = convertView.findViewById(R.id.tv_total_lines);
                 holder.totalAmountTV = convertView.findViewById(R.id.tv_amount);
-
-                holder.invoicenoTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.LIGHT));
-                holder.invoiceDateTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.LIGHT));
-                holder.totalLinesTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.LIGHT));
-                holder.totalAmountTV.setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.LIGHT));
-
-                ((TextView) convertView.findViewById(R.id.tv_invoice_no)).setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.MEDIUM));
-                ((TextView) convertView.findViewById(R.id.tv_amount)).setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.MEDIUM));
-                ((TextView) convertView.findViewById(R.id.tv_invoice_date)).setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.MEDIUM));
-                ((TextView) convertView.findViewById(R.id.tv_total_lines)).setTypeface(FontUtils.getFontRoboto(DeliveryManagement.this, FontUtils.FontType.MEDIUM));
 
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(convertView.findViewById(
