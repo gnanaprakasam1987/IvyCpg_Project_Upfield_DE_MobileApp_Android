@@ -2,6 +2,7 @@ package com.ivy.cpg.view.van.vanunload;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +24,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -67,7 +67,6 @@ public class VanUnloadHistoryActivity extends IvyBaseActivityNoActionBar {
         unloadRecyclerView.setAdapter(new RecyclerAdapter(vanUnLoadModuleHelper.getUnloadHistoryList()));
 
         Button closeBtn = findViewById(R.id.closeButton);
-        closeBtn.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,21 +84,22 @@ public class VanUnloadHistoryActivity extends IvyBaseActivityNoActionBar {
             this.items = items;
         }
 
+        @NonNull
         @Override
-        public RecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(
                     parent.getContext()).inflate(R.layout.unload_history_row_item, parent, false);
             return new RecyclerAdapter.MyViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(RecyclerAdapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerAdapter.MyViewHolder holder, int position) {
             final LoadManagementBO historyBo = items.get(position);
 
             if (position % 2 == 0)
-                holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(VanUnloadHistoryActivity.this, R.color.white));
+                holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(VanUnloadHistoryActivity.this, R.color.list_even_item_bg));
             else
-                holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(VanUnloadHistoryActivity.this, R.color.white));
+                holder.layoutBackground.setBackgroundColor(ContextCompat.getColor(VanUnloadHistoryActivity.this, R.color.list_odd_item_bg));
 
             holder.invNoTv.setText(historyBo.getTransactionId());
             holder.totSalableQtyTv.setText(String.valueOf(historyBo.getMaxQty()));
@@ -160,14 +160,6 @@ public class VanUnloadHistoryActivity extends IvyBaseActivityNoActionBar {
                 totNSQtyTv = itemView.findViewById(R.id.txt_history_ns_qty);
 
                 layoutBackground = itemView.findViewById(R.id.list_background);
-
-                labelInvNoTV.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.REGULAR));
-                labelSalableQtyTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.REGULAR));
-                labelNSQtyTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.REGULAR));
-
-                invNoTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.MEDIUM));
-                totSalableQtyTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.MEDIUM));
-                labelNSQtyTv.setTypeface(FontUtils.getFontRoboto(VanUnloadHistoryActivity.this, FontUtils.FontType.MEDIUM));
 
 
                 try {
