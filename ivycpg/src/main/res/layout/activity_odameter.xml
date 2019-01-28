@@ -8,28 +8,21 @@
     android:orientation="vertical"
     tools:context="com.ivy.cpg.view.collection.CollectionScreen">
 
-    <RelativeLayout
-        android:id="@+id/tolllayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar" />
-    </RelativeLayout>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
 
     <ScrollView
         android:id="@+id/scrl1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tolllayout">
+        android:layout_above="@+id/footer"
+        android:layout_below="@+id/toolbar">
 
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_margin="@dimen/list_margin"
             card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="0dp"
@@ -40,12 +33,12 @@
 
             <LinearLayout
                 android:id="@+id/odameterlayout"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="vertical"
@@ -53,46 +46,33 @@
 
                     <TextView
                         android:id="@+id/vanno"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/HeadingStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="2dp"
                         android:tag="loadvan"
-                        android:text="@string/vanno"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_small" />
+                        android:text="@string/vanno" />
 
                     <TextView
                         android:id="@+id/vannovalue"
-                        style="@style/TextViewListItemCaption"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="2dp"
-                        android:text="123"
-                        android:textSize="@dimen/font_small" />
+                        android:text="@string/zero" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/store_margin_top"
                     android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
-                    android:background="@color/light_gray"
+                    android:layout_marginEnd="@dimen/store_margin_top"
+                    android:gravity="center"
+                    android:background="@color/divider_view_color"
                     android:orientation="horizontal"
-
                     >
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/ret_list_div"
-                        android:background="@color/divider_view_color"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/plano_list_top_margin">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -188,12 +168,11 @@
                                 android:visibility="visible" />
                         </LinearLayout>
 
-                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/starttriplayout"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:gravity="center"
@@ -215,10 +194,10 @@
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
                         android:digits="0123456789$&amp;*"
+                        android:gravity="start"
                         android:imeOptions="actionDone"
                         android:inputType="numberDecimal"
                         android:maxLength="8"
-                        android:gravity="start"
                         android:maxLines="1"
                         android:textColorHint="@color/black_bg1" />
 
@@ -247,23 +226,23 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:layout_marginEnd="@dimen/values_editextWidth"
                     android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
+                    android:layout_marginEnd="@dimen/values_editextWidth"
                     android:background="@color/divider_view_color" />
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/store_margin_top"
                     android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/dialog_list_item_left_margin"
+                    android:layout_marginEnd="@dimen/store_margin_top"
                     android:background="@color/light_gray"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:id="@+id/enddatetime_layout"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/ret_list_div"
                         android:background="@color/divider_view_color"
@@ -370,7 +349,7 @@
 
                 <LinearLayout
                     android:id="@+id/endingtriplayout"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/toolbar_image_top"
                     android:gravity="center"
@@ -392,11 +371,11 @@
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
                         android:digits="0123456789$&amp;*"
+                        android:gravity="start"
                         android:imeOptions="actionDone"
                         android:inputType="numberDecimal"
                         android:maxLength="8"
                         android:maxLines="1"
-                        android:gravity="start"
                         android:textColorHint="@color/black_bg1" />
 
 
@@ -425,14 +404,14 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:layout_marginEnd="@dimen/values_editextWidth"
                     android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
+                    android:layout_marginEnd="@dimen/values_editextWidth"
                     android:background="@color/divider_view_color" />
 
                 <RelativeLayout
                     android:id="@+id/distancelayout"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/store_margin_top"
                     android:orientation="horizontal"
@@ -444,20 +423,20 @@
                         android:layout_width="@dimen/order_stock_list_product_name_width"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:padding="5dp"
                         android:text="@string/distance_covered"
-                        android:textColor="@color/black_bg1"
-                        android:layout_alignParentLeft="true" />
+                        android:textColor="@color/black_bg1" />
 
                     <TextView
                         android:id="@+id/distance_covered"
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
                         android:layout_toStartOf="@+id/kms2"
+                        android:layout_toLeftOf="@+id/kms2"
                         android:gravity="start"
                         android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:layout_toLeftOf="@+id/kms2"></TextView>
+                        android:textColor="@color/black_bg1"/>
 
                     <TextView
                         android:id="@+id/kms2"
@@ -465,10 +444,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:padding="5dp"
                         android:text="@string/km"
-                        android:textColor="@color/black_bg1"
-                        android:layout_alignParentRight="true" />
+                        android:textColor="@color/black_bg1" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -476,17 +455,12 @@
         </android.support.v7.widget.CardView>
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/footer"
-        android:background="@color/light_gray"
-        android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/footer1"
+            android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/ret_list_div"
             android:background="@color/white_box_border"
             android:gravity="center_horizontal">
@@ -508,20 +482,5 @@
                 android:textAllCaps="false" />
 
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/footer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <include
-            layout="@layout/keypad"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
-    </LinearLayout>
 
 </RelativeLayout>
