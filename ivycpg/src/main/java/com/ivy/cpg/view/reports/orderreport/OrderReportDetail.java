@@ -9,8 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -49,6 +51,9 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
     private ArrayList<OrderReportBO> list;
     private ArrayList<SchemeProductBO> schemeProductList = new ArrayList<SchemeProductBO>();
     private ExpandableListView elv;
+    private InputMethodManager inputManager;
+    private TextView productName;
+    private EditText mEdt_searchProductName;
 
     private String orderID ="";
 
@@ -60,6 +65,10 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
+
+        inputManager = (InputMethodManager) getSystemService(
+                INPUT_METHOD_SERVICE);
+        productName =  findViewById(R.id.productTvName);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         totalLines = findViewById(R.id.txttotallines);
@@ -273,7 +282,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 row.setOnClickListener(new OnClickListener() {
 
                     public void onClick(View v) {
-                        // productName.setText(holder.productName);
+                         productName.setText(holder.productName);
                     }
                 });
 
@@ -417,6 +426,13 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
                 if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                     holder.tvProductCode.setVisibility(View.GONE);
+
+                row.setOnClickListener(new OnClickListener() {
+
+                    public void onClick(View v) {
+                        productName.setText(holder.productBO.getProductName());
+                    }
+                });
 
                 row.setTag(holder);
             } else {
