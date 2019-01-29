@@ -64,6 +64,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -1122,7 +1123,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
             });
 
-            if (holder.mPromotionMasterBO.getRemarks() != null && !holder.mPromotionMasterBO.getRemarks().isEmpty())
+            if (!AppUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_promo, null));
             else
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_no_promo, null));

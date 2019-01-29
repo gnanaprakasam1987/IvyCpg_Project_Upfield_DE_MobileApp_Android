@@ -28,6 +28,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.StringTokenizer;
@@ -337,7 +338,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 textInputLayout2.setVisibility(View.GONE);
                 textInputLayout3.setVisibility(View.GONE);
                 lnrRField1.setVisibility(View.GONE);
-                if (promotionBO.getRemarks() != null && !promotionBO.getRemarks().isEmpty())
+                if (!AppUtils.isNullOrEmpty(promotionBO.getRemarks()))
                     remarks.setText(promotionBO.getRemarks());
                 else
                     remarks.setText("");
