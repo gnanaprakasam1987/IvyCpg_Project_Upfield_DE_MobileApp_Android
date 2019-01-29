@@ -1544,6 +1544,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SKIP_SCHEME_APPLY = "SCH12";
     public boolean IS_SKIP_SCHEME_APPLY;
 
+    private static final String CODE_VOICE_TO_TEXT = "VOICETXT";
+    public int IS_VOICE_TO_TEXT = -1;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2691,6 +2694,8 @@ public class ConfigurationMasterHelper {
         this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
 
         this.IS_SKIP_SCHEME_APPLY = hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) : false;
+
+        this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : 0;
     }
 
     private boolean isInOutModule() {

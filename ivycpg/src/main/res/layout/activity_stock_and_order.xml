@@ -90,95 +90,109 @@
                 android:layout_below="@+id/rvFilter"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/filterscreenlayout"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/list_margin"
-                    android:layout_marginEnd="@dimen/list_margin"
-                    android:background="@android:color/transparent"
-                    android:orientation="vertical">
-
+                    android:layout_marginStart="@dimen/dimen_8dp"
+                    android:layout_marginEnd="@dimen/dimen_8dp"
+                    android:padding="4dp"
+                    android:orientation="horizontal"
+                    android:background="@color/white">
 
                     <ViewFlipper
                         android:id="@+id/view_flipper"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:padding="2dp">
+                        android:layout_toLeftOf="@+id/btn_speech">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/white">
+                            android:layout_alignParentLeft="true"
+                            android:paddingRight="@dimen/dimen_5dp">
 
                             <TextView
                                 android:id="@+id/productName"
-                                android:layout_width="0dip"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
                                 android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/list_margin"
                                 android:layout_marginStart="@dimen/list_margin"
-                                android:layout_weight="1"
+                                android:layout_toLeftOf="@+id/btn_search"
                                 android:gravity="start"
                                 android:maxLines="1"
                                 android:textColor="?attr/primarycolor"
-                                android:textSize="@dimen/text_size_secondary"
-                                android:layout_marginLeft="@dimen/list_margin" />
+                                android:textSize="@dimen/text_size_secondary" />
 
                             <Button
                                 android:id="@+id/btn_search"
                                 android:layout_width="@dimen/filter_icon"
                                 android:layout_height="@dimen/filter_icon"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="2dp"
+                                android:layout_marginRight="@dimen/_10sdp"
                                 android:background="@drawable/ic_vector_search" />
-                        </LinearLayout>
 
-                        <LinearLayout
+                        </RelativeLayout>
+
+
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/white">
+                            android:gravity="center_vertical"
+                            android:paddingRight="@dimen/dimen_5dp">
 
                             <Button
                                 android:id="@+id/btn_filter_popup"
                                 android:layout_width="@dimen/filter_icon"
                                 android:layout_height="@dimen/filter_icon"
-                                android:layout_gravity="center_vertical"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
                                 android:background="@drawable/btn_productfilter_" />
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@android:color/white"
-                                android:orientation="horizontal">
+                            <EditText
+                                android:id="@+id/edt_searchproductName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/filter_icon"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/dimen_5dp"
+                                android:layout_toLeftOf="@+id/btn_clear"
+                                android:layout_toRightOf="@+id/btn_filter_popup"
+                                android:background="@android:color/transparent"
+                                android:gravity="start|center_vertical"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:textColor="@color/gray_text"
+                                android:textSize="@dimen/text_size_secondary" />
 
-                                <EditText
-                                    android:id="@+id/edt_searchproductName"
-                                    android:layout_width="0dip"
-                                    android:layout_height="@dimen/filter_icon"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="1"
-                                    android:background="@android:color/transparent"
-                                    android:gravity="start|center_vertical"
-                                    android:inputType="text"
-                                    android:maxLines="1"
-                                    android:text=""
-                                    android:imeOptions="actionDone"
-                                    android:textColor="@color/gray_text"
-                                    android:textSize="@dimen/text_size_secondary" />
-
-                                <Button
-                                    android:id="@+id/btn_clear"
-                                    android:layout_width="@dimen/filter_icon"
-                                    android:layout_height="@dimen/filter_icon"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_margin="2dp"
-                                    android:background="@drawable/ic_vector_action_clear_grey" />
-                            </LinearLayout>
-                        </LinearLayout>
+                            <Button
+                                android:id="@+id/btn_clear"
+                                android:layout_width="@dimen/filter_icon"
+                                android:layout_height="@dimen/filter_icon"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="2dp"
+                                android:background="@drawable/ic_vector_action_clear_grey" />
+                        </RelativeLayout>
 
                     </ViewFlipper>
-                </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/btn_speech"
+                        android:layout_width="@dimen/filter_icon"
+                        android:layout_height="@dimen/filter_icon"
+                        android:src="@drawable/ic_36_mic"
+                        android:visibility="visible"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
