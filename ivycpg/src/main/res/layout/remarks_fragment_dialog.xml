@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/round_dialog_bg"
     android:orientation="vertical">
 
     <LinearLayout
@@ -35,16 +35,15 @@
             android:visibility="visible">
 
             <TextView
+                style="@style/TextViewCaptionNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimens_10dp"
-                android:text="@string/enter_remark_to_set"
-                android:textColor="@color/gray_text"
-                android:textSize="@dimen/text_size_primary" />
+                android:text="@string/enter_remark_to_set" />
 
             <EditText
                 android:id="@+id/remarks"
-                style="@style/EditText_ListItem"
+                style="@style/EditTextNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -53,8 +52,7 @@
                 android:maxLines="1"
                 android:paddingStart="6dp"
                 android:paddingEnd="6dp"
-                android:tag="@string/remark"
-                android:textSize="@dimen/font_small"/>
+                android:tag="@string/remark"/>
         </LinearLayout>
 
 
@@ -71,16 +69,15 @@
             android:visibility="gone">
 
             <TextView
+                style="@style/TextViewCaptionNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimens_10dp"
-                android:text="@string/rfield1"
-                android:textColor="@color/gray_text"
-                android:textSize="@dimen/text_size_primary" />
+                android:text="@string/rfield1" />
 
             <EditText
                 android:id="@+id/rField1"
-                style="@style/EditText_ListItem"
+                style="@style/EditTextNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -90,8 +87,7 @@
                 android:maxLines="1"
                 android:paddingStart="6dp"
                 android:paddingEnd="6dp"
-                android:tag="@string/remark"
-                android:textSize="@dimen/font_small"/>
+                android:tag="@string/remark"/>
         </LinearLayout>
 
 
@@ -108,12 +104,11 @@
             android:visibility="gone">
 
             <TextView
+                style="@style/TextViewCaptionNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimens_10dp"
-                android:text="@string/rfield1"
-                android:textColor="@color/gray_text"
-                android:textSize="@dimen/text_size_primary" />
+                android:text="@string/rfield1"/>
 
             <Spinner
                 android:id="@+id/spnrField1"
@@ -140,16 +135,15 @@
             android:visibility="gone">
 
             <TextView
+                style="@style/TextViewCaptionNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimens_10dp"
-                android:text="@string/rfield2"
-                android:textColor="@color/gray_text"
-                android:textSize="@dimen/text_size_primary" />
+                android:text="@string/rfield2" />
 
             <EditText
                 android:id="@+id/rField2"
-                style="@style/EditText_ListItem"
+                style="@style/EditTextNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -159,8 +153,7 @@
                 android:maxLines="1"
                 android:paddingStart="6dp"
                 android:paddingEnd="6dp"
-                android:tag="@string/remark"
-                android:textSize="@dimen/font_small"/>
+                android:tag="@string/remark"/>
         </LinearLayout>
 
         <LinearLayout
@@ -177,14 +170,13 @@
             android:paddingRight="6dp">
 
             <TextView
+                style="@style/TextViewCaptionNormal"
                 android:id="@+id/remark_type_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimens_10dp"
                 android:text="@string/remarks_type_label"
-                android:tag="remark_type"
-                android:textColor="@color/gray_text"
-                android:textSize="@dimen/text_size_primary" />
+                android:tag="remark_type" />
 
             <Spinner
                 android:id="@+id/spinner_remark_type"

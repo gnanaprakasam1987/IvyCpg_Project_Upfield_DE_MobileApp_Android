@@ -64,6 +64,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -77,7 +78,7 @@ import java.util.Locale;
 
 
 public class PromotionTrackingFragment extends IvyBaseFragment implements BrandDialogInterface,
-        DataPickerDialogFragment.UpdateDateInterface, FiveLevelFilterCallBack {
+        DataPickerDialogFragment.UpdateDateInterface, FiveLevelFilterCallBack, RemarksDialog.PromotionRemarks {
 
     private BusinessModel businessModel;
     private PromotionHelper promotionHelper;
@@ -702,6 +703,12 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             QUANTITY.setText(append);
     }
 
+    @Override
+    public void updateRemarks() {
+        if (promotionAdapter != null)
+        promotionAdapter.notifyDataSetChanged();
+    }
+
     class ViewHolder {
         PromotionBO mPromotionMasterBO;
         TextView tv_promoName;
@@ -716,6 +723,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         Button mFromDateBTN;
         Button mToDateBTN;
         LinearLayout llSkuPromolayout;
+        LinearLayout ll_Rating;
+        ImageView img_remarks;
     }
 
     private class MyAdapter extends ArrayAdapter<PromotionBO> {
@@ -775,6 +784,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
                 holder.reasonSpin.setAdapter(reasonAdapter);
                 holder.ratingSpin = row.findViewById(R.id.spin_rating);
+                holder.ll_Rating = row.findViewById(R.id.ll_rating);
+                holder.img_remarks = row.findViewById(R.id.img_feedback);
                 if (mRatingAdapter != null)
                     holder.ratingSpin.setAdapter(mRatingAdapter);
 
@@ -796,8 +807,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 } else {
                     holder.tvGroupName.setVisibility(View.GONE);
                 }
-                if (promotionHelper.SHOW_PROMO_RATING) {
-                    holder.ratingSpin.setVisibility(View.VISIBLE);
+                if (!promotionHelper.SHOW_PROMO_RATING) {
+                    holder.ll_Rating.setVisibility(View.VISIBLE);
                     try {
                         if (businessModel.labelsMasterHelper.applyLabels(row.findViewById(
                                 R.id.executing_rating_label).getTag()) != null) {
@@ -811,7 +822,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         Commons.printException("" + e);
                     }
                 } else {
-                    holder.ratingSpin.setVisibility(View.GONE);
+                    holder.ll_Rating.setVisibility(View.GONE);
                 }
                 if (promotionHelper.SHOW_PROMO_QTY) {
                     holder.etPromoQty.setVisibility(View.VISIBLE);
@@ -1109,6 +1120,23 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     args.putString("MODULE", "");
                     newFragment.setArguments(args);
                     newFragment.show(getChildFragmentManager(), "toPicker");
+                }
+            });
+
+            if (!AppUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
+                holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_promo, null));
+            else
+                holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_no_promo, null));
+
+            holder.img_remarks.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction ft = getActivity()
+                            .getSupportFragmentManager().beginTransaction();
+                    RemarksDialog dialog = new RemarksDialog(holder.mPromotionMasterBO, "MENU_PROMO_REMARKS",
+                            PromotionTrackingFragment.this);
+                    dialog.setCancelable(false);
+                    dialog.show(ft, "MENU_PROMO_REMARKS");
                 }
             });
             return row;
