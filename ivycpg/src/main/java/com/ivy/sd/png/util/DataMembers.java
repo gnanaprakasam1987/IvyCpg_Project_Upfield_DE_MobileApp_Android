@@ -345,7 +345,7 @@ public class DataMembers {
     public static final String tbl_CompetitorHeader = "CompetitorHeader";
     public static final String tbl_CompetitorDetails = "CompetitorDetails";
     private static final String tbl_CompetitorHeader_cols = "Tid,RetailerId,CompetitorID,Feedback,ImageName,Date,Pid,Remark,CounterId,distributorid,ridSF,VisitId";
-    private static final String tbl_CompetitorDetails_cols = "Tid,TrackingListID,tcompetitorid,pid,FromDate,ToDate,Feedback,ImageName,qty,reasonID";
+    private static final String tbl_CompetitorDetails_cols = "Tid,TrackingListID,tcompetitorid,pid,FromDate,ToDate,Feedback,ImageName,qty,reasonID,RField1";
     private static final String tbl_invoicetaxDetails = "InvoiceTaxDetails";
     private static final String tbl_invoicetaxDetails_cols = "invoiceid,pid,taxRate,taxType,taxValue,IsFreeProduct";
     private static final String tbl_ordertaxDetails = "OrderTaxDetails";

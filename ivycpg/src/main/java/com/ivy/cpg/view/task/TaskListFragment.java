@@ -70,6 +70,7 @@ public class TaskListFragment extends Fragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        taskHelper = TaskHelper.getInstance(getActivity());
         if (!bmodel.configurationMasterHelper.IS_NEW_TASK) {
             hideNewTaskMenu();
             // invalidateOptionsMenu();

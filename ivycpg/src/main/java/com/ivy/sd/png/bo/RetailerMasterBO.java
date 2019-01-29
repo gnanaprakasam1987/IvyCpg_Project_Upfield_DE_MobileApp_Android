@@ -1592,4 +1592,14 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public void setRidSF(String ridSF) {
         this.ridSF = ridSF;
     }
+
+    public double getmOrderedTotWgt() {
+        return mOrderedTotWgt;
+    }
+
+    public void setmOrderedTotWgt(double mOrderedTotWgt) {
+        this.mOrderedTotWgt = mOrderedTotWgt;
+    }
+
+    private double mOrderedTotWgt;
 }
