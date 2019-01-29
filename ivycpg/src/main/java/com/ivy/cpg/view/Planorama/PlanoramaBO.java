@@ -43,6 +43,15 @@ public class PlanoramaBO {
     }
 
     private String retailerName,retailerCode;
-    private String visitedTime,comments;
+
+    public String getVisitedId() {
+        return visitedId;
+    }
+
+    public void setVisitedId(String visitedId) {
+        this.visitedId = visitedId;
+    }
+
+    private String visitedId,visitedTime,comments;
     private int numbertOfPhotosExpected;
 }

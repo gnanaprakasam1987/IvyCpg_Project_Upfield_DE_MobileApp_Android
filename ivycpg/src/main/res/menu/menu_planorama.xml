@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_image_full_view"
+        android:icon="@drawable/ic_default_image"
+        android:orderInCategory="104"
+        android:title="Delete"
+        android:visible="true"
+        ivydist:showAsAction="always"
+        />
+    <item
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/ic_delete_forever_black_24dp"
+        android:orderInCategory="105"
+        android:title="Delete"
+        android:visible="true"
+        ivydist:showAsAction="always"
+        />
+
+</menu>

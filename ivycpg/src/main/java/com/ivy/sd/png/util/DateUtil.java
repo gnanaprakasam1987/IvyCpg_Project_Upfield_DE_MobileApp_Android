@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
+import org.joda.time.DateTime;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -193,4 +196,20 @@ public class DateUtil {
     public static SimpleDateFormat getDateFormat (String format){
         return new SimpleDateFormat(format,Locale.US);
     }
+
+
+    public static String convertDateTimeObjectToRequestedFormat(String inputText,String inputDateFormat, String outDateFormat) {
+        String outDate="";
+        try {
+            DateFormat outputFormat = new SimpleDateFormat(outDateFormat, Locale.ENGLISH);
+            DateFormat inputFormat = new SimpleDateFormat(inputDateFormat, Locale.ENGLISH);
+            Date date = inputFormat.parse(inputText);
+            outDate = outputFormat.format(date);
+        } catch (Exception e) {
+
+            Commons.printException("convertDateObjectToRequestedFormat" + e);
+        }
+        return outDate;
+    }
+
 }

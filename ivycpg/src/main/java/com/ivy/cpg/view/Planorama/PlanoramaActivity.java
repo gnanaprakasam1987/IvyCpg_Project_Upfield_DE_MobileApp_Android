@@ -2,37 +2,50 @@ package com.ivy.cpg.view.Planorama;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.FontUtils;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
 
@@ -41,6 +54,7 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
     RecyclerView listView_visits;
     ArrayList<PlanoramaBO> list_visits;
     BusinessModel bModel;
+    private String photoPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,11 +84,18 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PlanoramaActivity.this,
-                        NewVisitActivity.class));
+                startActivityForResult(new Intent(PlanoramaActivity.this,
+                        NewVisitActivity.class),0);
                 //finish();
             }
         });
+
+        photoPath = getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES)
+                + "/" + DataMembers.photoFolderName + "/";
+
+
+        new LoadVisits().execute();
     }
 
     @Override
@@ -121,7 +142,7 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
     protected void onResume() {
         super.onResume();
 
-        new LoadVisits().execute();
+
     }
 
     private class LoadVisits extends AsyncTask<String, Void, String> {
@@ -147,6 +168,8 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
             if(!token.equals("")){
                 downloadVisits(token);
             }
+
+            PlanoramaHelper.getInstance(PlanoramaActivity.this).getImageNameList(PlanoramaActivity.this);
 
             return "";
         }
@@ -182,8 +205,8 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
             OutputStream os = con.getOutputStream();
 
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("username", "Quickstar");
-            jsonObject.put("password", "Log-me-in");
+            jsonObject.put("username", "Ivy01");
+            jsonObject.put("password", "IvyPOC01");
 
             os.write(jsonObject.toString().getBytes("UTF-8"));
             os.flush();
@@ -297,14 +320,21 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
                     JSONObject jsonData=(JSONObject)jsonArray.get(i);
                     planoramaBO=new PlanoramaBO();
 
-                    JSONObject json_StoreInfo=(JSONObject)jsonData.get("storeInfo");
-                    planoramaBO.setRetailerName(json_StoreInfo.get("name").toString());
-                    planoramaBO.setRetailerCode(json_StoreInfo.get("code").toString());
+                    String visitedTime=DateUtil.convertDateTimeObjectToRequestedFormat(jsonData.getString("visitedOn"),"yyyy-MM-dd'T'HH:mm:ss.SSSX","yyyy/MM/dd HH:mm:ss");
+                    planoramaBO.setVisitedTime(visitedTime);
+                    if(SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),visitedTime,"yyyy/MM/dd")==0){
 
-                    planoramaBO.setVisitedTime(jsonData.get("visitedOn").toString());
-                    planoramaBO.setNumbertOfPhotosExpected((int)jsonData.get("expPhotos"));
+                        JSONObject json_StoreInfo=(JSONObject)jsonData.get("storeInfo");
+                        planoramaBO.setRetailerName(json_StoreInfo.get("name").toString());
+                        planoramaBO.setRetailerCode(json_StoreInfo.get("code").toString());
+                        planoramaBO.setNumbertOfPhotosExpected((int)jsonData.get("expPhotos"));
+                        planoramaBO.setComments(jsonData.get("comment").toString());
+                        planoramaBO.setVisitedId(jsonData.get("id").toString());
 
-                    list_visits.add(planoramaBO);
+                        list_visits.add(planoramaBO);
+
+                    }
+
                 }
 
             }
@@ -334,10 +364,52 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
         public void onBindViewHolder(final ViewHolder holder, final int position) {
 
             holder.textView_retailerName.setText(items.get(position).getRetailerName());
-            holder.textView_photoCount.setText(String.valueOf(items.get(position).getNumbertOfPhotosExpected()));
+
+            PlanoramaHelper planoramaHelper=PlanoramaHelper.getInstance(PlanoramaActivity.this);
+
+            ArrayList<String> imageNameList=planoramaHelper.getImageNameListByVistId().get(items.get(position).getVisitedId());
+            if(imageNameList!=null) {
+                holder.textView_photoCount.setText(String.valueOf(imageNameList.size()));
+
+                File imgFile = new File(photoPath + "/"
+                        + imageNameList.get(0));
+                if (imgFile.exists()) {
+                    try {
+
+                        Bitmap myBitmap = bModel.decodeFile(imgFile);
+                        holder.imageView.setImageBitmap(myBitmap);
+
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                }
+                else {
+                    holder.imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_camera_grey));
+                }
+
+            }
+            else {
+                holder.imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_camera_grey));
+                holder.textView_photoCount.setText(String.valueOf(1));
+            }
 
            // String date= DateUtil.convertDateObjectToRequestedFormat(DateUtil.fromISO8601UTC(items.get(position).getVisitedTime()),bModel.configurationMasterHelper.outDateFormat);
             holder.textView_visitedTime.setText(items.get(position).getVisitedTime());
+
+
+
+            holder.parentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent =new Intent(PlanoramaActivity.this,PlanoramaDetailActivity.class);
+                    intent.putExtra("visitid",items.get(position).getVisitedId());
+                    intent.putExtra("comment",items.get(position).getComments());
+                    startActivity(intent);
+
+                    overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                }
+            });
 
         }
 
@@ -350,19 +422,35 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView textView_retailerName;
             TextView textView_visitedTime,textView_photoCount;
+            View parentView;
+            ImageView imageView;
 
             public ViewHolder(View v) {
                 super(v);
                 textView_retailerName =  v.findViewById(R.id.textView_store_name);
                 textView_visitedTime =  v.findViewById(R.id.textView_visit_time);
                 textView_photoCount =  v.findViewById(R.id.textView_photoCount);
+                imageView =  v.findViewById(R.id.imageView);
+                parentView=v;
 
                 textView_retailerName.setTypeface(FontUtils.getFontRoboto(PlanoramaActivity.this, FontUtils.FontType.MEDIUM));
                 textView_visitedTime.setTypeface(FontUtils.getFontRoboto(PlanoramaActivity.this, FontUtils.FontType.LIGHT));
+
+
 
             }
 
 
         }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+     if(requestCode==0&&resultCode==RESULT_OK){
+         new LoadVisits().execute();
+     }
     }
 }

@@ -1,6 +1,7 @@
 package com.ivy.utils;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.com.google.gson.Gson;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -421,5 +423,50 @@ public class AppUtils {
         }
         return true;
     }
+
+    public static int dpToPx(Context context,double dp) {
+        float density = context.getResources()
+                .getDisplayMetrics()
+                .density;
+        return (int)(dp * density);
+    }
+
+    /**
+     * Open the Image in Photo Gallery while onClick
+     *
+     * @param fileName File name
+     */
+    public static void openImage(String fileName,Context context) {
+        if (fileName.trim().length() > 0) {
+            try {
+                Uri path;
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(fileName));
+                } else {
+                    path = Uri.fromFile(new File(fileName));
+                }
+
+                intent.setDataAndType(path, "image/*");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Commons.printException("" + e);
+                Toast.makeText(
+                        context,
+                        context.getResources()
+                                .getString(
+                                        R.string.no_application_available_to_view_video),
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(context,
+                    context.getResources().getString(R.string.unloadimage),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 }

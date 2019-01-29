@@ -15,30 +15,43 @@
                 android:id="@+id/imageView"
                 android:layout_width="@dimen/dimens_100dp"
                 android:layout_height="@dimen/dimens_100dp"
-                android:src="@drawable/ic_photo_camera_grey_24dp"
+                android:src="@drawable/ic_camera_grey"
                 android:background="@color/gray_text"/>
             <TextView
                 android:id="@+id/textView_photoCount"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dimen_20dp"
                 android:layout_height="wrap_content"
                 android:text="1"
-                android:layout_marginStart="@dimen/dimen_2dp"/>
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/text_size_primary"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@color/gray_text"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_toRightOf="@+id/imageView"
                 android:layout_centerVertical="true"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="@dimen/dimen_5dp"
+                android:paddingRight="@dimen/dimen_5dp"
                 >
             <TextView
                 android:id="@+id/textView_store_name"
+                style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="sdwdd"
                 />
             <TextView
                 android:id="@+id/textView_visit_time"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:text="ddefef"
                 />
             </LinearLayout>
             
