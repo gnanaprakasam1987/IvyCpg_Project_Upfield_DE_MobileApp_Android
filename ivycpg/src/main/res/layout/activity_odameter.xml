@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:orientation="vertical"
-                    android:padding="15dp">
+                    android:padding="5dp">
 
                     <TextView
                         android:id="@+id/vanno"
@@ -69,104 +69,101 @@
                     android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:layout_marginEnd="@dimen/store_margin_top"
-                    android:gravity="center"
                     android:background="@color/divider_view_color"
+                    android:baselineAligned="false"
+                    android:gravity="center"
                     android:orientation="horizontal"
-                    >
+                    android:padding="5dp">
 
-                        <LinearLayout
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:gravity="center|top"
+                        android:orientation="vertical"
+                        android:padding="@dimen/plano_list_top_margin">
+
+                        <TextView
+                            android:id="@+id/datetxtview"
+                            style="?textFieldStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
                             android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/plano_list_top_margin">
+                            android:text="@string/date"
+                            android:textColor="?attr/accentcolor"
+                            android:textSize="@dimen/footer_label_size" />
 
-                            <TextView
-                                android:id="@+id/datetxtview"
-                                style="?textFieldStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="@string/date"
-                                android:textColor="?attr/accentcolor"
-                                android:textSize="@dimen/footer_label_size" />
-
-                            <TextView
-                                android:id="@+id/datevalue"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="11/2/1" />
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/datevalue"
+                            style="@style/TextViewListItemPrimary"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="11/2/1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="@dimen/plano_list_top_margin">
+
+                        <TextView
+                            android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/plano_list_top_margin">
+                            android:background="@color/light_gray" />
 
-                            <TextView
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/light_gray" />
+                    </LinearLayout>
 
-                        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:gravity="center|top"
+                        android:orientation="vertical"
+                        android:padding="@dimen/plano_list_top_margin">
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/timetxtview"
+                            style="?textFieldStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
                             android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/plano_list_top_margin">
+                            android:text="@string/time"
+                            android:textColor="?attr/accentcolor"
+                            android:textSize="@dimen/footer_label_size" />
 
-                            <TextView
-                                android:id="@+id/timetxtview"
-                                style="?textFieldStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="@string/time"
-                                android:textColor="?attr/accentcolor"
-                                android:textSize="@dimen/footer_label_size" />
+                        <TextView
+                            android:id="@+id/timevalue"
+                            style="@style/TextViewListItemPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="23:5:50" />
 
-                            <TextView
-                                android:id="@+id/timevalue"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="23:5:50" />
+                        <TextView
+                            android:id="@+id/timevaluestart"
+                            style="@style/TextViewListItemPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:text="23:5:50"
+                            android:visibility="gone" />
 
-                            <TextView
-                                android:id="@+id/timevaluestart"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="23:5:50"
-                                android:visibility="gone" />
-
-                            <com.ivy.cpg.view.van.odameter.CustomDigitalClock
-                                android:id="@+id/digitalClock1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:textSize="15sp"
-                                android:visibility="visible" />
-                        </LinearLayout>
+                        <com.ivy.cpg.view.van.odameter.CustomDigitalClock
+                            android:id="@+id/digitalClock1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textSize="15sp"
+                            android:visibility="visible" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -177,7 +174,7 @@
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:padding="5dp">
 
                     <TextView
                         android:id="@+id/starttriptxtview"
@@ -232,118 +229,105 @@
                     android:background="@color/divider_view_color" />
 
                 <LinearLayout
+                    android:id="@+id/enddatetime_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/store_margin_top"
                     android:layout_marginTop="@dimen/dialog_list_item_left_margin"
                     android:layout_marginEnd="@dimen/store_margin_top"
-                    android:background="@color/light_gray"
-                    android:orientation="horizontal">
+                    android:background="@color/divider_view_color"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
                     <LinearLayout
-                        android:id="@+id/enddatetime_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/ret_list_div"
-                        android:background="@color/divider_view_color"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/store_margin_top">
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:gravity="center|top"
+                        android:orientation="vertical"
+                        android:padding="@dimen/margin_top_spinner">
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/enddatetxtview"
+                            style="?textFieldStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
                             android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/margin_top_spinner">
+                            android:text="@string/dateend"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="@dimen/footer_label_size" />
 
-                            <TextView
-                                android:id="@+id/enddatetxtview"
-                                style="?textFieldStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="@string/dateend"
-                                android:textColor="@color/colorAccent"
-                                android:textSize="@dimen/footer_label_size" />
-
-                            <TextView
-                                android:id="@+id/enddatevalue"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="11/2/1" />
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/enddatevalue"
+                            style="@style/TextViewListItemPrimary"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="11/2/1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="@dimen/margin_top_spinner">
+
+                        <TextView
+                            android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/margin_top_spinner">
-
-                            <TextView
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/light_gray" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/margin_top_spinner">
-
-                            <TextView
-                                android:id="@+id/endtimetxtview"
-                                style="?textFieldStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="@string/timeend"
-                                android:textColor="@color/colorAccent"
-                                android:textSize="@dimen/footer_label_size" />
-
-                            <TextView
-                                android:id="@+id/endtimevalue"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="23:5:50" />
-
-                            <TextView
-                                android:id="@+id/timeend"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="23:5:50"
-                                android:visibility="gone" />
-
-                            <com.ivy.cpg.view.van.odameter.CustomDigitalClock
-                                android:id="@+id/digitalClock2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:textSize="15sp"
-                                android:visibility="visible" />
-                        </LinearLayout>
+                            android:background="@color/light_gray" />
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:gravity="center|top"
+                        android:orientation="vertical"
+                        android:padding="@dimen/margin_top_spinner">
+
+                        <TextView
+                            android:id="@+id/endtimetxtview"
+                            style="?textFieldStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/timeend"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="@dimen/footer_label_size" />
+
+                        <TextView
+                            android:id="@+id/endtimevalue"
+                            style="@style/TextViewListItemPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="23:5:50" />
+
+                        <TextView
+                            android:id="@+id/timeend"
+                            style="@style/TextViewListItemPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="23:5:50"
+                            android:visibility="gone" />
+
+                        <com.ivy.cpg.view.van.odameter.CustomDigitalClock
+                            android:id="@+id/digitalClock2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:visibility="visible" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
 
@@ -354,7 +338,7 @@
                     android:layout_marginTop="@dimen/toolbar_image_top"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:padding="5dp">
 
                     <TextView
                         android:id="@+id/endtriptxtview"
@@ -392,6 +376,7 @@
                         android:id="@+id/endtripimgiv"
                         android:layout_width="@dimen/icon"
                         android:layout_height="@dimen/icon"
+                        android:layout_marginStart="@dimen/card_margin"
                         android:layout_marginLeft="@dimen/card_margin"
                         android:background="@drawable/ic_photo_camera_blue_24dp"
                         android:gravity="start"
@@ -415,7 +400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/store_margin_top"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:padding="5dp">
 
                     <TextView
                         android:id="@+id/distencetxtview"
@@ -424,6 +409,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
                         android:padding="5dp"
                         android:text="@string/distance_covered"
                         android:textColor="@color/black_bg1" />
@@ -432,11 +418,12 @@
                         android:id="@+id/distance_covered"
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_toStartOf="@+id/kms2"
                         android:layout_toLeftOf="@+id/kms2"
                         android:gravity="start"
                         android:text="@string/zero"
-                        android:textColor="@color/black_bg1"/>
+                        android:textColor="@color/black_bg1" />
 
                     <TextView
                         android:id="@+id/kms2"
@@ -445,6 +432,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:padding="5dp"
                         android:text="@string/km"
                         android:textColor="@color/black_bg1" />
@@ -456,31 +444,32 @@
     </ScrollView>
 
 
-        <LinearLayout
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/ret_list_div"
-            android:background="@color/white_box_border"
-            android:gravity="center_horizontal">
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/ret_list_div"
+        android:background="?attr/customFooterBackgroundColor"
+        android:gravity="center_horizontal|end"
+        android:padding="5dp">
 
-            <Button
-                android:id="@+id/startjourney"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="@dimen/target_top_margin"
-                android:text="@string/start_journey"
-                android:textAllCaps="false" />
+        <Button
+            android:id="@+id/startjourney"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/start_journey"
+            android:textAllCaps="false" />
 
-            <Button
-                android:id="@+id/endjourney"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="@dimen/target_top_margin"
-                android:text="@string/end_journey"
-                android:textAllCaps="false" />
+        <Button
+            android:id="@+id/endjourney"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/end_journey"
+            android:textAllCaps="false" />
 
-        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
