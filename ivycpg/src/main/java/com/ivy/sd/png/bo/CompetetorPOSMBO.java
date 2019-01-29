@@ -12,6 +12,7 @@ public class CompetetorPOSMBO {
 	private String imagePath="";
 	private int qty;
 	private int reasonID;
+	private String remarks = "";
 
 	public CompetetorPOSMBO() {
 
@@ -117,5 +118,13 @@ public class CompetetorPOSMBO {
 
 	public void setReasonID(int reasonID) {
 		this.reasonID = reasonID;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 }

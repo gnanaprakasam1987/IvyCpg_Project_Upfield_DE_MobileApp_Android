@@ -1668,6 +1668,7 @@ public class BusinessModel extends Application {
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
 
             updateCurrentFITscore();
+            updateRetailersTotWgt();
 
             if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
 
@@ -7487,7 +7488,52 @@ public class BusinessModel extends Application {
 
         return "";
     }
+    public void updateRetailersTotWgt() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight,retailerid from OrderDetail");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int qty = c.getInt(0) +
+                            (c.getInt(1) * c.getInt(3) +
+                                    (c.getInt(2) * c.getInt(4)));
+                    for (RetailerMasterBO bo : retailerMaster) {
+                        if (bo.getRetailerID().equals(c.getString(6))) {
+                            bo.setmOrderedTotWgt(bo.getmOrderedTotWgt() + (qty * c.getDouble(5)));
+                        }
+                    }
+                }
 
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public void updateRetailersTotWgt(RetailerMasterBO bo) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight from OrderDetail " +
+                    "where retailerid =" + AppUtils.QT(bo.getRetailerID()));
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int qty = c.getInt(0) +
+                            (c.getInt(1) * c.getInt(3) +
+                                    (c.getInt(2) * c.getInt(4)));
+                    bo.setmOrderedTotWgt(bo.getmOrderedTotWgt() + (qty * c.getDouble(5)));
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
     String newlyaddedRetailer = "";
 
     public String getNewlyaddedRetailer() {
