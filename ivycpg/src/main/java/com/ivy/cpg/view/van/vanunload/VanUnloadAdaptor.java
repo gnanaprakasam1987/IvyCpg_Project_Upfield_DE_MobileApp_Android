@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.van.vanunload;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +22,6 @@ import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -64,6 +64,7 @@ public class VanUnloadAdaptor extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -77,29 +78,21 @@ public class VanUnloadAdaptor extends BaseAdapter {
             row = inflater.inflate(R.layout.van_unload, parent, false);
             holder = new ViewHolder();
 
-            holder.listheaderLty = (LinearLayout) row.findViewById(R.id.van_unload_list_header);
-            holder.caseQty = (EditText) row
+            holder.listheaderLty = row.findViewById(R.id.van_unload_list_header);
+            holder.caseQty = row
                     .findViewById(R.id.productqtyCases);
-            holder.pieceQty = (EditText) row
+            holder.pieceQty = row
                     .findViewById(R.id.productqtyPieces);
-            holder.psname = (TextView) row.findViewById(R.id.productName);
+            holder.psname = row.findViewById(R.id.productName);
             holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-            holder.outerQty = (EditText) row
+            holder.outerQty = row
                     .findViewById(R.id.productqtyouter);
 
-            holder.sih = (TextView) row
+            holder.sih = row
                     .findViewById(R.id.stock_and_order_listview_sih);
-            holder.batchno = (TextView) row
+            holder.batchno = row
                     .findViewById(R.id.stock_and_order_listview_batchno);
-            holder.nonSalableQty_pc = (TextView) row.findViewById(R.id.tv_nonsalable_pc);
-
-            holder.psname.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.MEDIUM));
-            holder.batchno.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-            holder.sih.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-            holder.caseQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-            holder.outerQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-            holder.pieceQty.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
-            holder.nonSalableQty_pc.setTypeface(FontUtils.getFontRoboto(mContext, FontUtils.FontType.LIGHT));
+            holder.nonSalableQty_pc = row.findViewById(R.id.tv_nonsalable_pc);
 
             // Nonsalable unload view
             if (!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_UNLOAD)
@@ -376,12 +369,6 @@ public class VanUnloadAdaptor extends BaseAdapter {
             holder.nonSalableQty_pc.setText(mContext.getString(R.string.zero));
         }
 
-        if (position % 2 == 0) {
-            row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.list_even_item_bg));
-        } else {
-            row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.list_odd_item_bg));
-        }
-
         return row;
     }
 
@@ -417,7 +404,7 @@ public class VanUnloadAdaptor extends BaseAdapter {
                 }
                 QUANTITY.setText(s);
             } else {
-                Button ed = (Button) ((VanUnloadActivity) mContext).findViewById(vw.getId());
+                Button ed = ((VanUnloadActivity) mContext).findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }

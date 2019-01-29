@@ -336,6 +336,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             //updating FIT score for current retailer
             bmodel.updateCurrentFITscore(bmodel.getRetailerMasterBO());
+            // update Total Weight
+            bmodel.updateRetailersTotWgt(bmodel.getRetailerMasterBO());
 
             SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext());
         } catch (Exception e) {

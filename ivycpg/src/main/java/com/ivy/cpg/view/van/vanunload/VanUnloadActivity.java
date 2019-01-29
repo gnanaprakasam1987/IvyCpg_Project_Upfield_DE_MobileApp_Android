@@ -25,7 +25,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -39,7 +38,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +72,7 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
         bModel = (BusinessModel) getApplicationContext();
         bModel.setContext(this);
         mVanUnLoadModuleHelper = VanUnLoadModuleHelper.getInstance(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         inputManager = (InputMethodManager) this
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -145,16 +143,16 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
 
 
     private void initializeView() {
-        lvwplist = (ListView) findViewById(R.id.list);
+        lvwplist =  findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
-        Button saveBtn = (Button) findViewById(R.id.van_btn_save);
-        viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
-        mEdt_searchproductName = (EditText) findViewById(R.id.edt_searchproductName);
-        Button mBtnSearch = (Button) findViewById(R.id.btn_search);
-        Button mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
-        Button mBtnClear = (Button) findViewById(R.id.btn_clear);
-        productName = (TextView) findViewById(R.id.productName);
+        Button saveBtn =  findViewById(R.id.van_btn_save);
+        viewFlipper =  findViewById(R.id.view_flipper);
+        mEdt_searchproductName =  findViewById(R.id.edt_searchproductName);
+        Button mBtnSearch =  findViewById(R.id.btn_search);
+        Button mBtnFilterPopup =  findViewById(R.id.btn_filter_popup);
+        Button mBtnClear =  findViewById(R.id.btn_clear);
+        productName =  findViewById(R.id.productName);
 
 
         saveBtn.setOnClickListener(this);
@@ -164,25 +162,17 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
         mEdt_searchproductName.setOnEditorActionListener(this);
 
 
-        ((TextView) findViewById(R.id.productListTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.itemcasetitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.outeritemcasetitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.itempiecetitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-
         if (!bModel.configurationMasterHelper.SHOW_NON_SALABLE_UNLOAD)
-            ((TextView) findViewById(R.id.tv_nonsalable_title)).setVisibility(View.GONE);
-        else
-            ((TextView) findViewById(R.id.tv_nonsalable_title)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            (findViewById(R.id.tv_nonsalable_title)).setVisibility(View.GONE);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.END);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
+        FrameLayout drawer = findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
@@ -204,7 +194,7 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
 
         if (!bModel.configurationMasterHelper.SHOW_ORDER_CASE) {
             findViewById(R.id.itemcasetitle).setVisibility(View.GONE);
-            ((LinearLayout) findViewById(R.id.ll_vanloadcase_lty)).setVisibility(View.GONE);
+            (findViewById(R.id.ll_vanloadcase_lty)).setVisibility(View.GONE);
         } else {
             try {
                 if (bModel.labelsMasterHelper.applyLabels(findViewById(
@@ -220,7 +210,7 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
         }
         if (!bModel.configurationMasterHelper.SHOW_ORDER_PCS) {
             findViewById(R.id.itempiecetitle).setVisibility(View.GONE);
-            ((LinearLayout) findViewById(R.id.ll_vanloadpiece_lty)).setVisibility(View.GONE);
+            (findViewById(R.id.ll_vanloadpiece_lty)).setVisibility(View.GONE);
         } else {
             try {
                 if (bModel.labelsMasterHelper.applyLabels(findViewById(
@@ -236,7 +226,7 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
 
         if (!bModel.configurationMasterHelper.SHOW_OUTER_CASE) {
             findViewById(R.id.outeritemcasetitle).setVisibility(View.GONE);
-            ((LinearLayout) findViewById(R.id.ll_vanloadouter_lty)).setVisibility(View.GONE);
+            (findViewById(R.id.ll_vanloadouter_lty)).setVisibility(View.GONE);
         } else {
             try {
                 if (bModel.labelsMasterHelper.applyLabels(findViewById(
@@ -392,11 +382,11 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
                                 .toLowerCase())))
                             mylist.add(ret);
                         else if (ret.getProductshortname() != null && ret.getProductshortname()
-                                    .toLowerCase()
-                                    .contains(
-                                            mEdt_searchproductName.getText().toString()
-                                                    .toLowerCase()))
-                                mylist.add(ret);
+                                .toLowerCase()
+                                .contains(
+                                        mEdt_searchproductName.getText().toString()
+                                                .toLowerCase()))
+                            mylist.add(ret);
                     }
                 }
             }
@@ -482,10 +472,10 @@ public class VanUnloadActivity extends IvyBaseActivityNoActionBar implements
 
     private void updateTotQtyDetails(ArrayList<LoadManagementBO> filterList) {
 
-        TextView mTotalSihTV = (TextView) findViewById(R.id.tv_unload_sih);
-        TextView mTotalCaseTV = (TextView) findViewById(R.id.tv_unload_total_case);
-        TextView mTotalOuterTV = (TextView) findViewById(R.id.tv_unload_total_outer);
-        TextView mTotalPcsTV = (TextView) findViewById(R.id.tv_unload_total_piece);
+        TextView mTotalSihTV =  findViewById(R.id.tv_unload_sih);
+        TextView mTotalCaseTV =  findViewById(R.id.tv_unload_total_case);
+        TextView mTotalOuterTV =  findViewById(R.id.tv_unload_total_outer);
+        TextView mTotalPcsTV =  findViewById(R.id.tv_unload_total_piece);
 
         int totalSih = 0;
         int totalPiece = 0;
