@@ -251,7 +251,7 @@ public class DenominationFragment extends IvyBaseFragment {
                             textViewHashMap.get(key).setText("0");
                     }
 
-                    if (totalValues <= Integer.valueOf(initialTotalAmount))
+                    if (totalValues <= Double.valueOf(initialTotalAmount))
                         mTotalCollectionTextview.setText(getActivity().getResources().getString(R.string.total) + ":" + String.valueOf(totalValues));
                 }
             }
@@ -284,7 +284,7 @@ public class DenominationFragment extends IvyBaseFragment {
                         textViewHashMap.get(key).setText("0");
                 }
 
-                if (totalValues <= Integer.valueOf(initialTotalAmount))
+                if (totalValues <= Double.valueOf(initialTotalAmount))
                     mTotalCollectionTextview.setText(getActivity().getResources().getString(R.string.total) + ":" + String.valueOf(totalValues));
                 else
                     Toast.makeText(getActivity(), "" + getActivity().getResources().getString(R.string.denomination_error), Toast.LENGTH_SHORT).show();
