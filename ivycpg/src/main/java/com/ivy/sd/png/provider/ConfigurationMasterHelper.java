@@ -2695,7 +2695,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_SKIP_SCHEME_APPLY = hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) : false;
 
-        this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : 0;
+        this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
     }
 
     private boolean isInOutModule() {
