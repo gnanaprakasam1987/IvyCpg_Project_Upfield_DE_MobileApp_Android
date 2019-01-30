@@ -241,7 +241,7 @@ public class CommonReasonDialog extends Dialog {
                 }
             });
 
-
+            CommonReasonDialog.this.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
 
         @Override
