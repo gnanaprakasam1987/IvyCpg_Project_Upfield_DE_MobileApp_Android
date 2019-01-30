@@ -17,96 +17,99 @@
         android:layout_height="match_parent">
 
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/linearLayout1"
+            android:layout_alignParentTop="true">
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_header_height"
+                android:background="@color/FullBlack"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/dimens_6dp">
+
+
+                <TextView
+                    android:id="@+id/tvTitleTrackingList"
+                    style="@style/TextViewListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:gravity="center|start"
+                    android:text="@string/tracking_list" />
+
+                <TextView
+                    android:id="@+id/tvTitleAvaialabilty"
+                    style="@style/TextViewListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/comp_availability" />
+
+
+                <TextView
+                    android:id="@+id/tvTitleQty"
+                    style="@style/TextViewListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
+                    android:text="@string/qty" />
+
+                <TextView
+                    android:id="@+id/tvTitleRfield"
+                    style="@style/TextViewListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/remark" />
+
+
+                <TextView
+                    android:id="@+id/tvTitlePhoto"
+                    style="@style/TextViewListTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/photo" />
+
+
+            </LinearLayout>
+
+
+            <ListView
+                android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/linearLayout1"
-                android:layout_alignParentTop="true">
-
-                <LinearLayout
-                    android:id="@+id/header"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/list_header_height"
-                    android:background="@color/FullBlack"
-                    android:padding="@dimen/dimens_6dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-
-                    <TextView
-                        android:id="@+id/tvTitleTrackingList"
-                        style="@style/TextViewListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:gravity="center|start"
-                        android:text="@string/tracking_list"
-                        />
-
-                    <TextView
-                        android:id="@+id/tvTitleAvaialabilty"
-                        style="@style/TextViewListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/comp_availability"
-                        />
-
-
-                    <TextView
-                        android:id="@+id/tvTitleQty"
-                        style="@style/TextViewListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:gravity="center"
-                        android:text="@string/qty"
-                         />
-
-
-                    <TextView
-                        android:id="@+id/tvTitlePhoto"
-                        style="@style/TextViewListTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/photo"
-                        />
-
-
-
-                </LinearLayout>
-
-
-                <ListView
-                    android:id="@+id/list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:cacheColorHint="@null"
-                    android:divider="@color/light_gray"
-                    android:dividerHeight="0.5dp"
-                    android:fitsSystemWindows="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/header"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:scrollbarSize="@dimen/dimen_5dp"
-                    android:scrollbarThumbVertical="@color/gray_text"
-                    android:fadeScrollbars="false"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"/>
-            </RelativeLayout>
+                android:layout_below="@+id/header"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="@null"
+                android:divider="@color/light_gray"
+                android:dividerHeight="0.5dp"
+                android:fadeScrollbars="false"
+                android:fitsSystemWindows="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarSize="@dimen/dimen_5dp"
+                android:scrollbarThumbVertical="@color/gray_text" />
+        </RelativeLayout>
 
 
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/card_margin_top"
             android:layout_above="@+id/footer"
+            android:layout_margin="@dimen/card_margin_top"
             android:orientation="horizontal">
 
 
@@ -116,13 +119,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/competitor_edt_height"
                 android:background="@drawable/feedback_edit_selector"
-                android:gravity="start"
-                android:padding="@dimen/row_top_margin"
                 android:cursorVisible="true"
+                android:gravity="start"
+                android:hint="@string/feedback_ifany"
                 android:imeOptions="actionDone"
                 android:inputType="textMultiLine"
-                android:hint="@string/feedback_ifany"
-                android:maxLength="250"/>
+                android:maxLength="250"
+                android:padding="@dimen/row_top_margin" />
         </LinearLayout>
 
         <LinearLayout
@@ -135,14 +138,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/light_gray"/>
+                android:background="@color/light_gray" />
 
             <Button
                 android:id="@+id/btn_save"
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:layout_margin="@dimen/target_top_margin"
+                android:gravity="center"
                 android:text="@string/save"
                 android:textAllCaps="false" />
         </LinearLayout>

@@ -345,7 +345,7 @@ public class DataMembers {
     public static final String tbl_CompetitorHeader = "CompetitorHeader";
     public static final String tbl_CompetitorDetails = "CompetitorDetails";
     private static final String tbl_CompetitorHeader_cols = "Tid,RetailerId,CompetitorID,Feedback,ImageName,Date,Pid,Remark,CounterId,distributorid,ridSF,VisitId";
-    private static final String tbl_CompetitorDetails_cols = "Tid,TrackingListID,tcompetitorid,pid,FromDate,ToDate,Feedback,ImageName,qty,reasonID";
+    private static final String tbl_CompetitorDetails_cols = "Tid,TrackingListID,tcompetitorid,pid,FromDate,ToDate,Feedback,ImageName,qty,reasonID,RField1";
     private static final String tbl_invoicetaxDetails = "InvoiceTaxDetails";
     private static final String tbl_invoicetaxDetails_cols = "invoiceid,pid,taxRate,taxType,taxValue,IsFreeProduct";
     private static final String tbl_ordertaxDetails = "OrderTaxDetails";
@@ -436,7 +436,7 @@ public class DataMembers {
     private static final String tbl_splitted_order_cols = "RetailerID,OrderID";
 
     private static final String tbl_PromotionHeader_cols = "Uid,RetailerId,Date,Remark,distributorid,Weightage,Score,ridSF,VisitId";
-    private static final String tbl_PromotionDetail_cols = "Uid,PromotionID,BrandID,IsExecuted,ImageName,reasonid,flag,MappingId,locid,ExecRatingLovId,PromoQty,HasAnnouncer,Score,fromDate,toDate";
+    private static final String tbl_PromotionDetail_cols = "Uid,PromotionID,BrandID,IsExecuted,ImageName,reasonid,flag,MappingId,locid,ExecRatingLovId,PromoQty,HasAnnouncer,Score,fromDate,toDate,remarks";
 
     private static final String tbl_MonthlyPlanHeaderMaster_cols = "RetailerID,Base,Promotion,Initiative,TargetMonth,Others,IsLock";
     private static final String tbl_MonthlyPlanDetail_cols = "RetailerId,InitId,Target";

@@ -963,7 +963,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                 if ((bmodel.getRetailerMaster().get(i).getBeatID() == beatId || beatId == 0)
                         && (bmodel.getRetailerMaster().get(i).getIsDeviated() != null
-                        &&("N").equals(bmodel.getRetailerMaster().get(i).getIsDeviated()))) {
+                        && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeviated()))) {
 
                     if (filter != null) {
                         if ((bmodel.getRetailerMaster().get(i).getRetailerName()
@@ -1698,6 +1698,22 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                         isFirstDone = true;
                     } else if (!isSecondDone) {
                         holder.tv_achvTgt2.setText(value);
+                        holder.tv_actualTgt2.setVisibility(View.GONE);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
+                //total retialers ordered weight
+                if (mRetTgtAchv.containsKey("VST22")) {
+                    String desc = mRetTgtAchv.get("VST22");
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(bmodel.formatValue(holder.retailerObjectHolder.getmOrderedTotWgt()));
+                        holder.tv_actualTgt1.setVisibility(View.GONE);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(bmodel.formatValue(holder.retailerObjectHolder.getmOrderedTotWgt()));
                         holder.tv_actualTgt2.setVisibility(View.GONE);
                         holder.tv_labelTgt2.setText(desc);
                         isSecondDone = true;

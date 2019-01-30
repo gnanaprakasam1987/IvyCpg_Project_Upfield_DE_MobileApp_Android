@@ -666,7 +666,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private void navigateToActivity(String menuName, String menuCode, Class activityName) {
         isClick = false;
         Intent intent = new Intent(getActivity(), activityName);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("screentitle", menuName);
         intent.putExtra("from", "1");
         intent.putExtra("isFromLodMgt", true);

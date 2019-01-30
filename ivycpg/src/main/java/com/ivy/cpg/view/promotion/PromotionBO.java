@@ -19,6 +19,7 @@ public class PromotionBO {
     private int promoQty;
     private int MappingId;
     private String parentHierarchy;
+    private String remarks;
 
     PromotionBO() {
 
@@ -41,6 +42,7 @@ public class PromotionBO {
         this.fromDate = promotionBO.getFromDate();
         this.toDate = promotionBO.getToDate();
         this.parentHierarchy = promotionBO.getParentHierarchy();
+        this.remarks = promotionBO.getRemarks();
     }
 
     public String getImagePath() {
@@ -205,5 +207,13 @@ public class PromotionBO {
 
     public void setParentHierarchy(String parentHierarchy) {
         this.parentHierarchy = parentHierarchy;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

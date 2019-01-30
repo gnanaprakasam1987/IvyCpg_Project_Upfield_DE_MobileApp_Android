@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.task;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,12 +48,17 @@ public class TaskListFragment extends Fragment {
     private TaskHelper taskHelper;
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onAttach(Context context) {
+        super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         taskHelper = TaskHelper.getInstance(getActivity());
         surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -64,6 +70,7 @@ public class TaskListFragment extends Fragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        taskHelper = TaskHelper.getInstance(getActivity());
         if (!bmodel.configurationMasterHelper.IS_NEW_TASK) {
             hideNewTaskMenu();
             // invalidateOptionsMenu();
