@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/orderScreenListRow"
-    android:layout_width="fill_parent"
-    android:layout_height="@dimen/retake_img_wd_ht"
-    android:background="@color/list_even_item_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:minHeight="@dimen/list_item_height_double_line"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/list_padding_left_n_right"
+    android:paddingTop="@dimen/target_top_margin"
+    android:paddingEnd="@dimen/list_padding_left_n_right"
+    android:paddingBottom="@dimen/target_top_margin">
 
 
     <RelativeLayout
-        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="3dp">
+        android:layout_gravity="center"
+        android:layout_weight="5"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/orderPRODNAME"
@@ -22,59 +27,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center"
-            android:layout_marginLeft="@dimen/skuwise_right_margin"
-            android:layout_marginStart="@dimen/skuwise_right_margin"
             android:gravity="start|center"
-            android:maxLines="1"
             android:text="@string/product_name" />
 
         <TextView
             android:id="@+id/prdcode"
-            style="@style/TextViewListItemPrimary"
-            android:layout_width="match_parent"
+            style="@style/TextViewListItemSecondaryHighlight"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/orderPRODNAME"
-            android:layout_marginLeft="@dimen/skuwise_right_margin"
-            android:layout_marginStart="@dimen/skuwise_right_margin"
-            android:layout_weight="1"
             android:gravity="start|center"
             android:text="@string/prod_code"
-            android:textSize="@dimen/text_size_secondary"
-            android:textStyle="bold"
             android:visibility="visible" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/sih_case"
         style="@style/TextViewListItemPrimary"
-        android:layout_width="@dimen/list_item_width_medium"
-        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:gravity="center"
-        android:padding="3dp"
         android:text="@string/zero" />
 
     <TextView
         android:id="@+id/sih_outer"
         style="@style/TextViewListItemPrimary"
-        android:layout_width="@dimen/list_item_width_medium"
-        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:gravity="center"
-        android:padding="3dp"
         android:text="@string/zero" />
 
     <TextView
         android:id="@+id/sih"
         style="@style/TextViewListItemPrimary"
-        android:layout_width="@dimen/list_item_width_medium"
-        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:gravity="center"
-        android:padding="3dp"
         android:text="@string/zero" />
 
 </LinearLayout>

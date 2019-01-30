@@ -147,7 +147,7 @@
                     android:id="@+id/cbIsPrimary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/card_margin"
+                    android:layout_margin="@dimen/card_margin"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvTitlePrimary" />
 
@@ -199,7 +199,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:inputType="textEmailAddress"
-                    android:maxLength="20"
+                    android:maxLength="50"
                     android:cursorVisible="true"
                     android:imeOptions="actionDone"
                     app:layout_constraintBottom_toBottomOf="parent"

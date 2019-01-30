@@ -139,8 +139,8 @@ public class NFCReadDialogActivity extends IvyBaseActivityNoActionBar {
                     .getString(R.string.select_reason));
             reasonAdapter.add(reason);
 
-            DBUtil db = new DBUtil(NFCReadDialogActivity.this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(NFCReadDialogActivity.this, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster("NFCRETAILER"));

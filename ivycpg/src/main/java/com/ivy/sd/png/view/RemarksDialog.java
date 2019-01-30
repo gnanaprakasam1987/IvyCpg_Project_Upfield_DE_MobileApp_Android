@@ -22,12 +22,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.promotion.PromotionBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.StringTokenizer;
 
@@ -37,18 +39,19 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
     private EditText rField1;
     private EditText rField2;
     private Spinner spnRField1;
-    private LinearLayout textInputLayout2;
-    private LinearLayout textInputLayout3, layout_remark;
-    private LinearLayout lnrRField1;
     private BusinessModel bmodel;
     @SuppressLint("ValidFragment")
     private final String mModuleName;
 
     ArrayAdapter<ReasonMaster> spinnerAdapter;
-    private LinearLayout layout_remark_type;
     private Spinner spinner_remark_type;
     boolean isSpinnerAvailable;
-    private String remarkLabel;
+    private PromotionBO promotionBO;
+    private PromotionRemarks mCallback;
+
+    public interface PromotionRemarks{
+        void updateRemarks();
+    }
 
     public RemarksDialog(String moduleName) {
         super();
@@ -56,29 +59,44 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
         this.mModuleName = moduleName;
     }
 
+    public RemarksDialog(PromotionBO promotionBO, String mModuleName, PromotionRemarks listener) {
+        super();
+        this.promotionBO = promotionBO;
+        this.mModuleName = mModuleName;
+        this.mCallback = listener;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        if (getDialog().getWindow() != null)
+            getDialog().getWindow()
+                    .setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         View view = inflater.inflate(R.layout.remarks_fragment_dialog, container, false);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        remarks = (EditText) view.findViewById(R.id.remarks);
-        rField1 = (EditText) view.findViewById(R.id.rField1);
-        rField2 = (EditText) view.findViewById(R.id.rField2);
-        spnRField1 = (Spinner) view.findViewById(R.id.spnrField1);
-        remarks.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        rField1.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        rField2.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        textInputLayout2 = (LinearLayout) view.findViewById(R.id.editText_layout2);
-        textInputLayout3 = (LinearLayout) view.findViewById(R.id.editText_layout3);
-        lnrRField1 = (LinearLayout) view.findViewById(R.id.lnrRField1);
+        remarks = view.findViewById(R.id.remarks);
+        rField1 = view.findViewById(R.id.rField1);
+        rField2 = view.findViewById(R.id.rField2);
+        spnRField1 = view.findViewById(R.id.spnrField1);
+        remarks.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        rField1.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        rField2.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        LinearLayout textInputLayout2 = view.findViewById(R.id.editText_layout2);
+        LinearLayout textInputLayout3 = view.findViewById(R.id.editText_layout3);
+        LinearLayout lnrRField1 = view.findViewById(R.id.lnrRField1);
 
-        layout_remark = (LinearLayout) view.findViewById(R.id.editText_layout1);
-        layout_remark_type = (LinearLayout) view.findViewById(R.id.layout_remark_type);
-        spinner_remark_type = (Spinner) view.findViewById(R.id.spinner_remark_type);
+        LinearLayout layout_remark = view.findViewById(R.id.editText_layout1);
+        LinearLayout layout_remark_type = view.findViewById(R.id.layout_remark_type);
+        spinner_remark_type = view.findViewById(R.id.spinner_remark_type);
 
         DisplayMetrics outMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay()
@@ -145,13 +163,6 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                                 .applyLabels(view.findViewById(
                                         R.id.remark_type_label)
                                         .getTag()));
-
-
-            if (bmodel.labelsMasterHelper.applyLabels("remark_dropdown_label") != null)
-                remarkLabel = (bmodel.labelsMasterHelper
-                        .applyLabels("remark_dropdown_label").toString());
-            else
-                remarkLabel = getResources().getString(R.string.select_remarks_type);
 
 
         } catch (Exception e) {
@@ -309,8 +320,8 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
             case "MENU_CROWN":
                 ((TextView) view.findViewById(R.id.titleBar))
                         .setText(getResources().getString(R.string.crown_count));
-                TextView titleBar = (TextView) view.findViewById(R.id.titleBar);
-                titleBar.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+                TextView titleBar = view.findViewById(R.id.titleBar);
+                titleBar.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
                 remarks.setHint(getResources().getString(R.string.enter) + " " + getResources().getString(R.string.crown_count));
                 remarks.setInputType(InputType.TYPE_CLASS_PHONE);
                 remarks.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
@@ -323,13 +334,22 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
             case "MENU_COUNTER":
                 remarks.setText(bmodel.getNote());
                 break;
+            case "MENU_PROMO_REMARKS":
+                textInputLayout2.setVisibility(View.GONE);
+                textInputLayout3.setVisibility(View.GONE);
+                lnrRField1.setVisibility(View.GONE);
+                if (!AppUtils.isNullOrEmpty(promotionBO.getRemarks()))
+                    remarks.setText(promotionBO.getRemarks());
+                else
+                    remarks.setText("");
+                break;
             default:
                 break;
         }
-        Button ok = (Button) view.findViewById(R.id.btn_ok);
-        Button cancel = (Button) view.findViewById(R.id.btn_cancel);
-        cancel.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        ok.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button ok = view.findViewById(R.id.btn_ok);
+        Button cancel = view.findViewById(R.id.btn_cancel);
+        cancel.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+        ok.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
         return view;
@@ -385,6 +405,9 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 case "MENU_COUNTER":
                     bmodel.setNote(remarks.getText().toString());
                     break;
+                case "MENU_PROMO_REMARKS":
+                    promotionBO.setRemarks(remarks.getText().toString());
+                    mCallback.updateRemarks();
                 default:
                     break;
             }

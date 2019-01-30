@@ -98,7 +98,7 @@ public class UploadHelper {
         DBUtil db;
         boolean check = true;
         try {
-            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -132,7 +132,7 @@ public class UploadHelper {
         handler = handlerr;
         try {
 
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -910,8 +910,8 @@ public class UploadHelper {
 
     private void updateUploadFlagRetailerWise(Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             String query = "";
             Set<String> keys = DataMembers.uploadColumnWithOutRetailer.keySet();
@@ -1115,8 +1115,8 @@ public class UploadHelper {
      */
     private void updateUploadFlag(HashMap<String, String> updateTableMap, Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Set<String> keys = updateTableMap.keySet();
             Commons.print(keys.size() + "size");
@@ -1146,8 +1146,8 @@ public class UploadHelper {
         JSONObject jsonObjData;
         this.handler = handler;
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Set<String> keys = DataMembers.uploadInvoiceSequenceNo.keySet();
@@ -1279,8 +1279,8 @@ public class UploadHelper {
         String rid = "";
         try {
             this.handler = handler;
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             JSONObject jsonobj = new JSONObject();

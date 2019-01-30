@@ -48,8 +48,8 @@ public class DistOrderReportHelper {
                 ArrayList<DistOrderReportBo> reportdistordbooking = null;
                 try {
                     DistOrderReportBo orderreport;
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     StringBuilder sb = new StringBuilder();
                     sb.append("select DOH.uid,DOH.distid,DM.DName,DOH.TotalValue,DOH.LPC,DOH.upload From DistOrderHeader DOH");
@@ -93,8 +93,8 @@ public class DistOrderReportHelper {
                 ArrayList<DistOrderReportBo> reportdistordbooking = null;
                 try {
                     DistOrderReportBo orderreport;
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     StringBuilder sb = new StringBuilder();
                     sb.append("select DOH.uid,DOH.distid,DM.DName,DOH.TotalValue,DOH.LPC,DOH.upload From DistOrderHeader DOH");
@@ -135,8 +135,8 @@ public class DistOrderReportHelper {
             public Double call() throws Exception {
                 double tot = 0;
                 try {
-                    DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.createDataBase();
                     db.openDataBase();
                     Cursor c = db.selectSQL("select count (distinct retailerid) from "
@@ -163,8 +163,8 @@ public class DistOrderReportHelper {
             public Double call() throws Exception {
                 double tot = 0;
                 try {
-                    DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.createDataBase();
                     db.openDataBase();
                     Cursor c = db.selectSQL("select sum(linespercall) from "
@@ -193,8 +193,8 @@ public class DistOrderReportHelper {
                 ArrayList<DistOrderReportBo> distributorOrderList = null;
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(context, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(context, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     StringBuilder sb = new StringBuilder();
                     sb.append("select PM.pname,PM.psname,DOD.pid,DOD.qty,DOD.uomid,DOD.uomcount,DOD.batchid,BM.batchNum,DOD.LineValue from DistOrderDetails ");

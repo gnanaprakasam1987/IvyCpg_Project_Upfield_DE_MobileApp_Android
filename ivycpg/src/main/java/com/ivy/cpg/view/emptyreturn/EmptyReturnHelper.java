@@ -46,7 +46,7 @@ public class EmptyReturnHelper {
 		try {
 			mProductType = new Vector<>();
 
-			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db = new DBUtil(context, DataMembers.DB_NAME);
 			db.openDataBase();
 			String sb = "Select Distinct PM.Pid,PM.Pname,PM.piece_uomid From ProductMaster PM INNER JOIN StandardListMaster SLM on PM.TypeId = SLM.ListId"
 					+ " WHERE PM.isReturnable =1 and SLM.ListCode ='GENERIC' ORDER BY PM.Pid";
@@ -81,13 +81,13 @@ public class EmptyReturnHelper {
 	public void saveEmptyReturn() {
 		DBUtil db = null;
 		try {
-			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db = new DBUtil(context, DataMembers.DB_NAME);
 			db.openDataBase();
 
 			String tid;
 			String values;
 			double lineValue, returnValue = 0;
-			String headerColumns = "orderid,orderdate,retailerid,ReturnValue,OFlag";
+			String headerColumns = "orderid,orderdate,retailerid,ReturnValue,OFlag,ridSF,VisitId";
 			String returncolumns = "OrderID,Pid,ReturnQty,Price,UomID,TypeID,LineValue,RetailerID,LiableQty,Qty";
 
 			tid = QT(bmodel.getAppDataProvider().getUser().getUserid()
@@ -164,7 +164,8 @@ public class EmptyReturnHelper {
 			// save header with total line value
 			values = tid + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
 					+ QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) + ","
-					+ QT(returnValue + "") + "," + 0;
+					+ QT(returnValue + "") + "," + 0 + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+					+ bmodel.getAppDataProvider().getUniqueId();
 
 			db.insertSQL(DataMembers.tbl_orderHeader, headerColumns, values);
 
@@ -213,7 +214,7 @@ public class EmptyReturnHelper {
 	private void saveTotalOrderReturnQty() {
 		DBUtil db = null;
 		try {
-			db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+			db = new DBUtil(context, DataMembers.DB_NAME);
 			db.openDataBase();
 			String sql, values;
 			Cursor cursor;

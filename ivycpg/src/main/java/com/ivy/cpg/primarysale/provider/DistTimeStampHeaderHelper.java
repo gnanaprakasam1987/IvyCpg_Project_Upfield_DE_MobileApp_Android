@@ -55,8 +55,8 @@ public class DistTimeStampHeaderHelper {
     public void saveTimeStamp(String date, String timeIn) {
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = " UId , DistId , Date , TimeIn , TimeOut ,Latitude,Longitude,DownloadedDate,Upload";
@@ -88,8 +88,8 @@ public class DistTimeStampHeaderHelper {
      */
     public void updateTimeStamp(String timeOut) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
@@ -122,8 +122,8 @@ public class DistTimeStampHeaderHelper {
 
     public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = " UId , Date , MenuCode , TimeIn , TimeOut , Upload";
@@ -148,8 +148,8 @@ public class DistTimeStampHeaderHelper {
      */
     public void updateTimeStampModuleWise(String timeOut) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;

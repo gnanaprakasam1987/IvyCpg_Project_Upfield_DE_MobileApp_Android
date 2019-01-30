@@ -6,7 +6,6 @@ import android.database.DatabaseUtils;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -46,7 +45,7 @@ public class SalesReturnDeliveryHelper {
                     loadConfigurations(context);
                     BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
                     Vector<SalesReturnDeliveryDataBo> returnDeliveryDataModelVector = new Vector<>();
-                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME);
 
                     dbUtil.openDataBase();
                     Cursor cursor = dbUtil.selectSQL("Select " +
@@ -96,7 +95,7 @@ public class SalesReturnDeliveryHelper {
                     Vector<SalesReturnDeliveryDataModel> returnDeliveryDataModelVector = new Vector<>();
                     ArrayList<SalesReturnDeliveryDataModel> skuLevelReturnData;
                     HashMap<String, ArrayList<SalesReturnDeliveryDataModel>> srdDataModelMap = new HashMap<>();
-                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    DBUtil dbUtil = new DBUtil(context, DataMembers.DB_NAME);
                     dbUtil.openDataBase();
 
                     Cursor cursor = dbUtil
@@ -242,15 +241,15 @@ public class SalesReturnDeliveryHelper {
     public boolean cancelSalesReturnDelivery(Context mContext, SalesReturnDeliveryDataBo salesReturnDeliveryDataBo) {
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
             BusinessModel businessModel = (BusinessModel) mContext.getApplicationContext();
 
             String uid = ("SR"
-                    + businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + businessModel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
 
 
@@ -268,13 +267,13 @@ public class SalesReturnDeliveryHelper {
 
             String columns;
             String values;
-            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,isCancel";
+            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,isCancel,ridSF,VisitId";
 
             values = AppUtils.QT(uid) + ","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + AppUtils.QT(businessModel.retailerMasterBO.getRetailerID()) + ","
                     + businessModel.retailerMasterBO.getBeatID() + ","
-                    + businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + businessModel.getAppDataProvider().getUser().getUserid()
                     + "," + AppUtils.QT(salesReturnDeliveryDataBo.getReturnValue()) + "," + salesReturnDeliveryDataBo.getLpc() + ","
                     + AppUtils.QT(businessModel.retailerMasterBO.getRetailerCode()) + ","
                     + AppUtils.QT(businessModel.getSaleReturnNote()) + ","
@@ -287,7 +286,9 @@ public class SalesReturnDeliveryHelper {
                     + indicativeFlag + ","
                     + AppUtils.QT(salesReturnDeliveryDataBo.getRefModuleTId()) + ","
                     + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + "," +
-                    AppUtils.QT(salesReturnDeliveryDataBo.getUId()) + "," + AppUtils.QT("1");
+                    AppUtils.QT(salesReturnDeliveryDataBo.getUId()) + "," + AppUtils.QT("1") + ","
+                    + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                    + businessModel.getAppDataProvider().getUniqueId();
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
@@ -304,8 +305,8 @@ public class SalesReturnDeliveryHelper {
         try {
 
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             boolean isData;
@@ -323,7 +324,7 @@ public class SalesReturnDeliveryHelper {
 
             String sb = "select uid from SalesReturnHeader where RefUID=" + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) +
                     " AND RetailerID=" +
-                    AppUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
+                    AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()) +
                     " AND upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -338,7 +339,7 @@ public class SalesReturnDeliveryHelper {
             }
 
             String uid = ("SR"
-                    + businessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + businessModel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
 
 
@@ -516,7 +517,7 @@ public class SalesReturnDeliveryHelper {
 
             if (isData) {
                 // Preapre and save salesreturn header.
-                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,CollectStatus,invoiceid";
+                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,RefUID,CollectStatus,invoiceid,ridSF,VisitId";
 
                 values = AppUtils.QT(uid) + ","
                         + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
@@ -537,7 +538,9 @@ public class SalesReturnDeliveryHelper {
                         + AppUtils.QT(salesReturnDeliveryDataBo.getRefModule()) + ","
                         + AppUtils.QT(salesReturnDeliveryDataBo.getUId()) + ","
                         + AppUtils.QT("F") + ","
-                        + AppUtils.QT(invoiceID);
+                        + AppUtils.QT(invoiceID) + ","
+                        + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                        + businessModel.getAppDataProvider().getUniqueId();
 
                 db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
@@ -561,8 +564,8 @@ public class SalesReturnDeliveryHelper {
             SHOW_SALES_RET_CASE = false;
             SHOW_SALES_RET_PCS = false;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster

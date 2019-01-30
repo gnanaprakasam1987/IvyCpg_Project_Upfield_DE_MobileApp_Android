@@ -26,7 +26,7 @@
         <item name="android:textColorSecondary">@color/half_Black</item>
 
         <!--screen background -->
-        <item name="android:windowBackground">@color/screen_bg_color</item>
+        <item name="android:windowBackground">@color/bottom_bg</item>
 
 
         <!--Customize all Labels based on Theme -->

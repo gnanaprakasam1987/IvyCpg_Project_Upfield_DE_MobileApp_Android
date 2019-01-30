@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 import com.ivy.core.data.label.LabelsDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
@@ -47,8 +46,8 @@ public class LabelsMasterHelper {
         labelsMap = new HashMap<>();
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db
@@ -129,8 +128,8 @@ public class LabelsMasterHelper {
      */
     public void downloadSyncContent() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db

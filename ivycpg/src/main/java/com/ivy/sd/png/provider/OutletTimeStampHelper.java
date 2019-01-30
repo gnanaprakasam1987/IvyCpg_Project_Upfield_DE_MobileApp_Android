@@ -15,7 +15,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.DeviceUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -121,8 +122,8 @@ public class OutletTimeStampHelper {
     public void deleteTimeStamp() {
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_OutletTimestamp, "retailerid="
@@ -141,8 +142,8 @@ public class OutletTimeStampHelper {
      */
     public void deleteTimeStampAllModule() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_outlet_time_stamp_detail, "retailerid="
@@ -161,8 +162,8 @@ public class OutletTimeStampHelper {
      */
     public void deleteTimeStampImages() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String query = "SELECT imageName from OutletTimestampImages where UID=" + getUid();
@@ -187,8 +188,8 @@ public class OutletTimeStampHelper {
 
     public void deleteImagesFromFolder() {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         String query = "SELECT imageName from OutletTimestampImages where UID=" + getUid();
@@ -226,7 +227,7 @@ public class OutletTimeStampHelper {
      */
     public boolean saveTimeStamp(String date, String timeIn, float distance, String folderPath, String fName, String mVisitMode, String mNFCREasonId) {
 
-        ArrayList<UserMasterBO> joinCallList = bmodel.userMasterHelper.getUserMasterBO().getJoinCallUserList();
+        ArrayList<UserMasterBO> joinCallList = bmodel.getAppDataProvider().getUser().getJoinCallUserList();
         boolean sucessFlag=true;
         try {
 		try {
@@ -238,17 +239,17 @@ public class OutletTimeStampHelper {
 			float dist = 0f;
             try {
                 dist =LocationUtil.calculateDistance(
-					bmodel.getRetailerMasterBO().getLatitude(), bmodel.getRetailerMasterBO().getLongitude());} catch (Exception e) {
+					bmodel.getAppDataProvider().getRetailMaster().getLatitude(), bmodel.getAppDataProvider().getRetailMaster().getLongitude());} catch (Exception e) {
                 Commons.printException(e);
             }
 
             int joinCallFlag = 0;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
-            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc";
+            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc,ridSF";
 
 
             String values = getUid() + ","
@@ -262,15 +263,16 @@ public class OutletTimeStampHelper {
                     + joinCallFlag + ","
                     + QT(LocationUtil.accuracy + "") + ","
                     + QT(distance + "") + ","
-                    + (dist < bmodel.getRetailerMasterBO().getGpsDistance() ? 1 : 0) + ","
-                    + (getLastRetailerId() == SDUtil.convertToInt(bmodel.getRetailerMasterBO().getRetailerID()) ? getLastRetailerSequence() : (getLastRetailerSequence() + 1))
+                    + (dist < bmodel.getAppDataProvider().getRetailMaster().getGpsDistance() ? 1 : 0) + ","
+                    + (getLastRetailerId() == SDUtil.convertToInt(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) ? getLastRetailerSequence() : (getLastRetailerSequence() + 1))
                     + "," + bmodel.retailerMasterBO.getDistributorId()
-                    + "," + getBatteryPercentage(context)
+                    + "," + DeviceUtils.getBatteryPercentage(context)
                     + "," + QT(LocationUtil.mProviderName)
                     + "," + QT(String.valueOf(bmodel.locationUtil.isGPSProviderEnabled()))
                     + "," + QT(String.valueOf(bmodel.retailerMasterBO.getIsDeviated()== null ? "": bmodel.retailerMasterBO.getIsDeviated()))
                     + "," + QT(String.valueOf(bmodel.getOrderValue()))
-                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()));
+                    + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()))
+                    + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
 			db.insertSQL("OutletTimestamp", columns, values);
 
@@ -309,8 +311,8 @@ public class OutletTimeStampHelper {
      */
     public void updateTimeStamp(String timeOut, String reasonDesc) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
@@ -346,8 +348,8 @@ public class OutletTimeStampHelper {
      */
     public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -375,8 +377,8 @@ public class OutletTimeStampHelper {
      */
     public void updateTimeStampModuleWise(String timeOut) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String dateTime = com.ivy.sd.png.commons.SDUtil.now(com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL) + " " + timeOut;
@@ -394,8 +396,8 @@ public class OutletTimeStampHelper {
     private void saveOutletTimeStampImages(String folderPath,
                                            String fNameStarts) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -431,8 +433,8 @@ public class OutletTimeStampHelper {
 
     public void getlastRetailerDatas() {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -463,8 +465,8 @@ public class OutletTimeStampHelper {
     public void updateJointCallDetailsByModuleWise(String menuCode, String uid, String oldUid) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -521,8 +523,8 @@ public class OutletTimeStampHelper {
     public boolean isVisited(String retailerId) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -541,8 +543,8 @@ public class OutletTimeStampHelper {
 
     public void deleteTimeStampModuleWise(String modulecode) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_outlet_time_stamp_detail, "retailerid="

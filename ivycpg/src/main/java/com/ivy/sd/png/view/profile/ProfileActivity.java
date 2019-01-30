@@ -96,7 +96,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.profile.assetHistory.AssetHistoryFragment;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
@@ -2364,6 +2364,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     finish();
                 } else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
                     Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     i.putExtra("isPlanningSub", true);
                     startActivity(i);
                     finish();

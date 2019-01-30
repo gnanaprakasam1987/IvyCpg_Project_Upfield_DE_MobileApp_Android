@@ -36,7 +36,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 

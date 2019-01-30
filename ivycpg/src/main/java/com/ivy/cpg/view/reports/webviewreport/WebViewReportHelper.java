@@ -42,7 +42,7 @@ public class WebViewReportHelper {
 
     public void downloadWebViewArchAuthUrl() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
 
             db.openDataBase();
             Cursor c = db
@@ -76,7 +76,7 @@ public class WebViewReportHelper {
 
     public void downloadWebViewArchUrl() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_ARCH'");
@@ -120,8 +120,8 @@ public class WebViewReportHelper {
 
         boolean isAmazonUpload = false;
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c = db
@@ -163,7 +163,7 @@ public class WebViewReportHelper {
     }
 
     public void downloadWebViewReportUrl(String menuCode) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db
                 .selectSQL("select ListName from StandardListMaster where ListCode='URL' AND ListType = 'WEBVIEW_REPORTS'");

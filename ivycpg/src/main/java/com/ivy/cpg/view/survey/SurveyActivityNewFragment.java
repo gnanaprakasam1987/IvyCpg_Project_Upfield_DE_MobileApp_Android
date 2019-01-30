@@ -78,7 +78,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.SlantView;
@@ -298,7 +298,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     private void loadListData() {
 
-        if( surveyHelperNew.getSurvey() == null){
+        if (surveyHelperNew.getSurvey() == null) {
             return;
         }
 
@@ -620,7 +620,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         }
 
                     } else {
-                        if(surveyHelperNew.isAnsweredTypeEmail()){
+                        if (surveyHelperNew.isAnsweredTypeEmail()) {
 
                             if (surveyHelperNew.hasPhotoToSave())
                                 new SaveSurveyTask().execute();
@@ -631,13 +631,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 checkClicked = false;
                             }
 
-                        }else{
+                        } else {
                             checkClicked = false;
                             bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
                         }
                     }
-                }
-                else {
+                } else {
                     if (surveyHelperNew.getInvalidEmails().length() > 0) {
                         bmodel.showAlert("Kindly provide valid mail id for \n" + surveyHelperNew.getInvalidEmails(), 0);
                     } else if (surveyHelperNew.getNotInRange().length() > 0) {
@@ -941,93 +940,95 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             int answerCount = answers.size();
             boolean checked = false;
             for (int i = 0; i < answerCount; i++) {
-                final RadioButton radioButton = new RadioButton(getActivity());
-                radioButton.setId(answers.get(i).getAnswerID());
-                radioButton.setText(answers.get(i).getAnswer());
-                radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
-                radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
-                if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
-                        answers.get(i).getAnswerID())) {
-                    radioButton.setChecked(true);
-                    checked = true;
-                } else {
-                    radioButton.setChecked(false);
-                }
-                if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
-                        answers.get(i).getAnswerID())) {
-                    if (answers.get(i).isExcluded()) {
-                        mCurrentQuestionBO.setQuestScore(0);
-                        mCurrentQuestionBO.setExcludeQuestionWeight(answers.get(i)
-                                .isExcluded());
+                if (answers.get(i).getAnswer() != null) {
+                    final RadioButton radioButton = new RadioButton(getActivity());
+                    radioButton.setId(answers.get(i).getAnswerID());
+                    radioButton.setText(answers.get(i).getAnswer());
+                    radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
+                    radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
+                    if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
+                            answers.get(i).getAnswerID())) {
+                        radioButton.setChecked(true);
+                        checked = true;
                     } else {
-                        mCurrentQuestionBO.setQuestScore(answers.get(i).getScore());
-                        mCurrentQuestionBO.setExcludeQuestionWeight(false);
+                        radioButton.setChecked(false);
                     }
-                }
-                radioButton
-                        .setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton buttonView,
-                                                         boolean isChecked) {
-                                View view = getView();
-                                if (view != null) {
-                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                                }
-                                if (isChecked) {
-                                    subQuestionLL.removeAllViews();
-                                    int id = buttonView.getId();
-                                    if (!mCurrentQuestionBO.getSelectedAnswerIDs().isEmpty()) {
-                                        int tempAnsSize = answers.size();
-                                        for (int i = 0; i < tempAnsSize; i++) {
+                    if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
+                            answers.get(i).getAnswerID())) {
+                        if (answers.get(i).isExcluded()) {
+                            mCurrentQuestionBO.setQuestScore(0);
+                            mCurrentQuestionBO.setExcludeQuestionWeight(answers.get(i)
+                                    .isExcluded());
+                        } else {
+                            mCurrentQuestionBO.setQuestScore(answers.get(i).getScore());
+                            mCurrentQuestionBO.setExcludeQuestionWeight(false);
+                        }
+                    }
+                    radioButton
+                            .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                                @Override
+                                public void onCheckedChanged(CompoundButton buttonView,
+                                                             boolean isChecked) {
+                                    View view = getView();
+                                    if (view != null) {
+                                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                    }
+                                    if (isChecked) {
+                                        subQuestionLL.removeAllViews();
+                                        int id = buttonView.getId();
+                                        if (!mCurrentQuestionBO.getSelectedAnswerIDs().isEmpty()) {
+                                            int tempAnsSize = answers.size();
+                                            for (int i = 0; i < tempAnsSize; i++) {
+                                                if (answers.get(i).getAnswerID() == mCurrentQuestionBO
+                                                        .getSelectedAnswerIDs().get(0)) {
+                                                    int tempQuestListSize = answers.get(i).getQuestionList().size();
+                                                    for (int j = 0; j < tempQuestListSize; j++) {
+                                                        String s = answers.get(i).getQuestionList().get(j) + "";
+                                                        if (!"0".equals(s)) {
+                                                            removeQID(answers.get(i).getQuestionList().get(j));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        mCurrentQuestionBO.getSelectedAnswerIDs()
+                                                .clear();
+                                        mCurrentQuestionBO.getSelectedAnswer()
+                                                .clear();
+                                        mCurrentQuestionBO.setSelectedAnswerID(id);
+                                        mCurrentQuestionBO.setSelectedAnswer(radioButton.getText().toString());
+                                        int tempAnsSize1 = answers.size();
+                                        for (int i = 0; i < tempAnsSize1; i++) {
                                             if (answers.get(i).getAnswerID() == mCurrentQuestionBO
                                                     .getSelectedAnswerIDs().get(0)) {
-                                                int tempQuestListSize = answers.get(i).getQuestionList().size();
-                                                for (int j = 0; j < tempQuestListSize; j++) {
+                                                int tempQuestListSize2 = answers.get(i).getQuestionList().size();
+                                                for (int j = 0; j < tempQuestListSize2; j++) {
                                                     String s = answers.get(i).getQuestionList().get(j) + "";
                                                     if (!"0".equals(s)) {
-                                                        removeQID(answers.get(i).getQuestionList().get(j));
+                                                        checkQID(answers.get(i).getQuestionList().get(j));
+                                                        generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                    mCurrentQuestionBO.getSelectedAnswerIDs()
-                                            .clear();
-                                    mCurrentQuestionBO.getSelectedAnswer()
-                                            .clear();
-                                    mCurrentQuestionBO.setSelectedAnswerID(id);
-                                    mCurrentQuestionBO.setSelectedAnswer(radioButton.getText().toString());
-                                    int tempAnsSize1 = answers.size();
-                                    for (int i = 0; i < tempAnsSize1; i++) {
-                                        if (answers.get(i).getAnswerID() == mCurrentQuestionBO
-                                                .getSelectedAnswerIDs().get(0)) {
-                                            int tempQuestListSize2 = answers.get(i).getQuestionList().size();
-                                            for (int j = 0; j < tempQuestListSize2; j++) {
-                                                String s = answers.get(i).getQuestionList().get(j) + "";
-                                                if (!"0".equals(s)) {
-                                                    checkQID(answers.get(i).getQuestionList().get(j));
-                                                    generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
-                                                }
-                                            }
-                                        }
+                                    if (mCurrentQuestionBO.equals(qScore.getTag())) {
+                                        String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && mCurrentQuestionBO.getQuestScore() > mCurrentQuestionBO.getMaxScore())
+                                                ? mCurrentQuestionBO.getMaxScore() : mCurrentQuestionBO.getQuestScore())) + "/"
+                                                + mCurrentQuestionBO.getQuestWeight();
+                                        qScore.setText(strScore);
+                                        questionsRv.invalidate();
+                                        updateSurveyScore();
+                                        updateOverAllSurveyScore();
                                     }
+                                    rvAdapter.notifyDataSetChanged();
                                 }
-                                if (mCurrentQuestionBO.equals(qScore.getTag())) {
-                                    String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && mCurrentQuestionBO.getQuestScore() > mCurrentQuestionBO.getMaxScore())
-                                            ? mCurrentQuestionBO.getMaxScore() : mCurrentQuestionBO.getQuestScore())) + "/"
-                                            + mCurrentQuestionBO.getQuestWeight();
-                                    qScore.setText(strScore);
-                                    questionsRv.invalidate();
-                                    updateSurveyScore();
-                                    updateOverAllSurveyScore();
-                                }
-                                rvAdapter.notifyDataSetChanged();
-                            }
-                        });
-                LinearLayout linLayoutRad = new LinearLayout(getActivity());
-                linLayoutRad.addView(radioButton, params1);
-                mRadioGroup.addView(linLayoutRad);
+                            });
+                    LinearLayout linLayoutRad = new LinearLayout(getActivity());
+                    linLayoutRad.addView(radioButton, params1);
+                    mRadioGroup.addView(linLayoutRad);
+                }
             }
             if (mCurrentQuestionBO.equals(qScore.getTag())) {
                 String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && mCurrentQuestionBO.getQuestScore() > mCurrentQuestionBO.getMaxScore())
@@ -1086,6 +1087,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                              final QuestionBO mCurrentQuestionBO, final TextView qScore, final LinearLayout subQuestionLL, final String qNO) {
         answerLL.removeAllViews();
         if (mCurrentQuestionBO.getAnswersList().get(0).getAnswerID() != -1
+                && mCurrentQuestionBO.getAnswersList().get(0).getAnswer() != null
                 && !mCurrentQuestionBO.getAnswersList().get(0).getAnswer()
                 .equals(getResources().getString(R.string.plain_select))) {
             AnswerBO selectBo = new AnswerBO();
@@ -1100,8 +1102,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         ArrayAdapter<String> comboAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);
         int ansSize = answers.size();
-        for (int i = 0; i < ansSize; i++)
-            comboAdapter.add(answers.get(i).getAnswer());
+        for (int i = 0; i < ansSize; i++) {
+            if (answers.get(i).getAnswer() != null)
+                comboAdapter.add(answers.get(i).getAnswer());
+        }
         comboAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         items.setAdapter(comboAdapter);
@@ -1242,121 +1246,123 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         subQuestionLL.removeAllViews();
         mCurrentQuestionBO.setQuestScore(0);
         for (int i = 0; i < answerSize; i++) {
-            checkBox = new CheckBox(getActivity());
-            checkBox.setId(answers.get(i).getAnswerID());
-            checkBox.setText(answers.get(i).getAnswer());
-            checkBox.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
-            checkBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
-            if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
-                    answers.get(i).getAnswerID())) {
-                checkBox.setChecked(true);
-                //   subQuestionLL.removeAllViews();
-                int tempQuestListSize1 = answers.get(i).getQuestionList().size();
-                for (int j = 0; j < tempQuestListSize1; j++) {
-                    String s = answers.get(i).getQuestionList().get(j) + "";
-                    if (!"0".equals(s)) {
-                        checkQID(answers.get(i).getQuestionList().get(j));
-                        generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
-                    }
-                }
-            } else {
-                checkBox.setChecked(false);
-            }
-            if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
-                    answers.get(i).getAnswerID())) {
-                score = score + answers.get(i).getScore();
-                if (answers.get(i).isExcluded())
-                    isExclude = true;
-                mCurrentQuestionBO.setQuestScore((mCurrentQuestionBO.getQuestScore() + answers.get(i).getScore()));
-            }
-            if (isExclude) {
-                score = 0;
-                mCurrentQuestionBO.setExcludeQuestionWeight(true);
-            } else {
-                mCurrentQuestionBO.setExcludeQuestionWeight(false);
-            }
-            // mCurrentQuestionBO.setQuestScore(answers.get(i).getScore());
-            final float finalScore = score;
-            checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView,
-                                             boolean isChecked) {
-                    Integer obj = buttonView.getId();
-                    View view = getView();
-                    if (view != null) {
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                    }
-                    if (isChecked) {
-                        //  subQuestionLL.removeAllViews();
-                        if (!mCurrentQuestionBO.getSelectedAnswerIDs()
-                                .contains(obj)) {
-                            mCurrentQuestionBO.setSelectedAnswerID(buttonView
-                                    .getId());
-                            mCurrentQuestionBO.setSelectedAnswer(buttonView.getText().toString());
+            if (answers.get(i).getAnswer() != null) {
+                checkBox = new CheckBox(getActivity());
+                checkBox.setId(answers.get(i).getAnswerID());
+                checkBox.setText(answers.get(i).getAnswer());
+                checkBox.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
+                checkBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
+                if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
+                        answers.get(i).getAnswerID())) {
+                    checkBox.setChecked(true);
+                    //   subQuestionLL.removeAllViews();
+                    int tempQuestListSize1 = answers.get(i).getQuestionList().size();
+                    for (int j = 0; j < tempQuestListSize1; j++) {
+                        String s = answers.get(i).getQuestionList().get(j) + "";
+                        if (!"0".equals(s)) {
+                            checkQID(answers.get(i).getQuestionList().get(j));
+                            generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
                         }
-                        int tempAnsListSize1 = answers.size();
-                        for (int i = 0; i < tempAnsListSize1; i++) {
-                            if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(answers.get(i).getAnswerID())) {
-                                int tempQuestListSize1 = answers.get(i).getQuestionList().size();
-                                for (int j = 0; j < tempQuestListSize1; j++) {
-                                    String s = answers.get(i).getQuestionList().get(j) + "";
-                                    if (!"0".equals(s)) {
-                                        checkQID(answers.get(i).getQuestionList().get(j));
-                                        generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
+                    }
+                } else {
+                    checkBox.setChecked(false);
+                }
+                if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
+                        answers.get(i).getAnswerID())) {
+                    score = score + answers.get(i).getScore();
+                    if (answers.get(i).isExcluded())
+                        isExclude = true;
+                    mCurrentQuestionBO.setQuestScore((mCurrentQuestionBO.getQuestScore() + answers.get(i).getScore()));
+                }
+                if (isExclude) {
+                    score = 0;
+                    mCurrentQuestionBO.setExcludeQuestionWeight(true);
+                } else {
+                    mCurrentQuestionBO.setExcludeQuestionWeight(false);
+                }
+                // mCurrentQuestionBO.setQuestScore(answers.get(i).getScore());
+                final float finalScore = score;
+                checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView,
+                                                 boolean isChecked) {
+                        Integer obj = buttonView.getId();
+                        View view = getView();
+                        if (view != null) {
+                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        }
+                        if (isChecked) {
+                            //  subQuestionLL.removeAllViews();
+                            if (!mCurrentQuestionBO.getSelectedAnswerIDs()
+                                    .contains(obj)) {
+                                mCurrentQuestionBO.setSelectedAnswerID(buttonView
+                                        .getId());
+                                mCurrentQuestionBO.setSelectedAnswer(buttonView.getText().toString());
+                            }
+                            int tempAnsListSize1 = answers.size();
+                            for (int i = 0; i < tempAnsListSize1; i++) {
+                                if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(answers.get(i).getAnswerID())) {
+                                    int tempQuestListSize1 = answers.get(i).getQuestionList().size();
+                                    for (int j = 0; j < tempQuestListSize1; j++) {
+                                        String s = answers.get(i).getQuestionList().get(j) + "";
+                                        if (!"0".equals(s)) {
+                                            checkQID(answers.get(i).getQuestionList().get(j));
+                                            generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
+                                        }
                                     }
                                 }
                             }
-                        }
-                    } else {
-                        subQuestionLL.removeAllViews();
+                        } else {
+                            subQuestionLL.removeAllViews();
 
-                        for (int i = 0; i < answers.size(); i++) {
-                            int ansid = mCurrentQuestionBO.getSelectedAnswerIDs().indexOf(buttonView.getId());
-                            if (mCurrentQuestionBO.getSelectedAnswerIDs().get(ansid).equals(answers.get(i).getAnswerID()) &&
-                                    mCurrentQuestionBO.getSelectedAnswerIDs().get(ansid).equals(buttonView.getId())) {
-                                int tempQuestListSize1 = answers.get(i).getQuestionList().size();
-                                for (int j = 0; j < tempQuestListSize1; j++) {
-                                    String s = answers.get(i).getQuestionList().get(j) + "";
-                                    if (!"0".equals(s)) {
-                                        checkQID(answers.get(i).getQuestionList().get(j));
-                                        generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
+                            for (int i = 0; i < answers.size(); i++) {
+                                int ansid = mCurrentQuestionBO.getSelectedAnswerIDs().indexOf(buttonView.getId());
+                                if (mCurrentQuestionBO.getSelectedAnswerIDs().get(ansid).equals(answers.get(i).getAnswerID()) &&
+                                        mCurrentQuestionBO.getSelectedAnswerIDs().get(ansid).equals(buttonView.getId())) {
+                                    int tempQuestListSize1 = answers.get(i).getQuestionList().size();
+                                    for (int j = 0; j < tempQuestListSize1; j++) {
+                                        String s = answers.get(i).getQuestionList().get(j) + "";
+                                        if (!"0".equals(s)) {
+                                            checkQID(answers.get(i).getQuestionList().get(j));
+                                            generateViews(subQuestionLL, answers.get(i).getQuestionList().get(j), false, qNO, j);
+                                        }
                                     }
+                                    break;
                                 }
-                                break;
+                            }
+
+                            if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(obj)) {
+                                mCurrentQuestionBO.getSelectedAnswerIDs().remove(obj);
+                                mCurrentQuestionBO.getSelectedAnswer().remove(buttonView.getText().toString());
                             }
                         }
-
-                        if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(obj)) {
-                            mCurrentQuestionBO.getSelectedAnswerIDs().remove(obj);
-                            mCurrentQuestionBO.getSelectedAnswer().remove(buttonView.getText().toString());
+                        if (mCurrentQuestionBO.equals(qScore.getTag())) {
+                            String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && finalScore > mCurrentQuestionBO.getMaxScore())
+                                    ? mCurrentQuestionBO.getMaxScore() : finalScore)) + "/"
+                                    + mCurrentQuestionBO.getQuestWeight();
+                            qScore.setText(strScore);
+                            questionsRv.invalidate();
+                            updateSurveyScore();
+                            updateOverAllSurveyScore();
                         }
-                    }
-                    if (mCurrentQuestionBO.equals(qScore.getTag())) {
-                        String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && finalScore > mCurrentQuestionBO.getMaxScore())
-                                ? mCurrentQuestionBO.getMaxScore() : finalScore)) + "/"
-                                + mCurrentQuestionBO.getQuestWeight();
-                        qScore.setText(strScore);
-                        questionsRv.invalidate();
-                        updateSurveyScore();
-                        updateOverAllSurveyScore();
-                    }
 
-                    rvAdapter.notifyDataSetChanged();
+                        rvAdapter.notifyDataSetChanged();
+                    }
+                });
+                if (mCurrentQuestionBO.equals(qScore.getTag())) {
+                    String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && finalScore > mCurrentQuestionBO.getMaxScore())
+                            ? mCurrentQuestionBO.getMaxScore() : finalScore)) + "/"
+                            + mCurrentQuestionBO.getQuestWeight();
+                    qScore.setText(strScore);
+                    questionsRv.invalidate();
+                    updateSurveyScore();
+                    updateOverAllSurveyScore();
                 }
-            });
-            if (mCurrentQuestionBO.equals(qScore.getTag())) {
-                String strScore = String.valueOf(((mCurrentQuestionBO.getMaxScore() > 0 && finalScore > mCurrentQuestionBO.getMaxScore())
-                        ? mCurrentQuestionBO.getMaxScore() : finalScore)) + "/"
-                        + mCurrentQuestionBO.getQuestWeight();
-                qScore.setText(strScore);
-                questionsRv.invalidate();
-                updateSurveyScore();
-                updateOverAllSurveyScore();
+                if (isViewMode)
+                    checkBox.setEnabled(false);
+                layoutTemp.addView(checkBox);
             }
-            if (isViewMode)
-                checkBox.setEnabled(false);
-            layoutTemp.addView(checkBox);
         }
         answerLL.addView(layoutTemp);
     }

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ellipsize="marquee"
-            android:singleLine="true" />
+            android:text="@string/product_name" />
 
         <TextView
             android:id="@+id/product_code"

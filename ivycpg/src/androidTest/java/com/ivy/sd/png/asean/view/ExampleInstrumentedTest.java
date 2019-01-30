@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.*;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -37,7 +36,7 @@ public class ExampleInstrumentedTest {
 
         assertEquals("com.ivy.sd.png.asean.view", appContext.getPackageName());
 
-        DBUtil db = new DBUtil(appContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(appContext, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
         boolean hasData=false;

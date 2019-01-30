@@ -46,7 +46,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
@@ -666,7 +666,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private void navigateToActivity(String menuName, String menuCode, Class activityName) {
         isClick = false;
         Intent intent = new Intent(getActivity(), activityName);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("screentitle", menuName);
         intent.putExtra("from", "1");
         intent.putExtra("isFromLodMgt", true);

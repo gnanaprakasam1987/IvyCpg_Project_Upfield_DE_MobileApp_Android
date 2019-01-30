@@ -54,7 +54,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 
@@ -349,6 +349,8 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         .findViewById(R.id.edt_competitor_feedback);
                 holder.edtQty = convertView
                         .findViewById(R.id.et_qty);
+                holder.edtRemark = convertView
+                        .findViewById(R.id.et_remark);
                 holder.spnReason = convertView
                         .findViewById(R.id.spn_reason);
 
@@ -379,6 +381,8 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                 if (!isChecked) {
                                     holder.edtQty.setText("0");
                                     holder.edtQty.setEnabled(false);
+                                    holder.edtRemark.setText("");
+                                    holder.edtRemark.setEnabled(false);
                                     holder.btnPhoto.setEnabled(false);
                                     holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                                     holder.edtComFeedback.setText("");
@@ -398,6 +402,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
                                     }
                                     holder.edtQty.setEnabled(true);
+                                    holder.edtRemark.setEnabled(true);
                                     holder.edtComFeedback.setEnabled(true);
                                     holder.btnFromDate.setEnabled(true);
                                     holder.btnToDate.setEnabled(true);
@@ -502,7 +507,39 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
                     }
                 });
+                holder.edtRemark.setOnTouchListener(new View.OnTouchListener() {
+                    public boolean onTouch(View v, MotionEvent event) {
+                        holder.edtRemark.onTouchEvent(event);
+                        holder.edtRemark.requestFocus();
+                        if (holder.edtRemark.getText().length() > 0)
+                            holder.edtRemark.setSelection(holder.edtRemark.getText().length());
+                        return true;
+                    }
+                });
 
+                holder.edtRemark.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        String str = s.toString();
+                        if (str.length() > 0)
+                            holder.edtRemark.setSelection(str.length());
+                        if (!str.equals(""))
+
+                            holder.mCompTrackBO.setRemarks(str);
+                        else
+                            holder.mCompTrackBO.setRemarks("");
+                    }
+                });
 
                 convertView.setTag(holder);
 
@@ -517,6 +554,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             holder.tvTrackingList.setText(holder.mCompTrackBO.getName());
             holder.edtComFeedback.setText(holder.mCompTrackBO.getFeedBack() + "");
             holder.edtQty.setText(holder.mCompTrackBO.getQty() + "");
+            holder.edtRemark.setText(holder.mCompTrackBO.getRemarks() + "");
             if (!holder.mCompTrackBO.isExecuted()) {
                 holder.btnFromDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
                         SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
@@ -529,6 +567,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         .toString());
                 //holder.mCompTrackBO.setReasonID(resonId);
                 holder.edtQty.setEnabled(false);
+                holder.edtRemark.setEnabled(false);
                 holder.btnPhoto.setEnabled(false);
                 holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                 holder.edtComFeedback.setEnabled(false);
@@ -549,6 +588,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                         outPutDateFormat))
                                 : holder.mCompTrackBO.getToDate());
                 holder.edtQty.setEnabled(true);
+                holder.edtRemark.setEnabled(true);
                 holder.btnPhoto.setEnabled(true);
                 holder.edtComFeedback.setEnabled(true);
                 holder.btnFromDate.setEnabled(true);
@@ -605,6 +645,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         ImageView btnPhoto;
         EditText edtComFeedback;
         EditText edtQty;
+        EditText edtRemark;
         Spinner spnReason;
     }
 

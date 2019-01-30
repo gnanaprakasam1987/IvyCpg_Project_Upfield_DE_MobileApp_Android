@@ -77,10 +77,10 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
 
-        isFromUpSelling=getIntent().getBooleanExtra("isFromUpSelling",false);
+        isFromUpSelling = getIntent().getBooleanExtra("isFromUpSelling", false);
 
-        if(getIntent()!=null&&getIntent().getStringExtra("productId")!=null){
-            productId=String.valueOf(getIntent().getStringExtra("productId"));
+        if (getIntent() != null && getIntent().getStringExtra("productId") != null) {
+            productId = String.valueOf(getIntent().getStringExtra("productId"));
         }
 
         TabLayout tabLayout = findViewById(R.id.tabs);
@@ -129,19 +129,21 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         tabLayout.removeAllTabs();
 
-        TabLayout.Tab schemeDetailsTab = tabLayout.newTab();
-        try {
-            if (bmodel.labelsMasterHelper.applyLabels("scheme_details_tab") != null)
-                schemeDetailsTab.setText(bmodel.labelsMasterHelper.applyLabels("scheme_details_tab"));
-            else
+        if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
+            TabLayout.Tab schemeDetailsTab = tabLayout.newTab();
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels("scheme_details_tab") != null)
+                    schemeDetailsTab.setText(bmodel.labelsMasterHelper.applyLabels("scheme_details_tab"));
+                else
+                    schemeDetailsTab.setText("Scheme");
+            } catch (Exception e) {
+                Commons.printException(e);
                 schemeDetailsTab.setText("Scheme");
-        } catch (Exception e) {
-            Commons.printException(e);
-            schemeDetailsTab.setText("Scheme");
+            }
+            tabLayout.addTab(schemeDetailsTab);
         }
-        tabLayout.addTab(schemeDetailsTab);
 
-        if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
+        if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_DIALOG) {
             TabLayout.Tab productDetailsTab = tabLayout.newTab();
             try {
                 if (bmodel.labelsMasterHelper.applyLabels("product_details_tab") != null)

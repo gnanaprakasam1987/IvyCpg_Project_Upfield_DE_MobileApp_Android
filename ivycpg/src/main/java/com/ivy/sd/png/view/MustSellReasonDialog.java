@@ -97,8 +97,8 @@ public class MustSellReasonDialog extends Dialog {
 	public void loadMustSellReason() {
 		try {
 			ReasonMaster reason;
-			DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-					DataMembers.DB_PATH);
+			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 			db.openDataBase();
 			Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.MUSTSELL_REASON_TYPE));
 			if (c != null) {

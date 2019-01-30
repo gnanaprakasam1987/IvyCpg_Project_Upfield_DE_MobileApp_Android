@@ -50,7 +50,7 @@ public class DeliveryManagementHelper {
         DBUtil db = null;
         try {
             mInvoiceList = new ArrayList<>();
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             String query = "select invoiceno,invoicedate,invNetamount,linespercall,invoicerefno,PickListId from InvoiceDeliveryMaster " +
@@ -86,7 +86,7 @@ public class DeliveryManagementHelper {
         ArrayList<RetailerMasterBO> invoicedRetailerList = new ArrayList<>();
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             String s = "select distinct RM.Retailerid,RM.RetailerName from invoicemaster IM INNER JOIN RetailerMaster RM on RM.RetailerID = IM.Retailerid"
                     + " where IM.InvoiceNo not in(select vh.invoiceid from vandeliveryheader vh)";
@@ -123,7 +123,7 @@ public class DeliveryManagementHelper {
         mInvoiceDetailsList = new ArrayList<>();
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             String query = "select id.productid,id.qty,id.uomid,id.uomcount,id.uomprice,id.batchid,bm.batchnum,PM.psname,PM.piece_uomid as pieceUomID," +
@@ -147,21 +147,35 @@ public class DeliveryManagementHelper {
                     } else {
                         invoiceProductBO = invoicedProducts.get(productid);
                     }
+                    int pcsQty =0 ,csQtyinPieces = 0, ouQtyinPieces = 0;
+
                     if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("pieceUomID"))) {
-                        invoiceProductBO.setOrderedPcsQty(c.getInt(1));
+                        pcsQty = c.getInt(1);
                         invoiceProductBO.setPcUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderPieceqty(c.getInt(1));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("caseUomId"))) {
-                        invoiceProductBO.setOrderedCaseQty(c.getInt(1));
+                        csQtyinPieces = c.getInt(1) * invoiceProductBO.getCaseSize();
                         invoiceProductBO.setCaseUomId(c.getInt(2));
                         invoiceProductBO.setLocalOrderCaseqty(c.getInt(1));
-                        invoiceProductBO.setCaseSize(c.getInt(c.getColumnIndex("caseSize")));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("outerUomId"))) {
-                        invoiceProductBO.setOrderedOuterQty(c.getInt(1));
+                        ouQtyinPieces = c.getInt(1) * invoiceProductBO.getOutersize();
                         invoiceProductBO.setOuUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderOuterQty(c.getInt(1));
-                        invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
                     }
+
+                    invoiceProductBO.setCaseSize(c.getInt(c.getColumnIndex("caseSize")));
+                    invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
+
+                    int totalqty = pcsQty + csQtyinPieces + ouQtyinPieces;
+                    int caseQty = invoiceProductBO.getCaseSize() != 0 ? totalqty / invoiceProductBO.getCaseSize() : totalqty;
+                    int QtyRemaining = totalqty - (caseQty * invoiceProductBO.getCaseSize());
+                    int outerQty = invoiceProductBO.getOutersize() != 0 ? QtyRemaining / invoiceProductBO.getOutersize() : QtyRemaining;
+                    int pieceQty = QtyRemaining - (outerQty * invoiceProductBO.getOutersize());
+
+                    invoiceProductBO.setOrderedPcsQty(pieceQty);
+                    invoiceProductBO.setOrderedCaseQty(invoiceProductBO.getCaseSize() != 0 ? caseQty : 0);
+                    invoiceProductBO.setOrderedOuterQty(invoiceProductBO.getOutersize() != 0 ? outerQty : 0);
+
                     invoicedProducts.put(productid, invoiceProductBO);
                 }
 
@@ -196,7 +210,7 @@ public class DeliveryManagementHelper {
                 }
             }
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             String deliveryheadercolumns = "uid,retailerid,invoiceddate,deliverydate,status,latitude,longtitude,utcdate," +
                     "invoiceid,SignName,Proofpicture,contactName,contactNo,SignaturePath,PickListId";
@@ -393,10 +407,10 @@ public class DeliveryManagementHelper {
 
         DBUtil db;
 
-        db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
 
-        String id = bmodel.QT("SR" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+        String id = AppUtils.QT("SR" + bmodel.getAppDataProvider().getUser().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
         boolean isData = false;
         double totalReturnValue = 0;
         int lpc = 0;
@@ -439,9 +453,9 @@ public class DeliveryManagementHelper {
                         + ","
                         + 0
                         + ","
-                        + bmodel.QT("")
+                        + AppUtils.QT("")
                         + ","
-                        + bmodel.QT("")
+                        + AppUtils.QT("")
                         + ","
                         + outerQty
                         + ","
@@ -455,7 +469,7 @@ public class DeliveryManagementHelper {
                         .getOldBatchIDByMfd(productMasterBO
                                 .getProductID())
                         + ","
-                        + bmodel.QT((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
+                        + AppUtils.QT((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
                         + ","
                         + 0
                         + ","
@@ -463,10 +477,10 @@ public class DeliveryManagementHelper {
                         + ","
                         + totalValue
                         + ","
-                        + bmodel.QT(bmodel.retailerMasterBO
+                        + AppUtils.QT(bmodel.retailerMasterBO
                         .getRetailerID()) + ","
-                        + 1 + "," + bmodel.QT("") + "," + productMasterBO.getPcUomid()
-                        + "," + bmodel.QT("") + "," + bmodel.QT(productMasterBO.getHsnCode());
+                        + 1 + "," + AppUtils.QT("") + "," + productMasterBO.getPcUomid()
+                        + "," + AppUtils.QT("") + "," + AppUtils.QT(productMasterBO.getHsnCode());
 
                 db.insertSQL(
                         DataMembers.tbl_SalesReturnDetails,
@@ -485,7 +499,7 @@ public class DeliveryManagementHelper {
             int srUserID = SDUtil.convertToInt(invAndUserId[0]);
             String invoiceID = invAndUserId[1];
 
-            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,CollectStatus,invoiceid";
+            columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,CollectStatus,invoiceid,ridSF,VisitId";
             String values = id + ","
                     + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                     + AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
@@ -506,7 +520,9 @@ public class DeliveryManagementHelper {
             values = values + "," + AppUtils.QT("") + ","
                     + AppUtils.QT("") + ","
                     + AppUtils.QT(status) + ","// update delivery status
-                    + AppUtils.QT(invoiceID);
+                    + AppUtils.QT(invoiceID) + ","
+                    + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                    + bmodel.getAppDataProvider().getUniqueId();
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
 
@@ -516,7 +532,7 @@ public class DeliveryManagementHelper {
     private boolean isProductAvailableinSIHmaster(String productId) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db.selectSQL("select qty from StockInHandMaster where pid=" + productId);
             if (c != null) {
@@ -536,7 +552,7 @@ public class DeliveryManagementHelper {
     public boolean isDeliveryMgtDone() {
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             String query = "select count(uid) from VanDeliveryHeader where Retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
             Cursor c = db.selectSQL(query);
@@ -558,7 +574,7 @@ public class DeliveryManagementHelper {
         boolean flag = false;
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             String query = "select count(*) from HhtMenuMaster where flag=1 and hhtcode='MENU_DELIVERY_MGMT'";
@@ -583,7 +599,7 @@ public class DeliveryManagementHelper {
     public void updateNotDeliveryDetails() {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             String deliveryheadercolumns = "uid,retailerid,invoiceddate,status,latitude,longtitude,utcdate,invoiceid,DeliveryDate";
@@ -638,8 +654,8 @@ public class DeliveryManagementHelper {
 
     public void downloadEmailAccountCredentials() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListName FROM StandardListMaster where listcode='DELIVERY_EMAIL' and listtype='DELIVERY_MAIL'";
 
@@ -670,8 +686,8 @@ public class DeliveryManagementHelper {
     //To get whether the retailer has sales return or not
     public boolean hasDeliveryReturn() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT count(uid) from SalesReturnHeader where RetailerID =" + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID());
             int count = 0;

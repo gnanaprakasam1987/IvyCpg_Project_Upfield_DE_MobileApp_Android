@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.tradeCoverage.deviation;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -33,17 +33,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.DateWisePlanBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.sd.png.view.profile.CommonReasonDialog;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 import com.ivy.utils.FontUtils;
@@ -53,12 +57,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class NonVisitFragment extends Fragment implements BrandDialogInterface,
+public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInterface,
         SearchView.OnQueryTextListener, FiveLevelFilterCallBack {
 
     private final String MENU_PLANNING = "Day Planning";
     private final String MENU_VISIT = "Trade Coverage";
     private final String MENU_PLANNING_SUB = "Day Planning Sub";
+
     public boolean profileclick;
     private AbsListView listView;
     private BusinessModel bmodel;
@@ -66,7 +71,6 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     private ArrayList<RetailerMasterBO> retailer;
     private Spinner spinnerbrand;
     private String calledBy;
-    private TypedArray typearr;
     private Spinner spn_mWeek;
     private DisplayMetrics displaymetrics;
     private ArrayList<String> mWeekList;
@@ -78,12 +82,14 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
     private boolean isReasonDialogClicked;
     private RadioGroup mWeekRG;
     private String mSelectedWeek = "All";
-    private LinearLayout filterLayout;
-    ArrayAdapter<BeatMasterBO> beatAdapter;
-    IconicAdapter mSchedule;
+    private IconicAdapter mSchedule;
 
+    // Valiable to deviate multiple retailers
     private FloatingActionButton fab;
-    ArrayList<String> selectedPosition = new ArrayList<>();
+    private ArrayList<String> selectedPosition = new ArrayList<>();
+
+    private DeviationHelper deviationHelper;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,7 +100,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
 
         mview = inflater.inflate(R.layout.nonvisit, container, false);
         setHasOptionsMenu(true);
-        typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
@@ -102,8 +108,10 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
             getActivity().finish();
         }
 
+        deviationHelper = new DeviationHelper(bmodel);
+
         spinnerbrand = mview.findViewById(R.id.brandSpinner);
-        filterLayout = mview.findViewById(R.id.filter);
+        LinearLayout filterLayout = mview.findViewById(R.id.filter);
         spn_mWeek = mview.findViewById(R.id.spn_week);
         spn_mDate = mview.findViewById(R.id.spin_date);
         spn_mBeat = mview.findViewById(R.id.spin_beat);
@@ -203,7 +211,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                 mDateList = new ArrayList<>();
             }
 
-            beatAdapter = new ArrayAdapter<>(getActivity(), R.layout.deviate_retailer_spinner_layout);
+            ArrayAdapter<BeatMasterBO> beatAdapter = new ArrayAdapter<>(getActivity(), R.layout.deviate_retailer_spinner_layout);
             beatAdapter.setDropDownViewResource(R.layout.deviate_retailer_spinner_list);
             beatAdapter.add(new BeatMasterBO(0, getResources().getString(
                     R.string.all), 0));
@@ -612,6 +620,9 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
         }
     };
 
+    /**
+     * Deviate all retailers in one shot.
+     */
     private void doDeviations() {
         boolean deviationNotAllowedforNewRetailer = false;
         boolean retailerAlreadyPlannedtoday = false;
@@ -804,7 +815,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             R.string.select_reason))) {
 
 
-                                bmodel.reasonHelper.setDeviate(
+                                deviationHelper.setDeviate(
                                         retailerObj.getRetailerID(), r,
                                         retailerObj.getBeatID(), "");
 
@@ -830,7 +841,7 @@ public class NonVisitFragment extends Fragment implements BrandDialogInterface,
                                             R.string.select_reason))) {
 
                                 for (RetailerMasterBO tempBo : retailer) {
-                                    bmodel.reasonHelper.setDeviate(
+                                    deviationHelper.setDeviate(
                                             tempBo.getRetailerID(), r,
                                             tempBo.getBeatID(), "");
                                 }

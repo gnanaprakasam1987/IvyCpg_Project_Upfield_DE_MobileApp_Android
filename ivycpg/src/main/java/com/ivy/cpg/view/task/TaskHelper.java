@@ -56,8 +56,8 @@ public class TaskHelper {
     public void saveTask(int channelId, String taskTitleDesc,
                          String taskDetailDesc) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             String values;
             db.createDataBase();
             db.openDataBase();
@@ -181,8 +181,8 @@ public class TaskHelper {
 
 
     public Vector<TaskDataBO> getTaskData(String retailerId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c = db
@@ -219,8 +219,8 @@ public class TaskHelper {
     }
 
     public Vector<TaskDataBO> getPendingTaskData() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c = db
@@ -256,8 +256,8 @@ public class TaskHelper {
     public int getTaskCount() {
         int i = 0;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -296,20 +296,21 @@ public class TaskHelper {
     private void updateTask(TaskDataBO taskBO,
                             String retailerid) {
         DBUtil db;
-        db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
-        String UID = QT(bmodel.getRetailerMasterBO().getRetailerID()
+        String UID = QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                 + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
-        String columns = "TaskId,RetailerId,Date,UId,Upload";
+        String columns = "TaskId,RetailerId,Date,UId,Upload,ridSF";
         String values;
 
         db.deleteSQL("TaskExecutionDetails", "TaskId=" + QT(taskBO.getTaskId()) + " and RetailerId = " + QT(retailerid), false);
 
         if (taskBO.isChecked()) {
-            values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + UID + ",'N'";
+            values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + UID + ",'N'" + ","
+                     + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
             db.insertSQL("TaskExecutionDetails", columns, values);
             bmodel.saveModuleCompletion("MENU_TASK");
         } else {

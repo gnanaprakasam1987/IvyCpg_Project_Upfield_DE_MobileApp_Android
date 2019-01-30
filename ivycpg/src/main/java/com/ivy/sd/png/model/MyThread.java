@@ -3,7 +3,6 @@ package com.ivy.sd.png.model;
 import android.app.Activity;
 import android.os.Handler;
 
-import com.baidu.platform.comapi.map.C;
 import com.ivy.cpg.primarysale.view.PrimarySaleOrderSummaryActivity;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.login.LoginBaseActivity;
@@ -22,8 +21,8 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
-import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.cpg.view.subd.SubDStockOrderActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;

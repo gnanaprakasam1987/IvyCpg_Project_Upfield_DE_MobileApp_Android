@@ -41,8 +41,8 @@ public class DisInvoiceDetailsHelper {
         selected_distributors_invoice = new Vector<>();
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "select * from "
@@ -83,8 +83,8 @@ public class DisInvoiceDetailsHelper {
     public void saveInvoiceDetails(Vector<DistInvoiceDetailsBO> disinvdetails) {
         String sql = "";
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             for (int i = 0; i < disinvdetails.size(); i++) {
                 sql = "Update " + DataMembers.tbl_DistInvoiceDetails + " set StatusLovId = '"

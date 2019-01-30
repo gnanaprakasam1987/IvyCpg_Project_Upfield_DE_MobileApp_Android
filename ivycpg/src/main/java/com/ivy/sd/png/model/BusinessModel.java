@@ -111,7 +111,6 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
-import com.ivy.sd.png.bo.TempSchemeBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.cpg.view.acknowledgement.AcknowledgementHelper;
@@ -153,8 +152,8 @@ import com.ivy.sd.png.util.TimerCount;
 import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CircleTransform;
-import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
@@ -536,8 +535,8 @@ public class BusinessModel extends Application {
         String weekText = "wk1";
         try {
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select CurrentWeekNo from AppVariables");
@@ -798,8 +797,8 @@ public class BusinessModel extends Application {
     public String getStandardListId(String listCode) {
         String listID = "";
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListId from StandardListMaster where ListCode='"
@@ -829,8 +828,8 @@ public class BusinessModel extends Application {
     public String getStandardListName(int listId) {
         String listName = "";
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListName from StandardListMaster where ListId="
@@ -859,8 +858,8 @@ public class BusinessModel extends Application {
     public String getStandardListNameByCode(String listCode) {
         String listName = "";
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListName from StandardListMaster where ListType="
@@ -895,8 +894,8 @@ public class BusinessModel extends Application {
     public String getStandardListIdAndType(String listCode, String listType) {
         String listID = "";
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListId from StandardListMaster where ListCode='"
@@ -943,8 +942,8 @@ public class BusinessModel extends Application {
     public void downloadInvoice(String retailerId, String docStatus) {
         try {
             configurationMasterHelper.loadInvoiceMasterDueDateAndDateConfig();
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuffer sb = new StringBuffer();
@@ -1051,8 +1050,8 @@ public class BusinessModel extends Application {
      */
     public boolean isOrderExistToCreateInvoice() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select orderid from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
@@ -1089,8 +1088,8 @@ public class BusinessModel extends Application {
      */
     public boolean isOrderExistToCreateInvoiceAll() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select orderid from " + DataMembers.tbl_orderHeader
@@ -1118,8 +1117,8 @@ public class BusinessModel extends Application {
 
     public void updateIsOrderWithoutInvoice() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sql = "";
 
@@ -1168,8 +1167,8 @@ public class BusinessModel extends Application {
     public boolean isContractRenewalDone() {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select tid from "
                     + DataMembers.tbl_retailercontractrenewal
@@ -1192,8 +1191,8 @@ public class BusinessModel extends Application {
     public boolean isSurveyDone(String menucode) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select uid from "
                     + DataMembers.tbl_AnswerHeader + " where retailerid="
@@ -1222,8 +1221,8 @@ public class BusinessModel extends Application {
      */
     public double getOrderValue() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(ordervalue)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
@@ -1251,8 +1250,8 @@ public class BusinessModel extends Application {
 
     public double getInvoiceAmount() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
@@ -1277,8 +1276,8 @@ public class BusinessModel extends Application {
     public double getOutStandingInvoiceAmount() {
         double i = 0;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL("SELECT SUM( IFNULL(payment.amount,0))  FROM payment  WHERE  payment.retailerid = "
@@ -1311,8 +1310,8 @@ public class BusinessModel extends Application {
     //Anand Asir V
     public double getLoyaltyPoints() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(Points) from LoyaltyPoints where retailerid="
@@ -1336,8 +1335,8 @@ public class BusinessModel extends Application {
 
     public double getLoyaltyBalancePoints() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(BalancePoints) from LoyaltyPoints where retailerid="
@@ -1360,8 +1359,8 @@ public class BusinessModel extends Application {
     }
 
     public ArrayList<RetailerMasterBO> downloadRetailerMasterData() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+        );
         db.openDataBase();
         ArrayList<RetailerMasterBO> retailerMasterData = new ArrayList<>();
         Cursor c = db.selectSQL("SELECT DISTINCT RetailerId, RetailerCode, RetailerName from retailerMaster");
@@ -1387,8 +1386,8 @@ public class BusinessModel extends Application {
             mRetailerBOByRetailerid = new HashMap<>();
             RetailerMasterBO retailer;
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             configurationMasterHelper.loadRouteConfig();
@@ -1430,8 +1429,8 @@ public class BusinessModel extends Application {
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
-                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId" : "0 as SupplierTaxLocId")
-                            + " FROM RetailerMaster A"
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? "SM.supplierTaxLocId as SupplierTaxLocId," : "0 as SupplierTaxLocId,")
+                            + "ridSF FROM RetailerMaster A"
 
                             + " LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = A.RetailerID"
 
@@ -1619,6 +1618,7 @@ public class BusinessModel extends Application {
                     retailer.setSbdPercent(c.getFloat(c.getColumnIndex("sbdDistPercent"))); // updated sbd percentage from history and ordered details
                     retailer.setRetailerTaxLocId(c.getInt(c.getColumnIndex("RetailerTaxLocId")));
                     retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
+                    retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -1668,6 +1668,7 @@ public class BusinessModel extends Application {
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
 
             updateCurrentFITscore();
+            updateRetailersTotWgt();
 
             if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
 
@@ -1700,7 +1701,7 @@ public class BusinessModel extends Application {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
             String sql = "";
             Cursor c = null;
@@ -1785,7 +1786,7 @@ public class BusinessModel extends Application {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor cursor = db.selectSQL("select RB.attributeid, RB.levelid from retailerattribute RB INNER JOIN " +
                     "EntityAttributeMaster  EAM  ON RB.attributeid=EAM.Attributeid  where RB.retailerid = " + getRetailerMasterBO().getRetailerID() +
@@ -1866,8 +1867,8 @@ public class BusinessModel extends Application {
 
             ArrayList<String> mOrderedProductList = new ArrayList<>();
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select distinct ProductID from "
                     + DataMembers.tbl_orderDetails + " where retailerid="
@@ -1931,7 +1932,7 @@ public class BusinessModel extends Application {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
             String sql = "";
             Cursor c = null;
@@ -1968,7 +1969,7 @@ public class BusinessModel extends Application {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
             String sql = "";
             Cursor c = null;
@@ -2028,7 +2029,7 @@ public class BusinessModel extends Application {
         DBUtil db = null;
         indicativeRtrList = new ArrayList<IndicativeBO>();
         try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -2053,8 +2054,8 @@ public class BusinessModel extends Application {
     public void downloadRetailerwiseMerchandiser() {
         UserMasterBO userBo;
         ArrayList<UserMasterBO> userList;
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2105,8 +2106,8 @@ public class BusinessModel extends Application {
     public boolean isAlreadyDownloadUser() {
         selectedDownloadRetailerID = "";
         selectedDownloadUserID = 0;
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2134,8 +2135,8 @@ public class BusinessModel extends Application {
     }
 
     public void updateUserAudit(int Auditvalue) {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2185,7 +2186,7 @@ public class BusinessModel extends Application {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
 
             String query = "";
@@ -2470,8 +2471,8 @@ public class BusinessModel extends Application {
         Vector<NonproductivereasonBO> nonProductiveVector = new Vector<NonproductivereasonBO>();
         try {
             NonproductivereasonBO ret;
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuffer sb = new StringBuffer();
@@ -2514,30 +2515,31 @@ public class BusinessModel extends Application {
         // uid = distid+uid+hh:mm
         boolean bool = false;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             String values;
             db.createDataBase();
             db.openDataBase();
 
             String id;
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
             for (int i = 0; i < retailers.size(); i++) {
-                id = QT(userMasterHelper.getUserMasterBO().getDistributorid()
-                        + "" + userMasterHelper.getUserMasterBO().getUserid()
+                id = AppUtils.QT(getAppDataProvider().getUser().getDistributorid()
+                        + "" + getAppDataProvider().getUser().getUserid()
                         + "" + SDUtil.now(SDUtil.DATE_TIME_ID) + i);
 
                 NonproductivereasonBO outlet = retailers.get(i);
 
                 if (!outlet.getReasonid().equals("0")) {
                     bool = true;
-                    values = id + "," + QT(outlet.getRetailerid()) + ","
-                            + outlet.getBeatId() + "," + QT(outlet.getDate())
-                            + "," + QT(outlet.getReasonid()) + ","
-                            + QT(getStandardListId(outlet.getReasontype()))
-                            + "," + QT("N") + "," + outlet.getDistributorID();
+                    values = id + "," + AppUtils.QT(outlet.getRetailerid()) + ","
+                            + outlet.getBeatId() + "," + AppUtils.QT(outlet.getDate())
+                            + "," + AppUtils.QT(outlet.getReasonid()) + ","
+                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
+                            + "," + AppUtils.QT("N") + "," + outlet.getDistributorID()
+                            + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
                     db.insertSQL("Nonproductivereasonmaster", columns, values);
                 }
@@ -2558,8 +2560,8 @@ public class BusinessModel extends Application {
      */
     public void saveNonproductivereason(NonproductivereasonBO outlet, String remarks) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             String values;
             db.createDataBase();
             db.openDataBase();
@@ -2575,49 +2577,50 @@ public class BusinessModel extends Application {
 
             db.deleteSQL(
                     "Nonproductivereasonmaster",
-                    "RetailerID=" + QT(getRetailerMasterBO().getRetailerID())
+                    "RetailerID=" + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + QT(getStandardListId(outlet.getReasontype()))
+                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
                             + " and RouteID="
-                            + getRetailerMasterBO().getBeatID(), false);
+                            + getAppDataProvider().getRetailMaster().getBeatID(), false);
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + QT(getRetailerMasterBO().getRetailerID())
+                            + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + QT(getStandardListId(outlet
+                            + AppUtils.QT(getStandardListId(outlet
                             .getCollectionReasonType()))
                             + " and RouteID="
-                            + getRetailerMasterBO().getBeatID(), false);
+                            + getAppDataProvider().getRetailMaster().getBeatID(), false);
 
-            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks";
+            String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks,ridSF";
 
-            values = id + "," + QT(getRetailerMasterBO().getRetailerID()) + ","
-                    + getRetailerMasterBO().getBeatID() + ","
-                    + QT(outlet.getDate()) + "," + QT(outlet.getReasonid())
-                    + "," + QT(getStandardListId(outlet.getReasontype())) + ","
-                    + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
+            values = id + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
+                    + getAppDataProvider().getRetailMaster().getBeatID() + ","
+                    + AppUtils.QT(outlet.getDate()) + "," + AppUtils.QT(outlet.getReasonid())
+                    + "," + AppUtils.QT(getStandardListId(outlet.getReasontype())) + ","
+                    + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks);
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (!outlet.getCollectionReasonID().equals("0")) {
-                String uid = QT(userMasterHelper.getUserMasterBO()
+                String uid = AppUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
-                        + userMasterHelper.getUserMasterBO().getUserid()
+                        + getAppDataProvider().getUser().getUserid()
                         + ""
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
                 values = uid
                         + ","
-                        + QT(getRetailerMasterBO().getRetailerID())
+                        + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                         + ","
-                        + getRetailerMasterBO().getBeatID()
+                        + getAppDataProvider().getRetailMaster().getBeatID()
                         + ","
-                        + QT(outlet.getDate())
+                        + AppUtils.QT(outlet.getDate())
                         + ","
-                        + QT(outlet.getCollectionReasonID())
+                        + AppUtils.QT(outlet.getCollectionReasonID())
                         + ","
-                        + QT(getStandardListId(outlet.getCollectionReasonType()))
-                        + "," + QT("N") + "," + getRetailerMasterBO().getDistributorId() + "," + QT(outlet.getImagePath()) + "," + QT(remarks);
+                        + AppUtils.QT(getStandardListId(outlet.getCollectionReasonType()))
+                        + "," + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks)
+                        + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
             }
 
@@ -2677,8 +2680,8 @@ public class BusinessModel extends Application {
      */
     public void saveNearByRetailers(String id) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columnsNew = "rid,nearbyrid,upload";
@@ -2740,8 +2743,8 @@ public class BusinessModel extends Application {
     public boolean isOrderTaken() {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select OrderID from "
                     + DataMembers.tbl_orderHeader + " where upload !='X' and retailerid="
@@ -2770,8 +2773,8 @@ public class BusinessModel extends Application {
      */
     public boolean hasAlreadyStockChecked(String retailerId) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select StockID from "
@@ -2797,7 +2800,7 @@ public class BusinessModel extends Application {
     }
 
     public String getDeliveryDate(String orderID, String retailerID) {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
         String date = "";
@@ -2822,8 +2825,8 @@ public class BusinessModel extends Application {
 
     public void loadLastVisitStockCheckedProducts(String retailerId, String menucode) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -2870,8 +2873,8 @@ public class BusinessModel extends Application {
     public boolean loadLastVisitHistoryStockCheckedProducts(String retailerId) {
         boolean isDataVailable = false;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -2909,8 +2912,8 @@ public class BusinessModel extends Application {
      */
     public void loadStockCheckedProducts(String retailerId, String menuCode) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String stockID = new String();
@@ -3131,8 +3134,8 @@ public class BusinessModel extends Application {
      */
     void deleteDistributorOrder(String distid) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String orderId = "";
@@ -3168,8 +3171,8 @@ public class BusinessModel extends Application {
      */
     void deleteDistributorStock(String distid) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String orderId = "";
@@ -3277,6 +3280,7 @@ public class BusinessModel extends Application {
                     Intent intent = new Intent();
                     frm.setResult(frm.RESULT_OK, intent);
                     frm.finish();
+                    loadActivity(ctx, DataMembers.actHomeScreenTwo);
 
                 } else if (idd == DataMembers.NOTIFY_INVOICE_SAVED) {
                     if (ctx.getClass().getSimpleName()
@@ -3420,8 +3424,8 @@ public class BusinessModel extends Application {
         try {
             boolean isAmazonUpload = false;
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -3472,8 +3476,8 @@ public class BusinessModel extends Application {
         boolean isDigiContentAvail = false;
         try {
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -3713,7 +3717,7 @@ public class BusinessModel extends Application {
     }
 
     public void setOrderedInDB(String flag) {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
         db.executeQ("update " + DataMembers.tbl_retailerMaster
@@ -3724,8 +3728,8 @@ public class BusinessModel extends Application {
 
     void setOrderMerchInDB(String flag) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.executeQ("update " + DataMembers.tbl_retailerMaster
@@ -3738,7 +3742,7 @@ public class BusinessModel extends Application {
     }
 
     void setInvoiceDoneInDB() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
         db.executeQ("update " + DataMembers.tbl_retailerMaster
@@ -3759,8 +3763,8 @@ public class BusinessModel extends Application {
         double strikeValue = 0, planned = 0, storesInvoiced = 0;
 
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -3847,7 +3851,7 @@ public class BusinessModel extends Application {
 
     public float getCollectionValue() {
 
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
         float total = 0;
@@ -3877,8 +3881,8 @@ public class BusinessModel extends Application {
 
     public void deleteAdhocImageDetailsFormTable(String ImageName) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_RoadActivityDetail, "imgname ="
                     + QT("RoadActivity" + "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
@@ -3901,7 +3905,7 @@ public class BusinessModel extends Application {
 
     public int getAdhocimgCount() {
         int i = 0;
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.openDataBase();
 
         Cursor c = db.selectSQL("select count(distinct imgname)from RoadActivityTransactiondetail where Upload = 'N'");
@@ -3926,8 +3930,8 @@ public class BusinessModel extends Application {
         try {
             RetailerMasterBO ret = new RetailerMasterBO();
             int siz = retailerMaster.size();
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = null;
@@ -3967,8 +3971,8 @@ public class BusinessModel extends Application {
      */
     public void updateIsVisitedFlag() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.updateSQL("Update RetailerBeatMapping set isVisited='Y' where RetailerID ="
                     + getRetailerMasterBO().getRetailerID()
@@ -4482,10 +4486,7 @@ public class BusinessModel extends Application {
                                 ();
                         Runtime.getRuntime().exec(cmd).waitFor();
                     } else if (i == 2) {
-                        String currentDBPath =
-                                "data/com.ivy.sd.png.asean.view/databases/" + DataMembers.DB_NAME;
-                        File data = Environment.getDataDirectory();
-                        File currentDB = new File(data, currentDBPath);
+                        File currentDB = new File(this.getDatabasePath(DataMembers.DB_NAME).getPath());
                         InputStream input = new FileInputStream(currentDB);
                         byte dataa[] = new byte[input.available()];
                         input.read(dataa);
@@ -4847,8 +4848,8 @@ public class BusinessModel extends Application {
      */
     public boolean saveModuleCompletion(String menuName) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -4877,8 +4878,8 @@ public class BusinessModel extends Application {
 
     public boolean deleteModuleCompletion(String menuName) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -4903,8 +4904,8 @@ public class BusinessModel extends Application {
 
     public void isModuleDone() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("Select MENU_CODE from ModuleCompletionReport "
@@ -4976,8 +4977,8 @@ public class BusinessModel extends Application {
                 }
             }
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c;
             if (isVansales) {
@@ -5005,8 +5006,8 @@ public class BusinessModel extends Application {
     public ArrayList<ConfigureBO> getFITscore() {
         try {
             ArrayList<ConfigureBO> lst = new ArrayList<>();
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select  SMA.SurveyDesc,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail  AD  " +
@@ -5040,8 +5041,8 @@ public class BusinessModel extends Application {
     public ArrayList<ConfigureBO> getGroupWiseFITScore() {
         try {
             ArrayList<ConfigureBO> lst = new ArrayList<>();
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select SM.groupName,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD"
@@ -5076,8 +5077,8 @@ public class BusinessModel extends Application {
 
     public void updateCurrentFITscore() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select  AH.retailerid,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
@@ -5103,8 +5104,8 @@ public class BusinessModel extends Application {
 
     public void updateCurrentFITscore(RetailerMasterBO bo) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             int count = 0;
             Cursor c = db
@@ -5128,8 +5129,8 @@ public class BusinessModel extends Application {
 
     void updatePoRemarks() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -5232,8 +5233,8 @@ public class BusinessModel extends Application {
 
     public void getRetailerWiseSellerType() {
         try {
-            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             retailerMasterBO.setIsVansales(0);
@@ -5264,7 +5265,7 @@ public class BusinessModel extends Application {
         DBUtil db = null;
         SupplierMasterBO supplierMasterBO;
         try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -5321,8 +5322,8 @@ public class BusinessModel extends Application {
     public int getSupplierPosition(ArrayList<SupplierMasterBO> mSupplierList) {
         int count = 0;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -5362,8 +5363,8 @@ public class BusinessModel extends Application {
      */
     void updateBottleCreditLimitAmount() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.updateSQL("UPDATE "
@@ -5388,8 +5389,8 @@ public class BusinessModel extends Application {
         int achieved = 0;
         try {
             achieved = 0;
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = null;
@@ -5414,7 +5415,7 @@ public class BusinessModel extends Application {
             locvect = new Vector<LocationBO>();
             LocationBO locbo;
             DBUtil db = null;
-            db = new DBUtil(this, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(this, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select LocId,LocName from LocationMaster ");
@@ -5442,8 +5443,8 @@ public class BusinessModel extends Application {
         String TAG = "parseJSONAndInsert";
 
         // Open Database to store the records.
-        DBUtil mDBAdapter = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil mDBAdapter = new DBUtil(ctx, DataMembers.DB_NAME
+        );
         mDBAdapter.openDataBase();
 
         // Get all the Keys from json object, keys are considered as table
@@ -5523,8 +5524,8 @@ public class BusinessModel extends Application {
     public void saveNotification(String msg, String url, String type) {
         try {
             String values;
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = "Message, Imageurl, TimeStamp, Type";
@@ -5544,7 +5545,7 @@ public class BusinessModel extends Application {
         slist = new Vector<StandardListBO>();
         StandardListBO slbo;
 
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.openDataBase();
         slbo = new StandardListBO();
         slbo.setListName(getResources()
@@ -5566,7 +5567,7 @@ public class BusinessModel extends Application {
     }
 
     public int getTodaysVisitCount(RetailerMasterBO rid) {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.openDataBase();
 
         Cursor c = db
@@ -5636,8 +5637,8 @@ public class BusinessModel extends Application {
     public String getStandardListCode(int listid) {
         String listCode = "";
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ListCode from StandardListMaster where ListId="
@@ -5670,8 +5671,8 @@ public class BusinessModel extends Application {
         String session = "";
         boolean fn = false, an = false, fd = false;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Calendar calendar = Calendar.getInstance();
             Cursor c = db
@@ -5766,8 +5767,8 @@ public class BusinessModel extends Application {
     public void downloadChatCredentials() {
         try {
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select chatregid,chatUserName,chatUserPwd from AppVariables");
@@ -5805,8 +5806,8 @@ public class BusinessModel extends Application {
 
     public void updatePrintCount(int count) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.updateSQL("update InvoiceMaster set print_count=" + count + " where invoiceNo = '" + this.invoiceNumber + "'");
 
@@ -5915,8 +5916,8 @@ public class BusinessModel extends Application {
     public void insertSeqNumber(String type) {
         Cursor cursor = null;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             cursor = db
                     .selectSQL("SELECT COUNT(SEQNO) FROM TransactionSequence WHERE TypeId IN (SELECT ListID FROM StandardListMaster WHERE LISTCODE =" + QT(type) + ")");
@@ -5945,8 +5946,8 @@ public class BusinessModel extends Application {
         Cursor cursor = null;
         String columns = "TypeID,SeqNo";
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             cursor = db
@@ -5978,8 +5979,8 @@ public class BusinessModel extends Application {
         long seqNo = 0L;
         Cursor cursor = null;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             // Download the Invoice ID Creating Rules, According to that Invoice
@@ -6178,8 +6179,8 @@ public class BusinessModel extends Application {
         ArrayList<String> rules = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             // Get Sequence ID
@@ -6220,8 +6221,8 @@ public class BusinessModel extends Application {
 
     public int getTotalFocusBrandLines() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(FocusPackLines)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
@@ -6245,8 +6246,8 @@ public class BusinessModel extends Application {
 
     public int getTotalMSLLines() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(MSPLines)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
@@ -6288,8 +6289,8 @@ public class BusinessModel extends Application {
         //type-0 tagged product
         //type-1 product master
 
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         try {
@@ -6372,8 +6373,8 @@ public class BusinessModel extends Application {
     }
 
     private void updateProductMapping(String productId, int pLevelId, int uomId, int contentLevel, int contentLevelId, int type) {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -6496,7 +6497,7 @@ public class BusinessModel extends Application {
     // Download bank details
     public void downloadBankDetails() {
         BankMasterBO inv;
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         try {
 
             db.openDataBase();
@@ -6519,7 +6520,7 @@ public class BusinessModel extends Application {
 
     public void downloadBranchDetails() {
         BranchMasterBO inv;
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor c = db.selectSQL("SELECT ListId, Parentid, ListName, ListCode FROM StandardListMaster WHERE ListType = 'BANK_BRANCH_TYPE'");
         if (c != null) {
@@ -6545,8 +6546,8 @@ public class BusinessModel extends Application {
     public void updateRetailerWiseSupplierType(int supplierid) {
         try {
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String query = "update retailermasterinfo set supplierid="
                     + supplierid + " where retailerid="
@@ -6631,8 +6632,8 @@ public class BusinessModel extends Application {
         retailerAttributeList = "";
         String str = "0";
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
 
             int mContentLevel = 0;
             db.openDataBase();
@@ -6671,8 +6672,8 @@ public class BusinessModel extends Application {
     public ArrayList<String> getAttributeParentListForCurrentRetailer(String retailerId) {
         ArrayList<String> lst = null;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             String sql = "select distinct EA.parentid from RetailerAttribute RA" +
@@ -6706,7 +6707,7 @@ public class BusinessModel extends Application {
     ArrayList<GuidedSellingBO> mGuidedSelling;
 
     public void downloadGuidedSelling() {
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.openDataBase();
 
         try {
@@ -6822,7 +6823,7 @@ public class BusinessModel extends Application {
 
     public void updatePriceGroupId(boolean isRetailer) {
 
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
 
@@ -6859,7 +6860,7 @@ public class BusinessModel extends Application {
 
     public void downloadCurrencyConfig() {
 
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
         db.openDataBase();
 
         try {
@@ -6986,8 +6987,8 @@ public class BusinessModel extends Application {
     public void downloadInvoice() {
         try {
             configurationMasterHelper.loadInvoiceMasterDueDateAndDateConfig();
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuffer sb = new StringBuffer();
@@ -7064,8 +7065,8 @@ public class BusinessModel extends Application {
 
     public void insertTempOrder() {
 
-        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -7107,8 +7108,8 @@ public class BusinessModel extends Application {
 
     public void loadTempOrderDetails() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -7144,8 +7145,8 @@ public class BusinessModel extends Application {
      */
     public void savePlaneDiveateReason(ArrayList<NonproductivereasonBO> reasonBoList, String remarks) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             String values;
             db.createDataBase();
             db.openDataBase();
@@ -7243,8 +7244,8 @@ public class BusinessModel extends Application {
         mUserCredentials.put("EMAILID", "");
         mUserCredentials.put("PASSWORD", "");
         try {
-            DBUtil db = new DBUtil(getContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getContext(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListName FROM StandardListMaster where listcode='DELIVERY_EMAIL' and listtype='DELIVERY_MAIL'";
 
@@ -7299,8 +7300,8 @@ public class BusinessModel extends Application {
                 channelid = getRetailerMasterBO().getSubchannelid();
 
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;
@@ -7356,8 +7357,8 @@ public class BusinessModel extends Application {
         ArrayList<Double> collectedList = new ArrayList<>();
         double osAmt = 0, paidAmt = 0;
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -7414,8 +7415,8 @@ public class BusinessModel extends Application {
 
     public double getRetailerInvoiceAmount() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
@@ -7440,8 +7441,8 @@ public class BusinessModel extends Application {
     public boolean hasPendingInvoice(String date, String retailerIds) {
         try {
             double balance = 0;
-            DBUtil db = new DBUtil(this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(this, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select Inv.InvoiceNo,Round(Inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as balance from "
                     + DataMembers.tbl_InvoiceMaster + " Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo where Inv.Retailerid in("
@@ -7465,8 +7466,8 @@ public class BusinessModel extends Application {
 
     public String getUserParentPosition() {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ParentPositionIds from UserMaster where userid="
@@ -7487,7 +7488,52 @@ public class BusinessModel extends Application {
 
         return "";
     }
+    public void updateRetailersTotWgt() {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
+            db.openDataBase();
+            Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight,retailerid from OrderDetail");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int qty = c.getInt(0) +
+                            (c.getInt(1) * c.getInt(3) +
+                                    (c.getInt(2) * c.getInt(4)));
+                    for (RetailerMasterBO bo : retailerMaster) {
+                        if (bo.getRetailerID().equals(c.getString(6))) {
+                            bo.setmOrderedTotWgt(bo.getmOrderedTotWgt() + (qty * c.getDouble(5)));
+                        }
+                    }
+                }
 
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public void updateRetailersTotWgt(RetailerMasterBO bo) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight from OrderDetail " +
+                    "where retailerid =" + AppUtils.QT(bo.getRetailerID()));
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    int qty = c.getInt(0) +
+                            (c.getInt(1) * c.getInt(3) +
+                                    (c.getInt(2) * c.getInt(4)));
+                    bo.setmOrderedTotWgt(bo.getmOrderedTotWgt() + (qty * c.getDouble(5)));
+                }
+            }
+            c.close();
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
     String newlyaddedRetailer = "";
 
     public String getNewlyaddedRetailer() {

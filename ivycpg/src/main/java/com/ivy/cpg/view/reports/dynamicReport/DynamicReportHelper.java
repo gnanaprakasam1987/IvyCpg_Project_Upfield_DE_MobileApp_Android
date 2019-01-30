@@ -43,8 +43,8 @@ public class DynamicReportHelper {
 
     public void downloadDynamicReport(String menucode) {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         dynamicReportHeaderBOs = new ArrayList<DynamicReportHeaderBO>();
@@ -92,27 +92,28 @@ public class DynamicReportHelper {
                     EntityId = bmodel.userMasterHelper.getUserMasterBO().getUserid();
                     setRep_retailer(false);
                 }
-            }
 
-            String sql = "Select ColumnId , Value , RowId from DynamicReportDetail where ReportId = " + dynamicReportHeaderBOs.get(0).getReportId() + " AND EntityId =" + EntityId;
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
 
-                while (c.moveToNext()) {
-                    int id = c.getInt(0);
-                    int recordId = c.getInt(2);
+                String sql = "Select ColumnId , Value , RowId from DynamicReportDetail where ReportId = " + dynamicReportHeaderBOs.get(0).getReportId() + " AND EntityId =" + EntityId;
+                Cursor c = db.selectSQL(sql);
+                if (c != null) {
 
-                    SparseArray<String> tempList = tempArray.get(id);
-                    if (tempList == null)
-                        tempList = new SparseArray<String>();
+                    while (c.moveToNext()) {
+                        int id = c.getInt(0);
+                        int recordId = c.getInt(2);
 
-                    tempList.put(recordId, c.getString(1));
-                    tempArray.put(id, tempList);
-                    rowSet.add(recordId);
+                        SparseArray<String> tempList = tempArray.get(id);
+                        if (tempList == null)
+                            tempList = new SparseArray<String>();
+
+                        tempList.put(recordId, c.getString(1));
+                        tempArray.put(id, tempList);
+                        rowSet.add(recordId);
+                    }
                 }
-            }
 
-            c.close();
+                c.close();
+            }
             db.closeDB();
 
         } catch (Exception e) {
@@ -127,8 +128,8 @@ public class DynamicReportHelper {
 
     private void downloadRetailerList(int reportId) {
         retailerList = new ArrayList<SpinnerBO>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         try {
@@ -153,8 +154,8 @@ public class DynamicReportHelper {
     }
 
     public void downloadRetailerReport(int RetailerId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
 
         dynamicReportDetailBO = new DynamicReportDetailBO();
 

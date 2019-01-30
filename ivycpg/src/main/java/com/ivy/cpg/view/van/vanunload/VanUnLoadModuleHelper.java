@@ -38,8 +38,8 @@ public class VanUnLoadModuleHelper {
 
     public void saveVanUnLoad(Vector<LoadManagementBO> mylist, Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             LoadManagementBO vanunloadbo;
@@ -105,8 +105,8 @@ public class VanUnLoadModuleHelper {
      */
     public void saveVanUnloadNonsalable(Vector<LoadManagementBO> mylist, Context context) {
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
 
             db.createDataBase();
@@ -175,8 +175,8 @@ public class VanUnLoadModuleHelper {
     public void UpdateNonSalableSIH(Vector<LoadManagementBO> mylist, Context context) {
 
         LoadManagementBO product;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -207,8 +207,8 @@ public class VanUnLoadModuleHelper {
 
     public void saveVanStockAdjustment(Vector<LoadManagementBO> mylist, Context context) {
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             LoadManagementBO vanunloadbo;
@@ -264,8 +264,8 @@ public class VanUnLoadModuleHelper {
 
     public void UpdateSIH(Vector<LoadManagementBO> vanunloadlist, Context context) {
         LoadManagementBO product;
-        DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -304,7 +304,7 @@ public class VanUnLoadModuleHelper {
     }
 
     public void updateEmptyReconilationTable(Vector<LoadManagementBO> vanunloadlist, Context context) {
-        DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
         try {
             LoadManagementBO product;
             db.openDataBase();
@@ -378,8 +378,8 @@ public class VanUnLoadModuleHelper {
                 + SDUtil.now(SDUtil.DATE_TIME_ID);
 
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -452,8 +452,8 @@ public class VanUnLoadModuleHelper {
                 + SDUtil.now(SDUtil.DATE_TIME_ID);
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -518,8 +518,8 @@ public class VanUnLoadModuleHelper {
                 + SDUtil.now(SDUtil.DATE_TIME_ID);
 
         try {
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -586,8 +586,8 @@ public class VanUnLoadModuleHelper {
      * @return
      */
     public ArrayList<SalesReturnReasonBO> setNonSalableReturnProduct(Vector<LoadManagementBO> mylist, Context context) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
 
         ArrayList<SalesReturnReasonBO> salesReturnList = null;
         LoadManagementBO bo;
@@ -642,8 +642,8 @@ public class VanUnLoadModuleHelper {
     private ArrayList<String> reasonList;
 
     public HashMap<String, ArrayList<LoadManagementBO>> getVanUnloadDetailsForPrint(String uid, Context context) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         vanUnLoadListHashMap = new HashMap<>();
         ArrayList<LoadManagementBO> vanUnLaodList = new ArrayList<>();
         reasonList = new ArrayList<>();
@@ -721,8 +721,8 @@ public class VanUnLoadModuleHelper {
         HashMap<String, LoadManagementBO> mUnloadHistorybyUid = new HashMap<>();
         LoadManagementBO unloadBo;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select uid," +

@@ -70,8 +70,8 @@ public class BatchAllocationHelper {
         mBatchListByproductID = new HashMap<String, ArrayList<ProductMasterBO>>();
         mFreeProductListByProductID = new HashMap<String, ArrayList<ProductMasterBO>>();
         ProductMasterBO productBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
 
             String str = "Price.srp1,Price1.srp1";
@@ -172,8 +172,8 @@ public class BatchAllocationHelper {
 
     public void loadOrderedBatchProducts(String invoiceId) {
         mBatchListByproductID = new HashMap<String, ArrayList<ProductMasterBO>>();
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         ProductMasterBO productBO;
         try {
             db.openDataBase();
@@ -617,8 +617,8 @@ public class BatchAllocationHelper {
      * download batch count for all product
      */
     public void downloadProductBatchCount() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();

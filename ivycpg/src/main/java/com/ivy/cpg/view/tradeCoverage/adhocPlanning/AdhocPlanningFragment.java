@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.tradeCoverage.adhocPlanning;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -72,20 +72,20 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
         view = inflater.inflate(R.layout.fragment_adhoc_planning, container, false);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        userSpin = (Spinner) view.findViewById(R.id.spn_users);
-        beatSpin = (Spinner) view.findViewById(R.id.spn_beat);
-        Button mAddBtn = (Button) view.findViewById(R.id.btn_add);
-        Button mDeleteBtn = (Button) view.findViewById(R.id.btn_delete);
-        Button mRefresh1Btn = (Button) view.findViewById(R.id.btn_refresh1);
-        Button mRefresh2Btn = (Button) view.findViewById(R.id.btn_refresh2);
-        Button mDownloadBtn = (Button) view.findViewById(R.id.btn_ok);
+        userSpin = view.findViewById(R.id.spn_users);
+        beatSpin = view.findViewById(R.id.spn_beat);
+        Button mAddBtn = view.findViewById(R.id.btn_add);
+        Button mDeleteBtn = view.findViewById(R.id.btn_delete);
+        Button mRefresh1Btn = view.findViewById(R.id.btn_refresh1);
+        Button mRefresh2Btn = view.findViewById(R.id.btn_refresh2);
+        Button mDownloadBtn = view.findViewById(R.id.btn_ok);
         mDownloadBtn.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        lv1 = (ListView) view.findViewById(R.id.lv_first);
-        lv2 = (ListView) view.findViewById(R.id.lv_second);
+        lv1 = view.findViewById(R.id.lv_first);
+        lv2 = view.findViewById(R.id.lv_second);
 
         //Retailer Search Widgets
-        mRetailerEdt = (EditText) view.findViewById(R.id.input_retailer);
-        mSearchIv = (ImageView) view.findViewById(R.id.ivSearch);
+        mRetailerEdt = view.findViewById(R.id.input_retailer);
+        mSearchIv = view.findViewById(R.id.ivSearch);
 
         mAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,11 +145,11 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
         });
 
         if (bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
-            ((LinearLayout) view.findViewById(R.id.llSpinner)).setVisibility(View.GONE);
-            ((RelativeLayout) view.findViewById(R.id.llRetailers)).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.llSpinner).setVisibility(View.GONE);
+            view.findViewById(R.id.llRetailers).setVisibility(View.VISIBLE);
         } else {
-            ((LinearLayout) view.findViewById(R.id.llSpinner)).setVisibility(View.VISIBLE);
-            ((RelativeLayout) view.findViewById(R.id.llRetailers)).setVisibility(View.GONE);
+            view.findViewById(R.id.llSpinner).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.llRetailers).setVisibility(View.GONE);
         }
         registerReceiver();
         updateScreen();
@@ -576,8 +576,8 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
                 convertView = inflater.inflate(R.layout.list_retailer_selection, parent,
                         false);
                 holder = new ViewHolder();
-                holder.retailerNameTV = (TextView) convertView.findViewById(R.id.tv_retailer_name);
-                holder.retailerSelectCbox = (CheckBox) convertView.findViewById(R.id.cb_retailer_select);
+                holder.retailerNameTV = convertView.findViewById(R.id.tv_retailer_name);
+                holder.retailerSelectCbox = convertView.findViewById(R.id.cb_retailer_select);
                 holder.retailerSelectCbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -627,8 +627,8 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
                 convertView = inflater.inflate(R.layout.list_retailer_selection, parent,
                         false);
                 holder = new ViewHolder();
-                holder.retailerNameTV = (TextView) convertView.findViewById(R.id.tv_retailer_name);
-                holder.retailerSelectCbox = (CheckBox) convertView.findViewById(R.id.cb_retailer_select);
+                holder.retailerNameTV = convertView.findViewById(R.id.tv_retailer_name);
+                holder.retailerSelectCbox = convertView.findViewById(R.id.cb_retailer_select);
                 holder.retailerSelectCbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

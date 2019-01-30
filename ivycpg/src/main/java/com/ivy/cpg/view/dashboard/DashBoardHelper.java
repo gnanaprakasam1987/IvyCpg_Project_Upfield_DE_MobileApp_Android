@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.PriorityBo;
 import com.ivy.sd.png.bo.RetailerKPIBO;
@@ -14,6 +15,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -119,8 +121,8 @@ public class DashBoardHelper {
 
     public ArrayList<String> getDashBoardFilter() {
         ArrayList<String> dashBoardFilterList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -151,8 +153,8 @@ public class DashBoardHelper {
 
     public ArrayList<String> getMonthNameList() {
         ArrayList<String> monthNoList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -192,8 +194,8 @@ public class DashBoardHelper {
     @Deprecated
     public ArrayList<String> getKpiMonthNameList(boolean isFromHomeScreenTwo) {
         ArrayList<String> monthNoList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -264,8 +266,8 @@ public class DashBoardHelper {
     @Deprecated
     public void getSellerKpiWeekList() {
         ArrayList<String> weekList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -293,8 +295,8 @@ public class DashBoardHelper {
     }
 
     public int getCurrentWeek() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -319,8 +321,8 @@ public class DashBoardHelper {
 
     public ArrayList<String> getQuarterNameList() {
         ArrayList<String> quarterList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -373,8 +375,8 @@ public class DashBoardHelper {
 
     public void loadDashBoard(String retailerID) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -527,8 +529,8 @@ public class DashBoardHelper {
     @Deprecated
     public void loadRetailerDashBoard(String retailerID, String interval) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -602,8 +604,8 @@ public class DashBoardHelper {
      */
     public void loadRouteDashBoard(String interval) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -661,7 +663,7 @@ public class DashBoardHelper {
     }
 
     public void findMinMaxProductLevelRetailerKPI(int kpiID, int kpiTypeLovID, String interval) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String sb = "select distinct (rksd.levelid),pl.sequence from RetailerKPISKUDetail rksd" +
@@ -709,8 +711,8 @@ public class DashBoardHelper {
         try {
             int loopEnd = childLevel - parentLevel + 1;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             if (loopEnd == 0) {
@@ -936,8 +938,8 @@ public class DashBoardHelper {
 
         ArrayList<String> dashList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -970,8 +972,8 @@ public class DashBoardHelper {
 
         ArrayList<String> dashList = null;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -1019,8 +1021,8 @@ public class DashBoardHelper {
 
     public void loadSellerDashBoardReport(String userid) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -1254,8 +1256,8 @@ public class DashBoardHelper {
      */
     public void loadSellerDashBoard(String userid, String interval) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -1332,8 +1334,8 @@ public class DashBoardHelper {
      */
     public void loadSellerDashBoardforWeek(String userid) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -1399,8 +1401,8 @@ public class DashBoardHelper {
      */
     public void loadSellerDashBoard(String userid) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -1479,8 +1481,8 @@ public class DashBoardHelper {
         int count = 0;
         try {
             showDayAndP3MSpinner = 0;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1507,8 +1509,8 @@ public class DashBoardHelper {
         int count = 0;
         try {
             showDayAndP3MSpinner = 0;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1539,8 +1541,8 @@ public class DashBoardHelper {
      */
     public void loadP3MTrendChaart(String userid) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getP3mChartList().clear();
@@ -1615,8 +1617,8 @@ public class DashBoardHelper {
 
     public void checkDayAndP3MSpinner(boolean isRetailerDashboard) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             boolean isDaySpinner = false;
@@ -1669,7 +1671,7 @@ public class DashBoardHelper {
 
 
     public void findMinMaxProductLevelSellerKPI(int kpiID, int kpiTypeLovID, String interval) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         ;
         try {
             db.openDataBase();
@@ -1713,7 +1715,7 @@ public class DashBoardHelper {
 
     public void calculateDayAcheivement(boolean isRetailer) {
         int maxLevel = 0, minLevel = 0;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
         sb.append("select Distinct p.PLid,pl.sequence from productmaster p ");
@@ -1812,8 +1814,8 @@ public class DashBoardHelper {
         try {
             int loopEnd = childLevel - parentLevel + 1;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             if (loopEnd == 0) {
@@ -2117,7 +2119,7 @@ public class DashBoardHelper {
 
 
     public void findMinMaxProductLevel(String retailerid) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String sb = "SELECT PLMin .LevelId,PLMax .LevelId FROM " +
@@ -2151,8 +2153,8 @@ public class DashBoardHelper {
                                       String code) {
         SKUWiseTargetBO temp;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuilder sb = new StringBuilder();
@@ -2243,8 +2245,8 @@ public class DashBoardHelper {
 
     public void LoadSKUWiseTarget(String retailerId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c;
 
@@ -2317,7 +2319,7 @@ public class DashBoardHelper {
     // to calculate achived value for each sku of VOL type
 
     public void downloadDashboardLevelSkip(int flag) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         int parentLevel = 0;
         int childLevel = 0;
         try {
@@ -2442,7 +2444,7 @@ public class DashBoardHelper {
     }
 
     public void downloadRetailerKpi() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         mRetailerKpiListBymonth = new SparseArray<>();
         mRetailerKpiMonthList = new LinkedHashSet<>();
 
@@ -2526,8 +2528,8 @@ public class DashBoardHelper {
     public ArrayList<String> loadMSLUnsold(String retailerID) {
         ArrayList<String> mslUnsoldList = new ArrayList<>();
         String productIds = bmodel.productHelper.getTaggingDetails("MSL");
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.createDataBase();
             db.openDataBase();
@@ -2554,8 +2556,8 @@ public class DashBoardHelper {
     }
 
     public void downloadTotalValuesAndQty() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c;
 
@@ -2627,8 +2629,8 @@ public class DashBoardHelper {
 
     public void checkDaySpinner() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             setShowDaySpinner(false);
@@ -2653,8 +2655,8 @@ public class DashBoardHelper {
     public String getKPiIDS(String userids) {
         String KpiIds = "";
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -2687,7 +2689,7 @@ public class DashBoardHelper {
     public void findMinMaxProductLevelSellerKPI(String kpiIDs, int kpiTypeLovID, String interval) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
 
@@ -2735,8 +2737,8 @@ public class DashBoardHelper {
         try {
             int loopEnd = childLevel - parentLevel + 1;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             if (loopEnd == 0) {
@@ -2856,8 +2858,8 @@ public class DashBoardHelper {
 
     public void loadKpiDashBoard(String userid, String interval) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             getDashboardMasterData().clear();
@@ -2926,8 +2928,8 @@ public class DashBoardHelper {
     private int getSKUCount(int KPIParamLovId) {
         int count = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -2959,8 +2961,8 @@ public class DashBoardHelper {
      */
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.createDataBase();
@@ -3018,8 +3020,8 @@ public class DashBoardHelper {
 
     public ArrayList<StandardListBO> getDashTabs() {
         ArrayList<StandardListBO> mTabs = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.createDataBase();
@@ -3059,8 +3061,8 @@ public class DashBoardHelper {
 
     public void loadKlgsDashboardData(String ListCode) {
         skuWiseTargetList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.createDataBase();
@@ -3096,8 +3098,8 @@ public class DashBoardHelper {
 
     public void loadPlatformDashboardData() {
         skuWiseTargetList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.createDataBase();
@@ -3138,8 +3140,8 @@ public class DashBoardHelper {
         productsIds = new ArrayList<>();
         priorityIds = new ArrayList<>();
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.createDataBase();
@@ -3261,8 +3263,8 @@ public class DashBoardHelper {
 
         String groupName = "0";
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT * FROM " + DataMembers.tbl_IncentiveDashboard + " Where inctype='" + type + "'";
@@ -3323,8 +3325,8 @@ public class DashBoardHelper {
 
             ArrayList<IncentiveDashboardDefinitionBO> list = new ArrayList<>();
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT * FROM IncentiveDashboardDefinition where inctype='" + type + "'";
@@ -3399,8 +3401,8 @@ public class DashBoardHelper {
     private int getParentId(int contentLevel, int parentLevel, int parentID) {
         int parentId = 0;
         int tempParentId = parentID;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         int loopEnd = contentLevel - parentLevel;
@@ -3442,7 +3444,7 @@ public class DashBoardHelper {
                 chIDs = chIDs.substring(0, chIDs.length() - 1);
 
             try {
-                db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                db = new DBUtil(mContext, DataMembers.DB_NAME);
                 db.createDataBase();
                 db.openDataBase();
                 StringBuffer sb = new StringBuffer();
@@ -3475,7 +3477,7 @@ public class DashBoardHelper {
         DBUtil db = null;
         int count = 0;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -3523,7 +3525,7 @@ public class DashBoardHelper {
                 chIDs = chIDs.substring(0, chIDs.length() - 1);
 
             try {
-                db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+                db = new DBUtil(mContext, DataMembers.DB_NAME);
                 db.createDataBase();
                 db.openDataBase();
                 StringBuffer sb = new StringBuffer();
@@ -3567,7 +3569,7 @@ public class DashBoardHelper {
         DBUtil db;
         int count = 0;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -3595,7 +3597,7 @@ public class DashBoardHelper {
      * @See {@link SellerDashboardDataManagerImpl#fetchOutletDailyReport()}
      */
     public DailyReportBO downloadDailyReport() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
         StringBuffer sb = new StringBuffer();
         DailyReportBO dailyRep = new DailyReportBO();
@@ -3658,8 +3660,8 @@ public class DashBoardHelper {
     public DailyReportBO getNoOfInvoiceAndValue() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -3690,8 +3692,8 @@ public class DashBoardHelper {
     public DailyReportBO getNoOfOrderAndValue() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -3720,8 +3722,8 @@ public class DashBoardHelper {
     public DailyReportBO getFocusBrandInvoiceAmt() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -3753,8 +3755,8 @@ public class DashBoardHelper {
     public double getSalesReturnValue() {
         double sale_return_value = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -3784,8 +3786,8 @@ public class DashBoardHelper {
     public DailyReportBO getFullFillmentValue() {
         DailyReportBO dailyRp = new DailyReportBO();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
@@ -3833,8 +3835,8 @@ public class DashBoardHelper {
     public int getTotalCallsForTheDayExcludingDeviatedVisits() {
         int total_calls = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -3862,8 +3864,8 @@ public class DashBoardHelper {
     public int getVisitedCallsForTheDayExcludingDeviatedVisits() {
         int visited_calls = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -3888,8 +3890,8 @@ public class DashBoardHelper {
     public int getProductiveCallsForTheDayExcludingDeviatedVisits() {
         int productive_calls = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = null;
             if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
@@ -3937,8 +3939,8 @@ public class DashBoardHelper {
     public int getTotalCallsForTheDay() {
         int total_calls = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = null;
@@ -3978,8 +3980,8 @@ public class DashBoardHelper {
     public int getVisitedCallsForTheDay() {
         int visited_calls = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -4018,8 +4020,8 @@ public class DashBoardHelper {
     public int getProductiveCallsForTheDay() {
         int productive_calls = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = null;
             if (bmodel.configurationMasterHelper.IS_INVOICE && !bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
@@ -4077,8 +4079,8 @@ public class DashBoardHelper {
     public int getProductiveCallsForTheDayKlgs() {
         int productive_calls = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = null;
 
@@ -4127,8 +4129,8 @@ public class DashBoardHelper {
         try {
             PRD_FOR_ORDER = false;
             PRD_FOR_SKT = false;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT RField FROM "
@@ -4161,8 +4163,8 @@ public class DashBoardHelper {
         DBUtil db;
         float totalWeight = 0;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -4186,5 +4188,40 @@ public class DashBoardHelper {
         return totalWeight;
     }
 
+    public String getLastDownloadDate(){
+        String downloadDate ="";
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select timestamp from SellerKPIDetail order by TimeStamp desc limit 1");
+            if (c != null && c.getCount() > 0 && c.moveToNext()) {
+                downloadDate = c.getString(0);
+                c.close();
+            }
+
+            db.closeDB();
+
+            if (downloadDate != null && !downloadDate.equals("")){
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
+                        Locale.ENGLISH);
+                Date date = sdf.parse(downloadDate);
+                sdf = new SimpleDateFormat(ConfigurationMasterHelper.outDateFormat +" HH:mm:ss", Locale.ENGLISH);
+
+                downloadDate = mContext.getResources().getString(R.string.last_download_on)
+                        +" "+sdf.format(date);
+
+            }
+
+        } catch (Exception e) {
+            Commons.printException(
+                    "Error at getLastDownloadDate In Dashboard.", e);
+        }
+
+        return downloadDate;
+    }
 
 }

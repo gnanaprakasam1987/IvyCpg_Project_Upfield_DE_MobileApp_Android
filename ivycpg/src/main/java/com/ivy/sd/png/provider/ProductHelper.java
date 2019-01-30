@@ -11,8 +11,11 @@ import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
 import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.cpg.view.loyality.LoyaltyBO;
+import com.ivy.cpg.view.loyality.LoyaltyBenifitsBO;
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.tax.TaxInterface;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.lib.existing.DBUtil;
@@ -28,8 +31,6 @@ import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
-import com.ivy.cpg.view.loyality.LoyaltyBO;
-import com.ivy.cpg.view.loyality.LoyaltyBenifitsBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
@@ -38,12 +39,9 @@ import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.cpg.view.order.tax.TaxInterface;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-
-import org.greenrobot.greendao.DbUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -330,8 +328,8 @@ public class ProductHelper {
      */
     public void loadRetailerWiseProductWiseP4StockAndOrderQty() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -377,8 +375,7 @@ public class ProductHelper {
                     String stockQty = hashMap1.get(p.getProductID());
                     p.setRetailerWiseP4StockQty(stockQty != null ? stockQty : "0,0,0,0");
 
-                    int oosQty = oosMap.get(p.getProductID());
-                    p.setOos(oosQty != 0 ? oosQty : -2);
+                    p.setOos(oosMap.get(p.getProductID()) == null || oosMap.get(p.getProductID()) == 0 ? -2 : oosMap.get(p.getProductID()));
                 }
             }
         } catch (Exception e) {
@@ -393,8 +390,8 @@ public class ProductHelper {
      */
     public void loadRetailerWiseProductWisePurchased() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             //SparseArray<Integer> hashMap = new SparseArray<Integer>();
@@ -432,8 +429,8 @@ public class ProductHelper {
      */
     public void loadRetailerWiseInventoryFlexQty() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select productid,qty,Rfield1,Rfield2,(((qty+RField1)*1.00)/RField2)as avgdays from RtrWiseInventoryMaster "
@@ -488,8 +485,8 @@ public class ProductHelper {
      */
     public void loadRetailerWiseInventoryOrderQty() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             SparseArray<Integer> hasmap = new SparseArray<Integer>();
@@ -552,8 +549,8 @@ public class ProductHelper {
      */
     public void downloadInStoreLocationsForStockCheck() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -618,8 +615,8 @@ public class ProductHelper {
         List<String> mLevels = Arrays.asList(bmodel.configurationMasterHelper.COMPETITOR_FILTER_LEVELS.split(","));
 
         if (mLevels.size() > 0) {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String contentLevelId = mLevels.get(mLevels.size() - 1);
@@ -705,8 +702,8 @@ public class ProductHelper {
         Vector<CompetitorFilterLevelBO> mFilterLevel;
 
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
 
         db.openDataBase();
 
@@ -751,8 +748,8 @@ public class ProductHelper {
         query = query + " WHERE CPM1.PLid = " + mParentLevelId
                 + " Order By CPM" + filterGap + ".RowId,CPM1.RowId";
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
 
         db.openDataBase();
 
@@ -783,8 +780,8 @@ public class ProductHelper {
     public Vector<LevelBO> downloadFilterLevel(String moduleName) {
         Vector<LevelBO> filterLevel = new Vector<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor listCursor = db
@@ -821,8 +818,8 @@ public class ProductHelper {
     public HashMap<Integer, Vector<LevelBO>> downloadFilterLevelProducts(Vector<LevelBO> filterProductLevels, boolean isDsdModule) {
         HashMap<Integer, Vector<LevelBO>> filterLevelPrdByLevelId = new HashMap<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
 
@@ -919,8 +916,8 @@ public class ProductHelper {
             ArrayList<StandardListBO> uomList = downloadUomList();
 
             ProductMasterBO product;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
 
@@ -1248,8 +1245,8 @@ public class ProductHelper {
         String PRODUCT_DISTRIBUTION_TYPE_SALES_TYPE = "SALES_TYPE";
         String PRODUCT_DISTRIBUTION_TYPE_CHANNEL = "CHANNEL";
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         String productIds = "";
 
         try {
@@ -1336,8 +1333,8 @@ public class ProductHelper {
         mAttributeByProductId = new HashMap<>();
         lstProductAttributeMapping = new ArrayList<>();
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             // plid is not used now.. considering given products is sku level
@@ -1374,8 +1371,8 @@ public class ProductHelper {
                     + " WHERE PM.PLid IN (SELECT ProductFilter" + childLevel + " FROM ConfigActivityFilter"
                     + " WHERE ActivityCode = " + bmodel.QT(moduleCode) + ")";
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
@@ -1403,8 +1400,8 @@ public class ProductHelper {
 
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1454,8 +1451,8 @@ public class ProductHelper {
 
     private StringBuffer downloadProductSequenceFromFilter() {
         StringBuffer filter = new StringBuffer();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor cur = db
@@ -1529,8 +1526,8 @@ public class ProductHelper {
             ProductTaggingBO taggingBO;
             productTaggingList = new ArrayList<>();
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
 
@@ -1622,8 +1619,8 @@ public class ProductHelper {
      */
     public void loadInitiativeProducts() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Vector<Integer> productIds = new Vector<Integer>();
@@ -1663,8 +1660,8 @@ public class ProductHelper {
     }
 
     public void loadOldBatchIDMap() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         try {
             oldBatchId = new HashMap<String, Integer>();
@@ -1775,6 +1772,7 @@ public class ProductHelper {
                     product.getLocations().get(z).setWHPiece(0);
                     product.getLocations().get(z).setFacingQty(0);
                 }
+                product.setTotalStockQty(0);
 
                 //clear delivered qty
                 product.setDeliveredCaseQty(0);
@@ -2095,7 +2093,7 @@ public class ProductHelper {
     public void downlaodReturnableProducts(String module) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -2166,7 +2164,7 @@ public class ProductHelper {
         String temp = "-1";
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String sql = "Select Pid,BPid,UomID,Qty from BomMaster Order by Pid";
@@ -2323,7 +2321,7 @@ public class ProductHelper {
         DBUtil db = null;
         Cursor cursor;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             String uid = QT(bmodel.userMasterHelper.getUserMasterBO()
                     .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
@@ -2422,7 +2420,7 @@ public class ProductHelper {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -2507,7 +2505,7 @@ public class ProductHelper {
     public boolean isAlreadyIndicativeOrderTaken(int indicativeOrderId) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
           /*  Cursor indicativeCursor = db
@@ -2601,7 +2599,7 @@ public class ProductHelper {
         DBUtil db = null;
 
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -2741,7 +2739,7 @@ public class ProductHelper {
         double totalAmount = 0.0;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -2813,7 +2811,7 @@ public class ProductHelper {
         DBUtil db = null;
         StringBuffer sb = new StringBuffer();
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             sb.append("SELECT Distinct ");
@@ -2914,8 +2912,8 @@ public class ProductHelper {
         int merchtargetpercent = 0;
         int disttargetpercent = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = null;
@@ -2973,8 +2971,8 @@ public class ProductHelper {
     public double applyGoldStoreLineDiscount() {
         int discount = 0, type = 0;
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c = db
                 .selectSQL("select discount,type from StoreWiseDiscount where retailerid="
@@ -2995,8 +2993,8 @@ public class ProductHelper {
     private boolean WasGoldStore() {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = null;
@@ -3022,7 +3020,7 @@ public class ProductHelper {
     private void saveOrUpdateReturnProductDetails() {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String sql, values;
@@ -3075,7 +3073,7 @@ public class ProductHelper {
     public void downloadGenericProductID() {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor cur = db
                     .selectSQL("SELECT  B.Bpid,A.PID,A.Pname  FROM ProductMaster A inner JOIN BomMaster B on A.pid = B.pid WHERE A.isReturnable = '1' Order by A.pid");
@@ -3111,8 +3109,8 @@ public class ProductHelper {
 
             inStoreLocation = new Vector<>();
             StandardListBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
@@ -3153,8 +3151,8 @@ public class ProductHelper {
 
             globalCategory = new Vector<LevelBO>();
             LevelBO levelBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String query = "SELECT DISTINCT PM1.PID, PM1.PName, PL.LevelId FROM ProductMaster PM1"
@@ -3202,12 +3200,13 @@ public class ProductHelper {
             String moduleCode, String batchmenucode) {
         mLoadManagementBOByProductId = new SparseArray<>();
         String sql = "", sql1 = "", sql2 = "", sql3 = "", sql4 = "";
+        String nSIHColumn = "";
         productlist = new Vector<>();
         LoadManagementBO bo;
         Vector<LoadManagementBO> list;
         LoadManagementBO batchnobo;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         if (batchmenucode.equals("MENU_MANUAL_VAN_LOAD")
@@ -3220,6 +3219,7 @@ public class ProductHelper {
 
             // Unload non salable qty from NonSalableSIHMaster
             sql4 = " left join ( select pid, SUM(qty) as nsihqty from NonSalableSIHMaster group by pid) as NSIH ON NSIH.pid = PM.PID";
+            nSIHColumn = ",NSIH.nsihqty";
         } else {
             sql = "";
             sql1 = "";
@@ -3243,7 +3243,7 @@ public class ProductHelper {
                 + sql1
                 + " ,(select qty from StockProposalNorm PSQ  where uomid =PM.dUomId and PM.PID = PSQ.PID) as sugcs,"
                 + " (select qty from StockProposalNorm PSQ  where uomid =PM.dOuomid and PM.PID = PSQ.PID) as sugou,PM.pCode as ProCode,"
-                + "  PM.ParentHierarchy as ParentHierarchy,NSIH.nsihqty "
+                + "  PM.ParentHierarchy as ParentHierarchy" + nSIHColumn
                 + " FROM ProductMaster PM"
                 + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=PM.pid and PWHS.UomID=PM.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                 + sql2
@@ -3286,14 +3286,17 @@ public class ProductHelper {
                 bo.setMsqQty(c.getInt(24));
                 bo.setIssalable(c.getInt(25));
                 bo.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
-                bo.setNonSalableQty(c.getInt(c.getColumnIndex("nsihqty")));
+
                 if (batchmenucode.equals("MENU_STOCK_PROPOSAL")
                         || batchmenucode.equals("MENU_STK_PRO")) {
                     bo.setStkprototalQty(c.getInt(c.getColumnIndex("qty")));
                     bo.setStkpropcsqty(c.getInt(c.getColumnIndex("pcsQty")));
                     bo.setStkprocaseqty(c.getInt(c.getColumnIndex("caseQty")));
                     bo.setStkproouterqty(c.getInt(c.getColumnIndex("outerQty")));
+                } else {
+                    bo.setNonSalableQty(c.getInt(c.getColumnIndex("nsihqty")));
                 }
+
                 if (batchmenucode.equals("MENU_MANUAL_VAN_LOAD")
                         || batchmenucode.equals("MENU_VAN_UNLOAD")
                         || batchmenucode.equals("MENU_CUR_STK_BATCH")
@@ -3403,7 +3406,7 @@ public class ProductHelper {
         DBUtil db = null;
         StringBuffer sBuffer = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             sBuffer = new StringBuffer();
@@ -3437,7 +3440,7 @@ public class ProductHelper {
         mTypeIdList = new ArrayList<Integer>();
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "select SM.Listid,SM.Listname from StandardListMaster SM where ListType='DISCOUNT_TYPE' and listcode!='PRICEOFF'";
@@ -3468,7 +3471,7 @@ public class ProductHelper {
         DBUtil db;
         StringBuilder sb;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             sb = new StringBuilder();
@@ -3635,8 +3638,8 @@ public class ProductHelper {
     public int getMappingLocationId(int loclevelid, int Retlocid) {
         int locid = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;
@@ -3674,8 +3677,8 @@ public class ProductHelper {
     public int getMappingChannelId(int chid, int RetSubCHid) {
         int channelid = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;
@@ -3713,8 +3716,8 @@ public class ProductHelper {
 
     public int getRetailerlevel(String menucode) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select IsAccount,IsRetailer,IsClass,LocLevelId,ChLevelId from ConfigActivityFilter where ActivityCode=" + bmodel.QT(menucode));
             if (c != null) {
@@ -3765,8 +3768,8 @@ public class ProductHelper {
 
 
             ProductMasterBO product;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
 
@@ -3852,7 +3855,7 @@ public class ProductHelper {
 
 
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
 
@@ -3920,8 +3923,8 @@ public class ProductHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             String query = "select SM.Listname from StandardListMaster SM where ListType='DISCOUNT_TYPE' and SM.LISTCODE='PRICEOFF'";
@@ -3944,8 +3947,8 @@ public class ProductHelper {
         ArrayList<StandardListBO> orderTypeList = null;
 
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -3977,7 +3980,7 @@ public class ProductHelper {
         }
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             int mFiltrtLevel = 0;
@@ -4083,8 +4086,8 @@ public class ProductHelper {
         mAttributeTypes = new ArrayList<>();
         ArrayList<Integer> temp;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             Cursor c = db.selectSQL("select att_id,att_name,att_type_lov_id,stm.listname from AttributeMaster am left join standardlistmaster stm on stm.listid=am.att_type_lov_id");//select att_id,att_name,att_type_lov_id from AttributeMaster");
@@ -4126,7 +4129,7 @@ public class ProductHelper {
         double discountValue = 0;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -4162,7 +4165,7 @@ public class ProductHelper {
     public void updateSalesReturnInfoInProductObj(DBUtil db, String invoiceid, boolean isFromReport) {
 
         if (db == null) {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
         }
@@ -4201,7 +4204,7 @@ public class ProductHelper {
     public void updateDistributorDetails() {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
@@ -4234,8 +4237,8 @@ public class ProductHelper {
     public void downloadDiscountRange() {
         // HashMap<String,ProductMasterBO> lstRangesByProductId=null;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("Select PM.PID, MinValue, MaxValue from DiscountProductMapping dpm "
                     + " inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
@@ -4390,7 +4393,7 @@ public class ProductHelper {
 
     public void updateBillWiseDiscountInObj(String invoiceid) {
         OrderHelper.getInstance(mContext).invoiceDiscount = 0 + "";
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.createDataBase();
         db.openDataBase();
         StringBuffer sb = new StringBuffer();
@@ -4466,8 +4469,8 @@ public class ProductHelper {
         sb.append("select producid,price,AvailQty from ContractPricing ");
         sb.append("where retailerid=" + bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID()));
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(sb.toString());
@@ -4496,8 +4499,8 @@ public class ProductHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             int plID = 0;
@@ -4593,8 +4596,8 @@ public class ProductHelper {
 
             loyaltyproductList = new Vector<LoyaltyBO>();
             LoyaltyBO loyalties;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql1 = "SELECT Distinct  IFNULL(LM.LoyaltyId,0),IFNULL(LM.Description,'Common'),LP.RetailerId,LP.Points,LP.PointsTypeID FROM LoyaltyPoints LP LEFT JOIN LoyaltyMaster LM ON LM.LoyaltyId = LP.LoyaltyId"
@@ -4662,8 +4665,8 @@ public class ProductHelper {
     public void downloadloyaltyBenifits() {
         try {
             LoyaltyBenifitsBO ltyBenifits;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -4736,8 +4739,8 @@ public class ProductHelper {
                 }
             }
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
             Cursor c1 = null;
@@ -4804,8 +4807,8 @@ public class ProductHelper {
     }
 
     public void setProductImageUrl() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c = null;
 
@@ -4848,8 +4851,8 @@ public class ProductHelper {
     public double getSchemeAmount(String invoiceid) {
         double amount = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select SchemeAmount from InvoiceMaster ");
@@ -4873,7 +4876,7 @@ public class ProductHelper {
         mIndicativeList = new ArrayList<Integer>();
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "select uid from indicativeorder where rid="
@@ -4897,7 +4900,7 @@ public class ProductHelper {
         DBUtil db = null;
         boolean isAvailable = true;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "select orderid from orderheader where IndicativeOrderID ="
@@ -5005,7 +5008,7 @@ public class ProductHelper {
         boolean isAvailable = false;
         int productFilter1 = 0;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "select ProductFilter1 from ConfigActivityFilter where ActivityCode ="
@@ -5032,7 +5035,7 @@ public class ProductHelper {
     public void updateOutletOrderedProducts(String rId) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "select ODR.ProductID,ODR.Qty,ODR.uomid,OHR.Remarks from OrderHeaderRequest OHR " +
@@ -5078,7 +5081,7 @@ public class ProductHelper {
         DBUtil db = null;
         boolean isAvailable = false;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "select HHTCode from HhtMenuMaster where HHTCode = 'Filt02' or 'Filt03'";
@@ -5158,7 +5161,7 @@ public class ProductHelper {
     private void getAlCompetitorTaggedProducts(int loopEnd) {
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             String sql;
             sql = "SELECT distinct A1.CPID, A1.CPName," +
@@ -5219,8 +5222,8 @@ public class ProductHelper {
         try {
             String mappingId = "0", moduletypeid = "0", locationId = "0";
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
 
             db.openDataBase();
 
@@ -5286,8 +5289,8 @@ public class ProductHelper {
             String language = sharedPrefs.getString("languagePref",
                     ApplicationConfigs.LANGUAGE);
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -5365,8 +5368,8 @@ public class ProductHelper {
     public float getSalesReturnValue() {
         float total = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -5424,8 +5427,8 @@ public class ProductHelper {
         DBUtil db = null;
         ArrayList<StandardListBO> uomList = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(("select listid,listname from standardlistmaster where listtype=" + bmodel.QT("PRODUCT_UOM")));
             if (c.getCount() > 0) {

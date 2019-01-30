@@ -26,7 +26,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -84,8 +83,8 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
     private void saveReason() {
 
         try {
-            DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             boolean isReasonAdded = false;
@@ -255,8 +254,8 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
     private void loadCollectionReason() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(NoCollectionReasonActivity.this, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.NO_COLLECTION_REASON_TYPE));

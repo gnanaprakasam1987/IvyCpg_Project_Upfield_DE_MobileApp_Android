@@ -51,8 +51,8 @@ public class OrderFullfillmentHelper {
         try {
 
             OrderFullfillmentBO ofbo;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
@@ -92,8 +92,8 @@ public class OrderFullfillmentHelper {
         list = new ArrayList<>();
         try {
             OrderFullfillmentBO bo;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct(OFH.orderid),sum(value),sum(lines),ifnull(DH.status,'D'),ifnull(DH.DeliveryDate,'" + bmodel.getResources().getString(R.string.select_date) + "'),DH.ReasonId, OFH.OrderNo from OrderFullfillmentHeader OFH left join deliveryheader dh on dh.orderid=OFH.orderid  where OFH.RetailerId=" + bmodel.QT(rid) + " group by OFH.orderid");
@@ -158,8 +158,8 @@ public class OrderFullfillmentHelper {
         ArrayList<OrderFullfillmentBO> listnew = new ArrayList<>();
         try {
             OrderFullfillmentBO bo, bonew;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct(OFD.PId),OFD.Qty,OFD.UOMId,OFD.Price,(select psname  from ProductMaster where PID=OFD.PId) as pname,OFD.OrderId,ifnull(DD.DeliveredQty,-1),ifnull(DD.UOMId,0) from OrderFullfillmentDetail OFD   left join deliverydetail dd on dd.OrderId=OFD.OrderId and dd.pid=OFD.pid where OFD.OrderId=" + bmodel.QT(orderid));
@@ -227,8 +227,8 @@ public class OrderFullfillmentHelper {
     public void SaveOrderFullfillment(ArrayList<OrderFullfillmentBO> list) {
 //OrderFullfillment Header
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             OrderFullfillmentBO ofbo;
@@ -343,8 +343,8 @@ public class OrderFullfillmentHelper {
         orderFulfillmentList = new ArrayList<>();
         try {
             OrderFulfillmentReportBO bo;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("Select distinct OFH.OrderID, RM.RetailerName, " +
@@ -378,8 +378,8 @@ public class OrderFullfillmentHelper {
         orderFulfillmentDetailList = new ArrayList<>();
         try {
             OrderFulfillmentReportListBO bo;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct OFD.OrderID,PM.PName," +
