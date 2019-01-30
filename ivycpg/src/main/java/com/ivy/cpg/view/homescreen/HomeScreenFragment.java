@@ -122,6 +122,7 @@ import com.ivy.sd.png.view.UserFeedbackActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -226,7 +227,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     ImageView settingView;
 
     Handler handler;
-
+    TextView userNameTv, designation;
 
     private List<MarkerOptions> markerList;
     private LatLng latLng;
@@ -320,16 +321,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         if (AttendanceHelper.getInstance(getActivity()).checkLeaveAttendance(getActivity()))
             isLeave_today = true;
 
-        TextView userNameTv = (TextView) view.findViewById(R.id.tv_username);
-        TextView designation = (TextView) view.findViewById(R.id.tv_designation);
+        userNameTv = (TextView) view.findViewById(R.id.tv_username);
+        designation = (TextView) view.findViewById(R.id.tv_designation);
         profileImageView = (ImageView) view.findViewById(R.id.im_user);
 
         listView = (ListView) view.findViewById(R.id.listView1);
-
-        if (bmodel.userMasterHelper.hasProfileImagePath(bmodel.userMasterHelper.getUserMasterBO()))
-            setImageFromCamera();
-        else
-            setProfileImage();
 
         profileImageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -376,12 +372,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         });
-
-        userNameTv.setText(bmodel.userMasterHelper.getUserMasterBO().getUserName());
-        userNameTv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        designation.setText(bmodel.userMasterHelper.getUserMasterBO().getUserType());
-        designation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
 
         ll_logout = (LinearLayout) view.findViewById(R.id.ll_logout);
         ll_logout.setOnClickListener(new OnClickListener() {
@@ -2551,6 +2541,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         if (showDefaultScreen) {
             showDefaultScreen();
         }
+
+        userNameTv.setText(bmodel.userMasterHelper.getUserMasterBO().getUserName());
+        userNameTv.setTypeface(FontUtils.getFontBalooHai(getContext(), FontUtils.FontType.REGULAR));
+        designation.setText(bmodel.userMasterHelper.getUserMasterBO().getUserType());
+        designation.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+
+        if (bmodel.userMasterHelper.hasProfileImagePath(bmodel.userMasterHelper.getUserMasterBO()))
+            setImageFromCamera();
+        else
+            setProfileImage();
     }
 
     @Override
