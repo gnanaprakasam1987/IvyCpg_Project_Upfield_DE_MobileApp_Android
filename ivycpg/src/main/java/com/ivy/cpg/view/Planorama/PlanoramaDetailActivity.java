@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,8 +53,13 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
     private String photoPath;
     private BusinessModel mBModel;
     private TextView textView_comments,textView_no_of_photos;
-    private Toolbar toolbar;
+    private Toolbar toolbar,toolbar_selection;
     private Button button_loadAnalysis;
+
+    private LinearLayout layout_toolbar_selection;
+    private String mTagOfSelectedImage="";
+    boolean isImageSelected=false;
+    private View imageViewSelectedToDelete=null;
 
 
     @Override
@@ -62,6 +69,8 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
         setContentView(R.layout.activity_planorama_detail);
 
         toolbar = findViewById(R.id.toolbar);
+        toolbar_selection= findViewById(R.id.toolbar_selection);
+        layout_toolbar_selection=findViewById(R.id.layout_toolbar_selection);
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
@@ -73,6 +82,36 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
 
         mBModel=(BusinessModel)getApplicationContext();
         mBModel.setContext(this);
+
+        toolbar_selection.inflateMenu(R.menu.menu_planorama);
+        toolbar_selection.getMenu().findItem(R.id.menu_delete).setVisible(false);
+        toolbar_selection.setNavigationIcon(getResources().getDrawable(R.drawable.ok_tick));
+        toolbar_selection.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId()==R.id.menu_image_full_view){
+
+                    try {
+                        File folder = new File(photoPath + "/" + mTagOfSelectedImage);
+                        AppUtils.openImage(folder.getAbsolutePath(), PlanoramaDetailActivity.this);
+                    }
+                    catch (Exception ex){
+                        Commons.printException(ex);
+                    }
+                }
+
+
+                return false;
+            }
+        });
+        toolbar_selection.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               unSelectView();
+            }
+        });
+
+
         layout_capturedImages=findViewById(R.id.layout_image_captured);
         textView_comments=findViewById(R.id.textView_comments);
         textView_no_of_photos=findViewById(R.id.label_no_of_photos);
@@ -100,7 +139,10 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
         button_loadAnalysis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(NetworkUtils.isNetworkConnected(PlanoramaDetailActivity.this.getApplicationContext()))
                 new LoadVisitAnalysis().execute();
+                else Toast.makeText(PlanoramaDetailActivity.this,getResources().getString(R.string.please_connect_to_internet),Toast.LENGTH_LONG).show();
             }
         });
 
@@ -121,6 +163,7 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
                     imageView.setAdjustViewBounds(true);
                     Bitmap myBitmap = mBModel.decodeFile(imgFile);
                     imageView.setImageBitmap(myBitmap);
+                    imageView.setTag(imageName);
                     LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(AppUtils.dpToPx(this,150), AppUtils.dpToPx(this,150));
 
                     if(position!=0) {
@@ -128,6 +171,27 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
                     }
                     position+=1;
 
+
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(isImageSelected){
+
+                                if(mTagOfSelectedImage.equals(view.getTag())){
+                                    unSelectView();
+                                }
+                                else {
+
+                                    selectView(view);
+                                }
+
+                            }
+                            else {
+                                selectView(view);
+                            }
+
+                        }
+                    });
 
                     layout_capturedImages.addView(imageView,layoutParams);
 
@@ -151,6 +215,39 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
+    private void selectView(View view){
+
+        // Un selecting last selected image
+        if(imageViewSelectedToDelete!=null)
+            imageViewSelectedToDelete.setPadding(0,0,0,0);
+
+        layout_toolbar_selection.setVisibility(View.VISIBLE);
+        toolbar.setVisibility(View.GONE);
+
+        int padding=AppUtils.dpToPx(PlanoramaDetailActivity.this,5);
+        view.setPadding(padding,padding,padding,padding);
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+        imageViewSelectedToDelete=view;
+        mTagOfSelectedImage=(String)view.getTag();
+
+        isImageSelected=true;
+
+    }
+
+    private void unSelectView(){
+
+        if(imageViewSelectedToDelete!=null)
+            imageViewSelectedToDelete.setPadding(0,0,0,0);
+
+        isImageSelected=false;
+        layout_toolbar_selection.setVisibility(View.GONE);
+        toolbar.setVisibility(View.VISIBLE);
+
+
+
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -306,11 +403,16 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected String doInBackground(String... url) {
 
-            String token=authenticate();
-            if(!token.equals("")){
-                return downloadVisitAnalysis(token,visitId);
+            try {
+                String token = authenticate();
+                if (!token.equals("")) {
+                    return downloadVisitAnalysis(token, visitId);
+                } else return "1";
             }
-            else return "1";
+            catch (Exception ex){
+                Commons.printException(ex);
+                return "3";
+            }
 
         }
 

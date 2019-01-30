@@ -5,9 +5,30 @@
     android:orientation="vertical"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar" />
+    <FrameLayout
+        android:id="@+id/toolbar_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/material_tool_bar" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_toolbar_selection"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+            <include
+                android:id="@+id/toolbar_selection"
+                layout="@layout/material_tool_bar_white_bg"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_2dp"
+                android:background="@color/colorPrimary"/>
+        </LinearLayout>
+    </FrameLayout>
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_photo"
@@ -16,7 +37,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/toolbar_frame"
         >
         <RelativeLayout
             android:layout_width="match_parent"

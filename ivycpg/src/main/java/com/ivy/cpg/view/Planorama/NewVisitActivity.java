@@ -41,6 +41,7 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -236,19 +237,7 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
                        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(AppUtils.dpToPx(this,150), AppUtils.dpToPx(this,150));
                        layoutParams.setMargins(10,0,10,0);
 
-                     /*  imageView.setOnLongClickListener(new View.OnLongClickListener() {
-                           @Override
-                           public boolean onLongClick(View view) {
-                               int padding=AppUtils.dpToPx(NewVisitActivity.this,5);
-                               view.setPadding(padding,padding,padding,padding);
-                               view.setBackgroundColor(getResources().getColor(R.color.RED));
 
-                               imageViewSelectedToDelete=imageView;
-                                supportInvalidateOptionsMenu();
-
-                               return false;
-                           }
-                       });*/
                        imageView.setOnClickListener(new View.OnClickListener() {
                            @Override
                            public void onClick(View view) {
@@ -604,9 +593,12 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
     public boolean onPrepareOptionsMenu(Menu menu) {
 
 
-        if(imageViewSelectedToDelete!=null)
-        menu.findItem(R.id.menu_delete).setVisible(true);
-        else menu.findItem(R.id.menu_delete).setVisible(false);
+        if(imageViewSelectedToDelete!=null) {
+            menu.findItem(R.id.menu_delete).setVisible(true);
+            menu.findItem(R.id.menu_image_full_view).setVisible(true);
+        }
+        else{ menu.findItem(R.id.menu_delete).setVisible(false);
+            menu.findItem(R.id.menu_image_full_view).setVisible(false);}
 
 
         return super.onPrepareOptionsMenu(menu);
@@ -621,9 +613,7 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
             showDialog(1);
 
                     }
-                    else if(i==R.id.menu_delete){
 
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -798,7 +788,9 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
+                                        if(NetworkUtils.isNetworkConnected(NewVisitActivity.this.getApplicationContext()))
                                         new CreateVisitAsync().execute();
+                                        else Toast.makeText(NewVisitActivity.this,getResources().getString(R.string.please_connect_to_internet),Toast.LENGTH_LONG).show();
                                     }
                                 })
                         .setNegativeButton(

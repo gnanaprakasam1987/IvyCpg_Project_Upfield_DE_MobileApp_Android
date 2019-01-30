@@ -53,8 +53,7 @@ public class PlanoramaHelper {
     public void saveVisit(Context mContext, String visitId, String comments, int noOfPhotos, ArrayList<String> imageNameList){
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             String planorama_column = "visitId,date,retailerId,comments,NoOfPhotos";
@@ -104,8 +103,7 @@ public class PlanoramaHelper {
         imageNameListByVistId=new HashMap<>();
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
 
