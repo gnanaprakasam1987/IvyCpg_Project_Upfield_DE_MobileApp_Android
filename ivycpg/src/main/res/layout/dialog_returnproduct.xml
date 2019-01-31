@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/screen_bg_color">
 
     <include
@@ -12,21 +12,21 @@
 
     <LinearLayout
         android:id="@+id/top_layout"
-        android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_header_height"
-        android:background="@color/list_title_bg_color"
-        android:gravity="center"
+        android:layout_below="@+id/toolbar"
+        android:background="?attr/customListTitleBackgroundColor"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingEnd="@dimen/list_margin"
-        android:paddingStart="@dimen/list_margin">
+        android:paddingStart="@dimen/list_padding_left_n_right"
+        android:paddingEnd="@dimen/list_padding_left_n_right">
 
         <TextView
             android:id="@+id/productBarcodetitle"
             style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center|start"
             android:text="@string/barcode"
             android:visibility="gone" />
@@ -36,7 +36,7 @@
             style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="4"
             android:gravity="center|start"
             android:text="@string/product_name" />
 
@@ -45,7 +45,7 @@
             style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:tag="item_case"
             android:text="@string/liableqty" />
 
@@ -54,50 +54,47 @@
             style="@style/TextViewListTitle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:text="@string/returnqty" />
     </LinearLayout>
 
     <ListView
         android:id="@+id/list"
-        android:layout_below="@+id/top_layout"
-        android:layout_above="@id/footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="1dp"
-        android:layout_marginStart="1dp"
+        android:layout_above="@id/keypad"
+        android:layout_below="@+id/top_layout"
         android:cacheColorHint="@null"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
+        android:divider="@color/light_gray"
+        android:dividerHeight="0.5dp"
         android:fitsSystemWindows="true"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true" />
 
+    <include
+        android:id="@+id/keypad"
+        layout="@layout/keypad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footer" />
+
+
     <RelativeLayout
         android:id="@+id/footer"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="?attr/customFooterBackgroundColor"
         android:orientation="horizontal">
-
-        <include
-            android:id="@+id/keypad"
-            layout="@layout/keypad"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/save_btn"
             style="?attr/roundedCustomButtonSmall"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/keypad"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:layout_margin="@dimen/target_top_margin"
-            android:layout_marginBottom="@dimen/activity_margin1"
-            android:layout_marginTop="@dimen/activity_margin1"
             android:text="@string/done" />
 
     </RelativeLayout>

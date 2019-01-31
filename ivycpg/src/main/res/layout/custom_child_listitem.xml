@@ -1,59 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/orderScreenListRow"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center_vertical"
+    android:minHeight="@dimen/list_item_height"
     android:orientation="horizontal">
 
 
     <TextView
         android:id="@+id/batch_no"
         style="@style/TextViewListItemCaption"
-        android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="start|center"
-        android:layout_marginStart="@dimen/skuwise_right_margin"
-        android:layout_weight="1"
+        android:layout_weight="5"
         android:gravity="start|center"
-        android:maxLines="1"
-        android:padding="3dp"
-        android:text=" "
-        android:textStyle="bold"
-        android:layout_marginLeft="@dimen/skuwise_right_margin" />
+        android:maxLines="1" />
 
     <TextView
         android:id="@+id/sih_case"
         style="@style/TextViewListItemCaption"
-        android:layout_width="@dimen/list_item_width_medium"
-        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:gravity="center"
-        android:padding="3dp"
         android:text="@string/zero" />
 
     <TextView
         android:id="@+id/sih_outer"
         style="@style/TextViewListItemCaption"
-        android:layout_width="@dimen/list_item_width_medium"
-        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:gravity="center"
-        android:padding="3dp"
         android:text="@string/zero" />
 
     <TextView
         android:id="@+id/sih"
         style="@style/TextViewListItemCaption"
-        android:layout_width="@dimen/list_item_width_medium"
-        android:layout_height="@dimen/stock_screen_txtview_height"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:gravity="center"
-        android:padding="3dp"
         android:text="@string/zero" />
 
 </LinearLayout>

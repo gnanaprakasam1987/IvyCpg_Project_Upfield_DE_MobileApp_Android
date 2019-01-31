@@ -355,7 +355,7 @@
                 android:layout_toEndOf="@+id/ll_Productscount"
                 android:layout_toRightOf="@id/ll_Productscount"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tv_sharePercentlbl"

@@ -1,82 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/LL_titleBar"
+
+    <TextView
+        android:id="@+id/titlebar"
         style="?attr/dialogTitleStyle"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center"
-
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/titlebar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:adjustViewBounds="true"
-            android:padding="8dp"
-            android:text="@string/vanload"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:adjustViewBounds="true"
+        android:gravity="start|center_vertical"
+        android:minHeight="@dimen/add_dialog_header_height"
+        android:padding="5dp"
+        android:text="@string/vanload" />
 
 
     <TextView
         android:id="@+id/product_name"
+        style="@style/TextViewNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/LL_titleBar"
+        android:layout_below="@+id/titlebar"
         android:layout_gravity="center"
-        android:gravity="start|center"
+        android:gravity="start|center_vertical"
         android:maxLines="1"
-        android:padding="3dp"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/font_small" />
+        android:padding="5dp" />
 
     <EditText
         android:id="@+id/batch_no"
+        style="@style/EditTextNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/product_name"
-        android:layout_weight="1"
         android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz."
         android:ems="10"
-        style="@style/EditTextGravity"
         android:hint="@string/batch_no"
-        android:inputType="text">
-
-        <requestFocus />
-    </EditText>
+        android:inputType="text" />
 
     <LinearLayout
         android:id="@+id/ll2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/batch_no"
-        android:weightSum="2">
+        android:padding="5dp"
+        android:layout_marginTop="5dp">
 
         <TextView
+            style="@style/TextViewCaptionNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start|center"
             android:maxLines="1"
-            android:padding="3dp"
-            android:text="@string/mfg_date"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/mfg_date" />
 
         <Button
             android:id="@+id/mfg_date"
+            style="@style/datePickerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
@@ -87,21 +71,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll2"
-        android:weightSum="2">
+        android:padding="5dp"
+        android:layout_marginTop="5dp">
 
         <TextView
+            style="@style/TextViewCaptionNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start|center"
             android:maxLines="1"
-            android:padding="3dp"
-            android:text="@string/exp_date"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/exp_date" />
 
         <Button
             android:id="@+id/exp_date"
+            style="@style/datePickerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
@@ -110,27 +94,28 @@
     <LinearLayout
         android:id="@+id/ll4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/footer_height"
         android:layout_below="@+id/ll3"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
         android:orientation="horizontal">
+
 
         <Button
             android:id="@+id/add"
-
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="1dp"
-            android:layout_weight="1"
-            android:text="@string/add_label" />
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_margin="@dimen/dimen_2dp"
+            android:text="@string/add_label"
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/close"
+            style="?attr/roundedCustomButtonNormalTransparent"
+            android:layout_margin="@dimen/dimen_2dp"
+            android:text="@string/close"
+            android:textAllCaps="false" />
 
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="1dp"
-            android:layout_weight="1"
-            android:text="@string/close" />
     </LinearLayout>
+
 
 </RelativeLayout>

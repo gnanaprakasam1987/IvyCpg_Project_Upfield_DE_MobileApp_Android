@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,6 +9,7 @@
         layout="@layout/material_tool_bar" />
 
     <TextView
+        style="@style/HeadingStyle"
         android:id="@+id/tv_invoice_no"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,87 +17,63 @@
         android:layout_below="@+id/toolbar"
         android:layout_marginTop="@dimen/dimen_20dp"
         android:gravity="center"
-        android:text="sdafklasdfja"
+        android:text="@string/invoice_number"
         android:visibility="gone" />
-
-    <com.ivy.sd.png.commons.MaterialSpinner
-        android:id="@+id/spin_payment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_invoice_no"
-        android:layout_centerInParent="true"
-        android:gravity="center" />
-
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/spin_payment"
-        android:layout_margin="@dimen/list_margin"
-        app:cardBackgroundColor="@android:color/transparent"
-        android:layout_above="@+id/footer">
-        <!--<HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spin_payment">-->
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/ll_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/FullBlack"
+                android:layout_height="@dimen/list_header_height"
+                android:background="?attr/customListTitleBackgroundColor"
+                android:layout_below="@id/tv_invoice_no"
                 android:orientation="horizontal"
                 android:paddingStart="@dimen/list_padding_left_n_right"
                 android:paddingEnd="@dimen/list_padding_left_n_right">
 
                 <TextView
-                    android:id="@+id/chk_title"
                     style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/order_stock_list_item_width_small"
-                    android:layout_height="40dp"
-                    android:text="" />
-
-                <TextView
-                    style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
-                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:text="@string/product_name"
                     android:layout_gravity="center|start"
+                    android:layout_weight="4.5"
+                    android:layout_marginStart="@dimen/dimen_6dp"
+                    android:layout_marginLeft="@dimen/dimen_6dp"
                     android:gravity="center|start" />
 
                 <TextView
                     android:id="@+id/tv_oo"
                     style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/order_stock_list_item_width_xlarge"
-                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:tag="@string/item_outer"
                     android:text="@string/item_outer" />
 
                 <TextView
                     android:id="@+id/tv_oc"
                     style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/order_stock_list_item_width_xlarge"
-                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:tag="@string/item_case"
                     android:text="@string/item_case" />
 
                 <TextView
                     android:id="@+id/tv_op"
                     style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/order_stock_list_item_width_xlarge"
-                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:tag="@string/item_piece"
                     android:text="@string/item_piece" />
 
                 <TextView
                     android:id="@+id/sihTitle"
                     style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/list_item_width_medium"
-                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
                     android:text="@string/sih" />
 
             </LinearLayout>
@@ -107,39 +83,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/ll_title"
-                android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:cacheColorHint="@null"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="0dp"
+                android:divider="@color/light_gray"
+                android:dividerHeight="0.5dp"
                 android:padding="@dimen/dimen_1dp"
+                android:layout_above="@id/ll_keypad"
                 android:fitsSystemWindows="true" />
 
             <LinearLayout
                 android:id="@+id/ll_keypad"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_alignParentBottom="true">
+                android:layout_above="@id/footer">
 
                 <include
                     android:id="@+id/keypad"
                     layout="@layout/keypad"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-        </RelativeLayout>
-
-        <!--</HorizontalScrollView>-->
-    </android.support.v7.widget.CardView>
-
     <RelativeLayout
         android:id="@+id/footer"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/footer_height"
         android:layout_alignParentBottom="true"
-        android:background="@color/footer_bg_color"
+        android:background="?attr/customFooterBackgroundColor"
         android:orientation="horizontal"
         android:padding="@dimen/footer_padding">
 
@@ -152,6 +123,18 @@
             android:text="@string/save"
             android:textAllCaps="false"
             android:layout_alignParentRight="true" />
+
+        <Button
+            android:id="@+id/btn_reject"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/reject"
+            android:textAllCaps="false"
+            android:layout_marginRight="@dimen/footer_padding"
+            android:layout_marginEnd="@dimen/footer_padding"
+            android:layout_toLeftOf="@+id/btn_save"
+            android:layout_toStartOf="@+id/btn_save"/>
     </RelativeLayout>
 
 </RelativeLayout>

@@ -140,5 +140,8 @@
     <string name="free_sih">Free SIH</string>
 
     <string name="asset_image">Asset Image</string>
+    <string name="error_e100">Access Denied. Contact Your System Administrator.</string>
+
+    <string name="amount_mismatch">Amount mismatch</string>
     <string name="select_seller">Select Seller</string>
 </resources>

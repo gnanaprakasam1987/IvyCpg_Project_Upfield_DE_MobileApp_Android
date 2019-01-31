@@ -1183,6 +1183,7 @@ public class SurveyHelperNew {
                                         || "EMAIL".equals(questionBO.getQuestionType())
                                         || "DATE".equals(questionBO.getQuestionType())
                                         || "PH_NO".equals(questionBO.getQuestionType())
+                                        || "DECIMAL".equals(questionBO.getQuestionType())
                                         && !questionBO.getSelectedAnswer().isEmpty()) {
                                     String detailvalues = values1
                                             + ","
@@ -1375,6 +1376,7 @@ public class SurveyHelperNew {
                                             || "EMAIL".equals(questionBO.getQuestionType())
                                             || "DATE".equals(questionBO.getQuestionType())
                                             || "PH_NO".equals(questionBO.getQuestionType())
+                                            || "DECIMAL".equals(questionBO.getQuestionType())
                                             && !questionBO.getSelectedAnswer().isEmpty()) {
                                         String detailvalues = values1
                                                 + ","
