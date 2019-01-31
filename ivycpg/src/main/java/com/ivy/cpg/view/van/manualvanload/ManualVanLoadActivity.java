@@ -51,7 +51,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,17 +127,17 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         hideAndSeekViews();
         final Intent i = getIntent();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.END);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
+        FrameLayout drawer = findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
@@ -200,21 +199,15 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
     private void hideAndSeekViews() {
 
         try {
-            Button saveBtn = (Button) findViewById(R.id.van_btn_save);
-            viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
-            tvSelectedFilter = (TextView) findViewById(R.id.tvSkuName);
-            LinearLayout keypadlty = (LinearLayout) findViewById(R.id.ll_keypad);
-            mEdtSearchproductName = (EditText) findViewById(R.id.edt_searchproductName);
-            TextView sihTitle = (TextView) findViewById(R.id.sihTitle);
-            TextView qtyTitle = (TextView) findViewById(R.id.qtyTitle);
-            TextView viewTitle = (TextView) findViewById(R.id.viewTitle);
-            TextView itemCaseTitle = (TextView) findViewById(R.id.itemcasetitle);
-            TextView outeritemTitle = (TextView) findViewById(R.id.outeritemcasetitle);
-            TextView itempieceTitle = (TextView) findViewById(R.id.itempiecetitle);
-            Button mBtnSearch = (Button) findViewById(R.id.btn_search);
-            Button mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
-            Button mBtnClear = (Button) findViewById(R.id.btn_clear);
-            productName = (TextView) findViewById(R.id.productName);
+            Button saveBtn = findViewById(R.id.van_btn_save);
+            viewFlipper = findViewById(R.id.view_flipper);
+            tvSelectedFilter = findViewById(R.id.tvSkuName);
+            LinearLayout keypadlty = findViewById(R.id.ll_keypad);
+            mEdtSearchproductName = findViewById(R.id.edt_searchproductName);
+            Button mBtnSearch = findViewById(R.id.btn_search);
+            Button mBtnFilterPopup = findViewById(R.id.btn_filter_popup);
+            Button mBtnClear = findViewById(R.id.btn_clear);
+            productName = findViewById(R.id.productName);
 
             saveBtn.setOnClickListener(this);
             mBtnSearch.setOnClickListener(this);
@@ -222,20 +215,8 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             mBtnClear.setOnClickListener(this);
             mEdtSearchproductName.setOnEditorActionListener(this);
 
-            lvwplist = (ListView) findViewById(R.id.list);
+            lvwplist = findViewById(R.id.list);
             lvwplist.setCacheColorHint(0);
-
-
-            tvSelectedFilter.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-            sihTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-            qtyTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-            itemCaseTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-            outeritemTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-            itempieceTitle.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-            saveBtn.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
-            productName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-            mEdtSearchproductName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-
 
             if (bmodel.configurationMasterHelper.IS_BATCHWISE_VANLOAD) {
                 totQtyflag = true;
@@ -306,18 +287,18 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             } catch (Exception e) {
                 Commons.printException("" + e);
             }
-            TextView txtLbl = (TextView) findViewById(R.id.tv_subdepot);
+            TextView txtLbl =  findViewById(R.id.tv_subdepot);
             if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
                 ArrayAdapter<SubDepotBo> subDepotAdapter;
-                LinearLayout subDepotLayout = (LinearLayout) findViewById(R.id.ll_depot);
+                LinearLayout subDepotLayout =  findViewById(R.id.ll_depot);
                 subDepotLayout.setVisibility(View.VISIBLE);
-                final MaterialSpinner spnSubDepot = (MaterialSpinner) findViewById(R.id.sp_subdepot);
+                final MaterialSpinner spnSubDepot =  findViewById(R.id.sp_subdepot);
                 if (bmodel.configurationMasterHelper.VANLOAD_TYPE == 0) {
                     txtLbl.setText(R.string.subdepot);
                     subDepotAdapter = new ArrayAdapter<>(
                             ManualVanLoadActivity.this,
                             R.layout.spinner_blacktext_layout,
-                            bmodel.loadManagementHelper.getSubDepotList());
+                            bmodel.loadManagementHelper.getDistributorList());
                 } else {
                     txtLbl.setText(R.string.distributor);
                     subDepotAdapter = new ArrayAdapter<>(
@@ -633,7 +614,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
             quantity = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            loadFiveFilterFragment(bundle,R.id.right_drawer);
+            loadFiveFilterFragment(bundle, R.id.right_drawer);
 
             return true;
         }
@@ -920,7 +901,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 String qty = s + "";
                 quantity.setText(qty);
             } else {
-                Button ed = (Button) findViewById(view.getId());
+                Button ed = findViewById(view.getId());
                 append = ed.getText().toString();
                 eff();
             }
@@ -975,28 +956,21 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     LayoutInflater inflater = getLayoutInflater();
                     row = inflater.inflate(R.layout.van_load, parent, false);
                     holder = new ViewHolder();
-                    holder.caseQty = (EditText) row
+                    holder.caseQty = row
                             .findViewById(R.id.productqtyCases);
-                    holder.pieceQty = (EditText) row
+                    holder.pieceQty = row
                             .findViewById(R.id.productqtyPieces);
-                    holder.psname = (TextView) row
+                    holder.psname = row
                             .findViewById(R.id.productName);
                     holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                    holder.outerQty = (EditText) row
+                    holder.outerQty = row
                             .findViewById(R.id.outerproductqtyCases);
-                    holder.sih = (TextView) row
+                    holder.sih = row
                             .findViewById(R.id.stock_and_order_listview_sih);
-                    holder.totQty = (TextView) row.findViewById(R.id.totalQty);
-                    holder.listLayout = (LinearLayout) row.findViewById(R.id.inv_view_layout);
-                    holder.rowLayout = (LinearLayout) row.findViewById(R.id.list_header_lty);
+                    holder.totQty = row.findViewById(R.id.totalQty);
+                    holder.listLayout = row.findViewById(R.id.inv_view_layout);
+                    holder.rowLayout = row.findViewById(R.id.list_header_lty);
                     holder.productBO = items.get(position);
-                    holder.psname.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.MEDIUM));
-                    holder.sih.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
-                    holder.totQty.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
-                    holder.caseQty.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
-                    holder.pieceQty.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
-                    holder.outerQty.setTypeface(FontUtils.getFontRoboto(ManualVanLoadActivity.this, FontUtils.FontType.LIGHT));
-
 
                     if (bmodel.configurationMasterHelper.IS_BATCHWISE_VANLOAD) {
                         holder.rowLayout.setOnClickListener(ManualVanLoadActivity.this);
@@ -1240,12 +1214,6 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
 
             } catch (Exception e) {
                 Commons.printException("" + e);
-            }
-
-            if (position % 2 == 0) {
-                row.setBackgroundColor(ContextCompat.getColor(ManualVanLoadActivity.this, R.color.list_even_item_bg));
-            } else {
-                row.setBackgroundColor(ContextCompat.getColor(ManualVanLoadActivity.this, R.color.list_odd_item_bg));
             }
 
             return row;
