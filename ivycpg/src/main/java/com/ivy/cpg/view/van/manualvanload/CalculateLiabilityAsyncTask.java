@@ -13,10 +13,9 @@ import com.ivy.sd.png.util.Commons;
  * Created by Hanifa on 21/8/18.
  */
 class CalculateLiabilityAsyncTask extends AsyncTask<Integer, Integer, Boolean> {
-    private Context mContext;
 
+    private Context mContext;
     private int selectedSubDepotId;
-    private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
 
     public CalculateLiabilityAsyncTask(Context context, int selectedSubDepotId) {
@@ -25,7 +24,7 @@ class CalculateLiabilityAsyncTask extends AsyncTask<Integer, Integer, Boolean> {
     }
 
     protected void onPreExecute() {
-        builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
         ((IvyBaseActivityNoActionBar) mContext).customProgressDialog(builder, mContext.getResources().getString(R.string.loading));
         alertDialog = builder.create();
@@ -54,7 +53,7 @@ class CalculateLiabilityAsyncTask extends AsyncTask<Integer, Integer, Boolean> {
         try {
 
             alertDialog.dismiss();
-            new ProductSummaryDialog(mContext, selectedSubDepotId);
+            new ProductSummaryDialog(mContext, selectedSubDepotId).show();
         } catch (Exception e) {
             Commons.printException("" + e);
         }
