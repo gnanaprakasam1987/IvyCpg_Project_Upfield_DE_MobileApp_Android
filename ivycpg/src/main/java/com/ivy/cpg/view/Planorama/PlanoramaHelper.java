@@ -223,7 +223,7 @@ public class PlanoramaHelper {
 
                         int length = json.getInt("linear");
                         double sos = json.getDouble("sos");
-                        double target = json.getDouble("target");
+                        double target = (json.has("target")?json.getDouble("target"):0);
 
                         productBO.setProductName(json.getString("manufacturer_name"));
                         if(length>0)

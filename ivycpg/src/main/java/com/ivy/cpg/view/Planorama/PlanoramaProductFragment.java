@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -101,6 +102,15 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
 
                 holder.spinner_reason.setAdapter(spinnerAdapter);
 
+                holder.editText_sc = row
+                        .findViewById(R.id.editText_sc);
+
+                holder.editText_sho = row
+                        .findViewById(R.id.editText_sho);
+
+                holder.editText_sp = row
+                        .findViewById(R.id.editText_sp);
+
 
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -109,11 +119,22 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
             holder.planoramaProductBO = items.get(position);
 
             holder.textView_productName.setText(holder.planoramaProductBO.getProductName());
-            holder.textView_no_facing.setText(String.valueOf(holder.planoramaProductBO.getNumberOfFacings()));
+            holder.textView_no_facing.setText("Facing: "+String.valueOf(holder.planoramaProductBO.getNumberOfFacings()));
 
-            if(holder.planoramaProductBO.isAvailable())
+            if(holder.planoramaProductBO.isAvailable()) {
                 holder.spinner_reason.setEnabled(false);
-            else holder.spinner_reason.setEnabled(true);
+                holder.editText_sc.setEnabled(true);
+                holder.editText_sp.setEnabled(true);
+                holder.editText_sho.setEnabled(true);
+                holder.textView_no_facing.setTextColor(getResources().getColor(R.color.colorPrimaryDarkGreen));
+            }
+            else {
+                holder.spinner_reason.setEnabled(true);
+                holder.editText_sc.setEnabled(false);
+                holder.editText_sp.setEnabled(false);
+                holder.editText_sho.setEnabled(false);
+                holder.textView_no_facing.setTextColor(getResources().getColor(R.color.RED));
+            }
 
 
 
@@ -125,6 +146,7 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
         PlanoramaProductBO planoramaProductBO;
         TextView textView_productName,textView_no_facing;
         Spinner spinner_reason;
+        EditText editText_sp,editText_sc,editText_sho;
 
     }
 }

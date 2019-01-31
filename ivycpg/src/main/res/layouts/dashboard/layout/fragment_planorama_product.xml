@@ -13,7 +13,8 @@
         android:orientation="horizontal"
         android:paddingStart="@dimen/list_padding_left_n_right"
         android:paddingEnd="@dimen/list_padding_left_n_right"
-        android:weightSum="10">
+        android:weightSum="10"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tvProductNameTitle"
@@ -51,7 +52,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:cacheColorHint="@null"
-        android:divider="@color/light_gray"
+        android:divider="@android:color/transparent"
         android:dividerHeight="0.5dp"
         android:fitsSystemWindows="true" />
 
