@@ -298,7 +298,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                     subDepotAdapter = new ArrayAdapter<>(
                             ManualVanLoadActivity.this,
                             R.layout.spinner_blacktext_layout,
-                            bmodel.loadManagementHelper.getDistributorList());
+                            bmodel.loadManagementHelper.getSubDepotList());
                 } else {
                     txtLbl.setText(R.string.distributor);
                     subDepotAdapter = new ArrayAdapter<>(
