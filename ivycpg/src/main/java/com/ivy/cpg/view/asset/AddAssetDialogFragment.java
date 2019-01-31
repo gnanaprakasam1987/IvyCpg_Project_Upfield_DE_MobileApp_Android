@@ -1,9 +1,13 @@
 package com.ivy.cpg.view.asset;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -17,19 +21,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -76,12 +83,14 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         mBModel = (BusinessModel) context.getApplicationContext();
         assetTrackingHelper = AssetTrackingHelper.getInstance(context);
 
-        mAsset = (Spinner) view.findViewById(R.id.spinner_asset);
-        mBrand = (Spinner) view.findViewById(R.id.spinner_brand);
-        btnAddInstallDate = (Button) view.findViewById(R.id.date_button);
-        mSNO = (EditText) view.findViewById(R.id.etxt_sno);
-        btnSave = (Button) view.findViewById(R.id.btn_save);
-        btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        mAsset = view.findViewById(R.id.spinner_asset);
+        mBrand = view.findViewById(R.id.spinner_brand);
+        btnAddInstallDate = view.findViewById(R.id.date_button);
+        mSNO = view.findViewById(R.id.etxt_sno);
+        btnSave = view.findViewById(R.id.btn_save);
+        btnCancel = view.findViewById(R.id.btn_cancel);
+        ImageView imageView_barcode_scan = view.findViewById(R.id.imageView_barcode_scan);
+        imageView_barcode_scan.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
@@ -355,9 +364,55 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                 R.string.no_assets_exists),
                         Toast.LENGTH_SHORT).show();
             }
+        } else if (view.getId() == R.id.imageView_barcode_scan) {
+            scanBarCode();
         } else if (view.getId() == R.id.btn_cancel) {
             dismiss();
         }
+    }
+
+    private void scanBarCode() {
+        {
+            ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.CAMERA);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        AddAssetDialogFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
+            } else {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.permission_enable_msg)
+                                + " " + getResources().getString(R.string.permission_camera)
+                        , Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (requestCode == IntentIntegrator.REQUEST_CODE) {
+                if (result != null) {
+                    if (result.getContents() == null) {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
+                    } else {
+                        mSNO.setText(result.getContents());
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
     }
 
     /**
