@@ -186,7 +186,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                 ConfigurationMasterHelper.outDateFormat));
         endtimevalue.setText("" + SDUtil.now(SDUtil.TIME));
         vannovalue.setText(" " + bmodel.userMasterHelper.getUserMasterBO().getVanno());
-        findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
+        //findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
 
         product = bmodel.loadManagementHelper.downloadOdameter();
 

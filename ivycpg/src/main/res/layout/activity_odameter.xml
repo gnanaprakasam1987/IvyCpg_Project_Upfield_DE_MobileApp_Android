@@ -3,8 +3,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.ivy.cpg.view.collection.CollectionScreen">
 
@@ -46,7 +46,7 @@
 
                     <TextView
                         android:id="@+id/vanno"
-                        style="@style/HeadingStyle"
+                        style="@style/TextViewNormal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -86,17 +86,15 @@
 
                         <TextView
                             android:id="@+id/datetxtview"
-                            style="?textFieldStyle"
+                            style="@style/BannerTextViewLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="@string/date"
-                            android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/footer_label_size" />
+                            android:text="@string/date" />
 
                         <TextView
                             android:id="@+id/datevalue"
-                            style="@style/TextViewListItemPrimary"
+                            style="@style/TextViewNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -121,7 +119,7 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:adjustViewBounds="true"
                         android:gravity="center|top"
@@ -130,17 +128,15 @@
 
                         <TextView
                             android:id="@+id/timetxtview"
-                            style="?textFieldStyle"
+                            style="@style/BannerTextViewLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="@string/time"
-                            android:textColor="?attr/accentcolor"
-                            android:textSize="@dimen/footer_label_size" />
+                            android:text="@string/time" />
 
                         <TextView
                             android:id="@+id/timevalue"
-                            style="@style/TextViewListItemPrimary"
+                            style="@style/TextViewNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -158,10 +154,10 @@
 
                         <com.ivy.cpg.view.van.odameter.CustomDigitalClock
                             android:id="@+id/digitalClock1"
+                            style="@style/TextViewCaptionNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:textSize="15sp"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -178,7 +174,7 @@
 
                     <TextView
                         android:id="@+id/starttriptxtview"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="@dimen/meter_value_width_large"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
@@ -201,7 +197,7 @@
 
                     <TextView
                         android:id="@+id/kms"
-                        style="@style/TextViewListItemValues"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
@@ -251,7 +247,7 @@
 
                         <TextView
                             android:id="@+id/enddatetxtview"
-                            style="?textFieldStyle"
+                            style="@style/BannerTextViewLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -261,7 +257,7 @@
 
                         <TextView
                             android:id="@+id/enddatevalue"
-                            style="@style/TextViewListItemPrimary"
+                            style="@style/TextViewNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -295,7 +291,7 @@
 
                         <TextView
                             android:id="@+id/endtimetxtview"
-                            style="?textFieldStyle"
+                            style="@style/BannerTextViewLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -305,7 +301,7 @@
 
                         <TextView
                             android:id="@+id/endtimevalue"
-                            style="@style/TextViewListItemPrimary"
+                            style="@style/TextViewNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -313,7 +309,7 @@
 
                         <TextView
                             android:id="@+id/timeend"
-                            style="@style/TextViewListItemPrimary"
+                            style="@style/TextViewNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
@@ -322,9 +318,9 @@
 
                         <com.ivy.cpg.view.van.odameter.CustomDigitalClock
                             android:id="@+id/digitalClock2"
+                            style="@style/TextViewCaptionNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="15sp"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -342,7 +338,7 @@
 
                     <TextView
                         android:id="@+id/endtriptxtview"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="@dimen/meter_value_width_large"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
@@ -404,7 +400,7 @@
 
                     <TextView
                         android:id="@+id/distencetxtview"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="@dimen/order_stock_list_product_name_width"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -416,6 +412,7 @@
 
                     <TextView
                         android:id="@+id/distance_covered"
+                        style="@style/TextViewNormal"
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -427,7 +424,7 @@
 
                     <TextView
                         android:id="@+id/kms2"
-                        style="@style/TextViewListItemValues"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"

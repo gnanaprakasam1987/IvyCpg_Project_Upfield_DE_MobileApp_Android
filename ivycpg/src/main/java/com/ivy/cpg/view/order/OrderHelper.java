@@ -1757,7 +1757,7 @@ public class OrderHelper {
                         product.setSelectedUomId(product.getCaseUomId());
                     } else if (outerQty > 0) {
                         product.setDefaultUomId(product.getOuUomid());
-                        product.setSelectedUomId(product.getCaseUomId());
+                        product.setSelectedUomId(product.getOuUomid());
                     }
                 }
 
