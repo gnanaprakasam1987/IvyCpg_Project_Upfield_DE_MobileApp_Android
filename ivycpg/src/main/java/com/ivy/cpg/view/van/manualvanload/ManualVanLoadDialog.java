@@ -64,9 +64,9 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
         setContentView(R.layout.dialog_vanload);
         setCancelable(true);
         bmodel = (BusinessModel) context.getApplicationContext();
-        Button back = (Button) findViewById(R.id.closeButton);
-        Button addLoadBtn = (Button) findViewById(R.id.add_load);
-        TextView headerText = (TextView) findViewById(R.id.titlebar);
+        Button back = findViewById(R.id.closeButton);
+        Button addLoadBtn = findViewById(R.id.add_load);
+        TextView headerText = findViewById(R.id.titlebar);
         back.setOnClickListener(this);
         addLoadBtn.setOnClickListener(this);
         product = productBO;
@@ -191,29 +191,29 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
     }
 
     private void intialize() {
-        Button calcone = (Button) (findViewById(R.id.keypad))
+        Button calcone = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcone);
-        Button calctwo = (Button) (findViewById(R.id.keypad))
+        Button calctwo = (findViewById(R.id.keypad))
                 .findViewById(R.id.calctwo);
-        Button calcthree = (Button) (findViewById(R.id.keypad))
+        Button calcthree = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcthree);
-        Button calcfour = (Button) (findViewById(R.id.keypad))
+        Button calcfour = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcfour);
-        Button calcfive = (Button) (findViewById(R.id.keypad))
+        Button calcfive = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcfive);
-        Button calcsix = (Button) (findViewById(R.id.keypad))
+        Button calcsix = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcsix);
-        Button calcseven = (Button) (findViewById(R.id.keypad))
+        Button calcseven = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcseven);
-        Button calceight = (Button) (findViewById(R.id.keypad))
+        Button calceight = (findViewById(R.id.keypad))
                 .findViewById(R.id.calceight);
-        Button calcnine = (Button) (findViewById(R.id.keypad))
+        Button calcnine = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcnine);
-        Button calczero = (Button) (findViewById(R.id.keypad))
+        Button calczero = (findViewById(R.id.keypad))
                 .findViewById(R.id.calczero);
-        Button calcdot = (Button) (findViewById(R.id.keypad))
+        Button calcdot = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcdot);
-        Button calcdel = (Button) (findViewById(R.id.keypad))
+        Button calcdel = (findViewById(R.id.keypad))
                 .findViewById(R.id.calcdel);
         calcone.setOnClickListener(this);
         calctwo.setOnClickListener(this);
@@ -317,13 +317,13 @@ class ManualVanLoadDialog extends Dialog implements OnClickListener {
                 row = inflater.inflate(R.layout.dialog_vanload_row, parent,
                         false);
                 holder = new ViewHolder();
-                holder.caseQty = (EditText) row
+                holder.caseQty = row
                         .findViewById(R.id.productqtyCases);
-                holder.pieceQty = (EditText) row
+                holder.pieceQty = row
                         .findViewById(R.id.productqtyPieces);
-                holder.outerQty = (EditText) row
+                holder.outerQty = row
                         .findViewById(R.id.outerproductqtyCases);
-                holder.batchno = (MaterialSpinner) row.findViewById(R.id.batchno);
+                holder.batchno = row.findViewById(R.id.batchno);
 
                 holder.caseQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
                 holder.pieceQty.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));

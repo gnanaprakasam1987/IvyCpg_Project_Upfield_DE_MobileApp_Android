@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.van.manualvanload;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
@@ -73,7 +74,6 @@ public class VanLoadReturnProductActivity extends IvyBaseActivityNoActionBar imp
             lvwplist.setCacheColorHint(0);
             btnSave = findViewById(R.id.save_btn);
             btnSave.setOnClickListener(this);
-            btnSave.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -131,8 +131,9 @@ public class VanLoadReturnProductActivity extends IvyBaseActivityNoActionBar imp
             return items.size();
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final ViewHolder holder;
             if (convertView == null) {
 
