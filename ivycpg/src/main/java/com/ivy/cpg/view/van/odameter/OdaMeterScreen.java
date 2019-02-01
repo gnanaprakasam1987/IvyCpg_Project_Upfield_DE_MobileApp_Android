@@ -376,7 +376,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
                     startingvalue = SDUtil.convertToDouble(value);
                     Commons.print("Planning ," + " starting value :" + startingvalue);
-                    tripStartInsideTry();
+                    updateTripDistanceCovered();
                     product.setOdameterstart(startingvalue);
 
                 }
@@ -415,7 +415,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                     if (value.length() > 0 && !"0".equals(value))
                         tripEnding.setSelection(value.length());
                     endingvalue = SDUtil.convertToDouble(value);
-                    tripEndInsideTry();
+                    updateTripDistanceCovered();
                     product.setOdameterend(endingvalue);
                 }
             });
@@ -583,36 +583,17 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
     }
 
-    private void tripEndInsideTry() {
-        try {
-            if (endingvalue > startingvalue)
-                distanceCovered = endingvalue - startingvalue;
-            else
-                distanceCovered = 0;
 
-            double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
+    private void updateTripDistanceCovered() {
 
-            distanceCoveredEt.setText(String.format("%.2f", distance));
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
+        if (endingvalue > startingvalue)
+            distanceCovered = endingvalue - startingvalue;
+        else
+            distanceCovered = 0;
 
-    private void tripStartInsideTry() {
-        try {
+        double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
 
-            if (endingvalue > startingvalue)
-                distanceCovered = endingvalue - startingvalue;
-            else
-                distanceCovered = 0;
-
-
-            double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
-
-            distanceCoveredEt.setText(String.format("%.2f", distance));
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
+        distanceCoveredEt.setText(String.format("%.2f", distance));
     }
 
     @Override

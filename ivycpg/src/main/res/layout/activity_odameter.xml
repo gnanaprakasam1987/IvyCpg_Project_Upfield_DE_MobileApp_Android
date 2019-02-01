@@ -404,9 +404,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/line_view2"
-                    android:layout_marginTop="@dimen/store_margin_top"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:layout_margin="@dimen/store_margin_top"
+                    android:padding="@dimen/dimens_14dp">
 
                     <TextView
                         android:id="@+id/distencetxtview"
@@ -456,7 +456,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/ret_list_div"
         android:background="?attr/customFooterBackgroundColor"
         android:gravity="center_horizontal|end"
         android:padding="5dp">
