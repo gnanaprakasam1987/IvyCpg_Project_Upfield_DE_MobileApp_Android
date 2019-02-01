@@ -66,6 +66,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -378,7 +379,7 @@ public class SOSFragment extends IvyBaseFragment implements
      */
     private void deleteUnsavedImageFromFolder() {
         for (String imgList : totalImgList) {
-            mBModel.deleteFiles(HomeScreenFragment.photoPath,
+            mBModel.deleteFiles(AppUtils.photoFolderPath,
                     imgList);
         }
     }
@@ -680,14 +681,14 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onPositiveButtonClick() {
 
-                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         if (dialog != null)
                             dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
@@ -1202,7 +1203,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                             boolean nFilesThere = mBModel
                                     .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath,
+                                            AppUtils.photoFolderPath,
                                             1, mFirstName);
                             if (nFilesThere) {
 
@@ -1211,7 +1212,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra("quality", 40);
-                                String path = HomeScreenFragment.photoPath + "/"
+                                String path = AppUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra("path", path);
                                 startActivityForResult(intent,
@@ -1325,7 +1326,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     && (!"null".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))) {
 
                 Glide.with(getActivity())
-                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
+                        .load(AppUtils.photoFolderPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)

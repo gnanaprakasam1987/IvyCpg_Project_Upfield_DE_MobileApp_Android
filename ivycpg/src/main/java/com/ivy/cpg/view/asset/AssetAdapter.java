@@ -37,6 +37,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -326,7 +327,7 @@ public class AssetAdapter extends BaseAdapter {
                         mAssetPresenter.mSelectedImageName = imageName;
                         mAssetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();
 
-                        String _path = HomeScreenFragment.photoPath + "/" + mAssetPresenter.mSelectedImageName;
+                        String _path = AppUtils.photoFolderPath + "/" + mAssetPresenter.mSelectedImageName;
                         mBModel.getPhotosTakeninCurrentAssetTracking().put(mAssetPresenter.mSelectedAssetID +"", _path);
 
                         boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,

@@ -13,6 +13,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -504,8 +505,7 @@ public class SurveyHelperNew {
                                         imgName = c1.getString(0);
                                     }
                                     questionBO.setImage1Captured(true);
-                                    questionBO.setImage1Path(HomeScreenFragment.folder
-                                            .getPath() + imgName);
+                                    questionBO.setImage1Path(AppUtils.photoFolderPath + imgName);
                                     questionBO.setImage2Captured(false);
                                     questionBO.setImage2Path("");
                                     counter++;
@@ -517,8 +517,7 @@ public class SurveyHelperNew {
                                         imgName = c1.getString(0);
                                     }
                                     questionBO.setImage2Captured(true);
-                                    questionBO.setImage2Path(HomeScreenFragment.folder
-                                            .getPath() + imgName);
+                                    questionBO.setImage2Path(AppUtils.photoFolderPath + imgName);
                                     break;
                                 }
                             }
@@ -601,8 +600,7 @@ public class SurveyHelperNew {
                                             imgName = c1.getString(0);
                                         }
                                         questionBO.setImage1Captured(true);
-                                        questionBO.setImage1Path(HomeScreenFragment.folder
-                                                .getPath() + "/" + imgName);
+                                        questionBO.setImage1Path(AppUtils.photoFolderPath + "/" + imgName);
                                         questionBO.setImage2Captured(false);
                                         questionBO.setImage2Path("");
                                         counter++;
@@ -614,8 +612,7 @@ public class SurveyHelperNew {
                                             imgName = c1.getString(0);
                                         }
                                         questionBO.setImage2Captured(true);
-                                        questionBO.setImage2Path(HomeScreenFragment.folder
-                                                .getPath() + imgName);
+                                        questionBO.setImage2Path(AppUtils.photoFolderPath + imgName);
                                         break;
                                     }
                                 }
@@ -1607,7 +1604,7 @@ public class SurveyHelperNew {
 
 
     private void deleteFiles(String filename) {
-        File folder = new File(HomeScreenFragment.photoPath + "/");
+        File folder = new File(AppUtils.photoFolderPath + "/");
 
         File[] files = folder.listFiles();
         for (File tempFile : files) {
@@ -1740,8 +1737,7 @@ public class SurveyHelperNew {
                                                     } catch (Exception e) {
                                                         imgName = c3.getString(0);
                                                     }
-                                                    subqBO.setImage1Path(HomeScreenFragment.folder
-                                                            .getPath() + imgName);
+                                                    subqBO.setImage1Path(AppUtils.photoFolderPath + imgName);
                                                     subqBO.setImage2Captured(false);
                                                     subqBO.setImage2Path("");
                                                     counter++;
@@ -1753,8 +1749,7 @@ public class SurveyHelperNew {
                                                         imgName = c3.getString(0);
                                                     }
                                                     subqBO.setImage2Captured(true);
-                                                    subqBO.setImage2Path(HomeScreenFragment.folder
-                                                            .getPath() + imgName);
+                                                    subqBO.setImage2Path(AppUtils.photoFolderPath + imgName);
                                                     break;
                                                 }
                                             }

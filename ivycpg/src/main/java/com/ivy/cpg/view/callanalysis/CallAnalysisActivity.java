@@ -1578,7 +1578,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                 boolean nFilesThere = bmodel
                         .checkForNFilesInFolder(
-                                HomeScreenFragment.photoPath, 1,
+                                AppUtils.photoFolderPath, 1,
                                 fnameStarts);
                 if (nFilesThere) {
                     showFileDeleteAlert(fnameStarts);
@@ -1586,7 +1586,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     Intent intent = new Intent(this,
                             CameraActivity.class);
                     intent.putExtra("quality", 40);
-                    String path = HomeScreenFragment.photoPath + "/"
+                    String path = AppUtils.photoFolderPath + "/"
                             + mImageName;
                     intent.putExtra("path", path);
                     startActivityForResult(intent,
@@ -1611,14 +1611,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         isPhotoTaken = false;
                         Intent intent = new Intent(CallAnalysisActivity.this,
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);

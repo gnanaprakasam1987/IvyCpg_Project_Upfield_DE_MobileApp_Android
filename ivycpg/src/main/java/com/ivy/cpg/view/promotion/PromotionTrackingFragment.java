@@ -611,13 +611,13 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                                 promoBO.setImageName("");
                             }
                         }
-                        businessModel.deleteFiles(HomeScreenFragment.photoPath,
+                        businessModel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
                                 businessModel.CAMERA_REQUEST_CODE);
@@ -966,7 +966,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
                             boolean nFilesThere = businessModel
                                     .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath, 1,
+                                            AppUtils.photoFolderPath, 1,
                                             fNameStarts);
                             if (nFilesThere) {
                                 showFileDeleteAlert(
@@ -976,7 +976,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra("quality", 40);
-                                String path = HomeScreenFragment.photoPath + "/"
+                                String path = AppUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra("path", path);
                                 startActivityForResult(intent,
@@ -1045,7 +1045,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     && (!"".equals(holder.mPromotionMasterBO.getImageName()))
                     && (!"null"
                     .equals(holder.mPromotionMasterBO.getImageName()))) {
-                File imgFile = new File(HomeScreenFragment.photoPath + "/" + holder.mPromotionMasterBO.getImageName());
+                File imgFile = new File(AppUtils.photoFolderPath + "/" + holder.mPromotionMasterBO.getImageName());
                 Glide.with(getActivity())
                         .load(imgFile.getAbsoluteFile())
                         .asBitmap()

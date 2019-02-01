@@ -60,6 +60,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -384,7 +385,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
                             boolean nFilesthere = mBModel
                                     .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath,
+                                            AppUtils.photoFolderPath,
                                             1, fnameStarts);
                             if (nFilesthere) {
 
@@ -394,7 +395,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra("quality", 40);
-                                String path = HomeScreenFragment.photoPath + "/"
+                                String path = AppUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra("path", path);
                                 startActivityForResult(intent,
@@ -447,7 +448,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOSKU.getImageName()))
                     && (!"null".equals(holder.mSOSKU.getImageName()))) {
                 Glide.with(getActivity())
-                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOSKU.getImgName())
+                        .load(AppUtils.photoFolderPath + "/" + holder.mSOSKU.getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
@@ -828,13 +829,13 @@ public class SOSKUFragment extends IvyBaseFragment implements
                                 sosku.setImgName("");
                             }
                         }
-                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
                                 mBModel.CAMERA_REQUEST_CODE);

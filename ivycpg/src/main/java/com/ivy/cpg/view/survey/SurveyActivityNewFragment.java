@@ -83,6 +83,7 @@ import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.SlantView;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1615,8 +1616,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 Intent intent = new Intent(
                                         getActivity(),
                                         CameraActivity.class);
-                                String path = HomeScreenFragment.folder
-                                        .getPath() + "/" + imageName;
+                                String path =AppUtils.photoFolderPath + "/" + imageName;
                                 if (i == 0) {
                                     questBO.setImage1Path(path);
                                     questBO.setImage1Captured(true);

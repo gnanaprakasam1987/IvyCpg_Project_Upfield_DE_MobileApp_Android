@@ -269,7 +269,7 @@ public class RoadFragment extends IvyBaseFragment {
 
                         Intent intent = new Intent(getActivity(), CameraActivity.class);
                         intent.putExtra("quality", 40);
-                        String mImagePath = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String mImagePath = AppUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("photoPath : " + mImagePath);
                         intent.putExtra("path", mImagePath);
                         startActivityForResult(intent,
@@ -414,13 +414,13 @@ public class RoadFragment extends IvyBaseFragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
-                        String _path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String _path = AppUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("PhotoPAth:  -      " + _path);
                         intent.putExtra("path", _path);
                         startActivityForResult(intent,

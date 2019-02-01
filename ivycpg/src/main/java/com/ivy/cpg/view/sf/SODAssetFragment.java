@@ -75,6 +75,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -507,7 +508,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
                             boolean mIsFileAvailable = mBModel
                                     .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath,
+                                            AppUtils.photoFolderPath,
                                             1, mFileNameStarts);
                             if (mIsFileAvailable) {
 
@@ -516,7 +517,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra("quality", 40);
-                                String _path = HomeScreenFragment.photoPath + "/"
+                                String _path = AppUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra("path", _path);
                                 startActivityForResult(intent,
@@ -590,7 +591,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))
                     && (!"null".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))) {
                 Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
-                Glide.with(getActivity()).load(HomeScreenFragment.photoPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()).asBitmap().centerCrop().placeholder(new BitmapDrawable(getResources(), defaultIcon)).into(new BitmapImageViewTarget(holder.btnPhoto) {
+                Glide.with(getActivity()).load(AppUtils.photoFolderPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()).asBitmap().centerCrop().placeholder(new BitmapDrawable(getResources(), defaultIcon)).into(new BitmapImageViewTarget(holder.btnPhoto) {
                     @Override
                     protected void setResource(Bitmap resource) {
                         holder.btnPhoto.setImageDrawable(new BitmapDrawable(getResources(), getCircularBitmapFrom(resource)));
@@ -963,13 +964,13 @@ public class SODAssetFragment extends IvyBaseFragment implements
         builder.setPositiveButton(getResources().getString(R.string.yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
                                 mBModel.CAMERA_REQUEST_CODE);

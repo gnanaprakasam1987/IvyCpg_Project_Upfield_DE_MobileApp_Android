@@ -1,4 +1,4 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.homescreen.userFeedback;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -19,21 +19,14 @@ public class UserFeedBackHelper {
 
     private Context context;
     private BusinessModel bmodel;
-    private static UserFeedBackHelper instance = null;
 
-    private UserFeedBackHelper(Context context) {
+    public UserFeedBackHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
     }
 
-    public static UserFeedBackHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new UserFeedBackHelper(context);
-        }
-        return instance;
-    }
 
-    ArrayList<ReasonMaster> mFeedBackType;
+    private ArrayList<ReasonMaster> mFeedBackType;
 
     public ArrayList<ReasonMaster> getFeedBackType() {
         return mFeedBackType;

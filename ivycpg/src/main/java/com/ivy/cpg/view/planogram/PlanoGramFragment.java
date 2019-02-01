@@ -64,6 +64,7 @@ import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -135,7 +136,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             calledBy = i.getStringExtra("from");
             menuCode = i.getStringExtra("CurrentActivityCode");
             isDialogPopup = false;
-            photoNamePath = BusinessModel.photoPath + "/";
+            photoNamePath = AppUtils.photoFolderPath + "/";
 
             loadReason();
             //mSelectedLocationId = Integer.parseInt(mPlanoGramHelper.getInStoreLocation().get(0).getListID());
@@ -921,7 +922,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         planoAdapter.notifyDataSetChanged();
 
                         Intent intent = new Intent(getActivity(),CameraActivity.class);
-                        String _path = HomeScreenFragment.photoPath + "/" + imageName;
+                        String _path = AppUtils.photoFolderPath + "/" + imageName;
                         intent.putExtra(getResources().getString(R.string.quality), 40);
                         intent.putExtra(getResources().getString(R.string.path), _path);
                         intent.putExtra(getResources().getString(R.string.saverequired),
@@ -968,7 +969,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            photoNamePath = BusinessModel.photoPath + "/";
+            photoNamePath = AppUtils.photoFolderPath + "/";
             holder.planoObj = items.get(position);
             holder.productName.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
             holder.tvAdherence.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1070,7 +1071,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             holder.layout_cameraImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    photoNamePath = BusinessModel.photoPath + "/";
+                    photoNamePath = AppUtils.photoFolderPath + "/";
                     if ("1".equals(calledBy)) {
                         imageFileName = "VPL_" + "0" + "_" + selectedCategory + "_"
                                 + mSelectedLocationId + "_" + Commons.now(Commons.DATE) + "_img.jpg";

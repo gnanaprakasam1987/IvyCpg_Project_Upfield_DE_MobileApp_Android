@@ -73,6 +73,7 @@ import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -1346,7 +1347,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
      * @param filename File Name
      */
     private void deleteFiles(String filename) {
-        File folder = new File(HomeScreenFragment.photoPath + "/");
+        File folder = new File(AppUtils.photoFolderPath + "/");
 
         File[] files = folder.listFiles();
         for (File tempFile : files) {

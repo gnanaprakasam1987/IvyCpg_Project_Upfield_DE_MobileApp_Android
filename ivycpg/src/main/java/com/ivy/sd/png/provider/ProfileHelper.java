@@ -27,6 +27,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -884,7 +885,7 @@ public class ProfileHelper {
     public void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
         try {
             String fName = (!isLatLongImage) ? "PRO_" : "LATLONG_" + retailerID;
-            File sourceDir = new File(HomeScreenFragment.photoPath);
+            File sourceDir = new File(AppUtils.photoFolderPath);
             File[] files = sourceDir.listFiles();
             for (File file : files) {
                 if (file.getName().startsWith(fName) &&

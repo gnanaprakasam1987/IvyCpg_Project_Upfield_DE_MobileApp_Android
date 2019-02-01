@@ -48,6 +48,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.AppUtils;
 
 import java.util.regex.Pattern;
 
@@ -150,7 +151,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             Commons.printException(e + "");
         }
 
-        photoNamePath = HomeScreenFragment.photoPath + "/";
+        photoNamePath = AppUtils.photoFolderPath + "/";
         Commons.print("Photo Path, " + "" + photoNamePath);
 
         startjourney.setOnClickListener(this);

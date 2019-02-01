@@ -240,7 +240,6 @@ public class BusinessModel extends Application {
 
     public String regid;
 
-    public static String photoPath;
 
     public InitiativeHelper initiativeHelper;
     public BeatMasterHelper beatMasterHealper;
@@ -448,6 +447,8 @@ public class BusinessModel extends Application {
         return mInstance;
 
     }
+
+
 
     private void loadActivity(Activity ctxx, String act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -4237,7 +4238,7 @@ public class BusinessModel extends Application {
             TransferUtility tm = new TransferUtility(ec2, getApplicationContext
                     ());
 
-            folder = new File(HomeScreenFragment.photoPath + "/");
+            folder = new File(AppUtils.photoFolderPath + "/");
 
             sfFiles = folder.listFiles();
 
@@ -4945,19 +4946,7 @@ public class BusinessModel extends Application {
         return "UTC";
     }
 
-    /**
-     * @return the orderSplitScreenTitle
-     */
-    public String getOrderSplitScreenTitle() {
-        return orderSplitScreenTitle;
-    }
 
-    /**
-     * @param orderSplitScreenTitle the orderSplitScreenTitle to set
-     */
-    public void setOrderSplitScreenTitle(String orderSplitScreenTitle) {
-        this.orderSplitScreenTitle = orderSplitScreenTitle;
-    }
 
     public int getTotalLines() {
         try {

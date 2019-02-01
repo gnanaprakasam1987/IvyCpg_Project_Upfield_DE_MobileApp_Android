@@ -266,7 +266,7 @@ public class CheckModeFragment extends IvyBaseFragment
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                 + "/";
                         mImagePath = mImagePath + mImageName;
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
 
                         mPaymentBO.setImageName(mImagePath);
 
