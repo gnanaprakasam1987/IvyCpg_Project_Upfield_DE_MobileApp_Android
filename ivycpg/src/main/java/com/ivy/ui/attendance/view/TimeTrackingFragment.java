@@ -24,6 +24,7 @@ import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.locationservice.realtime.FireBaseRealtimeLocationUpload;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -31,7 +32,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.ui.attendance.TimeTrackingContract;
 import com.ivy.ui.attendance.adapter.TimeTrackListClickListener;
 import com.ivy.ui.attendance.adapter.TimeTrackingAdapter;
@@ -189,40 +189,6 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             if (presenter.isPreviousInOutCompeleted())
                 presenter.fetchReasonAndShowDialog();
 
-
-            /*if (attendanceHelper.previousInOutTimeCompleted()) {
-                dialog = new InOutReasonDialog(getActivity(), onmydailogresult, bmodel.configurationMasterHelper.IS_ATTENDANCE_REMARK);
-                dialog.setDialogResult(new InOutReasonDialog.OnMyDialogResult() {
-
-                    public void cancel(String reasonid, String remarks) {
-                        dialog.dismiss();
-
-                        NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
-                        addNonFieldTwoBo.setId(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
-                        addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
-                        addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                        addNonFieldTwoBo.setOutTime(null);
-                        addNonFieldTwoBo.setRemarks(remarks);
-                        addNonFieldTwoBo.setReason(reasonid);
-
-                        if (startLocationService(addNonFieldTwoBo.getReason())) {
-
-                            attendanceHelper.saveNonFieldWorkTwoDetail(addNonFieldTwoBo, getActivity());
-                            if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
-                                HomeScreenFragment.isLeave_today = attendanceHelper.checkLeaveAttendance(getActivity());
-                            }
-
-                            //}
-                            listview.setVisibility(View.VISIBLE);
-                            no_data_txt.setVisibility(View.GONE);
-                            loadNonFieldTwoDetails();
-                        }
-                    }
-                });
-                dialog.show();
-
-            } */
             else {
                 try {
                     ((BusinessModel) getActivity().getApplicationContext()).showAlert(getResources().getString(R.string.out_time_error), 0);
