@@ -112,6 +112,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     public String strBarCodeSearch = "ALL";
     private TextView tvIsChanged, tvCompliance, tvCa, tvPc, tvOo;
     private LinearLayout ll_curPrice;
+    private InputMethodManager inputManager;
+    private TextView productName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -168,11 +170,15 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             }
         };
 
+        inputManager = (InputMethodManager) getActivity().getSystemService(
+                INPUT_METHOD_SERVICE);
+
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         priceTrackingHelper.prepareAdapters();
 
         viewFlipper = view.findViewById(R.id.view_flipper);
+        productName =  view.findViewById(R.id.productName);
 
         mEdt_searchProductName = view.findViewById(
                 R.id.edt_searchproductName);
@@ -1009,6 +1015,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         RelativeLayout rl_prev_price;
         LinearLayout ll_prev_case, ll_prev_oo, ll_prev_pc, ll_prev_price_Lty;
         LinearLayout ll_prev_mrp_main_Lty, ll_prev_mrp_ca_Lty, ll_prev_mrp_oo_Lty, ll_prev_mrp_pc_Lty;
+        String srpText;
     }
 
     private class MyAdapter extends ArrayAdapter<ProductMasterBO> {
@@ -1464,7 +1471,19 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     holder.rl_PriceCompliance.setVisibility(View.VISIBLE);
                     holder.mReason.setVisibility(View.VISIBLE);
                 }
+                row.setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
 
+                        productName.setText(holder.mSKUBO.getProductShortName());
+
+                        inputManager.hideSoftInputFromWindow(
+                                mEdt_searchProductName.getWindowToken(), 0);
+
+                        if (viewFlipper.getDisplayedChild() != 0) {
+                            viewFlipper.showPrevious();
+                        }
+                    }
+                });
 
                 row.setTag(holder);
 
@@ -1476,7 +1495,19 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
             holder.mBarCode.setText(holder.mSKUBO.getBarCode());
             holder.mSKU.setText(holder.mSKUBO.getProductShortName());
-            holder.mSrp.setText("SRP:" + String.valueOf(holder.mSKUBO.getSrp()));
+            try {
+                if (businessModel.labelsMasterHelper.applyLabels(row.findViewById(
+                        R.id.tv_srp).getTag()) != null)
+                    holder.srpText= businessModel.labelsMasterHelper
+                                    .applyLabels(row.findViewById(
+                                            R.id.tv_srp).getTag());
+                else
+                    holder.srpText="SRP";
+
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+            holder.mSrp.setText(holder.srpText+":" + String.valueOf(holder.mSKUBO.getSrp()));
 
 
             holder.mPrev_CA.setText(businessModel.formatValue(SDUtil.convertToDouble(holder.mSKUBO.getPrevPrice_ca())));

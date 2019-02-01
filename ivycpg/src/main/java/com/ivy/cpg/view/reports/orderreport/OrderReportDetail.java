@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.reports.orderreport;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -8,8 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -21,6 +24,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -45,6 +51,11 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
     private ArrayList<OrderReportBO> list;
     private ArrayList<SchemeProductBO> schemeProductList = new ArrayList<SchemeProductBO>();
     private ExpandableListView elv;
+    private InputMethodManager inputManager;
+    private TextView productName;
+    private EditText mEdt_searchProductName;
+
+    private String orderID ="";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +65,10 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
+
+        inputManager = (InputMethodManager) getSystemService(
+                INPUT_METHOD_SERVICE);
+        productName =  findViewById(R.id.productTvName);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         totalLines = findViewById(R.id.txttotallines);
@@ -160,7 +175,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             }
 
 
-            String orderID = obj.getOrderID();
+            orderID = obj.getOrderID();
             list = businessModel.reportHelper.downloadOrderreportdetail(orderID);
 
 
@@ -267,7 +282,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 row.setOnClickListener(new OnClickListener() {
 
                     public void onClick(View v) {
-                        // productName.setText(holder.productName);
+                         productName.setText(holder.productName);
                     }
                 });
 
@@ -412,6 +427,13 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                     holder.tvProductCode.setVisibility(View.GONE);
 
+                row.setOnClickListener(new OnClickListener() {
+
+                    public void onClick(View v) {
+                        productName.setText(holder.productBO.getProductName());
+                    }
+                });
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -495,6 +517,10 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_settings).setVisible(false);
+
+        if (businessModel.configurationMasterHelper.SHOW_PRINT_ORDER)
+            menu.findItem(R.id.menu_print).setVisible(true);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -504,8 +530,29 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             case android.R.id.home:
                 onBackButtonClick();
                 break;
+            case R.id.menu_print :
+                preparePrintData();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void preparePrintData() {
+
+        businessModel.invoiceNumber = orderID;
+
+        Intent intent = new Intent();
+
+        businessModel.mCommonPrintHelper.readBuilder(StandardListMasterConstants.PRINT_FILE_ORDER + businessModel.invoiceNumber + ".txt"
+                , DataMembers.IVYDIST_PATH);
+        intent.setClass(this, CommonPrintPreviewActivity.class);
+        intent.putExtra("IsUpdatePrintCount", true);
+        intent.putExtra("isHomeBtnEnable", true);
+        intent.putExtra("isFromInvoice", false);
+        intent.putExtra("IsFromReport", true);
+
+        startActivity(intent);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
 
     private void onBackButtonClick() {

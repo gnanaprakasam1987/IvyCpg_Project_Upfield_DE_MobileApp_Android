@@ -3,18 +3,15 @@ package com.ivy.ui.reports.currentreport.data;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.StockReportBO;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 
-import java.util.HashMap;
 import java.util.Vector;
 
 import io.reactivex.Observable;
@@ -73,8 +70,8 @@ public class CurrentReportManagerImpl implements CurrentReportManager {
 
     public void updateBaseUOM(Context mContext, String activity, int reportType) {
         //reportType(1)-EOD, reportType(2)-currentStock, reportType(3)-CurrentStockBatchwise
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         try {
@@ -134,8 +131,8 @@ public class CurrentReportManagerImpl implements CurrentReportManager {
 
 
     private void updateProductMapping(Context mContext, String productId, int pLevelId, int uomId, int contentLevel, int contentLevelId, int reportType) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 

@@ -37,8 +37,8 @@ public class AssetTrackingReportsHelper {
                 DBUtil db = null;
                 try {
                     RetailerNamesBO orderreport;
-                    db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     StringBuilder sb = new StringBuilder();
                     sb.append("Select distinct A.RetailerID,B.RetailerName from SOD_Assets_Detail A inner join RetailerMaster B on A.RetailerID = B.RetailerID");
@@ -79,8 +79,8 @@ public class AssetTrackingReportsHelper {
                 DBUtil db = null;
                 try {
                     AssetTrackingBrandBO orderreport;
-                    db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     StringBuilder sb = new StringBuilder();
                     sb.append("Select distinct A.ProductID,B.PName from SOD_Assets_Detail A " +
@@ -120,8 +120,8 @@ public class AssetTrackingReportsHelper {
                 DBUtil db = null;
                 try {
                     AssetTrackingReportBO assetTrackingReportBO;
-                    db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     StringBuilder sb = new StringBuilder();
                     sb.append("Select distinct A.PosmDesc,D.PName,ifnull(B.Target,0),ifnull(B.Actual,0),ifnull(C.ListName,'') from PosmMaster A ");

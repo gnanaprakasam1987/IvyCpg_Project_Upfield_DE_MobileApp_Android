@@ -59,8 +59,8 @@ public class TaskReportHelper {
                 ArrayList<SpinnerBO> retailerList = new ArrayList<>();
                 DBUtil db = null;
                 try {
-                    db = new DBUtil(mContext, DataMembers.DB_NAME,
-                            DataMembers.DB_PATH);
+                    db = new DBUtil(mContext, DataMembers.DB_NAME
+                    );
                     db.openDataBase();
                     StringBuilder sb = new StringBuilder();
                     sb.append("select Retailerid,MENU_CODE from ModuleCompletionReport");
@@ -79,7 +79,7 @@ public class TaskReportHelper {
                     TaskReportBo outlet;
                     for (RetailerMasterBO retailerMasterBO : bmodel.getRetailerMaster()) {
                         if (retailerMasterBO.getIsToday() == 1
-                                || retailerMasterBO.getIsDeviated().equals("Y")) {
+                                || (retailerMasterBO.getIsDeviated() != null && retailerMasterBO.getIsDeviated().equals("Y"))) {
                             outlet = new TaskReportBo();
                             outlet.setmRetailerId(SDUtil.convertToInt(retailerMasterBO.getRetailerID()));
                             outlet.setmRetailerName(retailerMasterBO.getRetailerName());
@@ -131,8 +131,8 @@ public class TaskReportHelper {
 
 
     public ArrayList<TaskReportBo> downloadBeatNames() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         ArrayList<TaskReportBo> beatinfo = new ArrayList<>();
         try {

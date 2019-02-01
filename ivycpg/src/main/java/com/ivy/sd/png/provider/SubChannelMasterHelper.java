@@ -84,8 +84,8 @@ public class SubChannelMasterHelper {
     @Deprecated
     public void downloadsubChannel() {
         SubchannelBO scbo;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         String query = "select levelid from channellevel order by Sequence desc limit 1";
         Cursor c = db.selectSQL(query);

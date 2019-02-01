@@ -1,9 +1,7 @@
 package com.ivy.cpg.view.order.indicativeOrderReason;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -11,8 +9,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,71 +21,68 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SpinnerBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
-/**
- * Created by rajkumar.s on 12/9/2016.
- */
-
-public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickListener {
+public class IndicativeOrderReasonActivity extends IvyBaseActivityNoActionBar {
 
     private BusinessModel bmodel;
-    private Context mContext;
     private ArrayList<SpinnerBO> mReasonList;
     private ArrayAdapter<SpinnerBO> mReasonAdapter;
 
-    public IndicativeOrderReasonDialog(Context mContext, BusinessModel bmodel) {
-        super(mContext);
-        this.bmodel = bmodel;
-        this.mContext = mContext;
-
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        Window window = getWindow();
-        lp.copyFrom(window.getAttributes());
-        // This makes the dialog take up the full width
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        window.setAttributes(lp);
-
-        setContentView(R.layout.dialog_indicativeorder_reason);
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        setCancelable(false);
-        // setTitle(mContext.getResources().getString(R.string.reason_req_for_indicative_order));
-    }
-
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_indicativeorder_reason);
+
+        this.bmodel = (BusinessModel)getApplicationContext();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        if (toolbar != null ) {
+
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            setScreenTitle(getResources().getString(R.string.reason_req_for_indicative_order));
+        }
 
         ListView listView = findViewById(R.id.lv_products);
-        Button btnOK = findViewById(R.id.okButton);
+        Button btnOK = findViewById(R.id.btn_next);
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
+                finish();
             }
         });
-        ((TextView) findViewById(R.id.titlebar)).setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
             try {
                 if (bmodel.labelsMasterHelper.applyLabels(findViewById(R.id.titlebar)
                         .getTag()) != null)
-                    ((TextView) findViewById(R.id.titlebar)).setText(bmodel.labelsMasterHelper
+                    setScreenTitle(bmodel.labelsMasterHelper
                             .applyLabels(findViewById(R.id.titlebar).getTag()));
                 else
-                    ((TextView) findViewById(R.id.titlebar)).setText(mContext.getResources().getString(R.string.reason_for_ordered_prods));
+                    setScreenTitle(getResources().getString(R.string.reason_for_ordered_prods));
 
 
             } catch (Exception e) {
-                ((TextView) findViewById(R.id.titlebar)).setText(mContext.getResources().getString(R.string.reason_for_ordered_prods));
+                setScreenTitle(getResources().getString(R.string.reason_for_ordered_prods));
             }
         }
 
@@ -100,10 +93,9 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
         for (ReasonMaster bo : reasons)
             mReasonList.add(new SpinnerBO(SDUtil.convertToInt(bo.getReasonID()), bo.getReasonDesc()));
 
-        mReasonAdapter = new ArrayAdapter<SpinnerBO>(mContext,
-                android.R.layout.simple_spinner_item, mReasonList);
-        mReasonAdapter
-                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mReasonAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, mReasonList);
+        mReasonAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         ArrayList<ProductMasterBO> mProducts = new ArrayList<>();
         for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
             if (bmodel.configurationMasterHelper.IS_SHOW_ORDER_REASON) {
@@ -119,14 +111,14 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
 
         MyAdapter adapter = new MyAdapter(mProducts);
         listView.setAdapter(adapter);
-
     }
 
-    private class MyAdapter extends ArrayAdapter {
+
+    private  class MyAdapter extends ArrayAdapter {
         private ArrayList<ProductMasterBO> items;
 
         public MyAdapter(ArrayList<ProductMasterBO> items) {
-            super(mContext, R.layout.row_indicative_reason_dialog, items);
+            super(IndicativeOrderReasonActivity.this, R.layout.row_indicative_reason_dialog, items);
             this.items = items;
         }
 
@@ -168,13 +160,13 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
                 holder.editText_remark = row.
                         findViewById(R.id.remarks);
 
-                holder.tv_pname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
-                holder.tv_indicativeOrder.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_cleanOrder.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_case.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_outer.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.tv_pcs.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.editText_remark.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                holder.tv_pname.setTypeface(FontUtils.getProductNameFont(IndicativeOrderReasonActivity.this));
+                holder.tv_indicativeOrder.setTypeface(FontUtils.getFontRoboto(IndicativeOrderReasonActivity.this,FontUtils.FontType.MEDIUM));
+                holder.tv_cleanOrder.setTypeface(FontUtils.getFontRoboto(IndicativeOrderReasonActivity.this,FontUtils.FontType.MEDIUM));
+                holder.tv_case.setTypeface(FontUtils.getFontRoboto(IndicativeOrderReasonActivity.this,FontUtils.FontType.MEDIUM));
+                holder.tv_outer.setTypeface(FontUtils.getFontRoboto(IndicativeOrderReasonActivity.this,FontUtils.FontType.MEDIUM));
+                holder.tv_pcs.setTypeface(FontUtils.getFontRoboto(IndicativeOrderReasonActivity.this,FontUtils.FontType.MEDIUM));
+                holder.editText_remark.setTypeface(FontUtils.getFontRoboto(IndicativeOrderReasonActivity.this,FontUtils.FontType.LIGHT));
 
 
                 // set filter to not allow emoji's and mentioned(specialChars) symbol are not allowed
@@ -344,6 +336,7 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
             }*/
             return (row);
         }
+
     }
 
     class ViewHolder {
@@ -352,10 +345,5 @@ public class IndicativeOrderReasonDialog extends Dialog implements View.OnClickL
         TextView tv_pname, tv_indicativeOrder, tv_cleanOrder, tv_case, tv_outer, tv_pcs;
         Spinner spn_reason;
         EditText editText_remark;
-    }
-
-    @Override
-    public void onClick(View view) {
-
     }
 }

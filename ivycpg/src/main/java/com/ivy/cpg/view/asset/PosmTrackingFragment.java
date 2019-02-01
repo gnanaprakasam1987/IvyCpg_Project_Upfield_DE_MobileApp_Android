@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -70,8 +69,8 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 
@@ -180,7 +179,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         }
         isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
 
-        view.findViewById(R.id.tv_store_loc).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_LOCATION_POSM)
+            view.findViewById(R.id.tv_store_loc).setVisibility(View.GONE);
 
         btnSave = view.findViewById(R.id.btn_save);
         btnSave.setOnClickListener(new OnClickListener() {

@@ -90,8 +90,8 @@ public class DownloaderThreadNew extends Thread {
             try {
 
                 boolean isAmazonUpload = false;
-                DBUtil db = new DBUtil(parentActivity, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(parentActivity, DataMembers.DB_NAME
+                );
                 db.createDataBase();
                 db.openDataBase();
                 Cursor c = db

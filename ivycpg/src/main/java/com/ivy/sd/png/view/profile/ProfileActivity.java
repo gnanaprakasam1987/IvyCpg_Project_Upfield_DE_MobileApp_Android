@@ -96,7 +96,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.profile.assetHistory.AssetHistoryFragment;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
@@ -1669,7 +1669,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         // Retailer sequence skip validation.
         if (bmodel.configurationMasterHelper.SHOW_RET_SKIP_VALIDATION
-                && !bmodel.retailerMasterBO.getIsDeviated().equalsIgnoreCase("Y")
+                && (bmodel.retailerMasterBO.getIsDeviated() != null && !bmodel.retailerMasterBO.getIsDeviated().equalsIgnoreCase("Y"))
                 && bmodel.getVisitretailerMaster().size() > 0) {
             if (!validateSequenceSkip(bmodel.getRetailerMasterBO()))
                 return;
@@ -2169,7 +2169,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
                     if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
-                            || !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated())) {
+                            || (bmodel.getRetailerMasterBO().getIsDeviated() != null && !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
 
                         SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(ProfileActivity.this,
                                 bmodel.userMasterHelper.getUserMasterBO().getUserid(), bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
@@ -2364,6 +2364,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     finish();
                 } else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB)) {
                     Intent i = new Intent(ProfileActivity.this, PlanningVisitActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     i.putExtra("isPlanningSub", true);
                     startActivity(i);
                     finish();

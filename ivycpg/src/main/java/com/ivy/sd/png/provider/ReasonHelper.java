@@ -64,8 +64,8 @@ public class ReasonHelper {
     public void downloadSalesReturnReason() {
         try {
             SalesReturnReasonBO reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT A.ListId, A.ListName, B.ListCode FROM StandardListMaster A"
                     + " INNER JOIN StandardListMaster B ON A.ParentId = B.ListId AND"
@@ -95,8 +95,8 @@ public class ReasonHelper {
     public void downloadNonPlannedReason() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT A.ListId, A.ListName, A.ListCode FROM StandardListMaster A"
                     + " INNER JOIN StandardListMaster B ON A.ParentId = B.ListId AND "
@@ -128,8 +128,8 @@ public class ReasonHelper {
     public void downloadNpReason(String RetailerId, String modulename) {
         try {
             reasonsWithPhoto = new NonproductivereasonBO();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String s = "SELECT RetailerID,ModuleCode,ReasonID,ImagePath,ImageName FROM NonProductiveModules "
@@ -157,8 +157,8 @@ public class ReasonHelper {
     public void downloadRemarks() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'ORDER_REASON'";
             Cursor c = db.selectSQL(s);
@@ -187,8 +187,8 @@ public class ReasonHelper {
         boolean isAvaiable = false;
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String s = "SELECT ReasonID  FROM NonProductiveModules "
@@ -217,8 +217,8 @@ public class ReasonHelper {
 
     public void downloadDeviatedReason() {
         ReasonMaster reason;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         Cursor c = db.selectSQL(getReasonFromStdListMaster("DEV"));
@@ -241,8 +241,8 @@ public class ReasonHelper {
 
     public void downloadNonVisitReasonMaster() {
         ReasonMaster reason;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         Cursor c = db.selectSQL(getReasonFromStdListMaster("NV"));
@@ -263,8 +263,8 @@ public class ReasonHelper {
     public void downloadPlaneDeviateReasonMaster(String listType) {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListId, ListName,CASE WHEN ifnull(P.id,0) >0 THEN 1 ELSE 0 END as planned FROM StandardListMaster S" +
                     " Left join PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + QT(listType);
@@ -296,8 +296,8 @@ public class ReasonHelper {
     public void downloadPlannedActivitiesReasonMaster(String listType){
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListId, ListName FROM StandardListMaster S INNER JOIN PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + QT(listType);
             Cursor c = db.selectSQL(s);
@@ -322,8 +322,8 @@ public class ReasonHelper {
 
     public void downloadNonProductiveReasonMaster() {
         ReasonMaster reason;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         Cursor c = db.selectSQL(getReasonFromStdListMaster("NP"));
@@ -346,8 +346,8 @@ public class ReasonHelper {
 
     public void loadAssetReasonsBasedOnType(String type) {
         ReasonMaster reason;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
 
         Cursor c = db.selectSQL(getReasonFromStdListMaster(type));
@@ -428,8 +428,8 @@ public class ReasonHelper {
     public int getSavedNonVisitReason(RetailerMasterBO retailerObj) {
         int i = 0;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c1 = db
                     .selectSQL("SELECT ReasonID FROM Nonproductivereasonmaster where retailerid="
@@ -457,58 +457,16 @@ public class ReasonHelper {
         return "'" + data + "'";
     }
 
-    private void setDeviateinDB(String retailerid, ReasonMaster reasonMaster,
-                                int beatid, String remarks) {
-        try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
-            db.createDataBase();
-            db.openDataBase();
 
-            String sql = "update RetailerBeatMapping set isDeviated='Y' where retailerid=" + retailerid +
-                    " AND BeatId=" + beatid;
-            db.executeQ(sql);
 
-            String uid = SDUtil.now(SDUtil.DATE_TIME_ID);
-            String values = QT(uid) + "," + retailerid + ","
-                    + QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate())
-                    + "," + reasonMaster.getReasonID() + "," + beatid + "," + bmodel.getRetailerMasterBO().getDistributorId() + "," + QT(remarks);
-            sql = "insert into deviateReasontable (uid,retailerid,date,reasonid,beatid,distributorID,remarks) values("
-                    + values + ")";
 
-            db.executeQ(sql);
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-    public void setDeviate(String retailerid, ReasonMaster reasonMaster,
-                           int beatid, String remarks) {
-        RetailerMasterBO retailer;
-        int siz = bmodel.retailerMaster.size();
-        if (siz == 0)
-            return;
-
-        for (int i = 0; i < siz; ++i) {
-            retailer = bmodel.retailerMaster.get(i);
-            if (retailer.getRetailerID().equals(retailerid)
-                    && (retailer.getBeatID() == beatid || beatid == 0)) {
-                retailer.setIsDeviated("Y");
-                bmodel.retailerMaster.setElementAt(retailer, i);
-                setDeviateinDB(retailerid, reasonMaster, beatid, remarks);
-                return;
-            }
-        }
-    }
 
     public void downloadReasons() {
         reasonList.clear();
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuilder sb = new StringBuilder();
@@ -556,8 +514,8 @@ public class ReasonHelper {
         ArrayList<StandardListBO> categoryList = new ArrayList<>();
         try {
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT A.ListId, A.ListName, A.ListCode FROM StandardListMaster A"
                     + "  Where (A.ListCode = '" + StandardListMasterConstants.SALES_RETURN_NONSALABLE_REASON_TYPE
@@ -587,8 +545,8 @@ public class ReasonHelper {
         try {
             clcrReason = new ArrayList<>();
             ReasonMaster reasonMaster;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(getReasonFromStdListMaster("CLCR"));
@@ -618,8 +576,8 @@ public class ReasonHelper {
         try {
             ReasonMaster reason;
             ordfreasonlist = new ArrayList<>();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             reason = new ReasonMaster();
             reason.setReasonDesc(context.getResources().getString(R.string.select_reason));
@@ -649,8 +607,8 @@ public class ReasonHelper {
         try {
             ReasonMaster reason;
             priminvoicestatus = new ArrayList<>();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             reason = new ReasonMaster();
             reason.setReasonDesc(context.getResources().getString(R.string.select));
@@ -692,8 +650,8 @@ public class ReasonHelper {
         ArrayList<ReasonMaster> reasons = new ArrayList<>();
         try {
             ReasonMaster reasonMaster;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db.selectSQL(getReasonFromStdListMaster("ORDER"));
@@ -716,8 +674,8 @@ public class ReasonHelper {
 
     public void saveNpReasons(NonproductivereasonBO nonproductivereasonBO) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             bmodel.outletTimeStampHelper.deleteTimeStampModuleWise(nonproductivereasonBO.getModuleCode());
@@ -771,8 +729,8 @@ public class ReasonHelper {
         ArrayList<StandardListBO> lst = null;
         try {
             StandardListBO reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListId, ListName, ListCode FROM StandardListMaster "
                     + " WHERE ListTYPE = '" + StandardListMasterConstants.COUNTER_SALES_AGE_GROUP_TYPE + "'";
@@ -808,8 +766,8 @@ public class ReasonHelper {
     public void downloadRemarksType() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'REMARKS_TYPE'";
             Cursor c = db.selectSQL(s);
@@ -840,8 +798,8 @@ public class ReasonHelper {
     public void downloadShipmentType() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'SHIPMENT_TYPE'";
             Cursor c = db.selectSQL(s);
@@ -871,8 +829,8 @@ public class ReasonHelper {
     public void downloadPaymentType() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'PAYTERM_TYPE'";
             Cursor c = db.selectSQL(s);
@@ -903,8 +861,8 @@ public class ReasonHelper {
     public void downloadDistChannelType() {
         try {
             ReasonMaster reason;
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'DIST_CHANNEL_TYPE'";
             Cursor c = db.selectSQL(s);
@@ -951,8 +909,8 @@ public class ReasonHelper {
             addressSB.append(addressCode);
         try {
             ReasonMaster reason;
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT RA.AddressId,RA.Address1,RA.Address2,RA.Address3  FROM StandardListMaster SLM"
                     + " LEFT JOIN RetailerAddress RA ON SLM.ListId = RA.AddressTypeID"

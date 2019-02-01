@@ -19,6 +19,7 @@
         android:padding="@dimen/dimen_8dp">
 
         <TextView
+            style="@style/TextViewListItemValues"
             android:id="@+id/txt_uid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,17 +27,18 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/txt_dateReturn"
-            android:padding="@dimen/padding_normal"
-            android:textSize="@dimen/font_small" />
+            android:layout_toStartOf="@id/txt_dateReturn"
+            android:padding="@dimen/padding_normal" />
 
         <TextView
+            style="@style/TextViewListItemValues"
             android:id="@+id/txt_dateReturn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:padding="@dimen/padding_normal"
-            android:textSize="@dimen/font_small" />
+            android:padding="@dimen/padding_normal" />
 
 
     </RelativeLayout>

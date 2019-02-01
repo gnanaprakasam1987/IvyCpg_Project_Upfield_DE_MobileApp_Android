@@ -211,8 +211,8 @@ public class AssetTrackingHelper {
             SHOW_MOVE_ASSET = false;
             SHOW_SERVICE_ASSET = false;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
@@ -327,8 +327,8 @@ public class AssetTrackingHelper {
             SHOW_LOCATION_POSM = false;
             SHOW_ATTR_POSM = false;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
@@ -446,8 +446,8 @@ public class AssetTrackingHelper {
 
         AssetTrackingBO assetTrackingBO;
         StringBuilder sb = new StringBuilder();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -639,8 +639,8 @@ public class AssetTrackingHelper {
         else
             type = MERCH_INIT;
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
 
@@ -751,8 +751,8 @@ public class AssetTrackingHelper {
                 break;
         }
         ReasonMaster reasonBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -806,8 +806,8 @@ public class AssetTrackingHelper {
             type = "CMN";
 
         AssetAddDetailBO assetBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -961,8 +961,8 @@ public class AssetTrackingHelper {
 
         AssetAddDetailBO assetBO;
         mBrandSpinner = new Vector<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1005,8 +1005,8 @@ public class AssetTrackingHelper {
         AssetTrackingBO assetBO;
 
         mAddRemoveAssets = new Vector<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1200,8 +1200,8 @@ public class AssetTrackingHelper {
      * @param imgName imageName
      */
     public void deleteImageName(Context mContext, String imgName) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         db.updateSQL("UPDATE AssetDetail SET  imagename =" + QT("")
@@ -1221,8 +1221,8 @@ public class AssetTrackingHelper {
             type = MERCH;
         else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1271,8 +1271,8 @@ public class AssetTrackingHelper {
             type = MERCH;
         else if (MENU_POSM.equals(moduleName))
             type = MERCH_INIT;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1326,8 +1326,8 @@ public class AssetTrackingHelper {
             type = MERCH_INIT;
 
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1366,8 +1366,8 @@ public class AssetTrackingHelper {
      * @param mSno SNO
      */
     public void deletePosmDetails(Context mContext, String mSno) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1394,8 +1394,8 @@ public class AssetTrackingHelper {
      */
     public boolean isExistingRetailerSno(Context mContext, String mSno) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1426,8 +1426,8 @@ public class AssetTrackingHelper {
      */
     public boolean isExistingAssetInRetailer(Context mContext, String serialNum) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1465,8 +1465,8 @@ public class AssetTrackingHelper {
         } else if (MENU_POSM.equals(moduleName) || "MENU_POSM_CS".equals(moduleName)) {
             type = MERCH_INIT;
         }
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1485,7 +1485,7 @@ public class AssetTrackingHelper {
                 }
             }
             String query = "select uid,refid from AssetHeader where retailerid ="
-                    + QT(mBusinessModel.getRetailerMasterBO().getRetailerID())
+                    + QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                     + " and TypeLovid=" + typeListId;
             query += " and (upload='N' OR refid!=0)";
 
@@ -1504,16 +1504,16 @@ public class AssetTrackingHelper {
 
             double productWeightAge, sum = 0;
 
-            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
 
-            String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid,distributorid";
+            String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid,distributorid,ridSF,VisitId";
             StringBuilder assetHeaderValues = new StringBuilder();
             assetHeaderValues.append(id);
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             assetHeaderValues.append(",");
-            assetHeaderValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
+            assetHeaderValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(mBusinessModel.getAssetRemark()));
             assetHeaderValues.append(",");
@@ -1633,7 +1633,7 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getCompetitorQty());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
                                 assetDetailValues.append(",");
                                 if (MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM)
                                     assetDetailValues.append(assetBo.getLocationID());
@@ -1772,7 +1772,7 @@ public class AssetTrackingHelper {
                                 assetDetailValues.append(",");
                                 assetDetailValues.append(assetBo.getCompetitorQty());
                                 assetDetailValues.append(",");
-                                assetDetailValues.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
+                                assetDetailValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
                                 assetDetailValues.append(",");
                                 if (MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM)
                                     assetDetailValues.append(assetBo.getLocationID());
@@ -1836,6 +1836,10 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(QT(refId));
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(mBusinessModel.retailerMasterBO.getDistributorId() + ""));
+            assetHeaderValues.append(",");
+            assetHeaderValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF()));
+            assetHeaderValues.append(",");
+            assetHeaderValues.append(mBusinessModel.getAppDataProvider().getUniqueId());
 
             db.insertSQL(DataMembers.tbl_AssetHeader, assetHeaderColumns,
                     assetHeaderValues.toString());
@@ -1957,8 +1961,8 @@ public class AssetTrackingHelper {
      * Method to check the movement Asset in sql table
      */
     public ArrayList<String> getAssetMovementDetails(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         ArrayList<String> retailerMovedData = new ArrayList<>();
         Cursor c = db.selectSQL("SELECT DISTINCT AssetId from " + DataMembers.tbl_AssetAddDelete + " where flag='M'");
@@ -1973,8 +1977,8 @@ public class AssetTrackingHelper {
         ArrayList<String> imageList = new ArrayList<>();
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -2002,8 +2006,8 @@ public class AssetTrackingHelper {
 
     public void deleteImageProof(Context mContext, String ImageName) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             db.deleteSQL(DataMembers.tbl_AssetImgInfo, "ImageName="
@@ -2016,8 +2020,8 @@ public class AssetTrackingHelper {
 
 
     public void deleteServiceTable(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -2034,8 +2038,8 @@ public class AssetTrackingHelper {
         if (mUniqueSerialNo == null)
             mUniqueSerialNo = new HashMap<>();
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -2073,8 +2077,8 @@ public class AssetTrackingHelper {
         AssetTrackingBO assetBO;
 
         assetServiceList = new Vector<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -2216,8 +2220,8 @@ public class AssetTrackingHelper {
 
         AssetTrackingBO assetTrackingBO;
         StringBuilder sb = new StringBuilder();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();

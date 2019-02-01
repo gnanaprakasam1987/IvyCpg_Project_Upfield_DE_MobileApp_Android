@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -24,13 +23,20 @@ public class DBUtil extends SQLiteOpenHelper {
     private final Context myContext;
     private net.sqlcipher.database.SQLiteDatabase db_encrypted = null;
     public static boolean isEncrypted;
-    public static String DB_PASSWORD = "password";
+    private static String DB_PASSWORD = "password";
 
-    public DBUtil(Context ctx, String mDBName, String mDBPath) {
+    public DBUtil(Context ctx, String mDBName) {
         super(ctx, mDBName, null, 2);
         this.myContext = ctx;
         this.DB_NAME = mDBName;
-        this.DB_PATH = mDBPath;
+        this.DB_PATH = myContext.getDatabasePath(DB_NAME).getPath();
+    }
+
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        db.disableWriteAheadLogging();
     }
 
     @Override
@@ -119,9 +125,9 @@ public class DBUtil extends SQLiteOpenHelper {
     }
 
     public void closeDB() {
-        if(!isEncrypted && db != null)
-        this.db.close();
-        else if (db_encrypted!=null)
+        if (!isEncrypted && db != null)
+            this.db.close();
+        else if (db_encrypted != null)
             db_encrypted.close();
     }
 
@@ -152,23 +158,13 @@ public class DBUtil extends SQLiteOpenHelper {
     /**
      * Check if the database already exist to avoid re-copying the file each
      * time you open the application.
+     * <p>
+     * Last Modified Mansoor
      *
      * @return true if it exists, false if it doesn't
      */
     private boolean checkDataBase() {
-        SQLiteDatabase checkDB = null;
-        try {
-            String myPath = DB_PATH + DB_NAME;
-            checkDB = SQLiteDatabase.openDatabase(myPath, null,
-                    SQLiteDatabase.OPEN_READONLY);
-        } catch (SQLiteException e) {
-            // database does't exist yet.
-        }
-        if (checkDB != null) {
-            checkDB.close();
-        }
-        return checkDB != null;
-        // abbas
+        return myContext.getDatabasePath(DB_NAME).exists();
     }
 
     /**
@@ -179,10 +175,8 @@ public class DBUtil extends SQLiteOpenHelper {
     private void copyDataBase() throws IOException {
         // Open your local db as the input stream
         InputStream myInput = myContext.getAssets().open(DB_NAME);
-        // Path to the just created empty db
-        String outFileName = DB_PATH + DB_NAME;
         // Open the empty db as the output stream
-        OutputStream myOutput = new FileOutputStream(outFileName);
+        OutputStream myOutput = new FileOutputStream(DB_PATH);
         // transfer bytes from the inputfile to the outputfile
         byte[] buffer = new byte[1024];
         int length;
@@ -198,10 +192,8 @@ public class DBUtil extends SQLiteOpenHelper {
     }
 
     public void openDataBase() throws SQLException {
-        // Open the database
-        String myPath = DB_PATH + DB_NAME;
         if (!isEncrypted)
-            db = SQLiteDatabase.openDatabase(myPath, null,
+            db = SQLiteDatabase.openDatabase(DB_PATH, null,
                     SQLiteDatabase.OPEN_READWRITE);
         else {
             net.sqlcipher.database.SQLiteDatabase.loadLibs(myContext);
@@ -213,8 +205,8 @@ public class DBUtil extends SQLiteOpenHelper {
         }
     }
 
-    public void encrypt(Context ctxt, String dbName,
-                        String passphrase) throws IOException {
+    private void encrypt(Context ctxt, String dbName,
+                         String passphrase) throws IOException {
         // To load sqlite cipher libraries
         net.sqlcipher.database.SQLiteDatabase.loadLibs(ctxt);
         File originalFile = ctxt.getDatabasePath(dbName);

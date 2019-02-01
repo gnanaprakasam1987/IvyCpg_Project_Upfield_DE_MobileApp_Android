@@ -49,8 +49,8 @@ public class ModuleTimeStampHelper {
 
     public void saveModuleTimeStamp(String inOrout) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String columns = "Tid,DistributorId,UserId,Date,ModuleCode,Activity,Latitude,Longitude,GpsAccuracy,upload";

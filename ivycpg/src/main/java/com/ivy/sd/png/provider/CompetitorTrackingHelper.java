@@ -13,7 +13,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class CompetitorTrackingHelper {
         DBUtil db = null;
         try {
             CompanyBO competitor;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct CM.CompanyID,CM.CompanyName FROM CompanyMaster CM"
@@ -82,7 +82,7 @@ public class CompetitorTrackingHelper {
         DBUtil db = null;
         try {
             CompanyBO competitor;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct CM.CompanyID,CM.CompanyName FROM CompanyMaster CM"
@@ -116,7 +116,7 @@ public class CompetitorTrackingHelper {
         DBUtil db = null;
         try {
             CompetitorBO competitorBo;
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = null;
 
@@ -149,6 +149,20 @@ public class CompetitorTrackingHelper {
 
                 c.close();
             }
+            // Competitor Tagging
+            if (!competitorMaster.isEmpty()) {
+                String productIDs = bmodel.productHelper.getCompetitorTaggingDetails("COMPETITOR");
+                ArrayList<CompetitorBO> tempList = new ArrayList<>();
+                if (productIDs != null && !productIDs.trim().equals("")) {
+                    for (CompetitorBO competitorBO : competitorMaster) {
+                        if (productIDs.contains(competitorBO.getCompetitorpid() + ""))
+                            tempList.add(competitorBO);
+                    }
+
+                    competitorMaster.clear();
+                    competitorMaster.addAll(tempList);
+                }
+            }
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -164,7 +178,7 @@ public class CompetitorTrackingHelper {
         CompetetorPOSMBO reasonbo;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("Select listid,ListName from StandardListMaster where ListType  ='COMPETITOR_TRACKING_TYPE'");
@@ -207,17 +221,17 @@ public class CompetitorTrackingHelper {
      * Save the competitor details using Company wise Header and Details.
      */
     public void saveCompetitor() {
-        CompetitorBO competitor = null;
-        DBUtil db = null;
+        CompetitorBO competitor;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        ;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
             db.createDataBase();
             db.openDataBase();
-            String headerColumns = "Tid,Date,RetailerID,CompetitorID,Feedback,ImageName,TimeZone,pid,Remark,CounterId,imgName,distributorid";
-            String detailColumns = "TiD,TrackingListid,pid,RetailerID,FromDate,ToDate,Feedback,ImageName,imgName,qty,reasonID";
+            String headerColumns = "Tid,Date,RetailerID,CompetitorID,Feedback,ImageName,TimeZone,pid,Remark,CounterId,imgName,distributorid,ridSF,VisitId";
+            String detailColumns = "TiD,TrackingListid,pid,RetailerID,FromDate,ToDate,Feedback,ImageName,imgName,qty,reasonID,RField1";
 
             String competitorReturnID = "CT"
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + bmodel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             Cursor orderDetailCursor = db.selectSQL("select tid from "
@@ -276,13 +290,17 @@ public class CompetitorTrackingHelper {
                             + ","
                             + competitor.getCompetitorpid()
                             + ","
-                            + bmodel.QT(bmodel.getNote())
+                            + QT(bmodel.getNote())
                             + ","
                             + bmodel.getCounterId()
                             + ","
                             + QT(competitor.getImageName())
                             + ","
-                            + bmodel.retailerMasterBO.getDistributorId();
+                            + bmodel.retailerMasterBO.getDistributorId()
+                            + ","
+                            + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF())
+                            + ","
+                            + bmodel.getAppDataProvider().getUniqueId();
 
                     db.insertSQL(DataMembers.tbl_CompetitorHeader,
                             headerColumns, values);
@@ -299,18 +317,18 @@ public class CompetitorTrackingHelper {
                                 + ","
                                 + competitor.getCompetitorpid()
                                 + ","
-                                + QT(bmodel.getRetailerMasterBO()
+                                + QT(bmodel.getAppDataProvider().getRetailMaster()
                                 .getRetailerID())
                                 + ","
                                 + QT(DateUtil
                                 .convertToServerDateFormat(
                                         temp.getFromDate(),
-                                        bmodel.configurationMasterHelper.outDateFormat))
+                                        ConfigurationMasterHelper.outDateFormat))
                                 + ","
                                 + QT(DateUtil
                                 .convertToServerDateFormat(
                                         temp.getToDate(),
-                                        bmodel.configurationMasterHelper.outDateFormat))
+                                        ConfigurationMasterHelper.outDateFormat))
                                 + ","
                                 + QT(temp.getFeedBack())
                                 + ","
@@ -319,8 +337,10 @@ public class CompetitorTrackingHelper {
                                 + QT(temp.getImageName())
                                 + ","
                                 + temp.getQty()
-                                +","
-                                + temp.getReasonID();
+                                + ","
+                                + temp.getReasonID()
+                                + ","
+                                + QT(temp.getRemarks());
 
                         db.insertSQL(DataMembers.tbl_CompetitorDetails,
                                 detailColumns, values);
@@ -341,8 +361,8 @@ public class CompetitorTrackingHelper {
      */
     public void loadcompetitors() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String orderID = new String();
@@ -371,7 +391,7 @@ public class CompetitorTrackingHelper {
                     setCompetitorDetails(competitorid, feedback, imagePath,
                             ppid, imgName);
                     // load details
-                    String sql1 = "select trackinglistid,pid,FromDate,ToDate,feedback,imagename,imgName,qty,reasonID from "
+                    String sql1 = "select trackinglistid,pid,FromDate,ToDate,feedback,imagename,imgName,qty,reasonID,ifnull(RField1,'') from "
                             + DataMembers.tbl_CompetitorDetails
                             + " where tid="
                             + QT(orderID) + "" + " and upload!= 'Y'";
@@ -386,10 +406,11 @@ public class CompetitorTrackingHelper {
                             String mCfeedback = orderDetailCursor.getString(4);
                             String mCimagePath = orderDetailCursor.getString(5);
                             String mCimageName = orderDetailCursor.getString(6);
-                            int qty=  orderDetailCursor.getInt(7);
-                            int reasonID=orderDetailCursor.getInt(8);
+                            int qty = orderDetailCursor.getInt(7);
+                            int reasonID = orderDetailCursor.getInt(8);
+                            String remark = orderDetailCursor.getString(9);
                             setCompetitorMasterDetails(competitorid,
-                                    trackingid, prdid, fromDate, toDate, mCfeedback, mCimagePath, mCimageName,qty,reasonID);
+                                    trackingid, prdid, fromDate, toDate, mCfeedback, mCimagePath, mCimageName, qty, reasonID,remark);
                         }
                     }
                 }
@@ -403,7 +424,7 @@ public class CompetitorTrackingHelper {
     }
 
     private void setCompetitorMasterDetails(int cid, int trackingid, int kid,
-                                            String fromDate, String toDate, String feedback, String imagePath, String imageName,int qty,int reasonID) {
+                                            String fromDate, String toDate, String feedback, String imagePath, String imageName, int qty, int reasonID,String remark) {
         CompetitorBO competitor;
         int siz = competitorMaster.size();
         Commons.print("B" + competitorMaster.size());
@@ -430,6 +451,7 @@ public class CompetitorTrackingHelper {
                         temp.setImageName(imageName);
                         temp.setQty(qty);
                         temp.setReasonID(reasonID);
+                        temp.setRemarks(remark);
                     }
 
                     competitorMaster.set(i, competitor);
@@ -489,8 +511,8 @@ public class CompetitorTrackingHelper {
     }
 
     public void deleteImageName(String imgName) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         if (bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR)

@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -74,7 +76,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     NearExpiryTrackingHelper mNearExpiryHelper;
     private ActionBar actionBar;
 
-    private final static int NEAR_EXPIRY_RESULT_CODE = 113;
+    private final static int NEAR_EXPIRY_RESULT_CODE = 119;
     private MyAdapter mSchedule;
 
     @Override
@@ -405,7 +407,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         .findViewById(R.id.barcode);
 
                 holder.mSKU = row.findViewById(R.id.sku);
-
+                holder.mSKU.setMaxLines(mBModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                 holder.rlCalendar = row
                         .findViewById(R.id.rl_calendar);
 
@@ -467,8 +469,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         intent.putExtras(args);
 
                         startActivityForResult(intent, NEAR_EXPIRY_RESULT_CODE);
-                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-
+                        getActivity().overridePendingTransition(R.anim.zoom_enter,R.anim.hold);
                     }
                 });
 
@@ -778,16 +779,29 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     }
                 }
             } else {
-                for (ProductMasterBO ret : items) {
+                if (productId == 0) {
+                    for (ProductMasterBO ret : items) {
+
+                        if (ret.getBarCode().equals(strBarCodeSearch)
+                                || ret.getCasebarcode().equals(strBarCodeSearch)
+                                || ret.getOuterbarcode().equals(strBarCodeSearch)
+                                || "ALL".equals(strBarCodeSearch)
+                                && ret.getIsSaleable() == 1) {
+                            myList.add(ret);
+                        }
+                    }
+                } else {
+                    for (ProductMasterBO ret : items) {
                     if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !ret.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                         continue;
-                    if (ret.getBarCode().equals(strBarCodeSearch)
-                            || ret.getCasebarcode().equals(strBarCodeSearch)
-                            || ret.getOuterbarcode().equals(strBarCodeSearch)
-                            || "ALL".equals(strBarCodeSearch)
-                            && (ret.getParentHierarchy().contains("/" + productId + "/"))
-                            && ret.getIsSaleable() == 1) {
-                        myList.add(ret);
+                        if (ret.getBarCode().equals(strBarCodeSearch)
+                                || ret.getCasebarcode().equals(strBarCodeSearch)
+                                || ret.getOuterbarcode().equals(strBarCodeSearch)
+                                || "ALL".equals(strBarCodeSearch)
+                                && (ret.getParentHierarchy().contains("/" + productId + "/"))
+                                && ret.getIsSaleable() == 1) {
+                            myList.add(ret);
+                        }
                     }
                 }
             }
@@ -890,7 +904,9 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == NEAR_EXPIRY_RESULT_CODE && resultCode == 1) {
+        if (requestCode == NEAR_EXPIRY_RESULT_CODE && resultCode == 1){
+            if (getActivity() != null)
+                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
             mSchedule.notifyDataSetChanged();
         }
     }

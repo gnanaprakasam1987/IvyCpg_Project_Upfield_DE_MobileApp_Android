@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_noise"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/ll_toolbar"
@@ -21,10 +20,10 @@
         android:id="@+id/layout_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_toolbar"
         android:layout_marginTop="@dimen/dimen_40dp"
         android:orientation="horizontal"
-        android:padding="@dimen/dimens_16dp"
-        android:layout_below="@+id/ll_toolbar">
+        android:padding="@dimen/dimens_16dp">
 
         <TextView
             style="@style/TextViewListItemCaption"
@@ -50,10 +49,10 @@
         android:id="@+id/layout_two"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_one"
         android:orientation="horizontal"
-        android:weightSum="2.05"
         android:padding="@dimen/dimens_16dp"
-        android:layout_below="@+id/layout_one">
+        android:weightSum="2.05">
 
         <Spinner
             android:id="@+id/spinner_asset"
@@ -86,10 +85,10 @@
         android:id="@+id/layout_three"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_two"
         android:layout_marginTop="@dimen/dimen_40dp"
         android:orientation="horizontal"
-        android:padding="@dimen/dimens_16dp"
-        android:layout_below="@+id/layout_two">
+        android:padding="@dimen/dimens_16dp">
 
         <TextView
             android:id="@+id/label_scan"
@@ -105,8 +104,8 @@
             style="@style/TextViewListItemCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:text="@string/addassetinstall" />
     </LinearLayout>
@@ -115,11 +114,11 @@
         android:id="@+id/layout_four"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_three"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/dimens_16dp"
-        android:layout_below="@+id/layout_three"
-        android:weightSum="5"
-        android:gravity="center_vertical">
+        android:weightSum="5">
 
         <EditText
             android:id="@+id/etxt_sno"
@@ -132,39 +131,60 @@
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
             android:hint="@string/zero"
             android:maxLength="50"
-            android:paddingBottom="10dp"
-            />
+            android:paddingBottom="10dp" />
+
         <ImageView
             android:id="@+id/imageView_barcode_scan"
             android:layout_width="0dp"
-            android:layout_weight=".5"
             android:layout_height="@dimen/dimen_20dp"
-            android:src="@drawable/barcode_scan_black"
-            android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_marginEnd="@dimen/dimen_10dp"
-
-            />
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:layout_weight=".5"
+            android:src="@drawable/barcode_scan_black" />
 
         <Button
             android:id="@+id/date_button"
             style="@style/datePickerButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginBottom="5dp"
             android:layout_weight="2.5"
             android:gravity="center"
             android:text="@string/servicedate" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/llnewassetPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_four"
+        android:orientation="vertical"
+        android:padding="@dimen/dimens_16dp">
 
+        <TextView
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:fontFamily="@font/roboto_light"
+            android:text="@string/asset_image" />
+
+        <ImageView
+            android:id="@+id/iv_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_10dp"
+            android:src="@drawable/ic_photo_camera_blue_24dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimens_12dp"
-        android:layout_marginTop="@dimen/dimens_12dp">
+        android:layout_marginTop="@dimen/dimens_12dp"
+        android:layout_marginBottom="@dimen/dimens_12dp">
 
         <include
             android:id="@+id/keypad"
@@ -177,10 +197,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/footer_height"
-        android:gravity="end"
-        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:background="@color/footer_bg_color"
+        android:gravity="end"
+        android:orientation="horizontal"
         android:padding="@dimen/footer_padding">
 
 

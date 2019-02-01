@@ -268,7 +268,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.PlanningActivity"
+            android:name="com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity"
             android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -302,7 +302,7 @@
             android:name="com.ivy.cpg.view.orderfullfillment.PartialFullfillment"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.HomeScreenActivity"
+            android:name="com.ivy.cpg.view.homescreen.HomeScreenActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="sensorPortrait">
@@ -852,7 +852,28 @@
             android:name="com.ivy.cpg.view.order.DiscountEditActivity"
             android:screenOrientation="portrait" />
         <activity android:name="com.ivy.cpg.view.order.ReturnProductActivity" />
-        <activity android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
+        <activity
+            android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name="com.ivy.cpg.view.initiative.InitiativeEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.cpg.view.order.CollectionBeforeInvoiceActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.supplierselect.SupplierSelectionActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.webview.PrivacyPolicyActivity"
             android:screenOrientation="portrait"/>
     </application>
 

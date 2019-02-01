@@ -202,6 +202,7 @@
 
 
         <LinearLayout
+            android:id="@+id/ll_rating"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
@@ -231,8 +232,15 @@
                 android:overlapAnchor="false"
                 android:textAlignment="center" />
         </LinearLayout>
-
-
+        <ImageView
+            android:id="@+id/img_feedback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/feedback_no_promo"
+            android:contentDescription="@string/feedback">
+        </ImageView>
     </LinearLayout>
 
 </LinearLayout>

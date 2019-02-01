@@ -67,6 +67,7 @@ import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.displayscheme.DisplaySchemeActivity;
 import com.ivy.cpg.view.displayscheme.DisplaySchemeTrackingActivity;
 import com.ivy.cpg.view.emptyreturn.EmptyReturnActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.loyality.LoyalityHelper;
 import com.ivy.cpg.view.loyality.LoyaltyPointsFragmentActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
@@ -2063,6 +2064,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         if (bmodel.isEdit()) {
                             orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                     .getRetailerID(), null);
+                            OrderHelper.getInstance(this).selectedOrderId = orderHelper.getOrderId();
                             orderHelper.loadSerialNo(this);
                             enableSchemeModule();
                         }
@@ -4265,8 +4267,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private void updateRetailerwiseSellertype(int flag) {
         try {
 
-            DBUtil db = new DBUtil(HomeScreenTwo.this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(HomeScreenTwo.this, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String query = "update retailermasterinfo set is_vansales=" + flag
                     + " where retailerid="
@@ -5183,6 +5185,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             if (bmodel.isEdit()) {//doubt
                                 orderHelper.loadOrderedProducts(this, bmodel.getRetailerMasterBO()
                                         .getRetailerID(), null);
+                                OrderHelper.getInstance(this).selectedOrderId = orderHelper.getOrderId();
                                 orderHelper.loadSerialNo(this);
                                 enableSchemeModule();
                             } else {

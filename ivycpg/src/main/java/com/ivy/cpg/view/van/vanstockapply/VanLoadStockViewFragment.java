@@ -4,31 +4,24 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +33,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.print.DemoSleeper;
-import com.ivy.utils.FontUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -50,23 +42,17 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Vector;
 
-public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClickListener {
+public class VanLoadStockViewFragment extends IvyBaseFragment {
     private static final String TAG = "Vanload Print";
 
     private ArrayList<VanLoadStockApplyBO> tempData;
     private ListView lvwplist;
     private BusinessModel bmodel;
     private Vector<VanLoadStockApplyBO> mylist;
-    private Vector<VanLoadStockApplyBO> mylist3;
     private TextView productname;
-    private TextView prodlabel, batchlabel, caselabel, outerlabel, piecelabel, totallabel;
-    private Button applybtn, rejectbtn;
     private String uid;
-    Vector<String> SIHApplyById;
-    private HashMap<String, Integer> mManuvalVanloadFlagByuid;
 
     // print vanload
 
@@ -79,24 +65,16 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
     private String mSalesdate;
 
 
-    private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
-    private TypedArray typearr;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vanload_stockview, container,
                 false);
-        typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
-        applybtn = (Button) view.findViewById(R.id.apply);
-        applybtn.setOnClickListener(this);
-        rejectbtn = (Button) view.findViewById(R.id.reject);
-        rejectbtn.setOnClickListener(this);
 
-        SIHApplyById = bmodel.configurationMasterHelper.getSIHApplyById();
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -104,33 +82,11 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                     Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
-        Spinner spinnerVanload = (Spinner) view
-                .findViewById(R.id.vanloadSpinner);
-        lvwplist = (ListView) view.findViewById(R.id.list);
+        lvwplist = view.findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
-        productname = (TextView) view.findViewById(R.id.productName);
-        productname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.prod_label)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.batchidTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.totaltitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
+        productname = view.findViewById(R.id.productName);
 
-
-        productname.setOnTouchListener(new OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                int inType = productname.getInputType();
-                productname.setInputType(InputType.TYPE_NULL);
-                productname.onTouchEvent(event);
-                productname.setInputType(inType);
-                return true;
-            }
-        });
-
-        if (bmodel.configurationMasterHelper.HIDE_STOCK_APPLY_BUTTON)
-            view.findViewById(R.id.thirdrow).setVisibility(View.GONE);
 
         uid = getActivity().getIntent().getExtras().getString("uid");
 
@@ -230,28 +186,6 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
 
         MyAdapter mSchedule = new MyAdapter(tempData);
         lvwplist.setAdapter(mSchedule);
-    }
-
-    @Override
-    public void onClick(View v) {
-        Button view = (Button) v;
-        if (view == applybtn) {
-
-            SIHApplyById.add(uid);
-            new UpdateSIH().execute();
-            applybtn.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            applybtn.setEnabled(false);
-            rejectbtn.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            rejectbtn.setEnabled(false);
-
-        } else if (view == rejectbtn) {
-            SIHApplyById.add(uid);
-            applybtn.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            applybtn.setEnabled(false);
-            rejectbtn.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_listcolor_alt, 0));
-            rejectbtn.setEnabled(false);
-            new RejectVanload().execute();
-        }
     }
 
     @Override
@@ -460,7 +394,7 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                     x += 30;
 
                     printItem.append("T 5 0 10 ").append(x).append(" ");
-                    printItem.append(productBO.getProductName().toLowerCase()).append("\r\n");
+                    printItem.append("(" + getActivity().getResources().getString(R.string.free) + ")" + productBO.getProductName().toLowerCase()).append("\r\n");
 
                     x += 30;
                     if (bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
@@ -711,23 +645,15 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                 row = inflater.inflate(R.layout.row_stock_report_listview,
                         parent, false);
                 holder = new ViewHolder();
-                holder.listBgLayout = (LinearLayout) row.findViewById(R.id.header_listlty);
-                holder.psname = (TextView) row.findViewById(R.id.productname);
+                holder.listBgLayout = row.findViewById(R.id.header_listlty);
+                holder.psname = row.findViewById(R.id.productname);
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                holder.productCode = (TextView) row.findViewById(R.id.product_code);
-                holder.caseqty = (TextView) row.findViewById(R.id.caseqty);
-                holder.pcsqty = (TextView) row.findViewById(R.id.pieceqty);
-                holder.unitprice = (TextView) row.findViewById(R.id.unitprice);
-                holder.outerqty = (TextView) row.findViewById(R.id.outerqty);
-                holder.batchid = (TextView) row.findViewById(R.id.batchid);
-
-                holder.psname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.productCode.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.caseqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.pcsqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.unitprice.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.outerqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
-                holder.batchid.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+                holder.productCode = row.findViewById(R.id.product_code);
+                holder.caseqty = row.findViewById(R.id.caseqty);
+                holder.pcsqty = row.findViewById(R.id.pieceqty);
+                holder.unitprice = row.findViewById(R.id.unitprice);
+                holder.outerqty = row.findViewById(R.id.outerqty);
+                holder.batchid = row.findViewById(R.id.batchid);
 
 
                 row.setOnClickListener(new OnClickListener() {
@@ -744,6 +670,8 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                     holder.outerqty.setVisibility(View.GONE);
                 if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                     holder.productCode.setVisibility(View.GONE);
+                if (product.getBatchNumber() == null)
+                    holder.batchid.setVisibility(View.GONE);
 
                 row.setTag(holder);
             } else {
@@ -752,6 +680,15 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
 
             tv = product.getProductShortName();
             holder.psname.setText(tv);
+
+            if (product.getIsFree() == 1)
+                holder.psname.setTextColor(ContextCompat.getColor(getActivity().getApplicationContext(),
+                        R.color.colorAccent));
+            else
+                holder.psname.setTextColor(ContextCompat.getColor(getActivity().getApplicationContext(),
+                        android.R.color.black));
+
+
             tv = product.getCaseQuantity() + "";
             holder.caseqty.setText(tv);
             tv = product.getPieceQuantity() + "";
@@ -771,19 +708,13 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
                         + ": " + product.getBatchNumber() + "";
                 holder.batchid.setText(tv);
             } else {
-                holder.batchid.setText("");
+                holder.batchid.setText(getString(R.string.batch_no));
             }
+
             if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
                 String prodCode = getResources().getString(R.string.prod_code)
                         + ": " + product.getProductCode() + " ";
                 holder.productCode.setText(prodCode);
-            }
-
-
-            if (position % 2 == 0) {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_even_item_bg));
-            } else {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_odd_item_bg));
             }
             return row;
         }
@@ -798,85 +729,6 @@ public class VanLoadStockViewFragment extends IvyBaseFragment implements OnClick
         TextView outerqty;
         TextView batchid;
         String pname;
-
-    }
-
-    class UpdateSIH extends AsyncTask<Integer, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, "Applying Vanload Stock ");
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-
-                int flag = 0;
-                if (mManuvalVanloadFlagByuid.get(uid) != null) {
-                    flag = mManuvalVanloadFlagByuid.get(uid);
-                }
-                bmodel.stockreportmasterhelper.downloadBatchwiseVanlod();
-                bmodel.stockreportmasterhelper.updateSIHMaster(mylist,
-                        SIHApplyById, uid, flag);
-                if (flag == 1) {
-                    bmodel.stockreportmasterhelper.updateVanload(uid);
-                }
-
-
-            } catch (Exception e) {
-                Commons.printException("" + e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(Boolean result) {
-            alertDialog.dismiss();
-            Toast.makeText(getActivity(), "Vanload Stock Applied ",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    class RejectVanload extends AsyncTask<Integer, Integer, Boolean> {
-
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-
-            customProgressDialog(builder, "Applying Vanload Stock ");
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            int flag = 0;
-            if (mManuvalVanloadFlagByuid.get(uid) != null) {
-                flag = mManuvalVanloadFlagByuid.get(uid);
-            }
-            bmodel.stockreportmasterhelper.rejectVanload(uid, flag);
-            return true;
-        }
-
-        protected void onPostExecute(Boolean result) {
-
-            alertDialog.dismiss();
-            Toast.makeText(getActivity(), "Vanload Stock Rejected ",
-                    Toast.LENGTH_SHORT).show();
-        }
 
     }
 

@@ -42,9 +42,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Vector;
 
 public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack, View.OnClickListener {
@@ -76,7 +74,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         bmodel.setContext(this);
 
 
-        Toolbar toolbar = toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
 
@@ -101,7 +99,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
+        FrameLayout drawer = findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
@@ -109,24 +107,22 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         drawer.setLayoutParams(params);
 
 
-        viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+        viewFlipper = findViewById(R.id.view_flipper);
 
-        mEdt_searchproductName = (EditText) findViewById(R.id.edt_searchproductName);
-        Button mBtn_Search = (Button) findViewById(R.id.btn_search);
-        Button mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
-        Button mBtn_clear = (Button) findViewById(R.id.btn_clear);
+        mEdt_searchproductName = findViewById(R.id.edt_searchproductName);
+        Button mBtn_Search = findViewById(R.id.btn_search);
+        Button mBtnFilterPopup = findViewById(R.id.btn_filter_popup);
+        Button mBtn_clear = findViewById(R.id.btn_clear);
 
         mBtn_Search.setOnClickListener(this);
         mBtnFilterPopup.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
         mEdt_searchproductName.setOnEditorActionListener(this);
 
-        expandlvwplist = (ExpandableListView) findViewById(R.id.expand_lvwplist);
+        expandlvwplist = findViewById(R.id.expand_lvwplist);
         expandlvwplist.setCacheColorHint(0);
 
-        productName = (TextView) findViewById(R.id.productName);
-        productName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        productName = findViewById(R.id.productName);
         productName.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 int inType = productName.getInputType();
@@ -164,14 +160,10 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         mSearchTypeArray.add(getResources().getString(
                 R.string.order_dialog_barcode));
 
-        Vector<String> vect = new Vector<>();
+      /*  Vector<String> vect = new Vector<>();
         vect.addAll(Arrays.asList(getResources().getStringArray(
-                R.array.productFilterArray)));
+                R.array.productFilterArray)));*/
         mSelectedFilterMap.put("General", GENERAL);
-        ((TextView) findViewById(R.id.product_name)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.sihCaseTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.sihOuterTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
-        ((TextView) findViewById(R.id.sihTitle)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
 
         if (bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_OU ||
                 bmodel.configurationMasterHelper.CONVERT_STOCK_SIH_CS ||
@@ -455,7 +447,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         HashMap<String, ArrayList<LoadManagementBO>> listDataChild = new HashMap<>();
         ArrayList<LoadManagementBO> childList = null;
         for (LoadManagementBO parentBo : temp) {
-            childList = new ArrayList<LoadManagementBO>();
+            childList = new ArrayList<>();
             for (LoadManagementBO childBO : temp2) {
                 if (parentBo.getProductid() == childBO.getProductid()
                         && childBO.getBatchlist() != null
@@ -464,6 +456,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                     childList.add(childBO);
             }
             String pid = String.valueOf(parentBo.getProductid());
+            if (parentBo.getIsFree() == 1) //  if free product to have unique key
+                pid = pid + "F";
             listDataChild.put(pid, childList);//load child batch List data
         }
 
@@ -479,7 +473,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         for (int i = 0; i < temp.size(); i++) {
 
             for (int j = i + 1; j < temp.size(); j++) {
-                if (temp.get(i).getProductid() == temp.get(j).getProductid()) {
+                if (temp.get(i).getProductid() == temp.get(j).getProductid() &&
+                        temp.get(i).getIsFree() == temp.get(j).getIsFree()) {
                     temp.remove(j);
                     j--;
                 }
@@ -552,7 +547,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
                                     mEdt_searchproductName.getText()
                                             .toString().toLowerCase()) || (ret.getProductCode() != null &&
                             ret.getProductCode().toLowerCase().contains(mEdt_searchproductName.getText().toString()
-                            .toLowerCase())))
+                                    .toLowerCase())))
                         temp.add(ret);
                 }
 
@@ -607,6 +602,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         }
 
 //---------- remove duplicate product name from given list-----------///
+
         /**
          * product getting duplicated if more than batch is available single product so in this case
          * only we removed duplicated product
@@ -615,7 +611,7 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         for (int i = 0; i < temp.size(); i++) {
 
             for (int j = i + 1; j < temp.size(); j++) {
-                if (temp.get(i).getProductid() == temp.get(j).getProductid()) {
+                if (temp.get(i).getProductid() == temp.get(j).getProductid() && temp.get(i).getIsFree() == temp.get(j).getIsFree()) {
                     temp.remove(j);
                     j--;
                 }
@@ -691,7 +687,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
         for (int i = 0; i < filterlist.size(); i++) {
 
             for (int j = i + 1; j < filterlist.size(); j++) {
-                if (filterlist.get(i).getProductid() == filterlist.get(j).getProductid()) {
+                if (filterlist.get(i).getProductid() == filterlist.get(j).getProductid() &&
+                        filterlist.get(i).getIsFree() == filterlist.get(j).getIsFree()) {
                     filterlist.remove(j);
                     j--;
                 }

@@ -1,6 +1,5 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.tradeCoverage;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -15,8 +14,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +31,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,6 +61,8 @@ import com.ivy.cpg.view.order.tax.TaxGstHelper;
 import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.CustomFragment;
+import com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity;
 import com.ivy.sd.png.view.profile.ProfileActivity;
 
 import org.json.JSONException;
@@ -805,7 +803,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
             /* Add today'sdeviated retailers. **/
             for (int i = 0; i < siz; i++) {
-                if ("Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                if (bmodel.getRetailerMaster().get(i).getIsDeviated() != null && "Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
                     if (mSelecteRetailerType.equalsIgnoreCase(CODE_DEAD_STORE) && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeadStore())) {
                         continue;
                     } else if (mSelecteRetailerType.equalsIgnoreCase(CODE_GOLDEN_STORE) && bmodel.getRetailerMaster().get(i).getIsGoldStore() != 1) {
@@ -853,7 +851,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     }
                 } else if (bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
                     if (filter != null) {
-                        if (!("Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated()))
+                        if ((bmodel.getRetailerMaster().get(i).getIsDeviated() != null && !("Y".equals(bmodel.getRetailerMaster().get(i).getIsDeviated())))
                                 && bmodel.getRetailerMaster().get(i).getIsToday() == 0) {
                             if ((bmodel.getRetailerMaster().get(i).getRetailerName()
                                     .toLowerCase()).contains(filter.toLowerCase()) ||
@@ -964,7 +962,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
 
                 if ((bmodel.getRetailerMaster().get(i).getBeatID() == beatId || beatId == 0)
-                        && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                        && (bmodel.getRetailerMaster().get(i).getIsDeviated() != null
+                        && ("N").equals(bmodel.getRetailerMaster().get(i).getIsDeviated()))) {
 
                     if (filter != null) {
                         if ((bmodel.getRetailerMaster().get(i).getRetailerName()
@@ -1086,8 +1085,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private boolean isSurveyDone(String menucode, String rid) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select uid from "
                     + DataMembers.tbl_AnswerHeader + " where retailerid="
@@ -1110,8 +1109,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private void setRetailerDoneforNoOrderMenu(ArrayList<RetailerMasterBO> retailer) {
         List<TempBO> outletDetails = null;
         try {
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT DISTINCT ModuleCode, RetailerID FROM OutletTimeStampDetail INNER JOIN HhtMenuMaster ON (HHTCode = ModuleCode  AND MenuType = 'ACT_MENU' AND FLAG =1 AND hasLink = 1) WHERE (ModuleCode <>'MENU_CLOSE_CALL') ORDER BY RetailerID");
             if (c != null) {
@@ -1705,6 +1704,22 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     }
                 }
 
+                //total retialers ordered weight
+                if (mRetTgtAchv.containsKey("VST22")) {
+                    String desc = mRetTgtAchv.get("VST22");
+                    if (!isFirstDone) {
+                        holder.tv_achvTgt1.setText(bmodel.formatValue(holder.retailerObjectHolder.getmOrderedTotWgt()));
+                        holder.tv_actualTgt1.setVisibility(View.GONE);
+                        holder.tv_labelTgt1.setText(desc);
+                        isFirstDone = true;
+                    } else if (!isSecondDone) {
+                        holder.tv_achvTgt2.setText(bmodel.formatValue(holder.retailerObjectHolder.getmOrderedTotWgt()));
+                        holder.tv_actualTgt2.setVisibility(View.GONE);
+                        holder.tv_labelTgt2.setText(desc);
+                        isSecondDone = true;
+                    }
+                }
+
                 if (!isFirstDone) {
                     holder.ll_scoreParent.setVisibility(View.GONE);
                 } else if (!isSecondDone) {
@@ -1855,7 +1870,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
     private String getTotalVolume() {
         tv_target.setTextSize(14);
-        DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME);
         db.openDataBase();
         int pcQty = 0;
         int caseQty = 0;

@@ -5,56 +5,52 @@
     android:background="@color/divider_view_color"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/titleBar"
+        style="?attr/dialogTitleStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/titleBar"
-            style="?attr/dialogTitleStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="6dp"
-            android:text="@string/order_remarks_dialog_title" />
-    </RelativeLayout>
+        android:layout_gravity="center"
+        android:padding="6dp"
+        android:text="@string/order_remarks_dialog_title" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:layout_marginTop="@dimen/dimen_10dp"
         android:visibility="gone">
 
         <TextView
+            style="@style/TextViewCaptionNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="5dp"
+            android:padding="@dimen/dimen_5dp"
             android:text="@string/order_date"
             android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/Btn_deliveryDate"
+            style="@style/datePickerButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:layout_weight="2"
             android:text="@string/dummy_txt"
-            android:textColor="@android:color/black"
-            android:layout_marginRight="5dp" />
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/po_lty"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/dimen_10dp"
         android:visibility="gone">
 
         <TextView
             android:id="@+id/txt_po"
+            style="@style/TextViewCaptionNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -64,24 +60,27 @@
 
         <EditText
             android:id="@+id/edt_po"
+            style="@style/EditTextNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="2"
             android:maxLength="250"
             android:singleLine="false"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:layout_marginRight="5dp" />
+            android:text="" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textView5"
+            style="@style/TextViewCaptionNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -91,29 +90,27 @@
 
         <EditText
             android:id="@+id/edt_remark"
+            style="@style/EditTextNormal"
             android:layout_width="0dp"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="2"
             android:maxLength="250"
             android:singleLine="false"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:layout_marginRight="5dp" />
+            android:text="" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
 
-        <Button
-            android:id="@+id/closeButton"
-            style="?attr/roundedCustomButtonNormal"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            android:text="@string/ok"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/closeButton"
+        style="?attr/roundedCustomButtonSmall"
+        android:layout_gravity="center|end"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="@string/ok" />
 
 </LinearLayout>

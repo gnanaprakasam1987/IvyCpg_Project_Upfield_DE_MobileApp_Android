@@ -50,8 +50,8 @@ public class OrderAndInvoiceHelper {
 
         double discValue = 0;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             // Order Header
@@ -105,7 +105,7 @@ public class OrderAndInvoiceHelper {
         LinkedList<ProductMasterBO> list = new LinkedList<>();
 
         String productIDs = ObjectToCommaSeperated(orderedProductList);
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
         Cursor orderHeaderCursor = db.selectSQL("Select distinct case when (psname is null or length(trim(psname)) =0) then Pname else psname end as ChildName,Pid as Child, ParentHierarchy as Parent from ProductMaster " +
                 "where (Plid in (Select levelid from ProductLevel where levelid not in (Select ParentId from ProductLevel)) and pid in(" + productIDs + ")) " +
@@ -127,8 +127,8 @@ public class OrderAndInvoiceHelper {
 
     public void updateGoldenStoreDetails(int isGoldenStore) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.updateSQL("Update DailyTargetPlanned set IsGoldenStore = " + isGoldenStore + ",upload='N' Where RetailerID  = " + bmodel.getRetailerMasterBO().getRetailerID());
@@ -152,7 +152,7 @@ public class OrderAndInvoiceHelper {
         String query;
         mGolderStoreDiscountAmount = 0;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             String uid = new String();
             // Order Header
@@ -230,7 +230,7 @@ public class OrderAndInvoiceHelper {
         DBUtil db = null;
         boolean istransaction = false;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor c = db.selectSQL("SELECT TypeID FROM TransactionSequence WHERE Upload = 'N'");

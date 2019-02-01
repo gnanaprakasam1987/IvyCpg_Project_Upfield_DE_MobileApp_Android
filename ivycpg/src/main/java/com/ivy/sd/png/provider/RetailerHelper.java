@@ -75,8 +75,8 @@ public class RetailerHelper {
 
     public void loadContractData() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor cr = db
                     .selectSQL("SELECT IFNULL(ContractType,''), IFNULL(EndDate,''), IFNULL(ContractId,''), IFNULL(StartDate,'') FROM RetailerContract where RetailerId="
@@ -107,7 +107,7 @@ public class RetailerHelper {
 
     public String[] getParentLevelName(int locid, boolean isParent) {
         String[] parentLevel = new String[3];
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -161,7 +161,7 @@ public class RetailerHelper {
 
     public String getPhysicalLcoation(int locid) {
         String locationName = "";
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -188,7 +188,7 @@ public class RetailerHelper {
 
     public String getGSTType(int locid) {
         String gstType = "";
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -306,7 +306,7 @@ public class RetailerHelper {
     public ArrayList<String> getMaxDaysInRouteSelection() {
         ArrayList<String> routeSelectionDateList = new ArrayList<>();
         int maxDaysCount = 7;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -339,7 +339,7 @@ public class RetailerHelper {
      * @deprecated
      */
     public void updatePlannedDatesInRetailerObj() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -393,15 +393,15 @@ public class RetailerHelper {
     public void downloadMissedRetailer() {
         mMissedRetailerList = new ArrayList<>();
         RetailerMissedVisitBO missedRetailerBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
             String sb = "select distinct RMV.Retailerid,RM.RetailerName,RV.PlannedVisitCount,RBM.beatid from RetailerMissedVisit RMV" +
                     " inner join RetailerMaster RM on RM.RetailerId=RMV.RetailerId " +
                     " inner join RetailerBeatMapping RBM on RBM.RetailerID = RM.RetailerID" +
-                    " LEFT JOIN RetailerVisit RV ON RV.RetailerID = RMV.RetailerID" +
-                    " Group by RMV.MissedDate";
+                    " LEFT JOIN RetailerVisit RV ON RV.RetailerID = RMV.RetailerID";
+                    //" Group by RMV.MissedDate";
             ;
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -425,7 +425,7 @@ public class RetailerHelper {
 
     private int getRetailerCount(int RetailerId) {
         int count = 0;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -456,7 +456,7 @@ public class RetailerHelper {
     public void downloadMissedRetailerDetails(String Retailerid) {
         mMissedRetailerDetails = new ArrayList<>();
         RetailerMissedVisitBO missedRetailerBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.createDataBase();
             db.openDataBase();
@@ -501,7 +501,7 @@ public class RetailerHelper {
     }
 
     public String getREclassification(int id) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         String listname = null;
 
         try {
@@ -532,7 +532,7 @@ public class RetailerHelper {
         }
 
         boolean flag = false;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
 
 
         try {
@@ -569,7 +569,7 @@ public class RetailerHelper {
     }
 
     public void downloadRetailerFilterSelection(String menuType) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         mRetailerSelectionFilter = new ArrayList<>();
 
 
@@ -637,7 +637,7 @@ public class RetailerHelper {
     }
 
     public String getColorCode(String value) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         String color = "";
         try {
             db.createDataBase();
@@ -675,7 +675,7 @@ public class RetailerHelper {
         RtrWiseDeadProductsBO rtrWiseDeadProductsBO;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -702,8 +702,8 @@ public class RetailerHelper {
         String url = "";
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select URL from UrlDownloadMaster where MasterName = 'TRADE_COVERAGE_VALIDATE'");
@@ -732,8 +732,8 @@ public class RetailerHelper {
     public void downloadRetailerTarget(String code) {
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sb = "select rk.retailerid,rk.interval,rkd.target,rk.kpiid,rkd.kpiparamlovid,rkd.achievement from RetailerKPI rk" +
                     " inner join RetailerKPIDetail rkd on rk.kpiid = rkd.kpiid INNER JOIN StandardListMaster SM" +

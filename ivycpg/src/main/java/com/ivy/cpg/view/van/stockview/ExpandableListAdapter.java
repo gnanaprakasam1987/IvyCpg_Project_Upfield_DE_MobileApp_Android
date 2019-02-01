@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.van.stockview;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +42,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
         String proid = String.valueOf(this.listDataHeader.get(groupPosition).getProductid());
+        if (this.listDataHeader.get(groupPosition).getIsFree() == 1)
+            proid = proid + "F";
         return this.listDataChild.get(proid)
                 .size();
     }
@@ -54,6 +56,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         String keyPid = this.listDataHeader.get(groupPosition).getProductid() + "";
+        if (this.listDataHeader.get(groupPosition).getIsFree() == 1)
+            keyPid = keyPid + "F";
         return this.listDataChild.get(keyPid)
                 .get(childPosition);
     }
@@ -87,18 +91,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .inflate(R.layout.row_stock_report, parent, false);
             holder = new GroupViewHolder();
 
-            holder.psname = (TextView) row.findViewById(R.id.orderPRODNAME);
-            holder.sihCase = (TextView) row.findViewById(R.id.sih_case);
-            holder.sihOuter = (TextView) row.findViewById(R.id.sih_outer);
-            holder.sih = (TextView) row.findViewById(R.id.sih);
-            holder.prodcode = (TextView) row.findViewById(R.id.prdcode);
-
-
-            holder.psname.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-            holder.prodcode.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-            holder.sihCase.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-            holder.sihOuter.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-            holder.sih.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+            holder.psname = row.findViewById(R.id.orderPRODNAME);
+            holder.psname.setMaxLines(bModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
+            holder.sihCase = row.findViewById(R.id.sih_case);
+            holder.sihOuter = row.findViewById(R.id.sih_outer);
+            holder.sih = row.findViewById(R.id.sih);
+            holder.prodcode = row.findViewById(R.id.prdcode);
 
             if (bModel.configurationMasterHelper.SHOW_SIH_SPLIT) {
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_CASE)
@@ -127,6 +125,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         holder.psname.setText(groupBoObj.getProductshortname());
+
+        if (groupBoObj.getIsFree() == 1)
+            holder.psname.setTextColor(ContextCompat.getColor(context,
+                    R.color.colorAccent));
+        else
+            holder.psname.setTextColor(ContextCompat.getColor(context,
+                    android.R.color.black));
+
         holder.pname = groupBoObj.getProductname();
         if (bModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
             String prodCode = context.getString(R.string.prod_code) + ": " +
@@ -320,16 +326,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .inflate(R.layout.custom_child_listitem, parent, false);
             holder = new ViewHolder();
 
-            holder.batchNo = (TextView) row.findViewById(R.id.batch_no);
-            holder.sihCase = (TextView) row.findViewById(R.id.sih_case);
-            holder.sihOuter = (TextView) row.findViewById(R.id.sih_outer);
-            holder.sih = (TextView) row.findViewById(R.id.sih);
-
-            holder.batchNo.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-            holder.sihCase.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-            holder.sihOuter.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-            holder.sih.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-
+            holder.batchNo = row.findViewById(R.id.batch_no);
+            holder.sihCase = row.findViewById(R.id.sih_case);
+            holder.sihOuter = row.findViewById(R.id.sih_outer);
+            holder.sih = row.findViewById(R.id.sih);
 
             if (bModel.configurationMasterHelper.SHOW_SIH_SPLIT) {
                 if (!bModel.configurationMasterHelper.SHOW_ORDER_CASE)
@@ -526,7 +526,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
 
-    class GroupViewHolder {
+    private class GroupViewHolder {
         private String pname;
         private TextView psname;
         private TextView sih;

@@ -81,8 +81,8 @@ public class ReportHelper {
         ArrayList<OrderReportBO> reportordbooking = null;
         try {
             OrderReportBO orderreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT OrderHeader.OrderID ,OrderHeader.RetailerID , RetailerMaster.RetailerName,"
@@ -141,8 +141,8 @@ public class ReportHelper {
         ArrayList<OrderReportBO> reportorddetbooking = null;
         try {
             OrderReportBO orderdetreport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             Cursor c = db
@@ -179,8 +179,8 @@ public class ReportHelper {
     public int getorderbookingCount(String tableName) {
         int tot = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select count (distinct retailerid) from "
@@ -210,8 +210,8 @@ public class ReportHelper {
         Vector<InvoiceReportBO> invoiceReportVector = null;
         try {
             InvoiceReportBO invoicereport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuffer sb = new StringBuffer();
@@ -262,8 +262,8 @@ public class ReportHelper {
     public boolean hasInvoiceDetails(String invoiceNumber) {
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT  count(invoiceId) from InvoiceDetails where InvoiceId='"
@@ -300,8 +300,8 @@ public class ReportHelper {
             childPaymentList = new ArrayList<>();
             lstPaymentBObyGroupId = new HashMap<>();
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -416,8 +416,8 @@ public class ReportHelper {
     }
 
     private void downloadAdvanePaymentForReport() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         ArrayList<PaymentBO> lstAdvancePayment = null;
         try {
             db.openDataBase();
@@ -504,8 +504,8 @@ public class ReportHelper {
     public ArrayList<SpinnerBO> downloadCollectionReportRetailer() {
         ArrayList<SpinnerBO> retailers = null;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct py.retailerid,rm.retailername from payment py inner join retailermaster rm on rm.retailerid=py.retailerid");
@@ -539,8 +539,8 @@ public class ReportHelper {
     public ArrayList<String> downloadCollectionReportGroups(int retailerId) {
         ArrayList<String> groups = null;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct groupid, datetime from payment where retailerid='" + retailerId + "'");
@@ -567,8 +567,8 @@ public class ReportHelper {
     public void downloadBatchwiseCurrentStockReport() {
         StockReportBO temp;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT DISTINCT P.pname,P.psname,P.pcode,SIH.qty,P.barcode,P.RField1,IFNULL(BM.batchNum,'') FROM StockInHandMaster SIH LEFT JOIN BatchMaster BM ON SIH.batchid = BM .batchid INNER JOIN ProductMaster P ON P.PID = SIH.pid"
@@ -674,8 +674,8 @@ public class ReportHelper {
     public void downloadTaskExecutionReport() {
         try {
             ArrayList<SpinnerBO> retailerList = new ArrayList<>();
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select Retailerid,MENU_CODE from ModuleCompletionReport");
@@ -694,7 +694,7 @@ public class ReportHelper {
             TaskReportBo outlet;
             for (RetailerMasterBO retailerMasterBO : bmodel.getRetailerMaster()) {
                 if (retailerMasterBO.getIsToday() == 1
-                        || retailerMasterBO.getIsDeviated().equals("Y")) {
+                        || (retailerMasterBO.getIsDeviated() != null && retailerMasterBO.getIsDeviated().equals("Y"))) {
                     outlet = new TaskReportBo();
                     outlet.setmRetailerId(SDUtil.convertToInt(retailerMasterBO.getRetailerID()));
                     outlet.setmRetailerName(retailerMasterBO.getRetailerName());
@@ -729,8 +729,8 @@ public class ReportHelper {
     }
 
     public void downloadBeatNames() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         beatinfo.clear();
 
@@ -758,8 +758,8 @@ public class ReportHelper {
      */
     public void deleteInvoiceDetail(InvoiceReportBO invoiceBO) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             updateSIH(invoiceBO, db);
@@ -887,8 +887,8 @@ public class ReportHelper {
         mEODReportBOByProductID = new HashMap<>();
         try {
             StockReportBO stockReportBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
@@ -1144,8 +1144,8 @@ public class ReportHelper {
     public HashMap<String, ArrayList<ProductMasterBO>> downloadBatchList() {
         HashMap<String, ArrayList<ProductMasterBO>> mBatchListByproductID = new HashMap<>();
         ProductMasterBO productBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -1238,8 +1238,8 @@ public class ReportHelper {
         ArrayList<ReportBrandPerformanceBO> brandperformancelist = null;
         try {
             ReportBrandPerformanceBO brandPerformanceReport;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT A.PName, ifnull(B.ProductiveCall,0),ifnull(B.ValuePerDay,0),ifnull(B.Lines,0),ifnull(C.Achieve ,0),ifnull(C.Target ,0) FROM ProductMaster A " +
@@ -1285,8 +1285,8 @@ public class ReportHelper {
         ArrayList<RetailersReportBO> retailersreportlist = null;
         try {
             RetailersReportBO mRetailersReportBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT RM.RetailerName, ifnull(DBM.ach,0)as Value,ifnull(DM.ach,0)as Line FROM RetailerMaster RM " +
@@ -1316,8 +1316,8 @@ public class ReportHelper {
         ArrayList<OrderTakenTimeBO> orederTimeTakenList = null;
         try {
             OrderTakenTimeBO mOrderTakenTimeBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             ArrayList<String> timelist = new ArrayList<>();
@@ -1386,8 +1386,8 @@ public class ReportHelper {
         ArrayList<ProductivityReportBO> mProductivityReportList = null;
         try {
             ProductivityReportBO mProductivityReportBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT ListName,ifnull(COUNT(DISTINCT OT.RetailerID),0) as TC,ifnull(TotalCount,0) as PC,ifnull(TotalOrder,0) as " +
@@ -1421,8 +1421,8 @@ public class ReportHelper {
         ArrayList<RetailersReportBO> retailersreportlist = null;
         try {
             RetailersReportBO mRetailersReportBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT DISTINCT RM.RetailerName, ifnull(DBM.ach,0)as Value,ifnull(DM.ach,0)as Line FROM RetailerMaster RM " +
@@ -1465,7 +1465,7 @@ public class ReportHelper {
 
     public void downloadWebViewPlanAuthUrl(String listType) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             webViewAuthUrl = "";
             db.openDataBase();
             Cursor c = db
@@ -1507,7 +1507,7 @@ public class ReportHelper {
 
     public void downloadWebViewPlanUrl(String listType) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             webViewPlanUrl = "";
             Cursor c = db
@@ -1540,8 +1540,8 @@ public class ReportHelper {
 
     public void updateBaseUOM(String activity, int reportType) {
         //reportType(1)-EOD, reportType(2)-currentStock, reportType(3)-CurrentStockBatchwise
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         try {
@@ -1622,8 +1622,8 @@ public class ReportHelper {
     }
 
     private void updateProductMapping(String productId, int pLevelId, int uomId, int contentLevel, int contentLevelId, int reportType) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -1742,8 +1742,8 @@ public class ReportHelper {
         int count = 0;
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select print_count from Payment where groupid='" + groupId + "'");
             if (c != null) {
@@ -1764,8 +1764,8 @@ public class ReportHelper {
 
     public void updatePaymentPrintCount(String groupId, int count) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.updateSQL("update Payment set print_count=" + count + " where groupid = '" + groupId + "'");
 
@@ -1778,8 +1778,8 @@ public class ReportHelper {
     public int getTotalQtyfororder(String orderId) {
         int tot = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(qty) from OrderDetail where orderId='"
@@ -1818,8 +1818,8 @@ public class ReportHelper {
 
     public void downloadOrderEmailAccountCredentials() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String s = "SELECT ListName FROM StandardListMaster where listcode='ORDER_EMAIL' and listtype='ORDER_MAIL'";
 
@@ -1856,8 +1856,8 @@ public class ReportHelper {
      */
     public ArrayList<ProductMasterBO> getReportDetails(String invoiceno) {
         ArrayList<ProductMasterBO> reportList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
         sb.append("select psname,productid,pcsQty,caseqty,outerqty,NetAmount,BM.batchnum,ID.weight,qty,PM.pcode from InvoiceDetails ID ");
@@ -1897,8 +1897,8 @@ public class ReportHelper {
      */
     public ArrayList<SchemeProductBO> getSchemeProductDetails(String id, boolean isInvoice) {
         ArrayList<SchemeProductBO> freeProductList = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         StringBuilder sb = new StringBuilder();
         sb.append("select psname,freeproductid,freeqty,BM.batchnum,");
@@ -1943,8 +1943,8 @@ public class ReportHelper {
     public void downloadRetailerMaster(Context context, int mRetailerId) {
         try {
             RetailerMasterBO retailer = new RetailerMasterBO();
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select distinct A.retailerid, RPG.GroupId, A.subchannelid,(select ListCode from StandardListMaster where ListID = A.RpTypeId) as rp_type_code,"
@@ -2005,8 +2005,8 @@ public class ReportHelper {
     public boolean hasPayment() {
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT count(uid) from Payment");
@@ -2027,8 +2027,8 @@ public class ReportHelper {
     public boolean hasOrder() {
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT count(OrderID) from OrderDetail");

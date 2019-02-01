@@ -54,8 +54,8 @@ public class PlanoGramHelper {
 
             IS_LOCATION_WISE_PLANOGRAM = false;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
@@ -87,7 +87,7 @@ public class PlanoGramHelper {
      * @param retailerId RetaILER iD
      */
     public void downloadLevels(Context mContext, String moduleName, String retailerId) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -268,7 +268,7 @@ public class PlanoGramHelper {
      * @param moduleName Module Name
      */
     public void downloadPlanoGram(Context mContext, String moduleName) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             PlanoGramBO planogram;
             db.openDataBase();
@@ -346,7 +346,7 @@ public class PlanoGramHelper {
      * @param retailerId Retailer Id
      */
     public void loadPlanoGramInEditMode(Context mContext, String retailerId) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String tid = "";
@@ -425,7 +425,7 @@ public class PlanoGramHelper {
 
         ArrayList<String> planogramImagList = new ArrayList<>();
 
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
 
@@ -477,46 +477,46 @@ public class PlanoGramHelper {
      * @return Is Saved
      */
     boolean savePlanoGram(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String tid;
             Cursor headerCursor;
 
-            String headerColumns = "TiD, RetailerId, Date, timezone, uid, RefId,Type,CounterId,DistributorID";
+            String headerColumns = "TiD, RetailerId, Date, timezone, uid, RefId,Type,CounterId,DistributorID,ridSF,VisitId";
             String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,Audit,CounterId";
 
             String values;
             boolean isData;
             String refId = "0";
-            String imagePath = "Planogram" + "/" + mBModel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
+            String imagePath = "Planogram" + "/" + mBModel.getAppDataProvider().getUser().getDownloadDate().replace("/", "")
                     + "/"
-                    + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + mBModel.getAppDataProvider().getUser().getUserid()
                     + "/";
 
-            tid = mBModel.userMasterHelper.getUserMasterBO().getUserid() + ""
-                    + mBModel.getRetailerMasterBO().getRetailerID() + ""
+            tid = mBModel.getAppDataProvider().getUser().getUserid() + ""
+                    + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ""
                     + SDUtil.now(SDUtil.DATE_TIME_ID);
 
             // delete transaction if exist
             headerCursor = db
                     .selectSQL("SELECT Tid, RefId FROM PlanogramHeader"
                             + " WHERE RetailerId = "
-                            + mBModel.getRetailerMasterBO().getRetailerID()
+                            + mBModel.getAppDataProvider().getRetailMaster().getRetailerID()
                             + " AND DistributorID = "
-                            + mBModel.getRetailerMasterBO().getDistributorId()
+                            + mBModel.getAppDataProvider().getRetailMaster().getDistributorId()
                             + " AND CounterId = 0"
                             + " AND Date = "
-                            + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
                 db.deleteSQL("PlanogramHeader",
-                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + QT(headerCursor.getString(0)), false);
                 db.deleteSQL("PlanogramDetails",
-                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + QT(headerCursor.getString(0)), false);
                 db.deleteSQL("PlanogramImageDetails",
-                        "Tid=" + mBModel.QT(headerCursor.getString(0)), false);
+                        "Tid=" + QT(headerCursor.getString(0)), false);
                 refId = headerCursor.getString(1);
                 headerCursor.close();
             }
@@ -534,7 +534,7 @@ public class PlanoGramHelper {
                             + QT(planogram.getPlanogramCameraImgName()) + ","
                             + QT(imagePath) + ","
                             + QT(planogram.getAdherence()) + ","
-                            + QT(mBModel.getRetailerMasterBO().getRetailerID())
+                            + QT(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
                             + "," + planogram.getReasonID() + ","
                             + planogram.getLocationID() + ","
                             + planogram.getAudit() + ",0";
@@ -552,12 +552,14 @@ public class PlanoGramHelper {
             // Save Header if There is Data in Details
             if (isData) {
                 values = QT(tid) + ","
-                        + mBModel.getRetailerMasterBO().getRetailerID() + ","
+                        + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                         + QT(mBModel.getTimeZone()) + ","
-                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                        + mBModel.getAppDataProvider().getUser().getUserid()
                         + "," + QT(refId) + ","
-                        + QT("") + ",0" + "," + mBModel.getRetailerMasterBO().getDistributorId();
+                        + QT("") + ",0" + "," + mBModel.getAppDataProvider().getRetailMaster().getDistributorId()
+                        + "," + QT(mBModel.getAppDataProvider().getRetailMaster().getRidSF())
+                        + "," + mBModel.getAppDataProvider().getUniqueId();
 
 
                 db.insertSQL("PlanogramHeader", headerColumns, values);
@@ -624,8 +626,8 @@ public class PlanoGramHelper {
      * @param imgName Image name
      */
     void deleteImageName(Context mContext, String imgName) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -649,8 +651,8 @@ public class PlanoGramHelper {
 
             mLocationList = new Vector<>();
             StandardListBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql1 = "SELECT Distinct SL.ListId, SL.ListName"

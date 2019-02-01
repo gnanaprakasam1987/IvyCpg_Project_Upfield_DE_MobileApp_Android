@@ -229,8 +229,8 @@ public class SalesReturnHelper {
     }
 
     public float getSalesReturnValue(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         float total = 0;
@@ -278,8 +278,8 @@ public class SalesReturnHelper {
             SHOW_SR_CATEGORY = false;
             IS_SHOW_SR_INVOICE_NO_HISTORY = false;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -422,20 +422,20 @@ public class SalesReturnHelper {
     public void saveSalesReturn(Context mContext, String orderId, String module, boolean isSplitOrder, boolean isInvoice) {
         try {
             ProductMasterBO product;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
             boolean isData;
 
             setSalesReturnID(QT("SR"
-                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + bmodel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID)));
 
             if (isSplitOrder)
                 setSalesReturnID(QT("SR"
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + bmodel.getAppDataProvider().getUser().getUserid()
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS)));
 
             // To generate Seqno based Sales Return Id
@@ -458,7 +458,7 @@ public class SalesReturnHelper {
             // transaction before saving new one.
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                 String sb = "select uid from SalesReturnHeader where RetailerID=" +
-                        AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
+                        AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) +
                         " and upload='N' and distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
                         " and RefModule != 'ORDER'";
                 Cursor c = db.selectSQL(sb);
@@ -671,7 +671,7 @@ public class SalesReturnHelper {
 
             if (isData) {
                 // Preapre and save salesreturn header.
-                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule";
+                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,ridSF,VisitId";
 
                 if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
                     columns = columns + ",invoiceid";
@@ -680,7 +680,7 @@ public class SalesReturnHelper {
                         + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
                         + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
                         + bmodel.retailerMasterBO.getBeatID() + ","
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + bmodel.getAppDataProvider().getUser().getUserid()
                         + "," + QT(SDUtil.format(returnValue,
                         bmodel.configurationMasterHelper.PERCENT_PRECISION_COUNT, 0)) + "," + lpcValue + ","
                         + QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
@@ -697,6 +697,9 @@ public class SalesReturnHelper {
                     values = values + "," + orderId + "," + QT(module);
                 else
                     values = values + "," + QT("") + "," + QT("");
+
+               values = values + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                        + bmodel.getAppDataProvider().getUniqueId();
 
                 if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
                     values = values + "," + QT(getInvoiceId());
@@ -730,8 +733,8 @@ public class SalesReturnHelper {
 
 
     public void getSalesReturnGoods(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c = db
@@ -751,8 +754,8 @@ public class SalesReturnHelper {
     }
 
     public void getNonSaleableReturnGoods(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c = db
@@ -774,8 +777,8 @@ public class SalesReturnHelper {
     public boolean isStockReplacementDone(Context mContext) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select uid from "
                     + DataMembers.tbl_SalesReturnHeader + " where retailerid="
@@ -798,8 +801,8 @@ public class SalesReturnHelper {
     public boolean isValueReturned(Context mContext) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select invoicecreated from SalesReturnHeader where upload !='X' and Retailerid="
@@ -819,8 +822,8 @@ public class SalesReturnHelper {
     public boolean isInvoiceCreated(Context mContext) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select salesreturned,return_amt from InvoiceMaster where Retailerid="
@@ -841,8 +844,8 @@ public class SalesReturnHelper {
     public boolean isInvoiceCreated(Context mContext, String invoiceno) {
         boolean flag = false;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select salesreturned,return_amt from InvoiceMaster where Retailerid="
@@ -869,8 +872,8 @@ public class SalesReturnHelper {
         DBUtil db = null;
         try {
             String uId = "";
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String cond = "";
@@ -1036,8 +1039,8 @@ public class SalesReturnHelper {
                     isVansales = false;
                 }
             }
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             String sb = "select sum(SRH.Returnvalue) from SalesReturnHeader SRH inner join OrderHeader OH on OH.OrderID = SRH.RefModuleTId where SRH.RetailerId=" +
                     AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
@@ -1068,8 +1071,8 @@ public class SalesReturnHelper {
 
     public double getOrderValue(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("select sum(ordervalue)from "
                     + DataMembers.tbl_orderHeader + " where retailerid="
@@ -1091,8 +1094,8 @@ public class SalesReturnHelper {
     }
 
     public double getTotalSalesReturnValue(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         double total = 0;
@@ -1440,8 +1443,8 @@ public class SalesReturnHelper {
     public int isCreditNoteCreated(Context mContext) {
         int flag = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select credit_flag from SalesReturnHeader where upload != 'X' and RetailerID="
@@ -1461,8 +1464,8 @@ public class SalesReturnHelper {
 
     public void clearTransaction(Context mContext) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sb = "select uid from SalesReturnHeader where RetailerID=" +
@@ -1537,8 +1540,8 @@ public class SalesReturnHelper {
     public ArrayList<String> getInvoiceNo(Context mContext) {
         ArrayList<String> invoiceNoList = new ArrayList<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sb = "select invoiceid from P4InvoiceHistoryMaster where retailerid=" +
@@ -1597,8 +1600,8 @@ public class SalesReturnHelper {
         mSalesReturnProducts = new Vector<ProductMasterBO>();
         mSalesReturnProductById = new HashMap<String, ProductMasterBO>();
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
         Cursor c = db.selectSQL("select pid,pname,parentid,psname,srp,mrp,pcuomid from SalesReturnProductMaster");
@@ -1678,8 +1681,8 @@ public class SalesReturnHelper {
     public int isSameContentLevel(Context mContext) {
         int count = 0;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sb = "Select count(*) from ConfigActivityFilter CF Inner Join ConfigActivityFilter CF1 on " +

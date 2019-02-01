@@ -32,7 +32,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -342,7 +341,7 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
                     retailerMasterBo.setUserName(getSellerName(retailerMasterBo.getUserId()));
                 }
 
-                if (!retailerMasterBo.getIsDeviated() && documentSnapshotBo.getIsDeviated()){
+                if ((!retailerMasterBo.getIsDeviated()) && documentSnapshotBo.getIsDeviated()){
                     retailerMasterBo.setIsDeviated(true);
                 }
 
@@ -584,8 +583,8 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 

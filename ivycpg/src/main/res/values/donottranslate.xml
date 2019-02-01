@@ -100,7 +100,7 @@
     <string name="free_qty">Free Qty</string>
     <string name="oos">OOS</string>
 
-    <string name ="enter_serial_no">Please Enter Serial No</string>
+    <string name="enter_serial_no">Please Enter Serial No</string>
 
     <string name="fill_photo_and_adherence">Please take photo and fill adherence</string>
 
@@ -126,6 +126,9 @@
     <string name="value_exceeded">Value Exceeded</string>
     <string name="this_may_remove_existing_data">This may remove existing data</string>
     <string name="created_by">Created By</string>
+
+    <string name="please_state_reason_not_visiting_store">Please state reason for not visiting following store</string>
+
     <string name="movement">Movement</string>
     <string name="label_exceeded_alloc"> exceeded Allocation</string>
     <string name="wsih_label">WSIH</string>
@@ -135,4 +138,11 @@
 
     <string name="loaded_free_stock">Loaded Free Stock</string>
     <string name="free_sih">Free SIH</string>
+
+    <string name="asset_image">Asset Image</string>
+    <string name="error_e100">Access Denied. Contact Your System Administrator.</string>
+
+    <string name="amount_mismatch">Amount mismatch</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="ivy_mobility_privacy">Ivy Mobility Privacy Policy</string>
 </resources>

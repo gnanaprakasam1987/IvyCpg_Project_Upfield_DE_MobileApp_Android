@@ -12,7 +12,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -119,8 +119,8 @@ public class SurveyHelperNew {
      * @param surveyType STANDARD|SPECIAL|NEW_RETAILER
      */
     public void downloadModuleId(String surveyType) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.openDataBase();
         Cursor c = db.selectSQL("SELECT ListId FROM StandardListMaster"
                 + " WHERE ListCode = " + QT(surveyType)
@@ -196,7 +196,7 @@ public class SurveyHelperNew {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
 
@@ -236,7 +236,7 @@ public class SurveyHelperNew {
         String surveyIds = "";
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
             // Attribute Groupid will be validated seprately after validating other citeria type.
@@ -335,7 +335,7 @@ public class SurveyHelperNew {
     public void getSurveyValidateOptions() {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
 
@@ -391,8 +391,8 @@ public class SurveyHelperNew {
             }
 
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             StringBuilder sb = new StringBuilder();
@@ -684,8 +684,8 @@ public class SurveyHelperNew {
             int optionIndex = -1;
 
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT distinct A.QId, A.QText, A.QType, IFNULL(E.ListCode,''), A.IsMand,"
@@ -803,12 +803,14 @@ public class SurveyHelperNew {
                             && (qus.getSelectedAnswerIDs().isEmpty() || qus.getSelectedAnswerIDs().contains(-1))) {
                         return false;
                     }
+
                     if (qus.getQuestionType().equals("EMAIL")) {
                         if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
                             invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                             invalidEmails.append("\n");
                         }
                     }
+
                     if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
                         if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
                             if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
@@ -887,12 +889,15 @@ public class SurveyHelperNew {
                             }
                         }
                     }
+
+
                     if (qus.getQuestionType().equals("EMAIL")) {
                         if (qus.getSelectedAnswer().size() > 0 && !isValidEmail(qus.getSelectedAnswer().get(0))) {
                             invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
                             invalidEmails.append("\n");
                         }
                     }
+
                     if (qus.getFromValue() != null && qus.getToValue() != null && qus.getQuestionType().equals("NUM")) {
                         if (!qus.getFromValue().isEmpty() && !qus.getToValue().isEmpty() && qus.getSelectedAnswer().size() > 0) {
                             if (!qus.getSelectedAnswer().get(0).equalsIgnoreCase("")) {
@@ -915,6 +920,26 @@ public class SurveyHelperNew {
             return false;
         }
         return returnFlag;
+    }
+
+    public boolean isAnsweredTypeEmail() {
+        invalidEmails = new StringBuilder();
+        for (SurveyBO sBO : getSurvey()) {
+            if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
+                ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
+                for (QuestionBO qus : mParentQuestions) {
+                    if (qus.getQuestionType().equals("EMAIL")) {
+                            if (qus.getSelectedAnswer().size() > 0
+                                    && qus.getSelectedAnswer().get(0).length()!=0
+                                    && !isValidEmail(qus.getSelectedAnswer().get(0))) {
+                                invalidEmails.append(sBO.getSurveyName() + "-" + "Q.No " + qus.getQuestionNo());
+                                invalidEmails.append("\n");
+                            }
+                    }
+                }
+            }
+        }
+        return invalidEmails.toString().length() <= 0;
     }
 
     private boolean isInRange(float a, float b, float c) {
@@ -1004,18 +1029,12 @@ public class SurveyHelperNew {
                 }
             }
         }
-        if (invalidEmails.toString().isEmpty() && isEmail) {
-            return true;
-        }
-        if (notInRange.toString().isEmpty() && isNum) {
-            return true;
-        }
-        return false;
+
+        if (invalidEmails.toString().isEmpty() && isEmail) return true;
+        return notInRange.toString().isEmpty() && isNum;
     }
 
     public boolean hasPhotoToSave() {
-
-
         for (SurveyBO sBO : getSurvey()) {
             if (sBO.getSurveyID() == mSelectedSurvey || bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE) {
                 ArrayList<QuestionBO> mParentQuestions = sBO.getQuestions();
@@ -1030,7 +1049,6 @@ public class SurveyHelperNew {
                 }
             }
         }
-
         return true;
     }
 
@@ -1040,8 +1058,8 @@ public class SurveyHelperNew {
      */
     public void saveAnswer(String menuCode) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1165,6 +1183,7 @@ public class SurveyHelperNew {
                                         || "EMAIL".equals(questionBO.getQuestionType())
                                         || "DATE".equals(questionBO.getQuestionType())
                                         || "PH_NO".equals(questionBO.getQuestionType())
+                                        || "DECIMAL".equals(questionBO.getQuestionType())
                                         && !questionBO.getSelectedAnswer().isEmpty()) {
                                     String detailvalues = values1
                                             + ","
@@ -1307,7 +1326,7 @@ public class SurveyHelperNew {
                         // update joint call
                         bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
-                        String headerColumns = "uid, surveyid, date, retailerid,DistributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency";
+                        String headerColumns = "uid, surveyid, date, retailerid,DistributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,ridSF,VisitId";
 
                         mAllQuestions.addAll(sBO.getQuestions());
                         questionSize = mAllQuestions.size();
@@ -1357,6 +1376,7 @@ public class SurveyHelperNew {
                                             || "EMAIL".equals(questionBO.getQuestionType())
                                             || "DATE".equals(questionBO.getQuestionType())
                                             || "PH_NO".equals(questionBO.getQuestionType())
+                                            || "DECIMAL".equals(questionBO.getQuestionType())
                                             && !questionBO.getSelectedAnswer().isEmpty()) {
                                         String detailvalues = values1
                                                 + ","
@@ -1440,7 +1460,9 @@ public class SurveyHelperNew {
                                             + "," + sBO.getMaxBonusScore()
                                             + "," + QT(remarkDone) + "," + QT(type) + ",0,''"
                                             + "," + userid
-                                            + "," + QT(sBO.getSurveyFreq());
+                                            + "," + QT(sBO.getSurveyFreq())
+                                            + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF())
+                                            + "," + bmodel.getAppDataProvider().getUniqueId();
 
                                     db.insertSQL("AnswerHeader", headerColumns, headerValues);
                                 }
@@ -1599,8 +1621,8 @@ public class SurveyHelperNew {
 
 
     public void loadSurveyAnswers(int supervisiorId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -1843,8 +1865,8 @@ public class SurveyHelperNew {
     }
 
     public void loadNewRetailerSurveyAnswers(String retailerId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -1907,8 +1929,8 @@ public class SurveyHelperNew {
     }
 
     public void loadCSSurveyAnswers(int supervisiorId, String referenceId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -2030,8 +2052,8 @@ public class SurveyHelperNew {
     }
 
     public void loadSuperVisorSurveyAnswers(int supervisiorId) {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
         db.createDataBase();
         db.openDataBase();
 
@@ -2160,8 +2182,8 @@ public class SurveyHelperNew {
                 channelid = bmodel.getRetailerMasterBO().getSubchannelid();
 
 
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
 
             int mChildLevel = 0;
             int mContentLevel = 0;
@@ -2216,8 +2238,8 @@ public class SurveyHelperNew {
      */
     public void saveAnswerNewRetailer(String menuCode, int screenMode) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -2462,8 +2484,8 @@ public class SurveyHelperNew {
     public boolean isSurveyAvaliable(String retailerId) {
         boolean isavailable = false;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql;
@@ -2489,8 +2511,8 @@ public class SurveyHelperNew {
 
     public void deleteNewRetailerSurvey(String retailerID) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             db.deleteSQL("NewRetailerSurveyResultDetail", "retailerid ="
@@ -2532,7 +2554,7 @@ public class SurveyHelperNew {
             this.IS_SURVEY_ANSWER_MANDATORY = false;
 
             DBUtil db;
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select menu_type from HhtModuleMaster where flag=1 and hhtcode='SURVEY07'and menu_type="
@@ -2625,7 +2647,7 @@ public class SurveyHelperNew {
 
         try {
             DBUtil db;
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select ParentHierarchy from ProductMaster where PID=" + productId);

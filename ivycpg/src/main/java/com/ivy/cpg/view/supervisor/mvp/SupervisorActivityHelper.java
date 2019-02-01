@@ -10,7 +10,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.lib.existing.DBUtil;
@@ -66,8 +65,8 @@ public class SupervisorActivityHelper {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -144,8 +143,8 @@ public class SupervisorActivityHelper {
         boolean isChatConfigAvail =false;
 
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             Cursor moduleCursor = db.selectSQL("select hhtcode from HhtModuleMaster where hhtCode = 'CHAT02'");

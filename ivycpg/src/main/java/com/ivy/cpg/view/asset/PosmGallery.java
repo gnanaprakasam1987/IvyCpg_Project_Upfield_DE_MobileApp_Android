@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.camera.CameraActivity;
@@ -28,7 +26,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -292,11 +290,12 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
                                     break;
                                 }
                             }
-                            if (assetTrackingBO.getImageList().size() > 0) {
+                           /* if (assetTrackingBO.getImageList().size() > 0) {
                                 imgGrid.setAdapter(new MyAdapter(assetTrackingBO.getImageList()));
                                 break;
                             } else
-                                finish();
+                                finish();*/
+                           finish();
                         }
 
                     }

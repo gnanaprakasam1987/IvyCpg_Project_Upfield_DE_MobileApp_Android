@@ -1,6 +1,5 @@
 package com.ivy.cpg.view.reports.slaesvolumereport;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -27,7 +26,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.HomeScreenActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,11 +1,43 @@
 package com.ivy.cpg.view.collection;
 
-public class CollectionBO {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class CollectionBO implements Parcelable {
 
 	private double cashamt, chequeamt, discountamt, creditamt,
 			mobilePaymentamt;
 	private int percent;
 	private String bankId,branchId;
+
+	public CollectionBO(){
+
+	}
+
+	protected CollectionBO(Parcel in) {
+		cashamt = in.readDouble();
+		chequeamt = in.readDouble();
+		discountamt = in.readDouble();
+		creditamt = in.readDouble();
+		mobilePaymentamt = in.readDouble();
+		percent = in.readInt();
+		bankId = in.readString();
+		branchId = in.readString();
+		description = in.readString();
+		no_of_coupon = in.readString();
+	}
+
+	public static final Creator<CollectionBO> CREATOR = new Creator<CollectionBO>() {
+		@Override
+		public CollectionBO createFromParcel(Parcel in) {
+			return new CollectionBO(in);
+		}
+
+		@Override
+		public CollectionBO[] newArray(int size) {
+			return new CollectionBO[size];
+		}
+	};
 
 	public int getPercent() {
 		return percent;
@@ -91,4 +123,22 @@ public class CollectionBO {
 
 	public String no_of_coupon;
 
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeDouble(cashamt);
+		dest.writeDouble(chequeamt);
+		dest.writeDouble(discountamt);
+		dest.writeDouble(creditamt);
+		dest.writeDouble(mobilePaymentamt);
+		dest.writeInt(percent);
+		dest.writeString(bankId);
+		dest.writeString(branchId);
+		dest.writeString(description);
+		dest.writeString(no_of_coupon);
+	}
 }

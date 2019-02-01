@@ -1,141 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/dimens_30dp"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    >
-    <TextView
-        android:id="@+id/productName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="@dimen/dimen_2dp"
-        android:layout_marginStart="@dimen/dimens_4dp"
-        android:layout_marginEnd="@dimen/dimens_4dp"
-        android:gravity="start"
-        android:text=""
-        android:visibility="visible"
-        style="?textFieldStyle"
-        android:textSize="@dimen/font_small">
-    </TextView>
-</LinearLayout>
+        <TextView
+            android:id="@+id/productName"
+            style="@style/TextViewNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dimens_40dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="start|center"
+            android:background="@color/white"
+            android:layout_margin="@dimen/list_padding_left_n_right"
+            android:text=""
+            android:visibility="visible" />
+
+
 
     <com.ivy.sd.png.commons.MaterialSpinner
         android:id="@+id/reasonSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/feedbck_edit_margintopbtm"
-        android:paddingEnd="@dimen/feedbck_edit_margintopbtm"
-        android:layout_marginStart="@dimen/profile_history_10dp"
-        android:layout_marginEnd="@dimen/profile_history_10dp"
-        app:ms_arrowColor="@color/FullBlack"
-        app:ms_highlightColor="?accentcolor"
         android:overlapAnchor="false"
-        />
+        app:ms_arrowColor="@color/FullBlack"
+        android:layout_marginStart="@dimen/list_padding_left_n_right"
+        android:layout_marginEnd="@dimen/list_padding_left_n_right"
+        app:ms_highlightColor="?accentcolor" />
 
-
-    <android.support.v7.widget.CardView
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/profile_history_10dp"
-        android:layout_marginEnd="@dimen/profile_history_10dp"
-        android:layout_marginBottom="@dimen/profile_botton_layout_height"
-        app:cardCornerRadius="@dimen/dimen_2dp"
-        android:orientation="vertical"
-        app:cardElevation="@dimen/dimen_4dp">
-        <LinearLayout
-            android:layout_width="wrap_content"
+        android:background="?customListTitleBackgroundColor"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/list_header_height"
+        android:paddingStart="@dimen/list_padding_left_n_right"
+        android:paddingEnd="@dimen/list_padding_left_n_right">
+
+        <TextView
+            android:id="@+id/product_txt"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_gravity="start|center"
+            android:layout_weight="4"
+            android:gravity="start|center"
+            android:text="@string/product_name" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/list_header_height"
-                android:background="@color/list_title_bg_color"
-                android:gravity="center_vertical"
-                >
+        <TextView
+            android:id="@+id/caseTitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:tag="item_case"
+            android:text="@string/item_case" />
 
-                <TextView
-                    style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/order_stock_list_product_name_width_xlarge"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:gravity="start|center"
-                    android:layout_weight="1"
-                    android:id="@+id/product_txt"
-                    android:layout_marginStart="@dimen/skuwise_right_margin"
-                    android:textStyle="bold"
-                    android:text="@string/product_name"
-                    android:layout_marginLeft="@dimen/skuwise_right_margin" />
+        <TextView
+            android:id="@+id/outerTitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/item_outer" />
 
-                <TextView
-                    android:id="@+id/caseTitle"
-                    style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/list_item_width_medium"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:layout_height="wrap_content"
-                    android:tag="item_case"
-                    android:text="@string/item_case" />
+        <TextView
+            android:id="@+id/pcsTitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:tag="item_piece"
+            android:text="@string/item_piece" />
 
-                <TextView
-                    android:id="@+id/outerTitle"
-                    style="@style/TextViewListTitle"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:layout_width="@dimen/list_item_width_medium"
-                    android:layout_height="wrap_content"
-                    android:text="@string/item_outer" />
+        <TextView
+            android:id="@+id/reasonTitle"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:tag="reason"
+            android:text="@string/reason" />
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/pcsTitle"
-                    style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/list_item_width_medium"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:tag="item_piece"
-                    android:text="@string/item_piece" />
-
-                <TextView
-                    android:id="@+id/reasonTitle"
-                    style="@style/TextViewListTitle"
-                    android:layout_width="@dimen/list_item_width_medium"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:layout_height="wrap_content"
-                    android:tag="reason"
-                    android:text="@string/reason" />
-            </LinearLayout>
-
-            <ListView
-                android:id="@+id/list"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginTop="1dp"
-                android:cacheColorHint="@null"
-                android:divider="@android:color/white"
-                android:dividerHeight="1dp"
-                android:fitsSystemWindows="true"
-                android:scrollbarAlwaysDrawHorizontalTrack="true"
-                android:scrollbarAlwaysDrawVerticalTrack="true" >
-            </ListView>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp"
+        android:cacheColorHint="@null"
+        android:divider="@color/light_gray"
+        android:dividerHeight="0.5dp"
+        android:fitsSystemWindows="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:scrollbarAlwaysDrawVerticalTrack="true" />
 </LinearLayout>

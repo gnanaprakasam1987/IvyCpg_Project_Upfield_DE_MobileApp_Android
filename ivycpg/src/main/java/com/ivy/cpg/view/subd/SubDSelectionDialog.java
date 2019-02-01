@@ -17,7 +17,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.VisitFragment;
+import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.utils.FontUtils;
 
 import java.util.Collections;

@@ -49,8 +49,8 @@ public class MVPHelper {
     void downloadMVPIdBySuperwisorId() {
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sb = "select M.userid from MVPReportRanking MVP " +
@@ -84,8 +84,8 @@ public class MVPHelper {
             int loopEnd = 0;
             int tempParentID = 0;
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -191,8 +191,8 @@ public class MVPHelper {
     void downloadBadgeUrlList() {
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 

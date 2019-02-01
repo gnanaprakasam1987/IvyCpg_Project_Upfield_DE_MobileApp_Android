@@ -94,4 +94,16 @@
             <!--android:summary="App Data will be cleared"-->
         </com.ivy.sd.png.view.CustomPreference>
     </com.ivy.sd.png.view.CustomPreferenceCategory>
+    <com.ivy.sd.png.view.CustomPreferenceCategory
+        android:key="policy"
+        android:layout="@layout/settings_header_layout"
+        android:title="@string/privacy_policy">
+        <com.ivy.sd.png.view.CustomPreference
+            android:key="privacy_policy"
+            android:layout="@layout/settings_card_layout"
+            android:summary="@string/ivy_mobility_privacy"
+            android:title="@string/privacy_policy">
+
+        </com.ivy.sd.png.view.CustomPreference>
+    </com.ivy.sd.png.view.CustomPreferenceCategory>
 </PreferenceScreen>

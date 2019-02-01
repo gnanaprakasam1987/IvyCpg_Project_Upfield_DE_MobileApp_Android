@@ -67,7 +67,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;

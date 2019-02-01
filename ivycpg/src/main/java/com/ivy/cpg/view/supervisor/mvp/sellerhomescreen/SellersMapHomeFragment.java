@@ -38,7 +38,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.customviews.ticker.TickerView;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
@@ -51,7 +50,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.utils.FontUtils;
 
 import java.text.SimpleDateFormat;
@@ -60,9 +59,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
-import co.chatsdk.core.session.NetworkManager;
-import co.chatsdk.core.types.AccountDetails;
 
 public class SellersMapHomeFragment extends IvyBaseFragment implements
         OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener,

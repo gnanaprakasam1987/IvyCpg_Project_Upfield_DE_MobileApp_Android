@@ -62,7 +62,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.sd.png.view.EmailDialog;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
@@ -695,7 +695,13 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             }
 
 
-            mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString().replace("#B#", "").replace("print_type", "").replace("print_no", "").replace("print_title", "").replace("duplicate_print_count", ""));
+            mPreviewTV.setText(bmodel.mCommonPrintHelper.getInvoiceData().toString()
+                    .replace("#B#", "")
+                    .replace("print_type", "")
+                    .replace("print_sub_type", "")
+                    .replace("print_no", "")
+                    .replace("print_title", "")
+                    .replace("duplicate_print_count", ""));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -816,8 +822,10 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         ZebraImageI zebraSignatureImage = null;
         try {
 
-            if (macAddress.equals(""))
+            if (macAddress.equals("")) {
                 updateStatus("Mac address is empty...");
+                return;
+            }
 
             zebraPrinterConnection = new BluetoothConnection(macAddress);
             zebraPrinterConnection.open();
@@ -991,6 +999,18 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             String[] lines = bmodel.mCommonPrintHelper.getInvoiceData().toString().split("\\r?\\n");
             for (String s : lines) {
 
+
+                if (s.contains("print_sub_type")) {
+
+                    if (mDataPrintCount == 0) {
+                        String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_sub_type_primary"));
+                        s = s.replace("print_sub_type", (primaryLabel != null ? primaryLabel : "Customer"));
+                    } else {
+                        String secondaryLabel = bmodel.labelsMasterHelper.applyLabels("print_sub_type_secondary");
+                        s = s.replace("print_sub_type", (secondaryLabel != null ? secondaryLabel : "Company"));
+                    }
+                }
+
                 if (s.contains("print_type")) {
                     if (mPrintCount == 0) {
                         String primaryLabel = (bmodel.labelsMasterHelper.applyLabels("print_type_primary"));
@@ -1044,7 +1064,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                     if (bmodel.configurationMasterHelper.IS_SHOW_PRINT_LANGUAGE_THAI) {
                         tempsb.append("! U1 SETBOLD 1");
-                        tempsb.append(str.replaceAll(" ", "  ").replaceAll("-", "--").replaceAll(",", ", ").replaceAll("\\.", ". "));
+                        tempsb.append(str.replaceAll(" ", "  ").replaceAll("--", "----").replaceAll(",", ", ").replaceAll("\\.", ". "));
                         tempsb.append("! U1 SETBOLD 0");
                         tempsb.append("\n\r");
                     } else {
@@ -1055,7 +1075,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
 
                 } else {
                     if (bmodel.configurationMasterHelper.IS_SHOW_PRINT_LANGUAGE_THAI) {
-                        tempsb.append(s.replaceAll(" ", "  ").replaceAll("-", "--").replaceAll(",", ", ").replaceAll("\\.", ". "));
+                        tempsb.append(s.replaceAll(" ", "  ").replaceAll("--", "----").replaceAll(",", ", ").replaceAll("\\.", ". "));
                         tempsb.append("\n\r");
                     } else {
                         tempsb.append(s);
@@ -1196,7 +1216,12 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             msg = getResources().getString(
                     R.string.printed_successfully);
         } else {
-            updateStatus("Printer error.");
+
+            if (getMacAddressFieldText() != null && getMacAddressFieldText().isEmpty())
+                updateStatus("Mac address is empty...");
+            else
+                updateStatus("Printer error.");
+
             if (!isPrintFileExsist())
                 msg = getString(R.string.printFile_missing_error);
             else

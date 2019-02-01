@@ -10,63 +10,51 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NewOutletBO;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
 /**
  * Created by Hanifa.M on 28/5/18.
  */
 
 public class NewOutletEditSortDialog extends Dialog {
-    private BusinessModel bmodel;
     private Context context;
-    private String listLoad;
-    private TextView headerText;
-    private boolean isdialog = false;
-    private int lastCheckedPosition = -1;
+    private int lastCheckedPosition;
     private ShortSelectionListener shortSelectionListener;
-    private ArrayList<NewOutletBO> retailerEditList = new ArrayList<>();
+    private ArrayList<NewOutletBO> retailerEditList;
 
-    protected NewOutletEditSortDialog(final Context context, final String listLoad, ArrayList<NewOutletBO> newRetailerList, int lastCheckPos) {
+    NewOutletEditSortDialog(final Context context,  ArrayList<NewOutletBO> newRetailerList, int lastCheckPos) {
         super(context);
-
         this.context = context;
-        this.listLoad = listLoad;
         this.retailerEditList = newRetailerList;
         this.lastCheckedPosition = lastCheckPos;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        bmodel = (BusinessModel) context.getApplicationContext();
         setContentView(R.layout.custom_dialog_newoutlet_edit);
-        int sizeLarge = SCREENLAYOUT_SIZE_LARGE; // For 7inch" tablet
-        if (sizeLarge == 3)
-            isdialog = true;
+//        int sizeLarge = SCREENLAYOUT_SIZE_LARGE; // For 7inch" tablet
+//        if (sizeLarge == 3)
+//            isdialog = true;
+//
+//        if (isdialog)
+//            getWindow().setLayout(1000, 600);
+//        else if (!isdialog)
+//            getWindow().setLayout(1000, 760);
 
-        if (isdialog)
-            getWindow().setLayout(1000, 600);
-        else if (!isdialog)
-            getWindow().setLayout(1000, 760);
         this.setCancelable(false);
 
 
         ArrayList<String> listName = new ArrayList<>();
-        RecyclerView reason_recycler = (RecyclerView) findViewById(R.id.reason_recycler);
+        RecyclerView reason_recycler = findViewById(R.id.reason_recycler);
         reason_recycler.setLayoutManager(new LinearLayoutManager(context));
         ArrayList<NewOutletBO> sortList = new ArrayList<>();
         NewOutletBO outletBO;
         listName.add("A - Z");
         listName.add("Z - A");
-//            listName.add("New Retailers");
-//            listName.add("Last Modified");
 
         for (int i = 0; i < listName.size(); i++) {
             outletBO = new NewOutletBO();
@@ -81,7 +69,7 @@ public class NewOutletEditSortDialog extends Dialog {
     class SortListAdapter extends RecyclerView.Adapter<NewOutletEditSortDialog.SortListAdapter.ViewHolder> {
         private ArrayList<NewOutletBO> items;
 
-        public SortListAdapter(ArrayList<NewOutletBO> items) {
+        SortListAdapter(ArrayList<NewOutletBO> items) {
             this.items = items;
         }
 
@@ -156,8 +144,8 @@ public class NewOutletEditSortDialog extends Dialog {
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                sortlist_radio_btn = (AppCompatRadioButton) itemView.findViewById(R.id.reason_radio_btn);
-                sortlist_radio_btn.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+                sortlist_radio_btn =  itemView.findViewById(R.id.reason_radio_btn);
+                sortlist_radio_btn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
             }
         }
     }

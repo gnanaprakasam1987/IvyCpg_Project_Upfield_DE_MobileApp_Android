@@ -47,7 +47,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;

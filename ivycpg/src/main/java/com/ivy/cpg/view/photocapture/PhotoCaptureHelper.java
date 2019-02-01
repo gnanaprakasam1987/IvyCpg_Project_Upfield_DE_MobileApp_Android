@@ -56,7 +56,7 @@ public class PhotoCaptureHelper {
      * Download the products for photo capture. Level will be taken from ProductFilter1 column of ConfigActivityFilter.
      */
     public void downloadPhotoCaptureProducts(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             PhotoCaptureProductBO phCapture;
@@ -95,8 +95,8 @@ public class PhotoCaptureHelper {
     public void downloadPhotoTypeMaster(Context mContext) {
         try {
             PhotoTypeMasterBO typeMasterBO;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL("SELECT ListId, ListName, ListCode FROM StandardListMaster WHERE ListType = 'PHOTO_TYPE'");
             photoTypeMaster = new ArrayList<>();
@@ -169,11 +169,11 @@ public class PhotoCaptureHelper {
      * @param retailerID retailerID
      */
     public void savePhotoCaptureDetails(Context mContext, String retailerID) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         Cursor cursor;
         try {
             String columns = "uid,date,phototypeid,pid,imagepath,retailerid,RetailerName,ImageCount4Retailer,FromDate,ToDate,LocId," +
-                    "sku_name,abv,lot_code,seq_num,DistributorID,feedback,imgName";
+                    "sku_name,abv,lot_code,seq_num,DistributorID,feedback,imgName,ridSF,VisitId";
             db.createDataBase();
             db.openDataBase();
             // delete transaction if exist
@@ -256,6 +256,10 @@ public class PhotoCaptureHelper {
                             sBuffer.append(QT(lbo.getFeedback()));
                             sBuffer.append(",");
                             sBuffer.append(QT(lbo.getImageName()));
+                            sBuffer.append(",");
+                            sBuffer.append(QT(mBModel.getAppDataProvider().getRetailMaster().getRidSF()));
+                            sBuffer.append(",");
+                            sBuffer.append(mBModel.getAppDataProvider().getUniqueId());
                             db.insertSQL(DataMembers.actPhotocapture, columns,
                                     sBuffer.toString());
                         }
@@ -302,7 +306,7 @@ public class PhotoCaptureHelper {
      * @param retailerID retailerID
      */
     public void loadPhotoCaptureDetailsInEditMode(Context mContext, String retailerID) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         Cursor cursor;
         try {
             db.openDataBase();
@@ -368,8 +372,8 @@ public class PhotoCaptureHelper {
 
             inStoreLocation = new ArrayList<>();
             PhotoCaptureLocationBO locations;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql1 = "SELECT Distinct SL.ListId, SL.ListName"
@@ -428,8 +432,8 @@ public class PhotoCaptureHelper {
      */
     public void deleteImageDetailsFormTable(Context mContext, String ImageName) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_PhotoCapture, "imgName="
                     + QT(ImageName), false);

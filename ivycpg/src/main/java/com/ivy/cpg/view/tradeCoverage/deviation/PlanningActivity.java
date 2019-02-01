@@ -1,22 +1,12 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.tradeCoverage.deviation;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -33,7 +23,8 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
+import com.ivy.cpg.view.tradeCoverage.adhocPlanning.AdhocPlanningFragment;
+import com.ivy.cpg.view.tradeCoverage.missedOutlets.MissedVisitFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,18 +41,12 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
     private String fromWhere;
     private NonVisitFragment mNonVisitFragment;
     private List<MarkerOptions> markerList;
-    private LatLng latLng;
+
     private TabLayout.Tab allTab;
     private TabLayout.Tab missedRetailerTab;
-    private int mSelectedpostion = -1;
-    private Toolbar toolbar;
 
     private List<com.baidu.mapapi.map.MarkerOptions> baiduMarkerList;
     com.baidu.mapapi.model.LatLng baidulatLng;
-
-
-    private StandardListBO mSelectedMenuBO;
-    private TabLayout tabLayout;
 
     ArrayList<StandardListBO> mRetailerSelectionList;
 
@@ -77,9 +62,10 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
         bmodel.setContext(this);
 
         //Tablayout
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setOnTabSelectedListener(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
             checkAndRequestPermissionAtRunTime(3);
@@ -139,7 +125,6 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
         }
 
         if (toolbar != null) {
-
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(bmodel.configurationMasterHelper.getTradecoveragetitle());
@@ -286,7 +271,7 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
     }
 
     private void setSearchTextColour(SearchView searchView) {
-        LinearLayout searchPlate = (LinearLayout) searchView
+        LinearLayout searchPlate = searchView
                 .findViewById(R.id.search_plate);
         searchPlate
 
@@ -323,7 +308,7 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
 
             // Add today'sdeviated retailers.
             for (int i = 0; i < siz; i++) {
-                if (("Y").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                if (bmodel.getRetailerMaster().get(i).getIsDeviated() != null && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
                     if (filter != null) {
                         if ((bmodel.getRetailerMaster().get(i)
                                 .getRetailerName().toLowerCase())
@@ -422,12 +407,11 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
 
-        MissedVisitFragment mMissedVisitFragment;
-        AdhocPlanningFragment mAdhocPlanningFragment;
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+
         mNonVisitFragment = (NonVisitFragment) fm.findFragmentByTag("all");
-        mMissedVisitFragment = (MissedVisitFragment) fm.findFragmentByTag(mMissedretailer);
-        mAdhocPlanningFragment = (AdhocPlanningFragment) fm.findFragmentByTag(mAdhoc);
+        MissedVisitFragment mMissedVisitFragment = (MissedVisitFragment) fm.findFragmentByTag(mMissedretailer);
+        AdhocPlanningFragment mAdhocPlanningFragment = (AdhocPlanningFragment) fm.findFragmentByTag(mAdhoc);
 
 
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();

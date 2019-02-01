@@ -33,12 +33,12 @@ public class RetailerActivityReportHelper {
             RetailerMasterBO retailerBo, ret;
             ret = new RetailerMasterBO();
 
-            DBUtil db = new DBUtil(businessModel, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(businessModel, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             for (RetailerMasterBO retailerList : businessModel.getRetailerMaster()) {
-                if (retailerList.getIsToday() == 1 || retailerList.getIsDeviated().equalsIgnoreCase("Y")) {
+                if (retailerList.getIsToday() == 1 || (retailerList.getIsDeviated() != null && retailerList.getIsDeviated().equalsIgnoreCase("Y"))) {
                     retailerBo = new RetailerMasterBO();
                     retailerBo.setRetailerID(retailerList.getRetailerID());
                     retailerBo.setRetailerName(retailerList.getRetailerName());

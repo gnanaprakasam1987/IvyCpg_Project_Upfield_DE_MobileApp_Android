@@ -46,7 +46,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
@@ -77,6 +77,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private final String MENU_DAMAGE_STOCK = "MENU_DAMAGE_STOCK";
     private static final String MENU_SURVEY01_SW = "MENU_SURVEY01_SW";
 
+    private String fromScreen = "";
 
     private BusinessModel bmodel;
     private AlertDialog alertDialog;
@@ -115,9 +116,19 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 getActivity().finish();
             }
 
+            if (getArguments() != null) {
+                fromScreen = getArguments().getString("from");
+            }
 
-            Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
-                    .downloadLoadManagementMenu();
+            Vector<ConfigureBO> menuDB = new Vector<>();
+
+            if(fromScreen.equals("MENU_PLANNING_SUB")){
+                menuDB = bmodel.configurationMasterHelper
+                        .downloadPlanningSubMenu();
+            } else {
+                menuDB = bmodel.configurationMasterHelper
+                        .downloadLoadManagementMenu();
+            }
 
 
             ListView listView = view.findViewById(R.id.listView1);
@@ -655,7 +666,6 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private void navigateToActivity(String menuName, String menuCode, Class activityName) {
         isClick = false;
         Intent intent = new Intent(getActivity(), activityName);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("screentitle", menuName);
         intent.putExtra("from", "1");
         intent.putExtra("isFromLodMgt", true);

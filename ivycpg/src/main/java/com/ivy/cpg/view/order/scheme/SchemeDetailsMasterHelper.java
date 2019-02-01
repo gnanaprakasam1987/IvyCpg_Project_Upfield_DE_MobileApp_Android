@@ -22,6 +22,7 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +104,7 @@ public class SchemeDetailsMasterHelper {
     private ArrayList<SchemeBO> mDisplaySchemeSlabs;
     private ArrayList<SchemeBO> mDisplaySchemeTrackingList;
     private HashMap<String, SchemaQPSAchHistoryBO> mSchemaQPSAchHistoryList;
+    private ArrayList<Integer> schemeParentId;
 
     protected SchemeDetailsMasterHelper(Context context) {
         bModel = (BusinessModel) context.getApplicationContext();
@@ -124,6 +126,7 @@ public class SchemeDetailsMasterHelper {
     private static final String CODE_SCHEME_CHECK = "SCH09";
     private static final String CODE_UP_SELLING = "SCH05";
     private static final String CODE_CHECK_SCHEME_WITH_ASRP = "SCH10";
+    private static final String CODE_SHOW_ALL_SCHEMES_ORDER = "SCH11";
 
     public boolean IS_SCHEME_ON;
     public boolean IS_SCHEME_EDITABLE;
@@ -138,6 +141,7 @@ public class SchemeDetailsMasterHelper {
     public boolean IS_SCHEME_QPS_TRACKING;
     private int UP_SELLING_PERCENTAGE = 70;
     private boolean IS_CHECK_SCHEME_WITH_ASRP;
+    public boolean IS_SHOW_ALL_SCHEMES_ORDER;
 
     private boolean isBatchWiseProducts;
 
@@ -150,7 +154,7 @@ public class SchemeDetailsMasterHelper {
         DBUtil db;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             loadSchemeConfigs(mContext);
@@ -221,8 +225,8 @@ public class SchemeDetailsMasterHelper {
     private void loadSchemeConfigs(Context mContext) {
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
 
             String sql = "SELECT hhtCode, RField FROM "
@@ -257,6 +261,8 @@ public class SchemeDetailsMasterHelper {
                         }
                     } else if (c.getString(0).equalsIgnoreCase(CODE_CHECK_SCHEME_WITH_ASRP))
                         IS_CHECK_SCHEME_WITH_ASRP = true;
+                    else if (c.getString(0).equalsIgnoreCase(CODE_SHOW_ALL_SCHEMES_ORDER))
+                        IS_SHOW_ALL_SCHEMES_ORDER = true;
 
                     if (c.getString(0).equalsIgnoreCase(CODE_SCHEME_CHECK)) {
                         IS_SCHEME_CHECK = true;
@@ -363,8 +369,6 @@ public class SchemeDetailsMasterHelper {
                 return true;
             }
             c.close();
-            db.closeDB();
-
         } catch (Exception ex) {
 
             Commons.printException(ex);
@@ -788,10 +792,10 @@ public class SchemeDetailsMasterHelper {
         if (c.getCount() > 0) {
             mParentIdListByProductId = new HashMap<>();
             mProductIdListByParentId = new SparseArray<>();
+            HashSet<Integer> schemeSet = new HashSet<>();
             String productId = "";
             ArrayList<Integer> parentIdList = new ArrayList<>();
             ArrayList<String> productIdList = new ArrayList<>();
-            int parentId = 0;
             while (c.moveToNext()) {
                 if (c.getInt(3) == 0 || (c.getInt(3) == 1 && mGroupIDList != null && mGroupIDList.contains(c.getString(2) + c.getString(1)))) {
 
@@ -824,14 +828,14 @@ public class SchemeDetailsMasterHelper {
                         mProductIdListByParentId.put(c.getInt(1), productIdList);
                     }
 
-
+                    schemeSet.add(c.getInt(1));
                 }
             }
             if (parentIdList.size() > 0) {
                 mParentIdListByProductId.put(productId, parentIdList);
             }
 
-
+                    schemeParentId = new ArrayList<>(schemeSet);
         }
         c.close();
     }
@@ -912,7 +916,7 @@ public class SchemeDetailsMasterHelper {
 
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query = "SELECT DISTINCT A.pid, A.batchid, A.schid,IFNULL(PieceUOM.Qty,0) AS PieceQty ,IFNULL(OuterUOM.Qty,0) as OouterQty,"
@@ -988,7 +992,7 @@ public class SchemeDetailsMasterHelper {
 
         DBUtil db;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String query="select distinct ProductID,sum(pieceQty),sum(caseQty),sum(outerQty) from orderDetail where upload='N' and retailerId="+retailerId +" " ;
@@ -1021,8 +1025,8 @@ public class SchemeDetailsMasterHelper {
      */
     public void downloadOffInvoiceSchemeDetails(Context mContext, String retailerId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             mOffInvoiceSchemeList = new ArrayList<>();
             StringBuilder sb = new StringBuilder();
@@ -1144,8 +1148,8 @@ public class SchemeDetailsMasterHelper {
     private void setIsScheme(Context mContext, ArrayList<String> mGroupIDList, int distributorId, String retailerId, int channelId
             , int locationId, int accountId) {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -1249,7 +1253,7 @@ public class SchemeDetailsMasterHelper {
     public void downloadSchemeReport(Context mContext, String id, boolean flag) {
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct SchemeID ,ProductID ,Value  from SchemeDetail  where ");
@@ -3391,7 +3395,7 @@ public class SchemeDetailsMasterHelper {
 
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select orderID from orderHeader where retailerid="
@@ -4348,7 +4352,7 @@ public class SchemeDetailsMasterHelper {
         SchemeProductBO schemeProductBO;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct SD.schemeid,MIN(SD.productid),SFD.freeproductID,SFD.FreeQty,");
@@ -4512,7 +4516,7 @@ public class SchemeDetailsMasterHelper {
         SchemeProductBO schemeProductBO;
         DBUtil db = null;
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
@@ -4581,8 +4585,8 @@ public class SchemeDetailsMasterHelper {
         } else {
             mSchemePromotion.clear();
         }
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         db.openDataBase();
         StringBuilder sb = new StringBuilder("");
         if ("ANY".equalsIgnoreCase(type)) {
@@ -4671,7 +4675,7 @@ public class SchemeDetailsMasterHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
@@ -4725,7 +4729,7 @@ public class SchemeDetailsMasterHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
@@ -4797,7 +4801,7 @@ public class SchemeDetailsMasterHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
 
@@ -4832,7 +4836,7 @@ public class SchemeDetailsMasterHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor cursor = db
@@ -4899,7 +4903,7 @@ public class SchemeDetailsMasterHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             String query = "Select distinct schemeId,schemeDesc,slabId,slabDesc from DisplaySchemeTrackingMaster";
@@ -4940,7 +4944,7 @@ public class SchemeDetailsMasterHelper {
         DBUtil db = null;
         try {
 
-            db = new DBUtil(mContext, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor cursor = db
@@ -5096,6 +5100,10 @@ public class SchemeDetailsMasterHelper {
         c.close();
 
         setmSchemaQPSAchHistoryList(mSchemaQPSAchHistoryList);
+    }
+
+    public ArrayList<Integer> getmParentIDList() {
+        return schemeParentId;
     }
 }
 

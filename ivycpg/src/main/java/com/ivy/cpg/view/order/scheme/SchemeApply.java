@@ -170,7 +170,11 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
     @Override
     protected void onResume() {
         super.onResume();
-
+        if (bModel.configurationMasterHelper.IS_SKIP_SCHEME_APPLY) {
+            Intent i = new Intent(SchemeApply.this, OrderSummary.class);
+            i.putExtra("ScreenCode", screenCode);
+            startActivity(i);
+        }
     }
 
 
@@ -1324,7 +1328,8 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             }
 
             if (bModel.configurationMasterHelper.IS_SIH_VALIDATION
-                    && !holder.schemeBO.isSihAvailableForFreeProducts()) {
+                    && !holder.schemeBO.isSihAvailableForFreeProducts()
+                    && holder.schemeBO.isQuantityTypeSelected()) {
                 holder.quantityCB.setChecked(false);
                 holder.schemeBO
                         .setQuantityTypeSelected(false);

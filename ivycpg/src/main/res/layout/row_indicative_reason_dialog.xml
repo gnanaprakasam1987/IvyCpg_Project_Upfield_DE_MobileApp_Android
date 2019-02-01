@@ -148,13 +148,11 @@
 
             </LinearLayout>
 
-            //
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:weightSum="10"
-                >
+                android:weightSum="10">
 
                 <LinearLayout
                     android:layout_width="@dimen/dimen_0dp"
@@ -251,7 +249,6 @@
 
                     </LinearLayout>
 
-
                     <LinearLayout
                         android:id="@+id/llOuter"
                         android:layout_width="wrap_content"
@@ -296,7 +293,9 @@
                             android:layout_marginTop="@dimen/dimens_4dp"
                             android:background="@color/gray_text" />
                     </LinearLayout>
+
                 </LinearLayout>
+
                 <EditText
                     android:id="@+id/remarks"
                     style="@style/EditText_ListItem"

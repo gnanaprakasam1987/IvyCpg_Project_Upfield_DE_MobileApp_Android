@@ -17,7 +17,7 @@
         ivydist:showAsAction="never" />
     <item
         android:id="@+id/menu_add"
-        android:icon="@drawable/ic_new_task"
+        android:icon="@drawable/task_add"
         android:orderInCategory="97"
         android:title="Add new posm"
         ivydist:showAsAction="never" />

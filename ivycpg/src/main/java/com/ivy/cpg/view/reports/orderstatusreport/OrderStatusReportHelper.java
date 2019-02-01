@@ -38,7 +38,7 @@ public class OrderStatusReportHelper {
 
     public void getOrderStatusList() {
         OrderStatusReportBO orderStatusReportBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String query = "Select distinct C.RetailerName,A.retailerid,A.retailerCode,A.orderid,A.OrderDate,A.OrderValue,B.ListName from P4OrderHistoryMaster A " +
@@ -71,7 +71,7 @@ public class OrderStatusReportHelper {
 
     public void getOrderStatusRetailerList() {
         OrderStatusRetailerReportBO orderStatusRetailerReportBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String query = "Select distinct C.RetailerID, C.RetailerCode, C.RetailerName from P4OrderHistoryMaster A " +
@@ -98,7 +98,7 @@ public class OrderStatusReportHelper {
 
     public void getInvoiceStatusRetailerList() {
         OrderStatusRetailerReportBO orderStatusRetailerReportBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String query = "Select distinct C.RetailerID, C.RetailerCode, C.RetailerName from P4InvoiceHistoryMaster A " +
@@ -125,7 +125,7 @@ public class OrderStatusReportHelper {
 
     public void getInvoiceStatusList() {
         OrderStatusReportBO orderStatusReportBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
             String query = "Select distinct C.RetailerName,A.retailerid,A.retailerCode,A.invoiceid,A.invoicedate,A.InvoiceValue,B.ListName from P4InvoiceHistoryMaster A " +

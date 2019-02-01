@@ -29,9 +29,8 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 static def fetchRevisionNumber() {
     def result = "git rev-list HEAD --count".execute().text.trim() //unix
-    if (result.empty) result = "PowerShell -Command git rev-list HEAD --count".execute().text.trim()
-    //windows
-    if (result.empty) throw new RuntimeException("Could not generate versioncode on this platform? Cmd output: ${result.text}")
+    if(result.empty) result = "PowerShell -Command git rev-list HEAD --count".execute().text.trim() //windows
+    if(result.empty) throw new RuntimeException("Could not generate versioncode on this platform? Cmd output: ${result.text}")
     return result.toInteger()
 }
 
@@ -156,17 +155,16 @@ android {
             }
         }
     }
+
     sourceSets {
         aws {
-            java {
-                srcDirs('src/AWS/java', 'src/main/java')
-            }
+            java.srcDirs = ['src/AWS/java', 'src/main/java']
+
         }
         sfdc {
-            res {
-                srcDirs('src/SFDC/java', 'src/main/java')
-                srcDirs('src/SFDC/res', 'src/main/res')
-            }
+
+            java.srcDirs = ['src/SFDC/java', 'src/main/java']
+            res.srcDirs = ['src/SFDC/res', 'src/main/res']
         }
 
         main {
@@ -283,7 +281,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
 
     implementation "org.greenrobot:eventbus:$rootProject.eventBusVersion"
-
 
     //Chat-Sdk
     implementation 'co.chatsdk.chatsdk:chat-sdk-core:4.1.36'

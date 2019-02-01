@@ -11,7 +11,6 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +29,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.AppUtils;
 
 public class OTPValidationDialog extends Dialog implements OnClickListener {
 
@@ -190,8 +190,8 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
     public void loadOTPReason() {
         try {
             SpinnerBO reason;
-            DBUtil db = new DBUtil(activityCtxt, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(activityCtxt, DataMembers.DB_NAME
+            );
             db.openDataBase();
             Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.OTP_REASON_TYPE));
             if (c != null) {
@@ -293,48 +293,49 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
         private String saveReason() {
 
             try {
-                DBUtil db = new DBUtil(activityCtxt, DataMembers.DB_NAME,
-                        DataMembers.DB_PATH);
+                DBUtil db = new DBUtil(activityCtxt, DataMembers.DB_NAME
+                );
                 String values;
                 db.createDataBase();
                 db.openDataBase();
 
                 String id;
 
-                String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID";
+                String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
-                id = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
+                id = AppUtils.QT(bmodel.getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
-                        + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                        + bmodel.getAppDataProvider().getUser().getUserid()
                         + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
 
                 values = id
                         + ","
-                        + bmodel.QT(mRetailerBO.getRetailerID())
+                        + AppUtils.QT(mRetailerBO.getRetailerID())
                         + ","
                         + mRetailerBO.getBeatID()
                         + ","
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
                         + ","
                         + ((SpinnerBO) reason.getSelectedItem()).getId()
                         + ","
-                        + bmodel.QT(bmodel
+                        + AppUtils.QT(bmodel
                         .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
-                        + "," + bmodel.QT("N")
-                        + "," + mRetailerBO.getDistributorId();
+                        + "," + AppUtils.QT("N")
+                        + "," + mRetailerBO.getDistributorId()
+                        + "," + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
                 db.deleteSQL(
                         "Nonproductivereasonmaster",
                         "RetailerID="
-                                + bmodel.QT(mRetailerBO.getRetailerID())
+                                + AppUtils.QT(mRetailerBO.getRetailerID())
                                 + " and DistributorId="
                                 + mRetailerBO.getDistributorId()
                                 + " and ReasonTypes="
-                                + bmodel.QT(bmodel
+                                + AppUtils.QT(bmodel
                                 .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
                                 + " and Date="
-                                + bmodel.QT(SDUtil.now(SDUtil.DATE)), false);
+                                + AppUtils.QT(SDUtil.now(SDUtil.DATE)), false);
 
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
 

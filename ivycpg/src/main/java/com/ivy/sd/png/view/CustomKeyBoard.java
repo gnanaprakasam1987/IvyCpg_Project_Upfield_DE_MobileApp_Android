@@ -61,24 +61,24 @@ public class CustomKeyBoard extends Dialog implements View.OnClickListener {
         if (tv.getText().toString().length() > 0 && !"0.0".equals(tv.getText().toString()))
             this.value = tv.getText().toString();
 
-        tv_value = (TextView) findViewById(R.id.typed_value);
+        tv_value =  findViewById(R.id.typed_value);
         tv_value.setText(value);
 
-        Button number_one = (Button) findViewById(R.id.num_one);
-        Button number_two = (Button) findViewById(R.id.num_two);
-        Button number_three = (Button) findViewById(R.id.num_three);
-        Button number_four = (Button) findViewById(R.id.num_four);
-        Button number_five = (Button) findViewById(R.id.num_five);
-        Button number_six = (Button) findViewById(R.id.num_six);
-        Button number_seven = (Button) findViewById(R.id.num_seven);
-        Button number_eight = (Button) findViewById(R.id.num_eight);
-        Button number_nine = (Button) findViewById(R.id.num_nine);
-        Button number_zero = (Button) findViewById(R.id.num_zero);
-        decimal_point = (Button) findViewById(R.id.dec_dot);
+        Button number_one =  findViewById(R.id.num_one);
+        Button number_two =  findViewById(R.id.num_two);
+        Button number_three =  findViewById(R.id.num_three);
+        Button number_four =  findViewById(R.id.num_four);
+        Button number_five =  findViewById(R.id.num_five);
+        Button number_six =  findViewById(R.id.num_six);
+        Button number_seven =  findViewById(R.id.num_seven);
+        Button number_eight =  findViewById(R.id.num_eight);
+        Button number_nine =  findViewById(R.id.num_nine);
+        Button number_zero =  findViewById(R.id.num_zero);
+        decimal_point =  findViewById(R.id.dec_dot);
 
-        Button btn_cancel = (Button) findViewById(R.id.cancel);
-        Button btn_ok = (Button) findViewById(R.id.ok);
-        ImageButton btn_delete = (ImageButton) findViewById(R.id.delete);
+        Button btn_cancel =  findViewById(R.id.cancel);
+        Button btn_ok =  findViewById(R.id.ok);
+        ImageButton btn_delete =  findViewById(R.id.delete);
 
         number_one.setOnClickListener(this);
         number_two.setOnClickListener(this);

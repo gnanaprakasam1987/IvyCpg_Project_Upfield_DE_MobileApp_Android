@@ -65,8 +65,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -93,8 +95,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -121,8 +125,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -148,10 +154,12 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:text=""
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -225,8 +233,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -253,8 +263,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -281,8 +293,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -308,10 +322,12 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:text=""
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -385,8 +401,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -413,8 +431,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -441,8 +461,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -468,10 +490,12 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:text=""
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
     </LinearLayout>
@@ -544,8 +568,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -572,8 +598,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -600,8 +628,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -627,10 +657,12 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:text=""
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -704,8 +736,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -732,8 +766,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -760,8 +796,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -787,10 +825,12 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:text=""
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
     </LinearLayout>
@@ -863,8 +903,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -891,8 +933,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -919,8 +963,10 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:inputType="number"
                 android:text="@string/zero"
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
 
@@ -946,10 +992,12 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="start"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLength="25"
                 android:text=""
+                android:textAlignment="textStart"
                 android:textSize="@dimen/font_small" />
         </LinearLayout>
     </LinearLayout>

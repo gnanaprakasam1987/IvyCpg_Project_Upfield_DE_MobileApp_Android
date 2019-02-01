@@ -2,26 +2,23 @@ package com.ivy.cpg.view.order;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -35,22 +32,22 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
-import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -58,7 +55,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.FontUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -66,21 +64,17 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class CollectionBeforeInvoiceDialog extends Dialog implements
-        android.view.View.OnClickListener {
+public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar implements View.OnClickListener {
 
     // Declare Businness Model Class
     private BusinessModel bmodel;
-    // Declare Context
-    private Context context;
     // Vairalbes
     private String append = "";
     // Views
     private EditText QUANTITY;
-    private OrderSummary orderSummaryActivity;
-    private Button btnSubmit, btnDot;
+    private Button btnSubmit;
     // Views
-    private LinearLayout layoutBankMode, layoutChequeDate, layoutKeypad;
+    private LinearLayout layoutBankMode, layoutKeypad;
     private RadioGroup rbPaymentType;
     private boolean isClicked, setRadioBtnChecked;
     private EditText collectionamount, chequenumber;
@@ -112,11 +106,8 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
     private double creditBalance = 0d;
     private String mTransactionPaymentMode = "";
     private PaymentBO pay;
-
-    TextView tv_header_title;
-    private RelativeLayout ll;
-    private LinearLayout ll_keyboard;
-    private Button close_btn;
+    private RelativeLayout layoutChequeDate;
+    private CardView ll_keyboard;
 
     ImageView capturecheque;
     private String mImageName;
@@ -129,57 +120,60 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     private CollectionHelper collectionHelper;
 
-
-    public CollectionBeforeInvoiceDialog(Context context,
-                                         OrderSummary orderSummary, CollectionBO collection,
-                                         double invoiceAmount, double minimumAmount, double creditBalance) {
-        super(context);
-        this.context = context;
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        bmodel = (BusinessModel) context.getApplicationContext();
-        orderSummaryActivity = orderSummary;
-        mTotalInvoiceAmount = invoiceAmount;
-        invoiceamount = mTotalInvoiceAmount;
-        collectionbo = collection;
-        osamount = minimumAmount;
-        this.creditBalance = creditBalance;
-        ll = (RelativeLayout) LayoutInflater.from(context)
-                .inflate(R.layout.dialog_collectionbeforeinvoice, null);
-        RelativeLayout ll = (RelativeLayout) LayoutInflater.from(context)
-                .inflate(R.layout.dialog_collectionbeforeinvoice, null);
-        setContentView(ll);
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
-        setCancelable(true);
-        // Initialize Views in the Screen
-        initializeView();
-        inputManager = (InputMethodManager) orderSummaryActivity
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        collectionHelper = CollectionHelper.getInstance(context);
-
-
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_collectionbeforeinvoice);
+
+        bmodel = (BusinessModel) getApplicationContext();
+
         todayDate = DateUtil.convertFromServerDateToRequestedFormat(
                 SDUtil.now(SDUtil.DATE_GLOBAL),
-                bmodel.configurationMasterHelper.outDateFormat);
+                ConfigurationMasterHelper.outDateFormat);
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mTotalInvoiceAmount = bundle.getDouble("TotalInvoiceAmt", 0);
+            invoiceamount = bundle.getDouble("InvoiceAmt", 0);
+            collectionbo = bundle.getParcelable("Collection");
+            osamount = bundle.getDouble("OsAmount", 0);
+            this.creditBalance = bundle.getDouble("CreditDalance", 0);
+        }
+
+        // Initialize Views in the Screen
+        initializeView();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        if (toolbar != null) {
+
+            setSupportActionBar(toolbar);
+
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            // Used to on / off the back arrow icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//           // Used to remove the app logo actionbar icon and set title as home
+//          // (title support click)
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
+
+            setScreenTitle(getResources().getString(R.string.Product_details));
+        }
+
+        collectionHelper = CollectionHelper.getInstance(this);
+
+        inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
     }
 
     @Override
     public void onStart() {
 
-        tvAmount.setText(bmodel.formatValue(mTotalInvoiceAmount) + "");
-        tvMinimumAmount.setText((bmodel.formatValue(osamount)) + "");
+        tvAmount.setText(bmodel.formatValue(mTotalInvoiceAmount));
+        tvMinimumAmount.setText((bmodel.formatValue(osamount)));
 
         if (rbPaymentType != null && rbPaymentType.getChildCount() > 0
                 && flagOnrestore == false) {
@@ -191,7 +185,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         else
             flagOnrestore = false;
         if (creditBalance <= 0 || creditBalance < mTotalInvoiceAmount)
-            rbPaymentType.removeView(ll.findViewById(R.id.chequeRadioButton));
+            rbPaymentType.removeView(findViewById(R.id.chequeRadioButton));
 
         fillRadioButton(rbPaymentType);
         viewTouchListener();
@@ -203,13 +197,13 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     private void updateBranchSpinner() {
         branchSpinnerAdapter = new ArrayAdapter<BranchMasterBO>(
-                orderSummaryActivity, android.R.layout.simple_spinner_item);
+                this, android.R.layout.simple_spinner_item);
         branchSpinnerAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         BranchMasterBO mm = new BranchMasterBO();
         mm.setBankID("0");
         mm.setBranchID("0");
-        mm.setBranchName(orderSummaryActivity.getResources().getString(
+        mm.setBranchName(getResources().getString(
                 R.string.sel_branch));
         branchSpinnerAdapter.add(mm);
         int branchSize = branchDetails.size();
@@ -228,7 +222,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                 modeInvisible();
             }
             rbPaymentType
-                    .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                    .setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
                         @Override
                         public void onCheckedChanged(RadioGroup group,
@@ -329,7 +323,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     private void viewTouchListener() {
         try {
-            chequenumber.setOnTouchListener(new OnTouchListener() {
+            chequenumber.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
                     ll_keyboard.setVisibility(View.GONE);
                     QUANTITY = chequenumber;
@@ -352,7 +346,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                 }
             });
 
-            collectionamount.setOnTouchListener(new OnTouchListener() {
+            collectionamount.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
                     QUANTITY = collectionamount;
                     int inType = collectionamount.getInputType();
@@ -411,7 +405,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                     qty = qty.length() > 1 ? qty.substring(0,
                                             qty.length() - 1) : "0";
                                     collectionamount.setText(qty);
-                                    Toast.makeText(context, "Enter Amount Exceed ", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CollectionBeforeInvoiceActivity.this, "Enter Amount Exceed ", Toast.LENGTH_SHORT).show();
                                 }
 
 
@@ -444,9 +438,9 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                             int month = c.get(Calendar.MONTH);
                             int day = c.get(Calendar.DAY_OF_MONTH);
 
-                            MyDatePickerDialog d = new MyDatePickerDialog(context, R.style.DatePickerDialogStyle,
+                            MyDatePickerDialog d = new MyDatePickerDialog(CollectionBeforeInvoiceActivity.this, R.style.DatePickerDialogStyle,
                                     mDateSetListener, year, month, day);
-                            d.setPermanentTitle(context.getString(R.string.choose_date));
+                            d.setPermanentTitle(getString(R.string.choose_date));
                             d.show();
                            /* DialogFragment newFragment = new DatePickerFragment();
                             newFragment.show(orderSummaryActivity
@@ -471,8 +465,8 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {
                 if (selectedDate.after(currentcal)) {
                     Toast.makeText(
-                            context.getApplicationContext(),
-                            context.getResources().getString(
+                            getApplicationContext(),
+                            getResources().getString(
                                     R.string.post_dated_cheque_notallow),
                             Toast.LENGTH_SHORT).show();
                     chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
@@ -493,7 +487,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         ArrayList<InvoiceHeaderBO> items = bmodel.getInvoiceHeaderBO();
         if (items == null) {
             bmodel.showAlert(
-                    orderSummaryActivity.getResources().getString(
+                    getResources().getString(
                             R.string.no_products_exists), 0);
             return;
         }
@@ -503,12 +497,12 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         branchDetails = collectionHelper.getBranchMasterBO();
 
         bankSpinnerAdapter = new ArrayAdapter<BankMasterBO>(
-                orderSummaryActivity, android.R.layout.simple_spinner_item);
+                CollectionBeforeInvoiceActivity.this, android.R.layout.simple_spinner_item);
         bankSpinnerAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         BankMasterBO mm = new BankMasterBO();
         mm.setBankId(0);
-        mm.setBankName(orderSummaryActivity.getResources().getString(
+        mm.setBankName(getResources().getString(
                 R.string.sel_bank));
         bankSpinnerAdapter.add(mm);
         int size = bankDetails.size();
@@ -517,7 +511,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             bankSpinnerAdapter.add(ret);
         }
         Bank.setAdapter(bankSpinnerAdapter);
-        Bank.setOnItemSelectedListener(new OnItemSelectedListener() {
+        Bank.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
 
@@ -543,7 +537,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
             }
         });
 
-        Branch.setOnItemSelectedListener(new OnItemSelectedListener() {
+        Branch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
 
@@ -567,7 +561,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                 "CNAP",
                 StandardListMasterConstants.CREDIT_NOTE_TYPE);
         if (collectionHelper.getCreditNoteList() != null) {
-            mCreditNoteList = new ArrayList<CreditNoteListBO>();
+            mCreditNoteList = new ArrayList<>();
             for (CreditNoteListBO bo : collectionHelper
                     .getCreditNoteList()) {
                 if (bo.getRetailerId().equals(
@@ -614,7 +608,6 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     }
 
-
     private int getBranchIndex(String bankId) {
         if (branchSpinnerAdapter.getCount() == 0)
             return 0;
@@ -630,41 +623,6 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         return -1;
     }
 
-
-    /*public class DatePickerFragment extends DialogFragment implements
-            DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Calendar selectedDate = new GregorianCalendar(year, month, day);
-            chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
-                    selectedDate.getTime(), outPutDateFormat));
-            chequeDate = chequedate.getText().toString();
-            Calendar currentcal = Calendar.getInstance();
-            if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {
-                if (selectedDate.after(currentcal)) {
-                    Toast.makeText(
-                            getActivity().getApplicationContext(),
-                            getResources().getString(
-                                    R.string.post_dated_cheque_notallow),
-                            Toast.LENGTH_SHORT).show();
-                    chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
-                            currentcal.getTime(), outPutDateFormat));
-                    chequeDate = chequedate.getText().toString();
-
-                }
-            }
-        }
-    }*/
-
     /**
      * Update branch for corresponding bank id
      *
@@ -672,12 +630,12 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
      */
     private void updateBranchSpinner(String bankID) {
         branchSpinnerAdapter = new ArrayAdapter<BranchMasterBO>(
-                orderSummaryActivity, android.R.layout.simple_spinner_item);
+                CollectionBeforeInvoiceActivity.this, android.R.layout.simple_spinner_item);
         branchSpinnerAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         BranchMasterBO mm = new BranchMasterBO();
         mm.setBranchID("0");
-        mm.setBranchName(orderSummaryActivity.getResources().getString(
+        mm.setBranchName(getResources().getString(
                 R.string.sel_bank));
         branchSpinnerAdapter.add(mm);
         int branchSize = branchDetails.size();
@@ -734,38 +692,34 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
                     if (osamount > amountcollected) {
                         Toast.makeText(
-                                orderSummaryActivity,
-                                orderSummaryActivity.getResources().getString(
+                                CollectionBeforeInvoiceActivity.this,
+                                getResources().getString(
                                         R.string.enter_minimum_amount),
 
                                 Toast.LENGTH_SHORT).show();
                     } else if (amountcollected > mTotalInvoiceAmount) {
                         Toast.makeText(
-                                orderSummaryActivity,
-                                orderSummaryActivity
-                                        .getResources()
+                                CollectionBeforeInvoiceActivity.this,
+                                getResources()
                                         .getString(
                                                 R.string.amount_exeeds_the_balance_please_check),
 
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         doPaymentObjectList();
-                        this.orderSummaryActivity.onResume();
-                        dismiss();
+                        finish();
                     }
                 } else if (amountcollected > mTotalInvoiceAmount) {
                     Toast.makeText(
-                            orderSummaryActivity,
-                            orderSummaryActivity
-                                    .getResources()
+                            CollectionBeforeInvoiceActivity.this,
+                            getResources()
                                     .getString(
                                             R.string.amount_exeeds_the_balance_please_check),
 
                             Toast.LENGTH_SHORT).show();
                 } else {
                     doPaymentObjectList();
-                    this.orderSummaryActivity.onResume();
-                    dismiss();
+                    finish();
 
                 }
             }
@@ -807,6 +761,10 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                     mTransactionPaymentMode, "");
 
         }
+
+        Intent intent = new Intent();
+        intent.putExtra("Collection", collectionbo);
+        setResult(1, intent);
     }
 
     private void setPaymentObject(double invoiceAmt, double paidAmt,
@@ -846,34 +804,34 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
         if (tempAmtCollected == 0) {
             Toast.makeText(
-                    orderSummaryActivity,
-                    orderSummaryActivity.getResources().getString(
+                    CollectionBeforeInvoiceActivity.this,
+                    getResources().getString(
                             R.string.enter_amount), Toast.LENGTH_SHORT).show();
             ok = false;
         } else if (collectionbo.getChequeamt() > 0
                 && TextUtils.isEmpty(chequenumber.getText().toString())) {
             Toast.makeText(
-                    orderSummaryActivity,
-                    orderSummaryActivity.getResources().getString(
+                    CollectionBeforeInvoiceActivity.this,
+                    getResources().getString(
                             R.string.enter_cheque_no), Toast.LENGTH_SHORT)
                     .show();
             ok = false;
         } else if (collectionbo.getChequeamt() > 0
                 && collectionbo.getBankId().equals("0")) {
             Toast.makeText(
-                    orderSummaryActivity,
-                    orderSummaryActivity.getResources().getString(
+                    CollectionBeforeInvoiceActivity.this,
+                    getResources().getString(
                             R.string.sel_bank), Toast.LENGTH_SHORT).show();
             ok = false;
         } else if (collectionbo.getChequeamt() > 0
                 && collectionbo.getBranchId().equals("0")) {
             Toast.makeText(
-                    orderSummaryActivity,
-                    orderSummaryActivity.getResources().getString(
+                    CollectionBeforeInvoiceActivity.this,
+                    getResources().getString(
                             R.string.sel_branch), Toast.LENGTH_SHORT).show();
             ok = false;
         } else if (collectionbo.getCreditamt() > 0 && isCreditAmountExceed(amountcollected)) {
-            Toast.makeText(orderSummaryActivity, "Enter Amount exceed CreditNote Amount", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CollectionBeforeInvoiceActivity.this, "Enter Amount exceed CreditNote Amount", Toast.LENGTH_SHORT).show();
             ok = false;
 
         }
@@ -907,63 +865,48 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     private void initializeView() {
         try {
-            btnSubmit = (Button) findViewById(R.id.btnsubmit);
-            tvAmount = (TextView) findViewById(R.id.tv_amount);
-            rbPaymentType = (RadioGroup) findViewById(R.id.chequeorcash);
-            collectionamount = (EditText) findViewById(R.id.collectionAmount);
-            layoutBankMode = (LinearLayout) findViewById(R.id.mode);
-            layoutChequeDate = (LinearLayout) findViewById(R.id.ccdate);
-            layoutKeypad = (LinearLayout) findViewById(R.id.keypad);
-            chequenumber = (EditText) findViewById(R.id.collectionchequeNo);
-            payTotal = (TextView) findViewById(R.id.payTotal);
-            img_max_amount = (ImageButton) findViewById(R.id.img_max_amount);
-            chequedate = (Button) findViewById(R.id.collectionDate);
-            Bank = (Spinner) findViewById(R.id.bankName);
-            Branch = (Spinner) findViewById(R.id.bankArea);
-            btnDot = (Button) findViewById(R.id.calcdot);
+            btnSubmit = findViewById(R.id.btnsubmit);
+            tvAmount = findViewById(R.id.tv_amount);
+            rbPaymentType = findViewById(R.id.chequeorcash);
+            collectionamount = findViewById(R.id.collectionAmount);
+            layoutBankMode = findViewById(R.id.mode);
+            layoutChequeDate = findViewById(R.id.ccdate);
+            layoutKeypad = findViewById(R.id.keypad);
+            chequenumber = findViewById(R.id.collectionchequeNo);
+            payTotal = findViewById(R.id.payTotal);
+            img_max_amount = findViewById(R.id.img_max_amount);
+            chequedate = findViewById(R.id.collectionDate);
+            Bank = findViewById(R.id.bankName);
+            Branch = findViewById(R.id.bankArea);
+            Button btnDot = findViewById(R.id.calcdot);
             btnDot.setVisibility(View.VISIBLE);
             btnSubmit.setOnClickListener(this);
-            tvMinimumAmount = (TextView) findViewById(R.id.tv_minimum_amount);
-            img_min_amount = (ImageButton) findViewById(R.id.img_min_amount);
-            mCreditNoteLV = (ListView) findViewById(R.id.lv_creditnote);
-            ll_keyboard = (LinearLayout) findViewById(R.id.footer);
+            tvMinimumAmount = findViewById(R.id.tv_minimum_amount);
+            img_min_amount = findViewById(R.id.img_min_amount);
+            mCreditNoteLV = findViewById(R.id.lv_creditnote);
+            ll_keyboard = findViewById(R.id.keypad_foot);
 
+            ((TextView) findViewById(R.id.productName2)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.minimumamount)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+            ((TextView) findViewById(R.id.tv_branch_title)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((TextView) findViewById(R.id.tv_bank_title)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((TextView) findViewById(R.id.totalLabel)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((TextView) findViewById(R.id.payTotal)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
+            ((RadioButton) findViewById(R.id.cashRadioButton)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((RadioButton) findViewById(R.id.chequeRadioButton)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            ((RadioButton) findViewById(R.id.creditNoteRadioButton)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+            tvMinimumAmount.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
+            tvAmount.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
 
-            tv_header_title = findViewById(R.id.titlebar);
-            close_btn = (Button) findViewById(R.id.closeButton);
-
-            tv_header_title.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.productName2)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            ((TextView) findViewById(R.id.minimumamount)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            ((TextView) findViewById(R.id.tv_branch_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.tv_bank_title)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.totalLabel)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((TextView) findViewById(R.id.payTotal)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-            ((RadioButton) findViewById(R.id.cashRadioButton)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((RadioButton) findViewById(R.id.chequeRadioButton)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            ((RadioButton) findViewById(R.id.creditNoteRadioButton)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-            tvMinimumAmount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-            tvAmount.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-
-            btnSubmit.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+            btnSubmit.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
             if (bmodel.configurationMasterHelper.COLL_CHEQUE_MODE) {
                 chequenumber.setInputType(InputType.TYPE_CLASS_TEXT);
             }
 
-            close_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (orderSummaryActivity != null)
-                        CollectionBeforeInvoiceDialog.this.orderSummaryActivity
-                                .onResume();
-                    dismiss();
-                }
-            });
-
             /*
              * collectionamount.setText(BigDecimal.valueOf(collectionbo
-			 * .getCashamt()) + "");
-			 */
+             * .getCashamt()) + "");
+             */
 
             img_max_amount.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1020,7 +963,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                     .equals(StandardListMasterConstants.CHEQUE)) {
                                 ChequeImgname = mImageName;
                             }
-                            Intent intent = new Intent(context, CameraActivity.class);
+                            Intent intent = new Intent(CollectionBeforeInvoiceActivity.this, CameraActivity.class);
                             intent.putExtra("quality", 40);
                             mImagePath = "Collection" + "/" + bmodel.userMasterHelper.getUserMasterBO
                                     ().getDownloadDate().replace("/", "")
@@ -1032,13 +975,13 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
                             Commons.print("photoPath : " + mImagePath);
                             intent.putExtra("path", path);
-                            orderSummaryActivity.startActivityForResult(intent,
+                            startActivityForResult(intent,
                                     bmodel.CAMERA_REQUEST_CODE);
                             return;
                         }
 
                     } else {
-                        Toast.makeText(context,
+                        Toast.makeText(CollectionBeforeInvoiceActivity.this,
                                 R.string.sdcard_is_not_ready_to_capture_img,
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -1052,38 +995,35 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     public void showFileDeleteAlert(final String imageNameStarts) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("");
-        builder.setMessage(orderSummaryActivity.getResources().getString(R.string.word_already)
+        builder.setMessage(getResources().getString(R.string.word_already)
                 + mImageCount
-                + orderSummaryActivity.getResources().getString(
+                + getResources().getString(
                 R.string.word_photocaptured_delete_retake));
 
-        builder.setPositiveButton(orderSummaryActivity.getResources().getString(R.string.yes),
+        builder.setPositiveButton(getResources().getString(R.string.yes),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                         bmodel.deleteFiles(HomeScreenFragment.photoPath,
                                 imageNameStarts);
                         dialog.dismiss();
-                        Intent intent = new Intent(context,
+                        Intent intent = new Intent(CollectionBeforeInvoiceActivity.this,
                                 CameraActivity.class);
                         intent.putExtra("quality", 40);
                         String _path = HomeScreenFragment.photoPath + "/" + mImageName;
                         Commons.print("PhotoPAth:  -      " + _path);
                         intent.putExtra("path", _path);
-                        orderSummaryActivity.startActivityForResult(intent,
+                        startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                         return;
                     }
                 });
 
-        builder.setNegativeButton(orderSummaryActivity.getResources().getString(R.string.no),
+        builder.setNegativeButton(getResources().getString(R.string.no),
                 new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which)
-
-
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         return;
                     }
@@ -1095,13 +1035,13 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     public void eff() {
         String s = (String) QUANTITY.getText().toString();
-        if (!s.equals(orderSummaryActivity.getResources().getString(
+        if (!s.equals(getResources().getString(
                 R.string.zero))) {
             if (s.indexOf(".") == -1 ? false : (s.substring(s.indexOf("."),
                     s.length()).length()) > 2 ? true : false) {
                 Toast.makeText(
-                        orderSummaryActivity,
-                        orderSummaryActivity.getResources().getString(
+                        this,
+                        getResources().getString(
                                 R.string.only_upto_two_digit),
                         Toast.LENGTH_SHORT).show();
                 return;
@@ -1116,7 +1056,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
     public void numberPressed(View v) {
         if (QUANTITY == null) {
             bmodel.showAlert(
-                    orderSummaryActivity.getResources().getString(
+                    getResources().getString(
                             R.string.please_select_item), 0);
         } else if (QUANTITY.equals(chequenumber)) {
             textPressed(v);
@@ -1125,10 +1065,10 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         }
     }
 
-    public void amountPressed(View vw) {
+    private void amountPressed(View vw) {
         if (QUANTITY == null) {
             bmodel.showAlert(
-                    orderSummaryActivity.getResources().getString(
+                    getResources().getString(
                             R.string.please_select_item), 0);
         } else {
             int id = vw.getId();
@@ -1200,15 +1140,15 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     }
 
-    public void eff1() {
+    private void eff1() {
         QUANTITY.setText(QUANTITY.getText() + append);
         QUANTITY.setSelection(QUANTITY.getText().toString().length());
     }
 
-    public void textPressed(View vw) {
+    private void textPressed(View vw) {
         if (QUANTITY == null) {
             bmodel.showAlert(
-                    orderSummaryActivity.getResources().getString(
+                    getResources().getString(
                             R.string.please_select_item), 0);
         } else {
             int id = vw.getId();
@@ -1255,22 +1195,6 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
     }
 
-    /**
-     * Method to check haspayment status
-     * and allow collection by using CB only or not
-     */
-    private boolean checkHasPaymentIssue(String mode) {
-        if (bmodel.getRetailerMasterBO().getHasPaymentIssue() == 1) {
-            boolean isCBType = collectionHelper.isCreditBalancebalance(mode);
-            if (!isCBType) {
-
-                return false;
-            }
-        }
-        return true;
-    }
-
-
     private class CreditNoteAdapter extends BaseAdapter {
 
 
@@ -1295,11 +1219,10 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                 row = inflater.inflate(R.layout.row_credit_note, parent, false);
                 holder = new ViewHolder();
 
-                holder.refNoTxt = (TextView) row.findViewById(R.id.refNoTxt);
-                holder.crdNoteAmtTxt = (TextView) row
-                        .findViewById(R.id.crdNoteAmtTxt);
-                holder.creditNoteCheckBox = (CheckBox) row
-                        .findViewById(R.id.creditNoteCheckBox);
+                holder.refNoTxt = row.findViewById(R.id.refNoTxt);
+                holder.crdNoteAmtTxt = row.findViewById(R.id.crdNoteAmtTxt);
+                holder.totalCreditNoteAmountTxt = row.findViewById(R.id.totcrdNoteAmtTxt);
+                holder.creditNoteCheckBox = row.findViewById(R.id.creditNoteCheckBox);
 
 
                 holder.creditNoteCheckBox
@@ -1316,8 +1239,8 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
                                         holder.creditNoteCheckBox.setChecked(false);
                                         holder.creditNoteListBO.setChecked(false);
                                         Toast.makeText(
-                                                context,
-                                                context.getResources()
+                                                CollectionBeforeInvoiceActivity.this,
+                                                getResources()
                                                         .getString(
                                                                 R.string.amount_exeeds_the_balance_please_check),
                                                 Toast.LENGTH_SHORT).show();
@@ -1338,8 +1261,7 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
 
             holder.creditNoteListBO = mCreditNoteList.get(position);
             holder.refNoTxt.setText(holder.creditNoteListBO.getRefno() + "");
-            holder.crdNoteAmtTxt.setText(bmodel.formatValue(holder.creditNoteListBO
-                    .getAmount()) + "");
+            holder.crdNoteAmtTxt.setText(bmodel.formatValue(holder.creditNoteListBO.getAmount()));
             holder.creditNoteCheckBox.setChecked(holder.creditNoteListBO.isChecked());
             String totCrdeitAmt = bmodel.formatValue(holder.creditNoteListBO.getAmount() + holder.creditNoteListBO.getAppliedAmount());
             holder.totalCreditNoteAmountTxt.setText(totCrdeitAmt);
@@ -1412,4 +1334,16 @@ public class CollectionBeforeInvoiceDialog extends Dialog implements
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i1 = item.getItemId();
+        if (i1 == android.R.id.home) {
+
+            setResult(1);
+            finish();
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

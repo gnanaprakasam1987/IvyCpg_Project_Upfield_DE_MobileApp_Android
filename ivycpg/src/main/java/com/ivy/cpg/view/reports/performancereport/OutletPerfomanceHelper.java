@@ -33,8 +33,8 @@ public class OutletPerfomanceHelper {
 
     public ArrayList<OutletReportBO> downloadOutletReports() {
         ArrayList<OutletReportBO> lst = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -84,8 +84,8 @@ public class OutletPerfomanceHelper {
 
     public ArrayList downloadUsers() {
         lstUsers = new ArrayList<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
 
             db.openDataBase();
@@ -115,8 +115,8 @@ public class OutletPerfomanceHelper {
 
     public Integer downloadlastVisitedRetailer(int userId) {
         int retailerid = 0;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                DataMembers.DB_PATH);
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+        );
         try {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
@@ -143,8 +143,8 @@ public class OutletPerfomanceHelper {
         boolean isAvailable = false;
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select UseriD from OutletPerfomanceReport");
@@ -169,8 +169,8 @@ public class OutletPerfomanceHelper {
         String url = "";
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select URL from UrlDownloadMaster where MasterName = 'RPT_RETAILER_PERFORMANCE'");

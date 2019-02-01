@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.homescreen;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -109,8 +109,20 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.About;
+import com.ivy.sd.png.view.ChannelSelectionDialog;
+import com.ivy.sd.png.view.DeviceStatusActivity;
+import com.ivy.sd.png.view.NewOutletEditFragment;
+import com.ivy.sd.png.view.NewoutletContainerFragment;
+import com.ivy.sd.png.view.PlanDeviationFragment;
+import com.ivy.sd.png.view.SynchronizationFragment;
+import com.ivy.sd.png.view.TLAttendanceActivity;
+import com.ivy.sd.png.view.UserFeedbackActivity;
+import com.ivy.sd.png.view.UserSettingsActivity;
+import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.ui.attendance.view.TimeTrackingFragment;
+import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -122,21 +134,16 @@ import java.util.Vector;
 
 public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener
         , PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
+
     private BusinessModel bmodel;
 
     //used to save the photo
     public static File folder;
-
     public static String photoPath;
-
     public static boolean fromHomeScreen = false;
 
     private static final String MENU_PLANNING_CONSTANT = "Day Planning";
     private static final String MENU_VISIT_CONSTANT = "Trade Coverage";
-
-    private Intent stockpropintent;
-    private Intent vanUnloadStockAdjustmentIntent = null;
-    private Intent planningIntent;
 
     private static final String MENU_PLANNING = "MENU_PLANNING";
     private static final String MENU_VISIT = "MENU_VISIT";
@@ -145,6 +152,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_REPORT = "MENU_REPORT";
     private static final String MENU_SYNC = "MENU_SYNC";
     private static final String MENU_LOAD_MANAGEMENT = "MENU_LOAD_MANAGEMENT";
+    private static final String MENU_PLANNING_SUB = "MENU_PLANNING_SUB";
     private static final String MENU_LOAD_REQUEST = "MENU_STK_PRO";
     private static final String MENU_PRIMARY_SALES = "MENU_PRIMARY_SALES";
     private static final String MENU_JOINT_CALL = "MENU_JOINT_CALL";
@@ -180,9 +188,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final String MENU_SUPERVISOR_CALLANALYSIS = "MENU_SUPERVISOR_ACTIVITY";
     private static final String MENU_DENOMINATION = "MENU_DENOMINATION";
     private static final String MENU_ROUTE_KPI = "MENU_ROUTE_KPI";
-//    private static final String MENU_SUPERVISOR = "MENU_SUPERVISOR";
-
-    //private static final String MENU_COLLECTION_PRINT = "MENU_COLLECTION_PRINT";
     private static final String MENU_JOINT_ACK = "MENU_JOINT_ACK";
     private static final String MENU_NON_FIELD = "MENU_NON_FIELD";
     private static final String MENU_DELMGMT_RET = "MENU_DELMGMT_RET"; //Deleiver Management
@@ -216,13 +221,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     private ActionBar actionBar;
 
-    private homeScreenItemClickedListener mHomeScreenItemClickedListener;
+    private HomeScreenItemClickedListener mHomeScreenItemClickedListener;
 
     LinearLayout ll_logout, ll_about;
     ImageView settingView;
 
     Handler handler;
-
+    TextView userNameTv, designation;
 
     private List<MarkerOptions> markerList;
     private LatLng latLng;
@@ -274,6 +279,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_SUBD, R.drawable.ic_vector_gallery);
         menuIcons.put(MENU_Q_CALL, R.drawable.ic_vector_tradecoverage);
         menuIcons.put(MENU_LOAD_MANAGEMENT, R.drawable.ic_load_mgmt_icon);
+        menuIcons.put(MENU_PLANNING_SUB, R.drawable.ic_action_icon_reports);
         menuIcons.put(MENU_NEW_RETAILER, R.drawable.ic_new_retailer_icon);
         menuIcons.put(MENU_LOAD_REQUEST, R.drawable.ic_stock_proposal_icon);
         menuIcons.put(MENU_REPORT, R.drawable.ic_vector_reports);
@@ -294,7 +300,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         menuIcons.put(MENU_LEAVE_APR, R.drawable.ic_vector_out_of_trade);
         menuIcons.put(MENU_EXPENSE, R.drawable.ic_expense_icon);
         menuIcons.put(MENU_NEWRET_EDT, R.drawable.ic_new_retailer_icon);
-        menuIcons.put(MENU_TASK_NEW, R.drawable.ic_new_task);
+        menuIcons.put(MENU_TASK_NEW, R.drawable.task);
         menuIcons.put(MENU_SURVEY_SW, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_SURVEY01_SW, R.drawable.ic_survey_icon);
         menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
@@ -315,16 +321,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         if (AttendanceHelper.getInstance(getActivity()).checkLeaveAttendance(getActivity()))
             isLeave_today = true;
 
-        TextView userNameTv = (TextView) view.findViewById(R.id.tv_username);
-        TextView designation = (TextView) view.findViewById(R.id.tv_designation);
+        userNameTv = (TextView) view.findViewById(R.id.tv_username);
+        designation = (TextView) view.findViewById(R.id.tv_designation);
         profileImageView = (ImageView) view.findViewById(R.id.im_user);
 
         listView = (ListView) view.findViewById(R.id.listView1);
-
-        if (bmodel.userMasterHelper.hasProfileImagePath(bmodel.userMasterHelper.getUserMasterBO()))
-            setImageFromCamera();
-        else
-            setProfileImage();
 
         profileImageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -371,12 +372,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         });
-
-        userNameTv.setText(bmodel.userMasterHelper.getUserMasterBO().getUserName());
-        userNameTv.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        designation.setText(bmodel.userMasterHelper.getUserMasterBO().getUserType());
-        designation.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-
 
         ll_logout = (LinearLayout) view.findViewById(R.id.ll_logout);
         ll_logout.setOnClickListener(new OnClickListener() {
@@ -737,10 +732,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
 
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -791,10 +786,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
 
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -851,10 +846,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             startActivity(i);
             getActivity().finish();
         } else if (menuItem.getConfigCode().equals(MENU_NEW_RETAILER)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") != 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -894,10 +889,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_NEW_RETAILER, menuItem.getMenuName());
             }
         } else if (menuItem.getConfigCode().equals(MENU_REPORT)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -917,10 +912,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_LOAD_MANAGEMENT)) {
 
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -941,13 +936,34 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else {
                 switchFragment(MENU_LOAD_MANAGEMENT, menuItem.getMenuName());
             }
+        } else if (menuItem.getConfigCode().equals(MENU_PLANNING_SUB)){
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    "yyyy/MM/dd") > 0)) {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+
+            } else if (isLeave_today) {
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.mark_attendance),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.leaveToday),
+                            Toast.LENGTH_SHORT).show();
+            } else {
+                switchFragment(MENU_PLANNING_SUB, menuItem.getMenuName());
+            }
         } else if (menuItem.getConfigCode().equals(MENU_SYNC)) {
             switchFragment(MENU_SYNC, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_SKUWISESTGT)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -965,10 +981,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_SKUWISESTGT, menuItem.getMenuName());
             }
         } else if (menuItem.getConfigCode().equals(MENU_LOAD_REQUEST)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -987,10 +1003,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_DASH_KPI)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1013,10 +1029,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_DASH_KPI, menuItem.getMenuName());
             }
         } else if (menuItem.getConfigCode().equals(MENU_ROUTE_KPI)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1037,10 +1053,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_ROUTE_KPI, menuItem.getMenuName());
             }
         } else if (menuItem.getConfigCode().equals(MENU_DASH)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1058,10 +1074,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 switchFragment(MENU_DASH, menuItem.getMenuName());
             }
         } else if (menuItem.getConfigCode().equals(MENU_DASH_DAY)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1080,10 +1096,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_DASH_INC)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1102,10 +1118,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_OFLNE_PLAN)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1147,10 +1163,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_SURVEY_SW)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1222,10 +1238,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         } else if (menuItem.getConfigCode().equals(MENU_SURVEY01_SW)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1263,6 +1279,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     bmodel.mSelectedActivityName = menuItem.getMenuName();
                     bmodel.mSelectedActivityConfigCode = menuItem
                             .getConfigCode();
+                    surveyHelperNew.loadSurveyConfig(MENU_SURVEY01_SW);
                     switchFragment(MENU_SURVEY01_SW, menuItem.getMenuName());
                 } else {
 
@@ -1272,10 +1289,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         } else if (menuItem.getConfigCode().equals(MENU_SURVEY_BA_CS)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1329,10 +1346,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             }
         } else if (menuItem.getConfigCode().equals(MENU_EMPTY_RECONCILIATION)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1363,10 +1380,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         } else if (menuItem.getConfigCode().equals(MENU_DIGITIAL_SELLER)) {
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1396,10 +1413,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_ROAD_ACTIVITY)) {
             roadTitle = (menuItem.getMenuName() == null) ? "" : menuItem.getMenuName();
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1579,10 +1596,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
 
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)
-                    && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
+            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1695,6 +1712,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_PLANE_MAP);
         LoadManagementFragment mLoadMgtFragment = (LoadManagementFragment) fm
                 .findFragmentByTag(MENU_LOAD_MANAGEMENT);
+        LoadManagementFragment mPlanningSubFragment = (LoadManagementFragment) fm
+                .findFragmentByTag(MENU_PLANNING_SUB);
         SkuWiseTargetFragment mSKUTgtFragment = (SkuWiseTargetFragment) fm
                 .findFragmentByTag(MENU_SKUWISESTGT);
         ReportMenuFragment mReportMenuFragment = (ReportMenuFragment) fm
@@ -1800,6 +1819,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (mLoadMgtFragment != null && (fragmentName.equals(MENU_LOAD_MANAGEMENT))
                 && mLoadMgtFragment.isVisible()) {
             return;
+        } else if (mPlanningSubFragment != null && (fragmentName.equals(MENU_PLANNING_SUB))
+                && mPlanningSubFragment.isVisible()) {
+            return;
         } else if (mSKUTgtFragment != null && (fragmentName.equals(MENU_SKUWISESTGT))
                 && mSKUTgtFragment.isVisible()) {
             return;
@@ -1893,6 +1915,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mPlanningMapFragment);
         if (mLoadMgtFragment != null)
             ft.remove(mLoadMgtFragment);
+        if (mPlanningSubFragment != null)
+            ft.remove(mPlanningSubFragment);
         if (mSKUTgtFragment != null)
             ft.remove(mSKUTgtFragment);
         if (mReportMenuFragment != null)
@@ -2100,9 +2124,22 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_LOAD_MANAGEMENT:
                 bmodel.configurationMasterHelper
                         .setLoadmanagementtitle(menuName);
+                bndl = new Bundle();
+                bndl.putString("from", fragmentName);
                 fragment = new LoadManagementFragment();
+                fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_LOAD_MANAGEMENT);
+                break;
+            case MENU_PLANNING_SUB:
+                bmodel.configurationMasterHelper
+                        .setLoadmanagementtitle(menuName);
+                bndl = new Bundle();
+                bndl.putString("from", fragmentName);
+                fragment = new LoadManagementFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_PLANNING_SUB);
                 break;
             case MENU_PRESENCE:
                 bndl = new Bundle();
@@ -2504,6 +2541,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         if (showDefaultScreen) {
             showDefaultScreen();
         }
+
+        userNameTv.setText(bmodel.userMasterHelper.getUserMasterBO().getUserName());
+        userNameTv.setTypeface(FontUtils.getFontBalooHai(getContext(), FontUtils.FontType.REGULAR));
+        designation.setText(bmodel.userMasterHelper.getUserMasterBO().getUserType());
+        designation.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+
+        if (bmodel.userMasterHelper.hasProfileImagePath(bmodel.userMasterHelper.getUserMasterBO()))
+            setImageFromCamera();
+        else
+            setProfileImage();
     }
 
     @Override
@@ -2642,7 +2689,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String language = sharedPrefs.getString("languagePref", ApplicationConfigs.LANGUAGE);
 
-            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor c = db.selectSQL("select * from "
@@ -2702,12 +2749,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
-    public interface homeScreenItemClickedListener {
-        void onListItemSelected();
-
-    }
-
-    void setmHomeScreenItemClickedListener(homeScreenItemClickedListener mListener) {
+    public void setmHomeScreenItemClickedListener(HomeScreenItemClickedListener mListener) {
         mHomeScreenItemClickedListener = mListener;
     }
 
@@ -2741,7 +2783,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             // Add today'sdeviated retailers.
             for (int i = 0; i < siz; i++) {
-                if (("Y").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
+                if (bmodel.getRetailerMaster().get(i).getIsDeviated() != null && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
                     if (filter != null) {
                         if ((bmodel.getRetailerMaster().get(i)
                                 .getRetailerName().toLowerCase())

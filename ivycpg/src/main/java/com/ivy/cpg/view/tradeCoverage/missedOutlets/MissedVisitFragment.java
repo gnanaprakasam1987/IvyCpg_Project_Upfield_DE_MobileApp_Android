@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.tradeCoverage.missedOutlets;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,12 +18,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.tradeCoverage.deviation.DeviationHelper;
+import com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailerMissedVisitBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.MissedCallDialog;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -37,6 +40,7 @@ public class MissedVisitFragment extends android.support.v4.app.Fragment {
     private TypedArray typearr;
     private String calledBy = "";
     private RetailerMissedVisitBO mSelectedMissedRetailer;
+    private DeviationHelper deviationHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +49,7 @@ public class MissedVisitFragment extends android.support.v4.app.Fragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         View mView = inflater.inflate(R.layout.missedvisit, container, false);
-        listView = (ListView) mView.findViewById(R.id.missedlistView);
+        listView = mView.findViewById(R.id.missedlistView);
         typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -91,6 +95,9 @@ public class MissedVisitFragment extends android.support.v4.app.Fragment {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        deviationHelper = new DeviationHelper(bmodel);
+
         calledBy = getActivity().getIntent().getStringExtra("From");
         if (calledBy == null)
             calledBy = "MENU_VISIT";
@@ -114,7 +121,7 @@ public class MissedVisitFragment extends android.support.v4.app.Fragment {
                             retailerMissedBO.getRetailerId())
                             && retailerMasterBO.getBeatID() == retailerMissedBO
                             .getBeatId()
-                            && "N".equals(retailerMasterBO.getIsDeviated())) {
+                            && (retailerMasterBO.getIsDeviated() != null &&  "N".equals(retailerMasterBO.getIsDeviated()))) {
                         mUpdateMissedRetailerList.add(retailerMissedBO);
                         break;
                     }
@@ -156,7 +163,7 @@ public class MissedVisitFragment extends android.support.v4.app.Fragment {
                         if (!r.getReasonDesc().equalsIgnoreCase(
                                 getResources()
                                         .getString(R.string.select_reason))) {
-                            bmodel.reasonHelper.setDeviate(
+                            deviationHelper.setDeviate(
                                     mSelectedMissedRetailer.getRetailerId(), r,
                                     mSelectedMissedRetailer.getBeatId(), "");
 
@@ -203,11 +210,11 @@ public class MissedVisitFragment extends android.support.v4.app.Fragment {
                 convertView = inflater.inflate(R.layout.missed_visit_list_item,
                         parent, false);
                 holder = new ViewHolder();
-                holder.retailerNameTV = (TextView) convertView
+                holder.retailerNameTV = convertView
                         .findViewById(R.id.tv_retailer_name);
-                holder.missedTV = (TextView) convertView
+                holder.missedTV = convertView
                         .findViewById(R.id.tv_missed);
-                holder.plannedVisitTV = (TextView) convertView
+                holder.plannedVisitTV = convertView
                         .findViewById(R.id.tv_planned);
                 holder.missedTV.setPaintFlags(holder.missedTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 

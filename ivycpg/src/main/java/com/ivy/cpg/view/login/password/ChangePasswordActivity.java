@@ -359,8 +359,8 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
     private void deleteUserMaster() {
 
         try {
-            DBUtil db = new DBUtil(ChangePasswordActivity.this, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(ChangePasswordActivity.this, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_userMaster, null, true);

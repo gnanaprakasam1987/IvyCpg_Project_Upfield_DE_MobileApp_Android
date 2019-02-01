@@ -14,14 +14,10 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.content.FileProvider;
-import android.os.Environment;
-import android.os.StatFs;
-import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -32,15 +28,13 @@ import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenActivity;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.io.File;
 
 import static android.content.Context.MODE_PRIVATE;
 

@@ -9,7 +9,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.HomeScreenFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 
 import java.io.File;
 import java.util.ArrayList;

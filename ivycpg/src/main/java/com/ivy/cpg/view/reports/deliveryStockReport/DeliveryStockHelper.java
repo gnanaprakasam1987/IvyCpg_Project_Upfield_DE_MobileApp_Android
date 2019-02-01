@@ -6,7 +6,6 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
@@ -44,10 +43,10 @@ public class DeliveryStockHelper {
                 try {
                     BusinessModel businessModel = (BusinessModel) context.getApplicationContext();
                     ArrayList<DeliveryStockBo> mDeliveryStocks = new ArrayList<>();
-                    db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME, DataMembers.DB_PATH);
+                    db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
                     String retailerIds = "";
                     for (RetailerMasterBO retailer : businessModel.getRetailerMaster()) {
-                        if (retailer.getIsToday() == 1 || retailer.getIsDeviated().equalsIgnoreCase("Y")) {
+                        if (retailer.getIsToday() == 1 || (retailer.getIsDeviated() != null && retailer.getIsDeviated().equalsIgnoreCase("Y"))) {
                             if (retailerIds.length() > 1)
                                 retailerIds += "," + retailer.getRetailerID();
                             else

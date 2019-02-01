@@ -2,18 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/light_gray"
-    android:orientation="vertical" >
-    
+    android:orientation="vertical">
+
     <TextView
-            android:id="@+id/titleBar"
-            style="?attr/dialogTitleStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:padding="6dp"
-            android:text="@string/must_sell" />
+        android:id="@+id/titleBar"
+        style="?attr/dialogTitleStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:padding="6dp"
+        android:text="@string/must_sell" />
 
     <TextView
         android:id="@+id/must_sell_message_tv"
@@ -29,35 +28,37 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:background="@color/grey_odd" />
+
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="8dp"
-        android:background="#DCDCDC"
-        android:padding="4dp"
-        android:layout_alignParentLeft="true">
+        android:gravity="right"
+        android:orientation="horizontal">
+
 
         <Button
             android:id="@+id/btn_ok"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:text="@string/ok" />
+            style="?attr/roundedCustomButtonNormalTransparent"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/cancel"
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/btn_continue"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/done"
+            android:textAllCaps="false" />
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:text="@string/lbl_continue"
-            android:visibility="gone" />
     </LinearLayout>
+
 
 </LinearLayout>

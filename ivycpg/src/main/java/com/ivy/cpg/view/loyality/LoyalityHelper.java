@@ -47,7 +47,7 @@ public class LoyalityHelper {
         String mLoyaltyRedemptionDetail = "LoyaltyRedemptionDetail";
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME, DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
 
             String uid;
@@ -128,8 +128,8 @@ public class LoyalityHelper {
 
     public boolean hasUpdatedLoyalties(String retailerId) {
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             String sql = "select UID from "
@@ -159,8 +159,8 @@ public class LoyalityHelper {
         ArrayList<StandardListBO> lstPointTypes = new ArrayList<>();
         try {
 
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
 
@@ -192,8 +192,8 @@ public class LoyalityHelper {
     public void updatedLoyaltyPoints(String retailerId) {
         DBUtil db = null;
         try {
-            db = new DBUtil(context, DataMembers.DB_NAME,
-                    DataMembers.DB_PATH);
+            db = new DBUtil(context, DataMembers.DB_NAME
+            );
             db.createDataBase();
             db.openDataBase();
             int ltyId;

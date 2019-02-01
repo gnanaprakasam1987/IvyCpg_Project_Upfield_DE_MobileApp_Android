@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.preference.ListPreference;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,8 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 /**
  * Created by mayuri.v on 4/13/2017.
@@ -26,9 +26,6 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
     public static final String TAG = "ThemedListPreference";
 
     private int mClickedDialogEntryIndex;
-
-    private CharSequence mDialogTitle;
-    private BusinessModel bmodel;
 
     public ThemedListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -43,13 +40,13 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
         // inflate custom layout with custom title & listview
         View view = View.inflate(getContext(), R.layout.dialog_settings, null);
 
-        mDialogTitle = getDialogTitle();
+        CharSequence mDialogTitle = getDialogTitle();
         if (mDialogTitle == null) mDialogTitle = getTitle();
-        TextView mTitleView = (TextView) view.findViewById(R.id.dialog_title);
-        mTitleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        TextView mTitleView = view.findViewById(R.id.dialog_title);
+        mTitleView.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
         mTitleView.setText(mDialogTitle);
-        Button mDoneBTN = (Button) view.findViewById(R.id.ok_btn);
-        mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button mDoneBTN = view.findViewById(R.id.ok_btn);
+        mDoneBTN.setTypeface(FontUtils.getFontBalooHai(getContext(), FontUtils.FontType.REGULAR));
         mDoneBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,8 +55,8 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
                 getDialog().dismiss();
             }
         });
-        Button mCancelBTN = (Button) view.findViewById(R.id.cancel_btn);
-        mCancelBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        Button mCancelBTN = view.findViewById(R.id.cancel_btn);
+        mCancelBTN.setTypeface(FontUtils.getFontBalooHai(getContext(),FontUtils.FontType.REGULAR));
         mCancelBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,9 +65,9 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
                 getDialog().dismiss();
             }
         });
-        GridView list = (GridView) view.findViewById(android.R.id.list);
+        GridView list = view.findViewById(android.R.id.list);
         // note the layout we're providing for the ListView entries
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(
                 getContext(), R.layout.btn_radio,
                 getEntries());
         if (getEntries().length > 1) {
@@ -158,12 +155,16 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        bmodel = (BusinessModel) getContext().getApplicationContext();
-        TextView titleView = (TextView) view.findViewById(android.R.id.title);
+        //To set ripple effect for the list item
+        TypedValue outValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        view.setBackgroundResource(outValue.resourceId);
+
+        TextView titleView = view.findViewById(android.R.id.title);
         titleView.setTextColor(ContextCompat.getColor(getContext(),R.color.white));
-        titleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        TextView summaryView = (TextView) view.findViewById(android.R.id.summary);
-        summaryView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        titleView.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.LIGHT));
+        TextView summaryView = view.findViewById(android.R.id.summary);
+        summaryView.setTypeface(FontUtils.getFontRoboto(getContext(),FontUtils.FontType.MEDIUM));
         summaryView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 }
