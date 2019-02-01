@@ -1535,7 +1535,7 @@ public class CommonPrintHelper {
                                 if (freeProduct.getPcUomid() == schemeProductBO.getUomID()
                                         && freeProduct.getPcUomid() != 0) {
                                     mProductValue = schemeProductBO.getQuantitySelected() + "";
-                                    mProductPieceQtyTotal += mProductPieceQtyTotal + schemeProductBO.getQuantitySelected();
+                                    mProductPieceQtyTotal = mProductPieceQtyTotal + schemeProductBO.getQuantitySelected();
                                 }
                             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_QTY_OUTER)) {
                                 if (freeProduct.getOuUomid() == schemeProductBO.getUomID()

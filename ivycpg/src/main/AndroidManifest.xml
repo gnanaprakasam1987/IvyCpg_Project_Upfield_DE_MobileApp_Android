@@ -873,6 +873,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.webview.PrivacyPolicyActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
             android:screenOrientation="portrait" />
