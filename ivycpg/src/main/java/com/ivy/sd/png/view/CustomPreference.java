@@ -4,12 +4,12 @@ import android.content.Context;
 import android.preference.Preference;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.FontUtils;
 
 public class CustomPreference extends Preference{
 
@@ -29,12 +29,16 @@ public class CustomPreference extends Preference{
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        BusinessModel bmodel = (BusinessModel) getContext().getApplicationContext();
-        TextView titleView = (TextView) view.findViewById(android.R.id.title);
+        //To set ripple effect for the list item
+        TypedValue outValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        view.setBackgroundResource(outValue.resourceId);
+
+        TextView titleView = view.findViewById(android.R.id.title);
         titleView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-        titleView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        TextView summaryView = (TextView) view.findViewById(android.R.id.summary);
-        summaryView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        titleView.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.LIGHT));
+        TextView summaryView = view.findViewById(android.R.id.summary);
+        summaryView.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
         summaryView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 }
