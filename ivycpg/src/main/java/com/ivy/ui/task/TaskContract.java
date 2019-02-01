@@ -61,6 +61,8 @@ public interface TaskContract {
 
         String outDateFormat();
 
-        boolean isValidate(String taskTitle,String taskView);
+        boolean isValidate(String taskTitle, String taskView);
+
+        void saveModuleCompletion(String menuCode);
     }
 }

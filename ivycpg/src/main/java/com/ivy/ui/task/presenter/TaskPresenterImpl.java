@@ -217,4 +217,13 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         return true;
     }
 
+    @Override
+    public void saveModuleCompletion(String menuCode) {
+        getCompositeDisposable().add(getDataManager().saveModuleCompletion(menuCode)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(value -> {
+                }));
+    }
+
 }

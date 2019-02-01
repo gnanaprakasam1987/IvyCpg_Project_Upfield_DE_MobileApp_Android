@@ -1,21 +1,29 @@
 package com.ivy.ui.task.view;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.core.base.view.BaseFragment;
+import com.ivy.cpg.view.task.TaskCreation;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.ui.task.TaskContract;
 
 import java.util.ArrayList;
@@ -158,5 +166,63 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView 
     @Override
     public void updateListData() {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_task, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.menu_save).setVisible(false);
+        if (!taskPresenter.isNewTask())
+            menu.findItem(R.id.menu_new_task).setVisible(false);
+
+        if (!fromHomeScreen)//this is applicable for store wise task
+            menu.findItem(R.id.menu_reason).setVisible(taskPresenter.isNoTaskReason());
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int i1 = item.getItemId();
+        if (i1 == android.R.id.home) {
+
+        } else if (i1 == R.id.menu_new_task) {
+            taskPresenter.updateModuleTime();
+            Intent i = new Intent(getActivity(), TaskCreation.class);
+            i.putExtra("fromHomeScreen", fromHomeScreen);
+            i.putExtra("IsRetailerwisetask", IsRetailerwisetask);
+            i.putExtra("screentitle", bundle.containsKey("screentitle") ? bundle.getString("screentitle") : getResources().
+                    getString(R.string.task));
+            startActivity(i);
+            getActivity().finish();
+        } else if (i1 == R.id.menu_reason) {
+            ReasonPhotoDialog dialog = new ReasonPhotoDialog();
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    /*if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), "MENU_TASK")) {
+                        if (!fromHomeScreen) {
+                            taskPresenter.saveModuleCompletion("MENU_TASK");
+                            startActivity(new Intent(getActivity(),
+                                    HomeScreenTwo.class));
+                            getActivity().finish();
+
+                        }
+                    }*/
+                }
+            });
+            Bundle args = new Bundle();
+            args.putString("modulename", "MENU_TASK");
+            dialog.setCancelable(false);
+            dialog.setArguments(args);
+            dialog.show(getActivity().getSupportFragmentManager(), "ReasonDialogFragment");
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
