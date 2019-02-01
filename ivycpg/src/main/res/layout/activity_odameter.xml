@@ -31,142 +31,141 @@
             card_view:cardUseCompatPadding="true"
             card_view:contentPadding="0dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/odameterlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
+
+                <TextView
+                    android:id="@+id/vanno"
+                    style="@style/TextViewNormal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:padding="5dp">
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:tag="loadvan"
+                    android:text="@string/vanno" />
 
-                    <TextView
-                        android:id="@+id/vanno"
-                        style="@style/TextViewNormal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:tag="loadvan"
-                        android:text="@string/vanno" />
-
-                    <TextView
-                        android:id="@+id/vannovalue"
-                        style="@style/TextViewCaptionNormal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/zero" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/vannovalue"
+                    style="@style/TextViewCaptionNormal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/store_margin_top"
-                    android:layout_marginTop="@dimen/plano_list_top_margin"
-                    android:layout_marginEnd="@dimen/store_margin_top"
+                    android:layout_below="@+id/vanno"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/zero" />
+
+
+                <RelativeLayout
+                    android:id="@+id/start_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/vannovalue"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/store_margin_top"
                     android:background="@color/divider_view_color"
                     android:baselineAligned="false"
-                    android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:padding="@dimen/dimens_14dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
-                        android:gravity="center|top"
-                        android:orientation="vertical"
-                        android:padding="@dimen/plano_list_top_margin">
-
-                        <TextView
-                            android:id="@+id/datetxtview"
-                            style="@style/BannerTextViewLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="@string/date" />
-
-                        <TextView
-                            android:id="@+id/datevalue"
-                            style="@style/TextViewNormal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="11/2/1" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="@dimen/plano_list_top_margin">
-
-                        <TextView
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/light_gray" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/datetxtview"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
-                        android:gravity="center|top"
-                        android:orientation="vertical"
-                        android:padding="@dimen/plano_list_top_margin">
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toStartOf="@+id/inner_line1"
+                        android:layout_toLeftOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:text="@string/date" />
 
-                        <TextView
-                            android:id="@+id/timetxtview"
-                            style="@style/BannerTextViewLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="@string/time" />
+                    <TextView
+                        android:id="@+id/datevalue"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/datetxtview"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toStartOf="@+id/inner_line1"
+                        android:layout_toLeftOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:text="11/2/1" />
 
-                        <TextView
-                            android:id="@+id/timevalue"
-                            style="@style/TextViewNormal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="23:5:50" />
 
-                        <TextView
-                            android:id="@+id/timevaluestart"
-                            style="@style/TextViewListItemPrimary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="2dp"
-                            android:text="23:5:50"
-                            android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/inner_line1"
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/dimens_50dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/light_gray" />
 
-                        <com.ivy.cpg.view.van.odameter.CustomDigitalClock
-                            android:id="@+id/digitalClock1"
-                            style="@style/TextViewCaptionNormal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:visibility="visible" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/timetxtview"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line1"
+                        android:layout_toRightOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:text="@string/time" />
 
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/timevalue"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/timetxtview"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line1"
+                        android:layout_toRightOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:text="23:5:50" />
+
+                    <TextView
+                        android:id="@+id/timevaluestart"
+                        style="@style/TextViewListItemPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/timevalue"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line1"
+                        android:layout_toRightOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="23:5:50"
+                        android:visibility="gone" />
+
+                    <com.ivy.cpg.view.van.odameter.CustomDigitalClock
+                        android:id="@+id/digitalClock1"
+                        style="@style/TextViewCaptionNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/timevaluestart"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line1"
+                        android:layout_toRightOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:visibility="visible" />
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/starttriplayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/start_ll"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -208,6 +207,7 @@
                         android:id="@+id/starttripimgiv"
                         android:layout_width="@dimen/icon"
                         android:layout_height="@dimen/icon"
+                        android:layout_marginStart="@dimen/card_margin"
                         android:layout_marginLeft="@dimen/card_margin"
                         android:background="@drawable/ic_photo_camera_blue_24dp"
                         android:gravity="start"
@@ -217,120 +217,127 @@
 
 
                 <View
+                    android:id="@+id/line_view1"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
+                    android:layout_below="@+id/starttriplayout"
                     android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
                     android:layout_marginEnd="@dimen/values_editextWidth"
                     android:background="@color/divider_view_color" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/enddatetime_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/store_margin_top"
-                    android:layout_marginTop="@dimen/dialog_list_item_left_margin"
-                    android:layout_marginEnd="@dimen/store_margin_top"
+                    android:layout_below="@+id/line_view1"
+                    android:layout_margin="@dimen/store_margin_top"
                     android:background="@color/divider_view_color"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:padding="@dimen/dimens_14dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
-                        android:gravity="center|top"
-                        android:orientation="vertical"
-                        android:padding="@dimen/margin_top_spinner">
 
-                        <TextView
-                            android:id="@+id/enddatetxtview"
-                            style="@style/BannerTextViewLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="@string/dateend"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="@dimen/footer_label_size" />
-
-                        <TextView
-                            android:id="@+id/enddatevalue"
-                            style="@style/TextViewNormal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="11/2/1" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="@dimen/margin_top_spinner">
-
-                        <TextView
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/light_gray" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/enddatetxtview"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
-                        android:gravity="center|top"
-                        android:orientation="vertical"
-                        android:padding="@dimen/margin_top_spinner">
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_toStartOf="@+id/inner_line2"
+                        android:layout_toLeftOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="@string/dateend"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/footer_label_size" />
 
-                        <TextView
-                            android:id="@+id/endtimetxtview"
-                            style="@style/BannerTextViewLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="@string/timeend"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="@dimen/footer_label_size" />
+                    <TextView
+                        android:id="@+id/enddatevalue"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/enddatetxtview"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toStartOf="@+id/inner_line2"
+                        android:layout_toLeftOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="11/2/1" />
 
-                        <TextView
-                            android:id="@+id/endtimevalue"
-                            style="@style/TextViewNormal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="23:5:50" />
 
-                        <TextView
-                            android:id="@+id/timeend"
-                            style="@style/TextViewNormal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="23:5:50"
-                            android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/inner_line2"
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/dimens_50dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/light_gray" />
 
-                        <com.ivy.cpg.view.van.odameter.CustomDigitalClock
-                            android:id="@+id/digitalClock2"
-                            style="@style/TextViewCaptionNormal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="visible" />
-                    </LinearLayout>
 
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/endtimetxtview"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line2"
+                        android:layout_toRightOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="@string/timeend"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/footer_label_size" />
+
+                    <TextView
+                        android:id="@+id/endtimevalue"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/endtimetxtview"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line2"
+                        android:layout_toRightOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="23:5:50" />
+
+                    <TextView
+                        android:id="@+id/timeend"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/endtimevalue"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line2"
+                        android:layout_toRightOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="23:5:50"
+                        android:visibility="gone" />
+
+                    <com.ivy.cpg.view.van.odameter.CustomDigitalClock
+                        android:id="@+id/digitalClock2"
+                        style="@style/TextViewCaptionNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/timeend"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line2"
+                        android:layout_toRightOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:visibility="visible" />
+
+                </RelativeLayout>
 
 
                 <LinearLayout
                     android:id="@+id/endingtriplayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/enddatetime_layout"
                     android:layout_marginTop="@dimen/toolbar_image_top"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -383,8 +390,10 @@
 
 
                 <View
+                    android:id="@+id/line_view2"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
+                    android:layout_below="@+id/endingtriplayout"
                     android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
                     android:layout_marginEnd="@dimen/values_editextWidth"
@@ -394,6 +403,7 @@
                     android:id="@+id/distancelayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/line_view2"
                     android:layout_marginTop="@dimen/store_margin_top"
                     android:orientation="horizontal"
                     android:padding="5dp">
@@ -435,7 +445,7 @@
                         android:textColor="@color/black_bg1" />
                 </RelativeLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </android.support.v7.widget.CardView>
     </ScrollView>

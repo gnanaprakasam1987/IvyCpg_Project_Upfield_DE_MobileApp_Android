@@ -134,7 +134,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         endjourney = findViewById(R.id.endjourney);
         LinearLayout endingtriplayout = findViewById(R.id.endingtriplayout);
         RelativeLayout distancelayout = findViewById(R.id.distancelayout);
-        LinearLayout enddatetime_layout = findViewById(R.id.enddatetime_layout);
+        RelativeLayout enddatetime_layout = findViewById(R.id.enddatetime_layout);
 
         CustomDigitalClock clk1 = findViewById(R.id.digitalClock1);
         CustomDigitalClock clk2 = findViewById(R.id.digitalClock2);
