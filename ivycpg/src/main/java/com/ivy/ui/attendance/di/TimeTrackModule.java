@@ -1,6 +1,9 @@
 package com.ivy.ui.attendance.di;
 
+import android.content.Context;
+
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.location.LocationUtil;
 import com.ivy.ui.attendance.TimeTrackingContract;
 import com.ivy.ui.attendance.data.TimeTrackDataManager;
 import com.ivy.ui.attendance.data.TimeTrackDataMangerImpl;
@@ -20,14 +23,11 @@ import io.reactivex.disposables.CompositeDisposable;
 public class TimeTrackModule {
 
     private TimeTrackingContract.TimeTrackingView mView;
+    private Context mContext;
 
-    public TimeTrackModule(TimeTrackingContract.TimeTrackingView mView) {
+    public TimeTrackModule(TimeTrackingContract.TimeTrackingView mView, Context context) {
         this.mView = mView;
-    }
-
-    @Provides
-    public TimeTrackingContract.TimeTrackingView provideView() {
-        return mView;
+        this.mContext = context;
     }
 
     @Provides
@@ -41,8 +41,8 @@ public class TimeTrackModule {
     }
 
     @Provides
-    TimeTrackDataManager providesPhotoCaptureDataManager(TimeTrackDataMangerImpl timeTrackDataManger){
-        return timeTrackDataManger;
+    public TimeTrackingContract.TimeTrackingView provideView() {
+        return mView;
     }
 
     @Provides
@@ -50,4 +50,16 @@ public class TimeTrackModule {
     TimeTrackingContract.TimeTrackingPresenter<TimeTrackingContract.TimeTrackingView> providesPhotoCapturePresenter(TimeTrackPresenterImpl<TimeTrackingContract.TimeTrackingView> photoCapturePresenter) {
         return photoCapturePresenter;
     }
+
+    @Provides
+    TimeTrackDataManager providesTimeTrackDataManager(TimeTrackDataMangerImpl timeTrackDataManger) {
+        return timeTrackDataManger;
+    }
+
+    @Provides
+    LocationUtil providesLocationUtil() {
+        return LocationUtil.getInstance(mContext);
+    }
+
+
 }

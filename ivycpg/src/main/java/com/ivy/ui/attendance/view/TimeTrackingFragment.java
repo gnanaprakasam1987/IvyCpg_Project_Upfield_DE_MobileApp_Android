@@ -4,30 +4,34 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.locationservice.realtime.FireBaseRealtimeLocationUpload;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
-import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.HomeScreenActivity;
 import com.ivy.ui.attendance.TimeTrackingContract;
 import com.ivy.ui.attendance.adapter.TimeTrackListClickListener;
 import com.ivy.ui.attendance.adapter.TimeTrackingAdapter;
@@ -41,6 +45,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static com.ivy.core.base.view.BaseActivity.LOCATION_PERMISSION;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 
@@ -51,6 +56,9 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
     private ArrayList<NonFieldTwoBo> timeTrackList;
     int addDialogrequestCode;
+    private String screenTitle;
+    private InOutReasonDialog dialog;
+    InOutReasonDialog.OnMyDialogResult onmydailogresult;
 
     @Inject
     TimeTrackingContract.TimeTrackingPresenter<TimeTrackingContract.TimeTrackingView> presenter;
@@ -66,7 +74,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
         DaggerTimeTrackComponent.builder()
                 .ivyAppComponent(((BusinessModel) Objects.requireNonNull(getActivity()).getApplication()).getComponent())
-                .timeTrackModule(new TimeTrackModule(this))
+                .timeTrackModule(new TimeTrackModule(this, getActivity()))
                 .build()
                 .inject(TimeTrackingFragment.this);
 
@@ -82,70 +90,77 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
     @Override
     public void initVariables(View view) {
         timeTrackList = new ArrayList<>();
-
     }
 
     @Override
     protected void getMessageFromAliens() {
-
+        if (getArguments() != null) {
+            Bundle bundle = getArguments();
+            screenTitle = bundle.getString("screentitle");
+        }
     }
 
     @Override
     protected void setUpViews() {
         setHasOptionsMenu(true);
+        setUpToolBar();
         presenter.fetchData();
-       /* if (bmodel.configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE) {
-
-            ((BaseActivity) getActivity()).checkAndRequestPermissionAtRunTime(BaseActivity.LOCATION_PERMISSION);
-
-            if (!bmodel.locationUtil.isGPSProviderEnabled()) {
+        if (presenter.isRealTimeLocationOn()) {
+            checkAndRequestPermissionAtRunTime(LOCATION_PERMISSION);
+            if (!presenter.getLocationUtil().isGPSProviderEnabled()) {
                 GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
-                int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(getContext());
+                int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(getActivity().getApplicationContext());
                 if (resultCode == ConnectionResult.SUCCESS) {
-                    bmodel.requestLocation(getActivity());
+                    ((BusinessModel) getActivity().getApplicationContext()).requestLocation(getActivity());
                 } else {
-                    onCreateDialogNew();
+                    showLocationEnableDialog();
                 }
             }
-        }*/
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-       /* if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
+        if (presenter.isShowCapturedLocation()) {
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                bmodel.locationUtil.startLocationListener();
+                presenter.getLocationUtil().startLocationListener();
             }
-        }*/
+        }
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-      /*  if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION) {
+        if (presenter.isShowCapturedLocation()) {
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)
-                bmodel.locationUtil.stopLocationListener();
-        }*/
+                presenter.getLocationUtil().stopLocationListener();
+        }
     }
 
-    protected void onCreateDialogNew() {
-        new CommonDialog(getContext().getApplicationContext(), getContext(), "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                Intent myIntent = new Intent(
-                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(myIntent);
+    private void setUpToolBar() {
+        getActionBar().setDisplayShowTitleEnabled(false);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActionBar().setElevation(0);
+        }
 
-            }
-        }).show();
+        if (screenTitle != null)
+            setScreenTitle(screenTitle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowHomeEnabled(true);
     }
+
+    private ActionBar getActionBar() {
+        return ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -161,6 +176,66 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
         menu.findItem(R.id.menu_select).setVisible(false);
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i1 = item.getItemId();
+        if (i1 == android.R.id.home) {
+            Intent i = new Intent(getActivity(), HomeScreenActivity.class);
+            startActivity(i);
+            getActivity().finish();
+            return true;
+        } else if (i1 == R.id.menu_add) {
+            if (presenter.isPreviousInOutCompeleted())
+                presenter.fetchReasonAndShowDialog();
+
+
+            /*if (attendanceHelper.previousInOutTimeCompleted()) {
+                dialog = new InOutReasonDialog(getActivity(), onmydailogresult, bmodel.configurationMasterHelper.IS_ATTENDANCE_REMARK);
+                dialog.setDialogResult(new InOutReasonDialog.OnMyDialogResult() {
+
+                    public void cancel(String reasonid, String remarks) {
+                        dialog.dismiss();
+
+                        NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
+                        addNonFieldTwoBo.setId(bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
+                        addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
+                        addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        addNonFieldTwoBo.setOutTime(null);
+                        addNonFieldTwoBo.setRemarks(remarks);
+                        addNonFieldTwoBo.setReason(reasonid);
+
+                        if (startLocationService(addNonFieldTwoBo.getReason())) {
+
+                            attendanceHelper.saveNonFieldWorkTwoDetail(addNonFieldTwoBo, getActivity());
+                            if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
+                                HomeScreenFragment.isLeave_today = attendanceHelper.checkLeaveAttendance(getActivity());
+                            }
+
+                            //}
+                            listview.setVisibility(View.VISIBLE);
+                            no_data_txt.setVisibility(View.GONE);
+                            loadNonFieldTwoDetails();
+                        }
+                    }
+                });
+                dialog.show();
+
+            } */
+            else {
+                try {
+                    ((BusinessModel) getActivity().getApplicationContext()).showAlert(getResources().getString(R.string.out_time_error), 0);
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+            }
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void populateDataToList(ArrayList<NonFieldTwoBo> timeTrackList) {
@@ -212,13 +287,12 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
     }
 
     @Override
-    public boolean updateRealTimeOut() {
+    public void updateRealTimeOut() {
 
         RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
         RealTimeLocationTracking.stopLocationTracking(getContext());
         realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH, null, "AttendanceOut");
 
-        return true;
     }
 
 
@@ -235,6 +309,33 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
                 realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceOut");
             }
         }
+    }
+
+    @Override
+    public void showInOutDialog(ArrayList<ReasonMaster> reasonList) {
+        dialog = new InOutReasonDialog(getActivity(), onmydailogresult, presenter.isAttendanceRemark(), reasonList);
+
+        dialog.setDialogResult(new InOutReasonDialog.OnMyDialogResult() {
+
+            @Override
+            public void cancel(String reasonid, String remarks) {
+                dialog.dismiss();
+                presenter.saveInOutDetails(reasonid, remarks);
+            }
+        });
+        dialog.show();
+    }
+
+    public void showLocationEnableDialog() {
+        new CommonDialog(getContext().getApplicationContext(), getContext(), "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                Intent myIntent = new Intent(
+                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(myIntent);
+
+            }
+        }).show();
     }
 
     @Override

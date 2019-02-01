@@ -14,7 +14,5 @@ import dagger.Component;
 @Component(dependencies = IvyAppComponent.class, modules = {TimeTrackModule.class})
 public interface TimeTrackComponent {
     void inject(TimeTrackingFragment TimeTrackingFragment);
-
-    void inject(TimeTrackingAdapter timeTrackingAdapter);
 }
 

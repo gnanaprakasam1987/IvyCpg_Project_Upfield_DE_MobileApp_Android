@@ -1,9 +1,14 @@
 package com.ivy.ui.attendance;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
+import com.ivy.location.LocationUtil;
+import com.ivy.sd.png.bo.ReasonMaster;
 
 import java.util.ArrayList;
 
@@ -17,9 +22,11 @@ public interface TimeTrackingContract {
 
         boolean updateRealTimeIn();
 
-        boolean updateRealTimeOut();
+        void updateRealTimeOut();
 
         void uploadAttendance(String IN_OUT, String reasonId );
+
+        void showInOutDialog(ArrayList<ReasonMaster> reasonList);
     }
 
     @PerActivity
@@ -30,11 +37,23 @@ public interface TimeTrackingContract {
 
         boolean startLocationService(String reasonId);
 
-        boolean stopLocationService(String reasonId);
+        void stopLocationService(String reasonId);
 
         void updateTimeTrackDetails(NonFieldTwoBo nonFieldTwoBo);
 
+        boolean isRealTimeLocationOn();
 
+        boolean isShowCapturedLocation();
+
+        LocationUtil getLocationUtil();
+
+        boolean isPreviousInOutCompeleted();
+
+        boolean isAttendanceRemark();
+
+        void fetchReasonAndShowDialog();
+
+        void saveInOutDetails(String reasonId, String remarks);
 
     }
 }

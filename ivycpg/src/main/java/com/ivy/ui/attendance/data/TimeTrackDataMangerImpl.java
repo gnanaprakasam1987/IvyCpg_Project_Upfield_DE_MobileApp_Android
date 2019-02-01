@@ -6,8 +6,11 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
@@ -65,13 +68,6 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
                             timeTrackBo.setOutTime(c.getString(3));
                             timeTrackBo.setRemarks(c.getString(4));
                             timeTrackBo.setRowid(c.getInt(5));
-
-                           /* if ((timeTrackBo.getInTime() != null && !timeTrackBo.getInTime().trim().equalsIgnoreCase(""))
-                                    && (timeTrackBo.getOutTime() != null && !timeTrackBo.getOutTime().trim().equalsIgnoreCase(""))) {
-                                timeTrackBo.setStatus(context.getResources().getString(R.string.in_complete));
-                            } else {
-                                timeTrackBo.setStatus(context.getResources().getString(R.string.in_partial));
-                            }*/
                             timeTrackBo.setReason(c.getString(6));
                             timeTrackBo.setReasonText(getReasonName(c.getString(6)));
                             timeTrackList.add(timeTrackBo);
@@ -91,14 +87,16 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
     }
 
     private String getReasonName(String id) {
+        String reasonName ="";
         try {
+
 
             initDb();
             Cursor c = mDbUtil.selectSQL("SELECT ListName FROM StandardListMaster"
                     + " WHERE ListId = " + id);
             if (c != null) {
                 if (c.moveToNext()) {
-                    return c.getString(0);
+                    reasonName = c.getString(0);
                 }
                 c.close();
             }
@@ -107,7 +105,7 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
             Commons.printException(e);
         }
         shutDownDb();
-        return "";
+        return reasonName;
     }
 
     /**
@@ -151,7 +149,6 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
 
                     mDbUtil.updateSQL(updateSql);
 
-                    shutDownDb();
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -161,6 +158,105 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
         });
     }
 
+    @Override
+    public Observable<ArrayList<ReasonMaster>> getInOutReasonList() {
+        return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
+            @Override
+            public ArrayList<ReasonMaster> call() {
+                try {
+                    initDb();
+                    ArrayList<ReasonMaster> reasonList = new ArrayList<>();
+                    String query = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'REASON'"
+                            + " AND ParentId = (SELECT ListId FROM StandardListMaster WHERE ListType ='REASON_TYPE' AND ListCode = 'ATR')";
+                    ;
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        ReasonMaster reasonMaster;
+                        while (c.moveToNext()) {
+                            reasonMaster = new ReasonMaster();
+                            reasonMaster.setReasonID(c.getString(0));
+                            reasonMaster.setReasonDesc(c.getString(1));
+                            reasonList.add(reasonMaster);
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+                    return reasonList;
+                } catch (Exception ignored) {
+                    ignored.printStackTrace();
+                }
+                shutDownDb();
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> saveTimeTrackDetailsDb(String reasonId, String remarks, double latitude, double longitude) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
+                addNonFieldTwoBo.setId(appDataProvider.getUser().getUserid()
+                        + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
+                addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
+                addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+                addNonFieldTwoBo.setOutTime(null);
+                addNonFieldTwoBo.setRemarks(remarks);
+                addNonFieldTwoBo.setReason(reasonId);
+
+                if (addNonFieldTwoBo.getId() != null) {
+                    try {
+
+                        initDb();
+
+                        String inTime = addNonFieldTwoBo.getInTime() != null ? addNonFieldTwoBo.getInTime() : " ";
+                        String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,Remarks,upload";
+                        String value = AppUtils.QT(addNonFieldTwoBo.getId()) + ","
+                                + AppUtils.QT(addNonFieldTwoBo.getFromDate()) + ","
+                                + AppUtils.QT(inTime) + ","
+                                + addNonFieldTwoBo.getReason() + "," + appDataProvider.getUser().getUserid() + ","
+                                + AppUtils.QT(latitude + "") + "," + AppUtils.QT(longitude + "") + ","
+                                + 0 + "," + AppUtils.QT(addNonFieldTwoBo.getRemarks()) + "," + AppUtils.QT("N");
+
+                        mDbUtil.insertSQL("AttendanceTimeDetails", columns, value);
+
+                        shutDownDb();
+                        return true;
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                    }
+                    shutDownDb();
+                    return false;
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> checkIsLeave() {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    initDb();
+                    Cursor c = mDbUtil
+                            .selectSQL("SELECT * FROM AttendanceTimeDetails where userid = " + appDataProvider.getUser().getUserid() +
+                                    " AND date = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) +
+                                    " AND upload = 'N' or upload ='Y'");
+                    if (c.getCount() == 0) {
+                        shutDownDb();
+                        return true;
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                shutDownDb();
+                return false;
+            }
+        });
+    }
 
     @Override
     public void tearDown() {

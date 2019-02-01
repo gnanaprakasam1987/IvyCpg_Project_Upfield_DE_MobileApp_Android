@@ -1,9 +1,14 @@
 package com.ivy.core.base.view;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +23,15 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.ivy.core.base.view.BaseActivity.CAMERA_AND_WRITE_PERMISSION;
+import static com.ivy.core.base.view.BaseActivity.LOCATION_PERMISSION;
+import static com.ivy.core.base.view.BaseActivity.PHONE_STATE_AND_WRITE_PERMISSON;
 
 public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
@@ -286,6 +298,70 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
             ((BaseActivity) getActivity()).setScreenTitle(title);
         else if(getActivity() instanceof IvyBaseActivityNoActionBar)
             ((IvyBaseActivityNoActionBar) getActivity()).setScreenTitle(title);
+    }
+
+
+    // Todo to be removed
+    public boolean checkAndRequestPermissionAtRunTime(int mGroup) {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int permissionStatus;
+        if (mGroup == PHONE_STATE_AND_WRITE_PERMISSON) {
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.READ_PHONE_STATE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
+            }
+
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), PHONE_STATE_AND_WRITE_PERMISSON);
+                return false;
+            }
+        } else if (mGroup == CAMERA_AND_WRITE_PERMISSION) {
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.CAMERA);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.CAMERA);
+            }
+
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), CAMERA_AND_WRITE_PERMISSION);
+                return false;
+            }
+        } else if (mGroup == LOCATION_PERMISSION) {
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                if (mBasePresenter.isLocationConfigurationEnabled()) {
+                    listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+                }
+            }
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), LOCATION_PERMISSION);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public void requestPermissionsSafely(String[] permissions, int requestCode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(permissions, requestCode);
+        }
     }
 
 }

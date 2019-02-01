@@ -132,7 +132,7 @@ public class IvyAppModule {
 
     @Provides
     @BeatInfo
-    protected BeatDataManager providesBeatDataManager(BeatDataManagerImpl beatDataManager){
+    protected BeatDataManager providesBeatDataManager(BeatDataManagerImpl beatDataManager) {
         return beatDataManager;
     }
 
@@ -145,43 +145,44 @@ public class IvyAppModule {
     @Provides
     @Profile
     protected RetailerMasterBO providesRetailerMasterBO() {
-        return ((BusinessModel)mContext).getRetailerMasterBO();
+        return ((BusinessModel) mContext).getRetailerMasterBO();
     }
 
     @Provides
     @Profile
     UserMasterHelper provideUserMasterHelper() {
-        return((BusinessModel)mContext).userMasterHelper;
+        return ((BusinessModel) mContext).userMasterHelper;
     }
 
     @Provides
     @Profile
     ChannelMasterHelper provideChannelMasterHelper() {
-        return((BusinessModel)mContext).channelMasterHelper;
+        return ((BusinessModel) mContext).channelMasterHelper;
     }
 
     @Provides
     @Profile
     SubChannelMasterHelper provideSubChannelMasterHelper() {
-        return((BusinessModel)mContext).subChannelMasterHelper;
+        return ((BusinessModel) mContext).subChannelMasterHelper;
     }
 
     @Provides
     @Profile
     RetailerHelper provideRetailerHelper() {
-        return((BusinessModel)mContext).mRetailerHelper;
+        return ((BusinessModel) mContext).mRetailerHelper;
     }
 
 
     @Provides
     @Profile
-    Vector<RetailerMasterBO> provideRetailerMaster(){
-        return ((BusinessModel)mContext).getRetailerMaster();
+    Vector<RetailerMasterBO> provideRetailerMaster() {
+        return ((BusinessModel) mContext).getRetailerMaster();
     }
+
     @Provides
     @Profile
-    NewOutletHelper provideNewoutletHelper(){
-        return ((BusinessModel)mContext).newOutletHelper;
+    NewOutletHelper provideNewoutletHelper() {
+        return ((BusinessModel) mContext).newOutletHelper;
     }
 
     @Provides
@@ -199,20 +200,19 @@ public class IvyAppModule {
 
     @Provides
     @DistributorInfo
-    DistributorDataManager providesDistributorManager(DistributorDataManagerImpl distributorDataManager){
+    DistributorDataManager providesDistributorManager(DistributorDataManagerImpl distributorDataManager) {
         return distributorDataManager;
     }
 
     @Provides
     @RetailerInfo
-    RetailerDataManager providesRetailerDataManager(RetailerDataManagerImpl retailerDataManager){
+    RetailerDataManager providesRetailerDataManager(RetailerDataManagerImpl retailerDataManager) {
         return retailerDataManager;
     }
 
     @Provides
     @ChannelInfo
-    ChannelDataManager providesChannelDataManager(ChannelDataManagerImpl channelDataManager){
+    ChannelDataManager providesChannelDataManager(ChannelDataManagerImpl channelDataManager) {
         return channelDataManager;
     }
-
 }
