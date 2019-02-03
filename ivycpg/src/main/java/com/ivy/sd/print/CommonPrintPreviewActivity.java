@@ -435,13 +435,20 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             HashMap<String, String> mUserCredentials = bmodel.downloadEmailAccountCredentials();
             final String emailId = mUserCredentials.get("EMAILID");
             final String password = mUserCredentials.get("PASSWORD");
+            final String type = mUserCredentials.get("TYPE");
 
             Properties props = System.getProperties();// new Properties();
 
-            //Configuring properties for GMAIL
-            props.put("mail.smtp.host", "smtp.gmail.com");
+            if(type.equalsIgnoreCase("office365")) {
+                //Properties for Office365
+                props.put("mail.smtp.host", "smtp.office365.com");
+            } else {
+                //Configuring properties for GMAIL
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            }
+
             props.put("mail.smtp.socketFactory.port", "587");
-            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.port", "587");
             props.put("mail.smtp.starttls.enable", "true");
