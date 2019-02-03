@@ -7232,6 +7232,7 @@ public class BusinessModel extends Application {
         HashMap<String, String> mUserCredentials = new HashMap<>();
         mUserCredentials.put("EMAILID", "");
         mUserCredentials.put("PASSWORD", "");
+        mUserCredentials.put("TYPE", "");
         try {
             DBUtil db = new DBUtil(getContext(), DataMembers.DB_NAME
             );
@@ -7252,6 +7253,16 @@ public class BusinessModel extends Application {
             if (c != null) {
                 if (c.moveToNext()) {
                     mUserCredentials.put("PASSWORD", c.getString(0));
+                }
+                c.close();
+            }
+
+            s = "SELECT ListName FROM StandardListMaster where listcode='DELIVERY_TYPE' and listtype='DELIVERY_MAIL'";
+
+            c = db.selectSQL(s);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    mUserCredentials.put("TYPE", c.getString(0));
                 }
                 c.close();
             }

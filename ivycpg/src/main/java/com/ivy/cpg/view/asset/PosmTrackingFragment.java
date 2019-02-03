@@ -913,14 +913,17 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                             assetTrackingHelper.mSelectedAssetID = holder.assetBO
                                     .getAssetID();
-                            assetTrackingHelper.mSelectedImageName = imageName;
+                            assetTrackingHelper.mSelectedSerialNumber = holder.assetBO.getSerialNo();
                             assetTrackingHelper.mSelectedProductID = holder.assetBO.getProductId();
+
+                            assetTrackingHelper.mSelectedImageName = imageName;
 
                             if (holder.assetBO.getImageList().size() != 0) {
                                 Intent intent = new Intent(getActivity(), PosmGallery.class);
                                 intent.putExtra("listId", mSelectedStandardListBO.getListID());
                                 intent.putExtra("assetId", holder.assetBO.getAssetID());
-                                intent.putExtra("productId", holder.assetBO.getProductId());
+                                intent.putExtra("serialNo", holder.assetBO.getSerialNo());
+                                intent.putExtra("productID", holder.assetBO.getProductId());
                                 startActivityForResult(intent, POSM_GALLERY);
                             } else
                                 captureCustom();
@@ -1276,7 +1279,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
      * @param assetID Asset Id
      * @param imgName Image Name
      */
-    private void onSaveImageName(int assetID, String imgName, int productID) {
+    private void onSaveImageName(int assetID, String serialNo, int productID, String imgName) {
 
         String imagePath = "Asset/"
                 + mBModel.userMasterHelper.getUserMasterBO().getDownloadDate()
@@ -1286,7 +1289,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         for (AssetTrackingBO assetBO : mAssetTrackingList) {
             if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                 continue;
-            if (assetID == assetBO.getAssetID() && productID == assetBO.getProductId()) {
+            if (assetID == assetBO.getAssetID() && serialNo.equals(assetBO.getSerialNo()) && productID == assetBO.getProductId()) {
                 ArrayList<String> imageList = assetBO.getImageList();
                 imageList.add(imagePath);
                 assetBO.setImageList(imageList);
@@ -1307,8 +1310,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                         "Camera Activity : Successfully Captured.");
                 if (assetTrackingHelper.mSelectedAssetID != 0) {
                     onSaveImageName(
-                            assetTrackingHelper.mSelectedAssetID,
-                            assetTrackingHelper.mSelectedImageName, assetTrackingHelper.mSelectedProductID);
+                            assetTrackingHelper.mSelectedAssetID, assetTrackingHelper.mSelectedSerialNumber, assetTrackingHelper.mSelectedProductID,
+                            assetTrackingHelper.mSelectedImageName);
                 }
             } else {
                 Commons.print(TAG + "," + "Camera Activity : Canceled");
